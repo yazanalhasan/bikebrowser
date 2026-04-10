@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import SearchBar from '../components/SearchBar';
 import CategoryTabs from '../components/CategoryTabs';
 import ResultGrid from '../components/ResultGrid';
 import { useSearch } from '../hooks/useSearch';
+import { useVoiceCapture } from '../hooks/useVoiceCapture';
+import { useCameraCapture } from '../hooks/useCameraCapture';
 
 function flattenResults(results, category) {
   if (!results) {
@@ -22,6 +24,100 @@ export default function SafeSearchPage() {
   const [lastQuery, setLastQuery] = useState('');
   const [localOnly, setLocalOnly] = useState(false);
   const [usOnly, setUsOnly] = useState(false);
+  const [mediaError, setMediaError] = useState(null);
+
+  // ── Voice capture ─────────────────────────────────────────────────────────
+  const voice = useVoiceCapture();
+  const voiceProcessingRef = useRef(false);
+
+  // When the hook produces a transcript, feed it into the search pipeline
+  useEffect(() => {
+    if (!voice.transcript || voiceProcessingRef.current) return;
+    voiceProcessingRef.current = true;
+    setMediaError(null);
+
+    (async () => {
+      try {
+        // Use voice IPC if available (main-process AI parsing), fall back to text search
+        if (window.api?.voice?.searchFromTranscript) {
+          const res = await window.api.voice.searchFromTranscript(voice.transcript);
+          if (res?.success && res.searchResult) {
+            // Inject the voice-search result into the same UI path
+            handleSearch(res.searchResult.query || voice.transcript);
+          } else {
+            // Fall back to plain text search with the transcript
+            handleSearch(voice.transcript);
+          }
+        } else {
+          handleSearch(voice.transcript);
+        }
+      } catch {
+        handleSearch(voice.transcript);
+      } finally {
+        voice.reset();
+        voiceProcessingRef.current = false;
+      }
+    })();
+  }, [voice.transcript]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleVoiceToggle = useCallback(() => {
+    setMediaError(null);
+    if (voice.listening) {
+      voice.stop();
+    } else {
+      voice.start();
+    }
+  }, [voice]);
+
+  // Surface voice errors
+  useEffect(() => {
+    if (voice.error) setMediaError(`Voice: ${voice.error}`);
+  }, [voice.error]);
+
+  // ── Camera capture ────────────────────────────────────────────────────────
+  const camera = useCameraCapture();
+  const cameraProcessingRef = useRef(false);
+
+  const handleCameraCapture = useCallback(async () => {
+    if (cameraProcessingRef.current || loading) return;
+    setMediaError(null);
+
+    // If camera isn't active yet, open it. The user re-clicks to take a photo.
+    if (!camera.capturing) {
+      camera.start();
+      return;
+    }
+
+    // Take the snapshot and run it through the image pipeline
+    const base64 = camera.capture();
+    if (!base64) return;
+
+    cameraProcessingRef.current = true;
+    try {
+      if (window.api?.camera?.searchFromImage) {
+        const res = await window.api.camera.searchFromImage(base64);
+        if (res?.success && res.searchResult) {
+          handleSearch(res.searchResult.query || res.searchArgs?.query || 'bike part');
+        } else if (res?.success && res.searchArgs?.query) {
+          handleSearch(res.searchArgs.query);
+        } else {
+          setMediaError('Could not identify the image. Try again or type a search.');
+        }
+      } else {
+        setMediaError('Camera search is not available in this environment.');
+      }
+    } catch {
+      setMediaError('Camera analysis failed. Try again.');
+    } finally {
+      camera.stop();
+      cameraProcessingRef.current = false;
+    }
+  }, [camera, loading]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Surface camera errors
+  useEffect(() => {
+    if (camera.error) setMediaError(`Camera: ${camera.error}`);
+  }, [camera.error]);
 
   const visibleResults = useMemo(
     () => flattenResults(results, activeCategory),
@@ -77,7 +173,38 @@ export default function SafeSearchPage() {
           </div>
         </div>
 
-        <SearchBar loading={loading} onSearch={handleSearch} />
+        <SearchBar
+          loading={loading}
+          onSearch={handleSearch}
+          onVoice={handleVoiceToggle}
+          onCamera={handleCameraCapture}
+          voiceListening={voice.listening}
+          voiceSupported={voice.supported}
+          cameraActive={camera.capturing}
+        />
+
+        {/* Camera viewfinder — shown only while camera is active */}
+        {camera.capturing && (
+          <div className="relative overflow-hidden rounded-2xl border-2 border-amber-400 bg-black shadow-lg">
+            <video
+              ref={camera.videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="mx-auto block max-h-64 w-full object-contain"
+            />
+            <p className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-4 py-1 text-sm text-white">
+              Tap 📷 again to capture
+            </p>
+          </div>
+        )}
+
+        {/* Media errors (voice / camera) */}
+        {mediaError && (
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-3 text-amber-800 shadow-sm">
+            {mediaError}
+          </div>
+        )}
 
         <div className="flex flex-wrap gap-3">
           <button
