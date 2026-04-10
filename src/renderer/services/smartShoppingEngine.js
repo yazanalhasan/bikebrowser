@@ -16,6 +16,11 @@ const DEFAULT_LOCATION = {
 const ALLOWED_SOURCES = new Set([
   'amazon',
   'ebay',
+  'jensonusa',
+  'revzilla',
+  'chainreaction',
+  'adafruit',
+  'retailer',
 ]);
 
 const MIN_SCORE_THRESHOLD = 30;
@@ -136,7 +141,7 @@ export async function searchOnlineProducts(query, location) {
   ]);
 
   const marketListings = extractList(marketResult, 'listings').map((item) => normalizeProductShape(item, 'marketcheck'));
-  const retailerListings = extractList(retailerResult, 'results').map((item) => normalizeProductShape(item, 'amazon'));
+  const retailerListings = extractList(retailerResult, 'results').map((item) => normalizeProductShape(item, 'retailer'));
   const ebayListings = extractList(ebayResult, 'results').map((item) => normalizeProductShape(item, 'ebay'));
 
   return [...marketListings, ...retailerListings, ...ebayListings].map((item) => {

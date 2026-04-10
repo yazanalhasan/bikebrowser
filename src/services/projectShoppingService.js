@@ -10,9 +10,9 @@ function normalizeRetailerResult(result) {
     price,
     shipping,
     totalPrice: Number((price + shipping).toFixed(2)),
-    rating: result.sourceMetadata?.rating || 4.1,
-    image: result.thumbnail || 'https://via.placeholder.com/240x240?text=Bike+Part',
-    source: 'amazon',
+    rating: result.sourceMetadata?.rating || undefined,
+    image: result.thumbnail || '',
+    source: result.source || 'retailer',
     sourceLabel: result.sourceName || result.source,
     url: result.url,
   };

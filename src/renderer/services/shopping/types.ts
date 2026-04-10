@@ -7,7 +7,12 @@ export type ProductSource =
   | 'marketcheck'
   | 'facebook_marketplace'
   | 'craigslist'
-  | 'google_places';
+  | 'google_places'
+  | 'jensonusa'
+  | 'revzilla'
+  | 'chainreaction'
+  | 'adafruit'
+  | 'retailer';
 
 export type VideoReference = {
   videoId: string;

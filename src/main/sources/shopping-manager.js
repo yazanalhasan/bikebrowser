@@ -58,45 +58,79 @@ function titleSimilarity(left, right) {
   return union === 0 ? 0 : overlap / union;
 }
 
+// Words too generic to count as a real match on their own
+const GENERIC_TOKENS = new Set(['bike', 'bicycle', 'cycling', 'cycle', 'part', 'parts', 'set', 'kit', 'replacement', 'durable', 'safe', 'project']);
+
 function matchesQuery(item, queries) {
   const haystack = normalizeTitle(`${item.title} ${item.description || ''} ${(item.tags || []).join(' ')}`);
   const tokens = queries.flatMap((query) => normalizeTitle(query).split(' ').filter(Boolean));
+  const specificTokens = tokens.filter((t) => !GENERIC_TOKENS.has(t));
+
+  // Require at least one specific (non-generic) token to match
+  if (specificTokens.length > 0) {
+    return specificTokens.some((token) => haystack.includes(token));
+  }
+
+  // If all tokens are generic, require at least one match
   return tokens.some((token) => haystack.includes(token));
 }
 
 function fallbackCatalog() {
   return {
     aliexpress: [
-      { id: 'ae-1', title: '48V brushless e-bike motor kit', description: 'International motor kit with controller and throttle.', price: 249, thumbnail: '', tags: ['electric', 'bike', 'motor'], sellerVerified: false, shippingEstimate: '10-20 days', country: 'CN', isInternational: true },
-      { id: 'ae-2', title: '52V battery pack with BMS', description: 'Battery pack for custom e-bike builds.', price: 189, thumbnail: '', tags: ['battery', 'ebike'], sellerVerified: false, shippingEstimate: '12-18 days', country: 'CN', isInternational: true }
+      { id: 'ae-chain', title: 'Bicycle Chain 6/7/8 Speed', description: 'Universal bike chain for multi-speed drivetrains.', price: 8.50, thumbnail: '', tags: ['chain', 'drivetrain', 'bike', 'bicycle'], url: 'https://www.aliexpress.com/w/wholesale-bicycle-chain.html', sellerVerified: false, shippingEstimate: '10-20 days', country: 'CN', isInternational: true },
+      { id: 'ae-tube', title: 'Bicycle Inner Tube 26 inch', description: 'Butyl rubber inner tube for 26 inch rims.', price: 3.20, thumbnail: '', tags: ['tube', 'inner tube', 'bike', 'bicycle'], url: 'https://www.aliexpress.com/w/wholesale-bicycle-inner-tube.html', sellerVerified: false, shippingEstimate: '10-20 days', country: 'CN', isInternational: true },
+      { id: 'ae-brake', title: 'Bicycle Brake Pads V-Brake', description: 'Replacement V-brake pads for rim brakes.', price: 2.80, thumbnail: '', tags: ['brake', 'brake pads', 'bike', 'bicycle'], url: 'https://www.aliexpress.com/w/wholesale-bicycle-brake-pads.html', sellerVerified: false, shippingEstimate: '10-20 days', country: 'CN', isInternational: true },
+      { id: 'ae-tire', title: 'Bicycle Tire 26x1.95', description: 'Mountain bike tire with puncture protection.', price: 9.50, thumbnail: '', tags: ['tire', 'wheel', 'bike', 'bicycle'], url: 'https://www.aliexpress.com/w/wholesale-bicycle-tire.html', sellerVerified: false, shippingEstimate: '10-20 days', country: 'CN', isInternational: true },
+      { id: 'ae-grease', title: 'Bicycle Chain Lubricant', description: 'Chain lube for smooth shifting and rust prevention.', price: 4.50, thumbnail: '', tags: ['grease', 'lube', 'chain', 'bike', 'bicycle'], url: 'https://www.aliexpress.com/w/wholesale-bicycle-chain-lubricant.html', sellerVerified: false, shippingEstimate: '10-20 days', country: 'CN', isInternational: true }
     ],
     banggood: [
-      { id: 'bg-1', title: 'E-bike motor controller kit', description: 'Controller, display, and wiring harness.', price: 98, thumbnail: '', tags: ['controller', 'motor'], sellerVerified: false, shippingEstimate: '7-14 days', warehouseLocation: 'CN', country: 'CN', isInternational: true }
+      { id: 'bg-chain', title: 'Mountain Bike Chain 8 Speed', description: 'Durable chain for 8-speed MTB drivetrains.', price: 9.99, thumbnail: '', tags: ['chain', 'drivetrain', 'bike', 'bicycle'], url: 'https://www.banggood.com/search/bicycle-chain.html', sellerVerified: false, shippingEstimate: '7-14 days', warehouseLocation: 'CN', country: 'CN', isInternational: true },
+      { id: 'bg-tube', title: 'Bicycle Inner Tube 700c', description: 'Road bike inner tube with Presta valve.', price: 3.50, thumbnail: '', tags: ['tube', 'inner tube', 'bike', 'bicycle'], url: 'https://www.banggood.com/search/bicycle-inner-tube.html', sellerVerified: false, shippingEstimate: '7-14 days', warehouseLocation: 'CN', country: 'CN', isInternational: true },
+      { id: 'bg-wrench', title: 'Bike Repair Tool Kit 16-in-1', description: 'Multi-tool for bicycle maintenance and repair.', price: 12.99, thumbnail: '', tags: ['wrench', 'tool', 'repair', 'bike', 'bicycle'], url: 'https://www.banggood.com/search/bicycle-repair-tool.html', sellerVerified: false, shippingEstimate: '7-14 days', warehouseLocation: 'CN', country: 'CN', isInternational: true }
     ],
     alibaba: [
-      { id: 'ab-1', title: 'Single-quantity electric bike motor set', description: 'Wholesale source with MOQ 1 available.', price: 310, thumbnail: '', tags: ['bulk', 'motor'], sellerVerified: true, shippingEstimate: '14-25 days', country: 'CN', isInternational: true }
+      { id: 'ab-chain', title: 'Bicycle Chain Bulk', description: 'Bicycle chains available in single quantity.', price: 6.00, thumbnail: '', tags: ['chain', 'drivetrain', 'bike', 'bicycle'], url: 'https://www.alibaba.com/trade/search?SearchText=bicycle+chain', sellerVerified: true, shippingEstimate: '14-25 days', country: 'CN', isInternational: true },
+      { id: 'ab-tire', title: 'Bicycle Tire All Sizes', description: 'Bike tires available in various sizes.', price: 7.00, thumbnail: '', tags: ['tire', 'wheel', 'bike', 'bicycle'], url: 'https://www.alibaba.com/trade/search?SearchText=bicycle+tire', sellerVerified: true, shippingEstimate: '14-25 days', country: 'CN', isInternational: true }
     ],
     revzilla: [
-      { id: 'rz-1', title: 'Mini bike protective frame sliders', description: 'Trusted motorcycle parts retailer option.', price: 79, thumbnail: '', tags: ['frame', 'bike'], sellerVerified: true, country: 'US', rating: 4.8 }
+      { id: 'rz-helmet', title: 'Kids Bike Helmet CPSC Certified', description: 'Safety-certified helmet for young riders.', price: 34.99, thumbnail: '', tags: ['helmet', 'safety', 'bike', 'bicycle'], url: 'https://www.revzilla.com/search?query=kids+bike+helmet', sellerVerified: true, country: 'US', rating: 4.5 },
+      { id: 'rz-light', title: 'Bicycle LED Light Set', description: 'Front and rear LED lights for bike safety.', price: 19.99, thumbnail: '', tags: ['light', 'safety', 'bike', 'bicycle'], url: 'https://www.revzilla.com/search?query=bicycle+light', sellerVerified: true, country: 'US', rating: 4.3 }
     ],
     jensonusa: [
-      { id: 'ju-1', title: 'E-bike drivetrain replacement kit', description: 'Bike-specific upgrade parts from a US retailer.', price: 129, thumbnail: '', tags: ['ebike', 'bike'], sellerVerified: true, country: 'US', rating: 4.6 }
+      { id: 'ju-chain', title: 'KMC Bicycle Chain 8 Speed', description: 'High quality chain from a trusted bike shop.', price: 12.99, thumbnail: '', tags: ['chain', 'drivetrain', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=bicycle+chain', sellerVerified: true, country: 'US', rating: 4.7 },
+      { id: 'ju-tube', title: 'Bicycle Inner Tube 26 inch Schrader', description: 'Standard inner tube for mountain bikes.', price: 6.99, thumbnail: '', tags: ['tube', 'inner tube', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=inner+tube', sellerVerified: true, country: 'US', rating: 4.6 },
+      { id: 'ju-brake', title: 'Shimano Brake Pads', description: 'Reliable disc brake pads for mountain bikes.', price: 14.99, thumbnail: '', tags: ['brake', 'brake pads', 'disc brake', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=brake+pads', sellerVerified: true, country: 'US', rating: 4.8 },
+      { id: 'ju-tire', title: 'Continental Bicycle Tire 26x2.0', description: 'Durable mountain bike tire with flat protection.', price: 29.99, thumbnail: '', tags: ['tire', 'wheel', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=bicycle+tire', sellerVerified: true, country: 'US', rating: 4.7 },
+      { id: 'ju-grease', title: 'Finish Line Bike Chain Lube', description: 'Premium bike chain lubricant for smooth operation.', price: 9.99, thumbnail: '', tags: ['grease', 'lube', 'chain', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=chain+lube', sellerVerified: true, country: 'US', rating: 4.9 },
+      { id: 'ju-wrench', title: 'Park Tool Bike Multi-Tool', description: 'Essential bicycle repair multi-tool.', price: 24.99, thumbnail: '', tags: ['wrench', 'tool', 'repair', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=bike+tool', sellerVerified: true, country: 'US', rating: 4.8 },
+      { id: 'ju-helmet', title: 'Kids Bike Helmet', description: 'Youth cycling helmet with adjustable fit.', price: 39.99, thumbnail: '', tags: ['helmet', 'safety', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=kids+helmet', sellerVerified: true, country: 'US', rating: 4.6 },
+      { id: 'ju-wheel', title: 'Bicycle Wheelset 26 inch', description: 'Complete front and rear wheel set for mountain bikes.', price: 89.99, thumbnail: '', tags: ['wheel', 'rim', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=bicycle+wheel', sellerVerified: true, country: 'US', rating: 4.5 },
+      { id: 'ju-pedals', title: 'Shimano Flat Pedals', description: 'Reliable platform pedals for everyday cycling.', price: 24.99, thumbnail: '', tags: ['pedal', 'pedals', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=bicycle+pedals', sellerVerified: true, country: 'US', rating: 4.6 },
+      { id: 'ju-seat', title: 'Bicycle Comfort Saddle', description: 'Ergonomic bike seat with cushion padding.', price: 29.99, thumbnail: '', tags: ['seat', 'saddle', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=bicycle+seat', sellerVerified: true, country: 'US', rating: 4.4 },
+      { id: 'ju-handlebar', title: 'Bicycle Handlebar Riser', description: 'Aluminum handlebar for mountain and hybrid bikes.', price: 19.99, thumbnail: '', tags: ['handlebar', 'handlebars', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=bicycle+handlebar', sellerVerified: true, country: 'US', rating: 4.5 },
+      { id: 'ju-lock', title: 'Kryptonite Bike U-Lock', description: 'Heavy-duty U-lock for bicycle security.', price: 34.99, thumbnail: '', tags: ['lock', 'security', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=bike+lock', sellerVerified: true, country: 'US', rating: 4.7 },
+      { id: 'ju-spoke', title: 'Bicycle Spoke Set Stainless Steel', description: 'Replacement spokes for bicycle rims.', price: 12.99, thumbnail: '', tags: ['spoke', 'spokes', 'wheel', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=bicycle+spokes', sellerVerified: true, country: 'US', rating: 4.5 },
+      { id: 'ju-derailleur', title: 'Shimano Rear Derailleur', description: 'Reliable rear derailleur for smooth gear shifting.', price: 34.99, thumbnail: '', tags: ['derailleur', 'gears', 'shifting', 'drivetrain', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=rear+derailleur', sellerVerified: true, country: 'US', rating: 4.7 },
+      { id: 'ju-cable', title: 'Bicycle Brake & Shift Cable Set', description: 'Complete cable replacement set for stopping and gear systems.', price: 8.99, thumbnail: '', tags: ['cable', 'cables', 'shift cable', 'bike', 'bicycle'], url: 'https://www.jensonusa.com/search?q=bicycle+cable+set', sellerVerified: true, country: 'US', rating: 4.5 }
     ],
     chainreaction: [
-      { id: 'crc-1', title: 'Trail bike frame parts bundle', description: 'UK-based bike components and accessories.', price: 112, thumbnail: '', tags: ['frame', 'bike'], sellerVerified: true, country: 'UK', isInternational: true, shippingEstimate: '6-12 days', rating: 4.6 }
+      { id: 'crc-chain', title: 'Shimano HG Chain 9 Speed', description: 'Quality chain from UK cycling retailer.', price: 14.99, thumbnail: '', tags: ['chain', 'drivetrain', 'bike', 'bicycle'], url: 'https://www.chainreactioncycles.com/search?q=bicycle+chain', sellerVerified: true, country: 'UK', isInternational: true, shippingEstimate: '6-12 days', rating: 4.6 },
+      { id: 'crc-brake', title: 'Disc Brake Pads Shimano', description: 'Sintered disc brake pads for reliable stopping.', price: 11.99, thumbnail: '', tags: ['brake', 'brake pads', 'disc brake', 'bike', 'bicycle'], url: 'https://www.chainreactioncycles.com/search?q=brake+pads', sellerVerified: true, country: 'UK', isInternational: true, shippingEstimate: '6-12 days', rating: 4.7 },
+      { id: 'crc-tire', title: 'Continental Mountain Bike Tire', description: 'Trail-ready tire with puncture protection.', price: 24.99, thumbnail: '', tags: ['tire', 'wheel', 'bike', 'bicycle'], url: 'https://www.chainreactioncycles.com/search?q=bicycle+tire', sellerVerified: true, country: 'UK', isInternational: true, shippingEstimate: '6-12 days', rating: 4.5 }
     ],
     offerup: [
-      { id: 'ou-1', title: 'Used electric bike motor local pickup', description: 'Nearby local listing for a used motor kit.', price: 140, thumbnail: '', tags: ['electric', 'motor'], sellerVerified: false, country: 'US', localPickup: true, distanceMiles: 12, condition: 'used' }
+      { id: 'ou-bike', title: 'Used Bicycle Parts - Local Pickup', description: 'Nearby listing for used bicycle components.', price: 25, thumbnail: '', tags: ['bike', 'bicycle', 'parts', 'used'], url: 'https://offerup.com/search/?q=bicycle+parts', sellerVerified: false, country: 'US', localPickup: true, distanceMiles: 12, condition: 'used' }
     ],
     'facebook-marketplace': [
-      { id: 'fbm-1', title: 'Mini bike frame project with parts', description: 'Local marketplace listing with used frame components.', price: 175, thumbnail: '', tags: ['mini bike', 'frame'], sellerVerified: false, country: 'US', localPickup: true, distanceMiles: 18, condition: 'used' }
+      { id: 'fbm-bike', title: 'Bicycle Parts and Accessories - Local', description: 'Local marketplace listing for bike parts.', price: 20, thumbnail: '', tags: ['bike', 'bicycle', 'parts'], url: 'https://www.facebook.com/marketplace/search/?query=bicycle+parts', sellerVerified: false, country: 'US', localPickup: true, distanceMiles: 18, condition: 'used' }
     ],
     adafruit: [
-      { id: 'ada-1', title: 'Brushless motor controller breakout', description: 'Educational electronics board for motor control projects.', price: 39, thumbnail: '', tags: ['controller', 'educational'], sellerVerified: true, country: 'US', educational: true, diyComponent: true, rating: 4.9 },
-      { id: 'ada-2', title: 'Battery monitoring sensor board', description: 'Sensor board for safe battery monitoring with adult help.', price: 24, thumbnail: '', tags: ['battery', 'sensor'], sellerVerified: true, country: 'US', educational: true, diyComponent: true, rating: 4.8 }
+      { id: 'ada-led', title: 'Bicycle LED Strip Kit', description: 'Programmable LED strip for bike decoration projects.', price: 19.95, thumbnail: '', tags: ['light', 'led', 'bike', 'bicycle', 'safety'], url: 'https://www.adafruit.com/search?q=bicycle+led', sellerVerified: true, country: 'US', educational: true, diyComponent: true, rating: 4.9 },
+      { id: 'ada-sensor', title: 'Bike Speed Sensor Module', description: 'Hall effect sensor for measuring bicycle speed.', price: 7.95, thumbnail: '', tags: ['sensor', 'speed', 'bike', 'bicycle'], url: 'https://www.adafruit.com/search?q=speed+sensor', sellerVerified: true, country: 'US', educational: true, diyComponent: true, rating: 4.8 }
     ],
     makerbeam: [
-      { id: 'mb-1', title: 'Aluminum frame beam starter kit', description: 'MakerBeam extrusion kit for custom frame prototypes.', price: 58, thumbnail: '', tags: ['frame', 'beam'], sellerVerified: true, country: 'NL', isInternational: true, educational: true, diyComponent: true, shippingEstimate: '5-10 days', rating: 4.7 }
+      { id: 'mb-beam', title: 'Aluminum Beam Kit for Bike Projects', description: 'MakerBeam extrusion kit for custom bike accessories.', price: 42, thumbnail: '', tags: ['frame', 'beam', 'bike', 'bicycle'], url: 'https://www.makerbeam.com/search?q=beam+kit', sellerVerified: true, country: 'NL', isInternational: true, educational: true, diyComponent: true, shippingEstimate: '5-10 days', rating: 4.7 }
     ]
   };
 }
@@ -676,7 +710,6 @@ class ShoppingManager extends BaseSourceManager {
       aliexpress: new AliExpressSource(config),
       banggood: new BanggoodSource(config),
       alibaba: new AlibabaSource(config),
-      revzilla: new RevZillaSource(config),
       jensonusa: new JensonUSASource(config),
       chainreaction: new ChainReactionCyclesSource(config),
       offerup: new OfferUpSource(config),
