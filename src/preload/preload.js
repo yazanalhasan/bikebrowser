@@ -27,8 +27,8 @@ contextBridge.exposeInMainWorld('api', {
   getNotesServer: () => ipcRenderer.invoke('server:getNotes'),
   addNoteServer: (payload) => ipcRenderer.invoke('server:addNote', payload),
   
-  // Database operations (future phases)
-  getHistory: () => ipcRenderer.invoke('db:getHistory'),
+  // Database operations — SQLite-backed history
+  getHistory: (limit, offset) => ipcRenderer.invoke('db:getHistory', limit, offset),
   getTrustList: () => ipcRenderer.invoke('db:getTrustList'),
   
   ai: {
@@ -112,6 +112,41 @@ contextBridge.exposeInMainWorld('api', {
   // Performance diagnostics (used by DiagnosticsPanel)
   getPerformanceStats: () => ipcRenderer.invoke('perf:getStats'),
 
+  // =============================================================================
+  // Camera / Image Intent API
+  // =============================================================================
+  camera: {
+    analyzeImage: (imageBase64) => ipcRenderer.invoke('camera:analyzeImage', imageBase64),
+    searchFromImage: (imageBase64) => ipcRenderer.invoke('search:fromImage', imageBase64),
+  },
+
+  // =============================================================================
+  // Voice Intent API
+  // =============================================================================
+  voice: {
+    parseTranscript: (transcript) => ipcRenderer.invoke('voice:parseTranscript', transcript),
+    searchFromTranscript: (transcript) => ipcRenderer.invoke('search:fromVoice', transcript),
+  },
+
+  // =============================================================================
+  // History & Decisions API (SQLite-backed)
+  // =============================================================================
+  history: {
+    get: (limit, offset) => ipcRenderer.invoke('db:getHistory', limit, offset),
+    saveSearchSession: (data) => ipcRenderer.invoke('db:saveSearchSession', data),
+    saveDecision: (decision) => ipcRenderer.invoke('db:saveDecision', decision),
+    getSessionWithResults: (sessionId) => ipcRenderer.invoke('db:getSessionWithResults', sessionId),
+    getDecisions: (limit) => ipcRenderer.invoke('db:getDecisions', limit),
+  },
+
+  // =============================================================================
+  // Compatibility Profiles API
+  // =============================================================================
+  profiles: {
+    save: (profile) => ipcRenderer.invoke('db:saveProfile', profile),
+    getAll: () => ipcRenderer.invoke('db:getProfiles'),
+  },
+
   // Listeners for main process events
   onYoutubeIntercepted: (callback) => {
     ipcRenderer.on('youtube:intercepted', (event, data) => callback(data));
@@ -154,4 +189,4 @@ contextBridge.exposeInMainWorld('electron', {
 });
 
 console.log('Preload script loaded successfully with API integrations');
-console.log('Available APIs: youtube, places, market, thaura, ai');
+console.log('Available APIs: youtube, places, market, thaura, ai, camera, voice, history, profiles');

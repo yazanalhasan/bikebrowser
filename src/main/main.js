@@ -13,6 +13,12 @@ const { SearchPipeline } = require('./search-pipeline');
 const { FallbackHandler } = require('./deepseek/fallback-handler');
 const { getAIProviderStatus } = require('./config/deepseek-config');
 
+// Architecture upgrade: main-process services for camera, voice, history
+const { ImageIntentService } = require('./services/image-intent-service');
+const { VoiceIntentService } = require('./services/voice-intent-service');
+const { HistoryStore } = require('./services/history-store');
+const { normalizeTextInput, intentToSearchArgs } = require('./services/intent-normalizer');
+
 // Import new API services
 const googlePlacesService = require('../services/googlePlacesService');
 const marketService = require('../services/marketService');
@@ -54,6 +60,9 @@ let apiServer = null;
 let apiConnectionInfo = null;
 let localRendererServer = null;
 let localRendererOrigin = null;
+let imageIntentService = null;
+let voiceIntentService = null;
+let historyStore = null;
 const ipcResponseCache = new Map();
 const ipcInFlight = new Map();
 
@@ -203,10 +212,29 @@ function initializeSearchPipeline() {
   fallbackHandler = new FallbackHandler();
   const providerStatus = getAIProviderStatus();
 
+  // Initialize SQLite history store
+  try {
+    const dbPath = path.join(app.getPath('userData'), 'history.db');
+    historyStore = new HistoryStore(dbPath);
+    console.log('History store initialized:', dbPath);
+  } catch (err) {
+    console.error('Failed to initialize history store:', err.message);
+  }
+
   try {
     searchPipeline = new SearchPipeline({
       youtubeApiKey: process.env.YOUTUBE_API_KEY
     });
+
+    // Wire history store into pipeline for learned suppression
+    if (historyStore) {
+      searchPipeline.setHistoryStore(historyStore);
+    }
+
+    // Initialize image and voice services (need providerManager from pipeline)
+    imageIntentService = new ImageIntentService(searchPipeline.providerManager);
+    voiceIntentService = new VoiceIntentService(searchPipeline.providerManager);
+
     console.log('AI search pipeline initialized');
     console.log('AI provider status', {
       ...providerStatus,
@@ -530,6 +558,11 @@ app.on('before-quit', async () => {
   } catch (error) {
     console.error('Failed to stop LAN server cleanly:', error);
   }
+
+  // Close SQLite history store cleanly
+  if (historyStore) {
+    try { historyStore.close(); } catch (_) { /* ignore */ }
+  }
 });
 
 // IPC Handlers
@@ -741,10 +774,16 @@ ipcMain.handle('navigate', (event, url) => {
   }
 });
 
-// Database operations (for future phases)
-ipcMain.handle('db:getHistory', async () => {
-  // TODO: Implement in Phase 3
-  return { success: true, history: [] };
+// Database operations — backed by SQLite HistoryStore
+ipcMain.handle('db:getHistory', async (_event, limit = 50, offset = 0) => {
+  try {
+    if (!historyStore) return { success: true, history: [] };
+    const history = historyStore.getHistory(limit, offset);
+    return { success: true, history };
+  } catch (error) {
+    console.error('db:getHistory error:', error.message);
+    return { success: false, error: error.message, history: [] };
+  }
 });
 
 // ── Performance stats (used by the diagnostics panel) ───────────────────────
@@ -770,6 +809,146 @@ ipcMain.handle('perf:getStats', async () => {
 ipcMain.handle('db:getTrustList', async () => {
   // TODO: Implement in Phase 3
   return { success: true, channels: [] };
+});
+
+// ── Camera / Image intent IPC ───────────────────────────────────────────────
+ipcMain.handle('camera:analyzeImage', async (_event, imageBase64) => {
+  try {
+    if (!imageIntentService) return { success: false, error: 'Image service not initialized' };
+    const result = await imageIntentService.analyzeImage(imageBase64);
+    return { success: true, ...result };
+  } catch (error) {
+    console.error('camera:analyzeImage error:', error.message);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('search:fromImage', async (_event, imageBase64) => {
+  try {
+    if (!imageIntentService || !searchPipeline) {
+      return { success: false, error: 'Services not initialized' };
+    }
+    const result = await imageIntentService.analyzeAndSearch(imageBase64, searchPipeline);
+    // Save to history
+    if (historyStore && result.normalizedIntent) {
+      try {
+        historyStore.saveSearchSession(
+          result.normalizedIntent,
+          result.searchArgs?.query || '',
+          result.searchResult?.totalResults || 0,
+          result.searchResult?.results || []
+        );
+      } catch (_) { /* history save is best-effort */ }
+    }
+    return { success: true, ...result };
+  } catch (error) {
+    console.error('search:fromImage error:', error.message);
+    return { success: false, error: error.message };
+  }
+});
+
+// ── Voice intent IPC ────────────────────────────────────────────────────────
+ipcMain.handle('voice:parseTranscript', async (_event, transcript) => {
+  try {
+    if (!voiceIntentService) return { success: false, error: 'Voice service not initialized' };
+    const result = await voiceIntentService.parseTranscript(transcript);
+    return { success: true, ...result };
+  } catch (error) {
+    console.error('voice:parseTranscript error:', error.message);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('search:fromVoice', async (_event, transcript) => {
+  try {
+    if (!voiceIntentService || !searchPipeline) {
+      return { success: false, error: 'Services not initialized' };
+    }
+    const result = await voiceIntentService.parseAndSearch(transcript, searchPipeline);
+    // Save to history
+    if (historyStore && result.normalizedIntent) {
+      try {
+        historyStore.saveSearchSession(
+          result.normalizedIntent,
+          result.searchArgs?.query || '',
+          result.searchResult?.totalResults || 0,
+          result.searchResult?.results || []
+        );
+      } catch (_) { /* history save is best-effort */ }
+    }
+    return { success: true, ...result };
+  } catch (error) {
+    console.error('search:fromVoice error:', error.message);
+    return { success: false, error: error.message };
+  }
+});
+
+// ── History & decisions IPC ─────────────────────────────────────────────────
+ipcMain.handle('db:saveSearchSession', async (_event, { normalizedIntent, query, resultsCount, topResults }) => {
+  try {
+    if (!historyStore) return { success: false, error: 'History store not initialized' };
+    const sessionId = historyStore.saveSearchSession(normalizedIntent, query, resultsCount, topResults || []);
+    return { success: true, sessionId };
+  } catch (error) {
+    console.error('db:saveSearchSession error:', error.message);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('db:saveDecision', async (_event, decision) => {
+  try {
+    if (!historyStore) return { success: false, error: 'History store not initialized' };
+    historyStore.saveDecision(decision);
+    return { success: true };
+  } catch (error) {
+    console.error('db:saveDecision error:', error.message);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('db:getSessionWithResults', async (_event, sessionId) => {
+  try {
+    if (!historyStore) return { success: false, error: 'History store not initialized' };
+    const session = historyStore.getSessionWithResults(sessionId);
+    return { success: true, session };
+  } catch (error) {
+    console.error('db:getSessionWithResults error:', error.message);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('db:getDecisions', async (_event, limit = 100) => {
+  try {
+    if (!historyStore) return { success: true, decisions: [] };
+    const decisions = historyStore.getDecisions(limit);
+    return { success: true, decisions };
+  } catch (error) {
+    console.error('db:getDecisions error:', error.message);
+    return { success: false, error: error.message, decisions: [] };
+  }
+});
+
+// ── Compatibility profiles IPC ──────────────────────────────────────────────
+ipcMain.handle('db:saveProfile', async (_event, profile) => {
+  try {
+    if (!historyStore) return { success: false, error: 'History store not initialized' };
+    const id = historyStore.saveProfile(profile);
+    return { success: true, id };
+  } catch (error) {
+    console.error('db:saveProfile error:', error.message);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('db:getProfiles', async () => {
+  try {
+    if (!historyStore) return { success: true, profiles: [] };
+    const profiles = historyStore.getProfiles();
+    return { success: true, profiles };
+  } catch (error) {
+    console.error('db:getProfiles error:', error.message);
+    return { success: false, error: error.message, profiles: [] };
+  }
 });
 
 // =============================================================================

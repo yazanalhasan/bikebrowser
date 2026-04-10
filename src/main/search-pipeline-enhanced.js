@@ -8,6 +8,7 @@ const { PerformanceMonitor } = require('./performance-monitor');
 const { ImageToQuery } = require('../pipeline/image-to-query');
 const { VoiceToQuery } = require('../pipeline/voice-to-query');
 const { SimilarityEngine } = require('../pipeline/similarity-engine');
+const { applyLearnedSuppression, applyCompatibilityHints } = require('../server/ranking-utils');
 
 class EnhancedSearchPipeline {
   constructor(config = {}) {
@@ -31,6 +32,10 @@ class EnhancedSearchPipeline {
       ranking: true,
       postProcessing: true
     };
+  }
+
+  setHistoryStore(historyStore) {
+    this.historyStore = historyStore;
   }
 
   async search(userQuery, options = {}) {
@@ -135,6 +140,15 @@ class EnhancedSearchPipeline {
       let rankedResults = this.rankResults(safeResults);
       if (this.stages.ranking) {
         rankedResults = this.applyDeepRanking(rankedResults);
+      }
+
+      // Apply learned suppression from user decision history
+      rankedResults = applyLearnedSuppression(rankedResults, this.historyStore);
+
+      // Apply compatibility hints from normalized intent (if provided via options)
+      if (options._compatibilityHints) {
+        rankedResults = applyCompatibilityHints(rankedResults, options._compatibilityHints);
+        rankedResults.sort((a, b) => (b.compositeScore || 0) - (a.compositeScore || 0));
       }
 
       const finalResults = this.stages.postProcessing

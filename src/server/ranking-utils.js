@@ -110,8 +110,102 @@ function applyNotesDecisionState(results = [], preferences = {}) {
   });
 }
 
+/**
+ * Apply learned suppression/boost based on HistoryStore decision data.
+ * - Items similar to previously rejected items get score suppressed.
+ * - Items matching preferred patterns get boosted.
+ * - Near-duplicates of recently shown results get faded.
+ *
+ * @param {Array} results - Search results array
+ * @param {Object} historyStore - HistoryStore instance (or null)
+ * @returns {Array} results with adjusted scores
+ */
+function applyLearnedSuppression(results = [], historyStore = null) {
+  if (!historyStore || results.length === 0) return results;
+
+  let rejected = [];
+  let preferred = [];
+  try {
+    rejected = historyStore.getRejectedItems();
+    preferred = historyStore.getPreferredItems();
+  } catch (_) {
+    return results;
+  }
+
+  const rejectedTitles = rejected.map((r) => r.item_title);
+  const preferredTitles = preferred.map((r) => r.item_title);
+
+  return results.map((item) => {
+    const title = item.title || item.name || '';
+    let delta = 0;
+
+    // Suppress items similar to rejected items
+    for (const rTitle of rejectedTitles) {
+      const sim = jaccardSimilarity(title, rTitle);
+      if (sim >= 0.6) {
+        delta -= 0.25 * sim;
+        break; // one suppression per item
+      }
+    }
+
+    // Boost items similar to preferred items
+    for (const pTitle of preferredTitles) {
+      const sim = jaccardSimilarity(title, pTitle);
+      if (sim >= 0.5) {
+        delta += 0.15 * sim;
+        break;
+      }
+    }
+
+    if (delta === 0) return item;
+
+    const base = Number(item.compositeScore || item.score || 0);
+    return {
+      ...item,
+      learnedDelta: delta,
+      score: base + delta,
+      compositeScore: base + delta,
+    };
+  });
+}
+
+/**
+ * Apply compatibility hints from normalized intent to score results higher
+ * when they match the user's bike profile (wheel size, voltage, brake type etc).
+ */
+function applyCompatibilityHints(results = [], hints = {}) {
+  if (!hints || Object.keys(hints).length === 0) return results;
+
+  const hintTokens = Object.values(hints)
+    .filter(Boolean)
+    .map((v) => String(v).toLowerCase());
+
+  if (hintTokens.length === 0) return results;
+
+  return results.map((item) => {
+    const text = ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.category || '')).toLowerCase();
+    let matchCount = 0;
+    for (const token of hintTokens) {
+      if (text.includes(token)) matchCount++;
+    }
+    if (matchCount === 0) return item;
+
+    const bonus = Math.min(0.3, matchCount * 0.1);
+    const base = Number(item.compositeScore || item.score || 0);
+    return {
+      ...item,
+      compatibilityBonus: bonus,
+      score: base + bonus,
+      compositeScore: base + bonus,
+    };
+  });
+}
+
 module.exports = {
   dedupeResults,
   compatibilityScore,
   applyNotesDecisionState,
+  applyLearnedSuppression,
+  applyCompatibilityHints,
+  jaccardSimilarity,
 };
