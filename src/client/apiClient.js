@@ -111,4 +111,25 @@ export const apiClient = {
   getNotes: () => request('/notes', 'GET'),
   createNote: (payload) => request('/notes', 'POST', payload),
   getConnectionStatus: () => request('/connection-status', 'GET'),
+
+  // Unified search endpoints
+  searchText: (query, options = {}, projectContext = null) =>
+    request('/search/text', 'POST', { query, options, projectContext }),
+  searchVoice: (transcript) =>
+    request('/search/voice', 'POST', { transcript }),
+  searchImage: (imageBase64) =>
+    request('/search/image', 'POST', { image: imageBase64 }),
+
+  // Compare
+  compareItems: (itemA, itemB) =>
+    request('/compare', 'POST', { itemA, itemB }),
+
+  // History
+  getHistory: (limit = 50) => request(`/history?limit=${limit}`, 'GET'),
+  findSimilar: (query) => request(`/history/similar?q=${encodeURIComponent(query)}`, 'GET'),
+  getHistoryProjects: () => request('/history/projects', 'GET'),
+  createHistoryProject: (name) => request('/history/projects', 'POST', { name }),
+  getProjectHistory: (id) => request(`/history/projects/${encodeURIComponent(id)}`, 'GET'),
+  addProjectItem: (id, item) => request(`/history/projects/${encodeURIComponent(id)}/items`, 'POST', item),
+  addProjectNote: (id, text) => request(`/history/projects/${encodeURIComponent(id)}/notes`, 'POST', { text }),
 };

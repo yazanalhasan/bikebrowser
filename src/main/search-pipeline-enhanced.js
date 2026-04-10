@@ -5,6 +5,9 @@ const { SourceRegistry } = require('./sources/source-registry');
 const { SafetyFilter } = require('./safety-filter');
 const { ShoppingSafetyFilter } = require('./filters/shopping-safety-filter');
 const { PerformanceMonitor } = require('./performance-monitor');
+const { ImageToQuery } = require('../pipeline/image-to-query');
+const { VoiceToQuery } = require('../pipeline/voice-to-query');
+const { SimilarityEngine } = require('../pipeline/similarity-engine');
 
 class EnhancedSearchPipeline {
   constructor(config = {}) {
@@ -16,6 +19,10 @@ class EnhancedSearchPipeline {
     this.shoppingSafetyFilter = new ShoppingSafetyFilter();
     this.monitor = new PerformanceMonitor();
     this.fallbackHandler = new FallbackHandler();
+    this.imageToQuery = new ImageToQuery(this.providerManager);
+    this.voiceToQuery = new VoiceToQuery(this.providerManager);
+    this.similarityEngine = new SimilarityEngine();
+    this.historyStore = null; // Set externally via setHistoryStore()
     this.stages = {
       queryExpansion: true,
       parallelFetch: true,
@@ -318,6 +325,155 @@ class EnhancedSearchPipeline {
       buy: results.filter((result) => result.category === 'buy'),
       watch: results.filter((result) => result.category === 'watch')
     };
+  }
+
+  // --- History store integration ---
+
+  setHistoryStore(store) {
+    this.historyStore = store;
+  }
+
+  _recordSearch(inputType, inputData, structuredQuery, results) {
+    if (!this.historyStore) return;
+    try {
+      this.historyStore.saveSearchResult({
+        input_type: inputType,
+        input_data: inputData,
+        structured_query: structuredQuery,
+        results_count: results.length,
+        top_results: results.slice(0, 10)
+      });
+    } catch (error) {
+      console.warn('[Pipeline] Failed to record search:', error.message);
+    }
+  }
+
+  // --- Unified pipeline entry ---
+
+  async runSearchPipeline(input) {
+    const type = input._inputType || 'text';
+    let query = '';
+    let searchTerms = [];
+    let structuredData = {};
+
+    if (type === 'image') {
+      query = (input.search_terms || []).join(' ') || input.description || input.category || '';
+      searchTerms = input.search_terms || [];
+      structuredData = input;
+    } else if (type === 'voice') {
+      query = (input.search_terms || []).join(' ') || input.raw_text || '';
+      searchTerms = input.search_terms || [];
+      structuredData = input;
+    } else {
+      query = typeof input === 'string' ? input : (input.query || '');
+      structuredData = { query };
+    }
+
+    if (!query) {
+      return { query: '', results: [], grouped: { build: [], buy: [], watch: [] }, totalResults: 0 };
+    }
+
+    // Run the core search
+    const result = await this.search(query, input.options || {});
+
+    // Deduplicate
+    if (result.results && result.results.length > 0) {
+      result.results = this.similarityEngine.deduplicateResults(result.results);
+    }
+
+    // Smart filtering: compare items within same category and assign status
+    result.results = this._applySmartFiltering(result.results, input.projectContext || null);
+
+    // Re-group after filtering
+    result.grouped = this.groupByCategory(result.results);
+
+    // Persist to history
+    this._recordSearch(type, { query, searchTerms }, structuredData, result.results);
+
+    // Attach input metadata
+    result.inputType = type;
+    result.structuredInput = structuredData;
+
+    return result;
+  }
+
+  // --- Image input entry ---
+
+  async processImageInput(imageBase64) {
+    const structured = await this.imageToQuery.analyze(imageBase64);
+    structured._inputType = 'image';
+    return this.runSearchPipeline(structured);
+  }
+
+  // --- Voice input entry ---
+
+  async processVoiceInput(transcript) {
+    const parsed = await this.voiceToQuery.parse(transcript);
+    parsed._inputType = 'voice';
+    return this.runSearchPipeline(parsed);
+  }
+
+  // --- Smart filtering ---
+
+  _applySmartFiltering(results, projectContext) {
+    if (!results || results.length === 0) return results;
+
+    // Group by category
+    const byCategory = {};
+    for (const item of results) {
+      const cat = item.category || 'watch';
+      if (!byCategory[cat]) byCategory[cat] = [];
+      byCategory[cat].push(item);
+    }
+
+    const output = [];
+
+    for (const [category, items] of Object.entries(byCategory)) {
+      if (items.length === 0) continue;
+
+      // Sort by score within category
+      items.sort((a, b) => (b.compositeScore || b.score || 0) - (a.compositeScore || a.score || 0));
+
+      const primary = items[0];
+      primary.status = 'primary';
+      primary.fade = false;
+      output.push(primary);
+
+      for (let i = 1; i < items.length; i++) {
+        const item = items[i];
+        const similarity = this.similarityEngine.scoreSimilarity(primary, item);
+
+        if (similarity > 0.8) {
+          // Near-duplicate of primary — skip or mark
+          item.status = 'duplicate';
+          item.fade = true;
+        } else if (projectContext && this._isIncompatible(item, projectContext)) {
+          item.status = 'incompatible';
+          item.fade = true;
+        } else {
+          item.status = 'alternative';
+          item.fade = false;
+        }
+
+        output.push(item);
+      }
+    }
+
+    // Maintain overall score ordering, primaries first
+    return output.sort((a, b) => {
+      if (a.status === 'primary' && b.status !== 'primary') return -1;
+      if (b.status === 'primary' && a.status !== 'primary') return 1;
+      if (a.fade && !b.fade) return 1;
+      if (b.fade && !a.fade) return -1;
+      return (b.compositeScore || b.score || 0) - (a.compositeScore || a.score || 0);
+    });
+  }
+
+  _isIncompatible(item, projectContext) {
+    if (!projectContext || !projectContext.voltage) return false;
+    const itemVoltage = item.attributes?.voltage || '';
+    if (itemVoltage && projectContext.voltage && itemVoltage !== projectContext.voltage) return true;
+    return false;
   }
 }
 

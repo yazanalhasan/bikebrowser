@@ -541,6 +541,80 @@ class ProviderManager {
     return result.data;
   }
 
+  async analyzeImage(base64Image, systemPrompt) {
+    const prompt = [
+      systemPrompt || 'Identify the bike part in this image. Return JSON.',
+      '\n[Image data provided as base64]'
+    ].join('\n');
+
+    const result = await this.executeWithOrchestration({
+      taskType: 'structured_parsing',
+      prompt,
+      expectedFormat: 'json',
+      metadata: {
+        imageBase64: base64Image,
+        fallbackData: {
+          type: 'bike_part',
+          category: 'unknown',
+          attributes: {},
+          confidence: 0,
+          description: 'Image analysis not available',
+          search_terms: []
+        }
+      }
+    });
+
+    return result;
+  }
+
+  async compareItems(itemA, itemB) {
+    const prompt = `Compare these two bike parts for a child's bike build project.
+
+ITEM A:
+- Title: ${itemA.title || 'Unknown'}
+- Category: ${itemA.category || 'Unknown'}
+- Brand: ${itemA.attributes?.brand || itemA.brand || 'Unknown'}
+- Price: ${itemA.price || 'Unknown'}
+- Source: ${itemA.source || 'Unknown'}
+
+ITEM B:
+- Title: ${itemB.title || 'Unknown'}
+- Category: ${itemB.category || 'Unknown'}
+- Brand: ${itemB.attributes?.brand || itemB.brand || 'Unknown'}
+- Price: ${itemB.price || 'Unknown'}
+- Source: ${itemB.source || 'Unknown'}
+
+OUTPUT FORMAT (JSON only):
+{
+  "better_choice": "A" or "B",
+  "reason": "child-friendly explanation",
+  "compatibility_score": 0.0-1.0,
+  "safety_notes": ""
+}`;
+
+    const result = await this.executeWithOrchestration({
+      taskType: 'high_confidence',
+      prompt,
+      expectedFormat: 'json',
+      metadata: {
+        fallbackData: {
+          better_choice: 'A',
+          reason: 'Unable to compare — both options may work',
+          compatibility_score: 0.5,
+          safety_notes: 'Ask a parent to help you decide'
+        }
+      }
+    });
+
+    const data = result.data || {};
+    return {
+      better_choice: data.better_choice === 'B' ? itemB : itemA,
+      reason: data.reason || '',
+      compatibility_score: Math.min(1, Math.max(0, Number(data.compatibility_score) || 0.5)),
+      safety_notes: data.safety_notes || ''
+    };
+  }
+
   getProviderStatus() {
     return {
       providers: Object.fromEntries(

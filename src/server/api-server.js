@@ -6,6 +6,7 @@ const dgram = require('dgram');
 const { getLocalIpAddress } = require('./network');
 const { ServerStorage } = require('./storage');
 const { JobQueue } = require('./job-queue');
+const { HistoryStore } = require('../storage/history-store');
 const {
   dedupeResults,
   compatibilityScore,
@@ -18,6 +19,13 @@ function createApiServer({ searchPipeline, appDataPath, port = 3001, webPort = 5
   app.set('trust proxy', true);
 
   const storage = new ServerStorage(path.join(appDataPath, 'server-state.json'));
+  const historyStore = new HistoryStore(appDataPath);
+
+  // Wire history into the search pipeline
+  if (searchPipeline && typeof searchPipeline.setHistoryStore === 'function') {
+    searchPipeline.setHistoryStore(historyStore);
+  }
+
   const connectedDevices = new Map();
   const searchCache = new Map();
   const rankCache = new Map();
@@ -282,6 +290,144 @@ function createApiServer({ searchPipeline, appDataPath, port = 3001, webPort = 5
       .filter((entry) => now - entry.lastSeen < 10 * 60 * 1000);
 
     res.json({ success: true, devices, activeCount: devices.filter((d) => d.active).length });
+  });
+
+  // --- Unified search endpoints ---
+
+  app.post('/search/text', requireApiKey, async (req, res) => {
+    try {
+      if (!searchPipeline) {
+        return res.json({ success: false, error: 'Search pipeline not available' });
+      }
+      const query = String((req.body || {}).query || '').trim();
+      const options = (req.body || {}).options || {};
+      const projectContext = (req.body || {}).projectContext || null;
+
+      const data = await Promise.race([
+        searchPipeline.runSearchPipeline({ _inputType: 'text', query, options, projectContext }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 20000))
+      ]);
+      res.json({ success: true, ...data });
+    } catch (error) {
+      console.error('[API] /search/text error:', error.message);
+      res.json({ success: true, query: String((req.body || {}).query || ''), results: [], grouped: { build: [], buy: [], watch: [] }, totalResults: 0, metadata: { error: error.message } });
+    }
+  });
+
+  app.post('/search/voice', requireApiKey, async (req, res) => {
+    try {
+      if (!searchPipeline) {
+        return res.json({ success: false, error: 'Search pipeline not available' });
+      }
+      const transcript = String((req.body || {}).transcript || '').trim();
+      if (!transcript) {
+        return res.json({ success: false, error: 'No transcript provided' });
+      }
+
+      const data = await Promise.race([
+        searchPipeline.processVoiceInput(transcript),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 25000))
+      ]);
+      res.json({ success: true, ...data });
+    } catch (error) {
+      console.error('[API] /search/voice error:', error.message);
+      res.json({ success: true, query: '', results: [], grouped: { build: [], buy: [], watch: [] }, totalResults: 0, metadata: { error: error.message } });
+    }
+  });
+
+  app.post('/search/image', requireApiKey, express.json({ limit: '10mb' }), async (req, res) => {
+    try {
+      if (!searchPipeline) {
+        return res.json({ success: false, error: 'Search pipeline not available' });
+      }
+      const imageBase64 = String((req.body || {}).image || '').trim();
+      if (!imageBase64) {
+        return res.json({ success: false, error: 'No image data provided' });
+      }
+      // Basic size check (10 MB base64 ≈ 7.5 MB image)
+      if (imageBase64.length > 10 * 1024 * 1024) {
+        return res.status(413).json({ success: false, error: 'Image too large (max 10MB)' });
+      }
+
+      const data = await Promise.race([
+        searchPipeline.processImageInput(imageBase64),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 30000))
+      ]);
+      res.json({ success: true, ...data });
+    } catch (error) {
+      console.error('[API] /search/image error:', error.message);
+      res.json({ success: true, query: '', results: [], grouped: { build: [], buy: [], watch: [] }, totalResults: 0, metadata: { error: error.message } });
+    }
+  });
+
+  // --- History endpoints ---
+
+  app.get('/history', requireApiKey, (req, res) => {
+    const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 50));
+    res.json({ success: true, searches: historyStore.getSearchHistory(limit) });
+  });
+
+  app.get('/history/similar', requireApiKey, (req, res) => {
+    const query = String(req.query.q || '').trim();
+    if (!query) {
+      return res.json({ success: true, items: [] });
+    }
+    const items = historyStore.findSimilarItems(query);
+    res.json({ success: true, items });
+  });
+
+  app.get('/history/projects', requireApiKey, (_req, res) => {
+    res.json({ success: true, projects: historyStore.getProjects() });
+  });
+
+  app.post('/history/projects', requireApiKey, (req, res) => {
+    const name = String((req.body || {}).name || '').trim();
+    if (!name) {
+      return res.json({ success: false, error: 'Project name required' });
+    }
+    const project = historyStore.createProject(name);
+    res.json({ success: true, project });
+  });
+
+  app.get('/history/projects/:id', requireApiKey, (req, res) => {
+    const history = historyStore.getProjectHistory(req.params.id);
+    res.json({ success: true, ...history });
+  });
+
+  app.post('/history/projects/:id/items', requireApiKey, (req, res) => {
+    const entry = historyStore.addItemToProject(req.params.id, req.body || {});
+    if (!entry) {
+      return res.status(404).json({ success: false, error: 'Project not found' });
+    }
+    res.json({ success: true, item: entry });
+  });
+
+  app.post('/history/projects/:id/notes', requireApiKey, (req, res) => {
+    const note = String((req.body || {}).text || '').trim();
+    const entry = historyStore.addNoteToProject(req.params.id, note);
+    if (!entry) {
+      return res.status(404).json({ success: false, error: 'Project not found' });
+    }
+    res.json({ success: true, note: entry });
+  });
+
+  // --- Compare endpoint ---
+
+  app.post('/compare', requireApiKey, async (req, res) => {
+    try {
+      if (!searchPipeline) {
+        return res.json({ success: false, error: 'Pipeline not available' });
+      }
+      const { itemA, itemB } = req.body || {};
+      if (!itemA || !itemB) {
+        return res.json({ success: false, error: 'Both itemA and itemB are required' });
+      }
+      const result = await searchPipeline.providerManager.compareItems(itemA, itemB);
+      res.json({ success: true, ...result });
+    } catch (error) {
+      console.error('[API] /compare error:', error.message);
+      res.json({ success: false, error: error.message });
+    }
   });
 
   async function handleWakeRequest(req, res) {
