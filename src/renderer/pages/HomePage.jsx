@@ -1,0 +1,205 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import TopicTile from '../components/TopicTile';
+
+function HomePage() {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/youtube/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleTopicClick = (topic) => {
+    navigate(`/youtube/search?q=${encodeURIComponent(topic)}&fast=1`);
+  };
+
+  const topics = [
+    {
+      id: 'project-builder',
+      title: 'Project Builder',
+      subtitle: 'Guided tutorials & missions',
+      emoji: '🏗️',
+      isSpecial: true,
+      color: 'from-purple-400 to-pink-500'
+    },
+    {
+      id: 'build-planner',
+      title: 'Build Planner',
+      subtitle: 'AI checklist + compatibility review',
+      emoji: '🧭',
+      isBuildPlanner: true,
+      color: 'from-cyan-500 to-lime-500'
+    },
+    {
+      id: 'shop-materials',
+      title: 'Shop Materials',
+      subtitle: 'Kid-safe parts and cart',
+      emoji: '🛒',
+      isShop: true,
+      color: 'from-emerald-400 to-teal-500'
+    },
+    {
+      id: 'bikes',
+      title: 'Bikes',
+      subtitle: 'Learn about regular bikes',
+      emoji: '🚴',
+      query: 'bike repair tutorial',
+      color: 'from-blue-400 to-blue-600'
+    },
+    {
+      id: 'ebikes',
+      title: 'E-Bikes',
+      subtitle: 'Electric bike building',
+      emoji: '⚡',
+      query: 'electric bike tutorial',
+      color: 'from-green-400 to-green-600'
+    },
+    {
+      id: 'dirtbikes',
+      title: 'Dirt Bikes',
+      subtitle: 'Off-road adventures',
+      emoji: '🏍️',
+      query: 'dirt bike maintenance',
+      color: 'from-orange-400 to-orange-600'
+    },
+    {
+      id: 'mountain',
+      title: 'Mountain Bikes',
+      subtitle: 'Trail riding & builds',
+      emoji: '⛰️',
+      query: 'mountain bike tutorial',
+      color: 'from-purple-400 to-purple-600'
+    },
+    {
+      id: 'bmx',
+      title: 'BMX',
+      subtitle: 'Tricks and repairs',
+      emoji: '🛹',
+      query: 'BMX bike tutorial',
+      color: 'from-red-400 to-red-600'
+    },
+    {
+      id: 'building',
+      title: 'Building & Parts',
+      subtitle: 'Build your own bike',
+      emoji: '🔧',
+      query: 'bike building tutorial',
+      color: 'from-yellow-400 to-yellow-600'
+    }
+  ];
+
+  return (
+    <div data-testid="home-page" className="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      {/* Title Section */}
+      <div className="bg-blue-50 border-b border-blue-200">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <h1 className="text-4xl font-bold text-blue-600 text-center">
+            🚴 BikeBrowser
+          </h1>
+          <p className="text-center text-gray-600 mt-2 text-lg">
+            Learn about bikes, building, and engineering!
+          </p>
+        </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="max-w-4xl mx-auto px-6 py-8">
+        <form onSubmit={handleSearch} className="relative">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="What do you want to learn about today?"
+            className="w-full px-6 py-5 text-xl rounded-2xl border-4 border-blue-300 
+                     focus:border-blue-500 focus:outline-none shadow-lg
+                     placeholder-gray-400"
+          />
+          <button
+            type="submit"
+            className="absolute right-3 top-1/2 -translate-y-1/2 
+                     bg-blue-500 text-white px-8 py-3 rounded-xl
+                     hover:bg-blue-600 transition-colors font-semibold text-lg"
+          >
+            Search
+          </button>
+        </form>
+
+        {/* Suggested searches */}
+        <div className="mt-4 flex flex-wrap gap-3 justify-center">
+          <span className="text-gray-600 font-semibold">Try:</span>
+          {['how to fix a flat tire', 'build an electric bike', 'BMX tricks'].map((suggestion) => (
+            <button
+              key={suggestion}
+              onClick={() => {
+                setSearchQuery(suggestion);
+                navigate(`/youtube/search?q=${encodeURIComponent(suggestion)}`);
+              }}
+              className="px-4 py-2 bg-white rounded-full border-2 border-gray-300
+                       hover:border-blue-400 hover:bg-blue-50 transition-all text-sm"
+            >
+              {suggestion}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Topic Tiles */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          What interests you?
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {topics.map((topic) => (
+            <TopicTile
+              key={topic.id}
+              {...topic}
+              onClick={() => {
+                if (topic.isSpecial) {
+                  navigate('/project-builder');
+                } else if (topic.isBuildPlanner) {
+                  navigate('/build-planner');
+                } else if (topic.isShop) {
+                  navigate('/shop');
+                } else {
+                  handleTopicClick(topic.query);
+                }
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Footer with helpful tips */}
+      <div className="max-w-4xl mx-auto px-6 py-12 text-center">
+        <div className="bg-white rounded-2xl p-8 shadow-lg">
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">
+            💡 Learning Tips
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+            <div>
+              <div className="text-3xl mb-2">✓</div>
+              <h4 className="font-semibold text-lg mb-2">Watch Tutorials</h4>
+              <p className="text-gray-600">Look for "how to" videos to learn new skills</p>
+            </div>
+            <div>
+              <div className="text-3xl mb-2">🔧</div>
+              <h4 className="font-semibold text-lg mb-2">Learn by Doing</h4>
+              <p className="text-gray-600">Try fixing or building something yourself</p>
+            </div>
+            <div>
+              <div className="text-3xl mb-2">📚</div>
+              <h4 className="font-semibold text-lg mb-2">Ask Questions</h4>
+              <p className="text-gray-600">Don't understand? Search for explanations</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default HomePage;

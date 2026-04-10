@@ -1,0 +1,19 @@
+{
+  "source": "krokotak",
+  "baseUrl": "https://krokotak.com/",
+  "lastUpdated": "2024-01-01",
+  "content": [
+    {
+      "id": "kk-mechanical-hand-01",
+      "title": "Cardboard Mechanical Hand",
+      "url": "https://krokotak.com/2018/04/cardboard-mechanical-hand/",
+      "thumbnail": "https://krokotak.com/wp-content/uploads/2018/04/mechanical-hand.jpg",
+      "description": "Build a mechanical hand that moves using strings and cardboard while learning about levers and pulleys.",
+      "tags": ["mechanical", "hand", "cardboard", "levers"],
+      "difficulty": "medium",
+      "materials_needed": ["cardboard", "string", "straws", "scissors", "glue"],
+      "requires_supervision": true,
+      "category": "build"
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "auditDate": "2026-03-24",
+  "appName": "BikeBrowser - Child-Safe Browser",
+  "auditRules": [
+    "Home button must ALWAYS be visible",
+    "Navigation must be consistent",
+    "No critical controls should disappear"
+  ],
+  "issues": [
+    {
+      "id": "UX-001",
+      "problem": "ProjectBuilderPage lacks visible home/back navigation",
+      "reason": "Users can navigate to /project-builder but there is no home button or back navigation in the header. This violates the rule that home button must ALWAYS be visible. A child may get stuck on this page unable to return.",
+      "fix": "Add a home button (🏠) to the ProjectBuilderPage header that navigates back to /. Example: <button onClick={() => navigate('/')} className='text-3xl hover:scale-110'>🏠</button>",
+      "severity": "critical",
+      "affectedPage": "ProjectBuilderPage",
+      "currentImplementation": "No header with navigation visible in ProjectBuilderPage component"
+    },
+    {
+      "id": "UX-002",
+      "problem": "SafeSearchPage uses 'Back Home' link instead of home button icon",
+      "reason": "While SafeSearchPage does have a home navigation via 'Back Home' Link component, it's styled as a text link button rather than the universally recognized home icon (🏠) used throughout the app. This creates visual inconsistency and children may not recognize it as the home button.",
+      "fix": "Replace the 'Back Home' text link with a home icon button matching YouTubeSearchView and VideoWatchPage: <button onClick={() => navigate('/')} className='text-3xl hover:scale-110' title='Back to home'>🏠</button>",
+      "severity": "medium",
+      "affectedPage": "SafeSearchPage",
+      "currentImplementation": "<Link to='/' className='rounded-full bg-white px-4 py-2...'>Back Home</Link>"
+    },
+    {
+      "id": "UX-003",
+      "problem": "VideoWatchPage uses 'Back' arrow icon instead of home button",
+      "reason": "VideoWatchPage header only shows '← Back' button which takes users to the previous page, not home. If a child navigates deep into content (HomePage → Search → Video), they cannot jump directly home and must go back multiple times.",
+      "fix": "Add home button alongside back button: <button>🏠</button> and <button>← Back</button> in the header, or replace back with home button for direct home access.",
+      "severity": "medium",
+      "affectedPage": "VideoWatchPage",
+      "currentImplementation": "<button onClick={handleBack} className='text-white text-2xl'>← Back</button>"
+    },
+    {
+      "id": "UX-004",
+      "problem": "Inconsistent navigation button styles across pages",
+      "reason": "Different pages use different home navigation approaches: YouTubeSearchView uses emoji button (🏠), SafeSearchPage uses text link, VideoWatchPage uses arrow button (←). This inconsistency can confuse children about how to navigate.",
+      "fix": "Standardize all navigation buttons across all pages. Every page should have: 1) Visible home button (🏠 emoji) 2) Back button (← arrow) if needed 3) Both consistently positioned in header 4) Matching Tailwind classes",
+      "severity": "medium",
+      "affectedPage": "All pages (HomePage, YouTubeSearchView, VideoWatchPage, ProjectBuilderPage, SafeSearchPage)",
+      "currentImplementation": "Mixed: YouTubeSearchView has 🏠, SafeSearchPage has 'Back Home' Link, VideoWatchPage has ←"
+    },
+    {
+      "id": "UX-005",
+      "problem": "HomePage has no back button for context-switching",
+      "reason": "HomePage is the landing page and primary entry point, so no back button is acceptable. However, it should remain the root navigation hub that's easily accessible from anywhere.",
+      "fix": "No change required for HomePage itself, but ensure all other pages (URLs 2-5) have clear path back to HomePage. Verify Router structure maintains this invariant.",
+      "severity": "low",
+      "affectedPage": "HomePage",
+      "currentImplementation": "No navigation buttons (correct for home page)"
+    },
+    {
+      "id": "UX-006",
+      "problem": "Critical control visibility: Search bar not persistent across all content pages",
+      "reason": "YouTubeSearchView has a sticky search bar, but VideoWatchPage and ProjectBuilderPage may not. This means a child watching a video cannot search without going back. Search is a critical control for navigation.",
+      "fix": "Ensure search capability is always accessible. Options: 1) Add sticky search header to VideoWatchPage, 2) Add search icon in header that opens search overlay, 3) Provide breadcrumb navigation showing search path",
+      "severity": "medium",
+      "affectedPage": "VideoWatchPage, ProjectBuilderPage",
+      "currentImplementation": "VideoWatchPage and ProjectBuilderPage lack search bar in header"
+    },
+    {
+      "id": "UX-007",
+      "problem": "Project type selector in ProjectBuilderPage could be hidden during scrolling",
+      "reason": "ProjectBuilderPage project type selector is likely not sticky. A child scrolling through videos might lose visibility of how to change projects, reducing flexibility and potentially causing confusion.",
+      "fix": "Make the project type selector sticky (sticky positioning) or add a 'Change Project' button in the header that opens the selector in a modal.",
+      "severity": "low",
+      "affectedPage": "ProjectBuilderPage",
+      "currentImplementation": "Project type list renders at top but no sticky positioning specified"
+    },
+    {
+      "id": "UX-008",
+      "problem": "VideoWatchPage error state lacks home navigation",
+      "reason": "When VideoWatchPage encounters an error, it displays an error message with only a 'Go Back' button. If the error is persistent, children may be stuck in an error loop unable to navigate home.",
+      "fix": "Error state should have two buttons: 1) 'Go Back' with ← 2) 'Home' with 🏠 emoji. Provide explicit home escape route in error scenarios.",
+      "severity": "high",
+      "affectedPage": "VideoWatchPage",
+      "currentImplementation": "<button onClick={handleBack} className='btn-primary'>Go Back</button> (only back, no home option)"
+    },
+    {
+      "id": "UX-009",
+      "problem": "Diagnostics panel could obscure critical navigation",
+      "reason": "DiagnosticsPanel is fixed position bottom-right, dev-only feature toggled with Ctrl+Shift+P. If accidentally triggered, it could cover action buttons or important content in the bottom-right corner, hiding controls.",
+      "fix": "Ensure DiagnosticsPanel is z-50 (high z-index) so it layers above but doesn't hide critical UI. Also verify that it's truly dev-only (not accessible to children). Consider making it draggable if high priority.",
+      "severity": "low",
+      "affectedPage": "All pages (DiagnosticsPanel is global)",
+      "currentImplementation": "z-50 applied, appears to be dev-only (Ctrl+Shift+P)"
+    },
+    {
+      "id": "UX-010",
+      "problem": "RouterContext dependency: Navigation relies entirely on React Router",
+      "reason": "All navigation uses React Router (navigate, Link, Routes). If router state breaks or a page loads outside the Router context, navigation buttons could fail silently, trapping users.",
+      "fix": "Add error boundaries around route transitions and ensure Router wraps entire app (already done in App.jsx). Consider adding manual window.history fallback: if navigate() fails, use window.history.back() or window.location.href",
+      "severity": "medium",
+      "affectedPage": "All pages",
+      "currentImplementation": "Router wraps all routes in App.jsx - good structure, but consider fallback navigation"
+    }
+  ],
+  "summary": {
+    "totalIssues": 10,
+    "byseverity": {
+      "critical": 2,
+      "high": 1,
+      "medium": 5,
+      "low": 2
+    },
+    "mostCriticalIssue": "UX-001: ProjectBuilderPage lacks home/back navigation - children could be trapped on this page",
+    "quickWins": [
+      "Add home button to ProjectBuilderPage header",
+      "Add home option to VideoWatchPage error state",
+      "Standardize navigation button appearance across all pages"
+    ]
+  },
+  "navigationConsistencyMatrix": {
+    "HomePage": {
+      "homeButton": "N/A (is home page)",
+      "backButton": "N/A",
+      "headerStyle": "Clean, no navigation"
+    },
+    "YouTubeSearchView": {
+      "homeButton": "✅ Yes - 🏠 emoji",
+      "backButton": "❌ No",
+      "headerStyle": "Sticky, icon-based"
+    },
+    "VideoWatchPage": {
+      "homeButton": "❌ No",
+      "backButton": "✅ Yes - ← arrow",
+      "headerStyle": "Fixed, arrow-based"
+    },
+    "ProjectBuilderPage": {
+      "homeButton": "❌ No",
+      "backButton": "❌ No",
+      "headerStyle": "❌ Missing"
+    },
+    "SafeSearchPage": {
+      "homeButton": "⚠️ Text link only - 'Back Home'",
+      "backButton": "❌ No",
+      "headerStyle": "Flex layout, text-based"
+    }
+  },
+  "recommendedFixes": {
+    "priority_1_critical": [
+      {
+        "task": "ProjectBuilderPage + Home Navigation",
+        "files": ["src/renderer/pages/ProjectBuilderPage.jsx"],
+        "changes": "Add header with home button (🏠) and optional back button (←) to component top"
+      },
+      {
+        "task": "VideoWatchPage Error State + Home",
+        "files": ["src/renderer/pages/VideoWatchPage.jsx"],
+        "changes": "In error state, add home button alongside 'Go Back' button"
+      }
+    ],
+    "priority_2_important": [
+      {
+        "task": "Standardize Navigation Component",
+        "files": ["src/renderer/components/Navigation.jsx (create new)"],
+        "changes": "Create reusable NavigationHeader component with home + back buttons for consistency"
+      },
+      {
+        "task": "SafeSearchPage + Home Icon",
+        "files": ["src/renderer/pages/SafeSearchPage.jsx"],
+        "changes": "Replace 'Back Home' Link with emoji home button matching YouTubeSearchView"
+      },
+      {
+        "task": "VideoWatchPage + Home Button",
+        "files": ["src/renderer/pages/VideoWatchPage.jsx"],
+        "changes": "Add home button to header alongside ← Back button"
+      }
+    ],
+    "priority_3_nice_to_have": [
+      {
+        "task": "ProjectBuilderPage + Sticky Project Selector",
+        "files": ["src/renderer/pages/ProjectBuilderPage.jsx"],
+        "changes": "Add sticky positioning to project type selector"
+      },
+      {
+        "task": "Add Router Fallback Navigation",
+        "files": ["src/renderer/App.jsx"],
+        "changes": "Add error handling for navigate() calls with window.history.back() fallback"
+      }
+    ]
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "generatedAt": "2026-03-23T03:55:07.399Z",
+  "defaultAppIcon": {
+    "svg": "assets/icon.svg",
+    "png": "assets/icon.png"
+  },
+  "variations": [
+    {
+      "variation": "electric-focused",
+      "files": [
+        {
+          "svg": "assets/icons/electric-focused-solid.svg",
+          "png": "assets/icons/electric-focused-solid.png"
+        },
+        {
+          "svg": "assets/icons/electric-focused-transparent.svg",
+          "png": "assets/icons/electric-focused-transparent.png"
+        }
+      ]
+    },
+    {
+      "variation": "dirt-bike-rugged",
+      "files": [
+        {
+          "svg": "assets/icons/dirt-bike-rugged-solid.svg",
+          "png": "assets/icons/dirt-bike-rugged-solid.png"
+        },
+        {
+          "svg": "assets/icons/dirt-bike-rugged-transparent.svg",
+          "png": "assets/icons/dirt-bike-rugged-transparent.png"
+        }
+      ]
+    },
+    {
+      "variation": "clean-minimal",
+      "files": [
+        {
+          "svg": "assets/icons/clean-minimal-solid.svg",
+          "png": "assets/icons/clean-minimal-solid.png"
+        },
+        {
+          "svg": "assets/icons/clean-minimal-transparent.svg",
+          "png": "assets/icons/clean-minimal-transparent.png"
+        }
+      ]
+    },
+    {
+      "variation": "game-badge",
+      "files": [
+        {
+          "svg": "assets/icons/game-badge-solid.svg",
+          "png": "assets/icons/game-badge-solid.png"
+        },
+        {
+          "svg": "assets/icons/game-badge-transparent.svg",
+          "png": "assets/icons/game-badge-transparent.png"
+        }
+      ]
+    }
+  ]
+}

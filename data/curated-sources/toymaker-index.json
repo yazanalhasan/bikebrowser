@@ -1,0 +1,19 @@
+{
+  "source": "toymaker",
+  "baseUrl": "https://www.thetoymaker.com/",
+  "lastUpdated": "2024-01-01",
+  "content": [
+    {
+      "id": "tm-marble-run-01",
+      "title": "Paper Marble Run",
+      "url": "https://www.thetoymaker.com/MarbleRun/MarbleRun.html",
+      "thumbnail": "https://www.thetoymaker.com/images/marblerun-thumb.jpg",
+      "description": "Build a working marble run out of paper and learn about gravity and momentum.",
+      "tags": ["build", "marble-run", "paper-craft", "gravity"],
+      "difficulty": "medium",
+      "materials_needed": ["paper", "scissors", "glue", "cardboard"],
+      "requires_supervision": true,
+      "category": "build"
+    }
+  ]
+}

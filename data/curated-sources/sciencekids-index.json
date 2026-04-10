@@ -1,0 +1,29 @@
+{
+  "source": "sciencekids",
+  "baseUrl": "https://www.sciencekids.co.nz/videos/",
+  "lastUpdated": "2024-01-01",
+  "content": [
+    {
+      "id": "sk-engineering-01",
+      "title": "How Car Engines Work",
+      "url": "https://www.sciencekids.co.nz/videos/engineering/carengines.html",
+      "thumbnail": "https://www.sciencekids.co.nz/images/videos/engine.jpg",
+      "description": "Learn how a car engine uses tiny explosions to make power and move the wheels.",
+      "tags": ["engine", "car", "mechanical", "how-it-works"],
+      "duration": "2:30",
+      "difficulty": "easy",
+      "category": "watch"
+    },
+    {
+      "id": "sk-engineering-02",
+      "title": "Building Bridges",
+      "url": "https://www.sciencekids.co.nz/videos/engineering/bridges.html",
+      "thumbnail": "https://www.sciencekids.co.nz/images/videos/bridges.jpg",
+      "description": "See how engineers design bridges that can hold heavy loads without falling down.",
+      "tags": ["bridge", "structure", "design"],
+      "duration": "3:15",
+      "difficulty": "easy",
+      "category": "watch"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "name": "bikebrowser",
+  "version": "0.1.0",
+  "description": "Kid Cognitive Browser - A child-friendly browser for bike enthusiasts",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "server": "node scripts/start-api-server.js",
+    "dev": "node scripts/dev-start.js",
+    "dev:stack": "concurrently -k \"npm:dev:react\" \"npm:dev:electron\"",
+    "dev:react": "vite",
+    "dev:electron": "wait-on http://localhost:5173 && electron .",
+    "generate:icons": "node scripts/generate-bikebrowser-icons.js",
+    "kill:dev": "taskkill /IM node.exe /F & taskkill /IM electron.exe /F",
+    "start:clean": "npm run kill:dev & npm run dev",
+    "predev:stack": "kill-port 5173",
+    "build": "vite build",
+    "build:electron": "electron-builder",
+    "lint": "eslint src --ext js,jsx"
+  },
+  "keywords": [
+    "electron",
+    "browser",
+    "kids",
+    "education",
+    "bikes"
+  ],
+  "author": "Yazan",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react-youtube": "^7.6.2",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.17",
+    "concurrently": "^8.2.2",
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
+    "kill-port": "^2.0.1",
+    "postcss": "^8.4.33",
+    "sharp": "^0.34.5",
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.0.12",
+    "wait-on": "^7.2.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.5",
+    "better-sqlite3": "^11.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "express": "^4.21.2",
+    "qrcode": "^1.5.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.21.3",
+    "react-youtube": "^10.1.0",
+    "uuid": "^13.0.0",
+    "zustand": "^5.0.12"
+  },
+  "build": {
+    "appId": "com.bikebrowser.app",
+    "productName": "BikeBrowser",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/main/**/*",
+      "src/preload/**/*",
+      "build/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ]
+    }
+  }
+}
