@@ -15,6 +15,8 @@ export default {
     'from-purple-400', 'to-purple-600',
     'from-red-400', 'to-red-600',
     'from-yellow-400', 'to-yellow-600',
+    // OnlineRetailerSection badge colors (dynamic via retailer.color)
+    'bg-orange-500', 'bg-blue-600', 'bg-blue-500',
   ],
   theme: {
     extend: {

@@ -1,6 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useProjectShopping } from '../hooks/useProjectShopping';
+import { useLocalStores } from '../hooks/useLocalStores';
+import { buildOnlineRetailers } from '../services/shopping/onlineRetailers';
 import type { Product } from '../services/shopping/types';
+import type { LocalStore } from '../hooks/useLocalStores';
+import type { OnlineRetailer } from '../services/shopping/onlineRetailers';
 
 type Props = {
   projectId: string;
@@ -30,6 +34,10 @@ export default function ProjectShoppingPanel({ projectId, materials }: Props) {
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
   const { results, loadingMap, cart, totalRange, selectProduct, updateQuantity, removeItem, addBestValueItems } =
     useProjectShopping(projectId, materials, zipcode);
+
+  const { stores: localStores, loading: storesLoading, error: storesError } = useLocalStores(zipcode, materials);
+
+  const onlineRetailers = useMemo(() => buildOnlineRetailers(results, materials), [results, materials]);
 
   const selectedMap = useMemo(
     () => Object.fromEntries(cart.items.map((item) => [item.name.toLowerCase(), item.selectedProduct?.id || ''])),
@@ -200,6 +208,56 @@ export default function ProjectShoppingPanel({ projectId, materials }: Props) {
         })}
       </div>
 
+      {/* ── Local Stores Section ── */}
+      <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-5">
+        <h4 className="text-base font-bold text-slate-900">📍 Local Stores Near {zipcode}</h4>
+        <p className="mt-1 text-sm text-slate-600">
+          Nearby shops that may carry bike parts and materials for same-day pickup.
+        </p>
+
+        {storesLoading && (
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse rounded-xl bg-white p-4 shadow-sm">
+                <div className="h-4 w-40 rounded bg-slate-200" />
+                <div className="mt-2 h-3 w-56 rounded bg-slate-100" />
+                <div className="mt-2 h-3 w-32 rounded bg-slate-100" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {storesError && (
+          <p className="mt-3 text-sm text-rose-600">{storesError}</p>
+        )}
+
+        {!storesLoading && !storesError && localStores.length === 0 && (
+          <p className="mt-3 text-sm text-slate-500">No local stores found near this ZIP code.</p>
+        )}
+
+        {!storesLoading && localStores.length > 0 && (
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {localStores.map((store) => (
+              <LocalStoreCard key={store.id} store={store} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── Online Retailers Section ── */}
+      <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-5">
+        <h4 className="text-base font-bold text-slate-900">🌐 Online Retailers</h4>
+        <p className="mt-1 text-sm text-slate-600">
+          Products and search links from major online stores.
+        </p>
+
+        <div className="mt-4 grid gap-4">
+          {onlineRetailers.map((retailer) => (
+            <OnlineRetailerSection key={retailer.key} retailer={retailer} />
+          ))}
+        </div>
+      </div>
+
       <div className="mt-5 grid gap-3 rounded-2xl bg-slate-900 p-4 text-white md:grid-cols-3">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-slate-300">Project Cart</p>
@@ -214,6 +272,119 @@ export default function ProjectShoppingPanel({ projectId, materials }: Props) {
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-slate-300">Selected Items</p>
           <p className="mt-2 text-lg font-semibold">{cart.items.filter((item) => item.selectedProduct).length} / {materials.length}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ──────────────── Local Store Card ──────────────── */
+
+function LocalStoreCard({ store }: { store: LocalStore }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-semibold text-slate-900">{store.name}</p>
+          <p className="mt-1 text-sm text-slate-600">{store.address}</p>
+        </div>
+        {store.rating != null && (
+          <span className="flex-shrink-0 rounded-full bg-amber-100 px-2 py-1 text-xs font-bold text-amber-800">
+            ⭐ {store.rating.toFixed(1)}
+            {store.totalRatings != null && <span className="font-normal text-amber-600"> ({store.totalRatings})</span>}
+          </span>
+        )}
+      </div>
+
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {store.tags.map((tag) => (
+          <span key={tag} className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">
+            {tag}
+          </span>
+        ))}
+        {store.isOpen === true && (
+          <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700">Open Now</span>
+        )}
+        {store.isOpen === false && (
+          <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-600">Closed</span>
+        )}
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+        {store.phone ? (
+          <a href={`tel:${store.phone}`} className="font-semibold text-blue-600 hover:text-blue-700">
+            📞 {store.phone}
+          </a>
+        ) : (
+          <span className="text-slate-400">No phone listed</span>
+        )}
+        {store.website && (
+          <a
+            href={store.website}
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold text-blue-600 hover:text-blue-700"
+          >
+            🌐 Website
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ──────────────── Online Retailer Section ──────────────── */
+
+function OnlineRetailerSection({ retailer }: { retailer: OnlineRetailer }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex items-center gap-2">
+        <span className="text-lg">{retailer.icon}</span>
+        <h5 className="font-bold text-slate-900">{retailer.name}</h5>
+        <span className={`ml-auto rounded-full ${retailer.color} px-2.5 py-0.5 text-xs font-semibold text-white`}>
+          {retailer.products.length} {retailer.products.length === 1 ? 'product' : 'products'} found
+        </span>
+      </div>
+
+      {retailer.products.length > 0 && (
+        <div className="mt-3 grid gap-2">
+          {retailer.products.slice(0, 4).map((product) => (
+            <a
+              key={product.id}
+              href={product.url}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-3 rounded-lg border border-slate-100 p-2 transition hover:bg-slate-50"
+            >
+              {product.image && (
+                <img src={product.image} alt={product.title} className="h-10 w-10 rounded object-cover" />
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-slate-800">{product.title}</p>
+                <p className="text-xs text-slate-500">{product.sourceLabel || product.source}</p>
+              </div>
+              {product.price > 0 && (
+                <p className="flex-shrink-0 text-sm font-bold text-slate-900">${product.price.toFixed(2)}</p>
+              )}
+            </a>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-3">
+        <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">Search on {retailer.name}</p>
+        <div className="flex flex-wrap gap-2">
+          {retailer.searchLinks.map(({ material, url }) => (
+            <a
+              key={material}
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 transition hover:bg-slate-100"
+            >
+              {material} ↗
+            </a>
+          ))}
         </div>
       </div>
     </div>
