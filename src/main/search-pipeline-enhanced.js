@@ -9,6 +9,7 @@ const { ImageToQuery } = require('../pipeline/image-to-query');
 const { VoiceToQuery } = require('../pipeline/voice-to-query');
 const { SimilarityEngine } = require('../pipeline/similarity-engine');
 const { applyLearnedSuppression, applyCompatibilityHints } = require('../server/ranking-utils');
+const { perfProfile } = require('./config/perf-profile');
 
 class EnhancedSearchPipeline {
   constructor(config = {}) {
@@ -24,6 +25,7 @@ class EnhancedSearchPipeline {
     this.voiceToQuery = new VoiceToQuery(this.providerManager);
     this.similarityEngine = new SimilarityEngine();
     this.historyStore = null; // Set externally via setHistoryStore()
+    this.concurrency = perfProfile.maxConcurrentSourceFetches;
     this.stages = {
       queryExpansion: true,
       parallelFetch: true,
@@ -89,8 +91,10 @@ class EnhancedSearchPipeline {
 
   async _searchInner(userQuery, options, traceId) {
       const skipExpansion = options.skipExpansion === true;
+      const timing = {};
 
-      // Tier 1: Full AI pipeline with per-stage timeouts
+      // ── Stage 1: Query expansion ──────────────────────────────────────────
+      const t0 = Date.now();
       const expandedQuery = (this.stages.queryExpansion && !skipExpansion)
         ? await this.monitor.measure('query_expansion', () =>
             Promise.race([
@@ -101,8 +105,13 @@ class EnhancedSearchPipeline {
               }, 5000))
             ]), traceId)
         : this.fallbackHandler.getFallbackExpansion(userQuery);
+      timing.queryExpansionMs = Date.now() - t0;
 
+      // ── Stage 2: Source fetch (concurrency-limited) ───────────────────────
+      const t1 = Date.now();
       const rawResults = await this.monitor.measure('parallel_fetch', () => this.fetchFromAllSources(expandedQuery, options, userQuery), traceId);
+      timing.sourceFetchMs = Date.now() - t1;
+
       const shoppingFiltered = this.shoppingSafetyFilter.filter(rawResults, {
         ...options,
         intent: expandedQuery.intent
@@ -110,33 +119,51 @@ class EnhancedSearchPipeline {
       const preFiltered = this.stages.preFiltering
         ? await this.monitor.measure('pre_filtering', () => Promise.resolve(this.safetyFilter.preFilter(shoppingFiltered, expandedQuery)), traceId)
         : shoppingFiltered;
-      const aiSafeResults = preFiltered.length > 0
+
+      // ── Trim before expensive AI evaluation ───────────────────────────────
+      // Sort by whatever raw score is available, then cut.
+      let trimmed = preFiltered;
+      if (trimmed.length > perfProfile.maxResultsBeforeRanking) {
+        trimmed = trimmed
+          .slice()
+          .sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0))
+          .slice(0, perfProfile.maxResultsBeforeRanking);
+      }
+
+      // ── Stage 3: AI safety filter ─────────────────────────────────────────
+      const t2 = Date.now();
+      const aiSafeResults = trimmed.length > 0
         ? await this.monitor.measure('ai_safety', () =>
             Promise.race([
-              this.applyAISafetyFilter(preFiltered),
+              this.applyAISafetyFilter(trimmed),
               new Promise((resolve) => setTimeout(() => {
                 console.warn('[Search] AI safety filter timed out, using keyword-only filtering');
-                resolve(preFiltered);
+                resolve(trimmed);
               }, 6000))
             ]), traceId)
-        : preFiltered;
+        : trimmed;
 
-      const evaluatedResults = this.stages.aiEvaluation && aiSafeResults.length > 0 && !skipExpansion
+      // ── Stage 4: AI batch evaluation (capped batch size) ──────────────────
+      const evalCandidates = aiSafeResults.slice(0, perfProfile.aiEvalBatchSize * 3);
+      const evaluatedResults = this.stages.aiEvaluation && evalCandidates.length > 0 && !skipExpansion
         ? await this.monitor.measure('ai_evaluation', () =>
             Promise.race([
-              this.providerManager.evaluateContentBatch(aiSafeResults),
+              this.providerManager.evaluateContentBatch(evalCandidates),
               new Promise((resolve) => setTimeout(() => {
                 console.warn('[Search] AI evaluation timed out, using raw scores');
-                resolve(aiSafeResults);
+                resolve(evalCandidates);
               }, 5000))
             ]), traceId)
-        : aiSafeResults;
+        : evalCandidates;
+      timing.aiEvaluationMs = Date.now() - t2;
 
       const safeResults = evaluatedResults.filter((result) =>
         (result.safety_score ?? 0) >= deepseekConfig.safety.minimumSafetyScore &&
         (result.relevance_score ?? 0) >= deepseekConfig.safety.minimumRelevanceScore
       );
 
+      // ── Stage 5: Ranking ──────────────────────────────────────────────────
+      const t3 = Date.now();
       let rankedResults = this.rankResults(safeResults);
       if (this.stages.ranking) {
         rankedResults = this.applyDeepRanking(rankedResults);
@@ -150,6 +177,7 @@ class EnhancedSearchPipeline {
         rankedResults = applyCompatibilityHints(rankedResults, options._compatibilityHints);
         rankedResults.sort((a, b) => (b.compositeScore || 0) - (a.compositeScore || 0));
       }
+      timing.rankingMs = Date.now() - t3;
 
       const finalResults = this.stages.postProcessing
         ? this.postProcessResults(rankedResults, expandedQuery)
@@ -161,9 +189,13 @@ class EnhancedSearchPipeline {
         aiProcessed: evaluatedResults.length
       });
 
+      timing.totalMs = Date.now() - t0;
+      console.log('[Search timing]', timing);
+
       const metadata = {
         traceId,
         processingTime: this.monitor.getTraceDuration(traceId),
+        timing,
         stages: this.monitor.getTraceMarks(traceId),
         stats: this.providerManager.getStats(),
         providerStatus: this.providerManager.getProviderStatus()
@@ -173,7 +205,7 @@ class EnhancedSearchPipeline {
       return {
         query: userQuery,
         expandedQuery,
-        results: finalResults.slice(0, 24),
+        results: finalResults.slice(0, perfProfile.maxFinalResults),
         grouped: this.groupByCategory(finalResults),
         metadata,
         totalResults: finalResults.length,
@@ -182,34 +214,75 @@ class EnhancedSearchPipeline {
   }
 
   async fetchFromAllSources(expandedQuery, options, userQuery) {
-    const sourcePromises = [];
     const sourcesToSearch = this.sourceRegistry.getSourcesForIntent(expandedQuery.intent);
+    const timeout = perfProfile.sourceFetchTimeoutMs;
+    const concurrency = this.concurrency;
+    const cutoff = perfProfile.earlyResultCutoff;
 
+    // Build task list
+    const tasks = [];
     for (const source of sourcesToSearch) {
       const sourceQueries = this.getSourceSpecificQueries(expandedQuery, source.name, userQuery);
-      if (sourceQueries.length === 0) {
-        continue;
-      }
+      if (sourceQueries.length === 0) continue;
+      tasks.push({ source, sourceQueries });
+    }
 
-      sourcePromises.push(
-        Promise.race([
-          source.manager.search(sourceQueries, {
+    // Concurrency-limited execution with early cutoff
+    const allResults = [];
+    let i = 0;
+
+    async function runOne(task) {
+      try {
+        return await Promise.race([
+          task.source.manager.search(task.sourceQueries, {
             ...options,
             intent: expandedQuery.intent
           }),
           new Promise((resolve) => setTimeout(() => {
-            console.warn(`Source ${source.name} timed out after 10s`);
+            console.warn(`Source ${task.source.name} timed out after ${timeout}ms`);
             resolve([]);
-          }, 10000))
-        ]).catch((error) => {
-          console.error(`Source ${source.name} failed:`, error.message || error);
-          return [];
-        })
-      );
+          }, timeout))
+        ]);
+      } catch (error) {
+        console.error(`Source ${task.source.name} failed:`, error.message || error);
+        return [];
+      }
     }
 
-    const results = await Promise.all(sourcePromises);
-    return results.flat();
+    // Launch initial batch
+    const active = new Map();
+    while (i < tasks.length && active.size < concurrency) {
+      const idx = i++;
+      active.set(idx, runOne(tasks[idx]));
+    }
+
+    // Process as they complete, launch next
+    while (active.size > 0) {
+      const entries = [...active.entries()];
+      const settled = await Promise.race(
+        entries.map(([idx, p]) => p.then((r) => ({ idx, results: r })))
+      );
+
+      active.delete(settled.idx);
+      if (settled.results.length > 0) {
+        allResults.push(...settled.results);
+      }
+
+      // Early cutoff: if we have enough results, skip remaining sources
+      if (allResults.length >= cutoff && i < tasks.length) {
+        console.log(`[Search] Early cutoff: ${allResults.length} results from ${settled.idx + 1}/${tasks.length} sources`);
+        // Let in-flight requests finish but don't launch new ones
+        i = tasks.length;
+      }
+
+      // Launch next
+      if (i < tasks.length && active.size < concurrency) {
+        const idx = i++;
+        active.set(idx, runOne(tasks[idx]));
+      }
+    }
+
+    return allResults;
   }
 
   async applyAISafetyFilter(results) {

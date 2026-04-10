@@ -12,6 +12,7 @@ const rankingEngine = require('../services/rankingEngine');
 const { SearchPipeline } = require('./search-pipeline');
 const { FallbackHandler } = require('./deepseek/fallback-handler');
 const { getAIProviderStatus } = require('./config/deepseek-config');
+const { perfProfile } = require('./config/perf-profile');
 
 // Architecture upgrade: main-process services for camera, voice, history
 const { ImageIntentService } = require('./services/image-intent-service');
@@ -70,6 +71,30 @@ function createCacheKey(namespace, payload) {
   return `${namespace}:${JSON.stringify(payload || {})}`;
 }
 
+// Prune expired + over-limit entries from the IPC cache.
+// Called on every cache write to keep memory bounded.
+function pruneIpcCache() {
+  const max = perfProfile.ipcCacheMaxEntries;
+  const now = Date.now();
+  const defaultTtl = perfProfile.ipcCacheDefaultTtlMs;
+
+  // 1. Drop expired entries
+  for (const [k, v] of ipcResponseCache) {
+    if ((now - v.ts) >= (v.ttl || defaultTtl)) {
+      ipcResponseCache.delete(k);
+    }
+  }
+
+  // 2. If still over limit, evict oldest first
+  if (ipcResponseCache.size > max) {
+    const sorted = [...ipcResponseCache.entries()].sort((a, b) => a[1].ts - b[1].ts);
+    const excess = sorted.length - max;
+    for (let i = 0; i < excess; i++) {
+      ipcResponseCache.delete(sorted[i][0]);
+    }
+  }
+}
+
 async function withIpcCache(namespace, payload, ttlMs, producer) {
   const key = createCacheKey(namespace, payload);
   const now = Date.now();
@@ -86,10 +111,12 @@ async function withIpcCache(namespace, payload, ttlMs, producer) {
   const pending = (async () => {
     try {
       const value = await producer();
-      ipcResponseCache.set(key, {
-        ts: Date.now(),
-        value,
-      });
+      // Skip caching oversized payloads
+      const payloadSize = JSON.stringify(value || '').length;
+      if (payloadSize <= perfProfile.ipcCacheMaxPayloadBytes) {
+        ipcResponseCache.set(key, { ts: Date.now(), value, ttl: ttlMs });
+        pruneIpcCache();
+      }
       return value;
     } finally {
       ipcInFlight.delete(key);
@@ -287,14 +314,18 @@ if (!gotTheLock) {
 
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
-// ── GPU acceleration ────────────────────────────────────────────────────────
-// Enable hardware-accelerated rasterisation and zero-copy texture uploads.
-// These are safe default flags for a modern desktop Electron app on Windows.
+// ── GPU acceleration (AMD RX 580 safe profile) ─────────────────────────────
+// GPU rasterization + D3D11 ANGLE are safe on GCN-class AMD GPUs.
+// Zero-copy and native-gpu-memory-buffers are gated behind an env flag
+// because they can cause flicker artefacts on the RX 580.
 app.commandLine.appendSwitch('enable-gpu-rasterization');
-app.commandLine.appendSwitch('enable-zero-copy');
-app.commandLine.appendSwitch('enable-native-gpu-memory-buffers');
-// Use the angle backend for best DX12/Vulkan compatibility on Windows
-app.commandLine.appendSwitch('use-angle', 'd3d11');
+app.commandLine.appendSwitch('use-angle', perfProfile.gpu.useAngle);
+if (perfProfile.gpu.enableZeroCopy) {
+  app.commandLine.appendSwitch('enable-zero-copy');
+}
+if (perfProfile.gpu.enableNativeGpuMemoryBuffers) {
+  app.commandLine.appendSwitch('enable-native-gpu-memory-buffers');
+}
 // ────────────────────────────────────────────────────────────────────────────
 
 function createVideoPlayerWindow(videoId, title = 'Video Player') {
