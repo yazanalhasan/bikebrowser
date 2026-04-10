@@ -78,7 +78,13 @@ class PriceSearchService {
       return false;
     }
 
-    return (product.rating || 0) >= 3.5;
+    // Accept products with no rating (undefined) or rating >= 3.0 from APIs
+    const rating = product.rating;
+    if (rating !== undefined && rating !== null && rating < 3.0) {
+      return false;
+    }
+
+    return true;
   }
 
   private slugify(value: string) {
@@ -86,18 +92,22 @@ class PriceSearchService {
   }
 
   private ensureProducts(products: Product[], source: Product['source']) {
-    return products.map((product, index) => ({
-      id: product.id || `${source}-${this.slugify(product.title || `${source}-${index}`)}`,
-      title: product.title,
-      price: Number(product.price || 0),
-      shipping: Number(product.shipping || 0),
-      totalPrice: Number((Number(product.price || 0) + Number(product.shipping || 0)).toFixed(2)),
-      rating: product.rating,
-      image: product.image || DEFAULT_IMAGE,
-      source: product.source || source,
-      sourceLabel: product.sourceLabel,
-      url: product.url,
-    }));
+    return products.map((product, index) => {
+      const price = Number(product.price || 0);
+      const shipping = Number(product.shipping || product.shippingCost || 0);
+      return {
+        id: product.id || `${source}-${this.slugify(product.title || `${source}-${index}`)}`,
+        title: product.title,
+        price,
+        shipping,
+        totalPrice: Number((price + shipping).toFixed(2)),
+        rating: product.rating,
+        image: product.image || DEFAULT_IMAGE,
+        source: product.source || source,
+        sourceLabel: product.sourceLabel,
+        url: product.url,
+      };
+    });
   }
 }
 

@@ -18,7 +18,7 @@ const ALLOWED_SOURCES = new Set([
   'ebay',
 ]);
 
-const MIN_SCORE_THRESHOLD = 40;
+const MIN_SCORE_THRESHOLD = 30;
 
 function normalizeSource(source) {
   const value = String(source || '').toLowerCase();
@@ -39,6 +39,8 @@ function normalizeProductShape(item, sourceFallback = 'marketcheck') {
     totalCost: Number.isFinite(basePrice) ? basePrice : 0,
     image: item?.image || item?.thumbnail || 'https://via.placeholder.com/240x240?text=Listing',
     source,
+    sourceLabel: item?.sourceLabel || '',
+    rating: Number.isFinite(Number(item?.rating)) ? Number(item.rating) : undefined,
     distance: Number.isFinite(Number(item?.distance)) ? Number(item.distance) : null,
     type: item?.type || 'online',
     score: 0,
@@ -89,6 +91,11 @@ export function buildSmartQuery(query, part) {
 
   if (category.includes('battery') || category.includes('power')) {
     return `${base} ebike lithium 48V downtube`.trim();
+  }
+
+  const lowerBase = base.toLowerCase();
+  if (lowerBase.includes('bike') || lowerBase.includes('bicycle') || lowerBase.includes('ebike')) {
+    return base;
   }
 
   return `${base} bicycle compatible`.trim();
