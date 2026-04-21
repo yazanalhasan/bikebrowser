@@ -328,6 +328,20 @@ if (!gotTheLock) {
 
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
+// ── GPU acceleration (AMD RX 580 safe profile) ─────────────────────────────
+// GPU rasterization + D3D11 ANGLE are safe on GCN-class AMD GPUs.
+// Zero-copy and native-gpu-memory-buffers are gated behind BIKEBROWSER_GPU_ZEROCOPY=1
+// because they can cause flicker artefacts on the RX 580.
+app.commandLine.appendSwitch('enable-gpu-rasterization');
+app.commandLine.appendSwitch('use-angle', perfProfile.gpu.useAngle);
+if (perfProfile.gpu.enableZeroCopy) {
+  app.commandLine.appendSwitch('enable-zero-copy');
+}
+if (perfProfile.gpu.enableNativeGpuMemoryBuffers) {
+  app.commandLine.appendSwitch('enable-native-gpu-memory-buffers');
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 function createVideoPlayerWindow(videoId, title = 'Video Player') {
   const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&controls=1&fs=1&modestbranding=1&rel=0&playsinline=1&iv_load_policy=3`;
   const playerWindow = new BrowserWindow({
