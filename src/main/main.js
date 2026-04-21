@@ -1,6 +1,20 @@
 // Load environment variables FIRST
 require('dotenv').config();
 
+// API_KEY hardening.
+// - Unset   → fall back to 'dev-local-key' (keeps renderer's Vite-bundled CONFIG
+//             in sync for local dev), but warn loudly.
+// - Weak    → warn. Same reason.
+// - Strong  → silent.
+// The Cloudflare tunnel at bike-browser.com makes this Internet-reachable, so
+// the user should set a real API_KEY in .env before the tunnel is used.
+if (!process.env.API_KEY) {
+  process.env.API_KEY = 'dev-local-key';
+}
+if (process.env.API_KEY === 'dev-local-key') {
+  console.warn('[SECURITY] API_KEY is the default dev-local-key. OK for localhost-only use, but DO NOT expose the cloudflared tunnel (bike-browser.com) without setting a strong API_KEY in .env (and matching VITE_API_KEY for the renderer).');
+}
+
 const { app, BrowserWindow, ipcMain, shell, session } = require('electron');
 const http = require('http');
 const fs = require('fs');
@@ -396,12 +410,12 @@ function createWindow({ rendererUrl } = {}) {
     backgroundColor: '#f9fafb',   // matches Tailwind bg-gray-50
     webPreferences: {
       preload: path.join(__dirname, '../preload/preload.js'),
-      webviewTag: true,
-      plugins: true,
+      webviewTag: false,
+      plugins: false,
       webSecurity: true,
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: false
+      sandbox: true
     },
     icon: path.join(__dirname, '../../assets/icon.png')
   });
@@ -831,10 +845,26 @@ ipcMain.on('debug:log', (_event, ...args) => {
   console.log('[renderer]', ...args);
 });
 
-ipcMain.handle('navigate', (event, url) => {
+const ALLOWED_NAV_SCHEMES = new Set(['http:', 'https:']);
+
+function isSafeNavUrl(url) {
+  try {
+    const parsed = new URL(url);
+    return ALLOWED_NAV_SCHEMES.has(parsed.protocol);
+  } catch {
+    return false;
+  }
+}
+
+ipcMain.handle('navigate', (_event, url) => {
+  if (!isSafeNavUrl(url)) {
+    console.warn('[SECURITY] navigate blocked:', url);
+    return { success: false, error: 'Blocked: disallowed URL scheme' };
+  }
   if (mainWindow) {
     mainWindow.loadURL(url);
   }
+  return { success: true };
 });
 
 // Database operations — backed by SQLite HistoryStore

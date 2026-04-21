@@ -40,10 +40,6 @@ function createApiServer({ searchPipeline, appDataPath, port = 3001, webPort = 5
     credentials: true,
   }));
 
-  if (!process.env.API_KEY) {
-    console.warn('[SECURITY] API_KEY not set in environment. Using default dev key. Set API_KEY in .env for production.');
-  }
-
   function requireApiKey(req, res, next) {
     const expected = process.env.API_KEY || 'dev-local-key';
     const key = req.headers['x-api-key'];
