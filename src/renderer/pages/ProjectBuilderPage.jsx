@@ -5,6 +5,7 @@ import VideoCard from '../components/VideoCard';
 import VideoPlayerModal from '../components/VideoPlayerModal';
 import useGlobalCart from '../hooks/useGlobalCart';
 import { apiClient } from '../../client/apiClient';
+import { getVideoId, isPlayableYouTubeVideo, normalizePlayableVideo } from '../utils/videoId';
 
 /**
  * Project Builder Page
@@ -13,49 +14,6 @@ import { apiClient } from '../../client/apiClient';
  * Integrates video ranking, learning paths, and mission generation
  */
 export default function ProjectBuilderPage() {
-    const normalizeVideoId = (video) => {
-      if (!video) {
-        return '';
-      }
-
-      const fromNested = typeof video?.id?.videoId === 'string' ? video.id.videoId : '';
-      const direct = typeof video?.videoId === 'string' ? video.videoId : '';
-      const raw = (fromNested || direct || '').trim();
-
-      if (!raw) {
-        return '';
-      }
-
-      const colonIdx = raw.lastIndexOf(':');
-      if (colonIdx > 0) {
-        return raw.slice(colonIdx + 1).trim();
-      }
-
-      return raw;
-    };
-
-    const isPlayableYouTubeVideo = (video) => {
-      const id = normalizeVideoId(video);
-      return /^[a-zA-Z0-9_-]{6,15}$/.test(id);
-    };
-
-    const toPlayableVideo = (video) => {
-      const id = normalizeVideoId(video);
-      if (!id) {
-        return null;
-      }
-
-      return {
-        ...video,
-        videoId: id,
-        id: {
-          ...(video?.id && typeof video.id === 'object' ? video.id : {}),
-          videoId: id,
-        },
-        thumbnail: video?.thumbnail || `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
-      };
-    };
-
   const lastPlayerCloseAtRef = useRef(0);
   const rankPollRef = useRef(null);
   const mountedRef = useRef(true);
@@ -130,7 +88,7 @@ export default function ProjectBuilderPage() {
       const baseResults = Array.isArray(search.results) ? search.results : [];
       const basePlayable = baseResults
         .filter(isPlayableYouTubeVideo)
-        .map(toPlayableVideo)
+        .map(normalizePlayableVideo)
         .filter(Boolean);
 
       setVideos(basePlayable);
@@ -141,7 +99,7 @@ export default function ProjectBuilderPage() {
           const initial = Array.isArray(rank.initial) && rank.initial.length > 0 ? rank.initial : baseResults;
           const initialPlayable = initial
             .filter(isPlayableYouTubeVideo)
-            .map(toPlayableVideo)
+            .map(normalizePlayableVideo)
             .filter(Boolean);
 
           if (initialPlayable.length > 0 && mountedRef.current) {
@@ -161,7 +119,7 @@ export default function ProjectBuilderPage() {
 
                 const rankedPlayable = (status.result?.ranked || [])
                   .filter(isPlayableYouTubeVideo)
-                  .map(toPlayableVideo)
+                  .map(normalizePlayableVideo)
                   .filter(Boolean);
 
                 if (rankedPlayable.length > 0 && mountedRef.current) {
@@ -199,7 +157,7 @@ export default function ProjectBuilderPage() {
   };
 
   const handleVideoPlay = (videoId, video) => {
-    const normalizedVideoId = normalizeVideoId({ ...video, videoId });
+    const normalizedVideoId = getVideoId({ ...video, videoId });
     if (!normalizedVideoId) {
       return;
     }

@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TopicTile from '../components/TopicTile';
+import { useLearningStore } from '../learning/learningStore';
+import { CATEGORIES } from '../learning/topics';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -41,6 +43,14 @@ function HomePage() {
       emoji: '🛒',
       isShop: true,
       color: 'from-emerald-400 to-teal-500'
+    },
+    {
+      id: 'play-game',
+      title: 'Play Game',
+      subtitle: "Zuzu's Bike Adventure",
+      emoji: '🎮',
+      isGame: true,
+      color: 'from-amber-400 to-orange-500'
     },
     {
       id: 'bikes',
@@ -164,6 +174,8 @@ function HomePage() {
                   navigate('/build-planner');
                 } else if (topic.isShop) {
                   navigate('/shop');
+                } else if (topic.isGame) {
+                  navigate('/play');
                 } else {
                   handleTopicClick(topic.query);
                 }
@@ -172,6 +184,9 @@ function HomePage() {
           ))}
         </div>
       </div>
+
+      {/* Learning Progress */}
+      <LearningProgressSection navigate={navigate} />
 
       {/* Footer with helpful tips */}
       <div className="max-w-4xl mx-auto px-6 py-12 text-center">
@@ -196,6 +211,101 @@ function HomePage() {
               <p className="text-gray-600">Don't understand? Search for explanations</p>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Learning Progress Section ─────────────────────────────────────
+
+const STATE_LABELS = {
+  new: { label: 'New', color: 'bg-slate-200 text-slate-600', emoji: '' },
+  started: { label: 'Started', color: 'bg-blue-100 text-blue-700', emoji: '📖' },
+  practiced: { label: 'Practiced', color: 'bg-amber-100 text-amber-700', emoji: '🔨' },
+  completed: { label: 'Completed', color: 'bg-green-100 text-green-700', emoji: '🏆' },
+};
+
+function LearningProgressSection({ navigate }) {
+  const topics = useLearningStore((s) => s.topics);
+  const stats = useLearningStore((s) => s.stats);
+
+  // Derive from raw topics state — avoids infinite re-render from method selectors
+  const { recommendations, completedCount, startedCount, totalCount } = useMemo(() => {
+    const store = useLearningStore.getState();
+    const all = store.getAllProgress();
+    return {
+      recommendations: store.getRecommendations(4),
+      completedCount: all.filter((t) => t.progress === 'completed').length,
+      startedCount: all.filter((t) => t.progress !== 'new').length,
+      totalCount: all.length,
+    };
+  }, [topics]);
+
+  return (
+    <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-indigo-100">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Your Learning Journey
+            </h2>
+            <p className="text-gray-500 text-sm mt-1">
+              {startedCount === 0
+                ? 'Start exploring topics below to begin your adventure!'
+                : `${completedCount} of ${totalCount} topics completed`}
+            </p>
+          </div>
+          {/* Progress bar */}
+          <div className="w-full sm:w-48">
+            <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-blue-400 to-green-400 rounded-full transition-all duration-500"
+                style={{ width: `${totalCount > 0 ? (completedCount / totalCount) * 100 : 0}%` }}
+              />
+            </div>
+            <p className="text-xs text-gray-400 mt-1 text-right">
+              {stats.videosWatched} videos · {stats.questsCompleted} quests
+            </p>
+          </div>
+        </div>
+
+        {/* Recommended topics */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {recommendations.map((topic) => {
+            const cat = CATEGORIES[topic.category];
+            const stateInfo = STATE_LABELS[topic.progress] || STATE_LABELS.new;
+            return (
+              <button
+                key={topic.id}
+                onClick={() => {
+                  if (topic.suggestedSearches?.[0]) {
+                    navigate(`/youtube/search?q=${encodeURIComponent(topic.suggestedSearches[0])}`);
+                  }
+                }}
+                className="text-left rounded-xl border border-slate-200 bg-slate-50 p-4
+                           hover:border-blue-300 hover:bg-blue-50 transition-all group cursor-pointer"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-2xl">{topic.icon}</span>
+                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${stateInfo.color}`}>
+                    {stateInfo.emoji} {stateInfo.label}
+                  </span>
+                </div>
+                <h3 className="font-bold text-slate-800 group-hover:text-blue-700 transition-colors">
+                  {topic.title}
+                </h3>
+                <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                  {topic.description}
+                </p>
+                {cat && (
+                  <p className="text-xs text-slate-400 mt-2">
+                    {cat.icon} {cat.label} · {topic.difficulty}
+                  </p>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

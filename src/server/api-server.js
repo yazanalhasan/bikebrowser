@@ -275,11 +275,11 @@ function createApiServer({ searchPipeline, appDataPath, port = 3001, webPort = 5
     res.json({ success: true, notes: storage.getNotes() });
   });
 
-  app.get('/api/health', requireApiKey, (_req, res) => {
+  app.get('/api/health', (_req, res) => {
     res.json({ success: true, status: 'ok' });
   });
 
-  app.get('/health', requireApiKey, (_req, res) => {
+  app.get('/health', (_req, res) => {
     res.json({ success: true, status: 'ok' });
   });
 

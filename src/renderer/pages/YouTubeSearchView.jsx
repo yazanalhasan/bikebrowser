@@ -4,56 +4,10 @@ import VideoCard from '../components/VideoCard';
 import VideoPlayerModal from '../components/VideoPlayerModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { apiClient } from '../../client/apiClient';
-
-function stripSourcePrefix(rawId) {
-  if (!rawId) return rawId;
-  const str = String(rawId);
-  const colonIdx = str.lastIndexOf(':');
-  if (colonIdx > 0) return str.slice(colonIdx + 1);
-  return str;
-}
-
-function getVideoId(video) {
-  if (!video) {
-    return null;
-  }
-
-  if (video.videoId) {
-    return stripSourcePrefix(video.videoId);
-  }
-
-  if (video.id?.videoId) {
-    return stripSourcePrefix(video.id.videoId);
-  }
-
-  if (typeof video.id === 'string') {
-    return stripSourcePrefix(video.id);
-  }
-
-  return null;
-}
-
-function isPlayableYouTubeVideo(video) {
-  const id = getVideoId(video);
-  return Boolean(id && /^[a-zA-Z0-9_-]{6,15}$/.test(id));
-}
-
-function normalizePlayableVideo(video) {
-  const videoId = getVideoId(video);
-  if (!videoId) {
-    return null;
-  }
-
-  return {
-    ...video,
-    videoId,
-    id: {
-      ...(video?.id && typeof video.id === 'object' ? video.id : {}),
-      videoId,
-    },
-    thumbnail: video?.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
-  };
-}
+import { getVideoId, isPlayableYouTubeVideo, normalizePlayableVideo } from '../utils/videoId';
+import { matchVideoToTopics, getTopicDetails } from '../learning/videoTopicMatcher';
+import { useLearningStore } from '../learning/learningStore';
+import { useBackendReady } from '../hooks/useBackendReady';
 
 function createInitialVideoState(video, videoId) {
   return {
@@ -90,9 +44,11 @@ function YouTubeSearchView() {
   const mountedRef = useRef(true);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const recordVideoWatch = useLearningStore((s) => s.recordVideoWatch);
+  const { ready: backendReady, checking: backendChecking, error: backendError } = useBackendReady();
   const query = searchParams.get('q') || '';
   const fastMode = searchParams.get('fast') === '1';
-  
+
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -103,7 +59,7 @@ function YouTubeSearchView() {
   const [aiSearchLoading, setAiSearchLoading] = useState(false);
 
   useEffect(() => {
-    if (query) {
+    if (query && backendReady) {
       performSearch(query);
     }
 
@@ -113,7 +69,7 @@ function YouTubeSearchView() {
         clearInterval(rankPollRef.current);
       }
     };
-  }, [query]);
+  }, [query, backendReady]);
 
   const performSearch = async (searchQuery, { useAI = false } = {}) => {
     if (rankPollRef.current) {
@@ -206,7 +162,9 @@ function YouTubeSearchView() {
       if (message.includes('failed with 401') || message.includes('failed with 403')) {
         setError('Search service rejected the request (auth/config issue).');
       } else if (message.includes('aborted') || message.includes('timeout')) {
-        setError('Search timed out. Please try again.');
+        setError('Search timed out. The server may be busy — please try again.');
+      } else if (message.includes('failed to fetch') || message.includes('networkerror') || message.includes('econnrefused')) {
+        setError('Cannot reach the search server. Make sure the API server is running (npm run server).');
       } else {
         setError('Failed to search right now. Please try again.');
       }
@@ -244,6 +202,12 @@ function YouTubeSearchView() {
       title: selectedVideo?.title || 'Video'
     });
     setActiveVideo(createInitialVideoState(selectedVideo, videoId));
+
+    // Record learning progress for matched topics
+    const topicIds = matchVideoToTopics(selectedVideo || { title: '' });
+    if (topicIds.length > 0) {
+      recordVideoWatch(topicIds, selectedVideo?.title || 'Video');
+    }
   }
 
   const handleCloseVideo = () => {
@@ -311,7 +275,23 @@ function YouTubeSearchView() {
 
       {/* Content */}
       <main data-testid="youtube-search-main" className="max-w-7xl mx-auto px-6 py-8">
-        {loading && (
+        {/* Backend readiness gate */}
+        {backendChecking && !backendReady && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <LoadingSpinner />
+            <p className="mt-4 text-xl text-gray-600">Starting search services...</p>
+            <p className="mt-2 text-sm text-gray-400">This usually takes a few seconds</p>
+          </div>
+        )}
+
+        {backendError && !backendReady && (
+          <div className="bg-amber-100 border-2 border-amber-300 rounded-xl p-6 text-center">
+            <p className="text-xl text-amber-800 font-semibold">🔌 Search server unavailable</p>
+            <p className="mt-2 text-amber-700">{backendError}</p>
+          </div>
+        )}
+
+        {backendReady && loading && (
           <div className="flex flex-col items-center justify-center py-20">
             <LoadingSpinner />
             <p className="mt-4 text-xl text-gray-600">Finding the best videos for you...</p>
@@ -366,13 +346,27 @@ function YouTubeSearchView() {
 
             {/* Video Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {videos.map((video) => (
-                <VideoCard
-                  key={getVideoId(video) || video.title}
-                  video={video}
-                  onClick={handleVideoSelect}
-                />
-              ))}
+              {videos.map((video) => {
+                const topicIds = matchVideoToTopics(video);
+                const topics = getTopicDetails(topicIds);
+                return (
+                  <div key={getVideoId(video) || video.title}>
+                    <VideoCard
+                      video={video}
+                      onClick={handleVideoSelect}
+                    />
+                    {topics.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-1.5 px-1">
+                        {topics.map((t) => (
+                          <span key={t.id} className="inline-flex items-center gap-1 rounded-full bg-indigo-50 border border-indigo-200 px-2 py-0.5 text-xs font-medium text-indigo-700">
+                            {t.icon} {t.title}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </>
         )}

@@ -27,11 +27,12 @@ function Wait-ForHttp($url, $timeoutSec = 30) {
   $start = Get-Date
   while ((Get-Date) -lt $start.AddSeconds($timeoutSec)) {
     try {
-      Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 2 | Out-Null
-      return $true
-    } catch {
-      Start-Sleep -Seconds 1
-    }
+      $code = & curl.exe -s -o NUL -w '%{http_code}' --connect-timeout 2 $url 2>$null
+      if ($code -match '^\d+$' -and [int]$code -ge 200 -and [int]$code -lt 500) {
+        return $true
+      }
+    } catch {}
+    Start-Sleep -Seconds 1
   }
   return $false
 }
@@ -44,13 +45,19 @@ function Get-HttpStatusCode {
   )
 
   try {
-    $response = Invoke-WebRequest -Uri $Url -UseBasicParsing -Headers $Headers -TimeoutSec 2 -ErrorAction Stop
-    return [int]$response.StatusCode
-  } catch {
-    if ($_.Exception.Response -and $_.Exception.Response.StatusCode) {
-      return [int]$_.Exception.Response.StatusCode
+    $headerArgs = @()
+    if ($Headers) {
+      foreach ($key in $Headers.Keys) {
+        $headerArgs += '-H'
+        $headerArgs += "${key}: $($Headers[$key])"
+      }
     }
-
+    $code = & curl.exe -s -o NUL -w '%{http_code}' --connect-timeout 2 @headerArgs $Url 2>$null
+    if ($code -match '^\d+$') {
+      return [int]$code
+    }
+    return $null
+  } catch {
     return $null
   }
 }

@@ -17,6 +17,7 @@ const SafeSearchPage = lazy(() => import('./pages/SafeSearchPage'));
 const ShoppingPage = lazy(() => import('./pages/ShoppingPage'));
 const BuildPlannerPage = lazy(() => import('./pages/BuildPlannerPage'));
 const AllProjectNotesPage = lazy(() => import('./pages/AllProjectNotesPage'));
+const GamePage = lazy(() => import('./pages/GamePage'));
 
 const VERSION_STORAGE_KEY = 'bikebrowser_cached_version';
 
@@ -71,6 +72,7 @@ function AppContent() {
           <Route path="/saved-notes" element={<AllProjectNotesPage />} />
           <Route path="/shop" element={<ShoppingPage />} />
           <Route path="/safe-search" element={<SafeSearchPage />} />
+          <Route path="/play" element={<GamePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

@@ -314,20 +314,6 @@ if (!gotTheLock) {
 
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
-// ── GPU acceleration (AMD RX 580 safe profile) ─────────────────────────────
-// GPU rasterization + D3D11 ANGLE are safe on GCN-class AMD GPUs.
-// Zero-copy and native-gpu-memory-buffers are gated behind an env flag
-// because they can cause flicker artefacts on the RX 580.
-app.commandLine.appendSwitch('enable-gpu-rasterization');
-app.commandLine.appendSwitch('use-angle', perfProfile.gpu.useAngle);
-if (perfProfile.gpu.enableZeroCopy) {
-  app.commandLine.appendSwitch('enable-zero-copy');
-}
-if (perfProfile.gpu.enableNativeGpuMemoryBuffers) {
-  app.commandLine.appendSwitch('enable-native-gpu-memory-buffers');
-}
-// ────────────────────────────────────────────────────────────────────────────
-
 function createVideoPlayerWindow(videoId, title = 'Video Player') {
   const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&controls=1&fs=1&modestbranding=1&rel=0&playsinline=1&iv_load_policy=3`;
   const playerWindow = new BrowserWindow({
@@ -406,6 +392,8 @@ function createWindow({ rendererUrl } = {}) {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
+    show: false,
+    backgroundColor: '#f9fafb',   // matches Tailwind bg-gray-50
     webPreferences: {
       preload: path.join(__dirname, '../preload/preload.js'),
       webviewTag: true,
@@ -417,6 +405,48 @@ function createWindow({ rendererUrl } = {}) {
     },
     icon: path.join(__dirname, '../../assets/icon.png')
   });
+
+  // ── Show strategy ──────────────────────────────────────────────────
+  // Use a single invalidate() after showing to nudge the AMD compositor.
+  // NO insertCSS / NO resize-toggle — those crash Phaser's canvas.
+  let shown = false;
+  function showOnce() {
+    if (shown || !mainWindow) return;
+    shown = true;
+    mainWindow.show();
+    mainWindow.focus();
+    console.log('[MAIN] Window shown');
+
+    // Single invalidate to help AMD RX 580 present the first frame
+    setTimeout(() => {
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.invalidate();
+      }
+    }, 200);
+  }
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log('[MAIN] did-finish-load fired');
+    mainWindow.webContents.setAudioMuted(false);
+    setTimeout(showOnce, 300);
+  });
+
+  // Catch renderer crashes so we can see the reason
+  mainWindow.webContents.on('render-process-gone', (_event, details) => {
+    console.error('[MAIN] RENDERER CRASHED:', JSON.stringify(details));
+  });
+
+  mainWindow.on('unresponsive', () => {
+    console.error('[MAIN] Window became unresponsive');
+  });
+
+  // Absolute safety net — show regardless after 8s
+  setTimeout(() => {
+    if (!shown) {
+      console.warn('[MAIN] Safety-net timeout – forcing window show');
+      showOnce();
+    }
+  }, 8000);
 
   if (!cspConfigured) {
     configureYouTubeSession(session.defaultSession);
@@ -477,7 +507,7 @@ function createWindow({ rendererUrl } = {}) {
 
     mainWindow.loadURL('http://localhost:5173');
     if (!app.isPackaged) {
-      // DevTools remain available in development but do not open automatically.
+      // DevTools available via Ctrl+Shift+I / F12
     }
   } else {
     if (rendererUrl) {
@@ -490,8 +520,10 @@ function createWindow({ rendererUrl } = {}) {
   // Initialize YouTube interceptor
   youtubeInterceptor.setup(mainWindow);
 
-  mainWindow.webContents.on('did-finish-load', () => {
-    mainWindow.webContents.setAudioMuted(false);
+  // Pipe renderer console messages to terminal for debugging
+  mainWindow.webContents.on('console-message', (_event, level, message, line, sourceId) => {
+    const tag = ['LOG', 'WARN', 'ERROR'][level] || 'LOG';
+    console.log(`[RENDERER:${tag}] ${message} (${sourceId}:${line})`);
   });
 
   mainWindow.on('closed', () => {
@@ -1426,6 +1458,16 @@ ipcMain.handle('ai:ux-audit', async (_event, { uiState, mode = 'continuous', inc
   }
 });
 
+// ── Resource-aware AI orchestration ──────────────────────────────────────────
+
+const { orchestrateTask, setResourcePolicy, getResourcePolicy, getRoutingDiagnostics } = require('../server/ai/computeOrchestrator');
+const { detectCapabilities, getCapabilitySummary } = require('../server/ai/capabilityDetector');
+
+// Initialize capability detection at startup (non-blocking)
+detectCapabilities().then((caps) => {
+  console.log('[Capabilities]', getCapabilitySummary());
+}).catch(() => {});
+
 ipcMain.handle('ai:orchestrate', async (_event, payload) => {
   try {
     if (!searchPipeline?.providerManager) {
@@ -1439,6 +1481,17 @@ ipcMain.handle('ai:orchestrate', async (_event, payload) => {
         providerUsed: 'offline'
       };
     }
+
+    // Use resource-aware routing if task metadata includes workload hints
+    const useOrchestrator = payload?.metadata?.workloadTaskType ||
+                            payload?.metadata?.allowLocalGpu !== undefined ||
+                            payload?.taskType === 'npc_dialogue';
+
+    if (useOrchestrator) {
+      return await orchestrateTask(payload, searchPipeline.providerManager);
+    }
+
+    // Default: use existing provider manager directly
     return await searchPipeline.providerManager.executeWithOrchestration(payload);
   } catch (error) {
     return {
@@ -1453,12 +1506,33 @@ ipcMain.handle('ai:orchestrate', async (_event, payload) => {
   }
 });
 
+// IPC handlers for resource management
+ipcMain.handle('ai:capabilities', async () => {
+  try {
+    return await detectCapabilities();
+  } catch (error) {
+    return { error: error.message };
+  }
+});
+
+ipcMain.handle('ai:resource-policy', async (_event, policy) => {
+  if (policy) setResourcePolicy(policy);
+  return {
+    policy: getResourcePolicy(),
+    diagnostics: getRoutingDiagnostics(),
+    capabilities: getCapabilitySummary(),
+  };
+});
+
 console.log('BikeBrowser main process initialized with API integrations');
+const providerStatus = getAIProviderStatus();
 console.log('Environment variables loaded:', {
-  hasOpenAI: getAIProviderStatus().hasOpenAI,
-  hasDeepSeek: getAIProviderStatus().hasDeepSeek,
+  hasOpenAI: providerStatus.hasOpenAI,
+  hasDeepSeek: providerStatus.hasDeepSeek,
+  hasLocal: providerStatus.hasLocal,
   hasGoogleMaps: !!process.env.GOOGLE_MAPS_API_KEY,
   hasMarketcheck: !!process.env.MARKETCHECK_API_KEY,
-  hasThaura: getAIProviderStatus().hasThaura
+  hasThaura: providerStatus.hasThaura,
+  resourcePolicy: providerStatus.resourcePolicy,
 });
 

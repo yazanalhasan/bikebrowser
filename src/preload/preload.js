@@ -36,7 +36,9 @@ contextBridge.exposeInMainWorld('api', {
     suggestions: (topic) => ipcRenderer.invoke('ai:suggestions', topic),
     safety: (payload) => ipcRenderer.invoke('ai:safety', payload),
     orchestrate: (payload) => ipcRenderer.invoke('ai:orchestrate', payload),
-    auditUX: (payload) => ipcRenderer.invoke('ai:ux-audit', payload)
+    auditUX: (payload) => ipcRenderer.invoke('ai:ux-audit', payload),
+    getCapabilities: () => ipcRenderer.invoke('ai:capabilities'),
+    setResourcePolicy: (policy) => ipcRenderer.invoke('ai:resource-policy', policy),
   },
   
   // =============================================================================

@@ -1,7 +1,8 @@
 import { memo, useEffect, useRef, useCallback, useState } from 'react';
 import YouTubePlayer from './YouTubePlayer';
 
-const PLAYER_TIMEOUT_MS = 4500;
+// Mobile embeds through the Cloudflare tunnel need more time to initialize
+const PLAYER_TIMEOUT_MS = 10000;
 
 function getFallbackReason(video, error) {
   if (error?.message) {
@@ -101,9 +102,16 @@ const VideoPlayerModal = memo(function VideoPlayerModal({ video, onClose, onFind
 
   const handleOpenExternal = useCallback(async () => {
     try {
-      await window.api?.openExternal?.(watchUrl);
+      if (window.api?.openExternal) {
+        await window.api.openExternal(watchUrl);
+      } else {
+        // Web/mobile fallback — open in new tab
+        window.open(watchUrl, '_blank', 'noopener,noreferrer');
+      }
     } catch (err) {
       console.error('[VideoPlayerModal] openExternal failed:', err);
+      // Last resort fallback
+      window.open(watchUrl, '_blank', 'noopener,noreferrer');
     }
   }, [watchUrl]);
 

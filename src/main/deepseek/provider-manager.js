@@ -8,6 +8,7 @@ const { NetworkHealthMonitor } = require('./network-health-monitor');
 const { DeepSeekProvider } = require('./providers/deepseek-provider');
 const { ThauraProvider } = require('./providers/thaura-provider');
 const { OpenAIProvider } = require('./providers/openai-provider');
+const { LocalProvider } = require('./providers/local-provider');
 const { createTaskSchema, validateJSON } = require('./provider-utils');
 
 class ProviderManager {
@@ -39,6 +40,7 @@ class ProviderManager {
         deepseek: 0,
         thaura: 0,
         openai: 0,
+        local: 0,
         fallback: 0,
         offline: 0,
         cache: 0
@@ -47,6 +49,7 @@ class ProviderManager {
         deepseek: this.createProviderMetric(),
         thaura: this.createProviderMetric(),
         openai: this.createProviderMetric(),
+        local: this.createProviderMetric(),
         fallback: this.createProviderMetric(),
         offline: this.createProviderMetric(),
         cache: this.createProviderMetric()
@@ -55,7 +58,8 @@ class ProviderManager {
     this.providers = {
       deepseek: new DeepSeekProvider(this.deepseekClient, this.config),
       thaura: new ThauraProvider(this.config.providers.thaura),
-      openai: new OpenAIProvider(this.config.providers.openai)
+      openai: new OpenAIProvider(this.config.providers.openai),
+      local: new LocalProvider(this.config.providers.local || {}),
     };
   }
 
@@ -199,13 +203,15 @@ class ProviderManager {
       case 'query_expansion':
         return ['deepseek', 'thaura', 'openai'];
       case 'structured_parsing':
-        return ['thaura', 'openai', 'deepseek'];
+        return ['local', 'thaura', 'openai', 'deepseek'];
       case 'safety_filter':
         return ['thaura', 'openai'];
       case 'ranking':
         return ['deepseek', 'thaura', 'openai'];
       case 'high_confidence':
         return ['openai', 'thaura', 'deepseek'];
+      case 'npc_dialogue':
+        return ['local', 'thaura', 'openai', 'deepseek'];
       default:
         return ['deepseek', 'thaura', 'openai'];
     }
@@ -297,6 +303,9 @@ class ProviderManager {
       }
 
       if (!(await provider.healthCheck())) {
+        if (providerName === 'local') {
+          console.log('[AI] ✗ local provider health check failed — is LM Studio running?');
+        }
         const failed = {
           success: false,
           data: null,
@@ -365,6 +374,7 @@ class ProviderManager {
         continue;
       }
 
+      console.log(`[AI] ✓ ${providerName} responded (${result.latency || 0}ms, task: ${taskType})`);
       this.networkHealth.recordSuccess(providerName);
       this.incrementProvider(providerName);
       this.trackCost(providerName, estimatedCost);

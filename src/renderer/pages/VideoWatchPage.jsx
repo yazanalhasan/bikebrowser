@@ -3,7 +3,8 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import YouTubePlayer from '../components/YouTubePlayer';
 
-const WATCH_PLAYER_TIMEOUT_MS = 4500;
+// Mobile embeds through the Cloudflare tunnel need more time to initialize
+const WATCH_PLAYER_TIMEOUT_MS = 10000;
 
 function VideoWatchPage() {
   const { videoId } = useParams();

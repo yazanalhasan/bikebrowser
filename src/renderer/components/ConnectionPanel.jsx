@@ -15,44 +15,47 @@ export default function ConnectionPanel() {
       }
     }).catch(() => {});
 
-    const timer = setInterval(() => {
-      fetch('/api/health')
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error('health check failed');
-          }
+    return () => { mounted = false; };
+  }, []);
 
+  // Only start polling once we know there's a server URL to show
+  useEffect(() => {
+    if (!info?.webUrl) return undefined;
+
+    let active = true;
+
+    const poll = () => {
+      fetch('/api/health', {
+        headers: { 'x-api-key': CONFIG.API_KEY },
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error('health check failed');
           return res;
         })
-        .catch(() => {
-          return fetch(`${CONFIG.API_BASE_URL}/health`, {
-            headers: {
-              'x-api-key': CONFIG.API_KEY,
-            },
-          });
-        })
+        .catch(() =>
+          fetch(`${CONFIG.API_BASE_URL}/health`, {
+            headers: { 'x-api-key': CONFIG.API_KEY },
+          })
+        )
         .then((res) => {
-          if (res.ok) {
-            setConnected(true);
-            return;
-          }
-
-          throw new Error('health check failed');
+          if (active && res.ok) setConnected(true);
+          else if (active) setConnected(false);
         })
-        .catch(() => setConnected(false));
+        .catch(() => { if (active) setConnected(false); });
 
       window.api?.getConnectionStatus?.().then((data) => {
-        if (mounted && data?.success) {
-          setStatus(data);
-        }
+        if (active && data?.success) setStatus(data);
       }).catch(() => {});
-    }, 3000);
+    };
+
+    poll();
+    const timer = setInterval(poll, 5000);
 
     return () => {
-      mounted = false;
+      active = false;
       clearInterval(timer);
     };
-  }, []);
+  }, [info?.webUrl]);
 
   if (!info?.webUrl) {
     return null;

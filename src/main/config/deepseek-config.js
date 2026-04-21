@@ -88,8 +88,18 @@ const deepseekConfig = {
       timeout: readInt('THAURA_TIMEOUT', readInt('THURA_TIMEOUT', 30000)),
       temperature: 0.2,
       valid: Boolean(readFirstEnv(['THAURA_API_KEY', 'THURA_API_KEY']))
+    },
+    local: {
+      endpoint: readEnv('LOCAL_AI_ENDPOINT', ''),
+      model: readEnv('LOCAL_AI_MODEL', 'default'),
+      timeout: readInt('LOCAL_AI_TIMEOUT', 30000),
+      temperature: readFloat('LOCAL_AI_TEMPERATURE', 0.3),
+      apiStyle: readEnv('LOCAL_AI_API_STYLE', 'openai-compatible'),
+      valid: Boolean(readEnv('LOCAL_AI_ENDPOINT')) || false, // auto-detect if not set
+      autoDetect: readEnv('LOCAL_AI_AUTODETECT', 'true') === 'true',
     }
   },
+  resourcePolicy: readEnv('RESOURCE_POLICY', 'adaptive'),
   orchestration: {
     confidenceThreshold: 0.6,
     healthFailureThreshold: 2,
@@ -102,11 +112,15 @@ function getAIProviderStatus() {
     hasDeepSeek: deepseekConfig.providers.deepseek.valid,
     hasOpenAI: deepseekConfig.providers.openai.valid,
     hasThaura: deepseekConfig.providers.thaura.valid,
+    hasLocal: deepseekConfig.providers.local.valid || deepseekConfig.providers.local.autoDetect,
     hasFallback: true,
+    resourcePolicy: deepseekConfig.resourcePolicy,
     validation: {
       deepseek: deepseekConfig.providers.deepseek.valid,
       openai: deepseekConfig.providers.openai.valid,
-      thaura: deepseekConfig.providers.thaura.valid
+      thaura: deepseekConfig.providers.thaura.valid,
+      local: deepseekConfig.providers.local.valid,
+      localAutoDetect: deepseekConfig.providers.local.autoDetect,
     }
   };
 }

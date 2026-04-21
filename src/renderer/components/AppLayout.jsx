@@ -24,6 +24,7 @@ function AppLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const isGameRoute = location.pathname.startsWith('/play');
   const [cartOpen, setCartOpen] = useState(false);
   const globalCart = useGlobalCart();
 
@@ -35,6 +36,31 @@ function AppLayout({ children }) {
     window.history.back();
   }, []);
 
+  // ── Immersive game layout — ZERO app chrome ─────────────────────────
+  // The game route gets the full viewport. Navigation is handled by a
+  // floating pointer-events-none overlay inside GameContainer itself.
+  if (isGameRoute) {
+    return (
+      <div
+        data-testid="app-layout"
+        className="w-screen bg-black overflow-hidden"
+        style={{
+          height: '100dvh',
+          overscrollBehavior: 'none',
+        }}
+      >
+        <main
+          data-testid="main-content"
+          className="w-full h-full overflow-hidden"
+          style={{ touchAction: 'none' }}
+        >
+          {children}
+        </main>
+      </div>
+    );
+  }
+
+  // ── Normal app layout (all other routes) ─────────────────────────────
   return (
     <div data-testid="app-layout" className="min-h-screen flex flex-col bg-gray-50">
       {/* ========== PERSISTENT HEADER ========== */}
@@ -136,6 +162,7 @@ function getBreadcrumbText(pathname) {
     '/saved-notes': 'Saved Parts / Notes',
     '/shop': 'Shop Materials',
     '/safe-search': 'Safe Search',
+    '/play': 'Play Game',
   };
 
   // Try exact match first

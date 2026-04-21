@@ -48,8 +48,8 @@ function YouTubePlayer({ videoId, title = 'YouTube video player', onReady, onPla
       return;
     }
 
-    iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts');
-    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+    iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-forms allow-presentation');
+    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen');
     iframe.setAttribute('allowfullscreen', '');
     iframe.setAttribute('frameborder', '0');
   };

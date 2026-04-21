@@ -8,7 +8,21 @@
     <title>BikeBrowser - Kid Cognitive Browser</title>
   </head>
   <body class="bg-gray-50">
-    <div id="root"></div>
+    <noscript>
+      <div style="background:red;color:white;padding:40px;font-size:24px;text-align:center;">
+        JavaScript is disabled! BikeBrowser needs JavaScript to run.
+      </div>
+    </noscript>
+    <div id="root">
+      <!-- Pre-render loading indicator visible until React hydrates -->
+      <div id="pre-react-loader" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#eff6ff;">
+        <div style="text-align:center;">
+          <div style="font-size:64px;">🚴</div>
+          <h1 style="font-size:28px;color:#2563eb;font-family:sans-serif;margin:16px 0 8px;">BikeBrowser</h1>
+          <p style="color:#64748b;font-family:sans-serif;">Loading...</p>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/renderer/main.jsx"></script>
   </body>
 </html>
