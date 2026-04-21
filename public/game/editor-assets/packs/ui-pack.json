@@ -1,0 +1,11 @@
+{
+  "ui": {
+    "files": [],
+    "meta": {
+      "app": "Phaser Editor - BikeBrowser",
+      "contentType": "phasereditor2d.pack.core",
+      "url": "game/editor-assets/packs/ui-pack.json",
+      "description": "UI assets for in-game Phaser HUD elements (if any move from React overlay to Phaser). Currently empty — all HUD is rendered by React. Future: dialog box frames, button sprites, icon spritesheets."
+    }
+  }
+}

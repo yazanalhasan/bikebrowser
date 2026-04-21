@@ -1,0 +1,17 @@
+{
+  "neighborhood-scene": {
+    "files": [
+      {
+        "type": "image",
+        "key": "neighborhood_world_v1",
+        "url": "game/maps/neighborhood_world_v1.png"
+      }
+    ],
+    "meta": {
+      "app": "Phaser Editor - BikeBrowser",
+      "contentType": "phasereditor2d.pack.core",
+      "url": "game/editor-assets/packs/neighborhood-scene-pack.json",
+      "description": "Assets specific to the Neighborhood scene. The world map image is the visual foundation. Future additions: landmark icons, NPC sprites, transition zone markers, collision zone debug overlays."
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "phaser-editor": {
+      "command": "cmd",
+      "args": ["/c", "npx", "@phaserjs/editor-mcp-server"]
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "preload": {
+    "files": [
+      {
+        "type": "image",
+        "key": "neighborhood_world_v1",
+        "url": "game/maps/neighborhood_world_v1.png"
+      }
+    ],
+    "meta": {
+      "app": "Phaser Editor - BikeBrowser",
+      "contentType": "phasereditor2d.pack.core",
+      "url": "game/editor-assets/packs/preload-pack.json",
+      "description": "Core assets loaded before any scene starts. World map, shared sprites."
+    }
+  }
+}

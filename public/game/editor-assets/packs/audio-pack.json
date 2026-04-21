@@ -1,0 +1,108 @@
+{
+  "audio": {
+    "files": [
+      {
+        "type": "audio",
+        "key": "garage_warm_oud",
+        "urls": [
+          "game/audio/music/garage_warm_oud.ogg",
+          "game/audio/music/garage_warm_oud.wav"
+        ]
+      },
+      {
+        "type": "audio",
+        "key": "desert_discovery",
+        "urls": [
+          "game/audio/music/desert_discovery.ogg"
+        ]
+      },
+      {
+        "type": "audio",
+        "key": "neighborhood_hybrid_ride",
+        "urls": [
+          "game/audio/music/neighborhood_hybrid_ride.ogg",
+          "game/audio/music/neighborhood_hybrid_ride.wav"
+        ]
+      },
+      {
+        "type": "audio",
+        "key": "quest_focus_hybrid",
+        "urls": [
+          "game/audio/music/quest_focus_hybrid.ogg",
+          "game/audio/music/quest_focus_hybrid.wav"
+        ]
+      },
+      {
+        "type": "audio",
+        "key": "pixel_pedal_parade",
+        "urls": [
+          "game/audio/music/pixel_pedal_parade.mp3"
+        ]
+      },
+      {
+        "type": "audio",
+        "key": "pixel_pedal_parade_v2",
+        "urls": [
+          "game/audio/music/pixel_pedal_parade_v2.mp3"
+        ]
+      },
+      {
+        "type": "audio",
+        "key": "pixel_pedal_parade_v3",
+        "urls": [
+          "game/audio/music/pixel_pedal_parade_v3.mp3"
+        ]
+      },
+      {
+        "type": "audio",
+        "key": "pixel_pedal_parade_v4",
+        "urls": [
+          "game/audio/music/pixel_pedal_parade_v4.mp3"
+        ]
+      },
+      {
+        "type": "audio",
+        "key": "warm_hands_quiet_gears",
+        "urls": [
+          "game/audio/music/warm_hands_quiet_gears.mp3"
+        ]
+      },
+      {
+        "type": "audio",
+        "key": "qanun_jar_lid",
+        "urls": [
+          "game/audio/music/qanun_jar_lid.mp3"
+        ]
+      },
+      {
+        "type": "audio",
+        "key": "workshop_tarab",
+        "urls": [
+          "game/audio/music/workshop_tarab.mp3"
+        ]
+      },
+      {
+        "type": "audio",
+        "key": "reward_tarabi_stinger",
+        "urls": [
+          "game/audio/stingers/reward_tarabi_stinger.ogg",
+          "game/audio/stingers/reward_tarabi_stinger.wav"
+        ]
+      },
+      {
+        "type": "audio",
+        "key": "upgrade_unlock_hybrid",
+        "urls": [
+          "game/audio/stingers/upgrade_unlock_hybrid.ogg",
+          "game/audio/stingers/upgrade_unlock_hybrid.wav"
+        ]
+      }
+    ],
+    "meta": {
+      "app": "Phaser Editor - BikeBrowser",
+      "contentType": "phasereditor2d.pack.core",
+      "url": "game/editor-assets/packs/audio-pack.json",
+      "description": "All music, stinger, and ambient audio assets. Note: SFX are currently procedurally generated and not included here. Audio playback is managed by the custom AudioManager (Web Audio API), not Phaser's sound system."
+    }
+  }
+}

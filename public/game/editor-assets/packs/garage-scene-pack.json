@@ -1,0 +1,11 @@
+{
+  "garage-scene": {
+    "files": [],
+    "meta": {
+      "app": "Phaser Editor - BikeBrowser",
+      "contentType": "phasereditor2d.pack.core",
+      "url": "game/editor-assets/packs/garage-scene-pack.json",
+      "description": "Assets specific to the Garage scene. Currently empty — the garage is 100% procedurally drawn (rectangles, graphics, emoji text). As sprite/image replacements are created, add them here. Future assets: garage floor tileset, wall texture, workbench sprite, bike rack sprite, tool sprites, notebook desk sprite."
+    }
+  }
+}

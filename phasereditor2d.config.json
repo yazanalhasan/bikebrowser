@@ -1,0 +1,15 @@
+{
+  "playUrl": "http://localhost:5173/play",
+  "rootFolder": ".",
+  "skipFolder": [
+    "node_modules",
+    "dist",
+    ".git",
+    ".claude"
+  ],
+  "fileExtensions": {
+    "scene": [".scene"],
+    "pack": ["-pack.json"],
+    "components": [".components"]
+  }
+}
