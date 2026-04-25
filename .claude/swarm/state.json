@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-25T08:10:00Z",
+  "last_updated": "2026-04-25T10:45:00Z",
   "current_week": 1,
   "current_pod_focus": "Engine Foundation",
   "completed": [
@@ -35,9 +35,20 @@
       "notes": "Manifest schema (permissive, additionalProperties:true) + useScreenAssets() hook (drei useGLTF.preload/clear, returns {models, ready}) + sample proof-of-life manifest + public/game3d-assets/{models,textures,audio,manifests}/ scaffold. KTX2 deferred to cycle 2 (drei v9.122 export confirmed clean). Reviewer flagged one LOW note: hooks-in-map pattern in useScreenAssets.js:76 — worker documents the key-prop remount constraint, drei's own useGLTF carries the same constraint. Two prior reviewer dispatches stalled before writing receipt; a third with model=sonnet succeeded — see .claude/swarm/blockers/reviewer-no-receipt-2026-04-25T08-05-00Z.md."
     }
   ],
-  "in_progress": [],
+  "in_progress": [
+    {
+      "agent": "input-controller-3d",
+      "started_ts": "2026-04-25T08:15:00Z",
+      "status": "partial",
+      "review_verdict": "NEEDS_REVISION",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-2026-04-25T10-45-00Z.json",
+      "receipt": ".claude/swarm/receipts/input-controller-3d-2026-04-25T09-15-00Z.json",
+      "follow_up": ".claude/swarm/blockers/input-controller-3d-needs-revision-2026-04-25T10-45-00Z.md",
+      "notes": "Three issues: (M) gamepad action/cancel not edge-triggered; (M) rAF poll calls getGamepads() unconditionally instead of gating on connection events; (L) dead var in TouchJoystick.jsx. CRITICAL checks all clean."
+    }
+  ],
   "blocked": [],
   "human_gates_pending": [],
-  "dispatch_count": 5,
+  "dispatch_count": 8,
   "session_token_estimate": 0
 }

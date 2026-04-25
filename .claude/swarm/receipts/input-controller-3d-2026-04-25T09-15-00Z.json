@@ -1,0 +1,33 @@
+{
+  "agent": "input-controller-3d",
+  "ts": "2026-04-25T09:15:00Z",
+  "status": "complete",
+  "files_changed": [
+    "src/renderer/game3d/input/useInput.js",
+    "src/renderer/game3d/input/InputProvider.jsx",
+    "src/renderer/game3d/input/InputDebugHUD.jsx",
+    "src/renderer/game3d/input/TouchJoystick.jsx",
+    "src/renderer/game3d/input/index.js",
+    "src/renderer/game3d/Game3D.jsx"
+  ],
+  "exports_added": [
+    "useInput() — default export from src/renderer/game3d/input/useInput.js; returns { moveX, moveY, action, cancel, debug, source }",
+    "InputProvider — default export from src/renderer/game3d/input/InputProvider.jsx; React context provider; also exports InputContext",
+    "InputDebugHUD — default export from src/renderer/game3d/input/InputDebugHUD.jsx; props: { visible=false }",
+    "TouchJoystick — default export from src/renderer/game3d/input/TouchJoystick.jsx; props: { forceVisible, size, bottom, left }",
+    "Barrel: src/renderer/game3d/input/index.js re-exports all four"
+  ],
+  "tests_added": [],
+  "blockers_discovered": [
+    {
+      "description": "navigator.getGamepads() returns null-padded arrays in most browsers when no pad is connected. The implementation calls Array.from(pads).find(Boolean) which handles this correctly, but on Electron Win32 the Gamepad API may not fire 'gamepadconnected' events reliably — the rAF poll still works because we poll unconditionally every frame regardless of connection events.",
+      "blocks_agents": []
+    }
+  ],
+  "next_agent_suggestions": [
+    "zuzu-character-3d — consume useInput() for character movement; moveX/moveY are ready",
+    "movement-controller — read moveX/moveY from useInput() inside InputProvider rather than binding its own listeners",
+    "touch-ui — TouchJoystick stub is wired and rendering-ready; needs visual polish and an action button"
+  ],
+  "notes": "Game3D.jsx ADOPTION: InputProvider was wrapped around Game3D's root div this cycle. The change is non-disruptive — Game3D's own useEffect for the 1/2/3 camera switcher and usePhysicsDebug's 'P' listener both remain untouched; they coexist as separate window listeners on different keys. A thin helper component InputDebugHUDFromContext was added at the bottom of Game3D.jsx so the debug HUD can read the F1 toggle state from context without adding new state to Game3D itself. The camera status bar was updated to mention 'F1 input debug'. KEY BINDING DECISIONS: WASD + arrow keys for axes; Space + Enter for action (edge-triggered — consumed after one rAF frame so it does not stay 'true' on hold); Esc for cancel; F1 latched toggle for debug. Keys 1/2/3 (camera) and P (physics) are intentionally absent from KEY_MAP. ACTION EDGE-TRIGGER: actionPending ref is set true on keydown (not repeat) and cleared after the first rAF tick that reads it, so consumers see exactly one true frame per press. Gamepad A button is also edge-triggered via the same pending mechanism. GAMEPAD POLLING: runs every rAF frame inside the tick loop; no separate 'gamepadconnected' event gating because the loop is already running. Dead-zone of 0.12 applied to axes. TOUCH: TouchJoystick auto-shows on window.innerWidth <= 768 or navigator.maxTouchPoints > 0; forceVisible prop overrides for desktop testing. Deltas flow into InputProvider via setTouch() callback exposed on the context value."
+}
