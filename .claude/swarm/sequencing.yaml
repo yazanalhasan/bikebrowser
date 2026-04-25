@@ -82,3 +82,11 @@ agents:
     requires_human_gate: false
     notes: "Always-on. Validates receipts and data files. Can run any time."
     max_turns: 15
+
+  code-quality-reviewer:
+    prerequisites: []
+    week: 1
+    pod: Quality
+    requires_human_gate: false
+    notes: "Always-on. Auto-dispatched by the orchestrator after every worker that returns a non-blocked, non-failed receipt. Verdict (PASS/NEEDS_REVISION/FAIL) gates the worker's transition into completed[]. Exempt from reviewing itself and data-schema-keeper."
+    max_turns: 8

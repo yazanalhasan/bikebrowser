@@ -50,13 +50,43 @@ When dispatching agent X:
 4. Invoke the Agent tool with subagent_type=X and the composed prompt
 5. When the subagent returns, find its receipt
 6. If no receipt: mark the run failed, log to .claude/swarm/blockers/, do NOT
-   move X to completed
-7. If receipt status=complete: move X from in_progress to completed in
-   state.json with timestamp and current git HEAD commit
-8. If receipt status=blocked: move X to blocked[] with the blocker details
-9. Increment dispatch_count
-10. Run `git add .claude/swarm/ && git commit -m "swarm: <agent> complete"`
+   move X to completed. Skip the review step.
+7. If receipt status=blocked: move X to blocked[] with the blocker details.
+   Skip the review step.
+8. Otherwise (status=complete or status=partial), dispatch the
+   code-quality-reviewer to gate the transition:
+   a. Compose a review prompt including:
+      - The worker's receipt path
+      - The worker's agent definition path (.claude/agents/X.md)
+      - The list of files_changed from the worker's receipt
+      - The hint that the reviewer can run `git diff HEAD~ -- <file>` per file
+      - The required reviewer receipt path
+   b. Invoke Agent with subagent_type=code-quality-reviewer
+   c. When the reviewer returns, read its receipt and look at the top-level
+      `verdict` field:
+      - PASS → continue to step 9 with the worker's original status
+      - NEEDS_REVISION → mark X status=partial in state.json, write the
+        reviewer's notes to a follow-up file at
+        .claude/swarm/blockers/<X>-needs-revision-<timestamp>.md, do NOT
+        mark X complete, surface to user
+      - FAIL → move X to blocked[] with the reviewer's reasons, surface to user
+      - Missing/invalid verdict → treat as FAIL and surface
+   d. If the reviewer itself produced no receipt or failed mid-run, log to
+      .claude/swarm/blockers/ and surface to user — do NOT silently mark X
+      complete on the basis of the worker's own self-report.
+9. If reviewer verdict=PASS AND worker status=complete: move X from
+   in_progress to completed in state.json with timestamp and current git
+   HEAD commit
+10. Increment dispatch_count (workers and reviewers each count as one)
+11. Run `git add .claude/swarm/ && git commit -m "swarm: <agent> complete"`
     so state changes are versioned
+
+## Reviewer exemption
+
+The `code-quality-reviewer` and `data-schema-keeper` are exempt from being
+reviewed — there is no infinite review loop. When dispatching either of
+these, skip step 8 entirely and proceed from step 5 directly to step 9
+based on the agent's own receipt status.
 
 ## Hard rules
 
