@@ -100,7 +100,7 @@ based on the agent's own receipt status.
 - Never skip a human gate. If the next agent has requires_human_gate: true,
   stop and present a written plan: which agent, why, what it will produce,
   what could go wrong. Wait for explicit "go".
-- If dispatch_count for the session exceeds 15, stop and recommend the user
+- If dispatch_count for the session exceeds 30, stop and recommend the user
   start a fresh session to avoid context degradation.
 
 ## Status reporting

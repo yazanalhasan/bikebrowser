@@ -1,1 +1,3 @@
 - [Haiku swarm agent model fallback](feedback_reviewer_model.md) — any haiku-frontmatter swarm agent that stalls without writing a receipt should be retried with model=sonnet override.
+- [Reviewer scope false-positives from dirty baselines](feedback_review_baseline_dirty.md) — when a reviewer FAILs CRITICAL on a file that was dirty pre-dispatch, suspect mis-attribution and re-dispatch with baseline clarification before accepting.
+- [Mid-session agent registry limitation](feedback_agent_registry.md) — agent .md files added mid-session aren't in the Agent tool registry; route via general-purpose with the spec embedded, or restart for native registration.
