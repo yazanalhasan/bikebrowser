@@ -1,0 +1,84 @@
+# Order of fields per agent:
+#   prerequisites: agents that must be in completed[] before this can run
+#   week: target week per the roadmap
+#   pod: pod name for grouping
+#   parallel_safe_with: agents that don't conflict with this one (informational only — Arch A runs serially)
+#   requires_human_gate: orchestrator must stop and ask before dispatching
+#   max_turns: hard cap on agentic turns
+#   notes: free text
+
+agents:
+  scene-architect-3d:
+    prerequisites: [r3f-scaffolder]
+    week: 1
+    pod: Engine Foundation
+    requires_human_gate: false
+    max_turns: 30
+
+  physics-engine-3d:
+    prerequisites: [scene-architect-3d]
+    week: 1
+    pod: Engine Foundation
+    requires_human_gate: false
+    max_turns: 30
+
+  asset-pipeline-3d:
+    prerequisites: [scene-architect-3d]
+    week: 1
+    pod: Engine Foundation
+    parallel_safe_with: [physics-engine-3d, input-controller-3d]
+    requires_human_gate: false
+    max_turns: 25
+
+  input-controller-3d:
+    prerequisites: [scene-architect-3d]
+    week: 1
+    pod: Engine Foundation
+    parallel_safe_with: [physics-engine-3d, asset-pipeline-3d]
+    requires_human_gate: false
+    max_turns: 25
+
+  screen-grid-architect:
+    prerequisites: [physics-engine-3d, asset-pipeline-3d, input-controller-3d]
+    week: 1
+    pod: Screen-Grid Core
+    requires_human_gate: true
+    notes: "Coordinate system is load-bearing. Human reviews before screen-loader builds on it."
+    max_turns: 25
+
+  save-bridge:
+    prerequisites: [screen-grid-architect]
+    week: 1
+    pod: Migration
+    requires_human_gate: true
+    notes: "Save schema is load-bearing. Moved earlier per review."
+    max_turns: 30
+
+  screen-loader:
+    prerequisites: [screen-grid-architect]
+    week: 1
+    pod: Screen-Grid Core
+    requires_human_gate: false
+    max_turns: 30
+
+  edge-detector:
+    prerequisites: [screen-loader, physics-engine-3d]
+    week: 1
+    pod: Screen-Grid Core
+    requires_human_gate: false
+    max_turns: 25
+
+  screen-transition-fx:
+    prerequisites: [edge-detector]
+    week: 1
+    pod: Screen-Grid Core
+    requires_human_gate: false
+    max_turns: 20
+
+  data-schema-keeper:
+    prerequisites: []
+    week: 1
+    pod: Quality
+    requires_human_gate: false
+    notes: "Always-on. Validates receipts and data files. Can run any time."
+    max_turns: 15

@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent Receipt",
+  "type": "object",
+  "required": ["agent", "ts", "status", "files_changed", "notes"],
+  "properties": {
+    "agent": { "type": "string" },
+    "ts": { "type": "string", "format": "date-time" },
+    "status": {
+      "type": "string",
+      "enum": ["complete", "partial", "blocked", "failed"]
+    },
+    "files_changed": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "exports_added": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "tests_added": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "blockers_discovered": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["description", "blocks_agents"],
+        "properties": {
+          "description": { "type": "string" },
+          "blocks_agents": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "next_agent_suggestions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "notes": { "type": "string" }
+  }
+}

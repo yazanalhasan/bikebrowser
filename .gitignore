@@ -7,7 +7,8 @@ build/
 .DS_Store
 *.log
 .vscode/
-.claude/
+.claude/swarm/logs/
+.claude/settings.local.json
 *.db
 *.sqlite
 *.db-shm
