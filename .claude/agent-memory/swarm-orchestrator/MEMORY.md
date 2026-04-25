@@ -1,0 +1,1 @@
+- [Haiku swarm agent model fallback](feedback_reviewer_model.md) — any haiku-frontmatter swarm agent that stalls without writing a receipt should be retried with model=sonnet override.
