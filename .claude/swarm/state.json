@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-25T12:05:00Z",
+  "last_updated": "2026-04-25T13:30:00Z",
   "current_week": 1,
   "current_pod_focus": "Engine Foundation",
   "completed": [
@@ -52,11 +52,20 @@
       "review_verdict": "EXEMPT",
       "receipt": ".claude/swarm/receipts/data-schema-keeper-2026-04-25T12-00-00Z.json",
       "notes": "First validation pass. ALL PASS: state.json shape, 8 worker+reviewer receipts (all required fields incl. verdict+reviewed_agent on the 4 reviewer receipts), sequencing.yaml DAG (no cycles, all prereqs resolve), asset-manifest.schema.json (valid draft-07), proof-of-life.manifest.json (validates). KNOWN GAPS noted (informational, not FAIL): screen-grid-architect, save-bridge, screen-loader, edge-detector, screen-transition-fx have no .md yet. world-grid.json + save schema not present. Initial haiku dispatch stalled mid-investigation without writing receipt; sonnet override succeeded — see .claude/swarm/blockers/data-schema-keeper-no-receipt-2026-04-25T12-00-00Z.md and updated memory."
+    },
+    {
+      "agent": "tts-voice-config",
+      "ts": "2026-04-25T13:30:00Z",
+      "commit": "c590519f84b68b8e7ff50bc850ec16ac6a44f8d3",
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-2026-04-25T13-30-00Z.json",
+      "receipt": ".claude/swarm/receipts/tts-voice-config-2026-04-25T13-15-00Z.json",
+      "notes": "6 NPCs discovered (zuzu/mrs_ramirez/mr_chen/old_miner/desert_guide/river_biologist). CHARACTER_GENDER expanded with one-line comments per entry; zuzu→default per user requirement, all five others gender-inferred from honorifics+given names with no ambiguity. _pickVoiceByGender('default') returns null. speak() got an explicit gender==='default' branch that leaves utterance.voice unset (bypasses the natural-English fallback heuristic). Module-level _voiceCache primed on load + voiceschanged listener (with onvoiceschanged fallback) re-fills it; all synth.getVoices() reads now go through _getCachedVoices(); only direct call sits in the cache-refill helper. getVoiceForCharacter and speakAsNpc default unknown ids to 'default' (was 'male'). voicePreference backfilled on old_miner (0.85/0.9), desert_guide (0.9/1.0), river_biologist (0.95/1.05); pre-existing mrs_ramirez/mr_chen untouched. debugListVoiceAssignments() exported. Public signatures of speak/speakAsNpc/autoSpeak preserved. Note: dispatched via general-purpose agent shell because the new agent type wasn't in this session's Agent registry (registry loads at session start; new .md files mid-session aren't picked up). Standards from .claude/agents/tts-voice-config.md were embedded in the prompt and reviewer confirmed PASS."
     }
   ],
   "in_progress": [],
   "blocked": [],
   "human_gates_pending": [],
-  "dispatch_count": 13,
+  "dispatch_count": 15,
   "session_token_estimate": 0
 }

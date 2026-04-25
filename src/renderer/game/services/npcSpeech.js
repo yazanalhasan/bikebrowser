@@ -9,6 +9,9 @@
  *   - Cancel-on-change prevents overlapping utterances
  *   - Tracks current utterance to avoid replaying on re-renders
  *   - Configurable rate/pitch per NPC via voice preferences
+ *   - Module-level voice cache, primed on load and refreshed via the
+ *     `voiceschanged` event, eliminates the cold-start empty-array
+ *     race that Electron/Chrome exhibits on first load.
  */
 
 const synth = typeof window !== 'undefined' ? window.speechSynthesis : null;
@@ -20,26 +23,82 @@ let _lastSpokenText = null;
 let _rate = 0.9;
 let _pitch = 1.0;
 
+// ── Voice cache (race-free) ─────────────────────────────────────────────────
+
+/**
+ * Module-level voice cache. Primed synchronously on module load; refreshed
+ * whenever the browser fires `voiceschanged`. All voice lookups in this file
+ * read from this cache instead of calling `synth.getVoices()` directly,
+ * which is the documented fix for the Chromium cold-start empty-array race.
+ *
+ * @type {SpeechSynthesisVoice[]}
+ */
+let _voiceCache = [];
+
+function _refillVoiceCache() {
+  if (!synth) return;
+  const voices = synth.getVoices();
+  if (Array.isArray(voices)) {
+    _voiceCache = voices;
+  }
+}
+
+if (synth) {
+  // Prime cache immediately — may return [] on cold start, that's expected.
+  _refillVoiceCache();
+  // Listener fires once the engine has loaded its voices.
+  if (typeof synth.addEventListener === 'function') {
+    synth.addEventListener('voiceschanged', _refillVoiceCache);
+  } else if ('onvoiceschanged' in synth) {
+    synth.onvoiceschanged = _refillVoiceCache;
+  }
+}
+
+/** Read the cached voice list (never calls `synth.getVoices()` directly). */
+function _getCachedVoices() {
+  // If cache is empty (cold start before voiceschanged fired) attempt a
+  // late refill — getVoices() may now succeed on a subsequent tick.
+  if (_voiceCache.length === 0 && synth) {
+    _refillVoiceCache();
+  }
+  return _voiceCache;
+}
+
 // ── Gender-based voice mapping ──────────────────────────────────────────────
 
 /**
  * Character voice gender registry.
- * Maps character id → 'male' | 'female' for voice selection.
+ * Maps character id → 'male' | 'female' | 'default'.
+ *
+ * 'default' means: do not pick a gendered voice — let the browser/OS choose
+ * its default voice. Used for Zuzu (per user requirement) and any NPC whose
+ * gender is genuinely ambiguous.
+ *
+ * One-line inline comment per NPC documents the inference (honorific +
+ * given name) so reviewers can audit choices.
  */
 const CHARACTER_GENDER = {
-  zuzu: 'male',
-  mrs_ramirez: 'female',
-  mr_chen: 'male',
+  zuzu: 'default',           // protagonist — explicit user requirement: use system default voice
+  mrs_ramirez: 'female',     // honorific "Mrs." — female
+  mr_chen: 'male',           // honorific "Mr." — male
+  old_miner: 'male',         // "Old Miner Pete" — male given name
+  desert_guide: 'female',    // "Ranger Nita" — female given name
+  river_biologist: 'female', // "Dr. Maya" — female given name
 };
 
 /**
- * Get a voice matching the requested gender from available browser voices.
- * @param {'male'|'female'} gender
+ * Get a voice matching the requested gender from cached browser voices.
+ * Returns null immediately for 'default' so the caller can let the
+ * browser/OS pick its default voice.
+ *
+ * @param {'male'|'female'|'default'} gender
  * @returns {SpeechSynthesisVoice|null}
  */
 function _pickVoiceByGender(gender) {
   if (!synth) return null;
-  const voices = synth.getVoices();
+  if (gender === 'default') return null; // explicit: use OS/browser default
+
+  const voices = _getCachedVoices();
   const englishVoices = voices.filter((v) => v.lang.startsWith('en'));
 
   // Try to find a voice whose name hints at the right gender
@@ -61,11 +120,14 @@ function _pickVoiceByGender(gender) {
 
 /**
  * Get the appropriate voice settings for a character.
+ * Unknown ids fall through to 'default' (was 'male' previously) so we never
+ * silently force a gender on an undeclared NPC.
+ *
  * @param {string} characterId - e.g. 'zuzu', 'mrs_ramirez', 'mr_chen'
  * @returns {{ gender: string, voice: SpeechSynthesisVoice|null }}
  */
 export function getVoiceForCharacter(characterId) {
-  const gender = CHARACTER_GENDER[characterId] || 'male';
+  const gender = CHARACTER_GENDER[characterId] || 'default';
   return { gender, voice: _pickVoiceByGender(gender) };
 }
 
@@ -111,6 +173,7 @@ export function getSpeechRate() {
  * @param {number} [options.pitch] - pitch override
  * @param {boolean} [options.force] - speak even if same as last spoken text
  * @param {function} [options.onEnd] - callback when speech finishes
+ * @param {'male'|'female'|'default'} [options.gender] - voice selection hint
  * @returns {boolean} true if speech was initiated
  */
 export function speak(text, options = {}) {
@@ -129,12 +192,18 @@ export function speak(text, options = {}) {
   utterance.pitch = options.pitch || _pitch;
   utterance.lang = 'en-US';
 
-  // Pick voice: gender-specific if requested, else natural-sounding
-  if (options.gender) {
+  // Pick voice:
+  //   - 'default' gender → leave utterance.voice unset so the browser/OS
+  //     picks its default voice (the ask for Zuzu).
+  //   - other gender → pick a matching English voice from the cache.
+  //   - no gender → fall through to the natural-English heuristic.
+  if (options.gender === 'default') {
+    // Intentionally do not set utterance.voice — browser default applies.
+  } else if (options.gender) {
     const genderVoice = _pickVoiceByGender(options.gender);
     if (genderVoice) utterance.voice = genderVoice;
   } else {
-    const voices = synth.getVoices();
+    const voices = _getCachedVoices();
     const preferred = voices.find((v) =>
       v.lang.startsWith('en') && v.name.toLowerCase().includes('natural')
     ) || voices.find((v) =>
@@ -194,8 +263,11 @@ export function resetLastSpoken() {
  * @param {object} [options] - additional speak options
  */
 export function speakAsNpc(text, voicePreference = {}, options = {}) {
-  // Resolve gender from npcId if provided
-  const gender = options.npcId ? (CHARACTER_GENDER[options.npcId] || 'male') : options.gender;
+  // Resolve gender from npcId if provided. Unknown ids fall through to
+  // 'default' so we never silently force a gendered voice.
+  const gender = options.npcId
+    ? (CHARACTER_GENDER[options.npcId] || 'default')
+    : options.gender;
   return speak(text, {
     rate: voicePreference.rate || _rate,
     pitch: voicePreference.pitch || _pitch,
@@ -211,4 +283,28 @@ export function speakAsNpc(text, voicePreference = {}, options = {}) {
 export function autoSpeak(text, voicePreference = {}, options = {}) {
   if (!_autoSpeak || !_enabled) return false;
   return speakAsNpc(text, voicePreference, options);
+}
+
+/**
+ * Dev-only verification helper. Returns a snapshot mapping each NPC id in
+ * `CHARACTER_GENDER` to the voice name that would be selected right now,
+ * given the current cached voice list. Useful in DevTools:
+ *
+ *     import { debugListVoiceAssignments } from './services/npcSpeech.js';
+ *     console.table(debugListVoiceAssignments());
+ *
+ * Returns an object: { [npcId]: voiceName | '(default)' | '(none)' }
+ */
+export function debugListVoiceAssignments() {
+  const out = {};
+  for (const id of Object.keys(CHARACTER_GENDER)) {
+    const gender = CHARACTER_GENDER[id];
+    if (gender === 'default') {
+      out[id] = '(default)';
+      continue;
+    }
+    const voice = _pickVoiceByGender(gender);
+    out[id] = voice ? voice.name : '(none)';
+  }
+  return out;
 }
