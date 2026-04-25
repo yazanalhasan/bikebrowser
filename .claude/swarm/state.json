@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-25T20:05:00Z",
+  "last_updated": "2026-04-25T20:15:00Z",
   "current_week": 1,
   "current_pod_focus": "Engine Foundation",
   "completed": [
@@ -47,11 +47,27 @@
     },
     {
       "agent": "data-schema-keeper",
-      "ts": "2026-04-25T12:05:00Z",
-      "commit": "a36e7a0e33ea73c00b0166b8bc7281fde71ed703",
+      "ts": "2026-04-25T20:15:00Z",
+      "commit": "8bd781cf25282264e7c701245ac606967e8676b4",
       "review_verdict": "EXEMPT",
-      "receipt": ".claude/swarm/receipts/data-schema-keeper-2026-04-25T12-00-00Z.json",
-      "notes": "First validation pass. ALL PASS: state.json shape, 8 worker+reviewer receipts (all required fields incl. verdict+reviewed_agent on the 4 reviewer receipts), sequencing.yaml DAG (no cycles, all prereqs resolve), asset-manifest.schema.json (valid draft-07), proof-of-life.manifest.json (validates). KNOWN GAPS noted (informational, not FAIL): screen-grid-architect, save-bridge, screen-loader, edge-detector, screen-transition-fx have no .md yet. world-grid.json + save schema not present. Initial haiku dispatch stalled mid-investigation without writing receipt; sonnet override succeeded — see .claude/swarm/blockers/data-schema-keeper-no-receipt-2026-04-25T12-00-00Z.md and updated memory."
+      "receipt": ".claude/swarm/receipts/data-schema-keeper-run2-2026-04-25T20-15-00Z.json",
+      "run_history": [
+        {
+          "run_number": 1,
+          "ts": "2026-04-25T12:05:00Z",
+          "receipt": ".claude/swarm/receipts/data-schema-keeper-2026-04-25T12-00-00Z.json",
+          "verdict": "ALL PASS",
+          "scope": "state.json + 8 receipts + sequencing.yaml + asset-manifest schema + sample manifest"
+        },
+        {
+          "run_number": 2,
+          "ts": "2026-04-25T20:15:00Z",
+          "receipt": ".claude/swarm/receipts/data-schema-keeper-run2-2026-04-25T20-15-00Z.json",
+          "verdict": "ALL PASS",
+          "scope": "state.json + 16 receipts (was 8) + sequencing.yaml + asset-manifest unchanged. Both new tts-* .md files confirmed."
+        }
+      ],
+      "notes": "Always-on validator. Two runs this session, both ALL PASS. Run 1 covered the Engine Foundation pod outputs (8 receipts). Run 2 re-validated after the Audio & TTS pod landed (16 receipts total). Both runs initially stalled on haiku model and recovered with sonnet override per saved memory."
     },
     {
       "agent": "tts-voice-config",
@@ -78,6 +94,6 @@
   "in_progress": [],
   "blocked": [],
   "human_gates_pending": [],
-  "dispatch_count": 20,
+  "dispatch_count": 21,
   "session_token_estimate": 0
 }
