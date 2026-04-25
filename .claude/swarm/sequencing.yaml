@@ -90,3 +90,19 @@ agents:
     requires_human_gate: false
     notes: "Always-on. Auto-dispatched by the orchestrator after every worker that returns a non-blocked, non-failed receipt. Verdict (PASS/NEEDS_REVISION/FAIL) gates the worker's transition into completed[]. Exempt from reviewing itself and data-schema-keeper."
     max_turns: 8
+
+  tts-voice-config:
+    prerequisites: []
+    week: 1
+    pod: Audio & TTS
+    requires_human_gate: false
+    notes: "Legacy 2D game scope. Expands CHARACTER_GENDER in npcSpeech.js to all NPCs, sets Zuzu to system-default voice, fixes voiceschanged race condition, fills voicePreference fields in npcProfiles.js. Strictly scoped to services/npcSpeech.js and data/npcProfiles.js."
+    max_turns: 25
+
+  tts-dialog-integration:
+    prerequisites: [tts-voice-config]
+    week: 1
+    pod: Audio & TTS
+    requires_human_gate: false
+    notes: "Legacy 2D game scope. Wires the voice config into GameContainer.jsx dialog TTS — fixes speaker→npcId mismatch and appends quiz answer choices to the spoken utterance (matching the physics-question pattern). Scope strictly limited to the dialog-TTS effect block; reviewer should flag any other GameContainer edits as CRITICAL scope violation."
+    max_turns: 20
