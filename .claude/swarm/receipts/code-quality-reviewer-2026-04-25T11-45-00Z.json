@@ -1,0 +1,9 @@
+{
+  "agent": "code-quality-reviewer",
+  "ts": "2026-04-25T11:45:00Z",
+  "status": "complete",
+  "verdict": "PASS",
+  "reviewed_agent": "input-controller-3d",
+  "files_changed": [],
+  "notes": "Cycle-2 delta review — all three fixes confirmed clean, no regressions found.\n\nFix 1 (gamepad edge-trigger): prevGpButtons ref present (line 81, { a: false, b: false }). actionPending armed only when currentA && !prevGpButtons.current.a && !actionPending.current (line 137); cancelPending same pattern for B (line 141). prevGpButtons updated each frame at line 146. Reset to { a: false, b: false } in the else branch when no active pad (line 150). PASS.\n\nFix 2 (gamepad poll gating): connectedRef initialized from navigator.getGamepads().some(Boolean) (lines 74-79). gamepadconnected and gamepaddisconnected listeners added inside the single useEffect (lines 257-264) and removed in cleanup (lines 272-273). rAF tick gates getGamepads() on connectedRef.current (lines 115-118); keyboard path unconditional. PASS.\n\nFix 3 (dead var): handleTouchStart in TouchJoystick.jsx (lines 59-70) does not contain 'const touch = e.touches[0]'. The variable is correctly absent; touch.clientX is only accessed inside handleTouchMove where it is needed. PASS.\n\nRegression checks:\n- Game3D.jsx: git diff empty. PASS.\n- useInput.js, InputDebugHUD.jsx, index.js: git diff empty for all. PASS.\n- Keyboard action edge-trigger: onKeyDown guards action/cancel with !e.repeat (lines 235, 238). PASS.\n- KEY_MAP: no entries for '1', '2', '3', 'p', 'P'. PASS.\n- F1 latch: present at lines 224-230 with !e.repeat guard. PASS.\n- Single useEffect: confirmed, lines 215-279, full cleanup including rAF cancel. PASS.\n- No package.json change visible in diff. PASS.\n- No new files created. PASS.\n- Plain JS (.jsx) only, no TypeScript. PASS."
+}

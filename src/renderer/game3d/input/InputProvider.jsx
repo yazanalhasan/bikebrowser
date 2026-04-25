@@ -69,6 +69,16 @@ export default function InputProvider({ children }) {
   const touchDelta = useRef({ x: 0, y: 0 });
   // Track last source to avoid unnecessary re-renders.
   const lastSource = useRef('keyboard');
+  // Fix 2: track whether any gamepad is connected so we can skip the
+  // getGamepads() poll when no pad is plugged in.
+  const connectedRef = useRef(
+    typeof navigator !== 'undefined' &&
+    navigator.getGamepads
+      ? navigator.getGamepads().some(Boolean)
+      : false,
+  );
+  // Fix 1: previous-frame button state for edge-trigger detection.
+  const prevGpButtons = useRef({ a: false, b: false });
 
   // ----------------------------------------------------------------
   // Touch injection — TouchJoystick calls this to push deltas.
@@ -100,8 +110,12 @@ export default function InputProvider({ children }) {
     }
 
     // --- Gamepad ---
-    const pads = navigator.getGamepads ? navigator.getGamepads() : [];
-    const activePad = Array.from(pads).find(Boolean);
+    // Fix 2: skip the getGamepads() call entirely when no pad is connected.
+    let activePad = null;
+    if (connectedRef.current) {
+      const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+      activePad = Array.from(pads).find(Boolean) ?? null;
+    }
 
     if (activePad) {
       const lx = applyDeadZone(activePad.axes[0] ?? 0);
@@ -115,17 +129,25 @@ export default function InputProvider({ children }) {
         source = 'gamepad';
       }
 
-      // Gamepad buttons (held, not edge-triggered — caller decides what
-      // to do with a held action; the context will still flip action off
-      // next frame once actionPending drains).
-      if (activePad.buttons[GP_BTN_A]?.pressed) {
+      // Fix 1: edge-trigger — only arm pending on the rising edge
+      // (current=true AND prev=false), mirroring the !e.repeat keyboard guard.
+      const currentA = activePad.buttons[GP_BTN_A]?.pressed ?? false;
+      const currentB = activePad.buttons[GP_BTN_B]?.pressed ?? false;
+
+      if (currentA && !prevGpButtons.current.a && !actionPending.current) {
         actionPending.current = true;
         source = 'gamepad';
       }
-      if (activePad.buttons[GP_BTN_B]?.pressed) {
+      if (currentB && !prevGpButtons.current.b && !cancelPending.current) {
         cancelPending.current = true;
         source = 'gamepad';
       }
+
+      prevGpButtons.current = { a: currentA, b: currentB };
+    } else {
+      // No active pad this frame — reset prev state so the next connection
+      // starts fresh (avoids a phantom edge from stale prev=true).
+      prevGpButtons.current = { a: false, b: false };
     }
 
     // --- Touch joystick ---
@@ -230,12 +252,25 @@ export default function InputProvider({ children }) {
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
 
+    // Fix 2: track gamepad connection state so the rAF tick can skip
+    // navigator.getGamepads() when nothing is plugged in.
+    const onGamepadConnected = () => { connectedRef.current = true; };
+    const onGamepadDisconnected = () => {
+      // Re-check: there might be >1 pad and only one disconnected.
+      connectedRef.current =
+        navigator.getGamepads ? navigator.getGamepads().some(Boolean) : false;
+    };
+    window.addEventListener('gamepadconnected', onGamepadConnected);
+    window.addEventListener('gamepaddisconnected', onGamepadDisconnected);
+
     // Start the rAF tick loop.
     rafHandle.current = requestAnimationFrame(tick);
 
     return () => {
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
+      window.removeEventListener('gamepadconnected', onGamepadConnected);
+      window.removeEventListener('gamepaddisconnected', onGamepadDisconnected);
       if (rafHandle.current != null) {
         cancelAnimationFrame(rafHandle.current);
         rafHandle.current = null;

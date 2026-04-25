@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-25T10:45:00Z",
+  "last_updated": "2026-04-25T11:45:00Z",
   "current_week": 1,
   "current_pod_focus": "Engine Foundation",
   "completed": [
@@ -33,22 +33,22 @@
       "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-2026-04-25T08-10-00Z.json",
       "receipt": ".claude/swarm/receipts/asset-pipeline-3d-2026-04-25T08-00-00Z.json",
       "notes": "Manifest schema (permissive, additionalProperties:true) + useScreenAssets() hook (drei useGLTF.preload/clear, returns {models, ready}) + sample proof-of-life manifest + public/game3d-assets/{models,textures,audio,manifests}/ scaffold. KTX2 deferred to cycle 2 (drei v9.122 export confirmed clean). Reviewer flagged one LOW note: hooks-in-map pattern in useScreenAssets.js:76 — worker documents the key-prop remount constraint, drei's own useGLTF carries the same constraint. Two prior reviewer dispatches stalled before writing receipt; a third with model=sonnet succeeded — see .claude/swarm/blockers/reviewer-no-receipt-2026-04-25T08-05-00Z.md."
-    }
-  ],
-  "in_progress": [
+    },
     {
       "agent": "input-controller-3d",
-      "started_ts": "2026-04-25T08:15:00Z",
-      "status": "partial",
-      "review_verdict": "NEEDS_REVISION",
-      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-2026-04-25T10-45-00Z.json",
-      "receipt": ".claude/swarm/receipts/input-controller-3d-2026-04-25T09-15-00Z.json",
-      "follow_up": ".claude/swarm/blockers/input-controller-3d-needs-revision-2026-04-25T10-45-00Z.md",
-      "notes": "Three issues: (M) gamepad action/cancel not edge-triggered; (M) rAF poll calls getGamepads() unconditionally instead of gating on connection events; (L) dead var in TouchJoystick.jsx. CRITICAL checks all clean."
+      "ts": "2026-04-25T11:45:00Z",
+      "commit": "5663442d898516f58d24511f4c22b467be2a6d8b",
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-2026-04-25T11-45-00Z.json",
+      "receipt": ".claude/swarm/receipts/input-controller-3d-cycle2-2026-04-25T11-30-00Z.json",
+      "cycle1_receipt": ".claude/swarm/receipts/input-controller-3d-2026-04-25T09-15-00Z.json",
+      "cycle1_review": ".claude/swarm/receipts/code-quality-reviewer-2026-04-25T10-45-00Z.json",
+      "notes": "Took two cycles. Cycle 1 (NEEDS_REVISION): landed useInput()/InputProvider/InputDebugHUD/TouchJoystick + InputProvider wrap of Game3D, but gamepad action/cancel was not edge-triggered, rAF polled getGamepads() unconditionally, and TouchJoystick.jsx had a dead var. Cycle 2 (PASS): rising-edge guard via prevGpButtons ref; connectedRef gates the getGamepads() call via gamepadconnected/disconnected events; dead var removed. CRITICAL checks (scope, camera-switcher 1/2/3 intact, physics-debug 'P' intact, KEY_MAP avoids reserved keys, no TS, no package.json) clean across both cycles."
     }
   ],
+  "in_progress": [],
   "blocked": [],
   "human_gates_pending": [],
-  "dispatch_count": 8,
+  "dispatch_count": 11,
   "session_token_estimate": 0
 }

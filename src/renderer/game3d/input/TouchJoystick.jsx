@@ -58,7 +58,6 @@ export default function TouchJoystick({
   // ----------------------------------------------------------------
   const handleTouchStart = useCallback((e) => {
     e.preventDefault();
-    const touch = e.touches[0];
     const rect = outerRef.current?.getBoundingClientRect();
     if (!rect) return;
     originRef.current = {

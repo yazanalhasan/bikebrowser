@@ -1,0 +1,17 @@
+{
+  "agent": "input-controller-3d",
+  "ts": "2026-04-25T11:30:00Z",
+  "status": "complete",
+  "files_changed": [
+    "src/renderer/game3d/input/InputProvider.jsx",
+    "src/renderer/game3d/input/TouchJoystick.jsx"
+  ],
+  "exports_added": [],
+  "tests_added": [],
+  "blockers_discovered": [],
+  "next_agent_suggestions": [
+    "zuzu-character-3d",
+    "movement-controller"
+  ],
+  "notes": "Cycle 2: applied exactly three targeted fixes from code-quality-reviewer. No other behavior was changed.\n\nFix 1 (MEDIUM — Gamepad action/cancel edge-trigger, InputProvider.jsx):\n  - Added `prevGpButtons` ref (line ~81) initialized to `{ a: false, b: false }`.\n  - In the rAF tick (lines ~132-146), replaced the unconditional `actionPending.current = true` writes with rising-edge guards: `if (currentA && !prevGpButtons.current.a && !actionPending.current)` and the symmetric guard for GP_BTN_B / cancelPending.\n  - `prevGpButtons.current` is updated to `{ a: currentA, b: currentB }` at the end of each frame when an active pad exists; reset to `{ a: false, b: false }` when no active pad is found (prevents phantom edge on reconnect).\n  - The cycle-1 receipt claim 'Gamepad A button is also edge-triggered via the same pending mechanism' was INCORRECT. The pending mechanism drains the flag but does not prevent it being re-armed every frame while held. The fix above makes the claim accurate: the flag is now only armed on the rising edge (current=true, prev=false), exactly mirroring the !e.repeat keyboard guard.\n\nFix 2 (MEDIUM — Gate gamepad poll on connection state, InputProvider.jsx):\n  - Added `connectedRef` (lines ~74-79) initialized from `navigator.getGamepads().some(Boolean)` at mount time so a pre-connected pad is detected immediately.\n  - Added `onGamepadConnected` (sets `connectedRef.current = true`) and `onGamepadDisconnected` (re-checks `getGamepads().some(Boolean)` to handle multi-pad scenarios) listeners registered on `window` inside the single `useEffect` (lines ~257-264).\n  - Both listeners are cleaned up in the existing cleanup return (lines ~272-273).\n  - In the rAF tick (lines ~113-118), the `navigator.getGamepads()` call and the `Array.from(...).find(Boolean)` walk are now skipped entirely when `connectedRef.current` is false. The keyboard path runs unconditionally as required.\n\nFix 3 (LOW — Dead variable in TouchJoystick.jsx):\n  - Removed `const touch = e.touches[0]` from `handleTouchStart` (was line ~61). The variable was declared but never read; the element rect (derived from `outerRef.current.getBoundingClientRect()`) is what the handler actually uses to set the joystick origin."
+}
