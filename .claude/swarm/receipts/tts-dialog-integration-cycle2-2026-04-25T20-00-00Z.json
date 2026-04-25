@@ -1,0 +1,9 @@
+{
+  "agent": "tts-dialog-integration",
+  "ts": "2026-04-25T20:00:00Z",
+  "status": "complete",
+  "files_changed": [
+    "src/renderer/game/GameContainer.jsx"
+  ],
+  "notes": "Cycle 2: addressed reviewer's single HIGH issue. Edited only line 60 of src/renderer/game/GameContainer.jsx. Before: `const HONORIFIC_RE = /^(mr|mrs|ms|dr|ranger)\\.?\\s+/i;` After: `const HONORIFIC_RE = /^(ranger)\\.?\\s+/i;`. Personal honorifics (mr/mrs/ms/dr) were dropped from the alternation because CHARACTER_GENDER keys in npcSpeech.js retain them as part of the snake-cased key (e.g. `mrs_ramirez`, `mr_chen`); stripping them would guarantee a miss for those NPCs. Role-style prefix `ranger` is retained. Verified resolver behavior: 'Mrs. Ramirez' -> 'mrs_ramirez' (match), 'Mr. Chen' -> 'mr_chen' (match), 'Ranger Nita' -> 'nita' (acceptable miss, falls through to 'default'), 'Zuzu' -> 'zuzu' (match). No other code, comments, files, or dependencies touched."
+}

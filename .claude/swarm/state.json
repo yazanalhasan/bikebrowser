@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-25T13:30:00Z",
+  "last_updated": "2026-04-25T20:05:00Z",
   "current_week": 1,
   "current_pod_focus": "Engine Foundation",
   "completed": [
@@ -61,11 +61,23 @@
       "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-2026-04-25T13-30-00Z.json",
       "receipt": ".claude/swarm/receipts/tts-voice-config-2026-04-25T13-15-00Z.json",
       "notes": "6 NPCs discovered (zuzu/mrs_ramirez/mr_chen/old_miner/desert_guide/river_biologist). CHARACTER_GENDER expanded with one-line comments per entry; zuzu→default per user requirement, all five others gender-inferred from honorifics+given names with no ambiguity. _pickVoiceByGender('default') returns null. speak() got an explicit gender==='default' branch that leaves utterance.voice unset (bypasses the natural-English fallback heuristic). Module-level _voiceCache primed on load + voiceschanged listener (with onvoiceschanged fallback) re-fills it; all synth.getVoices() reads now go through _getCachedVoices(); only direct call sits in the cache-refill helper. getVoiceForCharacter and speakAsNpc default unknown ids to 'default' (was 'male'). voicePreference backfilled on old_miner (0.85/0.9), desert_guide (0.9/1.0), river_biologist (0.95/1.05); pre-existing mrs_ramirez/mr_chen untouched. debugListVoiceAssignments() exported. Public signatures of speak/speakAsNpc/autoSpeak preserved. Note: dispatched via general-purpose agent shell because the new agent type wasn't in this session's Agent registry (registry loads at session start; new .md files mid-session aren't picked up). Standards from .claude/agents/tts-voice-config.md were embedded in the prompt and reviewer confirmed PASS."
+    },
+    {
+      "agent": "tts-dialog-integration",
+      "ts": "2026-04-25T20:05:00Z",
+      "commit": "5e0252245974d3be0414529ea0339cc601c7f9ee",
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-2026-04-25T20-05-00Z.json",
+      "receipt": ".claude/swarm/receipts/tts-dialog-integration-cycle2-2026-04-25T20-00-00Z.json",
+      "cycle1_receipt": ".claude/swarm/receipts/tts-dialog-integration-2026-04-25T19-12-46Z.json",
+      "cycle1_review_retracted": ".claude/swarm/receipts/code-quality-reviewer-2026-04-25T19-20-00Z.json",
+      "cycle1_review_authoritative": ".claude/swarm/receipts/code-quality-reviewer-2026-04-25T19-45-00Z.json",
+      "notes": "Took two cycles. Cycle 1 (NEEDS_REVISION on 2nd reviewer pass): resolveSpeakerToNpcId helper at GameContainer.jsx:47-69 + dialog-TTS effect rewrite at lines 509-531 + speaker→npcId fallback fix + Option N: choice-text append matching the physics-question pattern. Worker correctly left the physics path alone; the first reviewer pass FAIL on a 'physics path scope violation' was a misattribution of a pre-existing user edit (GameContainer.jsx hadn't been committed since e2531ce, so git diff HEAD mixed the user's earlier physics-TTS edit with the worker's actual changes — re-review with corrected baseline retracted the FAIL). The remaining HIGH was that HONORIFIC_RE stripped Mr/Mrs/Ms/Dr but the actual CHARACTER_GENDER keys keep those prefixes. Cycle 2 (PASS): single-line regex change /^(mr|mrs|ms|dr|ranger)\\.?\\s+/i → /^(ranger)\\.?\\s+/i. Now Mrs. Ramirez/Mr. Chen resolve to mrs_ramirez/mr_chen and hit the gender map. Routed via general-purpose for both cycles since the new tts-dialog-integration agent type isn't in this session's Agent registry."
     }
   ],
   "in_progress": [],
   "blocked": [],
   "human_gates_pending": [],
-  "dispatch_count": 15,
+  "dispatch_count": 20,
   "session_token_estimate": 0
 }

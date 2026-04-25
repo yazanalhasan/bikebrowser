@@ -45,6 +45,30 @@ function isTouchDevice() {
 }
 
 // ---------------------------------------------------------------------------
+// Speaker display name → npcId resolver
+// ---------------------------------------------------------------------------
+// Converts a dialog `speaker` display name (e.g. "Mrs. Ramirez",
+// "Old Miner Pete") into the snake_case key shape used by
+// CHARACTER_GENDER in services/npcSpeech.js (e.g. "mrs_ramirez",
+// "old_miner_pete"). Honorifics are stripped first because the
+// gender-map keys are constructed without them (e.g. "desert_guide",
+// not "ranger_nita"). Misses fall through to the upstream 'default'
+// voice — this resolver only needs to give gender lookup a fighting
+// chance when `dialog.npcId` is absent.
+function resolveSpeakerToNpcId(speaker) {
+  if (!speaker || typeof speaker !== 'string') return undefined;
+  const HONORIFIC_RE = /^(ranger)\.?\s+/i;
+  let s = speaker.trim();
+  while (HONORIFIC_RE.test(s)) {
+    s = s.replace(HONORIFIC_RE, '');
+  }
+  return s
+    .toLowerCase()
+    .replace(/\s+/g, '_')
+    .replace(/[^a-z0-9_]/g, '');
+}
+
+// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 export default function GameContainer() {
@@ -330,9 +354,18 @@ export default function GameContainer() {
     game.registry.events.on('changedata-physicsQuestion', (_p, v) => {
       if (v) {
         setPhysicsQuestion(v);
-        // Auto-speak the question text (Phase 4: voice reads question aloud)
+        // Auto-speak the question text plus each answer choice so kids who
+        // can't read fluently can still pick an answer.  Web Speech inserts
+        // a brief pause on each period; the "Option N:" prefix anchors the
+        // choice number to the visual button order.
         if (isSpeechEnabled()) {
-          speak(v.question, { rate: 0.85, pitch: 1.0 });
+          const stem = (v.question || '').trim();
+          const choices = Array.isArray(v.choices) ? v.choices : [];
+          const choicesText = choices
+            .map((choice, i) => `Option ${i + 1}: ${choice}`)
+            .join('. ');
+          const fullText = choicesText ? `${stem} ${choicesText}.` : stem;
+          speak(fullText, { rate: 0.85, pitch: 1.0 });
         }
       } else {
         // Question was auto-dismissed by arbiter (player moved or became busy)
@@ -480,10 +513,20 @@ export default function GameContainer() {
       prevDialogTextRef.current = null;
       return;
     }
-    const textToSpeak = dialog.aiDialogue?.spokenLine || dialog.text;
-    if (textToSpeak && textToSpeak !== prevDialogTextRef.current) {
-      prevDialogTextRef.current = textToSpeak;
-      autoSpeak(textToSpeak, dialog.voicePreference, { npcId: dialog.npcId || dialog.speaker?.toLowerCase() });
+    const stem = dialog.aiDialogue?.spokenLine || dialog.text;
+    if (stem && stem !== prevDialogTextRef.current) {
+      prevDialogTextRef.current = stem;
+      // If the dialog is a quiz, append each choice with the same
+      // "Option N: <label>" prefix used by the physics-question path
+      // so non-readers can pick by listening.
+      const choices = Array.isArray(dialog.choices) ? dialog.choices : [];
+      const choicesText = choices
+        .map((c, i) => `Option ${i + 1}: ${c.label}`)
+        .join('. ');
+      const textToSpeak = choicesText ? `${stem}. ${choicesText}.` : stem;
+      autoSpeak(textToSpeak, dialog.voicePreference, {
+        npcId: dialog.npcId || resolveSpeakerToNpcId(dialog.speaker),
+      });
     }
   }, [dialog]);
 
