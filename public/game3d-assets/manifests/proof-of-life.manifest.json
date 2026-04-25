@@ -1,0 +1,8 @@
+{
+  "screen_id": "proof-of-life",
+  "models": [],
+  "textures": [],
+  "audio": [],
+  "preload": [],
+  "_note": "Zero-asset manifest. Proves the public/game3d-assets/manifests/ path layout that world-grid-author and location-builder will follow. Add model/texture entries here when real assets land."
+}

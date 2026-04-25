@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Game3D Asset Manifest",
+  "description": "Per-screen asset bundle declaration for the R3F game module. Downstream agents (world-grid-author, location-builder) may add fields — additionalProperties is allowed at all levels.",
+  "type": "object",
+  "required": ["screen_id"],
+  "additionalProperties": true,
+  "properties": {
+    "screen_id": {
+      "type": "string",
+      "description": "Unique identifier for the screen/location that owns this manifest (e.g. 'neighborhood-2-1')."
+    },
+    "models": {
+      "type": "array",
+      "description": "GLTF/GLB model assets to preload for this screen.",
+      "items": {
+        "type": "object",
+        "required": ["id", "path"],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable key used to reference this model in code (e.g. 'garage')."
+          },
+          "path": {
+            "type": "string",
+            "description": "Absolute path from the public root (e.g. '/game3d-assets/models/garage.glb')."
+          }
+        }
+      },
+      "default": []
+    },
+    "textures": {
+      "type": "array",
+      "description": "KTX2 or other texture assets. Reserved for future use — useKTX2 support lands next cycle.",
+      "items": {
+        "type": "object",
+        "required": ["id", "path"],
+        "additionalProperties": true,
+        "properties": {
+          "id": { "type": "string" },
+          "path": { "type": "string" }
+        }
+      },
+      "default": []
+    },
+    "audio": {
+      "type": "array",
+      "description": "Audio asset references (not loaded by this pipeline — handed off to AudioManager).",
+      "items": {
+        "type": "object",
+        "required": ["id", "path"],
+        "additionalProperties": true,
+        "properties": {
+          "id": { "type": "string" },
+          "path": { "type": "string" }
+        }
+      },
+      "default": []
+    },
+    "preload": {
+      "type": "array",
+      "description": "Arbitrary extra asset paths to begin fetching early (e.g. next-screen models). No lifecycle management — fire and forget.",
+      "items": { "type": "string" },
+      "default": []
+    }
+  }
+}

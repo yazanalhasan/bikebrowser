@@ -1,0 +1,26 @@
+{
+  "agent": "asset-pipeline-3d",
+  "ts": "2026-04-25T08:00:00Z",
+  "status": "complete",
+  "files_changed": [
+    "src/renderer/game3d/assets/asset-manifest.schema.json",
+    "src/renderer/game3d/assets/useScreenAssets.js",
+    "public/game3d-assets/manifests/proof-of-life.manifest.json",
+    "public/game3d-assets/models/.gitkeep",
+    "public/game3d-assets/textures/.gitkeep",
+    "public/game3d-assets/audio/.gitkeep"
+  ],
+  "exports_added": [
+    "useScreenAssets (named export) — src/renderer/game3d/assets/useScreenAssets.js",
+    "useScreenAssets (default export) — src/renderer/game3d/assets/useScreenAssets.js",
+    "asset-manifest.schema.json — src/renderer/game3d/assets/asset-manifest.schema.json"
+  ],
+  "tests_added": [],
+  "blockers_discovered": [],
+  "next_agent_suggestions": [
+    "world-grid-author — can now write manifests per grid cell, following proof-of-life.manifest.json as template",
+    "location-builder — can adopt useScreenAssets() in scene components to load/unload per-location GLBs",
+    "asset-pipeline-3d (cycle 2) — wire in useKTX2 texture support; both useKTX2 and Ktx2 export cleanly from @react-three/drei v9 (verified this cycle)"
+  ],
+  "notes": "Manifest schema: additionalProperties:true at the root and at every item level — downstream agents can add fields (e.g. lod_levels, collision_mesh, nav_mesh) without a schema-keeper failure. Screen identity is the only required field. All other arrays default to empty.\n\nuseScreenAssets design: preload() is called outside React render via a preloadedRef guard so it fires once per mount regardless of re-renders. The models map is built by calling useGLTF() per path inside the hook — callers must remount (key prop) if the manifest model-count changes between renders, which is the same constraint useGLTF carries itself. Returns { models: {id→gltf}, ready: boolean } where ready flips false if any result is missing.\n\nStrict-mode double-mount: cleanup fires useGLTF.clear() after the first synthetic unmount, then the second mount calls preload()+useGLTF() again. drei/three caches by URL so the second resolve is near-instant from memory — no visible flicker. preloadedRef is reset in cleanup so the guard is correct across both mounts.\n\nKTX2: useKTX2 exports cleanly from @react-three/drei v9.122 (confirmed grep on node_modules index). Skipped this cycle per spec — texture support is empty array reserved in the schema. No blocker.\n\nPath layout: /game3d-assets/{models,textures,audio,manifests}/ — all absolute from public root so Vite serves correctly in dev and production. manifests/ directory already has a .gitkeep via the proof-of-life file itself."
+}
