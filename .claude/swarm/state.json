@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-24T00:00:00Z",
+  "last_updated": "2026-04-24T23:35:00Z",
   "current_week": 1,
   "current_pod_focus": "Engine Foundation",
   "completed": [
@@ -9,6 +9,12 @@
       "ts": "2026-04-20T00:00:00Z",
       "commit": null,
       "notes": "Cube + ground proof of life landed before swarm started."
+    },
+    {
+      "agent": "scene-architect-3d",
+      "ts": "2026-04-24T23:15:00Z",
+      "commit": null,
+      "notes": "Landed pre-orchestrator. Three camera presets (SideCam, AngledCam ~30°, TopCam) + BaseLighting + drei <Sky> + 1/2/3 keyboard switcher. Files under src/renderer/game3d/{cameras,lighting,scenes}/."
     }
   ],
   "in_progress": [],
