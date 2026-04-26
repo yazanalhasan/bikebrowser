@@ -91,6 +91,22 @@ agents:
     notes: "Always-on. Auto-dispatched by the orchestrator after every worker that returns a non-blocked, non-failed receipt. Verdict (PASS/NEEDS_REVISION/FAIL) gates the worker's transition into completed[]. Exempt from reviewing itself and data-schema-keeper."
     max_turns: 8
 
+  resource-auditor:
+    prerequisites: []
+    week: 1
+    pod: Quality
+    requires_human_gate: false
+    notes: "On-demand. Snapshot audit of machine-resource usage — Electron/Node process tree (RAM/CPU/handles), GPU utilization, bundle size, dependency weight. Read-only; never edits app code. Run with the app open for full runtime data. Outputs a markdown report under .claude/swarm/reports/ plus a receipt. Not auto-dispatched — user requests it. Complementary to runtime-audit-system (which checks in-game data integrity) — this one watches machine resources."
+    max_turns: 25
+
+  phaser-hmr-bridge:
+    prerequisites: []
+    week: 1
+    pod: Quality
+    requires_human_gate: true
+    notes: "On-demand. Closes the Vite-HMR-vs-Phaser-state gap: adds src/renderer/game/dev/phaserHmr.js helper and registers every scene under src/renderer/game/scenes/ for auto-swap on file edit. Wide blast radius (~15 scene files touched, all additive append-only blocks) — gated behind human approval before dispatch. Lean fix (window.__phaserGame in dev) is already in place at GameContainer.jsx so manual scene swap from DevTools console works without this agent."
+    max_turns: 20
+
   tts-voice-config:
     prerequisites: []
     week: 1

@@ -1,0 +1,30 @@
+{
+  "agent": "phaser-hmr-bridge",
+  "ts": "2026-04-24T22:00:00Z",
+  "status": "complete",
+  "files_changed": [
+    "src/renderer/game/dev/phaserHmr.js",
+    "src/renderer/game/scenes/OverworldScene.js",
+    "src/renderer/game/scenes/ZuzuGarageScene.js",
+    "src/renderer/game/scenes/StreetBlockScene.js",
+    "src/renderer/game/scenes/DogParkScene.js",
+    "src/renderer/game/scenes/LakeEdgeScene.js",
+    "src/renderer/game/scenes/SportsFieldsScene.js",
+    "src/renderer/game/scenes/CommunityPoolScene.js",
+    "src/renderer/game/scenes/DesertTrailScene.js",
+    "src/renderer/game/scenes/MountainScene.js",
+    "src/renderer/game/scenes/WorldMapScene.js",
+    "src/renderer/game/scenes/DesertForagingScene.js",
+    "src/renderer/game/scenes/CopperMineScene.js",
+    "src/renderer/game/scenes/SaltRiverScene.js",
+    "src/renderer/game/scenes/GarageScene.js",
+    "src/renderer/game/scenes/NeighborhoodScene.js"
+  ],
+  "exports_added": [
+    "registerSceneHmr from src/renderer/game/dev/phaserHmr.js"
+  ],
+  "tests_added": [],
+  "blockers_discovered": [],
+  "next_agent_suggestions": ["phaser-runtime-inspector"],
+  "notes": "Created src/renderer/game/dev/phaserHmr.js exporting registerSceneHmr(sceneKey, hot, sceneClass, exportName='default'). It no-ops when import.meta.hot is falsy (production), reads window.__phaserGame (already exposed by GameContainer.jsx in dev), and on accept does game.scene.remove(KEY) + game.scene.add(KEY, NewClass, true). All console paths are guarded with try/catch.\n\nRegistered scenes (15 total, sceneKey → file): OverworldScene → scenes/OverworldScene.js; ZuzuGarageScene → scenes/ZuzuGarageScene.js; StreetBlockScene → scenes/StreetBlockScene.js; DogParkScene → scenes/DogParkScene.js; LakeEdgeScene → scenes/LakeEdgeScene.js; SportsFieldsScene → scenes/SportsFieldsScene.js; CommunityPoolScene → scenes/CommunityPoolScene.js; DesertTrailScene → scenes/DesertTrailScene.js; MountainScene → scenes/MountainScene.js; WorldMapScene → scenes/WorldMapScene.js; DesertForagingScene → scenes/DesertForagingScene.js; CopperMineScene → scenes/CopperMineScene.js; SaltRiverScene → scenes/SaltRiverScene.js; GarageScene → scenes/GarageScene.js (legacy); NeighborhoodScene → scenes/NeighborhoodScene.js (legacy). Keys verified by reading each file's super('...') call or const SCENE_KEY = '...' — not guessed from filename. All 15 are referenced in src/renderer/game/config.js ALL_SCENES array, so they are real Phaser-registered scenes.\n\nSkipped files (abstract base classes, never passed to game.scene.add): scenes/LocalSceneBase.js — only extended by other scenes (Phaser.Scene base for ZuzuGarage/StreetBlock/DogPark/LakeEdge/SportsFields/CommunityPool/DesertTrail/Mountain), not in config.js; scenes/BaseSubScene.js — only extended by world-map sub-scenes (DesertForaging/CopperMine/SaltRiver), not in config.js. Confirmed via Grep against src/renderer/game/config.js, systems/sceneRegistry.js, and the entire src tree — neither name appears in any game.scene.add(...) call. BasePlayableScene.js does not exist.\n\nGameContainer.jsx not touched — the lean fix exposing window.__phaserGame in dev was already in place. The bridge reads it directly.\n\nStatic checks:\n- npm run build: SUCCESS (10.58s, no warnings related to HMR; the only warnings are pre-existing chunk-size and dynamic-import notices from GamePage/Game3DPage). Production build correctly tree-shakes the HMR block (early return when import.meta.hot is undefined).\n- npm run lint: 259 pre-existing errors across the repo (none introduced by this patch). For the 16 files I touched, lint shows zero new errors. Pre-existing issues in three of my touched files (scenes/GarageScene.js EXIT_ZONE_HEIGHT unused, scenes/StreetBlockScene.js getQuestBoard unused, scenes/WorldMapScene.js REGIONS/getLocationsByRegion unused) are unrelated to HMR wiring and were left alone per scope rules. The new helper src/renderer/game/dev/phaserHmr.js lints clean.\n\nFollow-ups (out of scope this cycle):\n- Sub-scene HMR: BaseSubScene-derived scenes are launched by parents; reloading the parent scene reloads its children. Acceptable for now.\n- In-scene state persistence across hot-swap: Phaser starts scenes fresh on add(); player position is reset. game.registry survives because it lives on the Game. If stateful HMR is wanted, snapshot scene.player.{x,y} into game.registry before remove() and restore in create() — separate cycle.\n- The unused-but-reserved _sceneClass parameter in registerSceneHmr is left in for future diagnostics (e.g., name comparison against newModule[exportName]); guarded with eslint-disable-next-line no-unused-vars."
+}

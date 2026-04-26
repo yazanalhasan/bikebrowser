@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-25T22:00:00Z",
+  "last_updated": "2026-04-25T22:45:00Z",
   "current_week": 2,
   "current_pod_focus": "World & Discovery",
   "completed": [
@@ -119,6 +119,16 @@
       "parallel_group": "world-discovery-state+world-terrain-renderer",
       "reviewer_dispatches": 2,
       "notes": "Parallel dispatch with world-discovery-state. Added terrain rendering layer to WorldMapScene.js in three isolated zones: lines 13-46 (BIOME import + BIOME_COLORS warm palette + WORLD_REGION_BIOME bridge map + biomeForWorldRegion helper), lines 75-86 (call to _renderTerrainLayer in create() after parchment rect), lines 219-289 (the _renderTerrainLayer method itself — single _terrainContainer at depth -100, 3 concentric translucent fillCircles per location for soft-edged blobs ~225px radius on 1024px map, deterministic stipple dots on desert blobs, geometry-mask clipped to parchment). Spec palette matched exactly. Render-once at create(). Click handlers (setInteractive/pointerdown/pointerover/pointerout) byte-identical. Notable judgment call (PASS confirmed): worldMapData.js REGIONS use different ids (arizona_desert, mountain_range) than the cross-cultural regions.js (arizona, andes); worker added an inline WORLD_REGION_BIOME bridge map inside WorldMapScene rather than touch worldMapData.js (which is data-layer scope owned by biome-classifier). Pre-existing dirty-baseline audio block at lines 212-216 (transitionToScene swap) preserved verbatim per dispatch warning. First reviewer dispatch stalled mid-task before writing receipt — re-dispatched fresh and second run completed cleanly with PASS. LOW observations (non-blocking): all 3 current locations are in arizona_desert so DESERT blobs heavily overlap (intentional — reads as one Sonoran landscape); home/neighborhood node has no terrain blob underneath (floats on parchment); future tuning when non-Sonoran locations land. Routed via general-purpose; reviewer native sonnet override."
+    },
+    {
+      "agent": "phaser-hmr-bridge",
+      "ts": "2026-04-25T22:45:00Z",
+      "commit": null,
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-phaser-hmr-bridge-2026-04-24T22-30-00Z.json",
+      "receipt": ".claude/swarm/receipts/phaser-hmr-bridge-2026-04-24T22-00-00Z.json",
+      "human_gate_approval": "User said 'go phaser-hmr-bridge' after orchestrator presented the staged plan. Lean fix (window.__phaserGame in dev) was already applied in GameContainer.jsx prior to dispatch.",
+      "notes": "Closes the Vite-HMR-vs-Phaser-state gap. New helper src/renderer/game/dev/phaserHmr.js exports registerSceneHmr(sceneKey, hot, sceneClass, exportName='default') — production-safe early return on falsy hot, reads window.__phaserGame, swaps via game.scene.remove + game.scene.add(KEY, NewClass, true) inside try/catch with [phaserHmr] info logs. Wired 15 concrete scenes (the full ALL_SCENES from config.js): OverworldScene, ZuzuGarageScene, StreetBlockScene, DogParkScene, LakeEdgeScene, SportsFieldsScene, CommunityPoolScene, DesertTrailScene, MountainScene, WorldMapScene, DesertForagingScene, CopperMineScene, SaltRiverScene, GarageScene (legacy), NeighborhoodScene (legacy). Two abstract bases skipped: LocalSceneBase.js, BaseSubScene.js — confirmed by grep against config.js ALL_SCENES and game.scene.add calls. Each scene file got exactly two additive lines (top import + bottom registration); reviewer confirmed no other edits attributable to this worker (parallel session's terrain/discovery edits in WorldMapScene/CopperMineScene/etc. correctly attributed to baseline). Static checks: npm run build SUCCESS in 10.58s with HMR block tree-shaken; npm run lint shows 259 pre-existing repo errors but zero new from this patch. Reviewer LOW (non-blocking): could not locally re-verify production tree-shaking since dist/ not present at review time. Routed via general-purpose; reviewer also via general-purpose."
     }
   ],
   "in_progress": [],
@@ -131,6 +141,6 @@
       "context": "User explicitly instructed orchestrator to pause after world-discovery-state and world-terrain-renderer both complete. Both PASS. Awaiting visual confirmation that terrain renders correctly in-game (npm run dev is up at background ID bmfdmx4ce) AND architectural review of the discovery-state API surface before dispatching downstream agents (world-fog-overlay, world-node-gating, world-discovery-quests)."
     }
   ],
-  "dispatch_count": 28,
+  "dispatch_count": 30,
   "session_token_estimate": 0
 }
