@@ -408,7 +408,26 @@
       "notes": "Parallel dispatch with world-discovery-state. Added terrain rendering layer to WorldMapScene.js in three isolated zones: lines 13-46 (BIOME import + BIOME_COLORS warm palette + WORLD_REGION_BIOME bridge map + biomeForWorldRegion helper), lines 75-86 (call to _renderTerrainLayer in create() after parchment rect), lines 219-289 (the _renderTerrainLayer method itself — single _terrainContainer at depth -100, 3 concentric translucent fillCircles per location for soft-edged blobs ~225px radius on 1024px map, deterministic stipple dots on desert blobs, geometry-mask clipped to parchment). Spec palette matched exactly. Render-once at create(). Click handlers (setInteractive/pointerdown/pointerover/pointerout) byte-identical. Notable judgment call (PASS confirmed): worldMapData.js REGIONS use different ids (arizona_desert, mountain_range) than the cross-cultural regions.js (arizona, andes); worker added an inline WORLD_REGION_BIOME bridge map inside WorldMapScene rather than touch worldMapData.js (which is data-layer scope owned by biome-classifier). Pre-existing dirty-baseline audio block at lines 212-216 (transitionToScene swap) preserved verbatim per dispatch warning. First reviewer dispatch stalled mid-task before writing receipt — re-dispatched fresh and second run completed cleanly with PASS. LOW observations (non-blocking): all 3 current locations are in arizona_desert so DESERT blobs heavily overlap (intentional — reads as one Sonoran landscape); home/neighborhood node has no terrain blob underneath (floats on parchment); future tuning when non-Sonoran locations land. Routed via general-purpose; reviewer native sonnet override."
     }
   ],
-  "in_progress": [],
+  "in_progress": [
+    {
+      "agent": "phaser-dry-wash-scene",
+      "pod": "Phaser DryWash",
+      "status": "dispatched",
+      "ts": "2026-04-26T18:50:00Z",
+      "parallel_group": "phaser-dry-wash-scene+phaser-bridge-construction",
+      "scope": "Wire NeighborhoodScene east edge → DryWashScene west edge via the seamlessTraversal primitive. Edits to NeighborhoodScene.js (add attachEdgeSensor + performSeamlessTransition call), DryWashScene.js (init hook calling applySeamlessEntry), seamlessTraversal.js (append DryWash west-edge reverse adjacency).",
+      "depends_on": "phaser-traversal-system (commit 96eceb7)"
+    },
+    {
+      "agent": "phaser-bridge-construction",
+      "pod": "Phaser DryWash",
+      "status": "dispatched",
+      "ts": "2026-04-26T18:50:00Z",
+      "parallel_group": "phaser-dry-wash-scene+phaser-bridge-construction",
+      "scope": "Extend the ConstructionSystem (commit 451e7a4) with a drag-and-drop mode alongside the existing click-to-place. Bridge blueprint switches to mode:'drag'; click mode unchanged for backwards compat. bridge_built observation event must continue to fire identically.",
+      "depends_on": "phaser-traversal-system (commit 96eceb7) — formal yaml prereq; no actual code dependency"
+    }
+  ],
   "blocked": [],
   "blocker_history": [
     {
