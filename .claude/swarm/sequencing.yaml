@@ -107,6 +107,31 @@ agents:
     notes: "On-demand. Closes the Vite-HMR-vs-Phaser-state gap: adds src/renderer/game/dev/phaserHmr.js helper and registers every scene under src/renderer/game/scenes/ for auto-swap on file edit. Wide blast radius (~15 scene files touched, all additive append-only blocks) — gated behind human approval before dispatch. Lean fix (window.__phaserGame in dev) is already in place at GameContainer.jsx so manual scene swap from DevTools console works without this agent."
     max_turns: 20
 
+  bundle-splitter:
+    prerequisites: [resource-auditor]
+    week: 1
+    pod: Quality
+    requires_human_gate: false
+    notes: "On-demand fix for resource-auditor's HIGH bundle-bloat finding. Adds manualChunks to vite.config.* to split phaser/three/drei/r3f/rapier into vendor chunks. Folds in the LOW dynamic-import fix in MCPAIAdapter.js. Touches only vite.config.* and MCPAIAdapter.js. Low blast — verifiable by re-running npm run build and comparing chunk sizes against the audit baseline."
+    max_turns: 18
+
+  audio-asset-cleanup:
+    prerequisites: [resource-auditor]
+    week: 1
+    pod: Quality
+    requires_human_gate: true
+    notes: "On-demand fix for resource-auditor's HIGH audio-bloat finding (~32 MB). Triages audio assets (alt-mixes, .wav masters, orphans) and ARCHIVES them via git mv to public/audio/_archived/ rather than deleting — reversible by design. Updates audioManifest.js if any reference shifts. NEVER touches services/npcSpeech.js or data/npcProfiles.js (that's tts-* scope). Human gate because file moves can break the audio loader if a manifest reference is missed."
+    max_turns: 22
+
+  dep-overrides-housekeeping:
+    prerequisites: [resource-auditor]
+    week: 1
+    pod: Quality
+    parallel_safe_with: [bundle-splitter]
+    requires_human_gate: true
+    notes: "On-demand fix for resource-auditor's MED three.js duplication finding + LOW dedupe finding. Adds overrides:{three:$three} to package.json to force a single three version, then runs npm dedupe. Touches package.json + package-lock.json only. Human gate because lockfile changes affect every dev and CI; agent will revert and mark blocked if npm install or build fails after the override."
+    max_turns: 18
+
   tts-voice-config:
     prerequisites: []
     week: 1
