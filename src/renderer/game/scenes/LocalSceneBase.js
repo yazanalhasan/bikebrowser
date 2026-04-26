@@ -34,6 +34,27 @@ import { getPhysicsState, wireCameraToMCP } from '../systems/physicsbridge.js';
 // Default world size for local scenes (viewport-scale, not overworld-scale)
 const DEFAULT_WORLD = { width: 800, height: 600 };
 
+// Biome-themed background fills + accent colors for the area outside a small
+// scene's world bounds (when the player's window is larger than the world).
+// Keyed by sceneKey to avoid touching every scene file. Edit a SCENE_BIOMES
+// entry when adding a new local scene; fallback is a muted dark frame.
+const SCENE_BIOMES = {
+  ZuzuGarageScene:    { fill: 0x6b4423, accent: 0x8b6914, label: 'urban'     },
+  GarageScene:        { fill: 0x6b4423, accent: 0x8b6914, label: 'urban'     },
+  NeighborhoodScene:  { fill: 0x6b5b3a, accent: 0x8b7344, label: 'urban'     },
+  StreetBlockScene:   { fill: 0xa08250, accent: 0xc4a26a, label: 'desert'    },
+  DogParkScene:       { fill: 0x4a6b3a, accent: 0x6e8a4a, label: 'grassland' },
+  SportsFieldsScene:  { fill: 0x5a7a4a, accent: 0x7a9a5a, label: 'grassland' },
+  CommunityPoolScene: { fill: 0x4a6680, accent: 0x6a86a0, label: 'urban'     },
+  LakeEdgeScene:      { fill: 0x4a7090, accent: 0x6a90b0, label: 'water'     },
+  DesertTrailScene:   { fill: 0xa08250, accent: 0xc4a26a, label: 'desert'    },
+  DesertForagingScene:{ fill: 0xa68a55, accent: 0xc8aa78, label: 'desert'    },
+  MountainScene:      { fill: 0x5a4a3a, accent: 0x7a6a52, label: 'mountain'  },
+  CopperMineScene:    { fill: 0x3a2f25, accent: 0x6a553f, label: 'rock'      },
+  SaltRiverScene:     { fill: 0x2c5577, accent: 0x4a7393, label: 'water'     },
+};
+const DEFAULT_BIOME = { fill: 0x2a2422, accent: 0x4a4030, label: 'unknown' };
+
 export default class LocalSceneBase extends Phaser.Scene {
   constructor(sceneKey) {
     super({ key: sceneKey });
@@ -169,12 +190,21 @@ export default class LocalSceneBase extends Phaser.Scene {
       // Center the camera on the world's center so the scene appears centered
       // in the viewport.
       cam.centerOn(world.width / 2, world.height / 2);
-      // Re-center on every viewport resize so the scene stays centered when
-      // the window is resized after scene boot. Cleaned up on scene shutdown
-      // so HMR + scene-stop don't leak listeners on the global Scale manager.
+
+      // Fill the empty space around the world with a biome-themed frame
+      // and overlay a soft vignette so the surround reads as intentional
+      // rather than uninitialized.
+      this._renderViewportFrame();
+
+      // Re-center + redraw frame on every viewport resize so the scene stays
+      // visually intact when the window is resized after scene boot. Cleaned
+      // up on scene shutdown so HMR + scene-stop don't leak listeners on the
+      // global Scale manager.
       this.scale.on('resize', this._recenterCameraOnWorld, this);
+      this.scale.on('resize', this._renderViewportFrame, this);
       this.events.once('shutdown', () => {
         this.scale.off('resize', this._recenterCameraOnWorld, this);
+        this.scale.off('resize', this._renderViewportFrame, this);
       });
     }
     cam.fadeIn(350, 0, 0, 0);
@@ -423,6 +453,97 @@ export default class LocalSceneBase extends Phaser.Scene {
       prop._nearby = dist < prop.radius;
       prop.prompt.setVisible(prop._nearby);
     }
+  }
+
+  /**
+   * Render a biome-themed frame + vignette over the viewport area outside
+   * the world bounds. Only visible when the window is larger than the
+   * world (the same condition that triggers camera centering). Idempotent:
+   * destroys the previous frame on each call so resize handlers can simply
+   * call this without leaking Graphics objects.
+   *
+   * Layout:
+   *   - 4 biome-fill rects in the empty bands around the world.
+   *   - 1 accent line at each world edge (subtle parchment-like border).
+   *   - 4 trapezoidal vignette gradients over the full viewport.
+   *
+   * All graphics are pinned via setScrollFactor(0) and rendered at depth
+   * 2000 (above scene content but below React-side HUD overlays which are
+   * outside the canvas entirely). Input passes through (Graphics has no
+   * default hit area).
+   */
+  _renderViewportFrame() {
+    if (!this.cameras?.main) return;
+    const world = this.getWorldSize();
+    const cam = this.cameras.main;
+
+    // Tear down any previous frame from a prior resize.
+    if (this._viewportFrame) {
+      this._viewportFrame.destroy();
+      this._viewportFrame = null;
+    }
+    if (this._viewportVignette) {
+      this._viewportVignette.destroy();
+      this._viewportVignette = null;
+    }
+
+    // Bail if the world fully covers the viewport — no empty space to fill.
+    if (cam.width <= world.width && cam.height <= world.height) return;
+
+    const sceneKey = this.getSceneKey();
+    const biome = SCENE_BIOMES[sceneKey] || DEFAULT_BIOME;
+
+    // Empty-band positions in screen-space. Camera is centered on world
+    // center, so world covers the rect (offsetX, offsetY)-(offsetX+W, offsetY+H).
+    const offsetX = Math.max(0, (cam.width  - world.width)  / 2);
+    const offsetY = Math.max(0, (cam.height - world.height) / 2);
+
+    // ── Biome fill bands ──────────────────────────────────────────────────
+    const frame = this.add.graphics();
+    frame.setScrollFactor(0);
+    frame.setDepth(2000);
+    frame.fillStyle(biome.fill, 1.0);
+    if (offsetX > 0) {
+      frame.fillRect(0, 0, offsetX, cam.height);                              // left
+      frame.fillRect(cam.width - offsetX, 0, offsetX, cam.height);            // right
+    }
+    if (offsetY > 0) {
+      frame.fillRect(offsetX, 0, world.width, offsetY);                       // top
+      frame.fillRect(offsetX, cam.height - offsetY, world.width, offsetY);    // bottom
+    }
+    // Accent line just outside the world edges — a thin biome-accent stroke
+    // that visually frames the playable area.
+    frame.lineStyle(2, biome.accent, 0.85);
+    frame.strokeRect(offsetX - 1, offsetY - 1, world.width + 2, world.height + 2);
+    this._viewportFrame = frame;
+
+    // ── Vignette over the full viewport ───────────────────────────────────
+    // Same trapezoid trick as world-map-polish: 4 edge bands with a linear
+    // gradient that darkens toward the viewport corners. Subtle (alpha 0.35)
+    // so the biome fill still reads.
+    const VIG_DEPTH = Math.round(Math.min(cam.width, cam.height) * 0.22);
+    const ALPHA_OUTER = 0.35;
+    const ALPHA_INNER = 0;
+    const vg = this.add.graphics();
+    vg.setScrollFactor(0);
+    vg.setDepth(2001);
+    // TOP
+    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000,
+      ALPHA_OUTER, ALPHA_OUTER, ALPHA_INNER, ALPHA_INNER);
+    vg.fillRect(0, 0, cam.width, VIG_DEPTH);
+    // BOTTOM
+    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000,
+      ALPHA_INNER, ALPHA_INNER, ALPHA_OUTER, ALPHA_OUTER);
+    vg.fillRect(0, cam.height - VIG_DEPTH, cam.width, VIG_DEPTH);
+    // LEFT
+    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000,
+      ALPHA_OUTER, ALPHA_INNER, ALPHA_OUTER, ALPHA_INNER);
+    vg.fillRect(0, 0, VIG_DEPTH, cam.height);
+    // RIGHT
+    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000,
+      ALPHA_INNER, ALPHA_OUTER, ALPHA_INNER, ALPHA_OUTER);
+    vg.fillRect(cam.width - VIG_DEPTH, 0, VIG_DEPTH, cam.height);
+    this._viewportVignette = vg;
   }
 
   /**
