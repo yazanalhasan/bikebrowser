@@ -214,12 +214,14 @@
     {
       "agent": "audio-asset-cleanup",
       "status": "partial",
+      "failure_class": "SPEC_VALID_BUT_RUNTIME_INVALID",
       "ts": "2026-04-26T01:50:00Z",
       "review_verdict": "NEEDS_REVISION",
       "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-audio-asset-cleanup-2026-04-26T01-45-00Z.json",
       "receipt": ".claude/swarm/receipts/audio-asset-cleanup-2026-04-26T01-35-00Z.json",
       "revision_note": ".claude/swarm/blockers/audio-asset-cleanup-needs-revision-2026-04-26T01-50-00Z.md",
       "resolution_applied": "Orchestrator restored all 5 archived WAVs via git mv from public/audio/_archived/ back to original paths. Runtime regression no longer in working tree.",
+      "retroactive_protocol_applied": "Runtime Reality Validation Protocol — see .claude/agent-memory/swarm-orchestrator/feedback_runtime_reality_validation.md. Future re-dispatch will be gated through RRV: candidates traced for runtime usage + fallback-chain validity; .wav masters whose .ogg siblings are 0-byte must emit requires_upstream_fix and recommend audio-compression-pass instead of acting.",
       "summary": "Worker followed spec literally — archived 5 WAVs whose .ogg siblings were present on disk. But ALL 5 .ogg siblings are 0-byte placeholders, no .mp3 exists, and AudioManager.findAssetUrl falls through ['.ogg', '.mp3', '.wav'] skipping 0-byte sources. The .wav files were the active runtime audio source for garage music, neighborhood music, world-map music, and 2 stingers. Spec criterion lacked 'compressed sibling must be non-zero bytes' rule. Cannot re-dispatch until either (a) spec is updated or (b) a new audio-compression-pass agent runs first to populate playable .ogg files, then this can re-run safely."
     }
   ],

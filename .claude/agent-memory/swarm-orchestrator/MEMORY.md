@@ -3,3 +3,4 @@
 - [Mid-session agent registry limitation](feedback_agent_registry.md) — agent .md files added mid-session aren't in the Agent tool registry; route via general-purpose with the spec embedded, or restart for native registration.
 - [3D track paused, 2D game is the product](project_3d_track_paused.md) — user paused 3D R3F module 2026-04-25; do not dispatch `screen-grid-architect` or pitch new 3D agents without re-approval.
 - [Receipt recovery for stalled-but-correct workers](feedback_receipt_recovery.md) — when code lands but receipt missing, run RECEIPT_RECOVERY (verify → synthesize → mark complete_with_recovery → audit log) instead of blocking.
+- [Runtime Reality Validation for destructive/archival agents](feedback_runtime_reality_validation.md) — before removing/archiving/rewriting assets, dispatch prompt must require runtime usage trace + fallback-chain validity check; spec compliance is not enough (audio-asset-cleanup 2026-04-26 incident).

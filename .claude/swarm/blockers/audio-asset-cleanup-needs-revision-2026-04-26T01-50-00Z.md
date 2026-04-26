@@ -5,6 +5,25 @@
 **Worker receipt:** `.claude/swarm/receipts/audio-asset-cleanup-2026-04-26T01-35-00Z.json`
 **Resolution applied this cycle:** Orchestrator restored the 5 archived WAVs via `git mv` immediately after review. The runtime regression is no longer present in the working tree.
 
+## Retroactive classification (added 2026-04-25 by orchestrator)
+
+**Failure mode:** `SPEC_VALID_BUT_RUNTIME_INVALID`
+
+The worker's diff was 100% spec-compliant. The spec missed a runtime-reality
+check: it did not require that the higher-priority `.ogg`/`.mp3` siblings
+referenced as the "compressed sibling" actually be playable (non-zero, valid).
+Going forward, the orchestrator dispatches every destructive/archival agent
+under the **Runtime Reality Validation Protocol** documented in
+`.claude/agent-memory/swarm-orchestrator/feedback_runtime_reality_validation.md`.
+
+Under that protocol, this same dispatch would have produced:
+- `rrv_candidates[].decision: block` for all 5 .wav masters
+- `blocker: "requires_upstream_fix"`
+- `recommended_next_agent: "audio-compression-pass"`
+- receipt status `blocked`, not `complete`
+
+The diff would never have landed; no restore would have been needed.
+
 ## What happened
 
 The worker correctly followed the spec criterion ("compressed sibling exists") and archived 5 `.wav` masters whose `.ogg` siblings were present on disk:
