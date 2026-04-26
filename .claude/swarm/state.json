@@ -122,7 +122,7 @@
     {
       "agent": "bundle-splitter",
       "ts": "2026-04-26T01:25:00Z",
-      "commit": null,
+      "commit": "6ed60a8",
       "review_verdict": "PASS",
       "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-bundle-splitter-2026-04-26T01-25-00Z.json",
       "receipt": ".claude/swarm/receipts/bundle-splitter-2026-04-26T01-20-00Z.json",
