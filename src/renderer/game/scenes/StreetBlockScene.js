@@ -20,6 +20,7 @@ import { getQuestBoard, getNextQuestForNPC } from '../data/questBoard.js';
 import QUESTS from '../data/quests.js';
 import { drawPlant } from '../utils/plantRenderer.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { loadLayout } from '../utils/loadLayout.js';
 
 export default class StreetBlockScene extends LocalSceneBase {
   constructor() {
@@ -30,16 +31,28 @@ export default class StreetBlockScene extends LocalSceneBase {
     return { width: 1000, height: 700 };
   }
 
+  preload() {
+    super.preload?.();
+    this.load.json('streetBlockLayout', 'layouts/street-block.layout.json');
+  }
+
   createWorld() {
-    const { width, height } = this.getWorldSize();
+    this.layout = loadLayout(this, 'streetBlockLayout');
+    const { width } = this.getWorldSize();
     const state = this.registry.get('gameState');
 
     // === GROUND ===
     // Grass
-    this.add.rectangle(width / 2, height / 2, width, height, 0x7cb342);
+    {
+      const o = this.layout.grass;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x7cb342);
+    }
 
     // Road (horizontal, center)
-    this.add.rectangle(width / 2, 350, width, 120, 0x616161);
+    {
+      const o = this.layout.road;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x616161);
+    }
     // Road lines
     const roadGfx = this.add.graphics();
     roadGfx.lineStyle(2, 0xfdd835, 0.6);
@@ -47,100 +60,178 @@ export default class StreetBlockScene extends LocalSceneBase {
       roadGfx.lineBetween(x, 350, x + 25, 350);
     }
     // Sidewalks
-    this.add.rectangle(width / 2, 280, width, 20, 0xbdbdbd);
-    this.add.rectangle(width / 2, 420, width, 20, 0xbdbdbd);
+    {
+      const o = this.layout.sidewalk_top;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0xbdbdbd);
+    }
+    {
+      const o = this.layout.sidewalk_bottom;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0xbdbdbd);
+    }
 
     // === ZUZU'S HOUSE (left side, north of road) ===
     // House body
-    this.add.rectangle(130, 180, 180, 120, 0xd4a574).setStrokeStyle(3, 0xc4945e).setDepth(1);
+    {
+      const o = this.layout.zuzu_house_body;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0xd4a574).setStrokeStyle(3, 0xc4945e).setDepth(1);
+    }
     // Roof
     const roofGfx = this.add.graphics();
     roofGfx.fillStyle(0x8d6e63);
-    roofGfx.fillTriangle(40, 125, 130, 60, 220, 125);
+    {
+      const o = this.layout.zuzu_house_roof;
+      roofGfx.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
+    }
     roofGfx.setDepth(2);
     // Door
-    this.add.rectangle(130, 220, 35, 50, 0x5d4037).setDepth(2);
-    this.add.circle(142, 220, 3, 0xfdd835).setDepth(3);
+    {
+      const o = this.layout.zuzu_house_door;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
+    }
+    {
+      const o = this.layout.zuzu_house_doorknob;
+      this.add.circle(o.x, o.y, o.r, 0xfdd835).setDepth(3);
+    }
     // Windows
-    this.add.rectangle(85, 175, 30, 25, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
-    this.add.rectangle(175, 175, 30, 25, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
+    {
+      const o = this.layout.zuzu_house_window_left;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
+    }
+    {
+      const o = this.layout.zuzu_house_window_right;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
+    }
     // Label
-    this.add.text(130, 245, "🏠 Zuzu's House", {
-      fontSize: '11px', fontFamily: 'sans-serif', color: '#4e342e',
-      fontStyle: 'bold', stroke: '#fff', strokeThickness: 2,
-    }).setOrigin(0.5).setDepth(3);
+    {
+      const o = this.layout.zuzu_house_label;
+      this.add.text(o.x, o.y, "🏠 Zuzu's House", {
+        fontSize: '11px', fontFamily: 'sans-serif', color: '#4e342e',
+        fontStyle: 'bold', stroke: '#fff', strokeThickness: 2,
+      }).setOrigin(0.5).setDepth(3);
+    }
     // House collision
-    this.addWall(130, 180, 180, 120);
+    {
+      const o = this.layout.zuzu_house_collision;
+      this.addWall(o.x, o.y, o.w, o.h);
+    }
 
     // Driveway
-    this.add.rectangle(130, 262, 60, 16, 0x9e9e9e);
+    {
+      const o = this.layout.zuzu_driveway;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x9e9e9e);
+    }
 
     // === NEIGHBOR HOUSE — Mrs. Ramirez (center-right, north of road) ===
-    this.add.rectangle(550, 180, 180, 120, 0xef9a9a).setStrokeStyle(3, 0xe57373).setDepth(1);
+    {
+      const o = this.layout.ramirez_house_body;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0xef9a9a).setStrokeStyle(3, 0xe57373).setDepth(1);
+    }
     const roofGfx2 = this.add.graphics();
     roofGfx2.fillStyle(0xc62828);
-    roofGfx2.fillTriangle(460, 125, 550, 60, 640, 125);
+    {
+      const o = this.layout.ramirez_house_roof;
+      roofGfx2.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
+    }
     roofGfx2.setDepth(2);
-    this.add.rectangle(550, 220, 35, 50, 0x5d4037).setDepth(2);
-    this.add.circle(562, 220, 3, 0xfdd835).setDepth(3);
-    this.add.rectangle(505, 175, 30, 25, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
-    this.add.rectangle(595, 175, 30, 25, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
-    this.add.text(550, 245, "🏡 Ramirez House", {
-      fontSize: '11px', fontFamily: 'sans-serif', color: '#b71c1c',
-      fontStyle: 'bold', stroke: '#fff', strokeThickness: 2,
-    }).setOrigin(0.5).setDepth(3);
-    this.addWall(550, 180, 180, 120);
+    {
+      const o = this.layout.ramirez_house_door;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
+    }
+    {
+      const o = this.layout.ramirez_house_doorknob;
+      this.add.circle(o.x, o.y, o.r, 0xfdd835).setDepth(3);
+    }
+    {
+      const o = this.layout.ramirez_house_window_left;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
+    }
+    {
+      const o = this.layout.ramirez_house_window_right;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
+    }
+    {
+      const o = this.layout.ramirez_house_label;
+      this.add.text(o.x, o.y, "🏡 Ramirez House", {
+        fontSize: '11px', fontFamily: 'sans-serif', color: '#b71c1c',
+        fontStyle: 'bold', stroke: '#fff', strokeThickness: 2,
+      }).setOrigin(0.5).setDepth(3);
+    }
+    {
+      const o = this.layout.ramirez_house_collision;
+      this.addWall(o.x, o.y, o.w, o.h);
+    }
 
     // === NEIGHBOR HOUSE — far right (decorative) ===
-    this.add.rectangle(850, 180, 160, 110, 0x90caf9).setStrokeStyle(3, 0x64b5f6).setDepth(1);
+    {
+      const o = this.layout.blue_house_body;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x90caf9).setStrokeStyle(3, 0x64b5f6).setDepth(1);
+    }
     const roofGfx3 = this.add.graphics();
     roofGfx3.fillStyle(0x1565c0);
-    roofGfx3.fillTriangle(770, 130, 850, 70, 930, 130);
+    {
+      const o = this.layout.blue_house_roof;
+      roofGfx3.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
+    }
     roofGfx3.setDepth(2);
-    this.add.rectangle(850, 218, 30, 45, 0x5d4037).setDepth(2);
-    this.addWall(850, 180, 160, 110);
+    {
+      const o = this.layout.blue_house_door;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
+    }
+    {
+      const o = this.layout.blue_house_collision;
+      this.addWall(o.x, o.y, o.w, o.h);
+    }
 
     // === SOUTH SIDE — more houses ===
-    this.add.rectangle(350, 550, 160, 100, 0xc8e6c9).setStrokeStyle(3, 0xa5d6a7).setDepth(1);
+    {
+      const o = this.layout.green_house_body;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0xc8e6c9).setStrokeStyle(3, 0xa5d6a7).setDepth(1);
+    }
     const roofGfx4 = this.add.graphics();
     roofGfx4.fillStyle(0x2e7d32);
-    roofGfx4.fillTriangle(270, 505, 350, 445, 430, 505);
+    {
+      const o = this.layout.green_house_roof;
+      roofGfx4.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
+    }
     roofGfx4.setDepth(2);
-    this.add.rectangle(350, 580, 30, 40, 0x5d4037).setDepth(2);
-    this.addWall(350, 550, 160, 100);
+    {
+      const o = this.layout.green_house_door;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
+    }
+    {
+      const o = this.layout.green_house_collision;
+      this.addWall(o.x, o.y, o.w, o.h);
+    }
 
-    this.add.rectangle(700, 550, 160, 100, 0xfff9c4).setStrokeStyle(3, 0xfff176).setDepth(1);
+    {
+      const o = this.layout.yellow_house_body;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0xfff9c4).setStrokeStyle(3, 0xfff176).setDepth(1);
+    }
     const roofGfx5 = this.add.graphics();
     roofGfx5.fillStyle(0xf9a825);
-    roofGfx5.fillTriangle(620, 505, 700, 445, 780, 505);
+    {
+      const o = this.layout.yellow_house_roof;
+      roofGfx5.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
+    }
     roofGfx5.setDepth(2);
-    this.add.rectangle(700, 580, 30, 40, 0x5d4037).setDepth(2);
-    this.addWall(700, 550, 160, 100);
+    {
+      const o = this.layout.yellow_house_door;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
+    }
+    {
+      const o = this.layout.yellow_house_collision;
+      this.addWall(o.x, o.y, o.w, o.h);
+    }
 
     // === TREES / DECORATIONS ===
-    const trees = [[30, 340], [260, 140], [400, 140], [700, 140], [950, 340],
-                   [200, 500], [500, 620], [900, 500]];
-    for (const [tx, ty] of trees) {
-      this.add.text(tx, ty, '🌳', { fontSize: '28px' }).setOrigin(0.5).setDepth(3);
+    for (const t of this.layout.trees) {
+      this.add.text(t.x, t.y, '🌳', { fontSize: '28px' }).setOrigin(0.5).setDepth(3);
     }
 
     // === ECOLOGY PLANTS (drawn with graphics + interactable) ===
     this._ecologyPlants = [];
 
-    const plants = [
-      { species: 'mesquite', label: 'Mesquite Tree', x: 260, y: 460, radius: 65 },
-      { species: 'mesquite', label: 'Mesquite Tree', x: 900, y: 460, radius: 65 },
-      { species: 'creosote', label: 'Creosote Bush', x: 80, y: 460, radius: 55 },
-      { species: 'creosote', label: 'Creosote Bush', x: 950, y: 620, radius: 55 },
-      { species: 'prickly_pear', label: 'Prickly Pear', x: 480, y: 640, radius: 50 },
-      { species: 'barrel_cactus', label: 'Barrel Cactus', x: 30, y: 620, radius: 45 },
-      { species: 'jojoba', label: 'Jojoba Shrub', x: 780, y: 640, radius: 45 },
-      { species: 'agave', label: 'Agave Plant', x: 450, y: 460, radius: 55 },
-      { species: 'yucca', label: 'Yucca Plant', x: 150, y: 620, radius: 50 },
-      { species: 'desert_lavender', label: 'Desert Lavender', x: 650, y: 460, radius: 50 },
-    ];
-
-    for (const p of plants) {
+    for (const p of this.layout.plants) {
       // Draw visual plant (graphics-based, not emoji)
       const plantContainer = drawPlant(this, p.species, p.x, p.y);
       plantContainer.setDepth(4); // background decoration, below player (depth 6)
@@ -155,79 +246,103 @@ export default class StreetBlockScene extends LocalSceneBase {
     }
 
     // Fire hydrant
-    this.add.text(340, 275, '🧯', { fontSize: '18px' }).setOrigin(0.5).setDepth(3);
+    {
+      const o = this.layout.fire_hydrant;
+      this.add.text(o.x, o.y, '🧯', { fontSize: '18px' }).setOrigin(0.5).setDepth(3);
+    }
 
     // Mailboxes
-    this.add.text(190, 265, '📫', { fontSize: '16px' }).setOrigin(0.5).setDepth(3);
-    this.add.text(610, 265, '📫', { fontSize: '16px' }).setOrigin(0.5).setDepth(3);
+    {
+      const o = this.layout.mailbox_left;
+      this.add.text(o.x, o.y, '📫', { fontSize: '16px' }).setOrigin(0.5).setDepth(3);
+    }
+    {
+      const o = this.layout.mailbox_right;
+      this.add.text(o.x, o.y, '📫', { fontSize: '16px' }).setOrigin(0.5).setDepth(3);
+    }
 
     // Street sign
-    this.add.text(width / 2, 275, '🛣️ E Trailside View', {
-      fontSize: '12px', fontFamily: 'sans-serif', color: '#fff',
-      backgroundColor: '#2e7d32', padding: { x: 6, y: 2 },
-      fontStyle: 'bold',
-    }).setOrigin(0.5).setDepth(5);
+    {
+      const o = this.layout.street_sign;
+      this.add.text(o.x, o.y, '🛣️ E Trailside View', {
+        fontSize: '12px', fontFamily: 'sans-serif', color: '#fff',
+        backgroundColor: '#2e7d32', padding: { x: 6, y: 2 },
+        fontStyle: 'bold',
+      }).setOrigin(0.5).setDepth(5);
+    }
 
     // === MRS. RAMIREZ NPC ===
     const ramirezData = NPC_PLACEMENTS.find(n => n.id === 'mrs_ramirez');
     this.addNpc({
       id: 'mrs_ramirez',
       name: 'Mrs. Ramirez',
-      x: 550,
-      y: 310,
+      x: this.layout.npc_mrs_ramirez.x,
+      y: this.layout.npc_mrs_ramirez.y,
       color: ramirezData?.color || 0xb45309,
       onInteract: () => this._handleNpcInteract('mrs_ramirez', 'flat_tire_repair'),
     });
 
     // Mrs. Ramirez's bike
     const questDone = state.completedQuests?.includes('flat_tire_repair');
-    this._ramirezBike = this.add.text(
-      590, 310,
-      questDone ? '🚲✅' : '🚲❌',
-      { fontSize: '28px' },
-    ).setOrigin(0.5).setDepth(40);
+    {
+      const o = this.layout.ramirez_bike_icon;
+      this._ramirezBike = this.add.text(
+        o.x, o.y,
+        questDone ? '🚲✅' : '🚲❌',
+        { fontSize: '28px' },
+      ).setOrigin(0.5).setDepth(40);
+    }
 
     // === MR. CHEN NPC ===
     const chenData = NPC_PLACEMENTS.find(n => n.id === 'mr_chen');
     this.addNpc({
       id: 'mr_chen',
       name: 'Mr. Chen',
-      x: 250,
-      y: 430,
+      x: this.layout.npc_mr_chen.x,
+      y: this.layout.npc_mr_chen.y,
       color: chenData?.color || 0x2563eb,
       onInteract: () => this._handleNpcInteract('mr_chen', 'chain_repair'),
     });
 
     // Mr. Chen's bike
     const chenQuestDone = state.completedQuests?.includes('chain_repair');
-    this._chenBike = this.add.text(
-      290, 430,
-      chenQuestDone ? '🚲✅' : '🚲⛓️',
-      { fontSize: '28px' },
-    ).setOrigin(0.5).setDepth(40);
+    {
+      const o = this.layout.chen_bike_icon;
+      this._chenBike = this.add.text(
+        o.x, o.y,
+        chenQuestDone ? '🚲✅' : '🚲⛓️',
+        { fontSize: '28px' },
+      ).setOrigin(0.5).setDepth(40);
+    }
 
     // === EXITS ===
     // West exit → Garage
-    this.addExit({
-      x: 14, y: 300,
-      width: 28, height: 80,
-      targetScene: 'ZuzuGarageScene',
-      targetSpawn: 'fromStreet',
-      label: '🏠 Garage ⬅',
-    });
+    {
+      const o = this.layout.exit_zone_west;
+      this.addExit({
+        x: o.x, y: o.y,
+        width: o.w, height: o.h,
+        targetScene: 'ZuzuGarageScene',
+        targetSpawn: 'fromStreet',
+        label: '🏠 Garage ⬅',
+      });
+    }
 
     // North exit → Overworld
-    this.addExit({
-      x: width / 2, y: 14,
-      width: 200, height: 28,
-      targetScene: 'OverworldScene',
-      targetSpawn: 'fromStreet',
-      label: '🗺️ Neighborhood ⬆',
-    });
+    {
+      const o = this.layout.exit_zone_north;
+      this.addExit({
+        x: o.x, y: o.y,
+        width: o.w, height: o.h,
+        targetScene: 'OverworldScene',
+        targetSpawn: 'fromStreet',
+        label: '🗺️ Neighborhood ⬆',
+      });
+    }
 
     // === WORLD MAP ACCESS: Bike GPS ===
     this.addInteractable({
-      x: width - 60, y: 300,
+      x: this.layout.interact_gps.x, y: this.layout.interact_gps.y,
       icon: '📡',
       label: 'Bike GPS',
       radius: 70,
@@ -246,11 +361,20 @@ export default class StreetBlockScene extends LocalSceneBase {
       },
     });
     // GPS post (visual)
-    this.add.rectangle(width - 60, 310, 8, 40, 0x475569);
-    this.add.rectangle(width - 60, 285, 30, 5, 0x475569);
+    {
+      const o = this.layout.gps_post;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x475569);
+    }
+    {
+      const o = this.layout.gps_top;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x475569);
+    }
 
     // === WORLD BOUNDS ===
-    this.addWall(width / 2, height + 10, width, 20); // south
+    {
+      const o = this.layout.wall_south;
+      this.addWall(o.x, o.y, o.w, o.h); // south
+    }
   }
 
   // ── Plant Interaction ────────────────────────────────────────────────────────

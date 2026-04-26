@@ -1,0 +1,165 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "target": "StreetBlockScene",
+  "ts": "2026-04-26T18-10-00Z",
+  "status": "complete",
+  "first_dispatch": false,
+  "dispatch_parameters": {
+    "targetSceneFile": "src/renderer/game/scenes/StreetBlockScene.js",
+    "targetSceneKey": "StreetBlockScene",
+    "layoutAssetKey": "streetBlockLayout",
+    "layoutPath": "layouts/street-block.layout.json"
+  },
+  "files_changed": [
+    "src/renderer/game/scenes/StreetBlockScene.js (M — added loadLayout import, added preload(), assigned this.layout at top of createWorld(), replaced 49 layout literals with this.layout.<name> references)",
+    "public/layouts/street-block.layout.json (NEW — 49 layout objects)"
+  ],
+  "files_skipped_already_present": [
+    "src/renderer/game/utils/loadLayout.js (exists from commit ee3b07f / first-dispatch ZuzuGarageScene)",
+    "CLAUDE.md (exists from commit ee3b07f / first-dispatch ZuzuGarageScene)"
+  ],
+  "verification": {
+    "build": {
+      "command": "npm run build",
+      "result": "PASS",
+      "duration": "11.26s"
+    },
+    "literal_coordinates_check": {
+      "command": "grep -E 'this\\.add\\.\\w+\\(\\s*[0-9]+\\s*,' src/renderer/game/scenes/StreetBlockScene.js",
+      "result": "0 matches"
+    },
+    "extended_literal_check": {
+      "command": "grep for addWall|addExit|addNpc|addInteractable|fillTriangle|lineBetween|fillCircle|fillRect (any leading numeric literal)",
+      "result": "1 match — line 60 road dash loop: roadGfx.lineBetween(x, 350, x + 25, 350). Loop-generated, exempt per spec section 8 (loop bounds use width from getWorldSize(); the literal 350 is the road centerline y matching road.y, and the loop emits a dynamic dashed pattern across the canvas)."
+    },
+    "unreferenced_layout_names_check": {
+      "method": "Object.keys(layout.objects).filter(k => !scene.includes('this.layout.' + k))",
+      "result": "0 unreferenced (49/49 referenced)"
+    },
+    "json_parse_sanity": {
+      "command": "node -e parse + count",
+      "result": "49 objects parsed cleanly"
+    },
+    "world_size_used": "1000x700 (verified via StreetBlockScene.js:29-30 — getWorldSize() returns { width: 1000, height: 700 }). NOT 800x600, NOT 1024x768."
+  },
+  "notes": {
+    "scene_processed": "StreetBlockScene",
+    "world_size_confirmation": "Used 1000x700 per the scene's own getWorldSize() return. All `width / 2` references resolved to 500. All `width - N` resolved against 1000 (e.g. width-60 -> 940). All `height + N` resolved against 700 (e.g. height+10 -> 710). All `height / 2` resolved to 350.",
+    "first_dispatch_files_status": {
+      "loadLayout.js": "SKIPPED — already exists from prior dispatch (commit ee3b07f). Did not modify or recreate.",
+      "CLAUDE.md": "SKIPPED — already exists from prior dispatch (commit ee3b07f). Did not modify or recreate."
+    },
+    "layout_object_count": 49,
+    "layout_object_names": [
+      "grass",
+      "road",
+      "sidewalk_top",
+      "sidewalk_bottom",
+      "zuzu_house_body",
+      "zuzu_house_roof",
+      "zuzu_house_door",
+      "zuzu_house_doorknob",
+      "zuzu_house_window_left",
+      "zuzu_house_window_right",
+      "zuzu_house_label",
+      "zuzu_house_collision",
+      "zuzu_driveway",
+      "ramirez_house_body",
+      "ramirez_house_roof",
+      "ramirez_house_door",
+      "ramirez_house_doorknob",
+      "ramirez_house_window_left",
+      "ramirez_house_window_right",
+      "ramirez_house_label",
+      "ramirez_house_collision",
+      "blue_house_body",
+      "blue_house_roof",
+      "blue_house_door",
+      "blue_house_collision",
+      "green_house_body",
+      "green_house_roof",
+      "green_house_door",
+      "green_house_collision",
+      "yellow_house_body",
+      "yellow_house_roof",
+      "yellow_house_door",
+      "yellow_house_collision",
+      "trees",
+      "plants",
+      "fire_hydrant",
+      "mailbox_left",
+      "mailbox_right",
+      "street_sign",
+      "npc_mrs_ramirez",
+      "ramirez_bike_icon",
+      "npc_mr_chen",
+      "chen_bike_icon",
+      "exit_zone_west",
+      "exit_zone_north",
+      "interact_gps",
+      "gps_post",
+      "gps_top",
+      "wall_south"
+    ],
+    "loop_generated_arrays_hoisted_to_json": [
+      {
+        "name": "trees",
+        "shape": "array of {x,y}",
+        "count": 8,
+        "rationale": "Per spec section 8: hoisted purely positional array; iteration loop in code now reads this.layout.trees."
+      },
+      {
+        "name": "plants",
+        "shape": "array of {species,label,x,y,radius}",
+        "count": 10,
+        "rationale": "Per spec section 8: hoisted the plant-config array. Includes species/label alongside positions because the array entries are tightly coupled (same loop body uses all five fields). Behavior is byte-identical — moving const data into JSON does not change behavior. Each plant's x/y/radius is the load-bearing positional/size data."
+      }
+    ],
+    "positions_left_in_code_with_reasons": [
+      {
+        "source_lines": "src/renderer/game/scenes/StreetBlockScene.js:58-61",
+        "code": "for (let x = 0; x < width; x += 50) { roadGfx.lineBetween(x, 350, x + 25, 350); }",
+        "reason": "Loop-generated road dash pattern. Per spec section 8 (loop-generated positions are exempt unless the loop bounds are literals worth capturing). Bounds use width from getWorldSize(); the y=350 literal is the road centerline (matches road.y) and the 50/25 literals control dash spacing/length. The road.y is captured in the layout JSON; the loop body coordinates are derived per-iteration."
+      },
+      {
+        "source_lines": "Various setOrigin(0.5), setStrokeStyle(N, 0xCOLOR), interaction radius (70 for GPS), font sizes ('11px', '28px', etc.), depth values, color literals (0xd4a574 etc.)",
+        "reason": "Per spec rule: setOrigin args are origin floats (0..1), NOT pixel coordinates. Stroke widths, depths, font sizes, interaction radii (constant 70 for GPS — matches ZuzuGarageScene convention), and color literals are styling/behavior, not layout positions. All left in code."
+      },
+      {
+        "source_lines": "src/renderer/game/scenes/StreetBlockScene.js:419-510 (_handlePlantInteract, _handleNpcInteract, advanceFromDialog, _showRewardCelebration)",
+        "reason": "All function bodies untouched. _showRewardCelebration uses dynamic camera-relative positions (cam.scrollX + cam.width/2, +40 offset) — these are per-frame/dynamic positions, exempt per spec section 7. delayedCall(4000) and tween durations (500ms, 400ms) are temporal, not coordinates."
+      }
+    ],
+    "behavioral_changes": "NONE. Zero touches to onInteract bodies, dialog strings, quest conditionals (startQuest/getCurrentStep/advanceQuest), audio calls (audioMgr.playSfx/playStinger), save calls (saveGame), NPC_PLACEMENTS lookup, scene transitions (this.scene.start), camera fade callbacks, plant info data, idle messages, MCP emit, or any conditional logic. Verified by reading the diff line-by-line: every change is either the import, the new preload(), the loadLayout() call, or a literal-to-this.layout.NAME swap.",
+    "computed_positions_resolved_to_literals": "Every `width / 2` -> 500, `width - 60` -> 940, `height + 10` -> 710, `height / 2` -> 350 was resolved to its concrete literal in the JSON. Original expressions are preserved in `_note` fields for human-roundtrip review.",
+    "preserved_runtime_property_assignments": "this._ramirezBike (line 286) and this._chenBike (line 308) are kept on the instance — they now read x/y from this.layout.ramirez_bike_icon and this.layout.chen_bike_icon respectively. The advanceFromDialog handler (line 467+) still references these properties to update bike icons after quest completion; preserving the assignments guarantees no behavioral drift. this._ecologyPlants (line 130) is also preserved — same shape as before.",
+    "scope_compliance": "Did NOT touch any file under .claude/agents/, .claude/swarm/, .claude/agent-memory/, or any scene file other than StreetBlockScene.js. Did NOT modify or recreate loadLayout.js or CLAUDE.md (both exist from commit ee3b07f). Did NOT pre-plan future agent dispatches. Per orchestrator scope guard."
+  },
+  "next_agent_suggestions": [
+    {
+      "agent": "phaser-scene-layout-extractor",
+      "target": "NeighborhoodScene",
+      "rationale": "Third in user's recommended order. The neighborhood scene is the next natural-sequencing local scene after the player exits StreetBlockScene's north exit into the overworld — high-traffic visual review path.",
+      "suggested_dispatch_parameters": {
+        "targetSceneFile": "src/renderer/game/scenes/NeighborhoodScene.js",
+        "targetSceneKey": "NeighborhoodScene",
+        "layoutAssetKey": "neighborhoodLayout",
+        "layoutPath": "layouts/neighborhood.layout.json"
+      }
+    },
+    {
+      "agent": "phaser-scene-layout-extractor",
+      "target": "MaterialLabScene",
+      "rationale": "Fourth in user's recommended order. Reachable from ZuzuGarageScene's lab door."
+    },
+    {
+      "agent": "phaser-scene-layout-extractor",
+      "target": "DesertTrailScene",
+      "rationale": "Fifth in user's recommended order."
+    },
+    {
+      "agent": "code-quality-reviewer",
+      "rationale": "After the layout-extractor batch completes, run a reviewer pass to confirm no behavioral drift across the migrated scenes (diff-aware, focused on event handler / dialog / quest / audio / save invariants)."
+    }
+  ]
+}
