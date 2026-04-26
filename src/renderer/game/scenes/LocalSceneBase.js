@@ -28,6 +28,7 @@ import { transitionTo } from '../systems/sceneTransition.js';
 import { SCENE_MAP, getSpawn } from '../systems/sceneRegistry.js';
 import MCPSystem from '../systems/MCPSystem.js';
 import { spawnObstacles } from '../systems/obstacleSystem.js';
+import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
 import { getPhysicsState, wireCameraToMCP } from '../systems/physicsbridge.js';
 
 // Default world size for local scenes (viewport-scale, not overworld-scale)
@@ -54,6 +55,63 @@ export default class LocalSceneBase extends Phaser.Scene {
 
   /** Override for per-frame custom logic. */
   onUpdate(_dt) { /* subclass implements */ }
+
+  // ---------------------------------------------------------------------------
+  // Quest progression — default advanceFromDialog
+  // ---------------------------------------------------------------------------
+  // Called by GameContainer.handleDialogContinue when the player closes a
+  // quest-bearing dialog. Advances the active quest if its step's requirements
+  // are met (e.g. requiredItem is in inventory after a forage/grant scene).
+  // Without this, scenes like CopperMineScene / MountainScene / ZuzuGarageScene
+  // would grant items via dialog but never trigger the step advance — leaving
+  // the player with the item but quest stuck on the prior step. NeighborhoodScene
+  // and StreetBlockScene OVERRIDE this with NPC-aware versions that emit the
+  // next step's dialog inline; this default just advances + saves silently and
+  // closes the dialog so the next interaction (NPC, prop, scene transition)
+  // surfaces the next step.
+  advanceFromDialog(choiceIndex) {
+    if (!this.scene?.isActive?.()) return;
+
+    let state = this.registry.get('gameState');
+    if (!state?.activeQuest?.id) {
+      // No active quest — just close the dialog
+      this.registry.set('dialogEvent', null);
+      return;
+    }
+
+    const audioMgr = this.registry.get('audioManager');
+    const result = advanceQuest(state, choiceIndex);
+
+    if (!result.ok) {
+      audioMgr?.playSfx?.('ui_error');
+      this.registry.set('dialogEvent', {
+        speaker: 'System',
+        text: result.message,
+        choices: null,
+        step: getCurrentStep(state),
+      });
+      return;
+    }
+
+    state = result.state;
+    this.registry.set('gameState', state);
+    saveGame(state);
+
+    const nextStep = getCurrentStep(state);
+    if (!nextStep) {
+      // Quest completed
+      audioMgr?.playStinger?.('reward_stinger');
+      if (typeof this._showRewardCelebration === 'function') {
+        this._showRewardCelebration(state);
+      }
+    } else {
+      audioMgr?.playSfx?.('ui_success');
+    }
+    // Close current dialog regardless — the next step's dialog will be
+    // emitted by whichever interaction the player triggers next (NPC,
+    // prop, scene transition).
+    this.registry.set('dialogEvent', null);
+  }
 
   // ---------------------------------------------------------------------------
   // Lifecycle
