@@ -141,8 +141,33 @@ agents:
     week: 2
     pod: World & Discovery
     requires_human_gate: false
-    notes: "Adds a terrain layer BENEATH existing nodes/paths/labels in WorldMapScene.js. Soft-blob biome painting per region using the warm desert palette. World stops looking like a blank canvas. Performance: render once at scene create."
-    max_turns: 25
+    notes: "REWRITTEN spec (v2). DELETE the existing radial fillCircle blobs at WorldMapScene.js:240-280 and REPLACE with continuous tile/noise terrain (32 px tiles), strong biome palette, inter-region color blending, and elevation shading from a deterministic noise heightmap. Includes new utils/terrainNoise.js helper. The v1 spec produced concentric tan circles centered on nodes — that result is wrong and must be removed wholesale, not toggled."
+    max_turns: 30
+
+  world-path-renderer:
+    prerequisites: [world-terrain-renderer]
+    week: 2
+    pod: World & Discovery
+    requires_human_gate: false
+    notes: "Replaces straight-line paths between regions with curved bezier paths whose color and stroke weight reflect the dominant biome on the segment. Skips WATER endpoints (can't walk on water). Read-only on terrain; rewrites only the path-rendering block in WorldMapScene."
+    max_turns: 22
+
+  world-landmarks:
+    prerequisites: [world-terrain-renderer]
+    week: 2
+    pod: World & Discovery
+    parallel_safe_with: [world-path-renderer]
+    requires_human_gate: false
+    notes: "Adds sparse procedural sprite scatter — cacti/rocks for desert, scrub for grassland, ridge lines for mountain. Deterministic placement using the same seed as terrain. Cap ~80 landmarks total. Procedural Phaser Graphics only (no image loading this cycle)."
+    max_turns: 22
+
+  world-map-polish:
+    prerequisites: [world-terrain-renderer, world-path-renderer, world-landmarks]
+    week: 2
+    pod: World & Discovery
+    requires_human_gate: false
+    notes: "Final cosmetic pass. Anchor nodes into biome bases (dust patch / rocky base / etc.), DELETE the large translucent zone circles around nodes, dim inactive labels to 0.7 alpha, add camera-edge vignette. Cosmetic only — click handlers, transitions, unlock logic untouched."
+    max_turns: 22
 
   world-discovery-state:
     prerequisites: []
