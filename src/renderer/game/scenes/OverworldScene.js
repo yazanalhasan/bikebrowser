@@ -24,6 +24,7 @@ import {
 } from '../data/neighborhoodLayout.js';
 import MCPSystem from '../systems/MCPSystem.js';
 import { getUnlockProgress } from '../systems/sceneRegistry.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 const SCENE_KEY = 'OverworldScene';
 const ENTER_RADIUS = 70; // how close player must be to enter a location
@@ -174,6 +175,8 @@ export default class OverworldScene extends Phaser.Scene {
 
   update(time, delta) {
     if (!this.player) return;
+    // Skip the tick if the sprite was torn down by a pause/unmount race.
+    if (!this.player.sprite || !this.player.sprite.active || !this.player.sprite.body) return;
 
     const pos = this.player.update();
 
@@ -321,3 +324,6 @@ export default class OverworldScene extends Phaser.Scene {
     saveGame(updated);
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr('OverworldScene', import.meta.hot, OverworldScene);

@@ -50,12 +50,14 @@ export default class AudioManager {
     this._loading = new Set();
 
     // Active sources
-    /** @type {AudioBufferSourceNode|null} */
+    // For music/ambient we prefer streaming via HTMLAudioElement (avoids
+    // bulk decodeAudioData which has crashed Chromium on some Windows/AMD
+    // setups with large MP3s). Handle shape: { kind: 'stream', el, src } or
+    // { kind: 'buffer', source } (procedural fallback when no file exists).
     this._currentMusic = null;
     this._currentMusicKey = null;
     this._currentMusicGainNode = null;
 
-    /** @type {AudioBufferSourceNode|null} */
     this._currentAmbient = null;
     this._currentAmbientKey = null;
     this._currentAmbientGainNode = null;
@@ -257,55 +259,33 @@ export default class AudioManager {
 
   /**
    * Play a music track. Crossfades from any currently playing track.
+   * Uses HTMLAudioElement streaming for real files (stable), falls back to
+   * a procedural AudioBuffer when no file exists.
    * @param {string} key
    */
   async playMusic(key) {
-    console.log('[AudioManager] playMusic:', key, 'ctx:', !!this.ctx, 'suspended:', this._suspended, 'currentKey:', this._currentMusicKey);
-    if (!this.ctx || this._suspended) { console.warn('[AudioManager] playMusic BAIL: no ctx or suspended'); return; }
-    if (this._currentMusicKey === key) { console.log('[AudioManager] playMusic SKIP: already playing', key); return; }
-
-    const buffer = this._buffers.get(key) || await this.load(key);
-    console.log('[AudioManager] playMusic buffer for', key, ':', buffer ? `${buffer.duration}s` : 'NULL');
-    if (!buffer) return;
+    if (!this.ctx || this._suspended) return;
+    if (this._currentMusicKey === key) return;
 
     const asset = ASSET_MAP[key];
     const targetVol = asset?.volume ?? 0.5;
+    const loop = asset?.loop ?? true;
 
-    // Fade out old music
+    const handle = await this._playStreamOrBuffer(key, this.musicGain, targetVol, loop);
+    if (!handle) return;
+
     if (this._currentMusic) {
-      this._fadeOutSource(this._currentMusic, this._currentMusicGainNode, CROSSFADE_MS);
+      this._fadeOutHandle(this._currentMusic, this._currentMusicGainNode, CROSSFADE_MS);
     }
-
-    // Create new source
-    const source = this.ctx.createBufferSource();
-    source.buffer = buffer;
-    source.loop = asset?.loop ?? true;
-
-    const gainNode = this.ctx.createGain();
-    gainNode.gain.setValueAtTime(0, this.ctx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(targetVol, this.ctx.currentTime + CROSSFADE_MS / 1000);
-
-    source.connect(gainNode);
-    gainNode.connect(this.musicGain);
-    source.start(0);
-
-    this._currentMusic = source;
+    this._currentMusic = handle;
     this._currentMusicKey = key;
-    this._currentMusicGainNode = gainNode;
-
-    source.onended = () => {
-      if (this._currentMusic === source) {
-        this._currentMusic = null;
-        this._currentMusicKey = null;
-        this._currentMusicGainNode = null;
-      }
-    };
+    this._currentMusicGainNode = handle.gainNode;
   }
 
   /** Stop current music with a quick fade. */
   stopMusic(fadeMs = 400) {
     if (this._currentMusic && this._currentMusicGainNode) {
-      this._fadeOutSource(this._currentMusic, this._currentMusicGainNode, fadeMs);
+      this._fadeOutHandle(this._currentMusic, this._currentMusicGainNode, fadeMs);
     }
     this._currentMusic = null;
     this._currentMusicKey = null;
@@ -324,44 +304,24 @@ export default class AudioManager {
     if (!this.ctx || this._suspended) return;
     if (this._currentAmbientKey === key) return;
 
-    const buffer = this._buffers.get(key) || await this.load(key);
-    if (!buffer) return;
-
     const asset = ASSET_MAP[key];
     const targetVol = asset?.volume ?? 0.3;
+    const loop = asset?.loop ?? true;
+
+    const handle = await this._playStreamOrBuffer(key, this.ambientGain, targetVol, loop);
+    if (!handle) return;
 
     if (this._currentAmbient) {
-      this._fadeOutSource(this._currentAmbient, this._currentAmbientGainNode, CROSSFADE_MS);
+      this._fadeOutHandle(this._currentAmbient, this._currentAmbientGainNode, CROSSFADE_MS);
     }
-
-    const source = this.ctx.createBufferSource();
-    source.buffer = buffer;
-    source.loop = asset?.loop ?? true;
-
-    const gainNode = this.ctx.createGain();
-    gainNode.gain.setValueAtTime(0, this.ctx.currentTime);
-    gainNode.gain.linearRampToValueAtTime(targetVol, this.ctx.currentTime + CROSSFADE_MS / 1000);
-
-    source.connect(gainNode);
-    gainNode.connect(this.ambientGain);
-    source.start(0);
-
-    this._currentAmbient = source;
+    this._currentAmbient = handle;
     this._currentAmbientKey = key;
-    this._currentAmbientGainNode = gainNode;
-
-    source.onended = () => {
-      if (this._currentAmbient === source) {
-        this._currentAmbient = null;
-        this._currentAmbientKey = null;
-        this._currentAmbientGainNode = null;
-      }
-    };
+    this._currentAmbientGainNode = handle.gainNode;
   }
 
   stopAmbient(fadeMs = 400) {
     if (this._currentAmbient && this._currentAmbientGainNode) {
-      this._fadeOutSource(this._currentAmbient, this._currentAmbientGainNode, fadeMs);
+      this._fadeOutHandle(this._currentAmbient, this._currentAmbientGainNode, fadeMs);
     }
     this._currentAmbient = null;
     this._currentAmbientKey = null;
@@ -489,12 +449,10 @@ export default class AudioManager {
    * @param {string} sceneKey
    */
   async transitionToScene(sceneKey) {
-    console.log('[AudioManager] transitionToScene:', sceneKey);
     const musicKey = SCENE_MUSIC[sceneKey];
     const ambientKey = SCENE_AMBIENT[sceneKey];
-    console.log('[AudioManager] musicKey:', musicKey, 'ambientKey:', ambientKey, 'ctx:', !!this.ctx, 'suspended:', this._suspended);
-    if (musicKey) this.playMusic(musicKey);
-    if (ambientKey) this.playAmbient(ambientKey);
+    if (musicKey) await this.playMusic(musicKey);
+    if (ambientKey) await this.playAmbient(ambientKey);
   }
 
   /**
@@ -505,14 +463,106 @@ export default class AudioManager {
   async transitionToSceneAlt(sceneKey) {
     const musicKey = SCENE_MUSIC_ALT[sceneKey] || SCENE_MUSIC[sceneKey];
     const ambientKey = SCENE_AMBIENT[sceneKey];
-    if (musicKey) this.playMusic(musicKey);
-    if (ambientKey) this.playAmbient(ambientKey);
+    if (musicKey) await this.playMusic(musicKey);
+    if (ambientKey) await this.playAmbient(ambientKey);
   }
 
   // =========================================================================
   // Internal helpers
   // =========================================================================
 
+  /**
+   * Build a playback handle for music/ambient. Tries HTMLAudioElement
+   * streaming first (stable for large MP3s), falls back to a procedural
+   * AudioBuffer when the asset has no file on disk.
+   * @returns {Promise<{kind:'stream'|'buffer', gainNode:GainNode, el?:HTMLAudioElement, src?:MediaElementAudioSourceNode, source?:AudioBufferSourceNode} | null>}
+   */
+  async _playStreamOrBuffer(key, busGain, targetVol, loop) {
+    const gainNode = this.ctx.createGain();
+    gainNode.gain.setValueAtTime(0, this.ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(targetVol, this.ctx.currentTime + CROSSFADE_MS / 1000);
+    gainNode.connect(busGain);
+
+    const fileUrl = await this._findAssetUrl(key);
+    if (fileUrl) {
+      try {
+        const el = new Audio();
+        el.loop = loop;
+        el.preload = 'auto';
+        el.crossOrigin = 'anonymous';
+        el.src = fileUrl;
+        const src = this.ctx.createMediaElementSource(el);
+        src.connect(gainNode);
+        const playPromise = el.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch(() => { /* autoplay blocked or element detached */ });
+        }
+        return { kind: 'stream', gainNode, el, src };
+      } catch (e) {
+        console.warn('[AudioManager] stream playback failed for', key, e);
+        gainNode.disconnect();
+        return null;
+      }
+    }
+
+    // No real file — try procedural buffer
+    const buffer = this._buffers.get(key) || await this.load(key);
+    if (!buffer) { try { gainNode.disconnect(); } catch {} return null; }
+    const source = this.ctx.createBufferSource();
+    source.buffer = buffer;
+    source.loop = loop;
+    source.connect(gainNode);
+    source.start(0);
+    return { kind: 'buffer', gainNode, source };
+  }
+
+  /**
+   * HEAD-check each extension and return the first URL that exists on disk.
+   * Avoids fetching the whole file just to test existence.
+   */
+  async _findAssetUrl(key) {
+    const asset = ASSET_MAP[key];
+    if (!asset) return null;
+    const exts = ['.ogg', '.mp3', '.wav'];
+    for (const ext of exts) {
+      try {
+        const resp = await fetch(asset.path + ext, { method: 'HEAD' });
+        if (!resp.ok) continue;
+        // Reject SPA fallbacks (missing files served as text/html by Vite).
+        const ctype = (resp.headers.get('content-type') || '').toLowerCase();
+        if (!ctype.startsWith('audio/')) continue;
+        const len = resp.headers.get('content-length');
+        if (len === '0') continue;
+        return asset.path + ext;
+      } catch { /* try next */ }
+    }
+    return null;
+  }
+
+  /** Fade out and tear down a music/ambient handle. */
+  _fadeOutHandle(handle, gainNode, ms) {
+    if (!handle || !gainNode || !this.ctx) return;
+    try {
+      const g = gainNode.gain;
+      g.setValueAtTime(g.value, this.ctx.currentTime);
+      g.linearRampToValueAtTime(0, this.ctx.currentTime + ms / 1000);
+    } catch { /* ok */ }
+    setTimeout(() => {
+      try {
+        if (handle.kind === 'stream') {
+          try { handle.el.pause(); } catch {}
+          try { handle.el.src = ''; } catch {}
+          try { handle.src.disconnect(); } catch {}
+        } else if (handle.kind === 'buffer') {
+          try { handle.source.stop(); } catch {}
+          try { handle.source.disconnect(); } catch {}
+        }
+        gainNode.disconnect();
+      } catch { /* ok */ }
+    }, ms + 50);
+  }
+
+  /** Fade out a raw SFX buffer source (short one-shots). */
   _fadeOutSource(source, gainNode, ms) {
     if (!gainNode || !this.ctx) return;
     try {

@@ -43,10 +43,28 @@ export function getInventoryDisplay(itemIds = []) {
   }
 
   return Object.entries(counts).map(([id, count]) => {
-    const item = ITEMS[id];
-    if (!item) return null;
+    const item = ITEMS[id] || fallbackItem(id);
     return { ...item, count };
-  }).filter(Boolean);
+  });
+}
+
+/**
+ * Synthesize display metadata for an item id that isn't registered in
+ * ITEMS. Prevents collected items from silently vanishing when a scene
+ * adds a resource whose id hasn't been wired into data/items.js yet.
+ */
+function fallbackItem(id) {
+  const name = id
+    .replace(/[_-]+/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return {
+    id,
+    name,
+    icon: '📦',
+    category: 'misc',
+    stackable: true,
+    description: 'Collected item.',
+  };
 }
 
 /** Build journal entries for the notebook panel. */

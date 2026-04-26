@@ -101,6 +101,7 @@ export function createGameConfig(parent, width, height, startScene) {
     width,
     height,
     backgroundColor: '#333333',
+    audio: { noAudio: true }, // We use our own AudioManager; avoid a second AudioContext
     scale: {
       mode: Phaser.Scale.RESIZE,
       autoCenter: Phaser.Scale.CENTER_BOTH,

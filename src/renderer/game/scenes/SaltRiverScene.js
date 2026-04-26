@@ -7,6 +7,7 @@
  */
 
 import BaseSubScene from './BaseSubScene.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 const SCENE_KEY = 'SaltRiverScene';
 
@@ -268,3 +269,6 @@ export default class SaltRiverScene extends BaseSubScene {
     }
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr(SCENE_KEY, import.meta.hot, SaltRiverScene);

@@ -416,6 +416,60 @@ const ITEMS = {
     description: 'Powered drill for faster mining. Unlocks rare materials.',
   },
 
+  // ── Copper mine resources (CopperMineScene) ────────────────────────────────
+  surface_copper: {
+    id: 'surface_copper', name: 'Surface Copper', icon: '🟢', category: 'foraged', stackable: true,
+    description: 'Oxidized copper ore from the surface — greenish patina (verdigris).',
+  },
+  deep_copper: {
+    id: 'deep_copper', name: 'Deep Copper Ore', icon: '🔶', category: 'foraged', stackable: true,
+    description: 'Pure chalcopyrite from deep in the mine — higher conductivity than surface ore.',
+  },
+  wire_spool: {
+    id: 'wire_spool', name: 'Wire Spool', icon: '🧶', category: 'material', stackable: true,
+    description: 'A spool of hand-drawn copper wire left by old miners.',
+  },
+
+  // ── Desert foraging resources (DesertForagingScene) ────────────────────────
+  yucca_fiber: {
+    id: 'yucca_fiber', name: 'Yucca Fiber', icon: '🧵', category: 'foraged', stackable: true,
+    description: 'Strong natural fiber — used by indigenous peoples for rope and baskets.',
+    plantSource: 'yucca',
+  },
+  jojoba_extract: {
+    id: 'jojoba_extract', name: 'Jojoba Extract', icon: '🫧', category: 'foraged', stackable: true,
+    description: 'Liquid wax from jojoba seeds — natural lubricant and solvent.',
+    plantSource: 'jojoba',
+  },
+  creosote_resin: {
+    id: 'creosote_resin', name: 'Creosote Resin', icon: '🧴', category: 'foraged', stackable: true,
+    description: 'Antiseptic resin from creosote bush — used as a natural sealant.',
+    plantSource: 'creosote',
+  },
+  cactus_water: {
+    id: 'cactus_water', name: 'Cactus Water', icon: '💧', category: 'foraged', stackable: true,
+    description: 'Emergency water from barrel cactus pulp.',
+    plantSource: 'barrel_cactus',
+  },
+
+  // ── Salt River resources (SaltRiverScene) ──────────────────────────────────
+  algae_sample: {
+    id: 'algae_sample', name: 'Algae Sample', icon: '🧪', category: 'foraged', stackable: true,
+    description: 'Green algae from the river — could produce organic compounds.',
+  },
+  microbial_sample: {
+    id: 'microbial_sample', name: 'Microbial Sample', icon: '🔬', category: 'foraged', stackable: true,
+    description: 'Microorganisms from river sediment — potential for bio-production.',
+  },
+  river_minerals: {
+    id: 'river_minerals', name: 'River Minerals', icon: '💎', category: 'material', stackable: true,
+    description: 'Dissolved minerals deposited along the riverbed.',
+  },
+  reed_fiber: {
+    id: 'reed_fiber', name: 'Reed Fiber', icon: '🌿', category: 'foraged', stackable: true,
+    description: 'Tough natural fiber from river reeds — good for weaving.',
+  },
+
   // Material samples (quest items for bridge_collapse)
   mesquite_wood_sample: {
     id: 'mesquite_wood_sample', name: 'Mesquite Wood Sample', icon: '🪵', category: 'quest', stackable: false,

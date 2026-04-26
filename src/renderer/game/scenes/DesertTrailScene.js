@@ -12,6 +12,7 @@
  */
 
 import LocalSceneBase from './LocalSceneBase.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 export default class DesertTrailScene extends LocalSceneBase {
   constructor() {
@@ -170,3 +171,6 @@ export default class DesertTrailScene extends LocalSceneBase {
     });
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr('DesertTrailScene', import.meta.hot, DesertTrailScene);

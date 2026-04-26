@@ -17,6 +17,8 @@
  * }
  */
 
+import { getDiscoveryState, loadDiscoveryState } from './discoverySystem.js';
+
 const SAVE_KEY = 'bikebrowser_game_save';
 const CURRENT_VERSION = 4;
 
@@ -104,6 +106,14 @@ function defaultSave() {
       totalRefined: 0,
       regionsVisited: [],
     },
+    // World map discovery (fog of war). Sparse by design — empty default.
+    // See systems/discoverySystem.js for the canonical shape.
+    discovery: {
+      tiles: [],
+      width: 0,
+      height: 0,
+      tile: 32,
+    },
     timestamp: new Date().toISOString(),
   };
 }
@@ -166,11 +176,22 @@ export function loadGame() {
     if (migrated.version === 3) migrated = migrateV3toV4(migrated);
 
     // Fill any fields that may be missing from older saves.
-    return {
+    const merged = {
       ...defaultSave(),
       ...migrated,
       version: CURRENT_VERSION,
     };
+
+    // Hydrate the discovery module from the merged save. Older saves without
+    // a `discovery` field fall through to the default empty payload above,
+    // which loadDiscoveryState resolves to an empty Set.
+    try {
+      loadDiscoveryState(merged.discovery);
+    } catch {
+      // Never let a discovery hydrate failure break the entire load.
+    }
+
+    return merged;
   } catch {
     return defaultSave();
   }
@@ -179,8 +200,20 @@ export function loadGame() {
 /** Persist full save object. */
 export function saveGame(state) {
   try {
+    // Pull live discovery state from the module so callers don't have to
+    // remember to copy it into `state` before saving. If the discovery
+    // module hasn't been initialized this run, getDiscoveryState() returns
+    // an empty payload — harmless.
+    let discovery;
+    try {
+      discovery = getDiscoveryState();
+    } catch {
+      discovery = state?.discovery ?? { tiles: [], width: 0, height: 0, tile: 32 };
+    }
+
     const data = {
       ...state,
+      discovery,
       version: CURRENT_VERSION,
       timestamp: new Date().toISOString(),
     };

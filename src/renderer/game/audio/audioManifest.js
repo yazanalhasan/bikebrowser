@@ -354,6 +354,13 @@ export const ASSET_MAP = Object.fromEntries(ALL_ASSETS.map((a) => [a.key, a]));
 // Each scene has a primary and an optional alternate (Arabic-inspired or
 // hybrid). The game can choose between them based on context or progression.
 // ---------------------------------------------------------------------------
+// NOTE: 'desert_discovery' has no real audio file on disk (only a 0-byte
+// placeholder .ogg). Any scene that mapped to it used to go silent after the
+// fade-out. Remapped those to tracks that actually exist, and added the
+// sub-scenes (copper mine / desert foraging / salt river / world map) that
+// were missing entirely — without an entry here, AudioManager.transitionToScene
+// silently keeps the previous scene's music, which breaks when the previous
+// scene was WorldMap.
 export const SCENE_MUSIC = {
   GarageScene: 'pixel_pedal_parade_v4',
   ZuzuGarageScene: 'pixel_pedal_parade_v4',
@@ -361,11 +368,16 @@ export const SCENE_MUSIC = {
   OverworldScene: 'pixel_pedal_parade_v2',
   StreetBlockScene: 'pixel_pedal_parade_v2',
   DogParkScene: 'neighborhood_hybrid_ride',
-  LakeEdgeScene: 'desert_discovery',
+  LakeEdgeScene: 'warm_hands_quiet_gears',
   SportsFieldsScene: 'neighborhood_hybrid_ride',
   CommunityPoolScene: 'neighborhood_hybrid_ride',
-  DesertTrailScene: 'desert_discovery',
-  MountainScene: 'desert_discovery',
+  DesertTrailScene: 'qanun_jar_lid',
+  MountainScene: 'qanun_jar_lid',
+  // Sub-scenes under BaseSubScene
+  WorldMapScene: 'quest_focus_hybrid',
+  CopperMineScene: 'qanun_jar_lid',
+  DesertForagingScene: 'qanun_jar_lid',
+  SaltRiverScene: 'warm_hands_quiet_gears',
 };
 
 export const SCENE_MUSIC_ALT = {

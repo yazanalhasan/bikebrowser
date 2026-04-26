@@ -19,6 +19,7 @@ import { NPC_PLACEMENTS } from '../data/neighborhoodLayout.js';
 import { getQuestBoard, getNextQuestForNPC } from '../data/questBoard.js';
 import QUESTS from '../data/quests.js';
 import { drawPlant } from '../utils/plantRenderer.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 export default class StreetBlockScene extends LocalSceneBase {
   constructor() {
@@ -498,3 +499,6 @@ export default class StreetBlockScene extends LocalSceneBase {
     });
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr('StreetBlockScene', import.meta.hot, StreetBlockScene);

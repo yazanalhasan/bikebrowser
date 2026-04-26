@@ -23,6 +23,7 @@ import Player from '../entities/Player.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { getSafeZone } from '../ui/safeZones.js';
 import { SPAWNS } from '../data/neighborhoodLayout.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 const SCENE_KEY = 'GarageScene';
 const EXIT_ZONE_HEIGHT = 48;
@@ -113,6 +114,8 @@ export default class GarageScene extends GarageSceneBase {
 
   update() {
     if (!this.player) return;
+    // Skip the tick if the sprite was torn down by a pause/unmount race.
+    if (!this.player.sprite || !this.player.sprite.active || !this.player.sprite.body) return;
     const pos = this.player.update();
     if (this.game.getFrame() % 120 === 0) this._savePosition(pos);
   }
@@ -142,3 +145,6 @@ export default class GarageScene extends GarageSceneBase {
     });
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr(SCENE_KEY, import.meta.hot, GarageScene);

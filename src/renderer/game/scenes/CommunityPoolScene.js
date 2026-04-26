@@ -13,6 +13,7 @@
  */
 
 import LocalSceneBase from './LocalSceneBase.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 export default class CommunityPoolScene extends LocalSceneBase {
   constructor() {
@@ -162,3 +163,6 @@ export default class CommunityPoolScene extends LocalSceneBase {
     });
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr('CommunityPoolScene', import.meta.hot, CommunityPoolScene);

@@ -39,6 +39,7 @@ import { getFallbackDialogue } from '../data/npcDialogueTemplates.js';
 import { populateWorld } from '../systems/ecologyEngine.js';
 import { initDepthSort, updateDepthSort, applyDepth } from '../systems/depthSort.js';
 import { FLORA_MAP } from '../data/flora.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 const SCENE_KEY = 'NeighborhoodScene';
 
@@ -236,16 +237,19 @@ export default class NeighborhoodScene extends NeighborhoodSceneBase {
     );
     for (const npc of Object.values(this._npcs)) {
       this._depthSortables.push({
-        gameObject: npc.circle,
-        heightOffset: 0,
+        gameObject: npc.container,
+        heightOffset: 22, // feet, so trees south of the NPC layer in front
         children: [npc.label, npc.prompt],
       });
+      // Shadow depth is managed in Npc.update() (depth - 0.5, below body).
     }
   }
 
   // ── Game loop ──────────────────────────────────────────────────────────────
   update() {
     if (!this.player) return;
+    // Skip the tick if the sprite was torn down by a pause/unmount race.
+    if (!this.player.sprite || !this.player.sprite.active || !this.player.sprite.body) return;
 
     const pos = this.player.update();
 
@@ -451,6 +455,11 @@ export default class NeighborhoodScene extends NeighborhoodSceneBase {
   }
 
   advanceFromDialog(choiceIndex) {
+    // Guard: this can be invoked from the React-side dialog UI after the scene
+    // has been paused/shut down (matches the "Cannot pause non-running Scene"
+    // race in the renderer log). Bail before touching registry/audio/refs.
+    if (!this._npcBikes || !this.scene?.isActive?.()) return;
+
     let state = this.registry.get('gameState');
     const audioMgr = this.registry.get('audioManager');
     const result = advanceQuest(state, choiceIndex);
@@ -483,7 +492,7 @@ export default class NeighborhoodScene extends NeighborhoodSceneBase {
     }
 
     NPC_PLACEMENTS.forEach((npcData) => {
-      if (state.completedQuests?.includes(npcData.questId) && this._npcBikes[npcData.id]) {
+      if (state.completedQuests?.includes(npcData.questId) && this._npcBikes?.[npcData.id]) {
         this._npcBikes[npcData.id].setText('\uD83D\uDEB2\u2705');
       }
     });
@@ -620,3 +629,6 @@ export default class NeighborhoodScene extends NeighborhoodSceneBase {
     });
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr(SCENE_KEY, import.meta.hot, NeighborhoodScene);

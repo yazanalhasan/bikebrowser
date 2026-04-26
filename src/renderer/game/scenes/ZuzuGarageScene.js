@@ -15,6 +15,7 @@
 import LocalSceneBase from './LocalSceneBase.js';
 import { saveGame } from '../systems/saveSystem.js';
 import QUESTS from '../data/quests.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 export default class ZuzuGarageScene extends LocalSceneBase {
   constructor() {
@@ -245,3 +246,6 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     }
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr('ZuzuGarageScene', import.meta.hot, ZuzuGarageScene);

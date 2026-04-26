@@ -139,6 +139,10 @@ export default class LocalSceneBase extends Phaser.Scene {
 
   update(_time, delta) {
     if (!this.player) return;
+    // Skip the whole tick if the player's sprite was torn down by a
+    // pause/unmount race — entities downstream (NPCs, MCP, save) all
+    // read this.player.sprite and would crash on a destroyed body.
+    if (!this.player.sprite || !this.player.sprite.active || !this.player.sprite.body) return;
 
     const pos = this.player.update();
 
@@ -226,7 +230,21 @@ export default class LocalSceneBase extends Phaser.Scene {
       }).setOrigin(0.5).setDepth(2);
     }
 
-    this._exits.push({ zone, targetScene, targetSpawn, sfx });
+    const entry = { zone, targetScene, targetSpawn, sfx };
+    this._exits.push(entry);
+
+    // Wire the overlap immediately if the player has already been created.
+    // Exits added in createWorld() run before the player exists and get wired
+    // by the loop in create(); exits added after super.create() (e.g. from
+    // BaseSubScene._registerExitPoint) need to be wired here or they'll
+    // never trigger a transition.
+    if (this.player?.sprite) {
+      this.physics.add.overlap(this.player.sprite, zone, () => {
+        transitionTo(this, entry.targetScene, entry.targetSpawn,
+          { sfx: entry.sfx || 'door_interact' });
+      });
+    }
+
     return zone;
   }
 

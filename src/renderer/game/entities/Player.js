@@ -344,6 +344,14 @@ export default class Player {
 
   /** Call from scene update(). Returns { x, y } of current position. */
   update() {
+    // Guard against the React-unmount race: Phaser can tear down the
+    // sprite's physics body mid-frame while an in-flight requestAnimationFrame
+    // callback still calls update(). When the user pauses/leaves and re-enters
+    // /play, this can fire one or two frames where sprite is technically alive
+    // but its body has already been freed. Return a safe stale position.
+    if (!this.sprite || !this.sprite.body || !this.sprite.active) {
+      return { x: this.sprite?.x ?? 0, y: this.sprite?.y ?? 0 };
+    }
     const body = this.sprite.body;
     let vx = 0;
     let vy = 0;

@@ -14,6 +14,7 @@
 import LocalSceneBase from './LocalSceneBase.js';
 import { saveGame } from '../systems/saveSystem.js';
 import QUESTS from '../data/quests.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 export default class MountainScene extends LocalSceneBase {
   constructor() {
@@ -237,3 +238,6 @@ export default class MountainScene extends LocalSceneBase {
     return null;
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr('MountainScene', import.meta.hot, MountainScene);

@@ -12,6 +12,19 @@
  * Rarity affects spawn chance: common=60%, uncommon=25%, rare=10%, epic=5%.
  */
 
+// ── Biome enum ──────────────────────────────────────────────────────────────
+// Canonical biome tags consumed by terrain rendering and biome-aware quests.
+// Each region carries a `biome:` field set to one of these values.
+export const BIOME = Object.freeze({
+  DESERT: 'desert',
+  GRASSLAND: 'grassland',
+  WATER: 'water',
+  ROCK: 'rock',
+  MOUNTAIN: 'mountain',
+  URBAN: 'urban',
+  UNKNOWN: 'unknown',
+});
+
 const REGIONS = [
   // ── Starting Region ─────────────────────────────────────────────────────
 
@@ -22,7 +35,8 @@ const REGIONS = [
     description: 'Your home in the Sonoran Desert — copper country. Ancient mines and modern engineering.',
     icon: '🏜️',
     color: '#D97706',
-    biome: 'desert_scrub',
+    // Sonoran Desert — copper country, arid scrubland.
+    biome: BIOME.DESERT,
     materials: [
       {
         id: 'copper_ore',
@@ -98,7 +112,9 @@ const REGIONS = [
     description: 'Silver mountains and lithium flats. Ancient metallurgy meets modern batteries.',
     icon: '⛰️',
     color: '#6D28D9',
-    biome: 'highland',
+    // "Silver mountains and lithium flats" — Andean highlands; mountain wins
+    // over flats since silver/copper/gold veins are mountain-mined.
+    biome: BIOME.MOUNTAIN,
     materials: [
       {
         id: 'silver_ore_andes',
@@ -174,7 +190,8 @@ const REGIONS = [
     description: 'Gold, salt, and frankincense — the materials that built ancient trade routes.',
     icon: '🕌',
     color: '#D4A017',
-    biome: 'arid_desert',
+    // Arabian Peninsula — arid desert; frankincense/salt/gold trade routes.
+    biome: BIOME.DESERT,
     materials: [
       {
         id: 'gold_ore_arabian',
@@ -250,7 +267,8 @@ const REGIONS = [
     description: 'Where metallurgy began. Iron, copper, and the world\'s richest boron deposits.',
     icon: '🏛️',
     color: '#DC2626',
-    biome: 'temperate_steppe',
+    // Anatolian temperate steppe — open grassland with iron/copper/boron beds.
+    biome: BIOME.GRASSLAND,
     materials: [
       {
         id: 'iron_ore_turkish',
@@ -314,7 +332,9 @@ const REGIONS = [
     description: 'Brass, turquoise, and lapis lazuli. The birthplace of alloys and pigments.',
     icon: '🏺',
     color: '#1E40AF',
-    biome: 'plateau',
+    // Iranian plateau — high arid rocky terrain; all materials are minerals
+    // (copper, zinc, lead, turquoise, lapis), so ROCK fits better than DESERT.
+    biome: BIOME.ROCK,
     materials: [
       {
         id: 'copper_ore_persian',
@@ -390,7 +410,9 @@ const REGIONS = [
     description: 'Iron-working masters and Indian Ocean traders. Tanzanite found nowhere else.',
     icon: '🌊',
     color: '#059669',
-    biome: 'coastal_tropical',
+    // Swahili Coast — Indian Ocean traders; the coast/sea is the defining
+    // feature even though materials (iron, gold, tanzanite) are inland.
+    biome: BIOME.WATER,
     materials: [
       {
         id: 'iron_ore_swahili',
@@ -454,7 +476,9 @@ const REGIONS = [
     description: 'Rare earth elements, tungsten, and jade. The foundation of modern electronics.',
     icon: '🏯',
     color: '#B91C1C',
-    biome: 'varied',
+    // Existing data tagged "varied" (China spans many biomes); enum has no
+    // multi-biome value, so UNKNOWN — terrain renderer can pick a default.
+    biome: BIOME.UNKNOWN,
     materials: [
       {
         id: 'iron_ore_chinese',
@@ -530,7 +554,9 @@ const REGIONS = [
     description: 'Emeralds from the Swat Valley, copper from Balochistan, salt from Khewra.',
     icon: '🏔️',
     color: '#065F46',
-    biome: 'mountain',
+    // Karakoram/Himalayan foothills — Swat Valley emeralds, Khewra salt mine,
+    // marble; clear mountain region.
+    biome: BIOME.MOUNTAIN,
     materials: [
       {
         id: 'copper_ore_pakistan',
@@ -618,7 +644,10 @@ const REGIONS = [
     description: 'Tin, rubber, and bauxite. The materials that built modern lightweight engineering.',
     icon: '🌴',
     color: '#0891B2',
-    biome: 'tropical',
+    // Malay Archipelago — tropical rainforest islands. Enum has no
+    // jungle/forest value; archipelago could read as WATER but tin/bauxite/
+    // rubber are land resources, so UNKNOWN until the enum grows.
+    biome: BIOME.UNKNOWN,
     materials: [
       {
         id: 'tin_ore',
@@ -703,3 +732,9 @@ export const RARITY_CHANCE = {
   rare: 0.10,
   epic: 0.05,
 };
+
+// Biome lookup helper — returns the BIOME enum value for a given region id,
+// or BIOME.UNKNOWN if the region id is missing or has no biome tag.
+export function getBiome(regionId) {
+  return REGION_MAP[regionId]?.biome || BIOME.UNKNOWN;
+}

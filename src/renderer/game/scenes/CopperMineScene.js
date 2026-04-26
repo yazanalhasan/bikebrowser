@@ -7,6 +7,9 @@
  */
 
 import BaseSubScene from './BaseSubScene.js';
+import { saveGame } from '../systems/saveSystem.js';
+import QUESTS from '../data/quests.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 const SCENE_KEY = 'CopperMineScene';
 
@@ -21,6 +24,38 @@ export default class CopperMineScene extends BaseSubScene {
 
   createWorld() {
     const { width, height } = this.getWorldSize();
+
+    // ── Bridge-quest copper bridge (no pun intended) ──
+    // The bridge_collapse quest step `collect_copper` requires the item id
+    // `copper_ore_sample`, which only the MountainScene grants. Players who
+    // intuitively visit the *Copper Mine* (this scene) for copper end up with
+    // `surface_copper`/`deep_copper` instead and get stuck. If they already
+    // have either of those AND are on the relevant quest step, retroactively
+    // grant `copper_ore_sample` so the quest can advance. Strictly additive —
+    // does not affect the side-quest `collect_copper_samples`.
+    {
+      const st = this.registry.get('gameState');
+      const aq = st?.activeQuest;
+      if (aq?.id === 'bridge_collapse' && !(st.inventory || []).includes('copper_ore_sample')) {
+        const step = QUESTS.bridge_collapse?.steps?.[aq.stepIndex];
+        const hasMineCopper = (st.inventory || []).some(
+          (id) => id === 'surface_copper' || id === 'deep_copper'
+        );
+        if (step?.id === 'collect_copper' && hasMineCopper) {
+          const updated = { ...st, inventory: [...st.inventory, 'copper_ore_sample'] };
+          this.registry.set('gameState', updated);
+          saveGame(updated);
+          this.registry.set('dialogEvent', {
+            speaker: 'Zuzu',
+            text:
+              "Wait — this copper from the mine works as a sample for Mr. Chen's bridge test!\n\n" +
+              '🟤 Got: Copper Ore Sample',
+            choices: null,
+            step: null,
+          });
+        }
+      }
+    }
 
     // ── Ground layers ── mine entrance transitions to underground
     // Surface (top third)
@@ -241,3 +276,6 @@ export default class CopperMineScene extends BaseSubScene {
     }
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr(SCENE_KEY, import.meta.hot, CopperMineScene);

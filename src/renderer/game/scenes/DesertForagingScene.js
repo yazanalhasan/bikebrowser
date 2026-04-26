@@ -7,6 +7,7 @@
  */
 
 import BaseSubScene from './BaseSubScene.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 const SCENE_KEY = 'DesertForagingScene';
 
@@ -217,3 +218,6 @@ export default class DesertForagingScene extends BaseSubScene {
     }
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr(SCENE_KEY, import.meta.hot, DesertForagingScene);

@@ -9,14 +9,31 @@ import ITEMS from '../data/items.js';
 
 /** Return full item metadata for every item id in the list. */
 export function resolveInventory(itemIds = []) {
-  return itemIds
-    .map((id) => ITEMS[id])
-    .filter(Boolean);
+  return itemIds.map((id) => ITEMS[id] || fallbackItem(id));
+}
+
+/** Fallback metadata so unknown ids are still visible rather than dropped. */
+function fallbackItem(id) {
+  const name = id
+    .replace(/[_-]+/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return {
+    id,
+    name,
+    icon: '📦',
+    category: 'misc',
+    stackable: true,
+    description: 'Collected item.',
+  };
 }
 
 /** Add an item id to the inventory array and return the new array. */
 export function addItem(inventory, itemId) {
-  if (!ITEMS[itemId]) return inventory; // unknown item — no-op
+  if (!ITEMS[itemId]) {
+    // Warn but still add — silent drops hide bugs and lose the player's loot.
+    // The HUD falls back to a generic display for unknown ids.
+    console.warn(`[inventory] adding item without registered metadata: ${itemId}`);
+  }
   return [...inventory, itemId];
 }
 

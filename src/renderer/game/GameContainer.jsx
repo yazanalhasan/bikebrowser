@@ -273,6 +273,18 @@ export default function GameContainer() {
     const game = new Phaser.Game(config);
     gameRef.current = game;
 
+    // Dev-only: expose the running Phaser game on window so DevTools and
+    // the (planned) phaser-hmr-bridge can reach it. Phaser scenes are
+    // stateful and don't HMR cleanly via Vite — to manually re-load a
+    // scene after editing its file, run in DevTools console:
+    //   __phaserGame.scene.remove('WorldMapScene');
+    //   __phaserGame.scene.add('WorldMapScene', WorldMapScene, true);
+    // (the second arg is the imported class — refresh the page first if
+    // your console doesn't already have it in scope).
+    if (import.meta.env.DEV) {
+      window.__phaserGame = game;
+    }
+
     // Track parent-element resizes so Phaser re-fits the canvas whenever
     // layout shifts (cold-start race, window resize, devtools toggle).
     const resizeObserver = new ResizeObserver(() => {
@@ -447,6 +459,9 @@ export default function GameContainer() {
       resizeObserver.disconnect();
       game.destroy(true);
       gameRef.current = null;
+      if (import.meta.env.DEV && window.__phaserGame === game) {
+        delete window.__phaserGame;
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, bootKey, containerReady]);

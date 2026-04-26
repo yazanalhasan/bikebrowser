@@ -15,6 +15,7 @@ import LocalSceneBase from './LocalSceneBase.js';
 import QUESTS from '../data/quests.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { drawPlant } from '../utils/plantRenderer.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 export default class DogParkScene extends LocalSceneBase {
   constructor() {
@@ -233,3 +234,6 @@ export default class DogParkScene extends LocalSceneBase {
     });
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr('DogParkScene', import.meta.hot, DogParkScene);
