@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-26T02:05:00Z",
+  "last_updated": "2026-04-26T02:35:00Z",
   "current_week": 2,
   "current_pod_focus": "World & Discovery",
   "completed": [
@@ -184,6 +184,16 @@
       "notes": "Second parallel-batch agent. Worker completed cleanly — wrote its own receipt and even cross-confirmed path-renderer's parallel merge in its notes ('Path-renderer agent edits were fully merged before landmark layer was added. No collision occurred.'). Implements: _renderLandmarkLayer (~194 lines) with deterministic SEED=0x5eed (matches terrain heightmap), XOR sub-seed 0xABCD1234 to avoid aliasing terrain detail-pass rolls, jittered tile placement, biome-gated spawn probabilities (desert 8%/grassland 4%/mountain 6%/rock 5%/urban 2%/water 0%/unknown 0%), LANDMARK_CAP=80 enforced on both loop conditions, all 5 procedural shape inventories per spec (desert 70/30 cactus/rock-formation, grassland scrub, mountain ridge lines, rock boulder via Graphics.slice, urban structure outline + door hint), 1px ellipse shadow at rgba(0,0,0,0.15) per landmark, performance.now() bracket + console.debug log with full per-biome breakdown. Estimated count for current 2-region map: ~44 (desert 42 + mountain 2). GRASSLAND/ROCK/URBAN counts will rise once worldMapData.js gains regions in those biomes. Reviewer PASS first time on cycle 1 (after re-dispatch with depth-question pre-resolved — first reviewer run stalled mid-investigation). LOW non-blocking note: _landmarkContainer has no explicit setDepth (defaults to 0, same as nodes); creation-order keeps nodes on top today but a defensive setDepth(-25) is recommended for world-map-polish. LOW: bounds-check guard at line 693 is logically redundant dead code (harmless)."
     },
     {
+      "agent": "audio-compression-pass",
+      "ts": "2026-04-26T02:35:00Z",
+      "commit": null,
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-audio-compression-pass-2026-04-26T02-35-00Z.json",
+      "receipt": ".claude/swarm/receipts/audio-compression-pass-2026-04-26T02-30-00Z.json",
+      "prior_blocked_receipt": ".claude/swarm/receipts/audio-compression-pass-2026-04-26T02-00-00Z.json",
+      "notes": "Second dispatch after user installed ffmpeg 8.1-full_build (Gyan.FFmpeg via winget) with libvorbis + libmp3lame. First dispatch (02:00Z) returned status=blocked because ffmpeg wasn't on PATH; user installed it and we re-ran. Inventory pre-discovered in the blocked receipt — 5 .wav files all with 0-byte .ogg siblings: 3 music tracks at 128 kbps (garage_warm_oud / neighborhood_hybrid_ride / quest_focus_hybrid) and 2 stingers at 96 kbps (reward_tarabi_stinger / upgrade_unlock_hybrid). Worker encoded all 5 with libvorbis VBR, validated each via decode round-trip (`ffmpeg -i out.ogg -f null -` exit 0), and confirmed non-mutation of .wav masters (git status -short showed only the 5 .ogg paths). Sizes 14.3 KB (shortest stinger) → 225.6 KB (largest music track), 3-8% of .wav size. Reviewer PASS — independently re-ran the decode round-trip on 2 of the 5 files (garage_warm_oud and upgrade_unlock_hybrid) and verified pre-state was git's canonical empty-file blob (e69de29). Orphan `public/game/audio/music/desert_discovery.ogg` (0 bytes, no .wav master) correctly left out of scope — it's audio-asset-cleanup's problem, not this agent's. Routed via general-purpose for the worker (mid-session agent registry limitation per saved memory); reviewer was native sonnet override. Unblocks audio-asset-cleanup re-dispatch — the original NEEDS_REVISION cause (silent runtime audio because all .ogg siblings were 0-byte placeholders) is now fully retired for these 5 basenames."
+    },
+    {
       "agent": "world-terrain-renderer",
       "version": "v2",
       "ts": "2026-04-25T22:45:00Z",
@@ -225,20 +235,19 @@
       "summary": "Worker followed spec literally — archived 5 WAVs whose .ogg siblings were present on disk. But ALL 5 .ogg siblings are 0-byte placeholders, no .mp3 exists, and AudioManager.findAssetUrl falls through ['.ogg', '.mp3', '.wav'] skipping 0-byte sources. The .wav files were the active runtime audio source for garage music, neighborhood music, world-map music, and 2 stingers. Spec criterion lacked 'compressed sibling must be non-zero bytes' rule. Cannot re-dispatch until either (a) spec is updated or (b) a new audio-compression-pass agent runs first to populate playable .ogg files, then this can re-run safely."
     }
   ],
-  "blocked": [
+  "blocked": [],
+  "blocker_history": [
     {
       "agent": "audio-compression-pass",
       "status": "blocked",
       "ts": "2026-04-26T02:05:00Z",
       "receipt": ".claude/swarm/receipts/audio-compression-pass-2026-04-26T02-00-00Z.json",
       "blocker": "ffmpeg not on PATH",
-      "blocker_detail": "Verified ffmpeg absent via bash, PowerShell, and direct probes of Chocolatey/scoop/WinGet/standard install paths. Per spec Step 2, no fallback encoders attempted.",
-      "remediation": "Install ffmpeg with libvorbis. Recommended: `winget install Gyan.FFmpeg` (preferred — stable Windows builds with libvorbis + libmp3lame). Alternative: `choco install ffmpeg`. After install, open a fresh shell and confirm `ffmpeg -version` works, then re-dispatch.",
-      "downstream_blocked": ["audio-asset-cleanup"],
-      "work_queue_preserved": "5 .wav files identified — public/game/audio/music/{garage_warm_oud,neighborhood_hybrid_ride,quest_focus_hybrid}.wav at 128 kbps + public/game/audio/stingers/{reward_tarabi_stinger,upgrade_unlock_hybrid}.wav at 96 kbps. Inventory in receipt notes; no re-discovery needed on re-dispatch."
+      "resolved_ts": "2026-04-26T02:30:00Z",
+      "resolution": "User installed ffmpeg 8.1-full_build via Gyan.FFmpeg. Verified `ffmpeg -version` succeeds with libvorbis + libmp3lame both compiled in. Re-dispatched."
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 48,
+  "dispatch_count": 50,
   "session_token_estimate": 0
 }
