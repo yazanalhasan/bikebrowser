@@ -17,6 +17,7 @@ import OverworldScene from './scenes/OverworldScene.js';
 
 // Local scenes
 import ZuzuGarageScene from './scenes/ZuzuGarageScene.js';
+import MaterialLabScene from './scenes/MaterialLabScene.js';
 import StreetBlockScene from './scenes/StreetBlockScene.js';
 import DogParkScene from './scenes/DogParkScene.js';
 import LakeEdgeScene from './scenes/LakeEdgeScene.js';
@@ -42,6 +43,7 @@ import NeighborhoodScene from './scenes/NeighborhoodScene.js';
  */
 const ALL_SCENES = [
   ZuzuGarageScene,
+  MaterialLabScene,
   OverworldScene,
   StreetBlockScene,
   DogParkScene,

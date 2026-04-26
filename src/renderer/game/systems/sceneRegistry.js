@@ -62,10 +62,32 @@ const SCENES = {
       default: { x: 400, y: 350 },
       fromStreet: { x: 400, y: 520 },
       fromOverworld: { x: 400, y: 350 },
+      fromMaterialLab: { x: 400, y: 350 },
     },
     exits: {
       toStreet: { target: 'StreetBlockScene', spawn: 'fromGarage' },
       toOverworld: { target: 'OverworldScene', spawn: 'fromGarage' },
+      toMaterialLab: { target: 'MaterialLabScene', spawn: 'fromGarage' },
+    },
+    unlockReq: null,
+    region: 'home',
+    defaultMusic: 'pixel_pedal_parade_v4',
+  },
+
+  MaterialLabScene: {
+    key: 'MaterialLabScene',
+    layer: 'local',
+    name: 'Materials Lab',
+    icon: '🧪',
+    description: "Mr. Chen's materials testing lab — the UTM rig.",
+    worldPos: null,
+    spawns: {
+      default: { x: 400, y: 540 },
+      fromGarage: { x: 400, y: 540 },
+      fromMaterialLab: { x: 400, y: 540 },
+    },
+    exits: {
+      toGarage: { target: 'ZuzuGarageScene', spawn: 'fromMaterialLab' },
     },
     unlockReq: null,
     region: 'home',

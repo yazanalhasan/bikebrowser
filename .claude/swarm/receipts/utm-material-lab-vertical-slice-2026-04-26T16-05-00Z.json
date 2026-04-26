@@ -1,0 +1,54 @@
+{
+  "agent": "utm-material-lab-vertical-slice",
+  "pod": "Early Experience Design (extended scope)",
+  "ts": "2026-04-26T16:05:00Z",
+  "status": "complete",
+  "files_changed": [
+    {
+      "type": "create",
+      "path": "src/renderer/game/scenes/MaterialLabScene.js",
+      "summary": "New LocalSceneBase scene. Visible UTM rig (base, columns, crossbeam, movable crosshead, grips, specimen). Material selector (3 clickable slots colored by visual.color, ✓ when tested). START TEST button drives a tweens.addCounter through runTensileTest's curve over 3.5s. Specimen visibly stretches (height ∝ 1+strain) and thins/necks per failureMode. Live stress-strain chart with elastic=green/plastic=amber/failure=red region coloring, ultimate+yield markers, and axis labels. Failure animations: mesquite splinters at a diagonal with 8 flying shards + dust; steel necks then snaps cleanly with a flash; copper stretches dramatically with curled tear tips. Test progress persisted to state.materialTestsCompleted. When all 3 tested, sets state.observations.load_test_completed and emits a Mr. Chen dialog with state.activeQuest as step → LocalSceneBase.advanceFromDialog auto-advances the bridge_collapse quest. First-entry hint dialog. Exit zone at bottom transitions back to ZuzuGarageScene with spawn 'fromMaterialLab'. HMR registered."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/config.js",
+      "summary": "Added `import MaterialLabScene` and registered it in the ALL_SCENES array right after ZuzuGarageScene."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/systems/sceneRegistry.js",
+      "summary": "Added MaterialLabScene entry (layer:'local', region:'home', defaultMusic pixel_pedal_parade_v4, no unlockReq, no worldPos — accessed via garage). Also added a fromMaterialLab spawn + toMaterialLab exit to ZuzuGarageScene's registry entry so the back-transition lands cleanly."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/scenes/ZuzuGarageScene.js",
+      "summary": "Added a Materials Lab doorway prop on the left wall (next to the workbench). Uses addInteractable. On interact: if the player has all three samples (mesquite_wood_sample/copper_ore_sample/steel_sample) OR is on bridge_collapse stepIndex >= 8 (weigh_instruction), transitions to MaterialLabScene. Otherwise emits a Mr. Chen nudge dialog listing missing samples."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/data/quests.js",
+      "summary": "Added `scene: 'MaterialLabScene'` informational field to the bridge_collapse `test_material` step (line 1219). No runtime behavior change."
+    }
+  ],
+  "build_validation": {
+    "command": "npm run build",
+    "result": "PASS",
+    "duration": "10.60s"
+  },
+  "components_landed": {
+    "rig_visual": true,
+    "material_selector": true,
+    "start_test_button": true,
+    "live_chart": true,
+    "splinter_failure": true,
+    "necking_failure": true,
+    "stretch_failure": true,
+    "three_material_loop": true,
+    "load_test_completed_event": true,
+    "workbench_to_lab_transition": true,
+    "exit_zone_back_to_garage": true,
+    "hmr_registered": true
+  },
+  "components_deferred": [],
+  "notes": "Built as a single comprehensive vertical slice per the user's no-waves directive. Material selector renders a panel of 3 clickable slot rectangles (Phaser setInteractive); slot border becomes amber when active, ✓ checkmark appears when that material has been tested. Tested-state restored from state.materialTestsCompleted at scene entry so reload mid-quest preserves progress. The chart redraws every 3 tween ticks during the test (cheaper than every frame, still smooth-looking) and a final time on completion to ensure full curve + markers. Failure animations are pure Graphics + tweens (no particle texture loading) — the splinter shards are tiny rotated rectangles using grain-color accents, the necking break uses a small white circle flash, the stretch-tear uses curled tip rectangles. Audio: plays ui_click on test start and ui_error on failure (graceful no-op if audioManager absent). Camera shake (150ms, 0.005) on steel necking failure for tactile metal feel. The Materials Lab doorway lives at (60,130) on the left wall — visually a small dark rectangle with a 🧪 above it; deliberately separate from the workbench's existing onInteract so the workbench dialog/steel-grant logic stays untouched. About the load_test_completed event flow: I made the scene write state.observations = [...prev, 'load_test_completed'] before opening the completion dialog. The questSystem's `advanceQuest` for observe steps auto-advances unconditionally (per questSystem.js:199-202), but adding the observation ensures any future quest gating that DOES check requiredObservation (or any observation-aware UI) sees the right state. The `step: state.activeQuest` field on the dialog is what triggers GameContainer's continue flow → LocalSceneBase.advanceFromDialog → advanceQuest. Tested by reading the LocalSceneBase default advanceFromDialog (lines 93-135) — it advances + saves and clears the dialog, then the next step's surface (the next NPC interaction or dialog flow in ZuzuGarageScene/Mr. Chen) will surface the next bridge_collapse step.\n\nNon-blocking: did not push the scene onto WorldMapScene as the worldPos is null (correct — accessed via garage doorway, not the overworld). The chart axis label 'max ${xMax.toFixed(2)}' tells the player the strain ceiling for the current sample's domain — useful since copper (~0.35) is much wider than wood (~0.018) so the shapes look different at the same scale. No new dependencies added; no package.json edits; no TypeScript; no edits to materials foundation files."
+}

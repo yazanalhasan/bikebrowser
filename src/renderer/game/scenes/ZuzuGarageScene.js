@@ -105,6 +105,51 @@ export default class ZuzuGarageScene extends LocalSceneBase {
       },
     });
 
+    // === MATERIALS LAB DOORWAY (left wall, near workbench) ===
+    // Visible prop the player can interact with — gates on having all 3
+    // material samples in inventory and being on (or past) the
+    // weigh_instruction step of bridge_collapse.
+    const labDoorX = 60;
+    const labDoorY = 130;
+    this.add.rectangle(labDoorX, labDoorY, 38, 56, 0x1c1d22).setStrokeStyle(2, 0x4a4d55).setDepth(1);
+    this.add.text(labDoorX, labDoorY - 30, '🧪', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
+
+    this.addInteractable({
+      x: labDoorX + 30, y: labDoorY + 40,
+      label: 'Materials Lab',
+      icon: '🧪',
+      radius: 70,
+      onInteract: () => {
+        const s = this.registry.get('gameState') || {};
+        const inv = s.inventory || [];
+        const haveAll = inv.includes('mesquite_wood_sample') &&
+          inv.includes('copper_ore_sample') &&
+          inv.includes('steel_sample');
+        // Active step gating — index 8 is `weigh_instruction` per quests.js.
+        const aq = s.activeQuest;
+        const onTrack = aq?.id === 'bridge_collapse' && (aq.stepIndex || 0) >= 8;
+
+        if (haveAll || onTrack) {
+          this.scene.start('MaterialLabScene', { spawn: 'fromGarage' });
+          return;
+        }
+
+        // Otherwise — friendly nudge so the player knows where to go.
+        const missing = [];
+        if (!inv.includes('mesquite_wood_sample')) missing.push('🪵 mesquite');
+        if (!inv.includes('copper_ore_sample')) missing.push('🟠 copper');
+        if (!inv.includes('steel_sample')) missing.push('⚙️ steel');
+        const list = missing.length ? `\n\nMissing: ${missing.join(', ')}` : '';
+        this.registry.set('dialogEvent', {
+          speaker: 'Mr. Chen',
+          text: `The materials lab is through here.\n\n` +
+            `Bring me all three samples first — wood, copper, and steel — ` +
+            `and I'll show you the testing machine.${list}`,
+          choices: null, step: null,
+        });
+      },
+    });
+
     // === HERO BIKE (center) ===
     const bikeX = width / 2;
     const bikeY = 170;

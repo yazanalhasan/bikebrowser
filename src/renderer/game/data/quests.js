@@ -1221,6 +1221,7 @@ const QUESTS = {
         text: 'Watch Mr. Chen run load tests on all three materials. Note when each one fails.',
         requiredObservation: 'load_test_completed',
         hint: 'Use the material testing bench to stress each sample.',
+        scene: 'MaterialLabScene',
       },
       {
         id: 'quiz_strength',
