@@ -1,0 +1,43 @@
+{
+  "agent": "quest-discovery-bridge-fix",
+  "alias": "Fix A from bridge_collapse soft-lock report",
+  "timestamp": "2026-04-26T07:20:12Z",
+  "status": "PASS",
+  "summary": "Added the reverse-direction quest -> location reveal hook so a quest activation (fresh start OR save-load) reveals its associated world-map locations through the fog-of-war.",
+  "files_changed": [
+    "src/renderer/game/systems/discoveryBridge.js (NEW)",
+    "src/renderer/game/systems/questSystem.js",
+    "src/renderer/game/scenes/WorldMapScene.js",
+    "src/renderer/game/GameContainer.jsx"
+  ],
+  "notes": {
+    "quest_activation_function": "startQuest(state, questId) in src/renderer/game/systems/questSystem.js (the only function that assigns state.activeQuest to a fresh value; consumePendingDiscoveryUnlocks routes through it).",
+    "bridge_call_injection_line": "questSystem.js: inserted revealLocationsByQuestId(questId) inside startQuest immediately after the QUESTS[questId] lookup and before constructing the new state (around line 105-119 of the edited file). This fires for any path that starts a quest (NPC dialog, side-quest accept, discovery bridge consumer).",
+    "save_load_activation_wired": true,
+    "save_load_wiring_location": "src/renderer/game/GameContainer.jsx — added import of triggerQuestRevealsForState and a guarded call right after initDiscoveryQuestBridge() in the Phaser bootstrap effect. This fires once per page-load so a mid-quest save (e.g. bridge_collapse step 6) doesn't soft-lock behind fog. The 6634 line `loadGame()` call (used to refresh registry on visibility change) was intentionally left untouched — that path doesn't transition activeQuest.id so re-firing reveals would be redundant and the existing first-load wiring already covers it.",
+    "worldmap_drain_wired": "WorldMapScene.create() — _drainPendingReveals(this) called after revealArea(homeX, homeY, 96); this.redrawFog() (right after the home-fog seed). Logs drained ids when non-empty.",
+    "module_design": "discoveryBridge.js inverts DISCOVERY_UNLOCKS once at module load to QUEST_TO_LOCATIONS (skipping pending entries). revealLocationsByQuestId chooses scene.revealNode() if WorldMapScene is mounted, otherwise queues into _pendingReveals (Set<string>). _drainPendingReveals(scene) clears the queue and calls revealNode for each. triggerQuestRevealsForState(state) is the convenience wrapper used by GameContainer.",
+    "bridge_collapse_soft_lock_resolution": "DISCOVERY_UNLOCKS already maps copper_mine -> bridge_collapse. The inverse map now means: when a player has bridge_collapse active (fresh start or load), copper_mine is auto-revealed. Player can travel to CopperMineScene to obtain copper_ore_sample without needing to complete bridge_collapse first (breaking the original circular gate).",
+    "hmr_preserved": "WorldMapScene phaserHmr import (line 19) and bottom registerSceneHmr(...) call were not modified.",
+    "untouched_files": "data/discoveryUnlocks.js, data/quests.js, data/regions.js, data/worldMapData.js, data/items.js, systems/runtimeAudit.js, systems/sceneRegistry.js, package.json — none touched.",
+    "build_status": "npm run build succeeded — 865 modules transformed, built in 10.64s. No new warnings related to changes; pre-existing chunk-size warnings unchanged."
+  },
+  "verification": {
+    "build": "PASS (vite v5.4.21, 10.64s)",
+    "manual_runtime": "Not executed — receipt prioritized per dispatch instructions. Suggested smoke test: load a save with activeQuest.id === 'bridge_collapse', open WorldMapScene, confirm console logs '[WorldMapScene] drained 1 pending quest-activation reveals: copper_mine' and the copper_mine node is visible/animated in."
+  },
+  "edge_cases_considered": [
+    "Pending DISCOVERY_UNLOCKS entries (questId === null) — skipped at inverse-map build time, so reverse map only contains valid quest IDs.",
+    "Quest with no DISCOVERY_UNLOCKS reverse mapping — revealLocationsByQuestId is a no-op (locs.length === 0).",
+    "Multiple WorldMapScene mount/unmount cycles — _pendingReveals cleared on drain; subsequent quest activations during the WorldMapScene's lifetime go through the direct revealNode path.",
+    "revealNode failure during direct reveal (try/catch falls back to queueing the id, so it'll be retried on next mount).",
+    "WorldMapScene mounted but _mapLayout not yet set when revealLocationsByQuestId fires — revealNode itself guards via `if (!layout)` warning, so call is safe but ineffective; queuing path is preferred for that case (we check scene.scene.key === 'WorldMapScene' which is true even pre-_mapLayout, so this is a known small gap — drain in create() catches it).",
+    "Idempotent on already-revealed tiles per WorldMapScene.revealNode comments and revealArea Set semantics."
+  ],
+  "next_agent_suggestions": [
+    "save-migration-fix-D",
+    "quest-hint-update-fix-B",
+    "runtime-audit-timing-fix-E",
+    "e2e-test-fix-F"
+  ]
+}

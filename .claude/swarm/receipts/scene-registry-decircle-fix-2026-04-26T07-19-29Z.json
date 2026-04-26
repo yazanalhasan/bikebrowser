@@ -1,0 +1,35 @@
+{
+  "agent": "scene-registry-decircle-fix",
+  "alias": "Fix C from bridge_collapse soft-lock report",
+  "status": "PASS",
+  "timestamp": "2026-04-26T07:19:29Z",
+  "files_changed": [
+    "src/renderer/game/systems/sceneRegistry.js"
+  ],
+  "build": {
+    "command": "npm run build",
+    "result": "PASS",
+    "duration_seconds": 10.72,
+    "warnings": "chunk size warning only (pre-existing, unrelated)"
+  },
+  "notes": {
+    "case_found": "questsAny ALSO requires completion. Verified at sceneRegistry.js:352-353 — predicate is `req.questsAny.some((qid) => completedIds.includes(qid))`. So Option 1 (questsAll → questsAny) would be functionally identical for a single-element list and would NOT break the circular lock.",
+    "option_taken": "Plan B — added new predicate `questsAnyOrActive` that matches if ANY listed quest is either in completedQuests OR is the player's currently active quest. Updated MountainScene to use it.",
+    "rationale": "Plan B fits within the single-file constraint (sceneRegistry.js only — predicate logic, hint logic, and the MountainScene config all live in this file). Verified `state.activeQuest.id` is the canonical shape across the codebase (gameHud.js:16, OverworldScene.js:290, foragingSystem.js:192, etc.). No new top-level deps. No save migration needed (existing saves with bridge_collapse already in completedQuests still satisfy the new predicate).",
+    "diff_summary": [
+      "MountainScene.unlockReq.questsAll: ['bridge_collapse'] → questsAnyOrActive: ['bridge_collapse']",
+      "MountainScene.unlockReq.hint: 'Master material science (complete \"The Bridge That Broke\")...' → 'Start material science (begin \"The Bridge That Broke\")...'",
+      "isSceneUnlocked(): added questsAnyOrActive branch checking completedIds OR state.activeQuest.id",
+      "getUnlockProgress(): added questsAnyOrActive condition emitting 'Start or complete one of: ...' label when not met",
+      "JSDoc on isSceneUnlocked() updated to list the new predicate"
+    ],
+    "diff": "@@ MountainScene\n-    unlockReq: {\n-      reputation: 35,\n-      questsAll: ['bridge_collapse'],\n-      hint: 'Master material science (complete \"The Bridge That Broke\") and earn 35 reputation.',\n-    },\n+    unlockReq: {\n+      reputation: 35,\n+      questsAnyOrActive: ['bridge_collapse'],\n+      hint: 'Start material science (begin \"The Bridge That Broke\") and earn 35 reputation.',\n+    },\n@@ isSceneUnlocked()\n+  // Must have completed OR currently be on ANY listed quest\n+  // (breaks circular locks where a quest grants items only obtainable in a scene gated by that quest)\n+  if (req.questsAnyOrActive) {\n+    const matched = req.questsAnyOrActive.some(\n+      (qid) => completedIds.includes(qid) || state?.activeQuest?.id === qid\n+    );\n+    if (!matched) return false;\n+  }\n@@ getUnlockProgress()\n+  if (req.questsAnyOrActive) {\n+    totalCount++;\n+    const met = req.questsAnyOrActive.some(\n+      (qid) => completedIds.includes(qid) || state?.activeQuest?.id === qid\n+    );\n+    if (met) metCount++;\n+    conditions.push({\n+      type: 'quest',\n+      met,\n+      label: met ? 'Quest requirement met' : `Start or complete one of: ${req.questsAnyOrActive.join(' or ')}`,\n+    });\n+  }",
+    "scope_compliance": "Single file, JS-only, no new deps. All logic for the new predicate fits inside sceneRegistry.js (predicate evaluator + hint formatter + scene config all colocated)."
+  },
+  "next_agent_suggestions": [
+    "save-migration-fix-D",
+    "quest-hint-update-fix-B",
+    "runtime-audit-timing-fix-E",
+    "e2e-test-fix-F"
+  ]
+}

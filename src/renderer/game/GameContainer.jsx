@@ -38,6 +38,7 @@ import { clearDialogueCache } from './services/npcAiClient.js';
 import { setBusy, recordQuestionDismissed } from './systems/gameplayArbiter.js';
 import { runRuntimeAudit } from './systems/runtimeAudit.js';
 import { initDiscoveryQuestBridge } from './systems/questSystem.js';
+import { triggerQuestRevealsForState } from './systems/discoveryBridge.js';
 
 // ---------------------------------------------------------------------------
 // Mobile detection helper
@@ -292,6 +293,14 @@ export default function GameContainer() {
     // queues quest IDs when regions are discovered; scenes consume the queue
     // at natural checkpoints via consumePendingDiscoveryUnlocks(state).
     initDiscoveryQuestBridge();
+
+    // Reverse discovery bridge — re-fire location reveals for the active
+    // quest at load time so that a save mid-quest (e.g. bridge_collapse
+    // step 6) doesn't soft-lock behind fog-of-war. The reveals are queued
+    // until WorldMapScene mounts, then drained via _drainPendingReveals().
+    if (savedState && savedState.activeQuest && savedState.activeQuest.id) {
+      triggerQuestRevealsForState(savedState);
+    }
 
     // Track parent-element resizes so Phaser re-fits the canvas whenever
     // layout shifts (cold-start race, window resize, devtools toggle).

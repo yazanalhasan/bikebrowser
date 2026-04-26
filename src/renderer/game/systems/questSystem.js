@@ -9,6 +9,7 @@ import QUESTS from '../data/quests.js';
 import { addItem, hasItem } from './inventorySystem.js';
 import { onRegionDiscovered } from './discoverySystem.js';
 import DISCOVERY_UNLOCKS from '../data/discoveryUnlocks.js';
+import { revealLocationsByQuestId } from './discoveryBridge.js';
 
 // ── Discovery → Quest Bridge ─────────────────────────────────────────────────
 
@@ -97,6 +98,20 @@ export function startQuest(state, questId) {
 
   const quest = QUESTS[questId];
   if (!quest) return null;
+
+  // Reverse discovery bridge — reveal any world-map locations associated
+  // with this quest in DISCOVERY_UNLOCKS so the player can find their way.
+  // Without this, fog-of-war (added in commit 5360e29 by world-node-gating)
+  // hides quest-required locations and produces soft-locks like
+  // bridge_collapse step 6 needing copper_ore_sample from a fogged mine.
+  // If WorldMapScene isn't mounted, the reveal is queued and drained on
+  // its next mount via _drainPendingReveals().
+  try {
+    revealLocationsByQuestId(questId);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn('[questSystem] revealLocationsByQuestId threw for', questId, e);
+  }
 
   return {
     ...state,

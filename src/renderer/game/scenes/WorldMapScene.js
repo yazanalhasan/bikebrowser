@@ -19,6 +19,7 @@ import { BIOME } from '../data/regions.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { generateHeightmap, sampleHeightmap, rand2, hash2 } from '../utils/terrainNoise.js';
 import { isDiscovered, revealArea, getDiscoveryState, DISCOVERY_TILE_SIZE, _emitRegionDiscovered } from '../systems/discoverySystem.js';
+import { _drainPendingReveals as _drainPendingQuestReveals } from '../systems/discoveryBridge.js';
 
 const SCENE_KEY = 'WorldMapScene';
 
@@ -189,6 +190,18 @@ export default class WorldMapScene extends Phaser.Scene {
     // save are no-ops. Then redraw fog to apply.
     revealArea(homeX, homeY, 96);
     this.redrawFog();
+
+    // ── Drain queued quest-activation reveals (reverse discovery bridge) ───
+    // discoveryBridge queues location ids when a quest becomes active while
+    // WorldMapScene wasn't mounted (e.g. quest started in a sub-scene, or
+    // a save was loaded mid-quest). Drain those now so the player sees the
+    // associated nodes revealed when they open the map. revealNode is
+    // idempotent against already-revealed tiles.
+    const drained = _drainPendingQuestReveals(this);
+    if (drained.length > 0) {
+      // eslint-disable-next-line no-console
+      console.log(`[WorldMapScene] drained ${drained.length} pending quest-activation reveals: ${drained.join(', ')}`);
+    }
 
     // ── Landmark scatter layer ──
     // Rendered AFTER terrain and paths, BEFORE nodes/labels so landmarks

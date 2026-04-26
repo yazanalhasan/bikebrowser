@@ -220,8 +220,8 @@ const SCENES = {
     },
     unlockReq: {
       reputation: 35,
-      questsAll: ['bridge_collapse'],
-      hint: 'Master material science (complete "The Bridge That Broke") and earn 35 reputation.',
+      questsAnyOrActive: ['bridge_collapse'],
+      hint: 'Start material science (begin "The Bridge That Broke") and earn 35 reputation.',
     },
     region: 'mountain',
     defaultMusic: 'desert_discovery',
@@ -325,7 +325,7 @@ export function getLocalScenes() {
 
 /**
  * Check if a scene is unlocked for the player.
- * Supports: reputation, questsAny, questsAll, items, knowledge.
+ * Supports: reputation, questsAny, questsAll, questsAnyOrActive, items, knowledge.
  *
  * @param {string} sceneKey
  * @param {object} state — game save state
@@ -351,6 +351,15 @@ export function isSceneUnlocked(sceneKey, state) {
   // Must complete ANY listed quest
   if (req.questsAny) {
     if (!req.questsAny.some((qid) => completedIds.includes(qid))) return false;
+  }
+
+  // Must have completed OR currently be on ANY listed quest
+  // (breaks circular locks where a quest grants items only obtainable in a scene gated by that quest)
+  if (req.questsAnyOrActive) {
+    const matched = req.questsAnyOrActive.some(
+      (qid) => completedIds.includes(qid) || state?.activeQuest?.id === qid
+    );
+    if (!matched) return false;
   }
 
   // Must have specific item
@@ -407,6 +416,19 @@ export function getUnlockProgress(sceneKey, state) {
       if (met) metCount++;
       conditions.push({ type: 'quest', met, label: met ? `✅ ${qid}` : `Complete: ${qid}` });
     }
+  }
+
+  if (req.questsAnyOrActive) {
+    totalCount++;
+    const met = req.questsAnyOrActive.some(
+      (qid) => completedIds.includes(qid) || state?.activeQuest?.id === qid
+    );
+    if (met) metCount++;
+    conditions.push({
+      type: 'quest',
+      met,
+      label: met ? 'Quest requirement met' : `Start or complete one of: ${req.questsAnyOrActive.join(' or ')}`,
+    });
   }
 
   const locked = !isSceneUnlocked(sceneKey, state);
