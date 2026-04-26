@@ -1,0 +1,14 @@
+{
+  "agent": "world-map-polish-hotfix",
+  "status": "complete",
+  "ts": "2026-04-25T00:30:00Z",
+  "files_changed": [
+    "src/renderer/game/scenes/WorldMapScene.js"
+  ],
+  "notes": {
+    "syntax_check": "node --check src/renderer/game/scenes/WorldMapScene.js → SYNTAX OK",
+    "git_diff": "diff --git a/src/renderer/game/scenes/WorldMapScene.js b/src/renderer/game/scenes/WorldMapScene.js\nindex 081b84b..382d18f 100644\n--- a/src/renderer/game/scenes/WorldMapScene.js\n+++ b/src/renderer/game/scenes/WorldMapScene.js\n@@ -112,14 +112,14 @@ export default class WorldMapScene extends Phaser.Scene {\n     setBusy('inMenu', true);\n \n     // ── Background ──\n-    this.add.rectangle(width / 2, height / 2, width, height, 0x2d1b0e);\n+    this.add.rectangle(width / 2, height / 2, width, height, 0x2d1b0e).setDepth(-300);\n \n     // Parchment/map overlay\n     const mapW = width * 0.88;\n     const mapH = height * 0.82;\n     const mapX = width / 2;\n     const mapY = height / 2 + 10;\n-    this.add.rectangle(mapX, mapY, mapW, mapH, 0xf5e6c8).setStrokeStyle(3, 0x8b6914);\n+    this.add.rectangle(mapX, mapY, mapW, mapH, 0xf5e6c8).setStrokeStyle(3, 0x8b6914).setDepth(-200);\n \n     // ── Terrain layer ──\n     // Painted ONCE at create. Lives strictly beneath paths / nodes / labels",
+    "depth_chain": "window-frame (-300) → parchment (-200) → terrain (-100) → paths (-50) → landmarks (-25) → nodeBaseG (0) → nodes/icons/labels (1) → vignette (1000)"
+  },
+  "next_agent_suggestions": []
+}

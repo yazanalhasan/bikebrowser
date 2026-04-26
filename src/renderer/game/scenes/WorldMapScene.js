@@ -112,14 +112,14 @@ export default class WorldMapScene extends Phaser.Scene {
     setBusy('inMenu', true);
 
     // ── Background ──
-    this.add.rectangle(width / 2, height / 2, width, height, 0x2d1b0e);
+    this.add.rectangle(width / 2, height / 2, width, height, 0x2d1b0e).setDepth(-300);
 
     // Parchment/map overlay
     const mapW = width * 0.88;
     const mapH = height * 0.82;
     const mapX = width / 2;
     const mapY = height / 2 + 10;
-    this.add.rectangle(mapX, mapY, mapW, mapH, 0xf5e6c8).setStrokeStyle(3, 0x8b6914);
+    this.add.rectangle(mapX, mapY, mapW, mapH, 0xf5e6c8).setStrokeStyle(3, 0x8b6914).setDepth(-200);
 
     // ── Terrain layer ──
     // Painted ONCE at create. Lives strictly beneath paths / nodes / labels
