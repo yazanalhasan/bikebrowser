@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-26T07:05:00Z",
+  "last_updated": "2026-04-26T07:50:00Z",
   "current_week": 2,
   "current_pod_focus": "World & Discovery",
   "completed": [
@@ -241,7 +241,30 @@
       "recovery_event": ".claude/swarm/recovery-events/runtime-audit-system-2026-04-26T06-25-00Z.md",
       "parallel_group": "world-fog-overlay+runtime-audit-system",
       "user_directive": "Player-experience-first sequencing: fog → node-gating → discovery-quests → audit. Independent of fog (different files entirely). Safe to run in parallel.",
-      "notes": "RECEIPT_RECOVERY case — worker hit max_turns at tool-use 31 mid-trim attempting to drop module from 273→250 lines AFTER all load-bearing work had landed. Code on disk is complete and substantial; orchestrator synthesized receipt from disk evidence per saved memory feedback_receipt_recovery.md. Two files touched: NEW `src/renderer/game/systems/runtimeAudit.js` (273 lines, 5 sub-audits + main entry) and `src/renderer/game/GameContainer.jsx` (+2 lines: 1 import + 1 invocation inside the existing `if (import.meta.env.DEV)` block — same DEV gate as `window.__phaserGame = game`). Sub-audits: auditQuestGivers (warning-not-error), auditQuestItems (error), auditQuestScenes (error, derives keys via `createGameConfig(null,0,0).scene[].name` — pure config-factory, no Phaser instantiation, reviewer independently confirmed at config.js), auditRegionBiomes (warning on UNKNOWN — known gap chinese/malay), auditDiscoveryUnlocks (async, try/catch on import, graceful skip when discoveryUnlocks.js absent — that's world-discovery-quests's territory). Boot safety: per-iteration try/catch on sync audits + dedicated try/catch on auditDiscoveryUnlocks; internal failures log `[runtimeAudit] internal error in <name>: <msg>` and continue — boot cannot be blocked. Output: returns `{errors, warnings, passed}`, emits `console.group('[runtimeAudit] PASS|FAIL — N errors, M warnings')` with console.error per error and console.warn per warning. Reviewer PASS — all CRITICAL clean (scope/DEV-gate/no-TS/no-deps/read-only), all HIGH clean (boot-safety/all-5-audits/output-format/scene-key-derivation-safety). Two MEDIUM follow-ups (non-blocking): 273 vs 250 line target → split into per-area files in a future cycle if it grows further; missing live console output in receipt → spot-check by importing module in dev. One LOW: function is async (necessary for dynamic import in auditDiscoveryUnlocks); call site fires without await which is fine for fire-and-forget DEV audit, but a clarifying comment would help."
+      "notes": "RECEIPT_RECOVERY case — worker hit max_turns at tool-use 31 mid-trim attempting to drop module from 273→250 lines AFTER all load-bearing work had landed. Code on disk is complete and substantial; orchestrator synthesized receipt from disk evidence per saved memory feedback_receipt_recovery.md. Two files touched: NEW `src/renderer/game/systems/runtimeAudit.js` (273 lines, 5 sub-audits + main entry) and `src/renderer/game/GameContainer.jsx` (+2 lines: 1 import + 1 invocation inside the existing `if (import.meta.env.DEV)` block — same DEV gate as `window.__phaserGame = game`). Sub-audits: auditQuestGivers (warning-not-error), auditQuestItems (error), auditQuestScenes (error, derives keys via `createGameConfig(null,0,0).scene[].name` — pure config-factory, no Phaser instantiation, reviewer independently confirmed at config.js), auditRegionBiomes (warning on UNKNOWN — known gap chinese/malay), auditDiscoveryUnlocks (async, try/catch on import, graceful skip when discoveryUnlocks.js absent — that's world-discovery-quests's territory). Boot safety: per-iteration try/catch on sync audits + dedicated try/catch on auditDiscoveryUnlocks; internal failures log `[runtimeAudit] internal error in <name>: <msg>` and continue — boot cannot be blocked. Output: returns `{errors, warnings, passed}`, emits `console.group('[runtimeAudit] PASS|FAIL — N errors, M warnings')` with console.error per error and console.warn per warning. Reviewer PASS — all CRITICAL clean (scope/DEV-gate/no-TS/no-deps/read-only), all HIGH clean (boot-safety/all-5-audits/output-format/scene-key-derivation-safety). Two MEDIUM follow-ups (non-blocking): 273 vs 250 line target → split into per-area files in a future cycle if it grows further; missing live console output in receipt → spot-check by importing module in dev. One LOW: function is async (necessary for dynamic import in auditDiscoveryUnlocks); call site fires without await which is fine for fire-and-forget DEV audit, but a clarifying comment would help. POST-COMMIT BUG (resolved in commit c2fae90): worker's literal-string dynamic-import path `await import('../data/discoveryUnlocks.js')` failed Vite/Rollup build-time path resolution because discoveryUnlocks.js doesn't exist yet (it's world-discovery-quests's deliverable). User reported renderer crash. Hotfix wrapped the path in a variable + /* @vite-ignore */ comment so static analysis is bypassed. Reviewer should have caught this by running npm run build during review. New saved memory feedback_dynamic_import_static_resolution.md captures the rule for future agents."
+    },
+    {
+      "agent": "world-node-gating",
+      "ts": "2026-04-26T07:50:00Z",
+      "commit": "5360e29",
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-world-node-gating-2026-04-25T12-00-00Z.json",
+      "receipt": ".claude/swarm/receipts/world-node-gating-2026-04-26T07-30-00Z.json",
+      "receipt_status": "complete_with_recovery",
+      "recovery_event": ".claude/swarm/recovery-events/world-node-gating-2026-04-26T07-30-00Z.md",
+      "user_directive": "Player-experience-first sequencing position 2 of 4: fog (done) → node-gating (this) → discovery-quests → audit (done in parallel).",
+      "reviewer_dispatch_history": [
+        {
+          "dispatch_ts": "2026-04-26T07:35:00Z",
+          "outcome": "stalled at tool-use 17 mid-investigation"
+        },
+        {
+          "dispatch_ts": "2026-04-26T07:45:00Z",
+          "outcome": "PASS — tighter checklist + early-write directive worked"
+        }
+      ],
+      "polish_hotfix_bundled": "Orchestrator-applied polish hotfix bundled in same commit 5360e29: (1) _landmarkContainer setDepth(-25) → setDepth(-90) — landmark layer was leaking through fog because spec didn't anticipate fog being added below it (user noticed cacti showing through fog on fresh-save screenshot); (2) revealArea(homeX, homeY, 96) + redrawFog() at scene-start to seed home fog clearance, addressing the MEDIUM follow-up flagged in the synthesized recovery event. Both edits verified via npm run build (10.76s).",
+      "notes": "RECEIPT_RECOVERY case (third in this session) — worker hit max_turns at tool-use 31 just before the receipt-write step (framework summary: 'HMR preserved at line 1550. Now let me write the receipt and memory files. First let me confirm the exact line ranges...'). Implementation was complete; receipt synthesized from disk evidence per saved memory feedback_receipt_recovery.md. Worker delivered: discovery gates in 3 loops (base/biome, node, path-destination) using imported isDiscovered(x,y); _mapLayout state for revealNode coord lookup; _nodeObjects map for tracking revealed nodes; revealNode(nodeId) public class method (~70 lines, 8-step orchestration: lookup loc + validate _mapLayout + compute coords + detect first-ever via getDiscoveryState().tiles.length===0 + revealArea(x,y,80px) + saveGame + redrawFog + spawn-or-reuse + animate + SFX with discover→reward_stinger fallback + first-discovery dialog 'Zuzu' speaker); _spawnNodeObjects helper (Phaser Container at depth 1, scale starts at 0); _playRevealAnimation (Back.easeOut 400ms scale + Sine alpha pulse, fully non-blocking). HMR registration intact at line 1566. Reviewer PASS on second dispatch (first stalled at tool-use 17): all CRITICAL clean (scope/HMR/build), all HIGH clean (revealNode is class method, isDiscovered used not duplicated, tweens non-blocking, first-discovery order correct, fog methods untouched). Two MEDIUM follow-ups (non-blocking, noted): visual asymmetry between create()-time nodes (drop-shadow + biome anchor + active-quest pulse) and revealNode-spawned nodes (circle + icon + label + stars only) — recommend future world-map-polish cycle; SFX fallback to reward_stinger is loud — future audio cycle could compose a gentler discover.ogg."
     }
   ],
   "superseded": [
@@ -273,6 +296,6 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 7,
+  "dispatch_count": 10,
   "session_token_estimate": 0
 }
