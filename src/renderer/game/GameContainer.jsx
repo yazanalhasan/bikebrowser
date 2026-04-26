@@ -74,6 +74,7 @@ function resolveSpeakerToNpcId(speaker) {
 export default function GameContainer() {
   const containerRef = useRef(null);
   const gameRef = useRef(null);
+  const [containerReady, setContainerReady] = useState(false);
   const prevCompletedRef = useRef(new Set());
   const navigate = useNavigate();
   const recordQuestComplete = useLearningStore((s) => s.recordQuestComplete);
@@ -199,11 +200,55 @@ export default function GameContainer() {
     setConfirmNewGame(false);
   }, []);
 
+  // Reset the gate when bootKey changes (e.g., Reset Game) so the new
+  // Phaser instance also waits for valid container dimensions.
+  useEffect(() => {
+    setContainerReady(false);
+  }, [bootKey]);
+
+  // ------------------------------------------------------------------
+  // Gate: wait for the container to have real dimensions before
+  // booting Phaser. On cold start, AppLayout's 100dvh height +
+  // Suspense lazy-load mean clientWidth/Height return 0 right after
+  // mount. If we boot Phaser at 0×0, every scene's create() reads
+  // those zero dimensions from this.cameras.main and bakes them into
+  // node positions, parchment rectangles, etc. Even after the canvas
+  // later resizes (via the ResizeObserver below), the scene content
+  // stays clustered in the top-left because positions are already
+  // locked in. Solution: don't boot until the layout has settled.
+  // ------------------------------------------------------------------
+  useEffect(() => {
+    if (phase !== 'playing') return;
+    if (!containerRef.current) return;
+    if (containerReady) return;
+
+    const el = containerRef.current;
+
+    const check = () => {
+      if (el.clientWidth > 0 && el.clientHeight > 0) {
+        setContainerReady(true);
+        return true;
+      }
+      return false;
+    };
+
+    if (check()) return;
+
+    const observer = new ResizeObserver(() => {
+      if (check()) {
+        observer.disconnect();
+      }
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [phase, containerReady]);
+
   // ------------------------------------------------------------------
   // Boot Phaser (only when phase === 'playing')
   // ------------------------------------------------------------------
   useEffect(() => {
     if (phase !== 'playing') return;
+    if (!containerReady) return;       // NEW: don't boot at 0×0
     if (!containerRef.current) return;
 
     // Guard: prevent Vite HMR from creating duplicate Phaser instances
@@ -211,8 +256,13 @@ export default function GameContainer() {
 
     const el = containerRef.current;
 
-    // Wait until the container has real dimensions (layout may not be
-    // painted yet when lazy-loaded via Suspense).
+    // Initial measurement — may be 0×0 on cold start when AppLayout's
+    // 100dvh height hasn't resolved yet (lazy-loaded via Suspense). The
+    // ResizeObserver below catches that case by calling scale.refresh()
+    // as soon as the layout settles, AND on any subsequent parent resize
+    // (window chrome changes, devtools open/close, etc.). Phaser's
+    // Scale.RESIZE mode only tracks `window` resize events natively — it
+    // does NOT observe parent-element size changes.
     const width = el.clientWidth || window.innerWidth;
     const height = el.clientHeight || window.innerHeight;
 
@@ -222,6 +272,15 @@ export default function GameContainer() {
     const config = createGameConfig(el, width, height, startScene);
     const game = new Phaser.Game(config);
     gameRef.current = game;
+
+    // Track parent-element resizes so Phaser re-fits the canvas whenever
+    // layout shifts (cold-start race, window resize, devtools toggle).
+    const resizeObserver = new ResizeObserver(() => {
+      if (gameRef.current) {
+        gameRef.current.scale.refresh();
+      }
+    });
+    resizeObserver.observe(el);
 
     // Seed registry with saved state
     game.registry.set('gameState', savedState);
@@ -385,11 +444,12 @@ export default function GameContainer() {
 
     // Cleanup on unmount
     return () => {
+      resizeObserver.disconnect();
       game.destroy(true);
       gameRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, bootKey]);
+  }, [phase, bootKey, containerReady]);
 
   // ------------------------------------------------------------------
   // Pause / resume on visibility change
