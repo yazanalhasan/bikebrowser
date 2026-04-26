@@ -122,7 +122,7 @@
     {
       "agent": "world-path-renderer",
       "ts": "2026-04-25T23:35:00Z",
-      "commit": null,
+      "commit": "194bf2d",
       "review_verdict": "PASS",
       "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-world-path-renderer-2026-04-25T23-30-00Z.json",
       "receipt": ".claude/swarm/receipts/world-path-renderer-2026-04-25T23-00-00Z.json",
@@ -134,7 +134,7 @@
     {
       "agent": "world-landmarks",
       "ts": "2026-04-25T23:35:00Z",
-      "commit": null,
+      "commit": "194bf2d",
       "review_verdict": "PASS",
       "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-world-landmarks-2026-04-25T23-35-00Z.json",
       "receipt": ".claude/swarm/receipts/world-landmarks-2026-04-25T23-00-00Z.json",
