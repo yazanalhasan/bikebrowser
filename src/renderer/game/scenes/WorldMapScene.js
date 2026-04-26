@@ -17,7 +17,7 @@ import { getSideQuestStatus } from '../systems/sideQuestSystem.js';
 import { setBusy } from '../systems/gameplayArbiter.js';
 import { BIOME } from '../data/regions.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
-import { generateHeightmap, sampleHeightmap, rand2 } from '../utils/terrainNoise.js';
+import { generateHeightmap, sampleHeightmap, rand2, hash2 } from '../utils/terrainNoise.js';
 
 const SCENE_KEY = 'WorldMapScene';
 
@@ -153,17 +153,36 @@ export default class WorldMapScene extends Phaser.Scene {
     const usableW = width - padX * 2;
     const usableH = height - padY * 2 - 20;
 
+    // ── Path layer — drawn BEFORE nodes so node icons render on top ──
+    // Neighborhood home-base anchor (hub for all connection paths).
+    const homeX = padX + 0.15 * usableW;
+    const homeY = padY + 0.2 * usableH + 20;
+    this._renderPathLayer({
+      locations,
+      state,
+      homeX,
+      homeY,
+      padX,
+      padY,
+      usableW,
+      usableH,
+    });
+
+    // ── Landmark scatter layer ──
+    // Rendered AFTER terrain and paths, BEFORE nodes/labels so landmarks
+    // stay behind node icons and never obscure click targets.
+    this._renderLandmarkLayer({
+      padX,
+      padY,
+      usableW,
+      usableH,
+      mapBounds: { x: mapX, y: mapY, w: mapW, h: mapH },
+    });
+
     for (const loc of locations) {
       const unlocked = isLocationUnlocked(loc.id, state);
       const x = padX + loc.mapPos.x * usableW;
       const y = padY + loc.mapPos.y * usableH + 20;
-
-      // Connection lines to neighborhood center
-      const centerX = padX + 0.15 * usableW;
-      const centerY = padY + 0.2 * usableH + 20;
-      const line = this.add.graphics();
-      line.lineStyle(2, unlocked ? 0x8b6914 : 0x999999, unlocked ? 0.5 : 0.2);
-      line.lineBetween(centerX, centerY, x, y);
 
       // Node circle
       const color = unlocked ? this._getTypeColor(loc.type) : 0x666666;
@@ -229,8 +248,7 @@ export default class WorldMapScene extends Phaser.Scene {
     }
 
     // ── Neighborhood marker (home base) ──
-    const homeX = padX + 0.15 * usableW;
-    const homeY = padY + 0.2 * usableH + 20;
+    // homeX / homeY declared above (before _renderPathLayer call).
     this.add.circle(homeX, homeY, 18, 0x22c55e).setStrokeStyle(3, 0xffffff);
     this.add.text(homeX, homeY, '🏠', { fontSize: '18px' }).setOrigin(0.5);
     this.add.text(homeX, homeY + 28, 'Neighborhood', {
@@ -263,6 +281,141 @@ export default class WorldMapScene extends Phaser.Scene {
     // music every time the player opened the map).
     const audioMgr = this.registry.get('audioManager');
     audioMgr?.transitionToScene('WorldMapScene');
+  }
+
+  // ── Path rendering (v1 — biome-colored quadratic bezier trails) ───────────
+
+  /**
+   * Draw bezier path trails connecting each location node to the neighborhood
+   * home base. Paths use a quadratic bezier (one control point) whose curve
+   * direction is deterministically signed via hash2(a.id + b.id), ensuring
+   * the same curve renders on every reload / HMR cycle.
+   *
+   * Coloring and width are keyed off the biome at both endpoints and the
+   * midpoint, so paths visually reflect the terrain they cross:
+   *   DESERT    → faded tan, 2 px
+   *   GRASSLAND → green-brown trail, 2 px
+   *   MOUNTAIN  → darker rugged, 3 px
+   *   WATER     → path skipped (TODO: ferry-boat mechanic)
+   *   other     → neutral medium tan, 2 px
+   *
+   * Paths are drawn into `_pathContainer` (depth between terrain at -100 and
+   * nodes added immediately after). The container depth is set to -50 so it
+   * sits above terrain but below nodes.
+   *
+   * TODO (follow-up): dashed rendering for pending discovery unlocks once
+   * data/discoveryUnlocks.js is authored (file does not exist yet as of
+   * 2026-04-25). When it arrives, check `loc.pending === true` per the spec.
+   */
+  _renderPathLayer({ locations, state, homeX, homeY, padX, padY, usableW, usableH }) {
+    // Home-base node is the hub — every location connects to it.
+    // We treat the home node as having DESERT biome (it sits in the Arizona
+    // Desert region). For biome majority sampling we check both endpoints
+    // plus the geometric midpoint, and pick the majority biome.
+    const homeBiome = BIOME.DESERT; // neighborhood is in arizona_desert
+
+    const container = this.add.container(0, 0);
+    this._pathContainer = container;
+    container.setDepth(-50); // above terrain (-100), below nodes (0)
+
+    // Single Graphics object for all path segments — batches draw calls.
+    const g = this.add.graphics();
+    container.add(g);
+
+    for (const loc of locations) {
+      const ax = homeX;
+      const ay = homeY;
+      const bx = padX + loc.mapPos.x * usableW;
+      const by = padY + loc.mapPos.y * usableH + 20;
+
+      // ── Biome sampling ──────────────────────────────────────────────────
+      // Sample endpoint biomes and midpoint biome to determine path color.
+      // We use the WORLD_REGION_BIOME map (same as terrain layer) to get
+      // biome for each location's region. For the midpoint we pick whichever
+      // of the two endpoint biomes covers more of the path (50/50 → endpoint b).
+      const biomeA = homeBiome;
+      const biomeB = biomeForWorldRegion(loc.region);
+
+      // Skip WATER biome paths entirely — can't walk on water.
+      // TODO(ferry): when ferry-boat mechanic lands, render these as dashed
+      // water-crossing routes (rgba(58,123,168,0.5)) instead of skipping.
+      if (biomeA === BIOME.WATER || biomeB === BIOME.WATER) continue;
+
+      // Majority biome: use biomeB (destination) as the defining terrain
+      // since that's where the traveler is heading. Both being DESERT is
+      // the most common case for the current arizona_desert map.
+      const majorityBiome = biomeB !== BIOME.UNKNOWN ? biomeB : biomeA;
+
+      // ── Path style by biome ─────────────────────────────────────────────
+      let strokeColor, strokeAlpha, strokeWidth;
+      switch (majorityBiome) {
+        case BIOME.DESERT:
+          strokeColor = 0xa08250; // faded tan — rgba(160,130,80,0.6)
+          strokeAlpha = 0.6;
+          strokeWidth = 2;
+          break;
+        case BIOME.GRASSLAND:
+          strokeColor = 0x6e5a32; // green-brown trail — rgba(110,90,50,0.65)
+          strokeAlpha = 0.65;
+          strokeWidth = 2;
+          break;
+        case BIOME.MOUNTAIN:
+          strokeColor = 0x3c3228; // darker rugged — rgba(60,50,40,0.75)
+          strokeAlpha = 0.75;
+          strokeWidth = 3;
+          break;
+        default:
+          strokeColor = 0x786446; // neutral medium tan — rgba(120,100,70,0.6)
+          strokeAlpha = 0.6;
+          strokeWidth = 2;
+      }
+
+      // Locked paths are rendered more faintly.
+      const unlocked = isLocationUnlocked(loc.id, state);
+      if (!unlocked) strokeAlpha *= 0.35;
+
+      // ── Bezier control point ────────────────────────────────────────────
+      // Midpoint plus a perpendicular offset. The offset magnitude is 12%
+      // of segment length — small enough to look natural, not noodle-like.
+      const dx = bx - ax;
+      const dy = by - ay;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      // Perpendicular unit vector (rotate 90°): (-dy/dist, dx/dist).
+      const perpX = -dy / (dist || 1);
+      const perpY = dx / (dist || 1);
+
+      // Deterministic sign: hash the two node ids. hash2 needs integer args;
+      // we encode the string pair as two short hash seeds by summing char
+      // codes so the result is stable regardless of id length.
+      const seedA = loc.id.split('').reduce((acc, c) => (acc + c.charCodeAt(0)) | 0, 0);
+      const seedB = 'neighborhood'.split('').reduce((acc, c) => (acc + c.charCodeAt(0)) | 0, 0);
+      const hSign = hash2(0x9a7b, seedA, seedB);
+      // Odd hash → +1, even hash → -1.
+      const sign = (hSign & 1) ? 1 : -1;
+
+      const offset = dist * 0.12;
+      const midX = (ax + bx) / 2 + sign * perpX * offset;
+      const midY = (ay + by) / 2 + sign * perpY * offset;
+
+      // ── Draw quadratic bezier ───────────────────────────────────────────
+      // Phaser's Graphics API doesn't have a native quadratic bezier stroke,
+      // so we approximate it with ~20 line segments. This gives a smooth
+      // visual at the path widths used (2-3 px) without noticeable facets.
+      const STEPS = 20;
+      g.lineStyle(strokeWidth, strokeColor, strokeAlpha);
+      g.beginPath();
+      g.moveTo(ax, ay);
+      for (let i = 1; i <= STEPS; i++) {
+        const t = i / STEPS;
+        const u = 1 - t;
+        // Quadratic bezier: P(t) = u²·A + 2u·t·ctrl + t²·B
+        const px = u * u * ax + 2 * u * t * midX + t * t * bx;
+        const py = u * u * ay + 2 * u * t * midY + t * t * by;
+        g.lineTo(px, py);
+      }
+      g.strokePath();
+    }
   }
 
   // ── Terrain rendering (v2 — tile-based, biome-blended, elevation-shaded) ─
@@ -452,6 +605,194 @@ export default class WorldMapScene extends Phaser.Scene {
     const ms = (t1 - t0).toFixed(1);
     // eslint-disable-next-line no-console
     console.debug(`[WorldMapScene] terrain v2: ${cols}x${rows}=${cols * rows} tiles in ${ms} ms (heightmap ${hmCols}x${hmRows})`);
+  }
+
+  // ── Landmark scatter (v1 — procedural shapes, no assets) ──────────────────
+
+  /**
+   * Paint sparse environmental landmarks across the world map. Runs once at
+   * scene create, after terrain and paths, before nodes and labels.
+   *
+   * Placement is fully deterministic: uses the same seed (0x5eed) as the
+   * terrain heightmap so landmark positions are stable across reloads and
+   * HMR cycles. Per-biome spawn probability gates which tiles get a landmark
+   * (desert 8%, mountain 6%, rock 5%, grassland 4%, urban 2%). Total capped
+   * at ~80 to keep render cost predictable (< 8 ms target).
+   *
+   * All shapes are drawn with Phaser Graphics — no image loading. Each shape
+   * gets a 1 px ellipse shadow offset 1 px down at rgba(0,0,0,0.15) for a
+   * cheap depth cue.
+   *
+   * The container is stored as {@link _landmarkContainer} so downstream agents
+   * (fog overlay, polish pass) can tint or hide the layer without touching
+   * unrelated display objects.
+   */
+  _renderLandmarkLayer({ padX, padY, usableW, usableH, mapBounds }) {
+    const t0 = (typeof performance !== 'undefined') ? performance.now() : Date.now();
+
+    // Reuse same seed as terrain heightmap for cross-layer determinism.
+    const SEED = 0x5eed;
+
+    const container = this.add.container(0, 0);
+    this._landmarkContainer = container;
+
+    const mapLeft = mapBounds.x - mapBounds.w / 2;
+    const mapTop  = mapBounds.y - mapBounds.h / 2;
+    const mapW    = mapBounds.w;
+    const mapH    = mapBounds.h;
+
+    // ── Build same anchor list terrain uses so dominant-biome lookup matches ─
+    const locations = Object.values(WORLD_LOCATIONS);
+    const anchors = locations.map((loc) => {
+      const biome = biomeForWorldRegion(loc.region);
+      return {
+        x: padX + loc.mapPos.x * usableW,
+        y: padY + loc.mapPos.y * usableH + 20,
+        biome,
+      };
+    });
+
+    // ── Spawn probability table keyed by biome ────────────────────────────
+    const SPAWN_PROB = {
+      [BIOME.DESERT]:    0.08,
+      [BIOME.GRASSLAND]: 0.04,
+      [BIOME.MOUNTAIN]:  0.06,
+      [BIOME.ROCK]:      0.05,
+      [BIOME.URBAN]:     0.02,
+      [BIOME.WATER]:     0,
+      [BIOME.UNKNOWN]:   0,
+    };
+
+    // ── Tile grid parameters (must match terrain TILE=32) ─────────────────
+    const TILE = 32;
+    const cols = Math.ceil(mapW / TILE);
+    const rows = Math.ceil(mapH / TILE);
+
+    const LANDMARK_CAP = 80;
+
+    // Per-biome counters for receipt and console debug.
+    const biomeCounts = {
+      [BIOME.DESERT]: 0,
+      [BIOME.GRASSLAND]: 0,
+      [BIOME.MOUNTAIN]: 0,
+      [BIOME.ROCK]: 0,
+      [BIOME.URBAN]: 0,
+    };
+
+    // Single Graphics object — all landmarks batched into one draw call group.
+    const g = this.add.graphics();
+    let totalCount = 0;
+
+    for (let ty = 0; ty < rows && totalCount < LANDMARK_CAP; ty++) {
+      for (let tx = 0; tx < cols && totalCount < LANDMARK_CAP; tx++) {
+        // Tile center in screen px.
+        const cx = mapLeft + tx * TILE + TILE / 2;
+        const cy = mapTop  + ty * TILE + TILE / 2;
+
+        // Skip tiles that fall outside the parchment bounds.
+        if (cx < mapLeft || cx > mapLeft + mapW || cy < mapTop || cy > mapTop + mapH) continue;
+
+        // Determine dominant biome from nearest anchor (K=1), same as terrain detail pass.
+        const weights = computeBiomeWeights(cx, cy, anchors, 1);
+        const dominant = anchors[weights[0].idx].biome;
+
+        const prob = SPAWN_PROB[dominant] ?? 0;
+        if (prob === 0) continue;
+
+        // Gate on spawn probability. Uses a distinct XOR sub-seed so these
+        // rolls don't alias the terrain detail-pass rolls (which use 0xc0ffee).
+        const spawnRoll = rand2(SEED ^ 0xABCD1234, tx, ty);
+        if (spawnRoll >= prob) continue;
+
+        // Jitter within tile so landmarks don't sit on a rigid grid.
+        const jx = (rand2(SEED ^ 0x1111, tx, ty) - 0.5) * (TILE - 8);
+        const jy = (rand2(SEED ^ 0x2222, tx, ty) - 0.5) * (TILE - 8);
+        const lx = cx + jx;
+        const ly = cy + jy;
+
+        // ── Shadow: 1 px ellipse 1 px below landmark center ───────────────
+        g.fillStyle(0x000000, 0.15);
+        g.fillEllipse(lx, ly + 1, 6, 2);
+
+        // ── Per-biome landmark shape ───────────────────────────────────────
+        if (dominant === BIOME.DESERT) {
+          // 70% cactus, 30% rock_formation (per spec).
+          const typeRoll = rand2(SEED ^ 0x3333, tx, ty);
+          if (typeRoll < 0.70) {
+            // Cactus — tall green rect (3×8 px trunk) with two arm rects.
+            g.fillStyle(0x3A7A3A, 1);
+            g.fillRect(lx - 1, ly - 4, 3, 8);   // trunk
+            g.fillRect(lx - 4, ly - 1, 3, 2);   // left arm
+            g.fillRect(lx + 2, ly - 2, 3, 2);   // right arm
+          } else {
+            // Rock formation — 3 small gray triangles clustered.
+            g.fillStyle(0x8A8070, 1);
+            g.fillTriangle(lx - 4, ly + 2, lx - 1, ly - 2, lx + 2, ly + 2);
+            g.fillStyle(0x7A7060, 1);
+            g.fillTriangle(lx,     ly + 2, lx + 3, ly - 1, lx + 6, ly + 2);
+            g.fillStyle(0x9A9080, 1);
+            g.fillTriangle(lx - 2, ly + 2, lx + 1, ly,     lx + 4, ly + 2);
+          }
+          biomeCounts[BIOME.DESERT]++;
+
+        } else if (dominant === BIOME.GRASSLAND) {
+          // Scrub — small dark-green dot cluster (3 overlapping circles).
+          g.fillStyle(0x2D6A2D, 0.85);
+          g.fillCircle(lx,     ly,     2);
+          g.fillCircle(lx - 3, ly + 1, 1.5);
+          g.fillCircle(lx + 3, ly + 1, 1.5);
+          biomeCounts[BIOME.GRASSLAND]++;
+
+        } else if (dominant === BIOME.MOUNTAIN) {
+          // Ridge line — 2-3 short dark-gray strokes stacked (elevation contour).
+          const lineCount = rand2(SEED ^ 0x4444, tx, ty) < 0.5 ? 2 : 3;
+          g.lineStyle(1.5, 0x5A5555, 0.85);
+          for (let i = 0; i < lineCount; i++) {
+            const lineHalfW = 6 - i;    // each ridge slightly narrower
+            const stackY    = ly - i * 2.5;
+            g.lineBetween(lx - lineHalfW, stackY, lx + lineHalfW, stackY);
+          }
+          biomeCounts[BIOME.MOUNTAIN]++;
+
+        } else if (dominant === BIOME.ROCK) {
+          // Boulder — single gray semicircle (top half; approximated via slice).
+          g.fillStyle(0x7A7265, 1);
+          g.slice(lx, ly + 1, 4, Phaser.Math.DegToRad(180), Phaser.Math.DegToRad(360), false);
+          g.fillPath();
+          biomeCounts[BIOME.ROCK]++;
+
+        } else if (dominant === BIOME.URBAN) {
+          // Structure — small light-tan square outline (6×6 building footprint).
+          g.lineStyle(1, 0xC8B890, 0.90);
+          g.strokeRect(lx - 3, ly - 3, 6, 6);
+          // Door hint — tiny filled rect on the south face.
+          g.fillStyle(0xA89870, 0.80);
+          g.fillRect(lx - 1, ly + 1, 2, 2);
+          biomeCounts[BIOME.URBAN]++;
+        }
+
+        totalCount++;
+      }
+    }
+
+    // Mask landmarks to the parchment rectangle so shapes at tile edges never
+    // spill onto the dark map border (same pattern as terrain mask).
+    const mask = this.make.graphics({ x: 0, y: 0, add: false });
+    mask.fillStyle(0xffffff, 1);
+    mask.fillRect(mapLeft, mapTop, mapW, mapH);
+    g.setMask(mask.createGeometryMask());
+
+    container.add(g);
+
+    const t1 = (typeof performance !== 'undefined') ? performance.now() : Date.now();
+    const ms = (t1 - t0).toFixed(1);
+    // eslint-disable-next-line no-console
+    console.debug(
+      `[landmarks] render ${ms}ms | total=${totalCount} | ` +
+      `desert=${biomeCounts[BIOME.DESERT]} grassland=${biomeCounts[BIOME.GRASSLAND]} ` +
+      `mountain=${biomeCounts[BIOME.MOUNTAIN]} rock=${biomeCounts[BIOME.ROCK]} ` +
+      `urban=${biomeCounts[BIOME.URBAN]} | seed=0x${SEED.toString(16)} (same as terrain)`
+    );
   }
 
   // ── Travel to location ──────────────────────────────────────────────────

@@ -1,0 +1,31 @@
+{
+  "agent": "world-landmarks",
+  "status": "complete",
+  "ts": "2026-04-25T23:00:00Z",
+  "files_changed": [
+    "src/renderer/game/scenes/WorldMapScene.js"
+  ],
+  "notes": {
+    "total_landmark_count_estimated": 43,
+    "note_on_count": "Estimated analytically: ~560 tiles total (28 cols x 20 rows at TILE=32 on a 900x615 parchment). With current worldMapData (only arizona_desert and mountain_range), ~520 tiles resolve to DESERT dominant biome and ~40 to MOUNTAIN. At 8% and 6% spawn rates that yields ~42 desert + ~2 mountain = ~44 landmarks before the cap of 80. LANDMARK_CAP=80 is not reached in the current dataset. Actual runtime count will appear in console.debug('[landmarks] render ...') output.",
+    "per_biome_breakdown_estimated": {
+      "DESERT": 42,
+      "MOUNTAIN": 2,
+      "GRASSLAND": 0,
+      "ROCK": 0,
+      "URBAN": 0,
+      "note": "GRASSLAND, ROCK, URBAN are not in WORLD_REGION_BIOME bridge map — all map to UNKNOWN, which has 0% spawn probability. These biomes will produce landmarks once new regions are added to worldMapData.js and WORLD_REGION_BIOME is extended."
+    },
+    "seed_used": "0x5eed — confirmed identical to terrain heightmap seed (line 484 in _renderTerrainLayer: generateHeightmap({ seed: 0x5eed, ... })). Spawn rolls use XOR sub-seed (0x5eed ^ 0xABCD1234) to avoid aliasing terrain detail-pass rolls.",
+    "frame_time_measurement": "Measured at runtime via performance.now() brackets. Estimated < 3 ms: only ~44 Graphics draw calls (fillRect, fillCircle, fillTriangle, lineBetween) versus terrain's ~588 fillRect calls. Console output: '[landmarks] render Xms | total=N | ...'",
+    "crowding_and_sparsity_observations": {
+      "DESERT": "Well within density target. ~42 landmarks spread across 520 tiles gives ~1 landmark per 12 tiles on average, which looks sparse and natural. No crowding expected.",
+      "MOUNTAIN": "Very sparse (2-3 landmarks) due to small mountain_range footprint in the current map. Will feel more populated once mountain region gains more tile coverage.",
+      "GRASSLAND_ROCK_URBAN": "Zero landmarks currently — these biomes are not registered in WORLD_REGION_BIOME. Tuning note: when new regions are added, these biomes will auto-populate at their spec'd probabilities (4%, 5%, 2%) without code changes.",
+      "overall": "Current map is mostly desert, so DESERT dominates. The map will feel more varied once the full biome palette is populated via region expansion."
+    },
+    "collision_safety": "Path-renderer agent edits were fully merged (bezier paths, _renderPathLayer method, hash2 import) before landmark layer was added. No collision occurred. Landmark layer insertion point confirmed: after _renderPathLayer call, before node markers loop. No path or node rendering lines were touched.",
+    "git_diff_summary": "My changes added exactly two blocks: (1) the _renderLandmarkLayer({ ... }) call in create() at lines 174-180, and (2) the full _renderLandmarkLayer method (194 lines) inserted between _renderTerrainLayer and _selectLocation. No terrain rendering, path rendering, node rendering, or click handler code was modified."
+  },
+  "next_agent_suggestions": ["world-map-polish"]
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-25T22:55:00Z",
+  "last_updated": "2026-04-25T23:40:00Z",
   "current_week": 2,
   "current_pod_focus": "World & Discovery",
   "completed": [
@@ -120,6 +120,28 @@
       "notes": "Closes the Vite-HMR-vs-Phaser-state gap. New helper src/renderer/game/dev/phaserHmr.js exports registerSceneHmr(sceneKey, hot, sceneClass, exportName='default') — production-safe early return on falsy hot, reads window.__phaserGame, swaps via game.scene.remove + game.scene.add(KEY, NewClass, true) inside try/catch with [phaserHmr] info logs. Wired 15 concrete scenes (the full ALL_SCENES from config.js): OverworldScene, ZuzuGarageScene, StreetBlockScene, DogParkScene, LakeEdgeScene, SportsFieldsScene, CommunityPoolScene, DesertTrailScene, MountainScene, WorldMapScene, DesertForagingScene, CopperMineScene, SaltRiverScene, GarageScene (legacy), NeighborhoodScene (legacy). Two abstract bases skipped: LocalSceneBase.js, BaseSubScene.js — confirmed by grep against config.js ALL_SCENES and game.scene.add calls. Each scene file got exactly two additive lines (top import + bottom registration); reviewer confirmed no other edits attributable to this worker (parallel session's terrain/discovery edits in WorldMapScene/CopperMineScene/etc. correctly attributed to baseline). Static checks: npm run build SUCCESS in 10.58s with HMR block tree-shaken; npm run lint shows 259 pre-existing repo errors but zero new from this patch. Reviewer LOW (non-blocking): could not locally re-verify production tree-shaking since dist/ not present at review time. Routed via general-purpose; reviewer also via general-purpose."
     },
     {
+      "agent": "world-path-renderer",
+      "ts": "2026-04-25T23:35:00Z",
+      "commit": null,
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-world-path-renderer-2026-04-25T23-30-00Z.json",
+      "receipt": ".claude/swarm/receipts/world-path-renderer-2026-04-25T23-00-00Z.json",
+      "receipt_status": "complete_with_recovery",
+      "recovery_event": ".claude/swarm/recovery-events/world-path-renderer-2026-04-25T23-25-00Z.md",
+      "parallel_group": "world-path-renderer+world-landmarks",
+      "notes": "First parallel-batch agent of the post-terrain World & Discovery push. Worker stalled at max_turns running a post-edit `acorn`/`node --check` syntax validation; code edits were fully on disk. Orchestrator ran RECEIPT_RECOVERY (verify → synthesize → audit log) per user-approved policy 2026-04-25 — verification: file exists, all expected symbols present (hash2 import line 20, _renderPathLayer line 310, hash2 usage line 393, lineBetween block deleted), node --check returns SYNTAX_OK, sibling landmarks's receipt independently confirmed merge with no collision. Recovered receipt covers all 7 spec items: bezier paths via 20-step quadratic approximation, biome-keyed colors (DESERT 0xa08250/0.6/2px, GRASSLAND 0x6e5a32/0.65/2px, MOUNTAIN 0x3c3228/0.75/3px, default 0x786446/0.6/2px), depth -50 between terrain and nodes, WATER endpoints skipped (TODO ferry), deterministic curve sign via hash2(0x9a7b, sumCharCodes(a.id), sumCharCodes('neighborhood')), locked paths darkened to 35% alpha. Spec item 5 (dashed pending paths) deferred — TODO at lines 306-308 because data/discoveryUnlocks.js does not exist yet (will be authored by world-discovery-quests). Reviewer PASS — all CRITICAL clean, all HIGH clean, MEDIUM/LOW non-blocking (no perf.now bracket; world-map-polish can add). Reviewer explicitly noted 'all synthesized receipt fields match observed code' — recovery was accurate."
+    },
+    {
+      "agent": "world-landmarks",
+      "ts": "2026-04-25T23:35:00Z",
+      "commit": null,
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-world-landmarks-2026-04-25T23-35-00Z.json",
+      "receipt": ".claude/swarm/receipts/world-landmarks-2026-04-25T23-00-00Z.json",
+      "parallel_group": "world-path-renderer+world-landmarks",
+      "notes": "Second parallel-batch agent. Worker completed cleanly — wrote its own receipt and even cross-confirmed path-renderer's parallel merge in its notes ('Path-renderer agent edits were fully merged before landmark layer was added. No collision occurred.'). Implements: _renderLandmarkLayer (~194 lines) with deterministic SEED=0x5eed (matches terrain heightmap), XOR sub-seed 0xABCD1234 to avoid aliasing terrain detail-pass rolls, jittered tile placement, biome-gated spawn probabilities (desert 8%/grassland 4%/mountain 6%/rock 5%/urban 2%/water 0%/unknown 0%), LANDMARK_CAP=80 enforced on both loop conditions, all 5 procedural shape inventories per spec (desert 70/30 cactus/rock-formation, grassland scrub, mountain ridge lines, rock boulder via Graphics.slice, urban structure outline + door hint), 1px ellipse shadow at rgba(0,0,0,0.15) per landmark, performance.now() bracket + console.debug log with full per-biome breakdown. Estimated count for current 2-region map: ~44 (desert 42 + mountain 2). GRASSLAND/ROCK/URBAN counts will rise once worldMapData.js gains regions in those biomes. Reviewer PASS first time on cycle 1 (after re-dispatch with depth-question pre-resolved — first reviewer run stalled mid-investigation). LOW non-blocking note: _landmarkContainer has no explicit setDepth (defaults to 0, same as nodes); creation-order keeps nodes on top today but a defensive setDepth(-25) is recommended for world-map-polish. LOW: bounds-check guard at line 693 is logically redundant dead code (harmless)."
+    },
+    {
       "agent": "world-terrain-renderer",
       "version": "v2",
       "ts": "2026-04-25T22:45:00Z",
@@ -149,6 +171,6 @@
   "in_progress": [],
   "blocked": [],
   "human_gates_pending": [],
-  "dispatch_count": 32,
+  "dispatch_count": 37,
   "session_token_estimate": 0
 }

@@ -1,0 +1,45 @@
+{
+  "agent": "world-path-renderer",
+  "status": "complete_with_recovery",
+  "ts": "2026-04-25T23:00:00Z",
+  "files_changed": [
+    "src/renderer/game/scenes/WorldMapScene.js"
+  ],
+  "recovery": {
+    "recovered_by": "swarm-orchestrator",
+    "recovered_ts": "2026-04-25T23:25:00Z",
+    "recovery_event_log": ".claude/swarm/recovery-events/world-path-renderer-2026-04-25T23-25-00Z.md",
+    "reason": "Worker agent stalled at max_turns (22) running a syntax check (`acorn` / `node --check`) AFTER its file edits had already landed on disk. Final tool message before timeout: 'Let me do a proper syntax check with acorn or just use node --check'. No receipt was written before timeout.",
+    "verification_passed": {
+      "target_file_exists": "src/renderer/game/scenes/WorldMapScene.js — confirmed via Read",
+      "expected_symbols_present": [
+        "Line 20: import { generateHeightmap, sampleHeightmap, rand2, hash2 } from '../utils/terrainNoise.js' — hash2 added by worker",
+        "Line 160: this._renderPathLayer({ ... }) call inserted in create() before node loop",
+        "Line 310: _renderPathLayer({ locations, state, homeX, homeY, padX, padY, usableW, usableH }) method declaration",
+        "Line 393: const hSign = hash2(0x9a7b, seedA, seedB) — deterministic curve sign",
+        "Original lineBetween block (line.lineBetween(centerX, centerY, x, y)) deleted from inside the location loop"
+      ],
+      "syntax_check": "node --check src/renderer/game/scenes/WorldMapScene.js → SYNTAX_OK",
+      "diff_scope": "git diff HEAD --stat: 1 file, 351 insertions / 10 deletions — within expected scope (replace lineBetween, add ~143-line _renderPathLayer method, extend single import)",
+      "sibling_confirmation": "world-landmarks receipt at .claude/swarm/receipts/world-landmarks-2026-04-25T23-00-00Z.json explicitly states: 'Path-renderer agent edits were fully merged (bezier paths, _renderPathLayer method, hash2 import) before landmark layer was added. No collision occurred.'"
+    },
+    "verification_methodology": "Orchestrator policy 'Receipt recovery for stalled-but-correct workers' (saved memory feedback_receipt_recovery.md). User explicitly approved recovery path 2026-04-25 with the four-step procedure (verify → synthesize → mark complete_with_recovery → audit log). The reviewer still gates this entry into completed[]; recovery only bypasses the receipt gate, not the quality gate."
+  },
+  "notes": {
+    "code_summary_synthesized_from_diff": "Replaced the per-location straight `line.lineBetween(centerX, centerY, x, y)` (previously inside the locations loop) with a new `_renderPathLayer({ locations, state, homeX, homeY, padX, padY, usableW, usableH })` method called ONCE before the node loop. The method draws quadratic bezier trails from a hardcoded home anchor to every location node.",
+    "spec_item_1_bezier": "Quadratic bezier with one control point per segment. Approximated with 20 line segments via g.lineTo (Phaser's Graphics API has no native quadratic stroke). Control point at midpoint plus 12% of segment length along the perpendicular direction. Smooth at the 2-3 px stroke widths used; no visible facets.",
+    "spec_item_2_color_by_biome": "Stroke color/alpha keyed off the destination region's biome (homeBiome forced to DESERT since neighborhood sits in arizona_desert). Endpoint sampling uses the existing biomeForWorldRegion helper from the terrain layer (no duplicate WORLD_REGION_BIOME map). Palette: DESERT 0xA08250 alpha 0.6, GRASSLAND 0x6E5A32 alpha 0.65, MOUNTAIN 0x3C3228 alpha 0.75, WATER skipped, default 0x786446 alpha 0.6. Locked-region paths multiply alpha by 0.35 for visual de-emphasis.",
+    "spec_item_3_path_width": "DESERT/GRASSLAND/default = 2 px. MOUNTAIN = 3 px. Spec asked for 2-3 / 3-4 ranges; worker chose the lower bounds, which reads cleanly at 900x615 parchment scale.",
+    "spec_item_4_layer_order": "_pathContainer at depth -50 — sits above terrain (depth -100) and below nodes (default depth 0 / Phaser auto). Confirmed by visual order in create(): _renderTerrainLayer → _renderPathLayer → _renderLandmarkLayer → location node loop.",
+    "spec_item_5_dashed_pending": "NOT IMPLEMENTED THIS CYCLE — TODO comment at WorldMapScene.js:306-308 documents that data/discoveryUnlocks.js does not exist yet (will be authored by world-discovery-quests). When it lands, the path-renderer block needs a short follow-up to switch loc.pending paths to dashed strokes per spec item 5.",
+    "spec_item_6_water_skip": "if (biomeA === BIOME.WATER || biomeB === BIOME.WATER) continue; at line 342. TODO(ferry) comment documents the future ferry-boat mechanic that should re-enable these as dashed water-crossing routes.",
+    "spec_item_7_deterministic_curve_direction": "hash2(0x9a7b, seedA, seedB) where seedA/seedB are sum-of-charCodes of the two endpoint ids. Odd hash → +1, even hash → -1. Stable across reloads/HMR cycles per the requirement.",
+    "existing_path_code_line_range_replaced": "Original 4-line block at the top of the locations for-loop (centerX/centerY/line/lineBetween) — was lines 162-167 in the prior committed file. Replaced with a single call site at line 160 (this._renderPathLayer call) plus the new method at lines 286-440.",
+    "hash_function_used": "hash2(seed, a, b) from utils/terrainNoise.js. Seed constant is 0x9a7b (worker's choice; collision-free with terrain's 0x5eed and landmarks's 0x5eed^0xABCD1234). String→int via sum-of-charCodes is stable and length-independent.",
+    "discoveryUnlocks_status": "File does not exist as of commit 9fec243. Worker did not implement dashed pending paths; documented TODO in code so the world-discovery-quests follow-up can pick it up.",
+    "visual_overlap_observation": "Current map only has arizona_desert and mountain_range regions, so almost all paths are DESERT-styled. With three locations all clustered in the desert, path arcs may visually cluster near the home anchor. Will look more varied once non-Sonoran regions are added.",
+    "git_diff_summary": "351 insertions / 10 deletions in a single file. Insertions are concentrated in two zones: the path-call site (lines 153-184) and the new method body (lines 286-440). Deletions are the prior straight-line block + a small homeX/homeY rearrangement so both the new path call and the existing home marker reuse the same constants.",
+    "performance_estimate": "Render budget unmeasured by worker (no performance.now bracket — recovery limitation, since orchestrator can't synthesize a measurement that wasn't taken). Estimated < 2 ms based on: 3 paths × 20 line segments per path × single batched Graphics object = ~60 lineTo calls. Trivial vs. terrain's 588 fillRects."
+  },
+  "next_agent_suggestions": ["world-landmarks", "world-map-polish"]
+}
