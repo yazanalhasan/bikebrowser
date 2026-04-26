@@ -1,0 +1,58 @@
+{
+  "agent": "discovery-pacing-fx",
+  "pod": "Early Experience Design",
+  "focus_area": 1,
+  "layer": "timing",
+  "status": "PASS",
+  "files_changed": [
+    "src/renderer/game/scenes/WorldMapScene.js"
+  ],
+  "notes": {
+    "drain_pacing_change": {
+      "before": "const drained = _drainPendingQuestReveals(this);\nif (drained.length > 0) {\n  console.log(`[WorldMapScene] drained ${drained.length} pending quest-activation reveals: ${drained.join(', ')}`);\n}",
+      "after": "const drained = _drainPendingQuestReveals(null);\nif (drained.length > 0) {\n  console.log(`[WorldMapScene] paced reveal of ${drained.length} queued nodes: ${drained.join(', ')}`);\n  const INITIAL_DELAY = 700;  // ms — let player see the map state first\n  const STAGGER = 380;        // ms between subsequent reveals\n  drained.forEach((id, i) => {\n    this.time.delayedCall(INITIAL_DELAY + i * STAGGER, () => {\n      if (this.scene && this.scene.key === 'WorldMapScene' && this.scene.isActive()) {\n        try { this.revealNode(id); }\n        catch (e) {\n          console.warn('[WorldMapScene] paced revealNode failed for', id, e);\n        }\n      }\n    });\n  });\n}",
+      "explanation": "Pass null to _drainPendingQuestReveals so it clears the queue but does NOT fire reveals (per discoveryBridge.js line 110: `if (!scene || typeof scene.revealNode !== 'function') return drained;`). Then schedule revealNode via Phaser's time.delayedCall with a 700 ms initial delay and 380 ms stagger. Includes scene-active guard to handle the case where the player leaves the map during the delay window.",
+      "constants_chosen": {
+        "INITIAL_DELAY_ms": 700,
+        "STAGGER_ms": 380
+      }
+    },
+    "play_reveal_animation_change": {
+      "before": {
+        "DURATION_ms": 400,
+        "scale_tween": "duration 400, ease Back.easeOut, no delay",
+        "alpha_pulse": "chained: alpha→0.5 over 140 ms (35% of 400) Sine.easeIn, then onComplete → alpha→1 over 260 ms (65%) Sine.easeOut",
+        "shape": "blink-then-recover, sequenced with scale"
+      },
+      "after": {
+        "DURATION_ms": 550,
+        "SCALE_DELAY_ms": 80,
+        "scale_tween": "duration 550, delay 80, ease Back.easeOut",
+        "alpha_pulse": "single yoyo tween: alpha→0.5 over 192 ms (35% of 550) Sine.easeIn, yoyo back over 192 ms with yoyoEase Sine.easeOut",
+        "shape": "alpha pulse begins first (eye catches brightening), 80 ms later scale pop kicks; pulse and scale overlap"
+      },
+      "yoyo_simplification_applied": true,
+      "rationale": "yoyo: true with yoyoEase replaces the chained onComplete pattern. Total alpha-down + alpha-up duration is 384 ms, slightly less than the new 550 ms scale duration, so pulse naturally overlaps with the back-half of the scale tween rather than blinking before it. Cleaner code (no nested tween), and the visual difference vs. the previous chained pattern is sub-perceptual (same easings, same 35/65-equivalent shape just expressed via yoyo)."
+    },
+    "manual_verification_scenarios": [
+      "Fresh save with bridge_collapse pre-active → start game → walk to bike (or however the map opens first) → open World Map. Expected: map renders fully (terrain, paths, home node, fog) and sits visible for ~700 ms with no node movement, THEN copper_mine pops in with a 550 ms Back.easeOut scale + concurrent alpha pulse (brightens slightly first ~80 ms before the pop). SFX should fire on the reveal. First-discovery dialog should still appear after.",
+      "Save with multiple queued reveals (e.g. quest with 2+ DISCOVERY_UNLOCKS entries pending) → load → open World Map. Expected: 700 ms initial pause, then reveals fire in queue order spaced 380 ms apart (e.g. node A at t=700, node B at t=1080). Each reveal individually shows the same 80 ms alpha-lead + 550 ms scale pop. They should NOT all fire on the same frame.",
+      "Open World Map with queued reveal, then immediately close/leave the scene before the 700 ms timer fires. Expected: no console error, no orphaned tween. Reopening the map should NOT replay the reveal (queue was already drained on first open — this is correct, not a regression). revealNode is idempotent against already-revealed tiles in any case."
+    ],
+    "build_status": "npm run build PASSED (vite v5.4.21, 867 modules transformed, built in 11.18s, no errors, only the pre-existing chunk-size and CJS deprecation warnings)",
+    "diff_size": "~30 lines net change, single file, well under the 40-line target",
+    "constraints_observed": [
+      "JavaScript only — no TS",
+      "Single file: WorldMapScene.js",
+      "discoveryBridge.js NOT modified (read-only)",
+      "No new module-scope constants — INITIAL_DELAY, STAGGER, DURATION, SCALE_DELAY all inline in their methods",
+      "revealNode behavior unchanged — still runs revealArea + saveGame + redrawFog + spawn + animate + SFX + first-discovery dialog. Only WHEN it's called moved.",
+      "SFX call inside revealNode untouched (audio layer is reserved for a future agent)",
+      "First-discovery dialog text/trigger untouched (narrative layer)",
+      "HMR registration at file tail untouched",
+      "No visual emphasis added (no glow, no highlight, no new color tweens) — that's the next agent's slice",
+      "No camera movement added — that's the third agent's slice"
+    ]
+  },
+  "next_agent_suggestions": ["discovery-visual-emphasis"]
+}

@@ -197,10 +197,29 @@ export default class WorldMapScene extends Phaser.Scene {
     // a save was loaded mid-quest). Drain those now so the player sees the
     // associated nodes revealed when they open the map. revealNode is
     // idempotent against already-revealed tiles.
-    const drained = _drainPendingQuestReveals(this);
+    //
+    // Pacing layer: pass `null` to drain the queue WITHOUT firing reveals
+    // synchronously, then schedule revealNode via Phaser's time.delayedCall
+    // so the player has a beat to register the map first. Multiple reveals
+    // stagger naturally rather than all popping in on the same frame.
+    const drained = _drainPendingQuestReveals(null);
     if (drained.length > 0) {
       // eslint-disable-next-line no-console
-      console.log(`[WorldMapScene] drained ${drained.length} pending quest-activation reveals: ${drained.join(', ')}`);
+      console.log(`[WorldMapScene] paced reveal of ${drained.length} queued nodes: ${drained.join(', ')}`);
+      const INITIAL_DELAY = 700;  // ms — let player see the map state first
+      const STAGGER = 380;        // ms between subsequent reveals
+      drained.forEach((id, i) => {
+        this.time.delayedCall(INITIAL_DELAY + i * STAGGER, () => {
+          // Guard: scene may have been left/destroyed during the delay
+          if (this.scene && this.scene.key === 'WorldMapScene' && this.scene.isActive()) {
+            try { this.revealNode(id); }
+            catch (e) {
+              // eslint-disable-next-line no-console
+              console.warn('[WorldMapScene] paced revealNode failed for', id, e);
+            }
+          }
+        });
+      });
     }
 
     // ── Landmark scatter layer ──
@@ -1530,13 +1549,18 @@ export default class WorldMapScene extends Phaser.Scene {
    * If only individual objects are present (nodes already rendered in create()
    * that were already at scale 1), alpha-pulse only — no scale tween needed.
    *
-   * Duration: 400 ms. Back.easeOut gives a satisfying "pop" overshoot.
+   * Duration: 550 ms. Back.easeOut gives a satisfying "pop" overshoot.
+   * The alpha pulse begins first (no delay) while the scale tween is offset
+   * by 80 ms so the player's eye catches the brightening before the scale
+   * kicks in. The pulse uses yoyo to overlap with — rather than blink before
+   * — the scale, giving a more cinematic feel without any extra duration.
    * Non-blocking — Phaser tweens are asynchronous; never blocks input.
    *
    * @param {{ container?, circle, icon, nameLabel }} objs
    */
   _playRevealAnimation({ container, circle, icon, nameLabel }) {
-    const DURATION = 400;
+    const DURATION = 550;
+    const SCALE_DELAY = 80; // ms — let alpha pulse start before the pop
 
     if (container) {
       // Container approach (freshly spawned node): scale the whole group in.
@@ -1544,12 +1568,17 @@ export default class WorldMapScene extends Phaser.Scene {
         targets: container,
         scale: 1,
         duration: DURATION,
+        delay: SCALE_DELAY,
         ease: 'Back.easeOut',
       });
     }
 
     // Alpha pulse on circle + icon (nameLabel alpha is 0.7 for locked nodes;
     // don't override it). Works for both container and non-container paths.
+    // Single yoyo tween: 35% out, 35% back (Sine in then auto-reverses with
+    // Sine.easeOut behaviour via yoyoEase) — replaces the previous chained
+    // onComplete pattern. Overlaps naturally with the scale tween instead of
+    // sequencing in/out.
     const pulseTargets = [circle, icon].filter(Boolean);
     if (pulseTargets.length > 0) {
       this.tweens.add({
@@ -1557,14 +1586,8 @@ export default class WorldMapScene extends Phaser.Scene {
         alpha: 0.5,
         duration: DURATION * 0.35,
         ease: 'Sine.easeIn',
-        onComplete: () => {
-          this.tweens.add({
-            targets: pulseTargets,
-            alpha: 1,
-            duration: DURATION * 0.65,
-            ease: 'Sine.easeOut',
-          });
-        },
+        yoyo: true,
+        yoyoEase: 'Sine.easeOut',
       });
     }
   }
