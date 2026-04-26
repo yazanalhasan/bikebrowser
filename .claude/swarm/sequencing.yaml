@@ -123,6 +123,48 @@ agents:
     notes: "On-demand precondition for audio-asset-cleanup. Scans .wav masters; for any whose .ogg/.mp3 sibling is missing or 0-byte, encodes a valid compressed file via ffmpeg (libvorbis preferred, libmp3lame fallback). 128 kbps for music, 96 kbps for SFX. Pure additive — never deletes a .wav, never renames. If ffmpeg isn't on PATH, returns blocker without trying alternatives."
     max_turns: 25
 
+  # ── Phaser DryWash pod (legacy 2D game) ──────────────────────────────
+  # Adds edge-walk access to DryWashScene + drag/drop construction mode.
+  # EXTENDS the just-shipped commit 451e7a4 (DryWashScene + ConstructionSystem
+  # + bridge_collapse step 15 wiring) — does NOT replace any of it.
+  # Honors the saved-memory rule feedback_systems_not_quests: traversal
+  # and drag-construction are both reusable systems with the bridge as
+  # their first consumer.
+
+  phaser-traversal-system:
+    prerequisites: []
+    week: 3
+    pod: Phaser DryWash
+    requires_human_gate: true
+    notes: "Load-bearing primitive. Adds NEW seamless edge-walk traversal alongside the existing teleport flow (transitionTo). Strictly additive — does NOT modify sceneTransition.js, does NOT call scene.start outside the new module. Wide blast radius if it bleeds into the teleport flow; human gate before dispatch."
+    max_turns: 25
+
+  phaser-dry-wash-scene:
+    prerequisites: [phaser-traversal-system]
+    week: 3
+    pod: Phaser DryWash
+    parallel_safe_with: [phaser-bridge-construction]
+    requires_human_gate: false
+    notes: "Wires NeighborhoodScene's east edge → DryWashScene's west edge via the seamless traversal primitive. Strictly additive: world-map travel access (commit 451e7a4) stays. Touches NeighborhoodScene.js + DryWashScene.js + a single SCENE_ADJACENCY append in seamlessTraversal.js."
+    max_turns: 22
+
+  phaser-bridge-construction:
+    prerequisites: [phaser-traversal-system]
+    week: 3
+    pod: Phaser DryWash
+    parallel_safe_with: [phaser-dry-wash-scene]
+    requires_human_gate: false
+    notes: "Extends the shipped ConstructionSystem (commit 451e7a4) with a drag-and-drop mode alongside existing click-to-place. Bridge blueprint switches to mode:'drag'; all other blueprints keep working unchanged (mode defaults to 'click'). Reuses existing anchor-validity logic. The bridge_built observation event must continue to fire identically — phaser-bridge-quest-glue verifies."
+    max_turns: 25
+
+  phaser-bridge-quest-glue:
+    prerequisites: [phaser-dry-wash-scene, phaser-bridge-construction]
+    week: 3
+    pod: Phaser DryWash
+    requires_human_gate: false
+    notes: "Fan-in verification agent. Traces bridge_built event end-to-end through both new paths (edge-walk entry + drag-place). HARD CAP: ≤ 50 LOC across ≤ 2 files. If wiring needs more than that, returns blocked. Verifies the systems-not-quests rule is honored."
+    max_turns: 15
+
   audio-asset-cleanup:
     prerequisites: [resource-auditor, audio-compression-pass]
     week: 1
