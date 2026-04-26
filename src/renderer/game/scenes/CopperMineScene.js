@@ -29,33 +29,13 @@ export default class CopperMineScene extends BaseSubScene {
     // The bridge_collapse quest step `collect_copper` requires the item id
     // `copper_ore_sample`, which only the MountainScene grants. Players who
     // intuitively visit the *Copper Mine* (this scene) for copper end up with
-    // `surface_copper`/`deep_copper` instead and get stuck. If they already
-    // have either of those AND are on the relevant quest step, retroactively
-    // grant `copper_ore_sample` so the quest can advance. Strictly additive —
+    // `surface_copper`/`deep_copper` instead and get stuck. The helper
+    // `_mintCopperOreSampleIfNeeded` retroactively grants `copper_ore_sample`
+    // when the player is on the relevant step and has any mine copper. Called
+    // here on scene entry as a safety net AND inline from the surface/deep
+    // copper collection callbacks (low-friction path). Strictly additive —
     // does not affect the side-quest `collect_copper_samples`.
-    {
-      const st = this.registry.get('gameState');
-      const aq = st?.activeQuest;
-      if (aq?.id === 'bridge_collapse' && !(st.inventory || []).includes('copper_ore_sample')) {
-        const step = QUESTS.bridge_collapse?.steps?.[aq.stepIndex];
-        const hasMineCopper = (st.inventory || []).some(
-          (id) => id === 'surface_copper' || id === 'deep_copper'
-        );
-        if (step?.id === 'collect_copper' && hasMineCopper) {
-          const updated = { ...st, inventory: [...st.inventory, 'copper_ore_sample'] };
-          this.registry.set('gameState', updated);
-          saveGame(updated);
-          this.registry.set('dialogEvent', {
-            speaker: 'Zuzu',
-            text:
-              "Wait — this copper from the mine works as a sample for Mr. Chen's bridge test!\n\n" +
-              '🟤 Got: Copper Ore Sample',
-            choices: null,
-            step: null,
-          });
-        }
-      }
-    }
+    this._mintCopperOreSampleIfNeeded();
 
     // ── Ground layers ── mine entrance transitions to underground
     // Surface (top third)
@@ -158,11 +138,13 @@ export default class CopperMineScene extends BaseSubScene {
       x: 180, y: 470, icon: '🟤', label: 'Surface Copper',
       itemId: 'surface_copper',
       description: 'Oxidized copper ore from the surface — greenish patina (verdigris).',
+      onAfterCollect: () => this._mintCopperOreSampleIfNeeded(),
     });
     this.addResource({
       x: 720, y: 520, icon: '🔶', label: 'Deep Copper Ore',
       itemId: 'deep_copper',
       description: 'Pure chalcopyrite from deep in the mine — higher conductivity.',
+      onAfterCollect: () => this._mintCopperOreSampleIfNeeded(),
     });
     this.addResource({
       x: 400, y: 700, icon: '🔌', label: 'Wire Sample',
@@ -236,6 +218,40 @@ export default class CopperMineScene extends BaseSubScene {
       explanation: 'd = 5 × 2² = 5 × 4 = 20 meters. This approximates real gravitational freefall!',
       concept: 'exponents in physics formulas',
       reward: { zuzubucks: 20, reputation: 5 },
+    });
+  }
+
+  /**
+   * Mint copper_ore_sample if the player is on bridge_collapse step
+   * collect_copper and has any mine copper in inventory but not the
+   * canonical sample. Called at scene entry (safety net) AND inline from
+   * surface_copper/deep_copper collection callbacks (low-friction path).
+   *
+   * Idempotent: returns silently if the player already has copper_ore_sample,
+   * if the active quest is wrong, or if the active step is wrong — so calling
+   * it twice (re-entry after collection) does NOT double-mint or double-dialog.
+   */
+  _mintCopperOreSampleIfNeeded() {
+    const st = this.registry.get('gameState');
+    const aq = st?.activeQuest;
+    if (aq?.id !== 'bridge_collapse') return;
+    if ((st.inventory || []).includes('copper_ore_sample')) return;
+    const step = QUESTS.bridge_collapse?.steps?.[aq.stepIndex];
+    if (step?.id !== 'collect_copper') return;
+    const hasMineCopper = (st.inventory || []).some(
+      (id) => id === 'surface_copper' || id === 'deep_copper'
+    );
+    if (!hasMineCopper) return;
+    const updated = { ...st, inventory: [...st.inventory, 'copper_ore_sample'] };
+    this.registry.set('gameState', updated);
+    saveGame(updated);
+    this.registry.set('dialogEvent', {
+      speaker: 'Zuzu',
+      text:
+        "Wait — this copper from the mine works as a sample for Mr. Chen's bridge test!\n\n" +
+        '🟤 Got: Copper Ore Sample',
+      choices: null,
+      step: null,
     });
   }
 

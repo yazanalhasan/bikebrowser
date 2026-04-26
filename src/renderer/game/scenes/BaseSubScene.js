@@ -313,6 +313,9 @@ export default class BaseSubScene extends LocalSceneBase {
    * @param {string} config.label
    * @param {string} config.itemId — item to grant
    * @param {string} [config.description] — flavor text
+   * @param {(updatedState: object, scene: BaseSubScene) => void} [config.onAfterCollect]
+   *   — optional scene-specific hook fired AFTER the inventory mutation and
+   *     pickup SFX. Wrapped in try/catch so it can't break generic collection.
    */
   addResource(config) {
     const state = this.registry.get('gameState');
@@ -345,6 +348,16 @@ export default class BaseSubScene extends LocalSceneBase {
         });
         const audioMgr = this.registry.get('audioManager');
         audioMgr?.playSfx('item_pickup');
+
+        // Optional scene-specific post-collect hook. Safe — wraps in try/catch so
+        // scene-specific logic can't break generic resource collection.
+        if (typeof config.onAfterCollect === 'function') {
+          try { config.onAfterCollect(updated, this); }
+          catch (e) {
+            // eslint-disable-next-line no-console
+            console.warn(`[addResource] onAfterCollect failed for ${config.itemId}`, e);
+          }
+        }
       },
     });
   }

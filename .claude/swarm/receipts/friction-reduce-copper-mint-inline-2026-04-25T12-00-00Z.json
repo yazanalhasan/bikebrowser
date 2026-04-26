@@ -1,0 +1,55 @@
+{
+  "agent": "friction-reduce-copper-mint-inline",
+  "pod": "Early Experience Design",
+  "focus_area": 5,
+  "layer": "logic-timing",
+  "timestamp": "2026-04-25T12:00:00Z",
+  "status": "PASS",
+  "files_changed": [
+    "src/renderer/game/scenes/CopperMineScene.js",
+    "src/renderer/game/scenes/BaseSubScene.js"
+  ],
+  "notes": {
+    "summary": "Eliminated playtest friction where collecting copper at the Copper Mine did not advance the bridge_collapse quest until scene re-entry. Moved the existing band-aid mutation timing from scene-creation only to ALSO fire inline at the moment of surface_copper/deep_copper collection. End state is identical to the prior scene-entry band-aid; only the WHEN changed. No semantic change to progression logic.",
+    "diffs": {
+      "BaseSubScene.js_addResource_jsdoc": "Added param doc:\n  * @param {(updatedState: object, scene: BaseSubScene) => void} [config.onAfterCollect]\n  *   — optional scene-specific hook fired AFTER the inventory mutation and\n  *     pickup SFX. Wrapped in try/catch so it can't break generic collection.",
+      "BaseSubScene.js_addResource_hook": "Inside the addResource onInteract callback, AFTER `audioMgr?.playSfx('item_pickup');`, added:\n\n  // Optional scene-specific post-collect hook. Safe — wraps in try/catch so\n  // scene-specific logic can't break generic resource collection.\n  if (typeof config.onAfterCollect === 'function') {\n    try { config.onAfterCollect(updated, this); }\n    catch (e) {\n      // eslint-disable-next-line no-console\n      console.warn(`[addResource] onAfterCollect failed for ${config.itemId}`, e);\n    }\n  }\n\nPurely additive — existing callers without `onAfterCollect` are unaffected because `typeof undefined === 'function'` is false.",
+      "CopperMineScene.js_helper_extraction": "Replaced the 22-line inline band-aid block in createWorld() (lines 36-58) with a single call `this._mintCopperOreSampleIfNeeded();` plus an updated banner comment. The extracted method `_mintCopperOreSampleIfNeeded()` was added just above `_handleMinerInteract()` with the exact same semantics as the original block:\n\n  _mintCopperOreSampleIfNeeded() {\n    const st = this.registry.get('gameState');\n    const aq = st?.activeQuest;\n    if (aq?.id !== 'bridge_collapse') return;\n    if ((st.inventory || []).includes('copper_ore_sample')) return;\n    const step = QUESTS.bridge_collapse?.steps?.[aq.stepIndex];\n    if (step?.id !== 'collect_copper') return;\n    const hasMineCopper = (st.inventory || []).some(\n      (id) => id === 'surface_copper' || id === 'deep_copper'\n    );\n    if (!hasMineCopper) return;\n    const updated = { ...st, inventory: [...st.inventory, 'copper_ore_sample'] };\n    this.registry.set('gameState', updated);\n    saveGame(updated);\n    this.registry.set('dialogEvent', {\n      speaker: 'Zuzu',\n      text:\n        \"Wait — this copper from the mine works as a sample for Mr. Chen's bridge test!\\n\\n\" +\n        '🟤 Got: Copper Ore Sample',\n      choices: null,\n      step: null,\n    });\n  }",
+      "CopperMineScene.js_inline_wiring": "Added `onAfterCollect: () => this._mintCopperOreSampleIfNeeded()` to the surface_copper and deep_copper addResource() calls only. NOT added to the wire_spool addResource (side-quest item, irrelevant to bridge_collapse)."
+    },
+    "idempotency_audit": {
+      "inventory_check": "Helper early-returns on `(st.inventory || []).includes('copper_ore_sample')` BEFORE mutating state or firing the dialog. So any second call after the first successful mint is a silent no-op — no double-mint, no double-dialog.",
+      "step_check": "Helper early-returns on `aq?.id !== 'bridge_collapse'` and on `step?.id !== 'collect_copper'`. After the player's quest auto-advances on the next tick (because copper_ore_sample now satisfies the collect_copper requirement), the step check will fail on any later call, providing a second guard.",
+      "active_quest_check": "Helper early-returns when there is no active bridge_collapse quest (e.g. player is doing the side-quest collect_copper_samples instead). Side-quest path is fully unaffected.",
+      "exception_safety": "The inline call site is wrapped in a try/catch in BaseSubScene.addResource so any future bug in the helper cannot break resource collection."
+    },
+    "manual_verification_scenarios": [
+      {
+        "name": "Friction case (the user's reported flow)",
+        "setup": "Player on bridge_collapse step collect_copper, no copper_ore_sample, no mine copper. Walks into Copper Mine for the first time.",
+        "expected_before_fix": "Player picks up surface_copper and/or deep_copper. Quest does NOT advance because the mine items don't match the required item id. Player walks to garage workbench — workbench's conditional grant of steel_sample fails because step is still collect_copper. User reports: \"does not activate anything unique\".",
+        "expected_after_fix": "Player picks up surface_copper. addResource's onAfterCollect fires _mintCopperOreSampleIfNeeded(). Helper sees bridge_collapse + collect_copper + hasMineCopper=true + no canonical sample → mints copper_ore_sample, saves, fires Zuzu dialog. Quest advances on next tick. Walking to workbench now advances correctly."
+      },
+      {
+        "name": "Re-entry case (original band-aid path still works)",
+        "setup": "Player has surface_copper from a previous session, exits and re-enters Copper Mine after the fix is shipped (or has not yet collected anything in current scene mount).",
+        "expected": "createWorld() runs `this._mintCopperOreSampleIfNeeded();` at scene entry. Helper sees the same preconditions and mints the sample on entry. This is the original band-aid behavior, preserved as a safety net."
+      },
+      {
+        "name": "Already-have-canonical case (no double-fire)",
+        "setup": "Player has both surface_copper AND copper_ore_sample (e.g. they collected mine copper, the inline mint already fired, then they walked out and came back to grab deep_copper).",
+        "expected": "On scene re-entry: helper early-returns at the inventory.includes('copper_ore_sample') check — no dialog re-fires. On collecting deep_copper: onAfterCollect fires the helper, helper early-returns at the same inventory check — no dialog, no double-mint."
+      }
+    ],
+    "build_status": "npm run build: PASS (vite build, 867 modules transformed, built in 12.20s, no errors). Pre-existing chunk-size warnings unrelated to this change.",
+    "scope_compliance": {
+      "files_in_scope_only": true,
+      "no_progression_semantics_change": "Helper preconditions are byte-identical to the prior inline block. Only the call site count changed (1 → 3: scene entry + 2 resource onAfterCollect callbacks).",
+      "single_layer_logic_timing": "No visual, audio, or camera changes.",
+      "javascript_only": true,
+      "two_files_max": true,
+      "hmr_preserved": "Bottom of CopperMineScene.js untouched — registerSceneHmr line intact. BaseSubScene.js has no HMR registration to preserve."
+    }
+  },
+  "next_agent_suggestions": []
+}
