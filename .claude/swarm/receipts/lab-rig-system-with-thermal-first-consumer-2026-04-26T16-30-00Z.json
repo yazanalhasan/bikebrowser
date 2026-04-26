@@ -1,0 +1,73 @@
+{
+  "agent": "lab-rig-system-with-thermal-first-consumer",
+  "pod": "Reusable Interaction Systems",
+  "ts": "2026-04-26T16:30:00Z",
+  "status": "complete",
+  "files_changed": [
+    {
+      "type": "create",
+      "path": "src/renderer/game/scenes/LabRigBase.js",
+      "summary": "New abstract base class extending LocalSceneBase. Owns the entire lab-rig lifecycle: world bg + title bar, sample selector panel, START TEST button, test-driving tween, live readout, region-colored chart, completion observation/dialog hook, first-entry hint (per-rig flag), exit zone back to ZuzuGarageScene. Exposes hooks: getSampleSet, runSampleTest, drawApparatus, drawSpecimenForSample, animateProgress, animateCompletion, getReadoutFields, getChartConfig, getTestedStateKey, getCompletionObservation, getCompletionDialog, getProgressDialog, getQuestId, getFirstEntryHint, getRigTitle/Subtitle/Emoji, getExitSpawnName, getTestDurationMs. Subclasses get a ctx object with apparatusLayer + specimenLayer + effectsLayer Containers so the base can clean specimen swaps cleanly. No HMR registration in the base — abstract class with no scene key."
+    },
+    {
+      "type": "create",
+      "path": "src/renderer/game/systems/materials/thermalRigDatabase.js",
+      "summary": "Pure-data module mirroring materialDatabase.js. Exports THERMAL_RODS (steel/copper/aluminum), THERMAL_ROD_IDS, getThermalRod, getMaxAlpha. Each entry has alphaPerK (linear thermal expansion coefficient), densityKgM3, color, failureTempC, lengthMm, originalLengthMm, unlocks[], questTags[]. Sourced from Engineering Toolbox / NIST thermal-expansion tables; gameplay-tuned but realistic."
+    },
+    {
+      "type": "create",
+      "path": "src/renderer/game/systems/materials/thermalRigEngine.js",
+      "summary": "Pure-functions sim engine. Exports runThermalTest(rodId, opts) → {rodId, testType, curve, summary, scores, unlockedKnowledge}, classifyThermalRegion, _smokeTest. Linear thermal expansion ΔL = α·L₀·ΔT. Default 25°C → 200°C across 60 samples. Region bands keyed off failureTempC (elastic < 50%, plastic 50–90%, failure ≥ 90%) — at 200°C all seeded rods stay elastic, so the gameplay value is the visible contrast, not failure. Smoke test verifies aluminum > copper > steel expansion ordering and unknown id returns null."
+    },
+    {
+      "type": "create",
+      "path": "src/renderer/game/scenes/ThermalRigScene.js",
+      "summary": "Thin LabRigBase subclass for Mrs. Ramirez's thermal expansion lab. ~280 LOC. Draws apparatus (concrete base, two ceramic insulator supports with V-cradle notches, furnace flame icon, temperature dial). drawSpecimenForSample renders horizontal rod (300px wide for 100mm). animateProgress: rod stretches with ΔL, tints toward red-hot via lerpColor, flame intensity scales, heat-haze puffs spawn above rod. animateCompletion: cools rod color, floats ΔL label up, plays ui_success. getCompletionObservation 'thermal_expansion_observed', getQuestId 'heat_failure'. Calls registerSceneHmr at bottom."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/config.js",
+      "summary": "Imported ThermalRigScene and added it to ALL_SCENES next to MaterialLabScene."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/systems/sceneRegistry.js",
+      "summary": "Added ThermalRigScene registry block (local layer, fromGarage spawn, toGarage exit, defaultMusic 'pixel_pedal_parade_v4'). Added fromThermalRig spawn + toThermalRig exit to ZuzuGarageScene entry."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/scenes/ZuzuGarageScene.js",
+      "summary": "Added Thermal Lab doorway prop at (60, 200) — 38×56 dark rect with 🌡️ label, mirroring the Materials Lab doorway pattern. Gates on activeQuest.id === 'heat_failure' && stepIndex >= 3 (the new observe_expansion step); otherwise emits a Mrs. Ramirez nudge dialog."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/data/quests.js",
+      "summary": "Inserted observe_expansion step in heat_failure.steps between quiz_thermal and learn_solution. Step is type:'observe', requiredObservation:'thermal_expansion_observed', scene:'ThermalRigScene'. Steps now 6 instead of 5; learn_solution + complete_heat indices shifted +1."
+    }
+  ],
+  "build_validation": {
+    "command": "npm run build",
+    "result": "pass",
+    "duration": "10.80s"
+  },
+  "components_landed": {
+    "lab_rig_base_class": true,
+    "thermal_rig_database": true,
+    "thermal_rig_engine": true,
+    "thermal_rig_scene": true,
+    "config_registered": true,
+    "scene_registry_entry": true,
+    "zuzu_garage_doorway": true,
+    "heat_failure_observe_step": true,
+    "hmr_registered_in_subclass": true,
+    "first_consumer_demonstrates_abstraction": true
+  },
+  "second_consumer_thought_experiment": {
+    "for_utm": "Migrating MaterialLabScene to extend LabRigBase is a thin refactor: replace the class header with `extends LabRigBase`, replace `_drawRig` with `drawApparatus(ctx)` (move the rig anatomy into ctx.layer instead of direct this.add — Containers accept the same gameobjects), replace `_drawSpecimen` with `drawSpecimenForSample(id, ctx)` adding to ctx.specimenLayer, move the per-tick deformation block from `_runTest`'s onUpdate into `animateProgress(progress01, sample, result, ctx)`, move the failure-mode dispatch into `animateCompletion(result, ctx)`, replace `_drawReadout/_updateReadout` with `getReadoutFields(progress01, sample, summary)` returning the Force/Strain/Stress trio, and have `getChartConfig()` return {xLabel:'strain', yLabel:'stress', xMax:fractureStrain*1.05, yMax:ultimateStrengthMPa*1.10, regionColors:{elastic,plastic,failure}}. UTM's curve samples already have `region` and (strain, stress) — phase 2 should add aliases `x:strain, y:stress` on each sample so the base's chart code works unchanged. Hooks: getSampleSet → MATERIAL_IDS.map, runSampleTest → runTensileTest, getTestedStateKey → 'materialTestsCompleted', getCompletionObservation → 'load_test_completed', getQuestId → 'bridge_collapse', getCompletionDialog → Mr. Chen's 'all three tested' speech, getFirstEntryHint → his welcome dialog. Confidence: HIGH. The only API surface UTM exercises that the base doesn't yet have is the failure-point markers (yield + ultimate dots) drawn over the chart — those are subclass-specific annotations and can either be drawn by UTM after the base finishes its chart, or added to the base as an optional `getChartAnnotations(result)` hook in phase 2.",
+    "missing_hooks_for_utm": [
+      "Optional getChartAnnotations(result) hook for the yield + ultimate-stress markers UTM draws on top of the curve. Defer to phase 2 — not blocking; UTM can also add these from animateCompletion by drawing on its own Graphics layer above the chart panel.",
+      "Optional getCameraShakeOnCompletion(result) hook for UTM's small-shake-on-steel-snap. Phase 2 can either add this as a hook or have UTM call this.cameras.main.shake() inside animateCompletion."
+    ]
+  },
+  "notes": "All 4 new files plus 4 edits land cleanly. `npm run build` passes in 10.80s with no errors (pre-existing 500kB chunk warnings unchanged). Engine smoke test passes (verified aluminum > copper > steel expansion ordering, unknown-id null return, region classification boundaries). MaterialLabScene was NOT touched — phase 2 is a separate dispatch. The first-entry hint flag uses `state.labRigHints[sceneKey]` so each rig (UTM, Thermal, future battery rig) gets its own one-shot hint without colliding. Quest step shift: heat_failure now has 5 steps (talk_heat, learn_thermal, quiz_thermal, observe_expansion, learn_solution, complete_heat) — saves on heat_failure that pre-date this change keep their numeric stepIndex; if a save was on stepIndex 3 (was learn_solution, now observe_expansion) the player will land on the new observe step which is exactly the intended migration path. ZuzuGarage doorway gates at stepIndex >= 3 so post-quiz-thermal saves can immediately access the lab."
+}

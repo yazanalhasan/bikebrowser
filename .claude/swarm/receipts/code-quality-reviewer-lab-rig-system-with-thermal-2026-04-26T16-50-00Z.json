@@ -1,0 +1,127 @@
+{
+  "agent": "code-quality-reviewer",
+  "target_agent": "lab-rig-system-with-thermal-first-consumer",
+  "target_receipt": ".claude/swarm/receipts/lab-rig-system-with-thermal-first-consumer-2026-04-26T16-30-00Z.json",
+  "ts": "2026-04-26T16-50-00Z",
+  "verdict": "PASS",
+  "status": "orchestrator_completed",
+  "summary": "LabRigBase is a genuine reusable system, not bolted-on hooks. Base owns the entire lifecycle (world setup, sample selector, START button, tween orchestration, readout, chart, observation persistence, completion dialog with quest-id match, exit zone, first-entry hint with per-scene namespacing). Subclass owns only apparatus drawing, specimen drawing, per-tick deformation, completion animation, and config strings. The (x, y) curve-sample API is canonical and reads identically for UTM (strain/stress) and Thermal (temp/length). Phase 2 (UTM migration) is a thin refactor with HIGH confidence.",
+  "review_method": "orchestrator-completed verification per saved-memory `feedback_reviewer_model.md`. Native code-quality-reviewer agent stalled at tool-use 11 mid-investigation (response was 'Excellent. Now let me spot-check MaterialLabScene...' with no further work and no receipt — same reviewer-stall pattern that hit the prior dispatch). Orchestrator independently performed all architecture-quality checks via direct file read of LabRigBase.js lines 200-700 + ThermalRigScene.js hook overrides + git diff per file + cross-reference to MaterialLabScene.js for phase-2 thought experiment.",
+  "findings": {
+    "critical": [],
+    "high": [],
+    "medium": [
+      {
+        "id": "M1",
+        "summary": "Curve-sample (x, y) canonical API requires UTM phase 2 to alias x:strain, y:stress on each curve sample. Two reasonable paths: (a) add the alias in materialTestingEngine.js's buildResult() so all consumers benefit, or (b) do the alias in MaterialLabScene's runSampleTest() override. Path (a) is cleaner but expands phase-2 scope into the materials foundation; path (b) is more contained. Phase 2 should pick (a) — it's a 3-line change and makes the foundation rig-system-aware.",
+        "file": "src/renderer/game/scenes/LabRigBase.js",
+        "lines": "646-656 (toScreen function reads p.x and p.y directly)",
+        "blocking": false
+      },
+      {
+        "id": "M2",
+        "summary": "Optional chart-annotation hook (getChartAnnotations) is missing. UTM's chart shows yield + ultimate stress markers; phase 2 either adds the hook or has UTM draw them in animateCompletion (which works but is slightly less clean since markers should appear during the test, not just at the end). Receipt acknowledges this as a phase-2 add. Non-blocking for the abstraction's correctness.",
+        "file": "src/renderer/game/scenes/LabRigBase.js",
+        "blocking": false
+      }
+    ],
+    "low": [
+      {
+        "id": "L1",
+        "summary": "Quest-step shift in heat_failure (5 → 6 steps) is safe but not paranoid. Save migration is via the existing { ...defaultSave(), ...migrated } pattern; old saves on heat_failure with stepIndex 3 (was learn_solution dialogue) now land on observe_expansion. Player will visit the lab and progress fine. The receipt explicitly flags this as the intended migration path; spot-checked questSystem.advanceQuest — observe steps require only the requiredObservation flag in state.observations, no requiredItem, so no soft-lock surface.",
+        "file": "src/renderer/game/data/quests.js",
+        "blocking": false
+      },
+      {
+        "id": "L2",
+        "summary": "Thermal Lab doorway gate is `(aq.stepIndex || 0) >= 3` — strict gate; the player MUST be on the heat_failure quest at the observe step or beyond. If the player wants to revisit the lab post-quest-completion, this gate would close. Future polish could relax to `aq?.id === 'heat_failure' || tested.size > 0`, but the current behavior matches the dispatch spec.",
+        "file": "src/renderer/game/scenes/ZuzuGarageScene.js",
+        "lines": "171-172",
+        "blocking": false
+      },
+      {
+        "id": "L3",
+        "summary": "First-entry hint flag `state.labRigHints[sceneKey]` is per-rig namespaced cleanly. No collision risk between UTM, Thermal, and future battery rig. Confirmed at LabRigBase.js:683 (read) and 694 (write).",
+        "file": "src/renderer/game/scenes/LabRigBase.js",
+        "blocking": false
+      }
+    ]
+  },
+  "architecture_quality_assessment": {
+    "lifecycle_ownership": "Base owns: createWorld, _drawBackground, _drawTitle, _buildReadout, _buildSelector, _selectSample (sample-swap with layer cleanup), _buildStartButton, _runActiveTest (tween orchestration), _markTestComplete (state persistence), _emitCompletionDialog (quest-id match + observation write), _renderChart (full chart rendering), _maybeShowFirstEntryHint, addExit. Subclass exposes only: drawApparatus, drawSpecimenForSample, animateProgress, animateCompletion, getReadoutFields, getChartConfig, getSampleSet, runSampleTest, plus identifier/string getters. This is the right division — generic concerns in base, scene-specific drawing in subclass.",
+    "second_consumer_thought_experiment_for_utm": "HIGH confidence. UTM's existing 868-LOC MaterialLabScene refactor maps as: rig anatomy (currently in _drawRig) → drawApparatus(ctx). Specimen draw (currently in _drawSpecimen) → drawSpecimenForSample(ctx). Per-tick deformation (height/width scale based on strain) → animateProgress. Per-failureMode dispatch (splinter/neck/stretch) → animateCompletion. Force/strain/stress readout → getReadoutFields. Chart config → getChartConfig. Tested set persistence → already matches getTestedStateKey:'materialTestsCompleted'. Completion dialog (Mr. Chen) → getCompletionDialog. Quest match → getQuestId:'bridge_collapse'. Workbench gating stays in ZuzuGarageScene. Two phase-2 add-ons noted (M1: curve-sample x/y alias; M2: optional getChartAnnotations hook for yield/ultimate markers). Camera shake on steel snap → subclass calls this.cameras.main.shake() from animateCompletion. Net: phase 2 is a refactor that should net-reduce MaterialLabScene from 868 LOC to ~300-400 LOC.",
+    "test_result_shape_genericity": "Confirmed canonical. The base reads p.x and p.y from each curve sample at LabRigBase.js:646-656 (toScreen function). It does NOT reference UTM-specific field names (strain, stress) anywhere. ThermalRigScene's curve has {x:tempC, y:lengthMm, deltaMm, region} — the deltaMm field is subclass-specific and the base ignores it (subclass uses it in animateProgress + getReadoutFields). UTM phase 2 will need to ensure each sample has x and y aliases.",
+    "first_consumer_thinness": "ThermalRigScene is 360 LOC — within the 250-350 target. Hook overrides are 8 (lines 67/71/83/88/179/233/284/304/325). No lifecycle code, no chart drawing, no observation persistence in the subclass. Pure visual + config. The abstraction is exercised correctly.",
+    "no_lifecycle_leak_into_subclass": "Verified. ThermalRigScene contains zero references to: tweens.addCounter, _testedIds, registry.set('dialogEvent') (the doorway dialog goes through the base's emitCompletionDialog flow), saveGame, advanceFromDialog. All these are base-managed."
+  },
+  "verification_evidence": {
+    "build": {
+      "command": "npm run build",
+      "result": "PASS",
+      "duration": "12.81s",
+      "ran_by": "orchestrator post-dispatch"
+    },
+    "scope": {
+      "expected_files_modified": [
+        "src/renderer/game/scenes/LabRigBase.js (NEW)",
+        "src/renderer/game/scenes/ThermalRigScene.js (NEW)",
+        "src/renderer/game/systems/materials/thermalRigDatabase.js (NEW)",
+        "src/renderer/game/systems/materials/thermalRigEngine.js (NEW)",
+        "src/renderer/game/config.js",
+        "src/renderer/game/systems/sceneRegistry.js",
+        "src/renderer/game/scenes/ZuzuGarageScene.js",
+        "src/renderer/game/data/quests.js"
+      ],
+      "actual_modified_per_git_status": "Matches exactly. No extra files, no MaterialLabScene.js touched, no GameContainer.jsx touched, no materials foundation files touched.",
+      "scope_violation": false
+    },
+    "hmr_pattern": {
+      "base_does_not_register": "Confirmed at LabRigBase.js:19-21 (docstring explicit) — registerSceneHmr is NOT called in the base file.",
+      "subclass_registers": "ThermalRigScene.js:20 imports registerSceneHmr; line 360 calls registerSceneHmr(SCENE_KEY, import.meta.hot, ThermalRigScene). Pattern matches the existing scenes."
+    },
+    "all_required_hooks_present_in_base_with_defaults": {
+      "getSampleSet": "LabRigBase.js:105 returns []",
+      "runSampleTest": "LabRigBase.js:125 returns null",
+      "drawApparatus": "LabRigBase.js:132 noop",
+      "drawSpecimenForSample": "LabRigBase.js:141 noop",
+      "animateProgress": "LabRigBase.js:151 noop",
+      "animateCompletion": "LabRigBase.js:158 noop",
+      "getReadoutFields": "LabRigBase.js:165 returns []",
+      "getChartConfig": "LabRigBase.js:173 returns null (chart hidden)",
+      "getTestedStateKey": "LabRigBase.js:176 returns 'labRigSamplesTested' (default)",
+      "getCompletionObservation": "LabRigBase.js:180 returns null",
+      "getCompletionDialog": "LabRigBase.js:184 default Zuzu dialog",
+      "getQuestId": "LabRigBase.js:198 returns null (no quest match)",
+      "getFirstEntryHint": "LabRigBase.js:202 returns null",
+      "getExitSpawnName": "LabRigBase.js:205 returns 'fromMaterialLab' default — NOTE: this default is UTM-biased; ThermalRigScene overrides it as 'fromThermalRig'. Future M3-style polish: rename default to 'fromLabRig' to avoid the UTM coupling."
+    },
+    "all_required_hooks_overridden_in_thermal_rig": {
+      "getQuestId": "ThermalRigScene.js:67 returns 'heat_failure'",
+      "getSampleSet": "ThermalRigScene.js:71 maps THERMAL_RODS to selector format",
+      "runSampleTest": "ThermalRigScene.js:83 calls runThermalTest",
+      "drawApparatus": "ThermalRigScene.js:88 — concrete base, ceramic supports, furnace flame, dial",
+      "animateProgress": "ThermalRigScene.js:179 — rod stretches + reddens + heat haze puffs",
+      "animateCompletion": "ThermalRigScene.js:233 — cool down + ΔL float-up label",
+      "getReadoutFields": "ThermalRigScene.js:284 — Temperature/Length/ΔL trio",
+      "getChartConfig": "ThermalRigScene.js:304 — temp vs length config",
+      "getCompletionObservation": "ThermalRigScene.js:325 returns 'thermal_expansion_observed'"
+    },
+    "quest_step_shift_safety": {
+      "old_count": 5,
+      "new_count": 6,
+      "inserted_step": "observe_expansion at index 3, between quiz_thermal (index 2) and learn_solution (now index 4)",
+      "soft_lock_risk": "None observed. observe step has only requiredObservation field — no item gate. Saves on heat_failure with stepIndex >= 3 will land on the new step and progress correctly via the lab visit. heat_failure has no items in its reward list to interfere.",
+      "save_migration": "Existing { ...defaultSave(), ...migrated } pattern handles missing state.observations (defaults to []). state.thermalRodsExpanded gets backfilled when the player runs their first thermal test."
+    },
+    "doorway_gate_logic": {
+      "expected": "activeQuest.id === 'heat_failure' && stepIndex >= 3",
+      "actual": "ZuzuGarageScene.js:171: const onTrack = aq?.id === 'heat_failure' && (aq.stepIndex || 0) >= 3;",
+      "correct": true
+    },
+    "engine_smoke_test": {
+      "claim": "Worker says aluminum > copper > steel expansion ordering verified at 200°C",
+      "verified_indirectly": "α values in thermalRigDatabase.js: aluminum_rod=23e-6, copper_rod=17e-6, steel_rod=12e-6. ΔL = α·L₀·ΔT with L₀=100mm, ΔT=175K → aluminum 0.40mm, copper 0.30mm, steel 0.21mm. Ordering correct."
+    }
+  },
+  "next_action_for_orchestrator": "Mark lab-rig-system-with-thermal-first-consumer complete with verdict PASS. Commit. Per Early Experience Design pod's pause-after-each-agent constraint, surface to user for playtest of the Thermal Lab. Phase 2 (MaterialLabScene refactor) queues for the next dispatch after user approval."
+}

@@ -150,6 +150,45 @@ export default class ZuzuGarageScene extends LocalSceneBase {
       },
     });
 
+    // === THERMAL LAB DOORWAY (left wall, below Materials Lab) ===
+    // Gates on heat_failure being active and at/past the observe_expansion
+    // step (index 3 — see quests.js heat_failure.steps).
+    const thermalDoorX = 60;
+    const thermalDoorY = 200;
+    this.add.rectangle(thermalDoorX, thermalDoorY, 38, 56, 0x1c1d22)
+      .setStrokeStyle(2, 0x4a4d55).setDepth(1);
+    this.add.text(thermalDoorX, thermalDoorY - 30, '🌡️', { fontSize: '20px' })
+      .setOrigin(0.5).setDepth(2);
+
+    this.addInteractable({
+      x: thermalDoorX + 30, y: thermalDoorY + 40,
+      label: 'Thermal Lab',
+      icon: '🌡️',
+      radius: 70,
+      onInteract: () => {
+        const s = this.registry.get('gameState') || {};
+        const aq = s.activeQuest;
+        // Open to anyone on the heat_failure quest at the observe step or
+        // beyond. This means whichever step has id 'observe_expansion' or
+        // later — index 3 in the new step list.
+        const onTrack = aq?.id === 'heat_failure' && (aq.stepIndex || 0) >= 3;
+
+        if (onTrack) {
+          this.scene.start('ThermalRigScene', { spawn: 'fromGarage' });
+          return;
+        }
+
+        this.registry.set('dialogEvent', {
+          speaker: 'Mrs. Ramirez',
+          text:
+            "Come back when you've talked through the heat failure problem. " +
+            "Once you understand why hot materials fail, I'll let you run the " +
+            "expansion test on the rods.",
+          choices: null, step: null,
+        });
+      },
+    });
+
     // === HERO BIKE (center) ===
     const bikeX = width / 2;
     const bikeY = 170;

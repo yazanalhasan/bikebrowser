@@ -1331,6 +1331,14 @@ const QUESTS = {
         ],
       },
       {
+        id: 'observe_expansion',
+        type: 'observe',
+        text: 'Visit the thermal lab and run the heating test on all three rods. Watch how each material expands.',
+        requiredObservation: 'thermal_expansion_observed',
+        hint: "Mrs. Ramirez's thermal lab is in Zuzu's garage — there's a doorway near the workbench. Test all three rods.",
+        scene: 'ThermalRigScene',
+      },
+      {
         id: 'learn_solution',
         type: 'dialogue',
         text:

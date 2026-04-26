@@ -63,11 +63,13 @@ const SCENES = {
       fromStreet: { x: 400, y: 520 },
       fromOverworld: { x: 400, y: 350 },
       fromMaterialLab: { x: 400, y: 350 },
+      fromThermalRig: { x: 100, y: 250 },
     },
     exits: {
       toStreet: { target: 'StreetBlockScene', spawn: 'fromGarage' },
       toOverworld: { target: 'OverworldScene', spawn: 'fromGarage' },
       toMaterialLab: { target: 'MaterialLabScene', spawn: 'fromGarage' },
+      toThermalRig: { target: 'ThermalRigScene', spawn: 'fromGarage' },
     },
     unlockReq: null,
     region: 'home',
@@ -88,6 +90,26 @@ const SCENES = {
     },
     exits: {
       toGarage: { target: 'ZuzuGarageScene', spawn: 'fromMaterialLab' },
+    },
+    unlockReq: null,
+    region: 'home',
+    defaultMusic: 'pixel_pedal_parade_v4',
+  },
+
+  ThermalRigScene: {
+    key: 'ThermalRigScene',
+    layer: 'local',
+    name: 'Thermal Lab',
+    icon: '🌡️',
+    description: "Mrs. Ramirez's thermal expansion lab — heat each rod and watch it stretch.",
+    worldPos: null,
+    spawns: {
+      default: { x: 400, y: 540 },
+      fromGarage: { x: 400, y: 540 },
+      fromThermalRig: { x: 400, y: 540 },
+    },
+    exits: {
+      toGarage: { target: 'ZuzuGarageScene', spawn: 'fromThermalRig' },
     },
     unlockReq: null,
     region: 'home',
