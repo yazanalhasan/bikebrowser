@@ -1,0 +1,92 @@
+{
+  "agent": "save-migration-fix-D",
+  "timestamp": "2026-04-25T20:30:00Z",
+  "task": "Add v4 → v5 save migration that synthesizes copper_ore_sample for saves soft-locked on bridge_collapse step 6.",
+  "status": "PASS",
+  "files_modified": [
+    "src/renderer/game/systems/saveSystem.js"
+  ],
+  "migration_registry_pattern": {
+    "shape": "chained guards in loadGame() of the form `if (migrated.version === N) migrated = migrateNtoNplus1(migrated);`",
+    "keying_convention": "registry keys are 'from version' — guard tests current version, function name reads `migrate<from>to<to>`",
+    "version_constant": "CURRENT_VERSION at top of file (was 4, now 5); defaultSave() reads from this constant so new saves auto-pickup v5",
+    "evidence": [
+      "if (migrated.version === 1) migrated = migrateV1toV2(migrated);",
+      "if (migrated.version === 2) migrated = migrateV2toV3(migrated);",
+      "if (migrated.version === 3) migrated = migrateV3toV4(migrated);"
+    ]
+  },
+  "diff": {
+    "change_1_version_bump": {
+      "before": "const CURRENT_VERSION = 4;",
+      "after": "const CURRENT_VERSION = 5;"
+    },
+    "change_2_new_function": {
+      "location": "after migrateV3toV4, before loadGame",
+      "added": "/**\n * Migrate from v4 → v5: Synthesize copper_ore_sample for players soft-locked\n * on bridge_collapse step 6.\n *\n * Bug context: bridge_collapse step 6 (collect_copper) requires\n * copper_ore_sample, granted only by MountainScene (originally locked\n * behind quest completion — circular). CopperMineScene grants\n * surface_copper/deep_copper which the side-quest uses, but the main-\n * quest band-aid only triggers on scene entry. Players who somehow have\n * mine copper but never entered CopperMineScene with the bridge_collapse\n * step active end up stuck. Synthesize the canonical item if mine copper\n * is present.\n *\n * Idempotent: only fires when activeQuest is bridge_collapse step 5\n * (stepIndex; 0-indexed for \"step 6\"), inventory has mine copper but\n * lacks the canonical item. Re-running on the migrated state is a no-op\n * because hasCanonical will be true.\n */\nfunction migrateV4toV5(data) {\n  const aq = data.activeQuest;\n  const inv = data.inventory || [];\n  const hasMineCopper = inv.includes('surface_copper') || inv.includes('deep_copper');\n  const hasCanonical = inv.includes('copper_ore_sample');\n  const matchesSoftLock =\n    aq && aq.id === 'bridge_collapse' && aq.stepIndex === 5 && hasMineCopper && !hasCanonical;\n  if (matchesSoftLock) {\n    return {\n      ...data,\n      version: 5,\n      inventory: [...inv, 'copper_ore_sample'],\n    };\n  }\n  return {\n    ...data,\n    version: 5,\n  };\n}"
+    },
+    "change_3_registration": {
+      "location": "loadGame() migration chain",
+      "before": "    if (migrated.version === 1) migrated = migrateV1toV2(migrated);\n    if (migrated.version === 2) migrated = migrateV2toV3(migrated);\n    if (migrated.version === 3) migrated = migrateV3toV4(migrated);",
+      "after": "    if (migrated.version === 1) migrated = migrateV1toV2(migrated);\n    if (migrated.version === 2) migrated = migrateV2toV3(migrated);\n    if (migrated.version === 3) migrated = migrateV3toV4(migrated);\n    if (migrated.version === 4) migrated = migrateV4toV5(migrated);"
+    }
+  },
+  "spec_compliance_notes": {
+    "stepIndex_correctness": "Used stepIndex === 5 because the bug report describes 'step 6' but stepIndex is 0-indexed, matching the convention of other game state fields.",
+    "activeQuest_null_safety": "Used `aq && aq.id === 'bridge_collapse'` form. Saves with `activeQuest: null` (the default) short-circuit on the first conjunct and pass through with only the version bump.",
+    "version_bump_always_applied": "The function always returns `{ ...data, version: 5 }` even when soft-lock pattern doesn't match. This is required so the chained `if (migrated.version === 4)` gate stops on the next pass and so the merged save in loadGame correctly carries forward.",
+    "defaultSave_at_v5": "defaultSave() returns `version: CURRENT_VERSION`, which is now 5 — new games start at v5 automatically with no separate change needed.",
+    "merged_overwrite_safe": "loadGame's `merged = { ...defaultSave(), ...migrated, version: CURRENT_VERSION }` final assignment forces version to CURRENT_VERSION; harmless given the migration already produced v5, and provides defense-in-depth."
+  },
+  "idempotency_proof": {
+    "claim": "Running migrateV4toV5 twice on the same v4 save (or once on a v5 save that was previously migrated) produces an equivalent state.",
+    "case_1_no_active_quest": {
+      "input": "{ activeQuest: null, inventory: [...], version: 4 }",
+      "first_run": "matchesSoftLock = false (aq is null) → returns { ...data, version: 5 }",
+      "second_run_on_output": "matchesSoftLock = false (aq is null) → returns { ...data, version: 5 } — identical"
+    },
+    "case_2_different_quest": {
+      "input": "{ activeQuest: { id: 'side_quest_X', stepIndex: 2 }, inventory: ['surface_copper'], version: 4 }",
+      "first_run": "matchesSoftLock = false (aq.id !== 'bridge_collapse') → returns { ...data, version: 5 } unchanged inventory",
+      "second_run": "Same — returns identical state"
+    },
+    "case_3_completed_quest": {
+      "input": "{ completedQuests: ['bridge_collapse'], activeQuest: null, inventory: ['copper_ore_sample'], version: 4 }",
+      "first_run": "matchesSoftLock = false (aq is null) → returns { ...data, version: 5 }",
+      "second_run": "Identical"
+    },
+    "case_4_soft_lock_match_first_application": {
+      "input": "{ activeQuest: { id: 'bridge_collapse', stepIndex: 5 }, inventory: ['surface_copper', 'wrench'], version: 4 }",
+      "first_run": "matchesSoftLock = true → returns { ...data, version: 5, inventory: ['surface_copper', 'wrench', 'copper_ore_sample'] }",
+      "second_run_on_output": "hasCanonical is now true → matchesSoftLock = false → returns { ...data, version: 5 } — inventory unchanged from first run's output. STABLE."
+    },
+    "case_5_already_has_canonical": {
+      "input": "{ activeQuest: { id: 'bridge_collapse', stepIndex: 5 }, inventory: ['surface_copper', 'copper_ore_sample'], version: 4 }",
+      "first_run": "hasCanonical = true → matchesSoftLock = false → returns { ...data, version: 5 } unchanged inventory",
+      "second_run": "Identical"
+    },
+    "conclusion": "All five cases reach a fixed point on the first invocation. Subsequent invocations are no-ops because the canonical item is now present (case 4) or the gate already returns false (cases 1-3, 5)."
+  },
+  "preservation_of_existing_saves": {
+    "completed_bridge_collapse": "If 'bridge_collapse' is in completedQuests and activeQuest is null/different, the migration is a no-op aside from the version bump — guard short-circuits on aq.id check.",
+    "different_active_quest": "Any activeQuest with id !== 'bridge_collapse' or stepIndex !== 5 passes through unchanged.",
+    "no_mine_copper": "If inventory lacks both surface_copper and deep_copper, hasMineCopper is false and the gate fails — pass through.",
+    "already_has_canonical": "If copper_ore_sample is already in inventory, hasCanonical is true and the gate fails — pass through (no duplicate)."
+  },
+  "build_status": {
+    "command": "npm run build",
+    "result": "PASS",
+    "duration": "10.36s",
+    "modules_transformed": 865,
+    "errors": 0,
+    "notes": "Only pre-existing warnings (CJS deprecation, chunk size > 500kB on vendor bundles) — unrelated to this change."
+  },
+  "hard_constraints_check": {
+    "javascript_only": true,
+    "single_file": "src/renderer/game/systems/saveSystem.js only",
+    "idempotent": true,
+    "existing_saves_preserved": true,
+    "build_passes": true
+  },
+  "next_agent_suggestions": []
+}

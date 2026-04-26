@@ -1,0 +1,21 @@
+{
+  "agent": "quest-hint-update-fix-B",
+  "timestamp": "2026-04-25T00:00:00Z",
+  "bug": "bridge_collapse soft-lock — Fix B (hint update)",
+  "files_modified": ["src/renderer/game/data/quests.js"],
+  "only_quests_js_modified": true,
+  "change": {
+    "quest_id": "bridge_collapse",
+    "step_id": "collect_copper",
+    "field": "hint",
+    "line_number": 1174,
+    "old_hint": "Look for greenish-brown rock veins near the mountain trail.",
+    "new_hint": "Ride to the Abandoned Copper Mine — surface or deep veins both yield ore. The mountain trail also has copper if you have been there."
+  },
+  "required_item_unchanged": true,
+  "required_item_value": "copper_ore_sample",
+  "build_status": "PASS",
+  "build_command": "npm run build",
+  "build_result": "built in 10.64s",
+  "next_agent_suggestions": []
+}

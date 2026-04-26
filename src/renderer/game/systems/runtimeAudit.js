@@ -15,6 +15,7 @@ import REGIONS, { BIOME, getBiome } from '../data/regions.js';
 import { debugListVoiceAssignments } from '../services/npcSpeech.js';
 import NPC_PROFILES from '../data/npcProfiles.js';
 import { createGameConfig } from '../config.js';
+import DISCOVERY_UNLOCKS_REAL from '../data/discoveryUnlocks.js';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -156,27 +157,26 @@ function auditRegionBiomes() {
 }
 
 /**
- * auditDiscoveryUnlocks — validates DISCOVERY_UNLOCKS if the module exists.
- * Absent file = expected until world-discovery-quests lands; logs info + skips.
+ * auditDiscoveryUnlocks — validates DISCOVERY_UNLOCKS.
+ *
+ * The module is statically imported at the top of this file, so it is
+ * guaranteed to be evaluated by the time this function runs. The previous
+ * dynamic-import pattern (commit c2fae90) was a workaround for the file
+ * not yet existing during world-discovery-quests development; it raced
+ * against module evaluation at boot and produced misleading
+ * "module not yet present" log messages on first boot. The file ships
+ * now, so a static import is race-free and clearer.
+ *
+ * Malformed-data resilience: if the import yields a non-object (e.g. data
+ * corruption, accidental refactor) we emit a warning and skip iteration.
+ * Iteration itself is wrapped in try/catch so a single broken entry does
+ * not abort the audit.
  */
-async function auditDiscoveryUnlocks() {
+function auditDiscoveryUnlocks() {
   const errors = [];
   const warnings = [];
 
-  let DISCOVERY_UNLOCKS;
-  try {
-    // Hide the path behind a variable so neither Vite's pre-bundler nor Rollup
-    // (production build) statically analyze it. Without this indirection, the
-    // build fails with "Could not resolve ../data/discoveryUnlocks.js" because
-    // the file is the world-discovery-quests agent's deliverable and has not
-    // shipped yet. The runtime try/catch handles the actual import failure.
-    const modPath = '../data/discoveryUnlocks.js';
-    const mod = await import(/* @vite-ignore */ modPath);
-    DISCOVERY_UNLOCKS = mod.default || mod.DISCOVERY_UNLOCKS;
-  } catch {
-    console.log('[runtimeAudit] DISCOVERY_UNLOCKS module not yet present — auditDiscoveryUnlocks skipped');
-    return { errors, warnings, skipped: true };
-  }
+  const DISCOVERY_UNLOCKS = DISCOVERY_UNLOCKS_REAL;
 
   if (!DISCOVERY_UNLOCKS || typeof DISCOVERY_UNLOCKS !== 'object') {
     warnings.push(makeWarning(
@@ -186,30 +186,37 @@ async function auditDiscoveryUnlocks() {
     return { errors, warnings };
   }
 
-  const questIds = new Set(Object.keys(QUESTS));
-  const regionIds = new Set(REGIONS.map((r) => r.id));
+  try {
+    const questIds = new Set(Object.keys(QUESTS));
+    const regionIds = new Set(REGIONS.map((r) => r.id));
 
-  for (const [regionId, entry] of Object.entries(DISCOVERY_UNLOCKS)) {
-    if (!regionIds.has(regionId)) {
-      errors.push(makeError(
-        'data/discoveryUnlocks.js',
-        `DISCOVERY_UNLOCKS entry "${regionId}" does not match any region in regions.js`
-      ));
-      continue;
+    for (const [regionId, entry] of Object.entries(DISCOVERY_UNLOCKS)) {
+      if (!regionIds.has(regionId)) {
+        errors.push(makeError(
+          'data/discoveryUnlocks.js',
+          `DISCOVERY_UNLOCKS entry "${regionId}" does not match any region in regions.js`
+        ));
+        continue;
+      }
+      if (entry && entry.pending === true) continue;
+      const questRef = entry && (entry.quest || entry.questId);
+      if (!questRef) {
+        errors.push(makeError(
+          'data/discoveryUnlocks.js',
+          `DISCOVERY_UNLOCKS["${regionId}"] has no quest reference and no pending:true`
+        ));
+      } else if (!questIds.has(questRef)) {
+        errors.push(makeError(
+          'data/discoveryUnlocks.js',
+          `DISCOVERY_UNLOCKS["${regionId}"] references unknown quest "${questRef}"`
+        ));
+      }
     }
-    if (entry.pending === true) continue;
-    const questRef = entry.quest || entry.questId;
-    if (!questRef) {
-      errors.push(makeError(
-        'data/discoveryUnlocks.js',
-        `DISCOVERY_UNLOCKS["${regionId}"] has no quest reference and no pending:true`
-      ));
-    } else if (!questIds.has(questRef)) {
-      errors.push(makeError(
-        'data/discoveryUnlocks.js',
-        `DISCOVERY_UNLOCKS["${regionId}"] references unknown quest "${questRef}"`
-      ));
-    }
+  } catch (err) {
+    warnings.push(makeWarning(
+      'data/discoveryUnlocks.js',
+      `iteration aborted: ${err?.message || err}`
+    ));
   }
 
   return { errors, warnings };
@@ -232,6 +239,7 @@ export async function runRuntimeAudit({ silent = false } = {}) {
     { name: 'auditQuestItems', fn: auditQuestItems },
     { name: 'auditQuestScenes', fn: auditQuestScenes },
     { name: 'auditRegionBiomes', fn: auditRegionBiomes },
+    { name: 'auditDiscoveryUnlocks', fn: auditDiscoveryUnlocks },
   ];
 
   for (const { name, fn } of syncAudits) {
@@ -242,14 +250,6 @@ export async function runRuntimeAudit({ silent = false } = {}) {
     } catch (err) {
       console.error(`[runtimeAudit] internal error in ${name}:`, err?.message || err);
     }
-  }
-
-  try {
-    const result = await auditDiscoveryUnlocks();
-    allErrors.push(...result.errors);
-    allWarnings.push(...result.warnings);
-  } catch (err) {
-    console.error('[runtimeAudit] internal error in auditDiscoveryUnlocks:', err?.message || err);
   }
 
   const passed = allErrors.length === 0;

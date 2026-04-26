@@ -20,7 +20,7 @@
 import { getDiscoveryState, loadDiscoveryState } from './discoverySystem.js';
 
 const SAVE_KEY = 'bikebrowser_game_save';
-const CURRENT_VERSION = 4;
+const CURRENT_VERSION = 5;
 
 /** Map old scene keys to new ones. */
 const SCENE_MIGRATION = {
@@ -157,6 +157,44 @@ function migrateV3toV4(data) {
   };
 }
 
+/**
+ * Migrate from v4 → v5: Synthesize copper_ore_sample for players soft-locked
+ * on bridge_collapse step 6.
+ *
+ * Bug context: bridge_collapse step 6 (collect_copper) requires
+ * copper_ore_sample, granted only by MountainScene (originally locked
+ * behind quest completion — circular). CopperMineScene grants
+ * surface_copper/deep_copper which the side-quest uses, but the main-
+ * quest band-aid only triggers on scene entry. Players who somehow have
+ * mine copper but never entered CopperMineScene with the bridge_collapse
+ * step active end up stuck. Synthesize the canonical item if mine copper
+ * is present.
+ *
+ * Idempotent: only fires when activeQuest is bridge_collapse step 5
+ * (stepIndex; 0-indexed for "step 6"), inventory has mine copper but
+ * lacks the canonical item. Re-running on the migrated state is a no-op
+ * because hasCanonical will be true.
+ */
+function migrateV4toV5(data) {
+  const aq = data.activeQuest;
+  const inv = data.inventory || [];
+  const hasMineCopper = inv.includes('surface_copper') || inv.includes('deep_copper');
+  const hasCanonical = inv.includes('copper_ore_sample');
+  const matchesSoftLock =
+    aq && aq.id === 'bridge_collapse' && aq.stepIndex === 5 && hasMineCopper && !hasCanonical;
+  if (matchesSoftLock) {
+    return {
+      ...data,
+      version: 5,
+      inventory: [...inv, 'copper_ore_sample'],
+    };
+  }
+  return {
+    ...data,
+    version: 5,
+  };
+}
+
 /** Read save from localStorage, or return defaults. */
 export function loadGame() {
   try {
@@ -174,6 +212,7 @@ export function loadGame() {
     if (migrated.version === 1) migrated = migrateV1toV2(migrated);
     if (migrated.version === 2) migrated = migrateV2toV3(migrated);
     if (migrated.version === 3) migrated = migrateV3toV4(migrated);
+    if (migrated.version === 4) migrated = migrateV4toV5(migrated);
 
     // Fill any fields that may be missing from older saves.
     const merged = {

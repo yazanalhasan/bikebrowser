@@ -1171,7 +1171,7 @@ const QUESTS = {
         type: 'forage',
         text: 'Mine copper ore from an exposed rock face. Arizona is copper country!',
         requiredItem: 'copper_ore_sample',
-        hint: 'Look for greenish-brown rock veins near the mountain trail.',
+        hint: 'Ride to the Abandoned Copper Mine — surface or deep veins both yield ore. The mountain trail also has copper if you have been there.',
       },
       {
         id: 'collect_steel',
