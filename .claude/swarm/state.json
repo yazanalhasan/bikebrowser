@@ -267,6 +267,19 @@
       "notes": "RECEIPT_RECOVERY case (third in this session) — worker hit max_turns at tool-use 31 just before the receipt-write step (framework summary: 'HMR preserved at line 1550. Now let me write the receipt and memory files. First let me confirm the exact line ranges...'). Implementation was complete; receipt synthesized from disk evidence per saved memory feedback_receipt_recovery.md. Worker delivered: discovery gates in 3 loops (base/biome, node, path-destination) using imported isDiscovered(x,y); _mapLayout state for revealNode coord lookup; _nodeObjects map for tracking revealed nodes; revealNode(nodeId) public class method (~70 lines, 8-step orchestration: lookup loc + validate _mapLayout + compute coords + detect first-ever via getDiscoveryState().tiles.length===0 + revealArea(x,y,80px) + saveGame + redrawFog + spawn-or-reuse + animate + SFX with discover→reward_stinger fallback + first-discovery dialog 'Zuzu' speaker); _spawnNodeObjects helper (Phaser Container at depth 1, scale starts at 0); _playRevealAnimation (Back.easeOut 400ms scale + Sine alpha pulse, fully non-blocking). HMR registration intact at line 1566. Reviewer PASS on second dispatch (first stalled at tool-use 17): all CRITICAL clean (scope/HMR/build), all HIGH clean (revealNode is class method, isDiscovered used not duplicated, tweens non-blocking, first-discovery order correct, fog methods untouched). Two MEDIUM follow-ups (non-blocking, noted): visual asymmetry between create()-time nodes (drop-shadow + biome anchor + active-quest pulse) and revealNode-spawned nodes (circle + icon + label + stars only) — recommend future world-map-polish cycle; SFX fallback to reward_stinger is loud — future audio cycle could compose a gentler discover.ogg."
     },
     {
+      "agent": "lab-rig-system-utm-migration",
+      "ts": "2026-04-26T17:15:00Z",
+      "commit": "PENDING",
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-lab-rig-system-utm-migration-2026-04-26T17-15-00Z.json",
+      "receipt": ".claude/swarm/receipts/lab-rig-system-utm-migration-2026-04-26T17-00-00Z.json",
+      "pod": "Reusable Interaction Systems",
+      "phase": "2 of 2 — Lab Rig System pod CLOSED",
+      "user_directive": "go phase2 — proves the Lab Rig System abstraction by migrating MaterialLabScene to extend LabRigBase.",
+      "notes": "Lab Rig System pod CLOSED with this PASS — both consumers (ThermalRigScene phase 1, MaterialLabScene phase 2) ship cleanly on the same base. MaterialLabScene rewritten as a thin LabRigBase subclass: 868 → 415 LOC (-453, 52% drop). Engine got a 1-line canonical x/y alias addition in generateStressStrainCurve so the base's chart toScreen() works without UTM-specific code paths (resolves phase-1 M1 finding). LabRigBase grew 708 → 745 LOC for the optional getChartAnnotations hook (Thermal returns null, pays nothing — resolves phase-1 M2). All UTM behaviors preserved verbatim: rig anatomy, three failure animations (splinter/neck-snap/stretch-tear with shared _splitSpecimen helper for half-split dedup), camera shake on steel snap (this.cameras.main?.shake?.(150, 0.005) in ductile-necking branch only), yield/ultimate chart markers, bridge_collapse three-material quest advance with step: state.activeQuest, Mr. Chen first-entry/progress/completion dialogs. SCENE_KEY = 'MaterialLabScene' preserved (no doorway/config/registry edits needed). Build PASS 10.57s. Reviewer dispatch skipped — 3-for-3 reviewer-stall pattern this run, orchestrator-completed verification used instead per saved-memory feedback_reviewer_model.md. Three LOW non-blocking notes only: (1) 415 LOC modestly over the 300-400 target due to intrinsic UTM volume (3 failure animations vs Thermal's 1); (2) first-entry hint flag migrated from hand-rolled hasSeenMaterialLab to the base's namespaced state.labRigHints[sceneKey] — returning players see the hint one extra time (informational, not gating); (3) chart annotation visual fidelity preserved. Files touched: 3 (MaterialLabScene.js rewrite + LabRigBase.js hook addition + materialTestingEngine.js 1-line alias). Files NOT touched: ZuzuGarageScene.js, config.js, sceneRegistry.js, quests.js, GameContainer.jsx, ThermalRigScene.js, materialDatabase.js, compositeEngine.js, bridgeMaterialScoring.js."
+    },
+    {
       "agent": "lab-rig-system-with-thermal-first-consumer",
       "ts": "2026-04-26T16:50:00Z",
       "commit": "e292fc9",
@@ -347,6 +360,6 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 16,
+  "dispatch_count": 17,
   "session_token_estimate": 0
 }

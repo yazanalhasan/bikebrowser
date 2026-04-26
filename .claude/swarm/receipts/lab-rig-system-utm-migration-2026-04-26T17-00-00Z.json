@@ -1,0 +1,54 @@
+{
+  "agent": "lab-rig-system-utm-migration",
+  "pod": "Reusable Interaction Systems",
+  "ts": "2026-04-26T17:00:00Z",
+  "status": "complete",
+  "files_changed": [
+    {
+      "type": "edit",
+      "path": "src/renderer/game/systems/materials/materialTestingEngine.js",
+      "summary": "Added canonical x/y aliases on each curve sample inside generateStressStrainCurve so LabRigBase._renderChart consumes UTM data without a per-scene override. One-line change as specified.",
+      "before_loc": 350,
+      "after_loc": 350
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/scenes/LabRigBase.js",
+      "summary": "Added optional getChartAnnotations(_result) hook (default returns null) and rendered annotations in _renderChart after the curve loop: 4px-default colored dot + 9px label text. Tracks annotations in this._chartAnnotations and clears prior nodes on every render and on chart-config-null teardown. Preserves all existing chart behavior; ThermalRigScene's null override means it pays nothing.",
+      "before_loc": 708,
+      "after_loc": 745
+    },
+    {
+      "type": "rewrite",
+      "path": "src/renderer/game/scenes/MaterialLabScene.js",
+      "summary": "Rewrote as a thin LabRigBase subclass. Pure overrides: getSceneKey/getRigTitle/getQuestId/getTestedStateKey/getCompletionObservation/getExitSpawnName for identity; getSampleSet over MATERIALS; runSampleTest delegates to runTensileTest; drawApparatus renders steel base, columns, crossbeam, hydraulic stub, crosshead, grips; drawSpecimenForSample draws the colored bar + grain striations and resets crosshead home; animateProgress moves crosshead and thins specimen via _widthFactorFor (necking, stretch, splinter modes); animateCompletion routes to _animateSplinter / _animateNeckSnap / _animateStretchTear; getReadoutFields produces Force/Strain/Stress; getChartConfig + getChartAnnotations supply UTM stress-strain config and yield/ultimate markers; getCompletionDialog/getProgressDialog/getFirstEntryHint preserve Mr. Chen's copy. Camera shake on steel preserved. HMR call preserved.",
+      "before_loc": 868,
+      "after_loc": 415
+    }
+  ],
+  "build_validation": {
+    "command": "npm run build",
+    "result": "pass",
+    "duration": "~10.7s"
+  },
+  "loc_delta": {
+    "MaterialLabScene_before": 868,
+    "MaterialLabScene_after": 415,
+    "delta": -453,
+    "LabRigBase_before": 708,
+    "LabRigBase_after": 745,
+    "materialTestingEngine_before": 350,
+    "materialTestingEngine_after": 350
+  },
+  "preserved_behaviors": {
+    "rig_anatomy": "Steel base + bolts, two columns, crossbeam, hydraulic actuator stub, crosshead, upper/lower grips drawn at the original coordinates with the same colors. Crosshead movement is identical (yOffset proportional to strain/fractureStrain).",
+    "splinter_failure": "Mesquite: specimen splits diagonally at -0.15 / +0.12 rad, 8 splinters fly out at evenly-spaced angles using wood + grainColor accents (alternating), 3 beige dust puffs (#d6c19a) fade upward. Audio cue ui_error fires.",
+    "necking_failure": "Steel: specimen visibly necks during animateProgress (full width through 60% of strain budget, then ~45% by fracture). On completion: clean horizontal break into top/bottom halves separating to ±sh/2, white flash circle (#fffbeb, alpha 0.85) at break point fades in 220ms.",
+    "stretch_failure": "Copper: specimen thins uniformly (~55% width by fracture). On completion: two halves separate over 600ms with curled tear-tip rectangles (sw*0.7) rotating from ±0.4 to ±1.0 rad over 700ms. No camera shake.",
+    "camera_shake_on_steel": "this.cameras.main?.shake?.(150, 0.005) fired only in animateCompletion's ductile-necking branch. Same parameters as before.",
+    "yield_ultimate_markers": "getChartAnnotations returns Ultimate (#fbbf24) with stress label, plus Yield (#60a5fa) when distinct from ultimate AND the material has yieldStrengthMPa (i.e. metals). Wood produces only the ultimate marker because yieldPoint === ultimatePoint on the plateau curve. Markers render as 4px dots + 9px bold labels, identical visual to the original.",
+    "three_material_quest_advance": "Base's _emitCompletionDialog handles the matchesQuest path: when activeQuest.id === 'bridge_collapse' (from getQuestId()) and all three sampleIds are in this._testedIds, it emits the completion dialog with step: state.activeQuest, persists 'load_test_completed' to state.observations, and saves. LocalSceneBase.advanceFromDialog will then drive the test_material step transition exactly as before."
+  },
+  "abstraction_proof": "The migration revealed the abstraction is genuinely tight. Of the seven-or-so concept axes a rig scene operates on (identity, sample set, test runner, apparatus geometry, specimen drawing, per-tick deformation, failure animation, readout, chart, dialogs, first-entry hint, exit), every single one had a clean hook in LabRigBase. The only thing the engine layer needed was canonical x/y aliases on each curve sample so the base's chart toScreen mapping works without a UTM-specific code path — that was the M1 finding, fixed in one line. The only base-level extension needed was getChartAnnotations, which fits the same hook-default pattern the base already uses (Thermal returns null and pays nothing). What stayed in MaterialLabScene is intrinsically UTM: the rig anatomy (~30 LOC), the specimen draw (~25 LOC), the per-failure-mode width-factor logic (~12 LOC), the three failure animations (~140 LOC combined — each spawns 4-8 sprites with bespoke tween shapes), and the copy. None of that should generalize to other rigs because none of it has analogues in Thermal or in foreseeable rigs (Battery, Beam, etc. will each want their own anatomy + their own failure flair). The 415 LOC count is moderately over the 300-400 target purely because UTM has *three* per-material failure animations vs Thermal's *one* gentle conclusion. Splitting the common 'split specimen into halves' into _splitSpecimen() saved ~20 LOC. Net delta on MaterialLabScene is -453 LOC (52% drop), confirming the abstraction earns its keep.",
+  "notes": "Build passes. Did not touch ZuzuGarageScene.js, config.js, sceneRegistry.js, quests.js, GameContainer.jsx, ThermalRigScene.js, materialDatabase.js, compositeEngine.js, or bridgeMaterialScoring.js. SCENE_KEY = 'MaterialLabScene' preserved. HMR registration call preserved. The base's getRigSubtitle default is null, matching the original scene which had no subtitle line. The original scene used a hand-rolled 'hasSeenMaterialLab' flag for the first-entry hint; the base now uses state.labRigHints[sceneKey] (per-rig namespacing), which is a minor save-state change but harmless: returning players whose state has hasSeenMaterialLab=true but no labRigHints entry will see the hint once more — acceptable since it's purely informational, not gating progress."
+}

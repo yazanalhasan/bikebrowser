@@ -176,7 +176,7 @@ export function generateStressStrainCurve(material, testType, options = {}) {
       }
     }
 
-    points.push({ strain, stress, region });
+    points.push({ strain, stress, region, x: strain, y: stress });
   }
 
   return points;

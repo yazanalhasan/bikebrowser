@@ -172,6 +172,12 @@ export default class LabRigBase extends LocalSceneBase {
    */
   getChartConfig(_result) { return null; }
 
+  /** Optional chart annotations — overlay points/labels on top of the curve.
+   *  Returns array of { xValue, yValue, label, color, dotRadius? } OR null.
+   *  Called once when chart renders with a full curve.
+   *  UTM: returns yield + ultimate markers.  Thermal: returns null. */
+  getChartAnnotations(_result) { return null; }
+
   /** gameState field that persists tested ids. UTM: 'materialTestsCompleted'. */
   getTestedStateKey() { return 'labRigSamplesTested'; }
 
@@ -561,8 +567,17 @@ export default class LabRigBase extends LocalSceneBase {
         this._chartAxisLabels.forEach(t => t.destroy());
         this._chartAxisLabels = null;
       }
+      if (this._chartAnnotations) {
+        this._chartAnnotations.forEach(t => t.destroy());
+        this._chartAnnotations = null;
+      }
       return;
     }
+    // Clear prior annotation text nodes — graphics dots live on _chartG.
+    if (this._chartAnnotations) {
+      this._chartAnnotations.forEach(t => t.destroy());
+    }
+    this._chartAnnotations = [];
 
     if (!this._chartG) this._chartG = this.add.graphics().setDepth(2);
     const g = this._chartG;
@@ -668,6 +683,28 @@ export default class LabRigBase extends LocalSceneBase {
       const pa = toScreen(a);
       const pb = toScreen(b);
       g.lineBetween(pa.sx, pa.sy, pb.sx, pb.sy);
+    }
+
+    // Optional annotations (e.g. yield/ultimate markers).
+    const annotations = this.getChartAnnotations(result || null);
+    if (Array.isArray(annotations)) {
+      for (const a of annotations) {
+        if (a == null || a.xValue == null || a.yValue == null) continue;
+        const sp = toScreen({ x: a.xValue, y: a.yValue });
+        const r = a.dotRadius != null ? a.dotRadius : 4;
+        g.fillStyle(a.color != null ? a.color : 0xfbbf24, 1);
+        g.fillCircle(sp.sx, sp.sy, r);
+        if (a.label) {
+          const txt = this.add.text(sp.sx + 4, sp.sy - 14, a.label, {
+            fontSize: '9px', fontFamily: 'sans-serif',
+            color: typeof a.color === 'number'
+              ? `#${a.color.toString(16).padStart(6, '0')}`
+              : '#fbbf24',
+            fontStyle: 'bold',
+          }).setDepth(4);
+          this._chartAnnotations.push(txt);
+        }
+      }
     }
   }
 
