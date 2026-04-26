@@ -471,7 +471,17 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _showRewardCelebration(state) {
-    const cam = this.cameras.main;
+    // Guard: scene may be mid-shutdown when a quest-completion celebration is
+    // triggered (e.g. final dialog handler runs after a scene transition has
+    // started tearing down cameras). Without this guard, cam.scrollX throws
+    // into the React error boundary and the renderer fails. Skip silently —
+    // reward state itself is already saved by the caller.
+    const cam = this.cameras?.main;
+    if (!cam) {
+      // eslint-disable-next-line no-console
+      console.warn('[StreetBlockScene] _showRewardCelebration: cameras.main unavailable; skipping celebration FX (state still saved).');
+      return;
+    }
     const cx = cam.scrollX + cam.width / 2;
     const cy = cam.scrollY + cam.height / 2 - 40;
 
