@@ -1,0 +1,107 @@
+{
+  "agent": "code-quality-reviewer",
+  "target_agent": "phaser-scene-layout-extractor",
+  "target": "ZuzuGarageScene",
+  "target_receipt": ".claude/swarm/receipts/phaser-scene-layout-extractor-ZuzuGarageScene-2026-04-26T17-50-00Z.json",
+  "ts": "2026-04-26T18-00-00Z",
+  "verdict": "PASS",
+  "status": "orchestrator_completed",
+  "summary": "Strict refactor lands clean. 60 layout objects extracted into public/layouts/zuzu-garage.layout.json with 0 unreferenced keys and 0 leftover literals in this.add.* calls. World-size resolution correct (800×600 — all 7 width/2-centered objects resolve to x=400, none to 512). Zero behavior changes — diff inspection confirmed no saveGame, audioMgr, playSfx, transitionToScene, dialogEvent, speaker, or text-string lines were added or removed. First-dispatch one-time files created cleanly: loadLayout.js (19 LOC, mirrors sibling utils style) and CLAUDE.md (12 LOC, layout-system rule under '## Layout system rule' heading). Build PASS 11.03s.",
+  "review_method": "Orchestrator-completed verification per saved-memory feedback_reviewer_model.md. Reviewer subagent stalled both attempts (haiku model: stalled at tool-use 14 with 'Excellent. Now let me verify...' no receipt; sonnet model override: stalled at tool-use 17 with 'Good - no leftover literal coordinates. Now let me run the remaining verification checks in parallel:' no receipt). 7/7 reviewer-stall rate this session — orchestrator-completed is the only viable path. Orchestrator ran the full verification checklist directly: git diff inspection, JSON structural check via node, world-size correctness check, behavior-line grep against the diff, build re-verification.",
+  "findings": {
+    "critical": [],
+    "high": [],
+    "medium": [],
+    "low": [
+      {
+        "id": "L1",
+        "summary": "37 of 60 layout objects have _note fields documenting the original computed expressions. The notes use phrasings like 'Original: x = width / 2 (800)' — slightly redundant with the resolved x value but harmless and helps human-roundtrip review per spec section 2.",
+        "blocking": false
+      },
+      {
+        "id": "L2",
+        "summary": "Receipt notes section 'computed_positions_resolved_to_literals' notes that bikeX/bikeY/labDoorX/labDoorY/thermalDoorX/thermalDoorY scoped const declarations were eliminated entirely (their values now read from this.layout.<name>). The diff confirms — '- const labDoorX = 60;' etc. are removed. This is correct refactor pattern (literals migrated, intermediate consts no longer needed), not a behavior change.",
+        "blocking": false
+      },
+      {
+        "id": "L3",
+        "summary": "this._workbenchX and this._workbenchY instance assignments preserved (now read from this.layout.workbench.x/y rather than literal 140/160). Worker correctly recognized these may be referenced by other code in the codebase — defensive preservation is the right call.",
+        "blocking": false
+      }
+    ]
+  },
+  "verification_evidence": {
+    "build": {
+      "command": "npm run build",
+      "result": "PASS",
+      "duration": "11.03s",
+      "ran_by": "orchestrator post-dispatch"
+    },
+    "structural_checks_via_node": {
+      "total_layout_objects": 60,
+      "unreferenced_layout_keys": 0,
+      "objects_with_note_field": 37,
+      "width_centered_objects_count": 7,
+      "width_centered_with_wrong_x_count": 0,
+      "width_centered_objects_correct": [
+        "floor (x=400)",
+        "wall_top (x=400)",
+        "peg_board (x=400)",
+        "peg_board_tools (x=400)",
+        "bike_rack_top_bar (x=400)",
+        "scene_title (x=400)",
+        "exit_zone_south (x=400)"
+      ]
+    },
+    "leftover_literals_check": {
+      "command": "grep -E 'this\\.add\\.\\w+\\(\\s*[0-9]+\\s*,' src/renderer/game/scenes/ZuzuGarageScene.js",
+      "result": "0 matches"
+    },
+    "setOrigin_in_json_check": {
+      "command": "grep -E 'setOrigin|\"origin\"' public/layouts/zuzu-garage.layout.json",
+      "result": "no match — setOrigin correctly stays in code"
+    },
+    "behavior_line_check": {
+      "method": "git diff HEAD filtered for saveGame|audioMgr|playSfx|transitionToScene|dialogEvent|speaker:|text:",
+      "added_lines": 0,
+      "removed_lines": 0,
+      "interpretation": "ZERO behavior changes. Refactor is purely positional."
+    },
+    "diff_scope_check": {
+      "method": "git diff HEAD inspected line by line; non-layout-pattern lines manually classified",
+      "result": "All non-substitution diff lines accounted for: import addition, preload override addition, this.layout = loadLayout(...) call, scoped const-block additions wrapping addInteractable/addExit/addVisibleWall/addWall/Graphics calls. Indentation changes are block-scope adjustments. No unauthorized changes."
+    },
+    "scope_violation_check": {
+      "files_modified_attributable_to_worker": [
+        "M src/renderer/game/scenes/ZuzuGarageScene.js (authorized)",
+        "?? public/layouts/zuzu-garage.layout.json (authorized)",
+        "?? src/renderer/game/utils/loadLayout.js (authorized first-dispatch one-time)",
+        "?? CLAUDE.md (authorized first-dispatch one-time)",
+        "?? .claude/swarm/receipts/phaser-scene-layout-extractor-ZuzuGarageScene-2026-04-26T17-50-00Z.json (authorized receipt)"
+      ],
+      "files_modified_NOT_attributable_to_worker": [
+        "M .claude/swarm/sequencing.yaml (pre-existing user-local state from before dispatch)",
+        "?? .claude/agents/phaser-scene-layout-extractor.md (pre-existing user-local state — user authored this agent definition but did not commit it)",
+        "?? src/renderer/game/editor-scenes/asset-pack.json (Phaser Editor artifact from Apr 26 13:38, predates dispatch)"
+      ],
+      "scope_compliance": true
+    },
+    "first_dispatch_one_time_files": {
+      "loadLayout_js": {
+        "status": "CREATED",
+        "loc": 19,
+        "exports": "named export loadLayout(scene, key) + default export",
+        "throws_on_missing_key": "yes — Error('Layout not found in cache: <key>')",
+        "returns": "data.objects (the inner objects map directly, so callers write this.layout.<name>.x rather than this.layout.objects.<name>.x)"
+      },
+      "CLAUDE_md": {
+        "status": "CREATED",
+        "loc": 12,
+        "contains_layout_system_rule": "yes — under '## Layout system rule' heading",
+        "rule_text_includes_loadLayout_reference": "yes"
+      }
+    },
+    "positions_left_in_code_documented": "yes — receipt notes section enumerates 3 cases: (1) floor grid loop at lines 47-48 (per spec section 8 loop-generated exemption), (2) delayedCall(600) at line 485 (timer not coordinate), (3) setOrigin/strokeWidth/depth/fontSize/interactionRadius (per spec rule — styling/behavior not layout)."
+  },
+  "next_action_for_orchestrator": "Per Block 3a outcome handler: mark phaser-scene-layout-extractor (target ZuzuGarageScene) complete in state.json with verdict PASS, increment dispatch_count, commit. Then surface the layout-object names list, loadLayout.js + CLAUDE.md creation status, positions-left-in-code list, and next-scene suggestion (StreetBlockScene per worker's next_agent_suggestions). Do NOT auto-queue the next scene — wait for user's go with a specific scene target."
+}

@@ -16,6 +16,7 @@ import LocalSceneBase from './LocalSceneBase.js';
 import { saveGame } from '../systems/saveSystem.js';
 import QUESTS from '../data/quests.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { loadLayout } from '../utils/loadLayout.js';
 
 export default class ZuzuGarageScene extends LocalSceneBase {
   constructor() {
@@ -26,12 +27,21 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     return { width: 800, height: 600 };
   }
 
+  preload() {
+    super.preload?.();
+    this.load.json('zuzuGarageLayout', 'layouts/zuzu-garage.layout.json');
+  }
+
   createWorld() {
+    this.layout = loadLayout(this, 'zuzuGarageLayout');
     const { width, height } = this.getWorldSize();
     const state = this.registry.get('gameState');
 
     // === FLOOR ===
-    this.add.rectangle(width / 2, height / 2, width, height, 0xbfb8a8);
+    {
+      const o = this.layout.floor;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0xbfb8a8);
+    }
     const floorGfx = this.add.graphics();
     floorGfx.lineStyle(1, 0xa8a090, 0.3);
     for (let x = 0; x < width; x += 60) floorGfx.lineBetween(x, 0, x, height);
@@ -39,39 +49,93 @@ export default class ZuzuGarageScene extends LocalSceneBase {
 
     // === WALLS (collision) ===
     // Top wall
-    this.addVisibleWall(width / 2, 20, width, 40, 0xd4a574, 0xc4945e);
+    {
+      const o = this.layout.wall_top;
+      this.addVisibleWall(o.x, o.y, o.w, o.h, 0xd4a574, 0xc4945e);
+    }
     // Left wall
-    this.addVisibleWall(20, height / 2, 40, height, 0xd4a574, 0xc4945e);
+    {
+      const o = this.layout.wall_left;
+      this.addVisibleWall(o.x, o.y, o.w, o.h, 0xd4a574, 0xc4945e);
+    }
     // Right wall
-    this.addVisibleWall(width - 20, height / 2, 40, height, 0xd4a574, 0xc4945e);
+    {
+      const o = this.layout.wall_right;
+      this.addVisibleWall(o.x, o.y, o.w, o.h, 0xd4a574, 0xc4945e);
+    }
     // Bottom wall (with door gap)
-    this.addVisibleWall(150, height - 20, 300, 40, 0xd4a574, 0xc4945e);
-    this.addVisibleWall(width - 150, height - 20, 300, 40, 0xd4a574, 0xc4945e);
+    {
+      const o = this.layout.wall_bottom_left;
+      this.addVisibleWall(o.x, o.y, o.w, o.h, 0xd4a574, 0xc4945e);
+    }
+    {
+      const o = this.layout.wall_bottom_right;
+      this.addVisibleWall(o.x, o.y, o.w, o.h, 0xd4a574, 0xc4945e);
+    }
 
     // === WINDOWS (right wall decorative) ===
-    this.add.rectangle(width - 20, 200, 24, 50, 0x87ceeb, 0.6).setDepth(1);
-    this.add.rectangle(width - 20, 200, 24, 50).setStrokeStyle(3, 0x8b7355).setDepth(1);
-    this.add.rectangle(width - 20, 320, 24, 50, 0x87ceeb, 0.6).setDepth(1);
-    this.add.rectangle(width - 20, 320, 24, 50).setStrokeStyle(3, 0x8b7355).setDepth(1);
+    {
+      const o = this.layout.window_top;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.6).setDepth(1);
+    }
+    {
+      const o = this.layout.window_top_frame;
+      this.add.rectangle(o.x, o.y, o.w, o.h).setStrokeStyle(3, 0x8b7355).setDepth(1);
+    }
+    {
+      const o = this.layout.window_bottom;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.6).setDepth(1);
+    }
+    {
+      const o = this.layout.window_bottom_frame;
+      this.add.rectangle(o.x, o.y, o.w, o.h).setStrokeStyle(3, 0x8b7355).setDepth(1);
+    }
 
     // === PEG BOARD (top wall) ===
-    this.add.rectangle(width / 2, 50, 240, 28, 0x8b7355).setDepth(1);
-    this.add.text(width / 2, 50, '⚙️  🪚  📏  🔩  🪛', { fontSize: '16px' }).setOrigin(0.5).setDepth(2);
+    {
+      const o = this.layout.peg_board;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x8b7355).setDepth(1);
+    }
+    {
+      const o = this.layout.peg_board_tools;
+      this.add.text(o.x, o.y, '⚙️  🪚  📏  🔩  🪛', { fontSize: '16px' }).setOrigin(0.5).setDepth(2);
+    }
 
     // === WORKBENCH (left side) ===
-    this._workbenchX = 140;
-    this._workbenchY = 160;
-    this.add.rectangle(140, 160, 180, 70, 0x7c5c3c).setStrokeStyle(3, 0x5a3e28).setDepth(1);
-    this.add.rectangle(60, 200, 10, 26, 0x5a3e28).setDepth(1);
-    this.add.rectangle(220, 200, 10, 26, 0x5a3e28).setDepth(1);
-    this.add.text(110, 152, '🔧', { fontSize: '24px' }).setOrigin(0.5).setDepth(2);
-    this.add.text(140, 152, '🪛', { fontSize: '24px' }).setOrigin(0.5).setDepth(2);
-    this.add.text(170, 152, '🧰', { fontSize: '24px' }).setOrigin(0.5).setDepth(2);
+    this._workbenchX = this.layout.workbench.x;
+    this._workbenchY = this.layout.workbench.y;
+    {
+      const o = this.layout.workbench;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x7c5c3c).setStrokeStyle(3, 0x5a3e28).setDepth(1);
+    }
+    {
+      const o = this.layout.workbench_leg_left;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5a3e28).setDepth(1);
+    }
+    {
+      const o = this.layout.workbench_leg_right;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5a3e28).setDepth(1);
+    }
+    {
+      const o = this.layout.workbench_wrench;
+      this.add.text(o.x, o.y, '🔧', { fontSize: '24px' }).setOrigin(0.5).setDepth(2);
+    }
+    {
+      const o = this.layout.workbench_screwdriver;
+      this.add.text(o.x, o.y, '🪛', { fontSize: '24px' }).setOrigin(0.5).setDepth(2);
+    }
+    {
+      const o = this.layout.workbench_toolbox;
+      this.add.text(o.x, o.y, '🧰', { fontSize: '24px' }).setOrigin(0.5).setDepth(2);
+    }
     // Workbench collision body
-    this.addWall(140, 160, 180, 70);
+    {
+      const o = this.layout.workbench_collision;
+      this.addWall(o.x, o.y, o.w, o.h);
+    }
 
     this.addInteractable({
-      x: 140, y: 220,
+      x: this.layout.interact_workbench.x, y: this.layout.interact_workbench.y,
       label: 'Workbench',
       icon: '🔧',
       radius: 70,
@@ -109,13 +173,17 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     // Visible prop the player can interact with — gates on having all 3
     // material samples in inventory and being on (or past) the
     // weigh_instruction step of bridge_collapse.
-    const labDoorX = 60;
-    const labDoorY = 130;
-    this.add.rectangle(labDoorX, labDoorY, 38, 56, 0x1c1d22).setStrokeStyle(2, 0x4a4d55).setDepth(1);
-    this.add.text(labDoorX, labDoorY - 30, '🧪', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
+    {
+      const o = this.layout.lab_door;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x1c1d22).setStrokeStyle(2, 0x4a4d55).setDepth(1);
+    }
+    {
+      const o = this.layout.lab_door_glyph;
+      this.add.text(o.x, o.y, '🧪', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
+    }
 
     this.addInteractable({
-      x: labDoorX + 30, y: labDoorY + 40,
+      x: this.layout.interact_lab.x, y: this.layout.interact_lab.y,
       label: 'Materials Lab',
       icon: '🧪',
       radius: 70,
@@ -153,15 +221,19 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     // === THERMAL LAB DOORWAY (left wall, below Materials Lab) ===
     // Gates on heat_failure being active and at/past the observe_expansion
     // step (index 3 — see quests.js heat_failure.steps).
-    const thermalDoorX = 60;
-    const thermalDoorY = 200;
-    this.add.rectangle(thermalDoorX, thermalDoorY, 38, 56, 0x1c1d22)
-      .setStrokeStyle(2, 0x4a4d55).setDepth(1);
-    this.add.text(thermalDoorX, thermalDoorY - 30, '🌡️', { fontSize: '20px' })
-      .setOrigin(0.5).setDepth(2);
+    {
+      const o = this.layout.thermal_door;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x1c1d22)
+        .setStrokeStyle(2, 0x4a4d55).setDepth(1);
+    }
+    {
+      const o = this.layout.thermal_door_glyph;
+      this.add.text(o.x, o.y, '🌡️', { fontSize: '20px' })
+        .setOrigin(0.5).setDepth(2);
+    }
 
     this.addInteractable({
-      x: thermalDoorX + 30, y: thermalDoorY + 40,
+      x: this.layout.interact_thermal.x, y: this.layout.interact_thermal.y,
       label: 'Thermal Lab',
       icon: '🌡️',
       radius: 70,
@@ -190,31 +262,56 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     });
 
     // === HERO BIKE (center) ===
-    const bikeX = width / 2;
-    const bikeY = 170;
     const matGfx = this.add.graphics();
     matGfx.fillStyle(0x6b7280, 0.15);
-    matGfx.fillRoundedRect(bikeX - 70, bikeY - 20, 140, 90, 8);
+    {
+      const o = this.layout.bike_mat;
+      matGfx.fillRoundedRect(o.x, o.y, o.w, o.h, 8);
+    }
     // Rack
-    this.add.rectangle(bikeX - 50, bikeY - 30, 6, 70, 0x6b7280).setDepth(1);
-    this.add.rectangle(bikeX + 50, bikeY - 30, 6, 70, 0x6b7280).setDepth(1);
-    this.add.rectangle(bikeX, bikeY - 60, 106, 5, 0x6b7280).setDepth(1);
-    this.add.rectangle(bikeX, bikeY + 40, 106, 4, 0x6b7280).setDepth(1);
+    {
+      const o = this.layout.bike_rack_post_left;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x6b7280).setDepth(1);
+    }
+    {
+      const o = this.layout.bike_rack_post_right;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x6b7280).setDepth(1);
+    }
+    {
+      const o = this.layout.bike_rack_top_bar;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x6b7280).setDepth(1);
+    }
+    {
+      const o = this.layout.bike_rack_bottom_bar;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x6b7280).setDepth(1);
+    }
     // Bike
-    this.add.text(bikeX, bikeY + 5, '🚲', { fontSize: '72px' }).setOrigin(0.5).setDepth(2);
+    {
+      const o = this.layout.bike_glyph;
+      this.add.text(o.x, o.y, '🚲', { fontSize: '72px' }).setOrigin(0.5).setDepth(2);
+    }
     // Glow
     const bikeGlow = this.add.graphics();
     bikeGlow.fillStyle(0x3b82f6, 0.06);
-    bikeGlow.fillCircle(bikeX, bikeY + 5, 60);
-    this.add.text(bikeX, bikeY + 60, "⭐ Zuzu's Bike ⭐", {
-      fontSize: '16px', fontFamily: 'sans-serif', color: '#1e40af', fontStyle: 'bold',
-      stroke: '#dbeafe', strokeThickness: 2,
-    }).setOrigin(0.5).setDepth(2);
+    {
+      const o = this.layout.bike_glow;
+      bikeGlow.fillCircle(o.x, o.y, o.r);
+    }
+    {
+      const o = this.layout.bike_label;
+      this.add.text(o.x, o.y, "⭐ Zuzu's Bike ⭐", {
+        fontSize: '16px', fontFamily: 'sans-serif', color: '#1e40af', fontStyle: 'bold',
+        stroke: '#dbeafe', strokeThickness: 2,
+      }).setOrigin(0.5).setDepth(2);
+    }
     // Bike rack collision
-    this.addWall(bikeX, bikeY, 120, 80);
+    {
+      const o = this.layout.bike_collision;
+      this.addWall(o.x, o.y, o.w, o.h);
+    }
 
     this.addInteractable({
-      x: bikeX, y: bikeY + 80,
+      x: this.layout.interact_bike.x, y: this.layout.interact_bike.y,
       label: "Zuzu's Bike",
       icon: '🚲',
       radius: 80,
@@ -233,13 +330,25 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     });
 
     // === NOTEBOOK DESK (right side) ===
-    this.add.rectangle(660, 160, 140, 65, 0x8b6f47).setStrokeStyle(3, 0x6b5430).setDepth(1);
-    this.add.text(640, 152, '📓', { fontSize: '30px' }).setOrigin(0.5).setDepth(2);
-    this.add.text(680, 152, '✏️', { fontSize: '22px' }).setOrigin(0.5).setDepth(2);
-    this.addWall(660, 160, 140, 65);
+    {
+      const o = this.layout.notebook_desk;
+      this.add.rectangle(o.x, o.y, o.w, o.h, 0x8b6f47).setStrokeStyle(3, 0x6b5430).setDepth(1);
+    }
+    {
+      const o = this.layout.notebook_glyph;
+      this.add.text(o.x, o.y, '📓', { fontSize: '30px' }).setOrigin(0.5).setDepth(2);
+    }
+    {
+      const o = this.layout.notebook_pencil;
+      this.add.text(o.x, o.y, '✏️', { fontSize: '22px' }).setOrigin(0.5).setDepth(2);
+    }
+    {
+      const o = this.layout.notebook_collision;
+      this.addWall(o.x, o.y, o.w, o.h);
+    }
 
     this.addInteractable({
-      x: 660, y: 210,
+      x: this.layout.interact_notebook.x, y: this.layout.interact_notebook.y,
       label: 'Notebook',
       icon: '📓',
       radius: 70,
@@ -256,63 +365,120 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     // Oil stain
     const oilGfx = this.add.graphics();
     oilGfx.fillStyle(0x8b8070, 0.2);
-    oilGfx.fillCircle(480, 380, 30);
-    oilGfx.fillCircle(460, 410, 18);
+    {
+      const o = this.layout.oil_stain_main;
+      oilGfx.fillCircle(o.x, o.y, o.r);
+    }
+    {
+      const o = this.layout.oil_stain_drip;
+      oilGfx.fillCircle(o.x, o.y, o.r);
+    }
 
     // Tires against left wall
-    this.add.text(52, 320, '⭕', { fontSize: '34px' }).setOrigin(0.5).setDepth(1);
-    this.add.text(52, 380, '⭕', { fontSize: '28px' }).setOrigin(0.5).setDepth(1);
+    {
+      const o = this.layout.tire_left_top;
+      this.add.text(o.x, o.y, '⭕', { fontSize: '34px' }).setOrigin(0.5).setDepth(1);
+    }
+    {
+      const o = this.layout.tire_left_bottom;
+      this.add.text(o.x, o.y, '⭕', { fontSize: '28px' }).setOrigin(0.5).setDepth(1);
+    }
 
     // Tools on left wall
-    this.add.text(52, 260, '🔩', { fontSize: '22px' }).setOrigin(0.5).setDepth(1);
-    this.add.text(52, 430, '🪛', { fontSize: '22px' }).setOrigin(0.5).setDepth(1);
+    {
+      const o = this.layout.wall_tool_top;
+      this.add.text(o.x, o.y, '🔩', { fontSize: '22px' }).setOrigin(0.5).setDepth(1);
+    }
+    {
+      const o = this.layout.wall_tool_bottom;
+      this.add.text(o.x, o.y, '🪛', { fontSize: '22px' }).setOrigin(0.5).setDepth(1);
+    }
 
     // Water bottle
-    this.add.text(width - 52, 420, '🧃', { fontSize: '22px' }).setOrigin(0.5).setDepth(1);
+    {
+      const o = this.layout.water_bottle;
+      this.add.text(o.x, o.y, '🧃', { fontSize: '22px' }).setOrigin(0.5).setDepth(1);
+    }
 
     // === STATE-DEPENDENT UPGRADES ===
     const upgrades = new Set(state?.upgrades || []);
     if (upgrades.has('tool_rack')) {
-      this.add.rectangle(width - 52, 260, 32, 80, 0x6b5430).setStrokeStyle(2, 0x4a3520).setDepth(1);
-      this.add.text(width - 52, 240, '🗄️', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
-      this.add.text(width - 52, 260, '🔧🪛', { fontSize: '12px' }).setOrigin(0.5).setDepth(2);
-      this.add.text(width - 52, 290, 'Tool Rack', {
-        fontSize: '10px', fontFamily: 'sans-serif', color: '#5a3e28', fontStyle: 'bold',
-      }).setOrigin(0.5).setDepth(2);
+      {
+        const o = this.layout.upgrade_tool_rack_shelf;
+        this.add.rectangle(o.x, o.y, o.w, o.h, 0x6b5430).setStrokeStyle(2, 0x4a3520).setDepth(1);
+      }
+      {
+        const o = this.layout.upgrade_tool_rack_glyph;
+        this.add.text(o.x, o.y, '🗄️', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
+      }
+      {
+        const o = this.layout.upgrade_tool_rack_tools;
+        this.add.text(o.x, o.y, '🔧🪛', { fontSize: '12px' }).setOrigin(0.5).setDepth(2);
+      }
+      {
+        const o = this.layout.upgrade_tool_rack_label;
+        this.add.text(o.x, o.y, 'Tool Rack', {
+          fontSize: '10px', fontFamily: 'sans-serif', color: '#5a3e28', fontStyle: 'bold',
+        }).setOrigin(0.5).setDepth(2);
+      }
     }
     if (upgrades.has('work_light')) {
-      this.add.text(200, 130, '💡', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
+      {
+        const o = this.layout.upgrade_work_light_glyph;
+        this.add.text(o.x, o.y, '💡', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
+      }
       const glowGfx = this.add.graphics();
       glowGfx.fillStyle(0xfef3c7, 0.12);
-      glowGfx.fillCircle(140, 160, 60);
+      {
+        const o = this.layout.upgrade_work_light_glow;
+        glowGfx.fillCircle(o.x, o.y, o.r);
+      }
     }
     if (upgrades.has('repair_stand')) {
-      this.add.rectangle(340, 360, 8, 55, 0x6b7280).setDepth(1);
-      this.add.rectangle(340, 335, 32, 6, 0x6b7280).setDepth(1);
-      this.add.text(340, 395, 'Repair Stand', {
-        fontSize: '10px', fontFamily: 'sans-serif', color: '#4b5563', fontStyle: 'bold',
-      }).setOrigin(0.5).setDepth(2);
+      {
+        const o = this.layout.upgrade_repair_stand_post;
+        this.add.rectangle(o.x, o.y, o.w, o.h, 0x6b7280).setDepth(1);
+      }
+      {
+        const o = this.layout.upgrade_repair_stand_arm;
+        this.add.rectangle(o.x, o.y, o.w, o.h, 0x6b7280).setDepth(1);
+      }
+      {
+        const o = this.layout.upgrade_repair_stand_label;
+        this.add.text(o.x, o.y, 'Repair Stand', {
+          fontSize: '10px', fontFamily: 'sans-serif', color: '#4b5563', fontStyle: 'bold',
+        }).setOrigin(0.5).setDepth(2);
+      }
     }
 
     // === SCENE TITLE ===
-    this.add.text(width / 2, 70, "Zuzu's Garage", {
-      fontSize: '20px', fontFamily: 'sans-serif', color: '#78350f',
-      fontStyle: 'bold', stroke: '#fef3c7', strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(5);
+    {
+      const o = this.layout.scene_title;
+      this.add.text(o.x, o.y, "Zuzu's Garage", {
+        fontSize: '20px', fontFamily: 'sans-serif', color: '#78350f',
+        fontStyle: 'bold', stroke: '#fef3c7', strokeThickness: 3,
+      }).setOrigin(0.5).setDepth(5);
+    }
 
     // === EXIT (south door → street) ===
     // Sunlight glow at door
     const sunGfx = this.add.graphics();
     sunGfx.fillStyle(0xfbbf24, 0.12);
-    sunGfx.fillRect(300, height - 55, 200, 55);
+    {
+      const o = this.layout.sun_glow;
+      sunGfx.fillRect(o.x, o.y, o.w, o.h);
+    }
 
-    this.addExit({
-      x: width / 2, y: height - 14,
-      width: 200, height: 28,
-      targetScene: 'StreetBlockScene',
-      targetSpawn: 'fromGarage',
-      label: '☀️ Go Outside ⬇',
-    });
+    {
+      const o = this.layout.exit_zone_south;
+      this.addExit({
+        x: o.x, y: o.y,
+        width: o.w, height: o.h,
+        targetScene: 'StreetBlockScene',
+        targetSpawn: 'fromGarage',
+        label: '☀️ Go Outside ⬇',
+      });
+    }
 
     // === ONBOARDING ===
     if (!state.hasSeenOnboarding) {

@@ -1,0 +1,162 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "target": "ZuzuGarageScene",
+  "ts": "2026-04-26T17-50-00Z",
+  "status": "complete",
+  "first_dispatch": true,
+  "dispatch_parameters": {
+    "targetSceneFile": "src/renderer/game/scenes/ZuzuGarageScene.js",
+    "targetSceneKey": "ZuzuGarageScene",
+    "layoutAssetKey": "zuzuGarageLayout",
+    "layoutPath": "layouts/zuzu-garage.layout.json"
+  },
+  "files_changed": [
+    "src/renderer/game/scenes/ZuzuGarageScene.js (M — added preload, added loadLayout import, replaced 60 literal positions with this.layout.<name> references)",
+    "public/layouts/zuzu-garage.layout.json (NEW — 60 layout objects)",
+    "src/renderer/game/utils/loadLayout.js (NEW — first-dispatch shared helper)",
+    "CLAUDE.md (NEW — first-dispatch project rule)"
+  ],
+  "verification": {
+    "build": {
+      "command": "npm run build",
+      "result": "PASS",
+      "duration": "11.62s"
+    },
+    "literal_coordinates_check": {
+      "command": "grep -E 'this\\.add\\.\\w+\\(\\s*[0-9]+\\s*,' src/renderer/game/scenes/ZuzuGarageScene.js",
+      "result": "0 matches"
+    },
+    "extended_literal_check": {
+      "command": "grep for addWall|addVisibleWall|addExit|addInteractable|fillCircle|fillRect|fillRoundedRect|lineBetween with leading numeric literal",
+      "result": "1 match — line 48 floor grid loop (lineBetween(0, y, width, y)). Loop-generated, exempt per spec section 7-8. The 0 is the loop x-axis origin, not a static anchor."
+    },
+    "unreferenced_layout_names_check": {
+      "method": "iterated Object.keys(layout.objects), confirmed each appears as 'this.layout.<name>' in scene source",
+      "result": "0 unreferenced"
+    },
+    "json_parse_sanity": {
+      "command": "node -e parse + count",
+      "result": "60 objects parsed cleanly"
+    },
+    "world_size_used": "800x600 (from getWorldSize() in ZuzuGarageScene.js:25-27). NOT 1024x768."
+  },
+  "notes": {
+    "scene_processed": "ZuzuGarageScene",
+    "world_size_confirmation": "Used 800x600 per the scene's own getWorldSize() return. All `width / 2` references resolved to 400 (not 512). All `width - N` resolved against 800. All `height - N` resolved against 600. The original Block-2 paste mention of 1024x768 was rejected as incorrect.",
+    "first_dispatch_files_created": {
+      "loadLayout.js": "CREATED at src/renderer/game/utils/loadLayout.js. Did not previously exist. Mirrors style of failureMath.js (named export + default export, JSDoc).",
+      "CLAUDE.md": "CREATED at repo root. Did not previously exist. Contains only the layout-system rule under '## Layout system rule' heading per spec template."
+    },
+    "layout_object_count": 60,
+    "layout_object_names": [
+      "floor",
+      "wall_top",
+      "wall_left",
+      "wall_right",
+      "wall_bottom_left",
+      "wall_bottom_right",
+      "window_top",
+      "window_top_frame",
+      "window_bottom",
+      "window_bottom_frame",
+      "peg_board",
+      "peg_board_tools",
+      "workbench",
+      "workbench_leg_left",
+      "workbench_leg_right",
+      "workbench_wrench",
+      "workbench_screwdriver",
+      "workbench_toolbox",
+      "workbench_collision",
+      "interact_workbench",
+      "lab_door",
+      "lab_door_glyph",
+      "interact_lab",
+      "thermal_door",
+      "thermal_door_glyph",
+      "interact_thermal",
+      "bike_mat",
+      "bike_rack_post_left",
+      "bike_rack_post_right",
+      "bike_rack_top_bar",
+      "bike_rack_bottom_bar",
+      "bike_glyph",
+      "bike_glow",
+      "bike_label",
+      "bike_collision",
+      "interact_bike",
+      "notebook_desk",
+      "notebook_glyph",
+      "notebook_pencil",
+      "notebook_collision",
+      "interact_notebook",
+      "oil_stain_main",
+      "oil_stain_drip",
+      "tire_left_top",
+      "tire_left_bottom",
+      "wall_tool_top",
+      "wall_tool_bottom",
+      "water_bottle",
+      "upgrade_tool_rack_shelf",
+      "upgrade_tool_rack_glyph",
+      "upgrade_tool_rack_tools",
+      "upgrade_tool_rack_label",
+      "upgrade_work_light_glyph",
+      "upgrade_work_light_glow",
+      "upgrade_repair_stand_post",
+      "upgrade_repair_stand_arm",
+      "upgrade_repair_stand_label",
+      "scene_title",
+      "sun_glow",
+      "exit_zone_south"
+    ],
+    "positions_left_in_code_with_reasons": [
+      {
+        "source_lines": "src/renderer/game/scenes/ZuzuGarageScene.js:47-48",
+        "code": "for (let x = 0; x < width; x += 60) floorGfx.lineBetween(x, 0, x, height); for (let y = 0; y < height; y += 60) floorGfx.lineBetween(0, y, width, y);",
+        "reason": "Loop-generated floor grid lines. Per spec section 8 (loop-generated positions are exempt unless the loop bounds are literals worth capturing). Bounds use width/height from getWorldSize(); only the step size 60 is a literal, and it controls a derived sequence rather than a static anchor. Leaving in code."
+      },
+      {
+        "source_lines": "src/renderer/game/scenes/ZuzuGarageScene.js:485",
+        "code": "this.time.delayedCall(600, ...)",
+        "reason": "600ms timer delay — a temporal value, not a coordinate. Not in scope for layout extraction."
+      },
+      {
+        "source_lines": "Various setOrigin(0.5), setOrigin(0.5).setDepth(2), setStrokeStyle(N, 0xCOLOR), interaction radius (e.g. 70, 80) and font sizes",
+        "reason": "Per spec rule: setOrigin args are origin floats (0..1), NOT pixel coordinates. Stroke widths, depths, font sizes, interaction radii are styling/behavior, not layout positions. All left in code."
+      }
+    ],
+    "behavioral_changes": "NONE. Zero touches to onInteract bodies, dialog strings, quest conditionals, audio calls, save calls, scene transitions, upgrade visibility logic, onboarding logic, or physics. Verified by reading the diff line-by-line: every change is either an import, a preload addition, the loadLayout() call, or a literal-to-this.layout.NAME swap.",
+    "computed_positions_resolved_to_literals": "Every `width / 2`, `width - N`, `height - N`, `bikeX +/- N`, `bikeY +/- N`, `labDoorX +/- N`, `thermalDoorX +/- N` was resolved to its concrete literal in the JSON. Original expressions are preserved in `_note` fields for human-roundtrip review.",
+    "preserved_runtime_property_assignments": "this._workbenchX and this._workbenchY (lines 105-106) are kept on the instance — they now read from this.layout.workbench rather than literal 140/160. Other code in the codebase may reference these properties; preserving the assignment guarantees no behavioral drift.",
+    "scope_compliance": "Did NOT touch any file under .claude/agents/, .claude/swarm/, .claude/agent-memory/, or any scene file other than ZuzuGarageScene.js. Did NOT pre-plan future agent dispatches. Per orchestrator scope guard."
+  },
+  "next_agent_suggestions": [
+    {
+      "agent": "phaser-scene-layout-extractor",
+      "target": "StreetBlockScene",
+      "rationale": "User's recommended next scene per dispatch prompt. StreetBlockScene is the first scene the player exits ZuzuGarageScene into — natural sequencing for visual review.",
+      "suggested_dispatch_parameters": {
+        "targetSceneFile": "src/renderer/game/scenes/StreetBlockScene.js",
+        "targetSceneKey": "StreetBlockScene",
+        "layoutAssetKey": "streetBlockLayout",
+        "layoutPath": "layouts/street-block.layout.json"
+      }
+    },
+    {
+      "agent": "phaser-scene-layout-extractor",
+      "target": "NeighborhoodScene",
+      "rationale": "Third in user's recommended order."
+    },
+    {
+      "agent": "phaser-scene-layout-extractor",
+      "target": "MaterialLabScene",
+      "rationale": "Fourth in user's recommended order."
+    },
+    {
+      "agent": "phaser-scene-layout-extractor",
+      "target": "DesertTrailScene",
+      "rationale": "Fifth in user's recommended order."
+    }
+  ]
+}
