@@ -1,0 +1,80 @@
+{
+  "agent": "phaser-bridge-construction",
+  "dispatched_via": "general-purpose (registry mid-session)",
+  "timestamp": "2026-04-26T18:50:00Z",
+  "scope": "Extend ConstructionSystem (commit 451e7a4) with a drag-and-drop placement mode alongside the existing click-to-place. Switch the bridge blueprint to the new mode.",
+  "status": "complete",
+  "files_changed": [
+    "src/renderer/game/systems/construction/constructionSystem.js",
+    "src/renderer/game/data/blueprints/bridgeBlueprint.js"
+  ],
+  "files_read_only": [
+    "src/renderer/game/scenes/DryWashScene.js"
+  ],
+  "verification": {
+    "build": "pass (npm run build, vite + tsc, 12.81s, no errors)",
+    "quests_js_untouched": "pass (git diff HEAD -- src/renderer/game/data/quests.js → empty)",
+    "bridge_built_event_intact": "pass (still declared in bridgeBlueprint.js line 39 as completion.observation = 'bridge_built'; ConstructionSystem.completeBuild reads it at line 530 and pushes to state.observations — the drag path lands in the same tryPlace → completeBuild flow as the click path)",
+    "click_path_byte_equivalence": "pass — wiring is preserved as the `else` branch in _renderGhost: `obj.on('pointerdown', () => { this.tryPlace(slot.id); });`. Removing the `mode` field on the blueprint (or setting `mode: 'click'`) routes through the original branch with zero behavior change. Removing the drag-mode methods + the `mode` doc lines yields the original 451e7a4 file byte-equal.",
+    "scope_compliance": "pass — only the 2 authorized files were modified by this agent. Other edits in working tree (DryWashScene.js, NeighborhoodScene.js, seamlessTraversal.js) are from the parallel phaser-dry-wash-scene agent."
+  },
+  "notes": {
+    "construction_system_public_api_inventory": {
+      "exported_class": "ConstructionSystem (default + named)",
+      "constructor": "new ConstructionSystem(scene, blueprint, opts)",
+      "public_methods": [
+        "getPlacedSlotIds()  — reads state[blueprint.stateKey] (always returns array)",
+        "isComplete()  — every slot id present in state",
+        "mount()  — renders ghosts/placed; idempotent",
+        "unmount()  — destroys all rendered objects (now also cancels in-flight drag); idempotent",
+        "tryPlace(slotId)  — async; runs onPlace, swaps ghost→placed, persists, fires onAllPlaced + completeBuild on completion",
+        "completeBuild()  — pushes observation, sets stateFlag, emits dialogEvent tagged with activeQuest if questId matches"
+      ],
+      "private_methods_unchanged": [
+        "_renderGhost (extended with mode branch only — click branch is byte-equivalent)",
+        "_renderPlaced"
+      ],
+      "private_methods_added": [
+        "_isDragMode()",
+        "_beginDrag(slot, sourceGhost, pointer)",
+        "_onDragMove(pointer)",
+        "_onDragUp(pointer)",
+        "_hitTestAnchors(px, py)",
+        "_cancelDrag()",
+        "_endDrag()"
+      ],
+      "events_emitted": [
+        "scene.registry.set('gameState', updated) — persisted via saveGame (unchanged in both modes)",
+        "scene.registry.set('dialogEvent', { speaker, text, choices: null, step }) — fired from completeBuild (unchanged in both modes)"
+      ],
+      "blueprint_fields_consumed": [
+        "id (informational)",
+        "name (informational)",
+        "slots[] (id, x, y, w?, h?, type?, requiredItem?)",
+        "stateKey (gameState field for placed ids)",
+        "completion.observation, completion.stateFlag, completion.questId, completion.dialogSpeaker, completion.dialogText",
+        "mode (NEW — optional; 'click' default | 'drag')"
+      ],
+      "opts_consumed": [
+        "layer (default scene)",
+        "drawGhost (REQUIRED — also used by drag mode to spawn the moving copy)",
+        "drawPlaced (REQUIRED)",
+        "onPlace (optional async; abort placement if returns false)",
+        "onAllPlaced (optional async; runs before completeBuild)",
+        "autoCompleteAfterAllPlaced (default true)"
+      ]
+    },
+    "blueprint_mode_field_behavior": {
+      "absent_or_click": "Backwards-compatible legacy path. Each empty slot's ghost is made interactive with cursor: 'pointer' and pointerdown directly invokes tryPlace(slot.id). Byte-identical to commit 451e7a4 behavior.",
+      "drag": "Each empty slot's ghost is still interactive but pointerdown lifts a 'moving' copy of the ghost (spawned via the host's drawGhost so visual styling matches). The moving copy follows pointermove (worldX/worldY-aware), shows alpha 0.75, depth 50, and is non-interactive so it never steals hit-tests. The source ghost dims to alpha 0.35 to read as 'lifted'. On pointerup the system hit-tests the pointer against EVERY unplaced slot's bounding rect (slot.x±w/2, slot.y±h/2); a hit invokes tryPlace(slot.id) for that slot — anchor-validity (already-placed, completed, onPlace returning false) is fully delegated to tryPlace. A miss silently cancels. Escape cancels mid-flight. unmount() also cancels in-flight drag so scene-level pointermove/pointerup/keydown listeners are never leaked."
+    },
+    "witness_blueprint_for_backwards_compat": "No second blueprint exists yet — the bridge is currently the only file under src/renderer/game/data/blueprints/ (verified via Glob). Backwards compatibility is therefore witnessed structurally rather than functionally: (a) the diff for _renderGhost preserves the original click wiring verbatim inside the `else` branch reached when blueprint.mode !== 'drag', (b) deleting the new code yields commit-451e7a4 byte-equivalence, and (c) the new branch is reachable ONLY when a blueprint opts in via `mode: 'drag'`. Future blueprints (workbench assembly, garden plots, bike-rack mounts) that omit `mode` will use the legacy path with zero edits — that is the witness contract.",
+    "bridge_built_through_drag_path": "Confirmed. The `bridge_built` string lives in bridgeBlueprint.js line 39 as completion.observation. ConstructionSystem.completeBuild() (line 525-530) reads `completion.observation` and pushes it onto state.observations. Both placement modes funnel through the same tryPlace() → (isComplete + onAllPlaced) → completeBuild() chain — drag mode only changes how tryPlace is invoked (via _onDragUp instead of a direct pointerdown), not what tryPlace does. The orchestrator's grep for `bridge_built` therefore still matches the same line; no event renaming, no shape change.",
+    "manual_verification_scenarios": [
+      "1. Click placement on a non-bridge blueprint: N/A — no second blueprint exists yet. Structural witness only (see above). Once a future blueprint ships without setting `mode`, this becomes runnable: mount its ConstructionSystem, click a ghost, confirm tryPlace fires. The diff guarantees the wiring is unchanged for that case.",
+      "2. Place a bridge beam via drag: enter DryWashScene with bridge_collapse step 15 active and !state.bridgeBuilt. Press down on a ghost beam → a moving translucent beam appears under the pointer, the source ghost dims. Drag across the wash → the moving copy tracks. Release over an unplaced anchor → tryPlace fires for that anchor, onPlace consumes a mesquite_wood_sample, the ghost swaps to a placed plank, item_pickup sfx plays. Repeat for all 4 beams; on the last, onAllPlaced runs the load-test bike animation, then DryWashScene calls completeBuild() (autoCompleteAfterAllPlaced=false on this scene), which pushes 'bridge_built' to state.observations and fires the Mr. Chen dialog tagged with activeQuest — LocalSceneBase.advanceFromDialog then advances bridge_collapse step 15.",
+      "3. Cancel a drag mid-flight via Esc: press down on a ghost beam → moving copy appears. Press Escape → moving copy is destroyed, source ghost alpha restored to 1, scene-level pointermove/pointerup/keydown listeners are cleaned up. State unchanged — no observation pushed, no save written. Equivalent cancel: release pointer outside any anchor's bounds (silent cancel via _onDragUp's null hit-test)."
+    ]
+  },
+  "next_agent_suggestions": ["phaser-bridge-quest-glue"]
+}

@@ -40,6 +40,7 @@ import { populateWorld } from '../systems/ecologyEngine.js';
 import { initDepthSort, updateDepthSort, applyDepth } from '../systems/depthSort.js';
 import { FLORA_MAP } from '../data/flora.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { attachEdgeSensor, performSeamlessTransition } from '../systems/seamlessTraversal.js';
 
 const SCENE_KEY = 'NeighborhoodScene';
 
@@ -164,6 +165,14 @@ export default class NeighborhoodScene extends NeighborhoodSceneBase {
     // --- Audio ---
     const audioMgr = this.registry.get('audioManager');
     if (audioMgr) audioMgr.transitionToScene(SCENE_KEY);
+
+    // --- Seamless edge traversal (east → DryWashScene) ---
+    // The east-edge sensor hands off to performSeamlessTransition which uses
+    // SCENE_ADJACENCY to find the destination. North/south/west edges are
+    // unmapped → the helper logs and ignores the cross.
+    attachEdgeSensor(this, this.player, (edge) => {
+      performSeamlessTransition(this, edge, this.player);
+    });
 
     // --- Debug ---
     if (DEBUG_WORLD) {

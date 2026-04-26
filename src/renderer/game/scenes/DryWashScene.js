@@ -28,6 +28,11 @@ import { saveGame } from '../systems/saveSystem.js';
 import { ConstructionSystem } from '../systems/construction/constructionSystem.js';
 import { BRIDGE_MESQUITE_BLUEPRINT } from '../data/blueprints/bridgeBlueprint.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import {
+  applySeamlessEntry,
+  attachEdgeSensor,
+  performSeamlessTransition,
+} from '../systems/seamlessTraversal.js';
 
 const SCENE_KEY = 'DryWashScene';
 
@@ -53,6 +58,37 @@ export default class DryWashScene extends LocalSceneBase {
 
   getSceneKey() { return SCENE_KEY; }
   getWorldSize() { return { width: 900, height: 600 }; }
+
+  // ── Lifecycle ──────────────────────────────────────────────────────
+
+  /**
+   * Stash incoming scene-start data so create() can apply seamless-entry
+   * placement after the player is constructed. Phaser passes whatever the
+   * caller sent via `scene.start(key, data)`. World-map travel sends no
+   * `entryEdge` → applySeamlessEntry is a no-op and the original spawn
+   * behavior in LocalSceneBase.create() runs unchanged.
+   *
+   * @param {{ entryEdge?: string, vx?: number, vy?: number, facing?: string, seamless?: boolean }} [data]
+   */
+  init(data) {
+    this._initData = data || null;
+  }
+
+  /**
+   * Extends LocalSceneBase.create() to:
+   *   1. Apply any seamless-entry payload (repositions player to the
+   *      entry edge, restores velocity + facing). No-op when entered via
+   *      world-map travel.
+   *   2. Attach the cardinal edge sensors so walking off the west edge
+   *      transitions back to NeighborhoodScene.
+   */
+  create() {
+    super.create();
+    applySeamlessEntry(this, this._initData);
+    attachEdgeSensor(this, this.player, (edge) => {
+      performSeamlessTransition(this, edge, this.player);
+    });
+  }
 
   // ── World construction ─────────────────────────────────────────────
 

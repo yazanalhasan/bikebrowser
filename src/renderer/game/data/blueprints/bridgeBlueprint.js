@@ -23,6 +23,11 @@
 export const BRIDGE_MESQUITE_BLUEPRINT = {
   id: 'mesquite_bridge_v1',
   name: 'Mesquite Bridge',
+  // Drag-and-drop placement (ConstructionSystem mode === 'drag'). Player
+  // presses on a ghost beam, drags into the wash, drops on any unplaced
+  // anchor to lock it in. Esc cancels mid-flight. Other blueprints that
+  // omit this field (or set 'click') keep the legacy click-to-place path.
+  mode: 'drag',
   slots: [
     { id: 'beam_a', x: 220, y: 400, w: 130, h: 18, type: 'beam' },
     { id: 'beam_b', x: 350, y: 400, w: 130, h: 18, type: 'beam' },

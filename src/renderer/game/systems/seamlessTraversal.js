@@ -86,6 +86,11 @@ export const SCENE_ADJACENCY = {
     east: { to: 'DryWashScene', entrySide: 'west' },
     // … other edges added by consumer agents as scenes adopt the API.
   },
+  DryWashScene: {
+    west: { to: 'NeighborhoodScene', entrySide: 'east' },
+    // East edge would lead to the locked far-side trail — left unmapped
+    // until that scene exists; the edge sensor will safe-fail with a warn.
+  },
 };
 
 // Edge → opposite edge lookup. Used to derive the entry edge when the

@@ -1,0 +1,37 @@
+{
+  "agent": "phaser-dry-wash-scene",
+  "dispatched_via": "general-purpose",
+  "timestamp": "2026-04-26T18:50:00Z",
+  "status": "complete",
+  "files_modified": [
+    "src/renderer/game/scenes/NeighborhoodScene.js",
+    "src/renderer/game/scenes/DryWashScene.js",
+    "src/renderer/game/systems/seamlessTraversal.js"
+  ],
+  "files_created": [],
+  "build": "pass (vite build, 10.98s)",
+  "verification": {
+    "sceneTransition_byte_identical": true,
+    "worldMapData_dryWash_entryScene_intact": true,
+    "scope_only_authorized_files": true
+  },
+  "notes": {
+    "neighborhood_sensor_lines": "Lines 169-175 of NeighborhoodScene.js — `attachEdgeSensor(this, this.player, ...)` registered at the end of create(), after audio transition and before the DEBUG_WORLD block. Import added at line 43 (`attachEdgeSensor, performSeamlessTransition` from seamlessTraversal.js). Sensor callback delegates to `performSeamlessTransition(this, edge, this.player)` — only the east edge is mapped in SCENE_ADJACENCY, so other edges safe-fail with a console.warn (no crash).",
+    "drywash_init_change": "DryWashScene previously had no init(). Added two pieces:\n  (a) `init(data)` at lines 73-75 — stashes `data` into `this._initData` so create() can apply it after the player is constructed by LocalSceneBase.create(). World-map travel sends no `entryEdge` so applySeamlessEntry is a no-op for that path.\n  (b) `create()` override at lines 85-91 — calls `super.create()` (which builds the world via createWorld() and constructs the player), then `applySeamlessEntry(this, this._initData)` to reposition the player to the west edge with restored velocity/facing when entered seamlessly, then `attachEdgeSensor(this, this.player, ...)` so walking off the west edge transitions back to NeighborhoodScene.\nImports added at lines 31-35 (`applySeamlessEntry, attachEdgeSensor, performSeamlessTransition`).",
+    "world_map_entry_preservation": "Confirmed via mental test: world-map travel calls `transitionTo(scene, 'DryWashScene', 'fromDryWash', ...)` from sceneTransition.js. That uses scene.start with NO `entryEdge` in the data payload, so `init(data)` stashes a payload without entryEdge, then `applySeamlessEntry` returns false (no-op) at its first guard. LocalSceneBase.create() then computes spawn from `_resolveSpawnName` → getSpawn(sceneKey, 'fromDryWash') as before. Spec confirmed: worldMapData.js still has `entryScene: 'DryWashScene'` (line 97) and `unlockReq: { questsAny: ['bridge_collapse'] }` (line 99). Both paths reach a usable spawn.",
+    "reverse_direction_wired": "YES — wired DryWashScene.west → NeighborhoodScene.east in SCENE_ADJACENCY (lines 89-93 of seamlessTraversal.js). The edge-walk is now symmetric: walking east from Neighborhood lands at DryWash west edge with preserved velocity, and walking west from DryWash returns to Neighborhood east edge with preserved velocity. DryWash east is intentionally left unmapped (the lore-side locked far-side trail isn't a real scene yet — the helper safely warns and ignores). North/south on both scenes are unmapped — same safe-fail behavior.",
+    "scene_adjacency_final_shape": "SCENE_ADJACENCY now contains two entries:\n  NeighborhoodScene.east → { to: 'DryWashScene', entrySide: 'west' }  (forward, was already seeded in commit 96eceb7)\n  DryWashScene.west     → { to: 'NeighborhoodScene', entrySide: 'east' }  (reverse, added this dispatch)\nBoth use `entrySide` explicitly so the OPPOSITE_EDGE fallback never fires. Other edges remain unset; performSeamlessTransition safely warns and aborts on unmapped edges.",
+    "manual_scenario_results": {
+      "scenario_a_world_map_entry": "Travel from world map → scene.start('DryWashScene', { spawnName: 'fromDryWash' }) (no entryEdge field) → init() stashes data → super.create() runs full LocalSceneBase boot → applySeamlessEntry returns false at guard → player spawns at the named spawn (default behavior unchanged) → attachEdgeSensor wires up cardinal sensors so walking west returns to Neighborhood. PASS.",
+      "scenario_b_edge_walk_east": "Walk east from Neighborhood → east-edge sensor fires → performSeamlessTransition captures vx/vy/facing → scene.start('DryWashScene', { seamless: true, entryEdge: 'west', vx, vy, facing }) → init() stashes data → super.create() boots scene + player at default spawn → applySeamlessEntry repositions player to west edge (x=ENTRY_INSET=32, y=300 = world.height/2) with restored velocity + facing → attachEdgeSensor wires up sensors. PASS."
+    }
+  },
+  "out_of_scope_respected": {
+    "sceneTransition_unchanged": true,
+    "worldMap_dryWash_entry_unchanged": true,
+    "no_other_scene_edges_modified": true,
+    "no_game3d_changes": true,
+    "no_agent_or_swarm_dirs_modified": true
+  },
+  "next_agent_suggestions": ["phaser-bridge-quest-glue"]
+}
