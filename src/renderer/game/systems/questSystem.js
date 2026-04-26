@@ -7,6 +7,86 @@
 
 import QUESTS from '../data/quests.js';
 import { addItem, hasItem } from './inventorySystem.js';
+import { onRegionDiscovered } from './discoverySystem.js';
+import DISCOVERY_UNLOCKS from '../data/discoveryUnlocks.js';
+
+// ── Discovery → Quest Bridge ─────────────────────────────────────────────────
+
+/**
+ * Pending quest unlocks queued by the discovery bridge.
+ * Stored as an array of questId strings. Consumed by callers via
+ * `consumePendingDiscoveryUnlocks(state)`.
+ * @type {string[]}
+ */
+const _pendingDiscoveryUnlocks = [];
+
+/**
+ * Wire discovery events to quest unlocks.
+ *
+ * Call once at boot (e.g. from GameContainer after quest system is ready).
+ * Registers an `onRegionDiscovered` listener that queues quest IDs for
+ * non-pending entries in DISCOVERY_UNLOCKS. Queued IDs are consumed by
+ * `consumePendingDiscoveryUnlocks(state)` which scenes call on their
+ * next interaction checkpoint.
+ *
+ * Idempotent within a session — safe to call more than once (no duplicate
+ * listeners are added because each call registers a distinct closure, but
+ * calling multiple times is a no-op as both closures do the same work and
+ * `startQuest` already guards against duplicate starts).
+ */
+export function initDiscoveryQuestBridge() {
+  onRegionDiscovered(({ regionId }) => {
+    const spec = DISCOVERY_UNLOCKS[regionId];
+    if (!spec || spec.pending) return;
+    const questId = spec.questId;
+    if (!questId) return;
+    if (!QUESTS[questId]) {
+      // eslint-disable-next-line no-console
+      console.warn(`[discovery→quest] quest "${questId}" not found in QUESTS — skipping`);
+      return;
+    }
+    if (!_pendingDiscoveryUnlocks.includes(questId)) {
+      _pendingDiscoveryUnlocks.push(questId);
+      // eslint-disable-next-line no-console
+      console.log(`[discovery→quest] queued unlock for quest "${questId}" (region: ${regionId})`);
+    }
+  });
+}
+
+/**
+ * Consume any discovery-triggered quest unlock queue.
+ *
+ * Call this from scene checkpoints (e.g. NPC interaction, scene entry) where
+ * it is natural to offer the player a new quest. The functional quest pattern
+ * is preserved: this returns an updated state, leaving persistence to the caller.
+ *
+ * @param {object} state — current game save state
+ * @returns {object} Updated state with any queued quests started (if none were
+ *   active and the quests are valid). If nothing was consumed, returns `state`
+ *   unchanged.
+ */
+export function consumePendingDiscoveryUnlocks(state) {
+  if (_pendingDiscoveryUnlocks.length === 0) return state;
+
+  let current = state;
+  // Drain the queue — splice as we go so partial consumption is safe.
+  while (_pendingDiscoveryUnlocks.length > 0) {
+    const questId = _pendingDiscoveryUnlocks[0];
+    const updated = startQuest(current, questId);
+    if (updated) {
+      // Successfully started — advance state.
+      current = updated;
+      _pendingDiscoveryUnlocks.splice(0, 1);
+      // startQuest only allows one active quest at a time — stop if we started one.
+      if (current.activeQuest) break;
+    } else {
+      // Can't start (busy / already done) — remove from queue and move on.
+      _pendingDiscoveryUnlocks.splice(0, 1);
+    }
+  }
+
+  return current;
+}
 
 /**
  * Start a quest by id. Returns updated save state, or null if already active.

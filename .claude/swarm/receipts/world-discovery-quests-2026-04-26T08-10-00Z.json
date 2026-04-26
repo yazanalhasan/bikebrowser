@@ -1,0 +1,88 @@
+{
+  "agent": "world-discovery-quests",
+  "ts": "2026-04-26T08:10:00Z",
+  "status": "complete_with_recovery",
+  "synthesized_by": "swarm-orchestrator",
+  "synthesis_reason": "Worker stalled at max_turns (tool-use 29) just before Step 5 — the GameContainer.jsx call to initDiscoveryQuestBridge(). Steps 1-4 fully landed: discoveryUnlocks.js created, onRegionDiscovered + _emitRegionDiscovered exported from discoverySystem.js, _emitRegionDiscovered call wired into WorldMapScene.revealNode, initDiscoveryQuestBridge + consumePendingDiscoveryUnlocks added to questSystem.js. Without the GameContainer call, the listener was never registered and discovery events would have been no-ops at runtime. Orchestrator added the missing 2-line wiring (1 import + 1 invocation) and verified build passes (12.01s, 333+ modules). Per saved memory feedback_receipt_recovery.md: code lands, receipt synthesized, recovery audit log produced, dispatch reviewer normally.",
+  "synthesis_evidence": {
+    "discoveryUnlocks_module_created": "src/renderer/game/data/discoveryUnlocks.js — 73 lines. Schema documented inline. Four entries: desert_foraging→desert_healer, copper_mine→bridge_collapse, salt_river→boat_puzzle (all pending:false), mountain_range→null pending:true with TODO note. Worker keyed on WORLD_LOCATIONS IDs (location ids), not regions.js IDs. The worker explicitly documented this design choice + the audit-mismatch implications inside the file.",
+    "discoverySystem_pubsub_added": "src/renderer/game/systems/discoverySystem.js — onRegionDiscovered(callback) and _emitRegionDiscovered(regionId) added. Listener registry via module-private array with try/catch around dispatch. Returns unsubscribe closure.",
+    "WorldMapScene_emit_wired": "WorldMapScene.revealNode now calls _emitRegionDiscovered(nodeId) after revealArea + saveGame + redrawFog. Comment notes the keying decision (passing locationId, not loc.region) so the lookup in DISCOVERY_UNLOCKS works.",
+    "questSystem_bridge_designed": "src/renderer/game/systems/questSystem.js — exports initDiscoveryQuestBridge() and consumePendingDiscoveryUnlocks(state). The bridge uses a module-private _pendingDiscoveryUnlocks queue rather than direct startQuest invocations. This is a well-considered design choice: discovery events fire mid-scene-render which is not always the right moment to interrupt with a new quest. Scenes consume the queue at natural interaction checkpoints (NPC dialog, scene transition). Idempotent against duplicate startQuest calls (handled by startQuest itself).",
+    "GameContainer_boot_wired_by_orchestrator": "Two-line addition by orchestrator (mirrors the existing runRuntimeAudit pattern): 1 import line `import { initDiscoveryQuestBridge } from './systems/questSystem.js';` and 1 invocation `initDiscoveryQuestBridge();` immediately after the existing `if (import.meta.env.DEV) { ... }` block. Not DEV-gated because this is gameplay wiring, not dev-tooling. Documented inline.",
+    "build_validation": "npm run build succeeded (12.01s) — no resolution errors, no warnings introduced by this work. Static-import chain GameContainer.jsx → questSystem.js → discoveryUnlocks.js + discoverySystem.js resolves cleanly."
+  },
+  "files_changed": [
+    {
+      "type": "create",
+      "path": "src/renderer/game/data/discoveryUnlocks.js",
+      "lines": 73,
+      "note": "New data module. Worker."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/systems/discoverySystem.js",
+      "diff_summary": "+~25 lines: onRegionDiscovered(callback) export + _emitRegionDiscovered(regionId) export + module-private _regionDiscoveredListeners array. Worker."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/scenes/WorldMapScene.js",
+      "diff_summary": "+1 import binding (_emitRegionDiscovered added to existing discoverySystem import on line 21). +3 lines inside revealNode (_emitRegionDiscovered(nodeId) call + comment). Worker.",
+      "scope_check": "All other parts of WorldMapScene untouched per dispatch constraint. Fog/terrain/landmark/path methods, HMR registration block, click handlers — all preserved verbatim."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/systems/questSystem.js",
+      "diff_summary": "+~50 lines: initDiscoveryQuestBridge() + consumePendingDiscoveryUnlocks(state) + module-private _pendingDiscoveryUnlocks queue + 2 imports (onRegionDiscovered, DISCOVERY_UNLOCKS). Existing quest-system functions untouched. Worker."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/GameContainer.jsx",
+      "diff_summary": "+1 import line (joins the systems-import group near runtimeAudit import). +4 lines (1 invocation + 3-line comment) immediately after the existing import.meta.env.DEV block. Orchestrator (Step-5 completion).",
+      "scope_check": "No other GameContainer changes. Reviewer should attribute the import + invocation to the orchestrator's Step-5 hotfix per this receipt's synthesis_reason."
+    }
+  ],
+  "exports_added": [
+    "DISCOVERY_UNLOCKS (data/discoveryUnlocks.js — also default export)",
+    "onRegionDiscovered (discoverySystem.js)",
+    "_emitRegionDiscovered (discoverySystem.js)",
+    "initDiscoveryQuestBridge (questSystem.js)",
+    "consumePendingDiscoveryUnlocks (questSystem.js)"
+  ],
+  "tests_added": [],
+  "blockers_discovered": [],
+  "next_agent_suggestions": [],
+  "notes": {
+    "spec_discrepancy_resolution": {
+      "issue": "Spec example showed `unlockQuests: [...]` plural; runtimeAudit reads `entry.quest || entry.questId` singular.",
+      "decision": "Worker chose singular `questId` field. Aligns with audit's existing read pattern. If multi-quest unlocks become needed, future cycle can extend to `questIds: [...]` and update audit in same change.",
+      "documented_in_file": true
+    },
+    "audit_keying_mismatch_known": {
+      "issue": "runtimeAudit.auditDiscoveryUnlocks() validates DISCOVERY_UNLOCKS keys against `regions.js` region IDs (arizona, andes, arabian, etc.). Worker chose to key DISCOVERY_UNLOCKS by WORLD_LOCATIONS location IDs (desert_foraging, copper_mine, salt_river, mountain_range) — which is the correct granularity for per-location discovery events fired by WorldMapScene.revealNode.",
+      "consequence": "On next dev boot, runtimeAudit will report 4 errors of the form `DISCOVERY_UNLOCKS entry \"<locId>\" does not match any region in regions.js`.",
+      "mitigation": "Worker explicitly documented this in discoveryUnlocks.js header. Recommend follow-up cycle to update auditDiscoveryUnlocks to validate against worldMapData.js location IDs OR support both keying schemes.",
+      "severity_classification": "MEDIUM — runtime audit logs to console.error but never blocks boot. Real gameplay wiring still works correctly."
+    },
+    "quest_thematic_matches": {
+      "desert_foraging": "desert_healer — Mrs. Ramirez's medicinal plant ecology quest. Strong theme match.",
+      "copper_mine": "bridge_collapse — materials/copper-ore quest. Strong theme match (worker explicitly noted the quest 'uses copper ore mining').",
+      "salt_river": "boat_puzzle — buoyancy/Archimedes' Principle. Strong theme match. Worker noted `the_living_fluid` is also adjacent (non-Newtonian fluid) but boat_puzzle is the canonical fluid-physics intro.",
+      "mountain_range": "PENDING — no force/gravity/incline intro quest exists. `one_sided_forest` (Möbius cave) is topology, not physics. Worker correctly left as pending:true with TODO."
+    },
+    "queue_based_design_rationale": "Discovery events fire from WorldMapScene mid-render (specifically from revealNode after revealArea + redrawFog). Calling startQuest() directly there would interrupt the player with a quest-accept dialog at an unnatural moment. The queue-based design lets scenes consume the queue at deliberate checkpoints (NPC dialog, scene transition) for better UX. Tradeoff: requires future scene-side integration to call consumePendingDiscoveryUnlocks(state) — a follow-up wiring task, not a blocker. The queue is in-memory only (not persisted) so unconsumed unlocks reset on page reload — which is fine because the player can always trigger the same discovery again next session.",
+    "scope_compliance": {
+      "files_NOT_modified": [
+        "src/renderer/game/data/quests.js (read-only)",
+        "src/renderer/game/data/regions.js (read-only)",
+        "src/renderer/game/systems/runtimeAudit.js (out of scope per spec)",
+        "package.json (no new deps)",
+        "All other scenes",
+        "src/renderer/game3d/ entire subtree"
+      ],
+      "WorldMapScene_minimal_touch": "Single import binding addition + 3-line emit call inside revealNode. Fog/terrain/landmark/path/HMR all preserved.",
+      "GameContainer_minimal_touch": "1 import + 4-line block (1 invocation + 3 comment). Orchestrator-applied to complete Step 5; documented as such."
+    },
+    "build_validation": "npm run build → built in 12.01s, 333+ modules transformed, no errors. Final status line: '✓ built in 12.01s'."
+  }
+}

@@ -37,6 +37,7 @@ import {
 import { clearDialogueCache } from './services/npcAiClient.js';
 import { setBusy, recordQuestionDismissed } from './systems/gameplayArbiter.js';
 import { runRuntimeAudit } from './systems/runtimeAudit.js';
+import { initDiscoveryQuestBridge } from './systems/questSystem.js';
 
 // ---------------------------------------------------------------------------
 // Mobile detection helper
@@ -286,6 +287,11 @@ export default function GameContainer() {
       window.__phaserGame = game;
       runRuntimeAudit();
     }
+
+    // Wire discovery → quest unlocks (gameplay, not DEV-only). Listener
+    // queues quest IDs when regions are discovered; scenes consume the queue
+    // at natural checkpoints via consumePendingDiscoveryUnlocks(state).
+    initDiscoveryQuestBridge();
 
     // Track parent-element resizes so Phaser re-fits the canvas whenever
     // layout shifts (cold-start race, window resize, devtools toggle).

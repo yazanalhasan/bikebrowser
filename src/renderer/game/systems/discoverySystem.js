@@ -24,6 +24,48 @@
 /** Grid cell size in world pixels. */
 export const DISCOVERY_TILE_SIZE = 32;
 
+// ── Region-discovered pub/sub ────────────────────────────────────────────────
+
+/**
+ * Registered listeners for region-discovered events.
+ * @type {Array<function({ regionId: string }): void>}
+ */
+const _regionDiscoveredListeners = [];
+
+/**
+ * Register a callback that fires whenever a world-map location is revealed.
+ * The callback receives `{ regionId }` where regionId is the WORLD_LOCATIONS
+ * nodeId (locationId) of the newly discovered location.
+ *
+ * @param {function({ regionId: string }): void} callback
+ * @returns {function(): void} Unsubscribe function — call to remove the listener.
+ */
+export function onRegionDiscovered(callback) {
+  _regionDiscoveredListeners.push(callback);
+  return function unsubscribe() {
+    const idx = _regionDiscoveredListeners.indexOf(callback);
+    if (idx >= 0) _regionDiscoveredListeners.splice(idx, 1);
+  };
+}
+
+/**
+ * Emit a region-discovered event to all registered listeners.
+ *
+ * @internal — exported for WorldMapScene.revealNode() to call after discovery.
+ *   Do not call from outside the discovery/world-map layer.
+ * @param {string} regionId — the WORLD_LOCATIONS nodeId (locationId) that was revealed.
+ */
+export function _emitRegionDiscovered(regionId) {
+  for (const cb of _regionDiscoveredListeners) {
+    try {
+      cb({ regionId });
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('[discovery] listener error in onRegionDiscovered handler', e);
+    }
+  }
+}
+
 // ── Module state ────────────────────────────────────────────────────────────
 
 /**

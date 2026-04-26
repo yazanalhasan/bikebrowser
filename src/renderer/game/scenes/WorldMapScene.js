@@ -18,7 +18,7 @@ import { setBusy } from '../systems/gameplayArbiter.js';
 import { BIOME } from '../data/regions.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { generateHeightmap, sampleHeightmap, rand2, hash2 } from '../utils/terrainNoise.js';
-import { isDiscovered, revealArea, getDiscoveryState, DISCOVERY_TILE_SIZE } from '../systems/discoverySystem.js';
+import { isDiscovered, revealArea, getDiscoveryState, DISCOVERY_TILE_SIZE, _emitRegionDiscovered } from '../systems/discoverySystem.js';
 
 const SCENE_KEY = 'WorldMapScene';
 
@@ -1387,6 +1387,11 @@ export default class WorldMapScene extends Phaser.Scene {
     // ── 3. Persist — saveGame() reads live discovery state from the module.
     const state = this.registry.get('gameState');
     saveGame(state);
+
+    // ── 3b. Fire region-discovered event so the quest bridge can queue unlocks.
+    // Passes the locationId (nodeId) as the regionId so DISCOVERY_UNLOCKS can
+    // look up per-location unlock specs (keyed by WORLD_LOCATIONS ids).
+    _emitRegionDiscovered(nodeId);
 
     // ── 4. Update fog visual.
     this.redrawFog();
