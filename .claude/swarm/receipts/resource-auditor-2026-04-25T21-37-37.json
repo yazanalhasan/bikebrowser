@@ -1,0 +1,14 @@
+{
+  "agent": "resource-auditor",
+  "ts": "2026-04-25T21:37:37Z",
+  "status": "complete",
+  "files_changed": [
+    ".claude/swarm/reports/resource-audit-2026-04-25T21-37-37.md"
+  ],
+  "next_agent_suggestions": [
+    "bundle-splitter (vite.config manualChunks for phaser/three/drei/rapier)",
+    "asset-curator (cull pixel_pedal_parade variants, re-encode .wav music to .mp3/.ogg)",
+    "dep-deduper (add overrides for three@0.184.0, audit @mediapipe/tasks-vision usage)"
+  ],
+  "notes": "Five-section audit complete with running app. Headline findings: Game3DPage chunk is 2.97 MB and GamePage is 1.99 MB (both exceed Vite's 500 KB warning); 11 MB of duplicate/draft audio masters in build/; three@0.170.0 duplicated via stats-gl. Total app footprint 1.20 GB (under 1.5 GB flag). GPU process is healthy at 5.27% engtype_3D, confirming RX 580 accel is active. No standalone Node API server observed. Full report at .claude/swarm/reports/resource-audit-2026-04-25T21-37-37.md."
+}
