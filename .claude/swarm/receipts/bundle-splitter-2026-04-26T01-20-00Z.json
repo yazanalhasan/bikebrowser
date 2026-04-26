@@ -1,0 +1,46 @@
+{
+  "agent": "bundle-splitter",
+  "status": "complete",
+  "ts": "2026-04-26T01-20-00Z",
+  "files_changed": [
+    "vite.config.js",
+    "src/renderer/game/systems/ai/MCPAIAdapter.js"
+  ],
+  "notes": {
+    "summary": "Added manualChunks function to vite.config.js build.rollupOptions.output. Converted the wasted dynamic import of validateAIQuestion in MCPAIAdapter.js to a static import (confirmed 3 other static importers of quizQuestionGenerator.js: aiFallbacks.js, aiPromptBuilders.js, physicsEducationSystem.js).",
+    "spec_path_discrepancy": "Spec listed MCPAIAdapter.js at src/renderer/services/MCPAIAdapter.js but actual location is src/renderer/game/systems/ai/MCPAIAdapter.js. Applied fix to the real file.",
+    "chunk_size_table": {
+      "before": {
+        "GamePage": "1999.35 KB",
+        "Game3DPage": "2976.60 KB",
+        "vendor-phaser": "n/a",
+        "vendor-three": "n/a",
+        "vendor-r3f": "n/a",
+        "vendor-drei": "n/a",
+        "vendor-rapier": "n/a",
+        "vendor-router": "n/a"
+      },
+      "after": {
+        "GamePage-Bn0H2EwN.js": "519.84 KB (gzip: 149.60 KB)",
+        "Game3DPage-C1XCfugA.js": "15.33 KB (gzip: 4.64 KB)",
+        "vendor-phaser-DvlocGKN.js": "1478.41 KB (gzip: 339.65 KB)",
+        "vendor-three-C3jy5vs5.js": "739.83 KB (gzip: 192.44 KB)",
+        "vendor-r3f-lGIbXi7u.js": "135.91 KB (gzip: 44.63 KB)",
+        "vendor-drei-BAUOGYTG.js": "4.98 KB (gzip: 2.51 KB)",
+        "vendor-rapier-3Yc_TGzK.js": "2081.49 KB (gzip: 768.98 KB)",
+        "vendor-router-DT7dWnwN.js": "164.18 KB (gzip: 53.45 KB)"
+      }
+    },
+    "anomalies": [
+      "GamePage is 519.84 KB — just 19 KB above the 500 KB target. Phaser is now in vendor-phaser but game logic itself (scenes, systems, entities) accounts for the remaining size. This is acceptable; the game page no longer carries Phaser inline.",
+      "vendor-rapier is 2081.49 KB — this is the Rapier physics WASM binary bundled as JS. It is a single non-splittable artifact. Exceeds 1 MB follow-up threshold.",
+      "vendor-drei is only 4.98 KB — Vite/Rollup is tree-shaking drei aggressively since only a handful of drei helpers are used. This is correct behavior.",
+      "vendor-phaser is 1478.41 KB (expected ~1800 KB) — likely some Phaser modules are tree-shaken.",
+      "Build warning count: still present for GamePage (519 KB), vendor-three (739 KB), vendor-phaser (1478 KB), vendor-rapier (2081 KB). The route chunk warnings (GamePage/Game3DPage) are largely resolved — warnings now originate from vendor chunks, which is the intended outcome. Game3DPage dropped from 2977 KB to 15 KB."
+    ]
+  },
+  "next_agent_suggestions": [
+    "vendor-rapier (2081 KB) exceeds 1 MB. Rapier WASM is a single binary blob — consider lazy-loading @react-three/rapier via dynamic import() at the Physics component level to defer load until the 3D scene mounts.",
+    "GamePage (519 KB) is 19 KB over the 500 KB target. Game scenes/systems could be dynamically imported per-scene if needed, but this is a low-priority follow-up."
+  ]
+}

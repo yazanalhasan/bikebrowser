@@ -10,7 +10,21 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
-    emptyOutDir: true
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('phaser')) return 'vendor-phaser';
+            if (id.includes('@react-three/rapier')) return 'vendor-rapier';
+            if (id.includes('@react-three/drei')) return 'vendor-drei';
+            if (id.includes('@react-three/fiber')) return 'vendor-r3f';
+            if (id.includes('three')) return 'vendor-three';
+            if (id.includes('react-router')) return 'vendor-router';
+          }
+        },
+      },
+    },
   },
   server: {
     host: true,

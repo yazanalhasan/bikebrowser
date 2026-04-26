@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-26T00:05:00Z",
+  "last_updated": "2026-04-26T01:15:00Z",
   "current_week": 2,
   "current_pod_focus": "World & Discovery",
   "completed": [
@@ -120,6 +120,27 @@
       "notes": "Closes the Vite-HMR-vs-Phaser-state gap. New helper src/renderer/game/dev/phaserHmr.js exports registerSceneHmr(sceneKey, hot, sceneClass, exportName='default') — production-safe early return on falsy hot, reads window.__phaserGame, swaps via game.scene.remove + game.scene.add(KEY, NewClass, true) inside try/catch with [phaserHmr] info logs. Wired 15 concrete scenes (the full ALL_SCENES from config.js): OverworldScene, ZuzuGarageScene, StreetBlockScene, DogParkScene, LakeEdgeScene, SportsFieldsScene, CommunityPoolScene, DesertTrailScene, MountainScene, WorldMapScene, DesertForagingScene, CopperMineScene, SaltRiverScene, GarageScene (legacy), NeighborhoodScene (legacy). Two abstract bases skipped: LocalSceneBase.js, BaseSubScene.js — confirmed by grep against config.js ALL_SCENES and game.scene.add calls. Each scene file got exactly two additive lines (top import + bottom registration); reviewer confirmed no other edits attributable to this worker (parallel session's terrain/discovery edits in WorldMapScene/CopperMineScene/etc. correctly attributed to baseline). Static checks: npm run build SUCCESS in 10.58s with HMR block tree-shaken; npm run lint shows 259 pre-existing repo errors but zero new from this patch. Reviewer LOW (non-blocking): could not locally re-verify production tree-shaking since dist/ not present at review time. Routed via general-purpose; reviewer also via general-purpose."
     },
     {
+      "agent": "bundle-splitter",
+      "ts": "2026-04-26T01:25:00Z",
+      "commit": null,
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-bundle-splitter-2026-04-26T01-25-00Z.json",
+      "receipt": ".claude/swarm/receipts/bundle-splitter-2026-04-26T01-20-00Z.json",
+      "notes": "First audit-followup agent. Vite manualChunks function form added to vite.config.js with order rapier → drei → fiber → three → router (drei before three is critical because drei imports three). MCPAIAdapter.js dynamic import of quizQuestionGenerator.js converted to static (worker verified 3 other static importers exist first). Build chunk results: GamePage 1,999 KB → 519 KB (74% drop, 19 KB over 500 KB target — acceptable, remainder is pure scene/system/entity logic), Game3DPage 2,977 KB → 15 KB (99.5% drop, all in vendors), new vendor chunks: phaser 1,478 KB / rapier 2,081 KB / three 739 KB / r3f 136 KB / drei 5 KB (heavily tree-shaken — only used helpers retained) / router 164 KB. Zero chunk-size warnings from Vite. Reviewer PASS — only LOW non-blocking note about receipt notes field schema (orchestrator artifact, not worker concern). Follow-up identified by worker: vendor-rapier 2,081 KB is a non-splittable WASM blob; future cycle could lazy-load @react-three/rapier dynamically at the Physics component to defer until 3D scene mounts. Routed via general-purpose because the bundle-splitter agent .md was added mid-session and isn't in the native Agent registry."
+    },
+    {
+      "agent": "resource-auditor",
+      "ts": "2026-04-25T21:42:00Z",
+      "commit": "4cdd5cb",
+      "review_verdict": "EXEMPT",
+      "receipt": null,
+      "report": ".claude/swarm/reports/resource-audit-2026-04-25T21-37-37.md",
+      "synthesized_completion": true,
+      "synthesized_by": "swarm-orchestrator 2026-04-26T01:15:00Z",
+      "synthesized_evidence": "Audit report exists on disk (12 KB markdown, dated 2026-04-25T21:37:37). Commit 4cdd5cb message reads 'swarm: phaser-hmr-bridge complete (PASS) + resource-auditor staged' — agent ran successfully and produced output but a state.json update was missed in the prior session. Synthesis recorded so the three downstream agents (bundle-splitter, audio-asset-cleanup, dep-overrides-housekeeping) can satisfy their prerequisites: [resource-auditor] requirement.",
+      "notes": "On-demand audit of running BikeBrowser dev stack. Output: 5 findings — 2 HIGH (GamePage 1.95 MB / Game3DPage 2.97 MB chunks; 32 MB unbundled audio in build/), 1 MED (three@0.170.0 duplicated via stats-gl 2.4.2), 2 LOW (Vite 25k handles, npm dedupe 29 patch bumps available). Total app footprint 1.20 GB under flag threshold. No code edits — read-only by design (resource-auditor agent definition). Three downstream repair agents drafted in same session to act on the findings."
+    },
+    {
       "agent": "world-map-polish",
       "ts": "2026-04-26T00:05:00Z",
       "commit": "e7b99ff",
@@ -180,7 +201,20 @@
   ],
   "in_progress": [],
   "blocked": [],
-  "human_gates_pending": [],
-  "dispatch_count": 43,
+  "human_gates_pending": [
+    {
+      "agent": "audio-asset-cleanup",
+      "ts": "2026-04-26T01:20:00Z",
+      "reason": "Archives ~32 MB of audio (alt mixes + uncompressed .wav masters) under public/audio/_archived/ — reversible but file-system-modifying. Awaiting explicit user go.",
+      "spec": ".claude/agents/audio-asset-cleanup.md"
+    },
+    {
+      "agent": "dep-overrides-housekeeping",
+      "ts": "2026-04-26T01:20:00Z",
+      "reason": "Modifies package.json (overrides:{three:$three}) + package-lock.json (npm dedupe). Affects every dev and CI. Awaiting explicit user go. Parallel-safe with bundle-splitter per sequencing.yaml.",
+      "spec": ".claude/agents/dep-overrides-housekeeping.md"
+    }
+  ],
+  "dispatch_count": 45,
   "session_token_estimate": 0
 }

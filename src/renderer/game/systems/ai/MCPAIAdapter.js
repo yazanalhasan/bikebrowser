@@ -27,6 +27,7 @@ import {
 import {
   checkTrigger, generateDeterministicQuest, buildQuestGenerationPrompt,
 } from './questGenerator.js';
+import { validateAIQuestion } from '../education/quizQuestionGenerator.js';
 
 // ── Per-type cooldowns ───────────────────────────────────────────────────────
 
@@ -178,7 +179,6 @@ export default class MCPAIAdapter {
     const result = await this.request('quiz_question', payload);
     // Validate AI response structure
     if (result.source === 'ai') {
-      const { validateAIQuestion } = await import('../education/quizQuestionGenerator.js');
       const validated = validateAIQuestion(result);
       if (validated) return validated;
       // AI returned garbage — fall back
