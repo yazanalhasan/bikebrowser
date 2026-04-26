@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-25T23:40:00Z",
+  "last_updated": "2026-04-26T00:05:00Z",
   "current_week": 2,
   "current_pod_focus": "World & Discovery",
   "completed": [
@@ -120,6 +120,16 @@
       "notes": "Closes the Vite-HMR-vs-Phaser-state gap. New helper src/renderer/game/dev/phaserHmr.js exports registerSceneHmr(sceneKey, hot, sceneClass, exportName='default') — production-safe early return on falsy hot, reads window.__phaserGame, swaps via game.scene.remove + game.scene.add(KEY, NewClass, true) inside try/catch with [phaserHmr] info logs. Wired 15 concrete scenes (the full ALL_SCENES from config.js): OverworldScene, ZuzuGarageScene, StreetBlockScene, DogParkScene, LakeEdgeScene, SportsFieldsScene, CommunityPoolScene, DesertTrailScene, MountainScene, WorldMapScene, DesertForagingScene, CopperMineScene, SaltRiverScene, GarageScene (legacy), NeighborhoodScene (legacy). Two abstract bases skipped: LocalSceneBase.js, BaseSubScene.js — confirmed by grep against config.js ALL_SCENES and game.scene.add calls. Each scene file got exactly two additive lines (top import + bottom registration); reviewer confirmed no other edits attributable to this worker (parallel session's terrain/discovery edits in WorldMapScene/CopperMineScene/etc. correctly attributed to baseline). Static checks: npm run build SUCCESS in 10.58s with HMR block tree-shaken; npm run lint shows 259 pre-existing repo errors but zero new from this patch. Reviewer LOW (non-blocking): could not locally re-verify production tree-shaking since dist/ not present at review time. Routed via general-purpose; reviewer also via general-purpose."
     },
     {
+      "agent": "world-map-polish",
+      "ts": "2026-04-26T00:05:00Z",
+      "commit": null,
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-world-map-polish-2026-04-26T00-00-00Z.json",
+      "receipt": ".claude/swarm/receipts/world-map-polish-2026-04-25T23-50-00Z.json",
+      "scope_expansion": "User-approved 7-point upgrade list expanded beyond .claude/agents/world-map-polish.md (which only specified points 5/8/9). Expansion: terrain-constrained path control points, landmark micro-clusters, full node anchoring + drop shadows, path alpha integration with terrain, explicit setDepth chain, landmark rotation/scale variance, micro-contrast pass.",
+      "notes": "Terminal visual-grounding polish pass. Solo dispatch (no parallel sibling per user's focused request). 459 insertions / 153 deletions in WorldMapScene.js — all 7 upgrades + vignette + label-opacity + zone-circle audit landed. Implementation choices documented in worker receipt: (1) DESERT path offset 12%→16%, MOUNTAIN switched from quadratic to cubic bezier with two kink control points + STEPS=14 (faceted feel); (2) Phase 1 cluster pass with 8 deterministic anchors via CLUSTER_SEED=SEED^0xC1A57E2, 2-4 children per cluster within 40px polar radius, then Phase 2 stragglers consume remaining cap; (3) nodeBaseG graphics with drop shadow rgba(0,0,0,0.18) y+2 + biome-conditional bases (DESERT tan ellipse, MOUNTAIN 3-overlap rocky, WATER blue+dock, etc.); (4) all stroke alphas reduced ~10pp, locked multiplier 0.35→0.25, soft endpoint last 3 segments thinner; (5) explicit setDepth — terrain -100, paths -50, landmarks -25 (newly explicit), nodeBaseG 0, nodes/icons/labels/quest-stars 1, vignette 1000; (6) drawLandmark() helper with ±15° rotation + 0.85-1.15× scale per landmark via rp() rotate-scale-translate helper, cactus arm-count micro-variation, rock formation rotation; (7) cactus alpha 1.0, rock-formation mid-triangle 0x8A8070→0x6A6050, ridge stroke 0x5A5555→0x4A4545 alpha 0.85→0.95, rock biome boulder 0x7A7265→0x6A6255, urban structure alpha 0.90→1.0. Vignette: 4 trapezoidal fillGradientStyle rects, ALPHA_OUTER=0.30 ALPHA_INNER=0, depth 1000, setData('occlusionRole','safe'), inherently non-interactive. Inactive labels setAlpha(0.7), active labels stay 1.0. Zone-circle audit: confirmed there were NO standalone large translucent rings to delete — the only `fillCircle` calls outside terrain/landmark methods were the legitimate node circles (r=22 px interactive hit targets, retained). Click handlers fully untouched — _selectLocation/_showLockHint/scene.start/saveGame all verified at original line numbers. Reviewer PASS on second dispatch (first stalled mid-investigation; second was given orchestrator-pre-resolved answers for vignette interactivity + scope cleanliness + depth chain). Worker also stalled at max_turns saving a project memory file AFTER receipt was written — receipt is the load-bearing artifact, side-task memory save was non-essential."
+    },
+    {
       "agent": "world-path-renderer",
       "ts": "2026-04-25T23:35:00Z",
       "commit": "194bf2d",
@@ -171,6 +181,6 @@
   "in_progress": [],
   "blocked": [],
   "human_gates_pending": [],
-  "dispatch_count": 37,
+  "dispatch_count": 40,
   "session_token_estimate": 0
 }

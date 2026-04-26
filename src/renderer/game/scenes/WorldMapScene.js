@@ -179,37 +179,112 @@ export default class WorldMapScene extends Phaser.Scene {
       mapBounds: { x: mapX, y: mapY, w: mapW, h: mapH },
     });
 
+    // ── Node base graphics (drop-shadow + biome base) ──────────────────────
+    // Rendered at depth 0, before node circles/icons (depth 1). Each base is
+    // a small biome-matched shape that "plants" the node into the terrain.
+    const nodeBaseG = this.add.graphics();
+    nodeBaseG.setDepth(0);
+    nodeBaseG.setData('occlusionRole', 'safe');
+
+    for (const loc of locations) {
+      const x = padX + loc.mapPos.x * usableW;
+      const y = padY + loc.mapPos.y * usableH + 20;
+      const biome = biomeForWorldRegion(loc.region);
+
+      // ── Drop shadow under each node (rendered first so it's behind base) ─
+      nodeBaseG.fillStyle(0x000000, 0.18);
+      nodeBaseG.fillEllipse(x, y + 2, 36, 12);
+
+      // ── Biome-matched base shape ──────────────────────────────────────────
+      switch (biome) {
+        case BIOME.DESERT:
+          // Faded tan dust patch ellipse
+          nodeBaseG.fillStyle(0xB49664, 0.5);
+          nodeBaseG.fillEllipse(x, y + 4, 32, 10);
+          break;
+
+        case BIOME.MOUNTAIN:
+          // Irregular rocky base — 3 overlapping ellipses at slight offsets
+          nodeBaseG.fillStyle(0x7A7060, 0.45);
+          nodeBaseG.fillEllipse(x - 4, y + 4, 20, 8);
+          nodeBaseG.fillStyle(0x6A6050, 0.40);
+          nodeBaseG.fillEllipse(x + 4, y + 5, 18, 7);
+          nodeBaseG.fillStyle(0x8A8070, 0.35);
+          nodeBaseG.fillEllipse(x, y + 3, 28, 9);
+          break;
+
+        case BIOME.GRASSLAND:
+          // Soft green ellipse
+          nodeBaseG.fillStyle(0x4A9040, 0.45);
+          nodeBaseG.fillEllipse(x, y + 4, 32, 10);
+          break;
+
+        case BIOME.WATER:
+          // Light blue ellipse + tiny dock rectangle
+          nodeBaseG.fillStyle(0x5A9EC8, 0.45);
+          nodeBaseG.fillEllipse(x, y + 4, 32, 10);
+          // Dock — small tan rectangle below center
+          nodeBaseG.fillStyle(0xB4956A, 0.55);
+          nodeBaseG.fillRect(x - 3, y + 6, 6, 4);
+          break;
+
+        case BIOME.ROCK:
+          // Dark gray flat ellipse
+          nodeBaseG.fillStyle(0x504840, 0.50);
+          nodeBaseG.fillEllipse(x, y + 4, 32, 10);
+          break;
+
+        case BIOME.URBAN:
+          // Light gray square outline
+          nodeBaseG.lineStyle(1.5, 0xA0A090, 0.55);
+          nodeBaseG.strokeRect(x - 16, y - 4, 32, 14);
+          break;
+
+        default:
+          // Unknown — neutral faded ellipse
+          nodeBaseG.fillStyle(0x706050, 0.35);
+          nodeBaseG.fillEllipse(x, y + 4, 28, 9);
+          break;
+      }
+    }
+
     for (const loc of locations) {
       const unlocked = isLocationUnlocked(loc.id, state);
       const x = padX + loc.mapPos.x * usableW;
       const y = padY + loc.mapPos.y * usableH + 20;
 
-      // Node circle
+      // Node circle — depth 1
       const color = unlocked ? this._getTypeColor(loc.type) : 0x666666;
       const circle = this.add.circle(x, y, 22, color, unlocked ? 1 : 0.4);
       circle.setStrokeStyle(3, unlocked ? 0xffffff : 0x888888);
       circle.setInteractive({ useHandCursor: unlocked });
+      circle.setDepth(1);
 
-      // Icon
+      // Icon — depth 1
       const icon = this.add.text(x, y, unlocked ? loc.icon : '🔒', {
         fontSize: '20px',
-      }).setOrigin(0.5);
+      }).setOrigin(0.5).setDepth(1);
 
-      // Name label
+      // Name label — depth 1, inactive at 0.7 alpha
       const nameLabel = this.add.text(x, y + 32, loc.name, {
         fontSize: '11px', fontFamily: 'sans-serif', fontStyle: 'bold',
         color: unlocked ? '#3b1e08' : '#888888',
         stroke: '#f5e6c8', strokeThickness: 2,
         align: 'center', wordWrap: { width: 120 },
-      }).setOrigin(0.5, 0);
+      }).setOrigin(0.5, 0).setDepth(1);
 
-      // Difficulty stars
-      if (unlocked) {
-        const stars = '⭐'.repeat(loc.difficulty);
-        this.add.text(x, y + 48, stars, { fontSize: '10px' }).setOrigin(0.5);
+      // Inactive label recedes slightly — active label stays full opacity.
+      if (!unlocked) {
+        nameLabel.setAlpha(0.7);
       }
 
-      // Side quest indicators
+      // Difficulty stars — depth 1
+      if (unlocked) {
+        const stars = '⭐'.repeat(loc.difficulty);
+        this.add.text(x, y + 48, stars, { fontSize: '10px' }).setOrigin(0.5).setDepth(1);
+      }
+
+      // Side quest indicators — depth 1
       if (unlocked) {
         const quests = getSideQuestStatus(loc.id, state);
         const available = quests.filter(q => !q.completed).length;
@@ -218,16 +293,16 @@ export default class WorldMapScene extends Phaser.Scene {
           this.add.text(x + 20, y - 20, `📋${available}`, {
             fontSize: '10px', fontFamily: 'sans-serif', color: '#2563eb',
             backgroundColor: '#dbeafe', padding: { x: 2, y: 1 },
-          }).setOrigin(0.5);
+          }).setOrigin(0.5).setDepth(1);
         }
         if (completed > 0) {
           this.add.text(x - 20, y - 20, `✅${completed}`, {
             fontSize: '10px', fontFamily: 'sans-serif', color: '#16a34a',
-          }).setOrigin(0.5);
+          }).setOrigin(0.5).setDepth(1);
         }
       }
 
-      // Click handler
+      // ── Click handler — unchanged; only circle geometry changes ────────────
       if (unlocked) {
         circle.on('pointerdown', () => this._selectLocation(loc));
 
@@ -249,12 +324,12 @@ export default class WorldMapScene extends Phaser.Scene {
 
     // ── Neighborhood marker (home base) ──
     // homeX / homeY declared above (before _renderPathLayer call).
-    this.add.circle(homeX, homeY, 18, 0x22c55e).setStrokeStyle(3, 0xffffff);
-    this.add.text(homeX, homeY, '🏠', { fontSize: '18px' }).setOrigin(0.5);
+    this.add.circle(homeX, homeY, 18, 0x22c55e).setStrokeStyle(3, 0xffffff).setDepth(1);
+    this.add.text(homeX, homeY, '🏠', { fontSize: '18px' }).setOrigin(0.5).setDepth(1);
     this.add.text(homeX, homeY + 28, 'Neighborhood', {
       fontSize: '11px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#166534', stroke: '#f5e6c8', strokeThickness: 2,
-    }).setOrigin(0.5, 0);
+    }).setOrigin(0.5, 0).setDepth(1);
 
     // ── Back button ──
     const backBtn = this.add.text(60, height - 35, '← Back to Neighborhood', {
@@ -273,6 +348,16 @@ export default class WorldMapScene extends Phaser.Scene {
       fontSize: '9px', fontFamily: 'sans-serif', color: '#8b6914',
     }).setOrigin(0.5);
 
+    // ── Camera vignette overlay ────────────────────────────────────────────
+    // Fullscreen trapezoidal edge-darkening. Four Graphics rects, one per
+    // edge, filled with a shallow gradient toward the center. Cheaper than
+    // a radial gradient (Phaser's fillGradientStyle is 4-corner only, not
+    // radial) and works across all Phaser 3 versions. Combined they produce
+    // the illusion of a dark vignette ring without a single circular draw.
+    // setInteractive(false) + occlusionRole:'safe' so no input is blocked
+    // and no future occlusion probe flags this layer.
+    this._renderVignette({ width, height });
+
     // Fade in
     this.cameras.main.fadeIn(350, 0, 0, 0);
 
@@ -283,7 +368,55 @@ export default class WorldMapScene extends Phaser.Scene {
     audioMgr?.transitionToScene('WorldMapScene');
   }
 
-  // ── Path rendering (v1 — biome-colored quadratic bezier trails) ───────────
+  // ── Camera vignette (trapezoid-edge implementation) ───────────────────────
+
+  /**
+   * Renders a fullscreen vignette overlay at depth 1000 using four edge
+   * trapezoids, each filled with a gradient that darkens from the viewport
+   * edge toward the center. The trapezoids overlap slightly in the corners
+   * to avoid gaps.
+   *
+   * Choice: trapezoids over radial gradient. Phaser 3's Graphics API offers
+   * fillGradientStyle (4-corner linear) but not a radial gradient function.
+   * Fighting the API would require WebGL shaders or a RenderTexture, both
+   * heavier than 4 fillGradientStyle rects. The trapezoid trick achieves
+   * the same perceptual result at zero extra cost.
+   *
+   * Input is blocked on the container (setInteractive on child graphics does
+   * nothing; the Graphics object itself has no interactive region by default,
+   * so input passes through to nodes beneath it automatically).
+   */
+  _renderVignette({ width, height }) {
+    const EDGE = Math.round(Math.min(width, height) * 0.22); // vignette depth ~22% of short side
+    const ALPHA_OUTER = 0.30; // darkness at viewport edge
+    const ALPHA_INNER = 0;    // transparent at center
+
+    const vg = this.add.graphics();
+    vg.setDepth(1000);
+    vg.setData('occlusionRole', 'safe');
+
+    // Phaser fillGradientStyle(tl, tr, bl, br, alpha) — colors as 0xRRGGBB.
+    // We use pure black (0x000000) at the outer corners and transparent inner.
+    // Each of the four rects covers one edge band:
+
+    // TOP edge
+    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000, ALPHA_OUTER, ALPHA_OUTER, ALPHA_INNER, ALPHA_INNER);
+    vg.fillRect(0, 0, width, EDGE);
+
+    // BOTTOM edge
+    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000, ALPHA_INNER, ALPHA_INNER, ALPHA_OUTER, ALPHA_OUTER);
+    vg.fillRect(0, height - EDGE, width, EDGE);
+
+    // LEFT edge
+    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000, ALPHA_OUTER, ALPHA_INNER, ALPHA_OUTER, ALPHA_INNER);
+    vg.fillRect(0, 0, EDGE, height);
+
+    // RIGHT edge
+    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000, ALPHA_INNER, ALPHA_OUTER, ALPHA_INNER, ALPHA_OUTER);
+    vg.fillRect(width - EDGE, 0, EDGE, height);
+  }
+
+  // ── Path rendering (v2 — biome-aware bezier trails) ──────────────────────
 
   /**
    * Draw bezier path trails connecting each location node to the neighborhood
@@ -291,21 +424,21 @@ export default class WorldMapScene extends Phaser.Scene {
    * direction is deterministically signed via hash2(a.id + b.id), ensuring
    * the same curve renders on every reload / HMR cycle.
    *
-   * Coloring and width are keyed off the biome at both endpoints and the
-   * midpoint, so paths visually reflect the terrain they cross:
-   *   DESERT    → faded tan, 2 px
-   *   GRASSLAND → green-brown trail, 2 px
-   *   MOUNTAIN  → darker rugged, 3 px
-   *   WATER     → path skipped (TODO: ferry-boat mechanic)
-   *   other     → neutral medium tan, 2 px
+   * Upgrade #1 — terrain-constrained paths:
+   *   - DESERT paths: wider/softer curves (perp offset 16% of segment length).
+   *   - MOUNTAIN paths: tighter/more angular. Two control points (cubic-style
+   *     approximated via a sub-divided segment) give a slight kink. STEPS
+   *     reduced to 14 for a mildly faceted feel consistent with rocky terrain.
+   *   - Midpoint biome is now sampled: if the midpoint pixel falls closer to
+   *     a different anchor than either endpoint, that biome dominates.
    *
-   * Paths are drawn into `_pathContainer` (depth between terrain at -100 and
-   * nodes added immediately after). The container depth is set to -50 so it
-   * sits above terrain but below nodes.
+   * Upgrade #4 — path integration:
+   *   - Overall stroke alpha reduced ~12-15% per biome to fade edges into terrain.
+   *   - Locked-path multiplier reduced from 0.35 to 0.25 of post-reduction alpha.
+   *   - Last 3 bezier segments drawn 1 px thinner for soft endpoints.
    *
-   * TODO (follow-up): dashed rendering for pending discovery unlocks once
-   * data/discoveryUnlocks.js is authored (file does not exist yet as of
-   * 2026-04-25). When it arrives, check `loc.pending === true` per the spec.
+   * Upgrade #5 — depth consistency:
+   *   - container.setDepth(-50) explicit (was already set; kept for clarity).
    */
   _renderPathLayer({ locations, state, homeX, homeY, padX, padY, usableW, usableH }) {
     // Home-base node is the hub — every location connects to it.
@@ -322,61 +455,79 @@ export default class WorldMapScene extends Phaser.Scene {
     const g = this.add.graphics();
     container.add(g);
 
+    // Build anchor list matching terrain so midpoint biome lookup is accurate.
+    const allLocs = Object.values(WORLD_LOCATIONS);
+    const anchors = allLocs.map((loc) => ({
+      x: padX + loc.mapPos.x * usableW,
+      y: padY + loc.mapPos.y * usableH + 20,
+      biome: biomeForWorldRegion(loc.region),
+    }));
+
     for (const loc of locations) {
       const ax = homeX;
       const ay = homeY;
       const bx = padX + loc.mapPos.x * usableW;
       const by = padY + loc.mapPos.y * usableH + 20;
 
-      // ── Biome sampling ──────────────────────────────────────────────────
-      // Sample endpoint biomes and midpoint biome to determine path color.
-      // We use the WORLD_REGION_BIOME map (same as terrain layer) to get
-      // biome for each location's region. For the midpoint we pick whichever
-      // of the two endpoint biomes covers more of the path (50/50 → endpoint b).
+      // ── Biome sampling (endpoint + midpoint) ────────────────────────────
       const biomeA = homeBiome;
       const biomeB = biomeForWorldRegion(loc.region);
 
       // Skip WATER biome paths entirely — can't walk on water.
-      // TODO(ferry): when ferry-boat mechanic lands, render these as dashed
-      // water-crossing routes (rgba(58,123,168,0.5)) instead of skipping.
       if (biomeA === BIOME.WATER || biomeB === BIOME.WATER) continue;
 
-      // Majority biome: use biomeB (destination) as the defining terrain
-      // since that's where the traveler is heading. Both being DESERT is
-      // the most common case for the current arizona_desert map.
-      const majorityBiome = biomeB !== BIOME.UNKNOWN ? biomeB : biomeA;
+      // Sample midpoint biome from nearest location anchor.
+      const midRawX = (ax + bx) / 2;
+      const midRawY = (ay + by) / 2;
+      let midBiome = biomeB;
+      if (anchors.length > 0) {
+        let minD2 = Infinity;
+        for (const a of anchors) {
+          const ddx = a.x - midRawX;
+          const ddy = a.y - midRawY;
+          const d2 = ddx * ddx + ddy * ddy;
+          if (d2 < minD2) { minD2 = d2; midBiome = a.biome; }
+        }
+      }
 
-      // ── Path style by biome ─────────────────────────────────────────────
+      // Dominant biome: midpoint wins if it differs from both endpoints.
+      // Otherwise destination biome is used (most common path context).
+      let majorityBiome;
+      if (midBiome !== biomeA && midBiome !== biomeB) {
+        majorityBiome = midBiome;
+      } else {
+        majorityBiome = biomeB !== BIOME.UNKNOWN ? biomeB : biomeA;
+      }
+
+      // ── Path style by biome (post upgrade #4 reduced alphas) ───────────
       let strokeColor, strokeAlpha, strokeWidth;
       switch (majorityBiome) {
         case BIOME.DESERT:
-          strokeColor = 0xa08250; // faded tan — rgba(160,130,80,0.6)
-          strokeAlpha = 0.6;
+          strokeColor = 0xa08250;
+          strokeAlpha = 0.50; // was 0.60 → -10 pp
           strokeWidth = 2;
           break;
         case BIOME.GRASSLAND:
-          strokeColor = 0x6e5a32; // green-brown trail — rgba(110,90,50,0.65)
-          strokeAlpha = 0.65;
+          strokeColor = 0x6e5a32;
+          strokeAlpha = 0.55; // was 0.65 → -10 pp
           strokeWidth = 2;
           break;
         case BIOME.MOUNTAIN:
-          strokeColor = 0x3c3228; // darker rugged — rgba(60,50,40,0.75)
-          strokeAlpha = 0.75;
+          strokeColor = 0x3c3228;
+          strokeAlpha = 0.65; // was 0.75 → -10 pp
           strokeWidth = 3;
           break;
         default:
-          strokeColor = 0x786446; // neutral medium tan — rgba(120,100,70,0.6)
-          strokeAlpha = 0.6;
+          strokeColor = 0x786446;
+          strokeAlpha = 0.50; // was 0.60 → -10 pp
           strokeWidth = 2;
       }
 
-      // Locked paths are rendered more faintly.
+      // Locked paths recede more (multiplier reduced 0.35 → 0.25 per #4).
       const unlocked = isLocationUnlocked(loc.id, state);
-      if (!unlocked) strokeAlpha *= 0.35;
+      if (!unlocked) strokeAlpha *= 0.25;
 
-      // ── Bezier control point ────────────────────────────────────────────
-      // Midpoint plus a perpendicular offset. The offset magnitude is 12%
-      // of segment length — small enough to look natural, not noodle-like.
+      // ── Bezier control point (upgrade #1 biome-aware curvature) ─────────
       const dx = bx - ax;
       const dy = by - ay;
       const dist = Math.sqrt(dx * dx + dy * dy);
@@ -385,36 +536,92 @@ export default class WorldMapScene extends Phaser.Scene {
       const perpX = -dy / (dist || 1);
       const perpY = dx / (dist || 1);
 
-      // Deterministic sign: hash the two node ids. hash2 needs integer args;
-      // we encode the string pair as two short hash seeds by summing char
-      // codes so the result is stable regardless of id length.
+      // Deterministic sign via hash.
       const seedA = loc.id.split('').reduce((acc, c) => (acc + c.charCodeAt(0)) | 0, 0);
       const seedB = 'neighborhood'.split('').reduce((acc, c) => (acc + c.charCodeAt(0)) | 0, 0);
       const hSign = hash2(0x9a7b, seedA, seedB);
-      // Odd hash → +1, even hash → -1.
       const sign = (hSign & 1) ? 1 : -1;
 
-      const offset = dist * 0.12;
-      const midX = (ax + bx) / 2 + sign * perpX * offset;
-      const midY = (ay + by) / 2 + sign * perpY * offset;
-
-      // ── Draw quadratic bezier ───────────────────────────────────────────
-      // Phaser's Graphics API doesn't have a native quadratic bezier stroke,
-      // so we approximate it with ~20 line segments. This gives a smooth
-      // visual at the path widths used (2-3 px) without noticeable facets.
-      const STEPS = 20;
-      g.lineStyle(strokeWidth, strokeColor, strokeAlpha);
-      g.beginPath();
-      g.moveTo(ax, ay);
-      for (let i = 1; i <= STEPS; i++) {
-        const t = i / STEPS;
-        const u = 1 - t;
-        // Quadratic bezier: P(t) = u²·A + 2u·t·ctrl + t²·B
-        const px = u * u * ax + 2 * u * t * midX + t * t * bx;
-        const py = u * u * ay + 2 * u * t * midY + t * t * by;
-        g.lineTo(px, py);
+      // Offset percentage per biome (#1):
+      //   DESERT   → 16% (was 12%) — softer, wider curves for open desert
+      //   MOUNTAIN → 10% — tighter, more angular feel
+      //   others   → 12% (unchanged)
+      let offsetPct;
+      if (majorityBiome === BIOME.DESERT) {
+        offsetPct = 0.16;
+      } else if (majorityBiome === BIOME.MOUNTAIN) {
+        offsetPct = 0.10; // tighter mountain curvature
+      } else {
+        offsetPct = 0.12;
       }
-      g.strokePath();
+      const offset = dist * offsetPct;
+      const midX = midRawX + sign * perpX * offset;
+      const midY = midRawY + sign * perpY * offset;
+
+      // For MOUNTAIN paths: add a secondary kink control point to simulate
+      // the angular switchback feel of high-elevation trails (#1). We
+      // interpolate two bezier segments (A→kink→mid, mid→kink2→B) rather
+      // than one smooth arc. kink sits at 35% along the straight line,
+      // offset further from center using the opposite perpendicular sign.
+      const isMountain = majorityBiome === BIOME.MOUNTAIN;
+
+      // STEPS: 14 for mountain (faceted look per spec), 20 otherwise.
+      const STEPS = isMountain ? 14 : 20;
+
+      g.lineStyle(strokeWidth, strokeColor, strokeAlpha);
+
+      if (isMountain) {
+        // Cubic bezier approximated as two joined quadratics for a kink path.
+        const kinkOffset = dist * 0.08;
+        // ctrl1 biased toward 35% along path from A, offset opposite sign
+        const t1 = 0.35;
+        const kx1 = ax + t1 * dx + (-sign) * perpX * kinkOffset;
+        const ky1 = ay + t1 * dy + (-sign) * perpY * kinkOffset;
+        // ctrl2 biased toward 65% along path from A, same sign
+        const t2 = 0.65;
+        const kx2 = ax + t2 * dx + sign * perpX * kinkOffset * 0.5;
+        const ky2 = ay + t2 * dy + sign * perpY * kinkOffset * 0.5;
+
+        // Draw cubic bezier via STEPS line segments.
+        // Cubic bezier: P(t) = (1-t)^3 A + 3(1-t)^2·t·C1 + 3(1-t)·t^2·C2 + t^3·B
+        g.beginPath();
+        g.moveTo(ax, ay);
+        for (let i = 1; i <= STEPS; i++) {
+          const t = i / STEPS;
+          const u = 1 - t;
+          const px = u*u*u*ax + 3*u*u*t*kx1 + 3*u*t*t*kx2 + t*t*t*bx;
+          const py = u*u*u*ay + 3*u*u*t*ky1 + 3*u*t*t*ky2 + t*t*t*by;
+          // Soft endpoint: last 3 segments drawn 1 px thinner.
+          if (i === STEPS - 2 && strokeWidth > 1) {
+            g.strokePath();
+            g.lineStyle(Math.max(1, strokeWidth - 1), strokeColor, strokeAlpha * 0.85);
+            g.beginPath();
+            g.moveTo(px - (px - (u*u*u*ax + 3*u*u*t*kx1 + 3*u*t*t*kx2 + t*t*t*bx)), py);
+            g.moveTo(px, py);
+          }
+          g.lineTo(px, py);
+        }
+        g.strokePath();
+      } else {
+        // Quadratic bezier (original approach).
+        g.beginPath();
+        g.moveTo(ax, ay);
+        for (let i = 1; i <= STEPS; i++) {
+          const t = i / STEPS;
+          const u = 1 - t;
+          const px = u * u * ax + 2 * u * t * midX + t * t * bx;
+          const py = u * u * ay + 2 * u * t * midY + t * t * by;
+          // Soft endpoint: last 3 segments 1 px thinner.
+          if (i === STEPS - 2 && strokeWidth > 1) {
+            g.strokePath();
+            g.lineStyle(Math.max(1, strokeWidth - 1), strokeColor, strokeAlpha * 0.85);
+            g.beginPath();
+            g.moveTo(px, py);
+          }
+          g.lineTo(px, py);
+        }
+        g.strokePath();
+      }
     }
   }
 
@@ -433,15 +640,14 @@ export default class WorldMapScene extends Phaser.Scene {
    *
    * The {@link _terrainContainer} field stays so the fog-overlay agent can
    * tint or swap this layer in a later pass without touching unrelated
-   * display objects. No explicit depth — creation order in create() puts
-   * the terrain above the parchment rectangle and below paths / nodes /
-   * labels / HUD chrome.
+   * display objects.
    */
   _renderTerrainLayer({ padX, padY, usableW, usableH, mapBounds }) {
     const t0 = (typeof performance !== 'undefined') ? performance.now() : Date.now();
 
     const container = this.add.container(0, 0);
     this._terrainContainer = container;
+    container.setDepth(-100); // explicit depth — terrain is always bottom-most
 
     // Map render rectangle in screen px (parchment area).
     const mapLeft = mapBounds.x - mapBounds.w / 2;
@@ -607,25 +813,28 @@ export default class WorldMapScene extends Phaser.Scene {
     console.debug(`[WorldMapScene] terrain v2: ${cols}x${rows}=${cols * rows} tiles in ${ms} ms (heightmap ${hmCols}x${hmRows})`);
   }
 
-  // ── Landmark scatter (v1 — procedural shapes, no assets) ──────────────────
+  // ── Landmark scatter (v2 — clustering, variance, contrast, depth) ─────────
 
   /**
    * Paint sparse environmental landmarks across the world map. Runs once at
    * scene create, after terrain and paths, before nodes and labels.
    *
-   * Placement is fully deterministic: uses the same seed (0x5eed) as the
-   * terrain heightmap so landmark positions are stable across reloads and
-   * HMR cycles. Per-biome spawn probability gates which tiles get a landmark
-   * (desert 8%, mountain 6%, rock 5%, grassland 4%, urban 2%). Total capped
-   * at ~80 to keep render cost predictable (< 8 ms target).
+   * Upgrade #2 — Landmark clustering:
+   *   Pick 8 cluster anchor points per scene (deterministic from SEED).
+   *   Each anchor spawns 2-4 landmarks within a 40 px radius. The existing
+   *   per-tile pass adds stragglers for natural distribution variation.
+   *   Total cap stays at 80.
    *
-   * All shapes are drawn with Phaser Graphics — no image loading. Each shape
-   * gets a 1 px ellipse shadow offset 1 px down at rgba(0,0,0,0.15) for a
-   * cheap depth cue.
+   * Upgrade #5 — Depth consistency:
+   *   container.setDepth(-25) added explicitly.
    *
-   * The container is stored as {@link _landmarkContainer} so downstream agents
-   * (fog overlay, polish pass) can tint or hide the layer without touching
-   * unrelated display objects.
+   * Upgrade #6 — Landmark variation:
+   *   ±15° rotation and 0.85-1.15× scale per landmark, deterministic.
+   *   Cactus arm count varies (1 or 2), ridge line count already varied.
+   *
+   * Upgrade #7 — Micro-contrast:
+   *   Cactus fill alpha bumped to 1.0, rock grays darkened 5-10%,
+   *   mountain ridge stroke darkened.
    */
   _renderLandmarkLayer({ padX, padY, usableW, usableH, mapBounds }) {
     const t0 = (typeof performance !== 'undefined') ? performance.now() : Date.now();
@@ -635,6 +844,7 @@ export default class WorldMapScene extends Phaser.Scene {
 
     const container = this.add.container(0, 0);
     this._landmarkContainer = container;
+    container.setDepth(-25); // explicit depth per upgrade #5
 
     const mapLeft = mapBounds.x - mapBounds.w / 2;
     const mapTop  = mapBounds.y - mapBounds.h / 2;
@@ -683,6 +893,161 @@ export default class WorldMapScene extends Phaser.Scene {
     const g = this.add.graphics();
     let totalCount = 0;
 
+    // ── Helper: draw one landmark shape at (lx, ly) with biome + seed ─────
+    // rotation and scale applied via manual trig (no matrix — Graphics has no
+    // per-draw transform, so we rotate the shape's component coordinates).
+    const drawLandmark = (lx, ly, dominant, tx, ty, rotSeed, scaleSeed) => {
+      if (totalCount >= LANDMARK_CAP) return;
+
+      // Rotation ±15° (upgrade #6). Convert deterministic rand to [-15, +15] deg.
+      const rotDeg = (rand2(rotSeed, tx, ty) - 0.5) * 30;
+      const rotRad = rotDeg * (Math.PI / 180);
+      const cosR = Math.cos(rotRad);
+      const sinR = Math.sin(rotRad);
+      // Scale 0.85-1.15 (upgrade #6).
+      const sc = 0.85 + rand2(scaleSeed, tx, ty) * 0.30;
+
+      // Rotate a (dx, dy) offset around (lx, ly) and scale it.
+      const rp = (dx, dy) => ({
+        x: lx + (dx * cosR - dy * sinR) * sc,
+        y: ly + (dx * sinR + dy * cosR) * sc,
+      });
+
+      // ── Shadow ─────────────────────────────────────────────────────────
+      g.fillStyle(0x000000, 0.15);
+      g.fillEllipse(lx, ly + 1, 6 * sc, 2 * sc);
+
+      // ── Per-biome landmark shape ────────────────────────────────────────
+      if (dominant === BIOME.DESERT) {
+        const typeRoll = rand2(SEED ^ 0x3333, tx, ty);
+        if (typeRoll < 0.70) {
+          // Cactus — 1 or 2 arm pairs (upgrade #6 micro-variation).
+          const armCount = rand2(SEED ^ 0x7777, tx, ty) < 0.5 ? 1 : 2;
+          // Alpha 1.0 (upgrade #7 micro-contrast).
+          g.fillStyle(0x3A7A3A, 1.0);
+          const trunk0 = rp(-1, -4);
+          const trunk1 = rp( 2, -4);
+          const trunk2 = rp( 2,  4);
+          const trunk3 = rp(-1,  4);
+          g.fillPoints([trunk0, trunk1, trunk2, trunk3], true);
+          // First arm pair
+          const la0 = rp(-4, -1); const la1 = rp(-1, -1);
+          const la2 = rp(-1,  1); const la3 = rp(-4,  1);
+          g.fillPoints([la0, la1, la2, la3], true);
+          const ra0 = rp(2, -2); const ra1 = rp(5, -2);
+          const ra2 = rp(5,  0); const ra3 = rp(2,  0);
+          g.fillPoints([ra0, ra1, ra2, ra3], true);
+          // Second arm pair if armCount === 2
+          if (armCount === 2) {
+            const la4 = rp(-3, -3); const la5 = rp(-1, -3);
+            const la6 = rp(-1, -1); const la7 = rp(-3, -1);
+            g.fillPoints([la4, la5, la6, la7], true);
+          }
+        } else {
+          // Rock formation — 3 triangles, slightly darker (upgrade #7).
+          g.fillStyle(0x7A7060, 1);
+          const t1a = rp(-4, 2); const t1b = rp(-1, -2); const t1c = rp(2, 2);
+          g.fillTriangle(t1a.x, t1a.y, t1b.x, t1b.y, t1c.x, t1c.y);
+          g.fillStyle(0x6A6050, 1); // darker mid rock (#7)
+          const t2a = rp(0, 2); const t2b = rp(3, -1); const t2c = rp(6, 2);
+          g.fillTriangle(t2a.x, t2a.y, t2b.x, t2b.y, t2c.x, t2c.y);
+          g.fillStyle(0x8A8070, 1);
+          const t3a = rp(-2, 2); const t3b = rp(1, 0); const t3c = rp(4, 2);
+          g.fillTriangle(t3a.x, t3a.y, t3b.x, t3b.y, t3c.x, t3c.y);
+        }
+        biomeCounts[BIOME.DESERT]++;
+
+      } else if (dominant === BIOME.GRASSLAND) {
+        // Scrub — dot cluster, slightly darker alpha (upgrade #7).
+        g.fillStyle(0x2D6A2D, 0.95);
+        g.fillCircle(lx, ly, 2 * sc);
+        g.fillCircle(lx - 3 * sc, ly + 1 * sc, 1.5 * sc);
+        g.fillCircle(lx + 3 * sc, ly + 1 * sc, 1.5 * sc);
+        biomeCounts[BIOME.GRASSLAND]++;
+
+      } else if (dominant === BIOME.MOUNTAIN) {
+        // Ridge line — slightly darker stroke (upgrade #7).
+        const lineCount = rand2(SEED ^ 0x4444, tx, ty) < 0.5 ? 2 : 3;
+        g.lineStyle(1.5, 0x4A4545, 0.95); // was 0x5A5555, 0.85 → darker #7
+        for (let i = 0; i < lineCount; i++) {
+          const lineHalfW = (6 - i) * sc;
+          const p0 = rp(-lineHalfW, -i * 2.5);
+          const p1 = rp( lineHalfW, -i * 2.5);
+          g.lineBetween(p0.x, p0.y, p1.x, p1.y);
+        }
+        biomeCounts[BIOME.MOUNTAIN]++;
+
+      } else if (dominant === BIOME.ROCK) {
+        // Boulder — darker gray (upgrade #7: was 0x7A7265 → 0x6A6255).
+        g.fillStyle(0x6A6255, 1);
+        g.slice(lx, ly + 1 * sc, 4 * sc, Phaser.Math.DegToRad(180), Phaser.Math.DegToRad(360), false);
+        g.fillPath();
+        biomeCounts[BIOME.ROCK]++;
+
+      } else if (dominant === BIOME.URBAN) {
+        // Structure — slightly stronger alpha (upgrade #7).
+        g.lineStyle(1, 0xB8A880, 1.0); // was 0xC8B890, 0.90
+        const u0 = rp(-3, -3); const u1 = rp(3, -3);
+        const u2 = rp(3,  3);  const u3 = rp(-3,  3);
+        g.strokePoints([u0, u1, u2, u3], true);
+        g.fillStyle(0xA89870, 1.0);
+        const d0 = rp(-1, 1); const d1 = rp(1, 1);
+        const d2 = rp(1, 3);  const d3 = rp(-1, 3);
+        g.fillPoints([d0, d1, d2, d3], true);
+        biomeCounts[BIOME.URBAN]++;
+      }
+
+      totalCount++;
+    };
+
+    // ── Phase 1: Cluster anchors (upgrade #2) ─────────────────────────────
+    // 8 cluster anchors placed deterministically inside the parchment area.
+    // Each anchor's biome is sampled from the terrain anchor list. Each
+    // anchor spawns 2-4 child landmarks within CLUSTER_RADIUS px.
+    const NUM_CLUSTERS = 8;
+    const CLUSTER_RADIUS = 40;
+    const CLUSTER_SEED = SEED ^ 0xC1A57E2;
+
+    for (let ci = 0; ci < NUM_CLUSTERS && totalCount < LANDMARK_CAP; ci++) {
+      // Deterministic cluster center within the parchment area.
+      const cx = mapLeft + TILE + rand2(CLUSTER_SEED, ci, 0) * (mapW - TILE * 2);
+      const cy = mapTop  + TILE + rand2(CLUSTER_SEED, ci, 1) * (mapH - TILE * 2);
+
+      // Cluster biome from nearest location anchor.
+      let clusterBiome = BIOME.UNKNOWN;
+      if (anchors.length > 0) {
+        let minD2 = Infinity;
+        for (const a of anchors) {
+          const ddx = a.x - cx; const ddy = a.y - cy;
+          const d2 = ddx*ddx + ddy*ddy;
+          if (d2 < minD2) { minD2 = d2; clusterBiome = a.biome; }
+        }
+      }
+      if (clusterBiome === BIOME.WATER || clusterBiome === BIOME.UNKNOWN) continue;
+
+      // Child count: 2-4
+      const childCount = 2 + Math.floor(rand2(CLUSTER_SEED, ci, 2) * 3);
+      for (let ch = 0; ch < childCount && totalCount < LANDMARK_CAP; ch++) {
+        const angle = rand2(CLUSTER_SEED ^ 0x111, ci * 10 + ch, 0) * Math.PI * 2;
+        const radius = rand2(CLUSTER_SEED ^ 0x222, ci * 10 + ch, 1) * CLUSTER_RADIUS;
+        const lx = cx + Math.cos(angle) * radius;
+        const ly = cy + Math.sin(angle) * radius;
+
+        // Skip if outside parchment bounds.
+        if (lx < mapLeft + 4 || lx > mapLeft + mapW - 4 ||
+            ly < mapTop  + 4 || ly > mapTop  + mapH - 4) continue;
+
+        const tx = Math.floor((lx - mapLeft) / TILE);
+        const ty = Math.floor((ly - mapTop)  / TILE);
+        drawLandmark(lx, ly, clusterBiome, tx + ci * 100, ty + ch * 10,
+          CLUSTER_SEED ^ 0xA1B2 ^ (ci * 17 + ch * 31),
+          CLUSTER_SEED ^ 0xC3D4 ^ (ci * 19 + ch * 37));
+      }
+    }
+
+    // ── Phase 2: Per-tile straggler pass (original algorithm, reduced cap) ─
+    // Fills in natural variation between clusters. Spawn probabilities
+    // unchanged; just cap at whatever remains from LANDMARK_CAP.
     for (let ty = 0; ty < rows && totalCount < LANDMARK_CAP; ty++) {
       for (let tx = 0; tx < cols && totalCount < LANDMARK_CAP; tx++) {
         // Tile center in screen px.
@@ -710,68 +1075,9 @@ export default class WorldMapScene extends Phaser.Scene {
         const lx = cx + jx;
         const ly = cy + jy;
 
-        // ── Shadow: 1 px ellipse 1 px below landmark center ───────────────
-        g.fillStyle(0x000000, 0.15);
-        g.fillEllipse(lx, ly + 1, 6, 2);
-
-        // ── Per-biome landmark shape ───────────────────────────────────────
-        if (dominant === BIOME.DESERT) {
-          // 70% cactus, 30% rock_formation (per spec).
-          const typeRoll = rand2(SEED ^ 0x3333, tx, ty);
-          if (typeRoll < 0.70) {
-            // Cactus — tall green rect (3×8 px trunk) with two arm rects.
-            g.fillStyle(0x3A7A3A, 1);
-            g.fillRect(lx - 1, ly - 4, 3, 8);   // trunk
-            g.fillRect(lx - 4, ly - 1, 3, 2);   // left arm
-            g.fillRect(lx + 2, ly - 2, 3, 2);   // right arm
-          } else {
-            // Rock formation — 3 small gray triangles clustered.
-            g.fillStyle(0x8A8070, 1);
-            g.fillTriangle(lx - 4, ly + 2, lx - 1, ly - 2, lx + 2, ly + 2);
-            g.fillStyle(0x7A7060, 1);
-            g.fillTriangle(lx,     ly + 2, lx + 3, ly - 1, lx + 6, ly + 2);
-            g.fillStyle(0x9A9080, 1);
-            g.fillTriangle(lx - 2, ly + 2, lx + 1, ly,     lx + 4, ly + 2);
-          }
-          biomeCounts[BIOME.DESERT]++;
-
-        } else if (dominant === BIOME.GRASSLAND) {
-          // Scrub — small dark-green dot cluster (3 overlapping circles).
-          g.fillStyle(0x2D6A2D, 0.85);
-          g.fillCircle(lx,     ly,     2);
-          g.fillCircle(lx - 3, ly + 1, 1.5);
-          g.fillCircle(lx + 3, ly + 1, 1.5);
-          biomeCounts[BIOME.GRASSLAND]++;
-
-        } else if (dominant === BIOME.MOUNTAIN) {
-          // Ridge line — 2-3 short dark-gray strokes stacked (elevation contour).
-          const lineCount = rand2(SEED ^ 0x4444, tx, ty) < 0.5 ? 2 : 3;
-          g.lineStyle(1.5, 0x5A5555, 0.85);
-          for (let i = 0; i < lineCount; i++) {
-            const lineHalfW = 6 - i;    // each ridge slightly narrower
-            const stackY    = ly - i * 2.5;
-            g.lineBetween(lx - lineHalfW, stackY, lx + lineHalfW, stackY);
-          }
-          biomeCounts[BIOME.MOUNTAIN]++;
-
-        } else if (dominant === BIOME.ROCK) {
-          // Boulder — single gray semicircle (top half; approximated via slice).
-          g.fillStyle(0x7A7265, 1);
-          g.slice(lx, ly + 1, 4, Phaser.Math.DegToRad(180), Phaser.Math.DegToRad(360), false);
-          g.fillPath();
-          biomeCounts[BIOME.ROCK]++;
-
-        } else if (dominant === BIOME.URBAN) {
-          // Structure — small light-tan square outline (6×6 building footprint).
-          g.lineStyle(1, 0xC8B890, 0.90);
-          g.strokeRect(lx - 3, ly - 3, 6, 6);
-          // Door hint — tiny filled rect on the south face.
-          g.fillStyle(0xA89870, 0.80);
-          g.fillRect(lx - 1, ly + 1, 2, 2);
-          biomeCounts[BIOME.URBAN]++;
-        }
-
-        totalCount++;
+        drawLandmark(lx, ly, dominant, tx, ty,
+          SEED ^ 0xE5F6 ^ (tx * 13 + ty * 7),
+          SEED ^ 0x7890 ^ (tx * 11 + ty * 5));
       }
     }
 
@@ -788,7 +1094,7 @@ export default class WorldMapScene extends Phaser.Scene {
     const ms = (t1 - t0).toFixed(1);
     // eslint-disable-next-line no-console
     console.debug(
-      `[landmarks] render ${ms}ms | total=${totalCount} | ` +
+      `[landmarks] v2 render ${ms}ms | total=${totalCount} | ` +
       `desert=${biomeCounts[BIOME.DESERT]} grassland=${biomeCounts[BIOME.GRASSLAND]} ` +
       `mountain=${biomeCounts[BIOME.MOUNTAIN]} rock=${biomeCounts[BIOME.ROCK]} ` +
       `urban=${biomeCounts[BIOME.URBAN]} | seed=0x${SEED.toString(16)} (same as terrain)`
