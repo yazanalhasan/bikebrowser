@@ -308,3 +308,23 @@ agents:
     requires_human_gate: false
     notes: "Reusable, run once per scene. Canonical first target is ZuzuGarageScene (the playable garage with hand-coded inline literals — not the Phaser-Editor-regenerable GarageScene.js, which already follows a separate base/derived pattern). Subsequent cycles cover remaining scenes one at a time. See agent definition for the four required dispatch parameters."
     max_turns: 25
+
+  # ── Density-measurement pipeline (closes bridge_collapse weighing gap) ──
+  # The UTM tensile-test side (strength, failure modes, stress-strain
+  # chart) is shipped via lab-rig-system-utm-migration +
+  # utm-material-lab-vertical-slice. The density side (weighing,
+  # quiz_weight, notebook documentation) was NEVER implemented — quiz
+  # text still hands the player canonical 0.83/8.9/7.8 g/cm³ instead
+  # of letting them measure. This agent closes that gap atomically:
+  # interactive scale + caliper + chalkboard in MaterialLabScene's
+  # left bay, materialLog save schema (v4 → v5 migration), structured
+  # journal entry rendering in the Notebook UI, and Mr. Chen quiz_weight
+  # template interpolation that reads from player measurements.
+  phaser-lab-notebook-pipeline:
+    prerequisites: []
+    week: 3
+    pod: Phaser Lab Density
+    parallel_safe_with: []
+    requires_human_gate: false
+    notes: "Tightly coupled three-subsystem agent — schema bump + scene scale + quest data must ship together. Strict scope: do NOT touch UTM rig / stress-strain chart / material selector / failure animations / quiz_choice. Reviewer FAILs on cross-feature edits. Adds public/-style assets via in-scene Phaser primitives only (no new image files). Mesquite=8.50g, Steel=78.50g, Copper=89.60g for fixed 10cm³ coupons."
+    max_turns: 30
