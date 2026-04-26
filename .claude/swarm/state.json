@@ -269,7 +269,7 @@
     {
       "agent": "phaser-dry-wash-scene",
       "ts": "2026-04-26T19:00:00Z",
-      "commit": "PENDING",
+      "commit": "f647de8",
       "review_verdict": "PASS",
       "review_status": "orchestrator_completed",
       "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-phaser-dry-wash-scene-2026-04-26T19-00-00Z.json",
@@ -281,7 +281,7 @@
     {
       "agent": "phaser-bridge-construction",
       "ts": "2026-04-26T19:00:00Z",
-      "commit": "PENDING",
+      "commit": "f647de8",
       "review_verdict": "PASS",
       "review_status": "orchestrator_completed",
       "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-phaser-bridge-construction-2026-04-26T19-00-00Z.json",
