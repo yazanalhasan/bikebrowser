@@ -222,7 +222,7 @@
     {
       "agent": "world-fog-overlay",
       "ts": "2026-04-26T07:05:00Z",
-      "commit": null,
+      "commit": "00e34840043014e2f3ed165a4120f766d1c5f3c2",
       "review_verdict": "PASS",
       "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-world-fog-overlay-2026-04-26T07-00-00Z.json",
       "receipt": ".claude/swarm/receipts/world-fog-overlay-2026-04-26T06-14-01Z.json",
@@ -233,7 +233,7 @@
     {
       "agent": "runtime-audit-system",
       "ts": "2026-04-26T07:05:00Z",
-      "commit": null,
+      "commit": "00e34840043014e2f3ed165a4120f766d1c5f3c2",
       "review_verdict": "PASS",
       "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-runtime-audit-system-2026-04-26T06-35-00Z.json",
       "receipt": ".claude/swarm/receipts/runtime-audit-system-2026-04-26T06-25-00Z.json",
