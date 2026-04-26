@@ -10,6 +10,7 @@ import { addItem, hasItem } from './inventorySystem.js';
 import { onRegionDiscovered } from './discoverySystem.js';
 import DISCOVERY_UNLOCKS from '../data/discoveryUnlocks.js';
 import { revealLocationsByQuestId } from './discoveryBridge.js';
+import { runProgressionReachabilityAudit } from './progressionReachabilityAudit.js';
 
 // ── Discovery → Quest Bridge ─────────────────────────────────────────────────
 
@@ -111,6 +112,18 @@ export function startQuest(state, questId) {
   } catch (e) {
     // eslint-disable-next-line no-console
     console.warn('[questSystem] revealLocationsByQuestId threw for', questId, e);
+  }
+
+  // DEV-only: post-activation reachability audit. Logs soft-lock candidates
+  // but does NOT abort the quest start (signal, not gate).
+  if (import.meta.env.DEV) {
+    try {
+      const postState = { ...state, activeQuest: { id: questId, stepIndex: 0 } };
+      runProgressionReachabilityAudit(postState, { silent: false });
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn('[questSystem] progression audit threw for', questId, e);
+    }
   }
 
   return {

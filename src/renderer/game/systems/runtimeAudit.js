@@ -16,6 +16,7 @@ import { debugListVoiceAssignments } from '../services/npcSpeech.js';
 import NPC_PROFILES from '../data/npcProfiles.js';
 import { createGameConfig } from '../config.js';
 import DISCOVERY_UNLOCKS_REAL from '../data/discoveryUnlocks.js';
+import { runProgressionReachabilityAudit } from './progressionReachabilityAudit.js';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -240,6 +241,13 @@ export async function runRuntimeAudit({ silent = false } = {}) {
     { name: 'auditQuestScenes', fn: auditQuestScenes },
     { name: 'auditRegionBiomes', fn: auditRegionBiomes },
     { name: 'auditDiscoveryUnlocks', fn: auditDiscoveryUnlocks },
+    { name: 'auditProgressionReachability', fn: () => {
+      const r = runProgressionReachabilityAudit({}, { silent: true });
+      return {
+        errors: r.errors.map((e) => makeError('progressionReachability', `[${e.type}] ${e.questId ? 'quest=' + e.questId + ' ' : ''}${e.reason}`)),
+        warnings: r.warnings.map((w) => makeWarning('progressionReachability', `[${w.type}] ${w.questId ? 'quest=' + w.questId + ' ' : ''}${w.reason || ''}`)),
+      };
+    } },
   ];
 
   for (const { name, fn } of syncAudits) {

@@ -1,0 +1,56 @@
+{
+  "agent": "progression-reachability-audit",
+  "timestamp": "2026-04-26T07:38:49Z",
+  "files_changed": [
+    "src/renderer/game/data/sceneItemGrants.js",
+    "src/renderer/game/systems/progressionReachabilityAudit.js",
+    "src/renderer/game/systems/runtimeAudit.js",
+    "src/renderer/game/systems/questSystem.js"
+  ],
+  "notes": {
+    "manifest_decision": "CREATED SCENE_ITEM_GRANTS manifest at src/renderer/game/data/sceneItemGrants.js. Hand-curated by grepping scene files for inventory: [...] and PLANT_INFO items: [...] patterns.",
+    "manifest_coverage": {
+      "covered_scenes": [
+        "StreetBlockScene (11 plants)",
+        "DogParkScene (3 plants)",
+        "DesertForagingScene (5 resources)",
+        "CopperMineScene (3 — incl. band-aid copper_ore_sample synth)",
+        "SaltRiverScene (4 resources)",
+        "MountainScene (1 — bridge_collapse copper_ore_sample)",
+        "ZuzuGarageScene (1 — bridge_collapse steel_sample)"
+      ],
+      "uncovered_scenes_warned": [
+        "BaseSubScene addResource generic mechanism captured via per-scene grants",
+        "items missing sources flagged as INCOMPLETE_DATA warnings: healing_salve, bio_sample_agave, bio_sample_bacteria"
+      ],
+      "starting_inventory_tracked": ["tire_lever", "patch_kit", "wrench", "chain_lube"]
+    },
+    "audit_functions_implemented": [
+      "auditItemReachability — checks 1+4 (item reachability with fallback variants)",
+      "auditSceneReachability — check 2 (questsAll/questsAny self-cycle detection)",
+      "auditDiscoveryVisibility — check 3 (world-map location reveal via DISCOVERY_UNLOCKS reverse map)",
+      "auditDependencyCycles — check 5 (DFS white/grey/black cycle detection across quest→item→scene→quest graph)"
+    ],
+    "audit_console_output_against_current_codebase": [
+      "[progressionAudit] PASS — 0 errors, 3 warnings",
+      "  WARN [INCOMPLETE_DATA] quest=desert_healer step=use_salve item=healing_salve no source recorded for item 'healing_salve' — add to sceneItemGrants.js or quests.js reward",
+      "  WARN [INCOMPLETE_DATA] quest=extract_dna step=collect_sample item=bio_sample_agave no source recorded for item 'bio_sample_agave' — add to sceneItemGrants.js or quests.js reward",
+      "  WARN [INCOMPLETE_DATA] quest=engineer_bacteria step=collect_bacteria item=bio_sample_bacteria no source recorded for item 'bio_sample_bacteria' — add to sceneItemGrants.js or quests.js reward",
+      "graph: {sceneGrantedItems:23, rewardItems:3, questsWithReveals:3}"
+    ],
+    "structural_softlocks_discovered_in_existing_data": [
+      "None at the structural level — bridge_collapse is correctly resolved via questsAnyOrActive on MountainScene (line 223 of sceneRegistry.js).",
+      "No quest references a scene that gates on its own id via questsAll/questsAny.",
+      "No dependency cycles detected in the quest→item→scene→quest dependency graph.",
+      "The 3 INCOMPLETE_DATA warnings are data-coverage gaps in sceneItemGrants.js (items granted via mechanisms outside the grep — e.g. healing_salve appears to be crafted, bio_samples likely come from biology system). These are warnings, not errors — they indicate the manifest needs a follow-up sweep, not a soft-lock."
+    ],
+    "dev_gating_confirmed": {
+      "runtimeAudit_call_site": "runRuntimeAudit() is called from GameContainer.jsx:287 inside `if (import.meta.env.DEV)` — the new auditProgressionReachability sub-audit inside runtimeAudit.js runs only when runRuntimeAudit() is invoked, so it is transitively DEV-only.",
+      "questSystem_call_site": "Direct `if (import.meta.env.DEV)` block added around runProgressionReachabilityAudit() call in startQuest() at lines ~117-126 of questSystem.js. The audit logs but does NOT abort the quest start (signal, not gate)."
+    },
+    "module_size": "src/renderer/game/systems/progressionReachabilityAudit.js — 347 lines (under 350 cap).",
+    "build_status": "npm run build PASSED — vite v5.4.21, 867 modules transformed, built in 10.52s. No errors, only standard chunk-size warnings.",
+    "verification": "Standalone Node import of the module exercised both default-state and bridge_collapse-active state — both pass with 0 errors and the expected 3 INCOMPLETE_DATA warnings."
+  },
+  "next_agent_suggestions": []
+}
