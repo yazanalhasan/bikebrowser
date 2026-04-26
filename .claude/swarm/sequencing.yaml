@@ -285,3 +285,26 @@ agents:
     requires_human_gate: false
     notes: "New systems/runtimeAudit.js — in-game cross-system invariant checker (quest givers exist, items exist, scenes registered, regions have biomes, discoveryUnlocks point to real quests). DEV-only call from GameContainer boot. Read-only observer; logs to console without blocking. Counterpart to dev-time code-quality-reviewer."
     max_turns: 22
+
+  # ── Phaser scene layout extractor (reusable, run once per scene) ─────────
+  # Converts inline x/y/w/h literals in a single Phaser scene into a
+  # data-driven layout JSON file under public/layouts/. STRICT refactor —
+  # preserves pixel-identical output and touches POSITIONS/SIZES ONLY.
+  # Logic, dialog, quests, interactions, physics, upgrades stay
+  # byte-identical. Reviewer FAILs on any logic change.
+  #
+  # Reusable: orchestrator dispatches this same agent once per target
+  # scene, passing targetSceneFile / targetSceneKey / layoutAssetKey /
+  # layoutPath in the dispatch prompt. First dispatch also creates the
+  # shared utils/loadLayout.js helper and appends the layout-system rule
+  # to CLAUDE.md; both are idempotent on subsequent runs. Each dispatch
+  # writes a receipt suffixed with the target scene key so multiple
+  # cycles don't collide.
+  phaser-scene-layout-extractor:
+    prerequisites: []
+    week: 2
+    pod: Phaser Refactor
+    parallel_safe_with: []
+    requires_human_gate: false
+    notes: "Reusable, run once per scene. Canonical first target is ZuzuGarageScene (the playable garage with hand-coded inline literals — not the Phaser-Editor-regenerable GarageScene.js, which already follows a separate base/derived pattern). Subsequent cycles cover remaining scenes one at a time. See agent definition for the four required dispatch parameters."
+    max_turns: 25
