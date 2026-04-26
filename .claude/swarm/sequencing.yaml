@@ -115,12 +115,20 @@ agents:
     notes: "On-demand fix for resource-auditor's HIGH bundle-bloat finding. Adds manualChunks to vite.config.* to split phaser/three/drei/r3f/rapier into vendor chunks. Folds in the LOW dynamic-import fix in MCPAIAdapter.js. Touches only vite.config.* and MCPAIAdapter.js. Low blast — verifiable by re-running npm run build and comparing chunk sizes against the audit baseline."
     max_turns: 18
 
+  audio-compression-pass:
+    prerequisites: []
+    week: 1
+    pod: Quality
+    requires_human_gate: false
+    notes: "On-demand precondition for audio-asset-cleanup. Scans .wav masters; for any whose .ogg/.mp3 sibling is missing or 0-byte, encodes a valid compressed file via ffmpeg (libvorbis preferred, libmp3lame fallback). 128 kbps for music, 96 kbps for SFX. Pure additive — never deletes a .wav, never renames. If ffmpeg isn't on PATH, returns blocker without trying alternatives."
+    max_turns: 25
+
   audio-asset-cleanup:
-    prerequisites: [resource-auditor]
+    prerequisites: [resource-auditor, audio-compression-pass]
     week: 1
     pod: Quality
     requires_human_gate: true
-    notes: "On-demand fix for resource-auditor's HIGH audio-bloat finding (~32 MB). Triages audio assets (alt-mixes, .wav masters, orphans) and ARCHIVES them via git mv to public/audio/_archived/ rather than deleting — reversible by design. Updates audioManifest.js if any reference shifts. NEVER touches services/npcSpeech.js or data/npcProfiles.js (that's tts-* scope). Human gate because file moves can break the audio loader if a manifest reference is missed."
+    notes: "On-demand fix for resource-auditor's HIGH audio-bloat finding (~32 MB). Triages audio assets (alt-mixes, .wav masters, orphans) and ARCHIVES them via git mv to public/audio/_archived/ rather than deleting — reversible by design. Updates audioManifest.js if any reference shifts. NEVER touches services/npcSpeech.js or data/npcProfiles.js (that's tts-* scope). Now also depends on audio-compression-pass so we never archive a .wav whose compressed sibling is 0-byte. Human gate because file moves can break the audio loader if a manifest reference is missed."
     max_turns: 22
 
   dep-overrides-housekeeping:
