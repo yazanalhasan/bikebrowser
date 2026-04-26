@@ -1437,6 +1437,10 @@ export default class WorldMapScene extends Phaser.Scene {
 
     const objs = this._nodeObjects[nodeId];
     if (objs) {
+      // Visual emphasis layer: ring expansion + glow burst at the node center.
+      // Fires alongside (not instead of) the existing scale/alpha-pulse tweens
+      // in _playRevealAnimation so the beat reads as a punctuated discovery.
+      this._playRevealHighlight(x, y);
       this._playRevealAnimation(objs);
     }
 
@@ -1590,6 +1594,82 @@ export default class WorldMapScene extends Phaser.Scene {
         yoyoEase: 'Sine.easeOut',
       });
     }
+
+    // Visual emphasis: brief amber stroke flash on the node circle. Phaser
+    // Arc/Circle don't tween stroke colors directly, so we set then revert
+    // via delayedCall. Captures the node's current stroke (which branches
+    // on locked/unlocked in _spawnNodeObjects: 0xffffff vs 0x888888) so the
+    // restore exactly matches what the spawn logic chose.
+    if (circle && typeof circle.setStrokeStyle === 'function') {
+      const FLASH_COLOR = 0xFFD27A; // warm amber, matches highlight palette
+      const FLASH_DURATION = 450;   // ms — sits within the 550 ms reveal beat
+      const STROKE_WIDTH = 3;       // matches _spawnNodeObjects pattern
+      const originalStrokeColor = (typeof circle.strokeColor === 'number')
+        ? circle.strokeColor
+        : 0xffffff;
+      circle.setStrokeStyle(STROKE_WIDTH, FLASH_COLOR);
+      this.time.delayedCall(FLASH_DURATION, () => {
+        if (circle && circle.scene) {
+          circle.setStrokeStyle(STROKE_WIDTH, originalStrokeColor);
+        }
+      });
+    }
+  }
+
+  /**
+   * Visual emphasis layer for revealNode(). Adds a warm-amber ring expansion
+   * + inner glow burst centered on the newly-revealed node so the beat reads
+   * as "look here, this is significant" rather than a quiet appearance.
+   *
+   * Both effects sit at depth 0.5 — above the landmarks (-25) so they're
+   * visible, below the node container (1) so the icon stays crisp on top.
+   * Both effects destroy themselves in onComplete; no GameObject leaks.
+   *
+   * Pure visual: does NOT touch timing, camera, audio, or progression.
+   *
+   * @param {number} x — node center x in scene coords
+   * @param {number} y — node center y in scene coords
+   */
+  _playRevealHighlight(x, y) {
+    const COLOR = 0xFFD27A;        // warm amber, parchment/discovery palette
+    const RING_DURATION = 700;     // ms — matches the 700 ms initial pacing beat
+    const GLOW_DURATION = 500;     // ms — glow fades faster than ring
+    const NODE_RADIUS = 22;        // matches _spawnNodeObjects circle radius
+    const RING_TARGET_RADIUS = 80; // matches REVEAL_RADIUS — fog-cleared area
+    const HIGHLIGHT_DEPTH = 0.5;   // above fog/landmarks, below node container
+
+    // Inner glow burst — semi-transparent amber fill that fades + softly
+    // expands. Sits below the node icon so it haloes rather than obscures.
+    const GLOW_RADIUS = 40;
+    const GLOW_ALPHA_START = 0.4;
+    const GLOW_SCALE_END = 1.4;
+    const glow = this.add.circle(x, y, GLOW_RADIUS, COLOR, GLOW_ALPHA_START);
+    glow.setDepth(HIGHLIGHT_DEPTH);
+    this.tweens.add({
+      targets: glow,
+      alpha: 0,
+      scale: GLOW_SCALE_END,
+      duration: GLOW_DURATION,
+      ease: 'Sine.easeOut',
+      onComplete: () => glow.destroy(),
+    });
+
+    // Outer ring expansion — stroked-only circle that grows from the node's
+    // own radius out to the fog-reveal radius and fades to alpha 0. Phaser
+    // doesn't tween Graphics radius natively, so we tween scale on a Circle
+    // GameObject (visually identical, much simpler).
+    const RING_STROKE_WIDTH = 3;
+    const ring = this.add.circle(x, y, NODE_RADIUS, undefined, 0);
+    ring.setStrokeStyle(RING_STROKE_WIDTH, COLOR, 1.0);
+    ring.setDepth(HIGHLIGHT_DEPTH);
+    this.tweens.add({
+      targets: ring,
+      scale: RING_TARGET_RADIUS / NODE_RADIUS,
+      alpha: 0,
+      duration: RING_DURATION,
+      ease: 'Sine.easeOut',
+      onComplete: () => ring.destroy(),
+    });
   }
 
   _getTypeColor(type) {

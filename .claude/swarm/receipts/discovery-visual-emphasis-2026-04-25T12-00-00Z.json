@@ -1,0 +1,53 @@
+{
+  "agent": "discovery-visual-emphasis",
+  "pod": "Early Experience Design",
+  "focus_area": 1,
+  "layer": "visual",
+  "slice": "Discovery Moments — visual emphasis layer",
+  "predecessor": {
+    "agent": "discovery-pacing-fx",
+    "commit": "31fcb61",
+    "layer": "timing"
+  },
+  "files_changed": [
+    "src/renderer/game/scenes/WorldMapScene.js"
+  ],
+  "edits_summary": {
+    "revealNode": "Added a single line invoking this._playRevealHighlight(x, y) directly before this._playRevealAnimation(objs). No timing changes; both calls fire in the same tick from the same dispatch site that the pacing agent already sequenced.",
+    "_playRevealAnimation": "Added a brief amber stroke flash on the existing node circle. Captures circle.strokeColor before mutation so the restore exactly matches whichever color _spawnNodeObjects originally chose (0xffffff for unlocked, 0x888888 for locked). Reverted via this.time.delayedCall after 450 ms.",
+    "_playRevealHighlight": "New helper method (added inside the existing class — no new module/class/system). Spawns two short-lived Phaser Circle GameObjects: an inner glow burst and an outer expansion ring. Both destroy themselves in onComplete."
+  },
+  "notes": {
+    "visual_elements_added": [
+      "Outer ring expansion: stroked-only Phaser Circle, color 0xFFD27A, radius 22 -> tween scale to 80/22 (~3.64x), alpha 1.0 -> 0.0, duration 700 ms, ease Sine.easeOut. Implemented as scale tween on a Circle GameObject (Phaser Graphics radius cannot be tweened directly).",
+      "Inner glow burst: filled Phaser Circle, color 0xFFD27A, radius 40, alpha 0.4 -> 0.0, scale 1.0 -> 1.4, duration 500 ms, ease Sine.easeOut.",
+      "Stroke color flash on the existing node circle: 0xffffff/0x888888 -> 0xFFD27A -> original, duration 450 ms via setStrokeStyle + delayedCall (Phaser does not natively tween Arc stroke colors)."
+    ],
+    "stroke_flash_applied": "Yes — applied. Captured circle.strokeColor at flash time (defaults to 0xffffff if numeric read fails) so we restore exactly to the color that _spawnNodeObjects set, which correctly preserves the gray locked-stroke (0x888888) for locked nodes. Stroke width 3 matches _spawnNodeObjects pattern.",
+    "depth_choices": {
+      "highlight_depth": 0.5,
+      "rationale": "Sits above landmarks (-25) so the ring/glow are visible against the map, and below the node container (depth 1) so the node icon, label, and stroke flash render crisp on top. Never obscures the node icon."
+    },
+    "no_leaks_confirmed": "Both transient GameObjects (ring, glow) destroy themselves in tween onComplete callbacks. The stroke flash mutates an existing object (the node circle) and restores via delayedCall guarded by `if (circle && circle.scene)` so it no-ops if the scene tore down mid-animation. No persistent references held; no Graphics created.",
+    "scope_compliance": {
+      "single_file": "src/renderer/game/scenes/WorldMapScene.js only",
+      "no_new_systems": "All edits inside existing methods or new helper on the existing class. No new modules, no new classes, no new module-scope constants — every magic number is a named local.",
+      "no_progression_changes": "Untouched: revealArea, saveGame, redrawFog, _emitRegionDiscovered, first-discovery dialog, SFX dispatch.",
+      "no_timing_changes": "Did not alter delays, durations, or sequencing in revealNode itself. Sibling-1 (pacing) territory preserved.",
+      "no_camera_changes": "No camera tweens, no zoom, no pan. Sibling-3 territory preserved.",
+      "no_audio_changes": "SFX dispatch block untouched.",
+      "hmr_preserved": "registerSceneHmr line at file end unchanged."
+    },
+    "manual_verification_scenarios": [
+      "1. Trigger first-ever discovery (fresh save, no prior tiles): observe amber ring expand from the node outward to ~80 px while glow burst haloes the node, simultaneously the node circle stroke briefly flashes amber then returns to white. Ring + glow disappear cleanly within ~700 ms; node remains at default scale 1.",
+      "2. Trigger reveal of a locked node (e.g., a node whose unlockReq is not yet met): confirm the stroke flash returns to the gray (0x888888) locked color, NOT white. The lock icon (🔒) stays crisp throughout — depth 0.5 keeps the glow underneath.",
+      "3. Reveal multiple nodes in rapid succession (drained pending queue at 700 ms + 380 ms stagger from the pacing agent): each node gets its own independent ring/glow that staggers naturally. Open Phaser scene inspector / DevTools and confirm no Arc/Circle GameObjects accumulate in the scene's display list after ~1 s post-reveal — every transient effect is destroyed."
+    ],
+    "build_status": "npm run build PASSED — vite build completed in 12.29s, 867 modules transformed, no errors. Existing chunk-size warnings (vendor-rapier, vendor-phaser, GamePage) are pre-existing and unrelated.",
+    "alternatives_considered": [
+      "Skipping the stroke flash (suggested fallback) — rejected because reading circle.strokeColor on Phaser Arc is straightforward and the flash adds meaningful punch on the node itself, not just around it.",
+      "Tweening Graphics radius — rejected per the embedded prompt's guidance; scale tween on a Circle GameObject is visually equivalent and far cheaper."
+    ]
+  },
+  "next_agent_suggestions": ["discovery-camera-attention"]
+}
