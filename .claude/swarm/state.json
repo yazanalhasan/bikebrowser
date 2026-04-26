@@ -2,7 +2,7 @@
   "schema_version": 1,
   "last_updated": "2026-04-26T08:15:00Z",
   "current_week": 3,
-  "current_pod_focus": "Phaser DryWash",
+  "current_pod_focus": "Phaser Refactor",
   "completed": [
     {
       "agent": "r3f-scaffolder",
@@ -351,7 +351,24 @@
       "notes": "Parallel dispatch with world-discovery-state. Added terrain rendering layer to WorldMapScene.js in three isolated zones: lines 13-46 (BIOME import + BIOME_COLORS warm palette + WORLD_REGION_BIOME bridge map + biomeForWorldRegion helper), lines 75-86 (call to _renderTerrainLayer in create() after parchment rect), lines 219-289 (the _renderTerrainLayer method itself — single _terrainContainer at depth -100, 3 concentric translucent fillCircles per location for soft-edged blobs ~225px radius on 1024px map, deterministic stipple dots on desert blobs, geometry-mask clipped to parchment). Spec palette matched exactly. Render-once at create(). Click handlers (setInteractive/pointerdown/pointerover/pointerout) byte-identical. Notable judgment call (PASS confirmed): worldMapData.js REGIONS use different ids (arizona_desert, mountain_range) than the cross-cultural regions.js (arizona, andes); worker added an inline WORLD_REGION_BIOME bridge map inside WorldMapScene rather than touch worldMapData.js (which is data-layer scope owned by biome-classifier). Pre-existing dirty-baseline audio block at lines 212-216 (transitionToScene swap) preserved verbatim per dispatch warning. First reviewer dispatch stalled mid-task before writing receipt — re-dispatched fresh and second run completed cleanly with PASS. LOW observations (non-blocking): all 3 current locations are in arizona_desert so DESERT blobs heavily overlap (intentional — reads as one Sonoran landscape); home/neighborhood node has no terrain blob underneath (floats on parchment); future tuning when non-Sonoran locations land. Routed via general-purpose; reviewer native sonnet override."
     }
   ],
-  "in_progress": [],
+  "in_progress": [
+    {
+      "agent": "phaser-scene-layout-extractor",
+      "target": "ZuzuGarageScene",
+      "pod": "Phaser Refactor",
+      "status": "dispatched",
+      "ts": "2026-04-26T17:50:00Z",
+      "dispatch_cycle": "first (will create loadLayout.js + CLAUDE.md as one-time artifacts)",
+      "params": {
+        "targetSceneFile": "src/renderer/game/scenes/ZuzuGarageScene.js",
+        "targetSceneKey": "ZuzuGarageScene",
+        "layoutAssetKey": "zuzuGarageLayout",
+        "layoutPath": "layouts/zuzu-garage.layout.json"
+      },
+      "world_size_corrected_in_prompt": "Block 2 paste claimed 1024×768; orchestrator confirmed actual is 800×600 from ZuzuGarageScene.js:25-26 and corrected the dispatch prompt before sending. User approved the corrected plan via 'go'.",
+      "phaser_drywash_pod_parked": "phaser-traversal-system human gate remains pending; user pivoted to Phaser Refactor instead. DryWash gate to be picked up later when user explicitly requests."
+    }
+  ],
   "blocked": [],
   "blocker_history": [
     {
