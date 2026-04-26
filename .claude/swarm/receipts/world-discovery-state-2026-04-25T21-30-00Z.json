@@ -1,0 +1,26 @@
+{
+  "agent": "world-discovery-state",
+  "ts": "2026-04-25T21:30:00Z",
+  "status": "complete",
+  "files_changed": [
+    "src/renderer/game/systems/discoverySystem.js",
+    "src/renderer/game/systems/saveSystem.js"
+  ],
+  "exports_added": [
+    "discoverySystem.js: initDiscovery(width, height)",
+    "discoverySystem.js: revealArea(px, py, radius)",
+    "discoverySystem.js: isDiscovered(x, y)",
+    "discoverySystem.js: getDiscoveryState()",
+    "discoverySystem.js: loadDiscoveryState(payload)",
+    "discoverySystem.js: resetDiscovery()",
+    "discoverySystem.js: DISCOVERY_TILE_SIZE (const = 32)",
+    "discoverySystem.js: _debugGetRevealedSet() (debug-only helper)"
+  ],
+  "tests_added": [],
+  "next_agent_suggestions": [
+    "world-fog-overlay",
+    "world-node-gating",
+    "world-discovery-quests"
+  ],
+  "notes": "DISCOVERY MODULE — sparse Set<string> storage keyed by `${gx}_${gy}`. Tile size = 32 world px. revealArea iterates only the radius's grid footprint (not the full map) and uses circular distance check, so it's cheap to call every frame.\n\nPERSISTED PAYLOAD SHAPE (canonical):\n  {\n    \"tiles\":  [\"3_5\", \"3_6\", \"4_5\", ...],   // sparse list of revealed grid cells\n    \"width\":  1024,                            // world map width in px (at init)\n    \"height\": 768,                             // world map height in px (at init)\n    \"tile\":   32                               // DISCOVERY_TILE_SIZE — embedded for forward compat\n  }\n\nSCHEMA VERSION: NOT bumped. Stays at v4. Rationale: the change is purely additive (a new top-level `discovery` field), and the existing `loadGame` logic already does `{ ...defaultSave(), ...migrated }` which fills missing fields from defaults. Old saves without a `discovery` field load with the empty default `{ tiles: [], width: 0, height: 0, tile: 32 }`, then loadDiscoveryState() resolves that to an empty Set. No migration function needed.\n\nBACKWARDS-COMPAT VERIFICATION: Ran a node integration test stubbing localStorage with an old-shape v4 save lacking the `discovery` field entirely. Results:\n  - loaded.discovery present, with .tiles=[]\n  - _debugGetRevealedSet().size === 0 — module hydrated to empty Set\n  - Unrelated fields (player.x, etc.) preserved\n  - Round-trip: revealed tiles via revealArea, called saveGame(), wiped state, reloaded — discovered tiles came back, isDiscovered(300,300) still true.\nAlso unit-tested the discovery module in isolation: empty-on-init, reveal-then-query, snapshot-and-rehydrate, null/undefined/{} payloads → empty set, non-string entries filtered out. ALL TESTS PASSED.\n\nMEMORY BUDGET: For a 1024×768 world map at DISCOVERY_TILE_SIZE=32, the grid is 32×24 = 768 cells. A fully-discovered map serializes to ~5.6 KB JSON (measured: 5631 bytes). Even at 4× the resolution (e.g. a 4096×3072 world), full discovery is ~12,288 cells ≈ ~90 KB JSON — comfortably within reason. In practice the world will be far from fully discovered, so typical save overhead is well under 1 KB.\n\nSAVESYSTEM INTEGRATION:\n  - Added `import { getDiscoveryState, loadDiscoveryState } from './discoverySystem.js';`\n  - Added `discovery: { tiles: [], width: 0, height: 0, tile: 32 }` to defaultSave().\n  - In loadGame(): after the defaults-merge, calls loadDiscoveryState(merged.discovery) inside a try/catch so a bad payload never breaks the load.\n  - In saveGame(): pulls live state via getDiscoveryState() and overwrites state.discovery before persisting — so callers don't have to remember to copy the discovery payload into their game-state object before saving. Falls back to state.discovery (then to empty default) if the module call throws.\n\nSCOPE COMPLIANCE: Touched ONLY src/renderer/game/systems/discoverySystem.js (new) and src/renderer/game/systems/saveSystem.js (additive). Did not modify any scene file (WorldMapScene.js was already dirty pre-run from the parallel agent's prior baseline / unrelated edits — confirmed via git status comparison against the agent spec's stated baseline). Did not touch src/renderer/game3d/. Did not bump schema version. No new top-level dependencies. JavaScript only — no TypeScript."
+}

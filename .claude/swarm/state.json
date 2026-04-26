@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-25T20:45:00Z",
+  "last_updated": "2026-04-25T22:00:00Z",
   "current_week": 2,
   "current_pod_focus": "World & Discovery",
   "completed": [
@@ -98,11 +98,39 @@
       "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-world-biome-classifier-2026-04-25T20-45-00Z.json",
       "receipt": ".claude/swarm/receipts/world-biome-classifier-2026-04-25T20-30-00Z.json",
       "notes": "First World & Discovery pod agent. 9 regions discovered + tagged: arizona/arabian → desert, andes/pakistan → mountain, turkish → grassland, persian → rock, swahili → water, chinese/malay → unknown (enum has no multi-biome or jungle/forest values). BIOME frozen enum + getBiome(regionId) helper added; existing exports (REGIONS default, REGION_MAP, getRegionMaterial, getAllMineableMaterials, RARITY_CHANCE) preserved. Notable judgment call (PASS confirmed): every region already had a non-canonical `biome:` field with descriptive strings ('desert_scrub', 'temperate_steppe', etc.); worker normalized values in-place to the canonical enum rather than introduce a parallel field. Reviewer's independent grep confirmed no consumer reads `region.biome` from region data — all `.biome` references in src/ are runtime `state.environment.biome` paths. Zero behavioral risk. Reviewer also caught a latent bug in the spec: spec example used REGIONS[regionId]?.biome (REGIONS is an array, would always return undefined); worker correctly used REGION_MAP[regionId]?.biome. MEDIUM follow-up: questGenerator.js:210 and MCPSystem.js:221 still use stale `'desert_scrub'` fallback string — pre-existing, not a regression, flagged for a future migration agent. Routed via general-purpose since the new agent type isn't in this session's Agent registry; reviewer was native (sonnet override per saved memory)."
+    },
+    {
+      "agent": "world-discovery-state",
+      "ts": "2026-04-25T21:45:00Z",
+      "commit": "376abb3eb81b31b4c7c9bc3abab7a2506b0fbbea",
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-world-discovery-state-2026-04-25T21-45-00Z.json",
+      "receipt": ".claude/swarm/receipts/world-discovery-state-2026-04-25T21-30-00Z.json",
+      "parallel_group": "world-discovery-state+world-terrain-renderer",
+      "notes": "Parallel dispatch with world-terrain-renderer. Created NEW src/renderer/game/systems/discoverySystem.js (sparse Set<string> storage keyed by `${gx}_${gy}`, DISCOVERY_TILE_SIZE=32) with the full 7-export public API (initDiscovery, revealArea, isDiscovered, getDiscoveryState, loadDiscoveryState, resetDiscovery, DISCOVERY_TILE_SIZE) + 1 debug helper (_debugGetRevealedSet). Wired into saveSystem.js additively without bumping schema version (CURRENT_VERSION still 4) — the existing `{ ...defaultSave(), ...migrated }` pattern handles missing `discovery` field on old saves. defaultSave gains `discovery: { tiles: [], width: 0, height: 0, tile: 32 }`; loadGame calls loadDiscoveryState in try/catch; saveGame pulls live state via getDiscoveryState. Worker verified backwards-compat with a node integration test (old v4 save without discovery field hydrates to empty Set). Memory budget: 1024×768 fully discovered = ~5.6KB JSON. Reviewer PASS, all CRITICAL clean. MEDIUM follow-up (non-blocking): inner try/catch around getDiscoveryState() in saveGame swallows failures silently — should add console.warn for dev visibility. Routed via general-purpose; reviewer native sonnet override."
+    },
+    {
+      "agent": "world-terrain-renderer",
+      "ts": "2026-04-25T21:15:00Z",
+      "commit": "376abb3eb81b31b4c7c9bc3abab7a2506b0fbbea",
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-world-terrain-renderer-2026-04-25T21-15-00Z.json",
+      "receipt": ".claude/swarm/receipts/world-terrain-renderer-2026-04-25T21-00-00Z.json",
+      "parallel_group": "world-discovery-state+world-terrain-renderer",
+      "reviewer_dispatches": 2,
+      "notes": "Parallel dispatch with world-discovery-state. Added terrain rendering layer to WorldMapScene.js in three isolated zones: lines 13-46 (BIOME import + BIOME_COLORS warm palette + WORLD_REGION_BIOME bridge map + biomeForWorldRegion helper), lines 75-86 (call to _renderTerrainLayer in create() after parchment rect), lines 219-289 (the _renderTerrainLayer method itself — single _terrainContainer at depth -100, 3 concentric translucent fillCircles per location for soft-edged blobs ~225px radius on 1024px map, deterministic stipple dots on desert blobs, geometry-mask clipped to parchment). Spec palette matched exactly. Render-once at create(). Click handlers (setInteractive/pointerdown/pointerover/pointerout) byte-identical. Notable judgment call (PASS confirmed): worldMapData.js REGIONS use different ids (arizona_desert, mountain_range) than the cross-cultural regions.js (arizona, andes); worker added an inline WORLD_REGION_BIOME bridge map inside WorldMapScene rather than touch worldMapData.js (which is data-layer scope owned by biome-classifier). Pre-existing dirty-baseline audio block at lines 212-216 (transitionToScene swap) preserved verbatim per dispatch warning. First reviewer dispatch stalled mid-task before writing receipt — re-dispatched fresh and second run completed cleanly with PASS. LOW observations (non-blocking): all 3 current locations are in arizona_desert so DESERT blobs heavily overlap (intentional — reads as one Sonoran landscape); home/neighborhood node has no terrain blob underneath (floats on parchment); future tuning when non-Sonoran locations land. Routed via general-purpose; reviewer native sonnet override."
     }
   ],
   "in_progress": [],
   "blocked": [],
-  "human_gates_pending": [],
-  "dispatch_count": 23,
+  "human_gates_pending": [
+    {
+      "gate": "Visual + architectural review of World & Discovery parallel dispatch",
+      "requested_by_user": true,
+      "requested_ts": "2026-04-25T22:00:00Z",
+      "context": "User explicitly instructed orchestrator to pause after world-discovery-state and world-terrain-renderer both complete. Both PASS. Awaiting visual confirmation that terrain renders correctly in-game (npm run dev is up at background ID bmfdmx4ce) AND architectural review of the discovery-state API surface before dispatching downstream agents (world-fog-overlay, world-node-gating, world-discovery-quests)."
+    }
+  ],
+  "dispatch_count": 28,
   "session_token_estimate": 0
 }
