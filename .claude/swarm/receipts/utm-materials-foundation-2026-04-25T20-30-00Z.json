@@ -1,0 +1,195 @@
+{
+  "agent": "utm-materials-foundation",
+  "pod": "Early Experience Design",
+  "wave": 1,
+  "ts": "2026-04-25T20:30:00Z",
+  "status": "complete",
+  "files_changed": [
+    {
+      "type": "create",
+      "path": "src/renderer/game/systems/materials/materialDatabase.js",
+      "summary": "Pure-data MATERIALS map with 3 seed entries (mesquite_wood, structural_steel, copper). Exports MATERIALS, MATERIAL_IDS, getMaterial(id). Includes JSDoc references and per-entry property comments."
+    },
+    {
+      "type": "create",
+      "path": "src/renderer/game/systems/materials/materialTestingEngine.js",
+      "summary": "Pure stress-strain simulation. Exports runTensileTest, runCompressionTest, generateStressStrainCurve, calculateForce, calculateDisplacement, detectFailurePoint, _smokeTest. Models elastic Hooke's-law region, exponential plastic hardening for ductile metals, brittle plateau-then-drop for wood, anisotropic grain-direction multipliers, compression knockdowns per family."
+    },
+    {
+      "type": "create",
+      "path": "src/renderer/game/systems/materials/compositeEngine.js",
+      "summary": "Rule-of-mixtures composite synthesis. Exports createComposite, estimateCompositeProperties, COMPOSITE_PRESETS. Handles laminated wood as a special case via grainDirectionMultiplier.laminated. Two TBD presets (carbon_fiber_polymer, glass_fiber_polymer) returned as pending stubs with todo strings."
+    },
+    {
+      "type": "create",
+      "path": "src/renderer/game/systems/materials/bridgeMaterialScoring.js",
+      "summary": "Use-case-aware scoring. Exports scoreMaterialForBridge and BRIDGE_COLLAPSE_USE_CASE. Priority-driven weighted sum across stw/strength/cost/corrosion/fatigue, with environment-tag corrosion multipliers, additive bridgeScoreBias correction, threshold gate at strengthScore < 0.30 for non-cost priorities, and warning rules for monsoon/cross-grain/fatigue."
+    }
+  ],
+  "exports_added": {
+    "materialDatabase.js": ["MATERIALS", "MATERIAL_IDS", "getMaterial"],
+    "materialTestingEngine.js": [
+      "runTensileTest",
+      "runCompressionTest",
+      "generateStressStrainCurve",
+      "calculateForce",
+      "calculateDisplacement",
+      "detectFailurePoint",
+      "_smokeTest"
+    ],
+    "compositeEngine.js": [
+      "createComposite",
+      "estimateCompositeProperties",
+      "COMPOSITE_PRESETS"
+    ],
+    "bridgeMaterialScoring.js": [
+      "scoreMaterialForBridge",
+      "BRIDGE_COLLAPSE_USE_CASE"
+    ]
+  },
+  "next_agent_suggestions": ["utm-material-lab-scene"],
+  "notes": {
+    "references_cited": {
+      "materialDatabase.js": [
+        "USDA Forest Products Laboratory Wood Handbook (2010, FPL-GTR-190) — wood mechanical properties parallel- and cross-grain, density, Young's modulus, ultimate tensile strength",
+        "Engineering Toolbox — Young's modulus and density for common copper and steel alloys",
+        "ASTM A36 / A572 spec sheets — yield and ultimate ranges for structural steel"
+      ],
+      "materialTestingEngine.js": [
+        "USDA Forest Products Laboratory Wood Handbook (2010, FPL-GTR-190) — anisotropic wood behavior, cross-grain knockdown factors",
+        "Engineering Toolbox — Young's modulus / Poisson ratio / typical ductile metal stress-strain shapes",
+        "ASTM E8 / E9 — tensile and compression test methodology informs the curve shape"
+      ],
+      "compositeEngine.js": [
+        "Krenchel, H. (1964) 'Fibre Reinforcement' — orientation efficiency factors for unidirectional, woven, and random fiber arrangements",
+        "Engineering Toolbox / standard composites texts — rule-of-mixtures formulae",
+        "USDA Forest Products Lab Wood Handbook — laminated wood beam stiffness multipliers"
+      ],
+      "bridgeMaterialScoring.js": [
+        "AASHTO LRFD Bridge Design Specifications — high-level guidance on selecting structural materials by load class and environment",
+        "USDA Forest Products Lab Wood Handbook — cross-grain knockdowns informing 'warning' rules",
+        "Engineering Toolbox — corrosion behavior of mild steel vs copper informing environment-tag weights"
+      ]
+    },
+    "smoke_test_summary": {
+      "method": "Ran `node --input-type=module -e \"import('./materialTestingEngine.js').then(m => console.log(JSON.stringify(m._smokeTest())))\"`. All three materials returned non-null TestResults for both tensile and compression.",
+      "results": {
+        "mesquite_wood": {
+          "tensile": {
+            "maxForceN": 10000,
+            "ultimateMPa": 100,
+            "E_GPa": 11,
+            "scores": {
+              "toughnessScore": 0.015,
+              "stiffnessScore": 0.055,
+              "strengthScore": 0.222,
+              "ductilityScore": 0.036,
+              "costScore": 0.88,
+              "strengthToWeightScore": 1.0
+            }
+          },
+          "compression": {
+            "maxForceN": 6000,
+            "ultimateMPa": 60,
+            "comment": "60% of tensile ultimate per spec — wood is weaker in compression"
+          }
+        },
+        "structural_steel": {
+          "tensile": {
+            "maxForceN": 40558.17,
+            "ultimateMPa": 450,
+            "E_GPa": 200,
+            "scores": {
+              "toughnessScore": 0.766,
+              "stiffnessScore": 1.0,
+              "strengthScore": 1.0,
+              "ductilityScore": 0.4,
+              "costScore": 0.4,
+              "strengthToWeightScore": 1.0
+            }
+          },
+          "compression": {
+            "maxForceN": 40558.17,
+            "ultimateMPa": 450,
+            "comment": "symmetric to tension; buckling not modeled per spec"
+          }
+        },
+        "copper": {
+          "tensile": {
+            "maxForceN": 23723.18,
+            "ultimateMPa": 250,
+            "E_GPa": 120,
+            "scores": {
+              "toughnessScore": 0.727,
+              "stiffnessScore": 0.6,
+              "strengthScore": 0.556,
+              "ductilityScore": 0.7,
+              "costScore": 0.55,
+              "strengthToWeightScore": 0.487
+            }
+          },
+          "compression": {
+            "maxForceN": 24660.73,
+            "ultimateMPa": 250,
+            "comment": "1.5× tensile fracture strain budget — copper crushes/squishes rather than breaks"
+          }
+        }
+      },
+      "bridge_scoring_check": {
+        "mesquite_wood": {
+          "score": 0.574,
+          "recommendation": "Not suitable as primary structure — consider for decorative or sensor roles",
+          "trigger": "strengthScore 0.22 < 0.30 threshold for 'balanced' priority — gate fired correctly"
+        },
+        "structural_steel": {
+          "score": 0.751,
+          "recommendation": "Excellent — primary structural element for this use case",
+          "warnings": ["Corrosion resistance is low — monsoon environment will accelerate degradation"]
+        },
+        "copper": {
+          "score": 0.566,
+          "recommendation": "Good — viable as a main beam, double-check fatigue under cyclic load",
+          "alternatives": ["bridge sensor wiring"]
+        }
+      },
+      "composite_check": {
+        "laminated_mesquite": "E=13.75 GPa (1.25× mesquite parallel), ultimate=125 MPa — matches grainDirectionMultiplier.laminated of 1.25",
+        "copper_wire_reinforced_wood": "E=17.7 GPa, ultimate=106.25 MPa, density=1661 kg/m³ — Voigt blend with woven η=0.65, 0.10 Vf copper",
+        "carbon_fiber_polymer": "pending=true with todo string — no crash, scene can render as locked",
+        "glass_fiber_polymer": "pending=true with todo string",
+        "steel_cable_reinforced_composite": "E=16.95 GPa, density=1200 kg/m³ — Voigt blend with woven η=0.65, 0.05 Vf steel"
+      }
+    },
+    "gameplay_simplifications_flagged": [
+      "Wood compression strength = 60% of tensile ultimate. Real wood compression depends on grain direction (perpendicular crushing is much weaker than parallel); we collapse this to one number for gameplay clarity. Documented at the top of materialTestingEngine.js.",
+      "Copper plastic hardening uses sigma = sigma_u * (1 - exp(-8 * plastic_strain)). The hardening exponent of 8 is phenomenological — chosen to make the curve approach ultimate by ~50% of the plastic-strain budget. Real copper follows Hollomon (sigma = K * eps^n with n≈0.45 for annealed) which would be more accurate but harder to tune visually. Documented in materialTestingEngine.js header.",
+      "No strain-rate effects. Real metals stiffen at high rates; we model quasi-static behavior. The strainRateHz option only controls chart sample density. Documented.",
+      "Wood proportional limit set at 80% of ultimate (since yieldStrengthMPa is null). Real value varies 60–80% of ultimate depending on species; 80% chosen as a clean default.",
+      "Composite strength uses the same rule-of-mixtures form as stiffness. Real composite strength is governed by the weaker phase failing first, but the simplified form keeps gameplay numbers in a believable range. Documented in compositeEngine.js header.",
+      "Composite cost adds a 10% surcharge on the fiber's cost component to model manufacturing premium. Hand-tuned, not derived.",
+      "Toughness/corrosion/fatigue/bridgeScoreBias are 0–1 gameplay scalars, not unit-bearing values. Documented at top of materialDatabase.js.",
+      "Bridge score's environment effect only re-weights corrosionResistance. UV / freeze-thaw / fatigue environment interactions are not modeled. Documented in bridgeMaterialScoring.js header.",
+      "Bridge bias is added at 0.10× the raw bias (so a +1 bias only adds 0.10 to the final score). Prevents bias from dominating priority weighting."
+    ],
+    "scope_compliance": {
+      "files_touched": "Only the four new files under src/renderer/game/systems/materials/. Verified via `git status -s` — only the new directory and the orchestrator-managed .claude/swarm/state.json are modified.",
+      "no_existing_files_modified": true,
+      "no_new_top_level_deps": true,
+      "javascript_only_no_typescript": true,
+      "no_phaser_react_imports": true,
+      "no_ui_lib_imports": true
+    },
+    "build_validation": {
+      "command": "npm run build",
+      "result": "PASS",
+      "duration": "12.33s",
+      "warnings": "Pre-existing chunk-size warnings only (vendor-rapier 2.08 MB, vendor-phaser 1.48 MB, vendor-three 740 kB, GamePage 531 kB). No new warnings introduced by this wave."
+    },
+    "node_syntax_check": "All four files passed `node --check`. No parse errors.",
+    "follow_ups_for_wave_2": [
+      "utm-material-lab-scene (Wave 2) — consume runTensileTest/runCompressionTest from a Phaser scene; render the curve with one of the existing chart helpers; surface unlockedKnowledge into the questSystem.",
+      "Once a polymer matrix material is added in a future wave, populate carbon_fiber_polymer and glass_fiber_polymer presets by re-running createComposite with real ids.",
+      "The bridge_collapse quest's currently-fake material testing should be replaced with a flow that calls runTensileTest + scoreMaterialForBridge(result, BRIDGE_COLLAPSE_USE_CASE)."
+    ]
+  }
+}
