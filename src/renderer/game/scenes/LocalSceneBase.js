@@ -158,9 +158,24 @@ export default class LocalSceneBase extends Phaser.Scene {
     // --- Camera ---
     const cam = this.cameras.main;
     if (world.width > cam.width || world.height > cam.height) {
+      // World is larger than viewport: bound the camera and follow the player.
       cam.setBounds(0, 0, world.width, world.height);
       cam.startFollow(this.player.sprite, true, 0.1, 0.1);
       cam.setDeadzone(60, 40);
+    } else {
+      // World FITS inside the viewport (small scene + larger window). Without
+      // this branch the camera stays at scroll (0,0) and the world content
+      // renders in the canvas top-left with empty space to the right/bottom.
+      // Center the camera on the world's center so the scene appears centered
+      // in the viewport.
+      cam.centerOn(world.width / 2, world.height / 2);
+      // Re-center on every viewport resize so the scene stays centered when
+      // the window is resized after scene boot. Cleaned up on scene shutdown
+      // so HMR + scene-stop don't leak listeners on the global Scale manager.
+      this.scale.on('resize', this._recenterCameraOnWorld, this);
+      this.events.once('shutdown', () => {
+        this.scale.off('resize', this._recenterCameraOnWorld, this);
+      });
     }
     cam.fadeIn(350, 0, 0, 0);
 
@@ -408,6 +423,31 @@ export default class LocalSceneBase extends Phaser.Scene {
       prop._nearby = dist < prop.radius;
       prop.prompt.setVisible(prop._nearby);
     }
+  }
+
+  /**
+   * Re-center the camera on the world's center. Used by the world-fits-in-
+   * viewport path so the scene stays visually centered if the window is
+   * resized AFTER scene boot. Wired as a `scale.resize` listener inside
+   * create(); removed on scene shutdown to avoid leaks across HMR/scene
+   * restarts.
+   */
+  _recenterCameraOnWorld() {
+    if (!this.cameras?.main) return;
+    const world = this.getWorldSize();
+    const cam = this.cameras.main;
+    if (world.width > cam.width || world.height > cam.height) {
+      // Window has shrunk below world size — bound + follow if not already
+      if (!cam.useBounds) {
+        cam.setBounds(0, 0, world.width, world.height);
+        if (this.player?.sprite) {
+          cam.startFollow(this.player.sprite, true, 0.1, 0.1);
+          cam.setDeadzone(60, 40);
+        }
+      }
+      return;
+    }
+    cam.centerOn(world.width / 2, world.height / 2);
   }
 
   _savePosition(pos) {
