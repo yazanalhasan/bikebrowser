@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-26T07:50:00Z",
+  "last_updated": "2026-04-26T08:15:00Z",
   "current_week": 2,
   "current_pod_focus": "World & Discovery",
   "completed": [
@@ -265,6 +265,19 @@
       ],
       "polish_hotfix_bundled": "Orchestrator-applied polish hotfix bundled in same commit 5360e29: (1) _landmarkContainer setDepth(-25) → setDepth(-90) — landmark layer was leaking through fog because spec didn't anticipate fog being added below it (user noticed cacti showing through fog on fresh-save screenshot); (2) revealArea(homeX, homeY, 96) + redrawFog() at scene-start to seed home fog clearance, addressing the MEDIUM follow-up flagged in the synthesized recovery event. Both edits verified via npm run build (10.76s).",
       "notes": "RECEIPT_RECOVERY case (third in this session) — worker hit max_turns at tool-use 31 just before the receipt-write step (framework summary: 'HMR preserved at line 1550. Now let me write the receipt and memory files. First let me confirm the exact line ranges...'). Implementation was complete; receipt synthesized from disk evidence per saved memory feedback_receipt_recovery.md. Worker delivered: discovery gates in 3 loops (base/biome, node, path-destination) using imported isDiscovered(x,y); _mapLayout state for revealNode coord lookup; _nodeObjects map for tracking revealed nodes; revealNode(nodeId) public class method (~70 lines, 8-step orchestration: lookup loc + validate _mapLayout + compute coords + detect first-ever via getDiscoveryState().tiles.length===0 + revealArea(x,y,80px) + saveGame + redrawFog + spawn-or-reuse + animate + SFX with discover→reward_stinger fallback + first-discovery dialog 'Zuzu' speaker); _spawnNodeObjects helper (Phaser Container at depth 1, scale starts at 0); _playRevealAnimation (Back.easeOut 400ms scale + Sine alpha pulse, fully non-blocking). HMR registration intact at line 1566. Reviewer PASS on second dispatch (first stalled at tool-use 17): all CRITICAL clean (scope/HMR/build), all HIGH clean (revealNode is class method, isDiscovered used not duplicated, tweens non-blocking, first-discovery order correct, fog methods untouched). Two MEDIUM follow-ups (non-blocking, noted): visual asymmetry between create()-time nodes (drop-shadow + biome anchor + active-quest pulse) and revealNode-spawned nodes (circle + icon + label + stars only) — recommend future world-map-polish cycle; SFX fallback to reward_stinger is loud — future audio cycle could compose a gentler discover.ogg."
+    },
+    {
+      "agent": "world-discovery-quests",
+      "ts": "2026-04-26T08:15:00Z",
+      "commit": "459b90d9cb8d4faa5729a212d325a062b90adb1f",
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-world-discovery-quests-2026-04-25T08-10-00Z.json",
+      "receipt": ".claude/swarm/receipts/world-discovery-quests-2026-04-26T08-10-00Z.json",
+      "receipt_status": "complete_with_recovery",
+      "recovery_event": ".claude/swarm/recovery-events/world-discovery-quests-2026-04-26T08-10-00Z.md",
+      "user_directive": "Player-experience-first sequencing position 3 of 4 (terminal). Closes the discovery → progression loop.",
+      "pod_completion": "World & Discovery pod CLOSED with this PASS. All 10 pod agents complete: world-biome-classifier, world-terrain-renderer (v2), world-path-renderer, world-landmarks, world-map-polish, world-discovery-state, world-fog-overlay, world-node-gating, world-discovery-quests, runtime-audit-system.",
+      "notes": "RECEIPT_RECOVERY case (4th in this session) — worker hit max_turns at tool-use 29 just before Step 5 (the GameContainer boot wiring). Steps 1-4 fully landed: NEW src/renderer/game/data/discoveryUnlocks.js (73 lines, 4 entries — desert_foraging→desert_healer, copper_mine→bridge_collapse, salt_river→boat_puzzle, mountain_range→pending:true with TODO 'no force/gravity intro quest exists yet'); onRegionDiscovered(callback) + _emitRegionDiscovered(regionId) added to discoverySystem.js with module-private listener registry + try/catch wrapping + unsubscribe closure return; WorldMapScene.revealNode wired with _emitRegionDiscovered(nodeId) call (1 import binding + 3-line emit block); questSystem.js gained initDiscoveryQuestBridge() + consumePendingDiscoveryUnlocks(state) + module-private _pendingDiscoveryUnlocks queue (dedup guard on push, splice-as-you-go drain — partial-consumption safe, double-start safe via startQuest null-return discard). Orchestrator added Step-5 boot wiring to GameContainer.jsx: 1 import line + 4-line invocation block immediately after the existing import.meta.env.DEV block (NOT inside it — gameplay wiring, not dev-tooling). Mirrors the existing runRuntimeAudit pattern exactly. Reviewer PASS on first dispatch — all 6 CRITICAL clean (quests.js/regions.js/runtimeAudit.js/package.json all empty diffs; WorldMapScene scope minimal; build passes 12.24s; all 3 non-pending questIds verified to exist in quests.js at lines 176/1113/1429), all 4 HIGH clean (pub/sub unsubscribe + try/catch poison-isolation; queue partial-consumption safety; boot wiring orchestrator attribution clear; HMR intact at line 1571). Three MEDIUM/LOW follow-ups (non-blocking, documented): (1) DISCOVERY_UNLOCKS keys are locationIds not regions.js IDs — runtimeAudit will report 4 errors next dev boot; recommend follow-up to teach auditDiscoveryUnlocks about location-ID keying; (2) consumePendingDiscoveryUnlocks not yet wired into any scene checkpoint — queue silently accumulates until a scene consumes; (3) initDiscoveryQuestBridge docstring claims idempotency but duplicate calls would register duplicate listeners (queue dedup prevents double-queueing but not duplicate listener registration; low risk since called once at boot)."
     }
   ],
   "superseded": [
@@ -296,6 +309,6 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 10,
+  "dispatch_count": 12,
   "session_token_estimate": 0
 }
