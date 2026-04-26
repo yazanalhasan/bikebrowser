@@ -16,20 +16,23 @@ import { WORLD_LOCATIONS, REGIONS, isLocationUnlocked, getLocationsByRegion } fr
 import { getSideQuestStatus } from '../systems/sideQuestSystem.js';
 import { setBusy } from '../systems/gameplayArbiter.js';
 import { BIOME } from '../data/regions.js';
+import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { generateHeightmap, sampleHeightmap, rand2 } from '../utils/terrainNoise.js';
 
 const SCENE_KEY = 'WorldMapScene';
 
-// ── Terrain palette ─────────────────────────────────────────────────────────
-// Warm palette from the rebuild blueprint. Hex literals are used because
-// Phaser Graphics fillStyle expects 0xRRGGBB integers.
+// ── Terrain palette (v2 — tile-based renderer) ──────────────────────────────
+// Stronger, more recognizable biome identity than the v1 muddy warm palette.
+// Phaser Graphics fillStyle wants 0xRRGGBB integers, so each entry is the
+// hex value from the v2 spec converted from #RRGGBB.
 const BIOME_COLORS = Object.freeze({
-  [BIOME.DESERT]:    0xf0d18a, // sand
-  [BIOME.GRASSLAND]: 0x4f7a52, // warm green
-  [BIOME.WATER]:     0x2b5f91, // deep blue
-  [BIOME.ROCK]:      0x7a6a5a, // warm gray
-  [BIOME.MOUNTAIN]:  0x5a5560, // cool gray
-  [BIOME.URBAN]:     0xb8a07a, // warm tan / dirt
-  [BIOME.UNKNOWN]:   0x1a1a2e, // dark void (matches existing background)
+  [BIOME.DESERT]:    0xE6C27A, // sandy
+  [BIOME.GRASSLAND]: 0x7FBF6A, // warm green
+  [BIOME.WATER]:     0x3A7BA8, // blue
+  [BIOME.MOUNTAIN]:  0x7E6855, // gray-brown
+  [BIOME.ROCK]:      0x5C5048, // darker rough
+  [BIOME.URBAN]:     0x9C886A, // warm tan
+  [BIOME.UNKNOWN]:   0x3C3530, // desaturated foggy
 });
 
 // Mapping of worldMapData REGIONS ids → biome enum. The richer biome data
@@ -43,6 +46,52 @@ const WORLD_REGION_BIOME = Object.freeze({
 
 function biomeForWorldRegion(regionId) {
   return WORLD_REGION_BIOME[regionId] || BIOME.UNKNOWN;
+}
+
+// ── Terrain math helpers (module-level for v8 hot-path inlining) ───────────
+
+/** Unpack 0xRRGGBB int into { r, g, b } byte components. */
+function unpackRGB(c) {
+  return {
+    r: (c >> 16) & 0xff,
+    g: (c >> 8) & 0xff,
+    b: c & 0xff,
+  };
+}
+
+function clamp255(v) {
+  if (v < 0) return 0;
+  if (v > 255) return 255;
+  return v | 0;
+}
+
+/**
+ * Compute biome blend weights for a tile at (tx, ty) given the anchor list.
+ * Uses inverse-distance-squared weighting on the K nearest anchors. Returns
+ * a sorted array of `{ idx, w }` with weights normalized to sum to 1.
+ *
+ * For K=1 callers (detail pass), this still works — single-element array
+ * with weight 1.
+ */
+function computeBiomeWeights(tx, ty, anchors, k) {
+  // Score every anchor by inverse-distance-squared.
+  const scored = new Array(anchors.length);
+  for (let i = 0; i < anchors.length; i++) {
+    const dx = anchors[i].x - tx;
+    const dy = anchors[i].y - ty;
+    const d2 = dx * dx + dy * dy + 1; // +1 avoids div-by-zero at exact anchor
+    scored[i] = { idx: i, w: 1 / d2 };
+  }
+  // Partial sort: pick top K by descending weight.
+  scored.sort((a, b) => b.w - a.w);
+  const kk = Math.min(k, scored.length);
+  const top = scored.slice(0, kk);
+  let sum = 0;
+  for (let i = 0; i < kk; i++) sum += top[i].w;
+  if (sum > 0) {
+    for (let i = 0; i < kk; i++) top[i].w /= sum;
+  }
+  return top;
 }
 
 export default class WorldMapScene extends Phaser.Scene {
@@ -216,81 +265,193 @@ export default class WorldMapScene extends Phaser.Scene {
     audioMgr?.transitionToScene('WorldMapScene');
   }
 
-  // ── Terrain rendering ───────────────────────────────────────────────────
+  // ── Terrain rendering (v2 — tile-based, biome-blended, elevation-shaded) ─
 
   /**
-   * Paint biome-colored blobs for every world-map location. Runs once at
-   * scene create. The result is added to {@link _terrainContainer} which is
-   * inserted at depth 0 so it sits beneath every other display object on the
-   * scene (paths, nodes, labels). No per-frame work, no input listeners.
+   * Paint a continuous tile-based terrain across the entire map area. Runs
+   * once at scene create. Replaces the v1 radial fillCircle blobs (which
+   * looked like dead gradient stamps on tan paper) with a real grid of
+   * 32 px tiles. Each tile's color is the inverse-distance-squared blend of
+   * the 2-3 nearest region biomes, then modulated by a coarse fbm
+   * heightmap so high ground brightens and low ground dims.
+   *
+   * Result: continuous geography reads like a Civilization-style world map,
+   * with smooth biome transitions instead of visible region borders.
+   *
+   * The {@link _terrainContainer} field stays so the fog-overlay agent can
+   * tint or swap this layer in a later pass without touching unrelated
+   * display objects. No explicit depth — creation order in create() puts
+   * the terrain above the parchment rectangle and below paths / nodes /
+   * labels / HUD chrome.
    */
   _renderTerrainLayer({ padX, padY, usableW, usableH, mapBounds }) {
+    const t0 = (typeof performance !== 'undefined') ? performance.now() : Date.now();
+
     const container = this.add.container(0, 0);
-    // No explicit depth — relying on creation order. The container is added
-    // in create() at line ~80, after the parchment rectangle (line ~73) and
-    // before the title (line ~89), so it naturally renders above parchment
-    // and below all foreground elements (title, paths, nodes, labels, HUD).
-    // Setting depth(-100) here previously hid the terrain BEHIND the
-    // parchment because parchment is at default depth 0.
     this._terrainContainer = container;
 
+    // Map render rectangle in screen px (parchment area).
+    const mapLeft = mapBounds.x - mapBounds.w / 2;
+    const mapTop = mapBounds.y - mapBounds.h / 2;
+    const mapW = mapBounds.w;
+    const mapH = mapBounds.h;
+
+    // ── Tile grid ────────────────────────────────────────────────────────
+    // 32 px tiles → ~28×21 = ~588 tiles on a 900×615 parchment area. Small
+    // enough for fine biome blending, large enough to stay well under the
+    // 16 ms render budget (single Graphics object batches all fillRects).
+    const TILE = 32;
+    const cols = Math.ceil(mapW / TILE);
+    const rows = Math.ceil(mapH / TILE);
+
+    // ── Region anchors in pixel space ────────────────────────────────────
+    // Convert each location's normalized mapPos into the same coord system
+    // the markers use (padX/padY/usableW/usableH from create()) so terrain
+    // and nodes stay aligned.
+    const locations = Object.values(WORLD_LOCATIONS);
+    const anchors = locations.map((loc) => {
+      const biome = biomeForWorldRegion(loc.region);
+      return {
+        x: padX + loc.mapPos.x * usableW,
+        y: padY + loc.mapPos.y * usableH + 20,
+        biome,
+        color: BIOME_COLORS[biome] ?? BIOME_COLORS[BIOME.UNKNOWN],
+        isMountain: biome === BIOME.MOUNTAIN,
+      };
+    });
+
+    // ── Heightmap ────────────────────────────────────────────────────────
+    // Coarse fbm noise, ~5x coarser than the tile grid. On a 900×615 map
+    // with 32 px tiles, that's ~28×21 tiles → ~6×5 heightmap cells, which
+    // is intentionally low-frequency (broad continents, not pixel noise).
+    // Bumped slightly for finer mountain detail without being noisy.
+    const HM_DIVISOR = 5;
+    const hmCols = Math.max(8, Math.ceil(cols / HM_DIVISOR));
+    const hmRows = Math.max(6, Math.ceil(rows / HM_DIVISOR));
+    const heightmap = generateHeightmap({
+      seed: 0x5eed,
+      cols: hmCols,
+      rows: hmRows,
+      scale: 4,
+      octaves: 4,
+    });
+
+    // ── Tile rendering ───────────────────────────────────────────────────
     const g = this.add.graphics();
 
-    // Per-location blob: soft-edged gradient achieved by stacking three
-    // translucent fills of decreasing radius. Phaser's Graphics has no real
-    // radial gradient, but layered alpha circles read as a soft edge.
-    const locations = Object.values(WORLD_LOCATIONS);
-    const baseR = Math.max(usableW, usableH) * 0.22; // ~225 px on a 1024 map
-    for (const loc of locations) {
-      const x = padX + loc.mapPos.x * usableW;
-      const y = padY + loc.mapPos.y * usableH + 20;
-      const biome = biomeForWorldRegion(loc.region);
-      const color = BIOME_COLORS[biome] ?? BIOME_COLORS[BIOME.UNKNOWN];
+    // Pre-extract anchor RGB for fast lerp.
+    const anchorsRGB = anchors.map((a) => unpackRGB(a.color));
 
-      // Soft halo (outer)
-      g.fillStyle(color, 0.18);
-      g.fillCircle(x, y, baseR);
-      // Mid
-      g.fillStyle(color, 0.32);
-      g.fillCircle(x, y, baseR * 0.72);
-      // Core
-      g.fillStyle(color, 0.55);
-      g.fillCircle(x, y, baseR * 0.45);
-    }
+    for (let ty = 0; ty < rows; ty++) {
+      for (let tx = 0; tx < cols; tx++) {
+        // Tile center in screen px.
+        const cx = mapLeft + tx * TILE + TILE / 2;
+        const cy = mapTop + ty * TILE + TILE / 2;
 
-    // Desert stipple — a sparse dot pattern on top of the desert blobs adds
-    // a touch of texture without per-frame cost. Only desert locations get
-    // dots (other biomes read fine flat at this scale).
-    g.fillStyle(0xc9a86a, 0.55);
-    for (const loc of locations) {
-      if (biomeForWorldRegion(loc.region) !== BIOME.DESERT) continue;
-      const cx = padX + loc.mapPos.x * usableW;
-      const cy = padY + loc.mapPos.y * usableH + 20;
-      const stippleR = baseR * 0.6;
-      // Deterministic offsets (no RNG so the map is stable across reopens).
-      const seeds = [
-        [-0.6, -0.3], [0.4, -0.5], [-0.2, 0.55], [0.7, 0.15],
-        [0.05, -0.2], [-0.45, 0.2], [0.3, 0.5], [-0.7, -0.6],
-        [0.55, -0.1], [-0.1, 0.0], [0.2, -0.7], [-0.55, 0.55],
-      ];
-      for (const [dx, dy] of seeds) {
-        g.fillCircle(cx + dx * stippleR, cy + dy * stippleR, 1.6);
+        // ── Biome blend: weighted by 1 / dist^2 of nearest 2-3 anchors ──
+        const weights = computeBiomeWeights(cx, cy, anchors, 3);
+
+        // Mix RGB.
+        let r = 0, gC = 0, b = 0;
+        for (let i = 0; i < weights.length; i++) {
+          const w = weights[i].w;
+          const rgb = anchorsRGB[weights[i].idx];
+          r += rgb.r * w;
+          gC += rgb.g * w;
+          b += rgb.b * w;
+        }
+
+        // ── Heightmap sample ──
+        const gx = (tx / cols) * (hmCols - 1);
+        const gy = (ty / rows) * (hmRows - 1);
+        let h = sampleHeightmap(heightmap, gx, gy);
+
+        // Mountain bias: nearest anchor is mountain → push tile uphill.
+        const top = weights[0];
+        if (anchors[top.idx].isMountain) {
+          h = Math.min(1, h + 0.3 * top.w);
+        }
+
+        // Brightness modifier: 0.85 .. 1.15 over h in [0,1].
+        const k = 0.85 + h * 0.30;
+        r = clamp255(r * k);
+        gC = clamp255(gC * k);
+        b = clamp255(b * k);
+
+        const color = (r << 16) | (gC << 8) | b;
+        g.fillStyle(color, 1);
+        g.fillRect(mapLeft + tx * TILE, mapTop + ty * TILE, TILE, TILE);
       }
     }
 
-    // Mask the terrain to the parchment rectangle so blobs don't bleed onto
-    // the dark border outside the map.
+    // ── Per-biome detail pass (cheap, deterministic) ─────────────────────
+    // Walk tiles again and add taste-level detail keyed off each tile's
+    // dominant biome. All offsets come from the deterministic hash so the
+    // map renders identically across reloads.
+    for (let ty = 0; ty < rows; ty++) {
+      for (let tx = 0; tx < cols; tx++) {
+        const cx = mapLeft + tx * TILE + TILE / 2;
+        const cy = mapTop + ty * TILE + TILE / 2;
+        const weights = computeBiomeWeights(cx, cy, anchors, 1);
+        const dominant = anchors[weights[0].idx].biome;
+
+        if (dominant === BIOME.DESERT) {
+          // Sparse 1-px sand grain stipple — only ~12% of desert tiles, 1-2 dots.
+          const r1 = rand2(0xc0ffee, tx, ty);
+          if (r1 < 0.18) {
+            g.fillStyle(0xC9A570, 0.85);
+            const dx = (rand2(0xa, tx, ty) - 0.5) * (TILE - 4);
+            const dy = (rand2(0xb, tx, ty) - 0.5) * (TILE - 4);
+            g.fillRect(cx + dx, cy + dy, 1, 1);
+            if (r1 < 0.06) {
+              const dx2 = (rand2(0xc, tx, ty) - 0.5) * (TILE - 4);
+              const dy2 = (rand2(0xd, tx, ty) - 0.5) * (TILE - 4);
+              g.fillRect(cx + dx2, cy + dy2, 1, 1);
+            }
+          }
+        } else if (dominant === BIOME.GRASSLAND) {
+          // Darker green patches — ~8% of grassland tiles, small 3px blob.
+          if (rand2(0x9ea55, tx, ty) < 0.10) {
+            g.fillStyle(0x5fa050, 0.55);
+            g.fillCircle(cx, cy, 3);
+          }
+        } else if (dominant === BIOME.WATER) {
+          // Subtle horizontal banding — every other tile row, faint white wash.
+          if ((ty % 2) === 0) {
+            g.fillStyle(0x6FA8C8, 0.10);
+            g.fillRect(mapLeft + tx * TILE, mapTop + ty * TILE, TILE, TILE);
+          }
+        } else if (dominant === BIOME.ROCK) {
+          // Scattered dark dots, ~12% chance per tile.
+          if (rand2(0x60c10c, tx, ty) < 0.14) {
+            g.fillStyle(0x3A322C, 0.75);
+            const dx = (rand2(0x21, tx, ty) - 0.5) * (TILE - 6);
+            const dy = (rand2(0x22, tx, ty) - 0.5) * (TILE - 6);
+            g.fillCircle(cx + dx, cy + dy, 1.5);
+          }
+        } else if (dominant === BIOME.URBAN) {
+          // Faint grid hint — light line on a small fraction of tiles.
+          if (rand2(0x07ba17, tx, ty) < 0.18) {
+            g.lineStyle(1, 0x7a6a4a, 0.35);
+            g.strokeRect(mapLeft + tx * TILE + 4, mapTop + ty * TILE + 4, TILE - 8, TILE - 8);
+          }
+        }
+      }
+    }
+
+    // Mask the terrain to the parchment rectangle so tiles at the grid
+    // edges never spill onto the dark border outside the map.
     const mask = this.make.graphics({ x: 0, y: 0, add: false });
     mask.fillStyle(0xffffff, 1);
-    mask.fillRect(
-      mapBounds.x - mapBounds.w / 2,
-      mapBounds.y - mapBounds.h / 2,
-      mapBounds.w,
-      mapBounds.h,
-    );
+    mask.fillRect(mapLeft, mapTop, mapW, mapH);
     g.setMask(mask.createGeometryMask());
 
     container.add(g);
+
+    const t1 = (typeof performance !== 'undefined') ? performance.now() : Date.now();
+    const ms = (t1 - t0).toFixed(1);
+    // eslint-disable-next-line no-console
+    console.debug(`[WorldMapScene] terrain v2: ${cols}x${rows}=${cols * rows} tiles in ${ms} ms (heightmap ${hmCols}x${hmRows})`);
   }
 
   // ── Travel to location ──────────────────────────────────────────────────
@@ -377,3 +538,6 @@ export default class WorldMapScene extends Phaser.Scene {
     }
   }
 }
+
+// ── HMR ──────────────────────────────────────────────────────────────
+registerSceneHmr(SCENE_KEY, import.meta.hot, WorldMapScene);
