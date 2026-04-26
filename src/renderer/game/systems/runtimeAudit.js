@@ -165,7 +165,13 @@ async function auditDiscoveryUnlocks() {
 
   let DISCOVERY_UNLOCKS;
   try {
-    const mod = await import('../data/discoveryUnlocks.js');
+    // Hide the path behind a variable so neither Vite's pre-bundler nor Rollup
+    // (production build) statically analyze it. Without this indirection, the
+    // build fails with "Could not resolve ../data/discoveryUnlocks.js" because
+    // the file is the world-discovery-quests agent's deliverable and has not
+    // shipped yet. The runtime try/catch handles the actual import failure.
+    const modPath = '../data/discoveryUnlocks.js';
+    const mod = await import(/* @vite-ignore */ modPath);
     DISCOVERY_UNLOCKS = mod.default || mod.DISCOVERY_UNLOCKS;
   } catch {
     console.log('[runtimeAudit] DISCOVERY_UNLOCKS module not yet present — auditDiscoveryUnlocks skipped');
