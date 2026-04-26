@@ -18,7 +18,7 @@ import { setBusy } from '../systems/gameplayArbiter.js';
 import { BIOME } from '../data/regions.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { generateHeightmap, sampleHeightmap, rand2, hash2 } from '../utils/terrainNoise.js';
-import { isDiscovered, DISCOVERY_TILE_SIZE } from '../systems/discoverySystem.js';
+import { isDiscovered, revealArea, getDiscoveryState, DISCOVERY_TILE_SIZE } from '../systems/discoverySystem.js';
 
 const SCENE_KEY = 'WorldMapScene';
 
@@ -160,6 +160,10 @@ export default class WorldMapScene extends Phaser.Scene {
     const usableW = width - padX * 2;
     const usableH = height - padY * 2 - 20;
 
+    // Store layout params so revealNode() can compute world coords without
+    // create() being on the call stack.
+    this._mapLayout = { padX, padY, usableW, usableH };
+
     // ── Path layer — drawn BEFORE nodes so node icons render on top ──
     // Neighborhood home-base anchor (hub for all connection paths).
     const homeX = padX + 0.15 * usableW;
@@ -174,6 +178,17 @@ export default class WorldMapScene extends Phaser.Scene {
       usableW,
       usableH,
     });
+
+    // ── Seed initial home/neighborhood fog clearance ────────────────────────
+    // On a fresh save the discovery state is empty and fog covers the entire
+    // map. The home node is rendered above fog (depth 1) so it stays visible,
+    // but the surrounding area is pitch black, which reads as broken on first
+    // load. Reveal a comfortable area (3 × DISCOVERY_TILE_SIZE = 96 px) around
+    // the home so fog clears around the player's start point. Idempotent —
+    // revealArea adds tiles to a Set; subsequent loads of an already-revealed
+    // save are no-ops. Then redraw fog to apply.
+    revealArea(homeX, homeY, 96);
+    this.redrawFog();
 
     // ── Landmark scatter layer ──
     // Rendered AFTER terrain and paths, BEFORE nodes/labels so landmarks
@@ -196,6 +211,12 @@ export default class WorldMapScene extends Phaser.Scene {
     for (const loc of locations) {
       const x = padX + loc.mapPos.x * usableW;
       const y = padY + loc.mapPos.y * usableH + 20;
+
+      // ── Discovery gate — skip base entirely for undiscovered nodes ─────────
+      // Skipping entirely (not silhouette) prevents leaking world layout through
+      // the fog layer, consistent with the path-gating rule below.
+      if (!isDiscovered(x, y)) continue;
+
       const biome = biomeForWorldRegion(loc.region);
 
       // ── Drop shadow under each node (rendered first so it's behind base) ─
@@ -255,10 +276,19 @@ export default class WorldMapScene extends Phaser.Scene {
       }
     }
 
+    // Per-location map for reveal animation targets: { circle, icon, nameLabel }
+    this._nodeObjects = {};
+
     for (const loc of locations) {
-      const unlocked = isLocationUnlocked(loc.id, state);
       const x = padX + loc.mapPos.x * usableW;
       const y = padY + loc.mapPos.y * usableH + 20;
+
+      // ── Discovery gate — skip rendering entirely if not discovered ──────────
+      // Skipping (not silhouette) is chosen so undiscovered node positions are
+      // never visible above the fog, preventing world-layout leakage.
+      if (!isDiscovered(x, y)) continue;
+
+      const unlocked = isLocationUnlocked(loc.id, state);
 
       // Node circle — depth 1
       const color = unlocked ? this._getTypeColor(loc.type) : 0x666666;
@@ -327,6 +357,8 @@ export default class WorldMapScene extends Phaser.Scene {
       }
 
       this._markers.push({ loc, circle, icon, nameLabel });
+      // Store game objects keyed by locationId so revealNode() can tween them.
+      this._nodeObjects[loc.id] = { circle, icon, nameLabel, x, y };
     }
 
     // ── Neighborhood marker (home base) ──
@@ -475,6 +507,12 @@ export default class WorldMapScene extends Phaser.Scene {
       const ay = homeY;
       const bx = padX + loc.mapPos.x * usableW;
       const by = padY + loc.mapPos.y * usableH + 20;
+
+      // ── Discovery gate — skip path if the destination node is not discovered.
+      // The home base (neighborhood) is always visible; we treat it as always
+      // discovered. The destination must be discovered to avoid leaking the
+      // world layout (path endpoints reveal node positions through the fog).
+      if (!isDiscovered(bx, by)) continue;
 
       // ── Biome sampling (endpoint + midpoint) ────────────────────────────
       const biomeA = homeBiome;
@@ -957,7 +995,12 @@ export default class WorldMapScene extends Phaser.Scene {
 
     const container = this.add.container(0, 0);
     this._landmarkContainer = container;
-    container.setDepth(-25); // explicit depth per upgrade #5
+    // Depth -90 sits BETWEEN terrain (-100) and fog (-75). Landmarks are
+    // geographic features that belong with the terrain — fog must hide them
+    // until the player explores. Original spec used -25 (above fog), which
+    // leaked the world layout: cacti/ridges/scrub were visible through fog
+    // on a fresh save. Lowered after the fog layer landed.
+    container.setDepth(-90);
 
     const mapLeft = mapBounds.x - mapBounds.w / 2;
     const mapTop  = mapBounds.y - mapBounds.h / 2;
@@ -1286,6 +1329,226 @@ export default class WorldMapScene extends Phaser.Scene {
       text: `${loc.name} is locked. ${hints.join('. ') || 'Keep exploring!'}`,
       choices: null, step: null,
     });
+  }
+
+  // ── Node discovery & reveal ───────────────────────────────────────────────
+
+  /**
+   * Reveal a world-map node by id. Intended to be called by external systems
+   * (quest engine, dialogue events) when a location is first discovered.
+   *
+   * Steps:
+   *  1. Resolve the location's pixel coords from _mapLayout.
+   *  2. Check whether this is the very first discovery ever (pre-revealArea
+   *     tile count === 0) so we can fire the first-discovery dialog.
+   *  3. Call revealArea() to mark tiles as discovered in the discovery module.
+   *  4. Call saveGame() so the reveal persists across sessions.
+   *  5. Call redrawFog() to update the fog visual.
+   *  6. Spawn a circle + path reveal: create the node game objects that were
+   *     skipped during create() (because the node was hidden), animate them in.
+   *  7. Play discover SFX if available.
+   *  8. Fire first-discovery dialog on the very first ever reveal.
+   *
+   * Non-blocking: all Phaser tweens are asynchronous. No await, no scene pause.
+   *
+   * @param {string} nodeId — location id from WORLD_LOCATIONS.
+   */
+  revealNode(nodeId) {
+    const loc = WORLD_LOCATIONS[nodeId];
+    if (!loc) {
+      // eslint-disable-next-line no-console
+      console.warn(`[WorldMapScene] revealNode: unknown nodeId "${nodeId}"`);
+      return;
+    }
+
+    const layout = this._mapLayout;
+    if (!layout) {
+      // eslint-disable-next-line no-console
+      console.warn('[WorldMapScene] revealNode: called before create() — _mapLayout not set');
+      return;
+    }
+
+    const { padX, padY, usableW, usableH } = layout;
+    const x = padX + loc.mapPos.x * usableW;
+    const y = padY + loc.mapPos.y * usableH + 20;
+
+    // ── 1. First-discovery detection: was the tile set empty before this call?
+    // We check via getDiscoveryState().tiles.length instead of a flag in the
+    // save schema — no schema bump required, and it correctly handles the edge
+    // case where the node was already revealed (tiles > 0 from a prior load).
+    const wasFirstEver = getDiscoveryState().tiles.length === 0;
+
+    // ── 2. Mark tiles discovered (2.5× DISCOVERY_TILE_SIZE radius = 80 px)
+    // This covers the node icon (radius 22) plus a comfortable surrounding area
+    // that aligns with the fog grid, so the fog clears visibly around the node.
+    const REVEAL_RADIUS = DISCOVERY_TILE_SIZE * 2.5; // 80 px
+    revealArea(x, y, REVEAL_RADIUS);
+
+    // ── 3. Persist — saveGame() reads live discovery state from the module.
+    const state = this.registry.get('gameState');
+    saveGame(state);
+
+    // ── 4. Update fog visual.
+    this.redrawFog();
+
+    // ── 5. Spawn node game objects for this newly revealed location and animate.
+    // If the node was already rendered (visible from a prior session), skip
+    // re-creation but still play the animation on the existing objects.
+    if (!this._nodeObjects[nodeId]) {
+      this._spawnNodeObjects(loc, x, y, state);
+    }
+
+    const objs = this._nodeObjects[nodeId];
+    if (objs) {
+      this._playRevealAnimation(objs);
+    }
+
+    // ── 6. Play discover SFX if available.
+    // audioManifest has no 'discover' SFX key — no sfx_world/sfx_ui entry for
+    // discovery. We fall back to 'reward_stinger' (stinger, 0.7 volume) as the
+    // closest available celebratory cue.
+    const audioMgr = this.registry.get('audioManager');
+    if (audioMgr) {
+      // Try discover key first; fall back to reward_stinger.
+      if (audioMgr.hasSfx?.('discover')) {
+        audioMgr.playSfx('discover');
+      } else if (audioMgr.playStinger) {
+        audioMgr.playStinger('reward_stinger');
+      } else {
+        // AudioManager may expose playSfx for stingers too — try both.
+        audioMgr.playSfx?.('reward_stinger');
+      }
+    }
+
+    // ── 7. First-discovery dialog (narrative beat).
+    if (wasFirstEver) {
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu',
+        text: `You discovered a new place! "${loc.name}" is now on your map.`,
+        choices: null,
+        step: null,
+      });
+    }
+  }
+
+  /**
+   * Spawn node game objects (circle, icon, label, stars) for a location that
+   * was previously hidden behind fog. Called from revealNode() when the
+   * location was not rendered during create(). Places all child objects inside
+   * a Phaser Container positioned at (x, y) so the reveal tween only needs to
+   * animate the container's scale — children use local (0, 0)-relative coords.
+   * Registers click handlers so the node is immediately interactive.
+   *
+   * @param {object} loc — WORLD_LOCATIONS entry
+   * @param {number} x — screen X
+   * @param {number} y — screen Y
+   * @param {object} state — gameState registry value
+   */
+  _spawnNodeObjects(loc, x, y, state) {
+    const unlocked = isLocationUnlocked(loc.id, state);
+    const color = unlocked ? this._getTypeColor(loc.type) : 0x666666;
+
+    // Container at node center, depth 1. Starts at scale 0 for the reveal
+    // tween. Input on child objects is relative to the container position.
+    const container = this.add.container(x, y);
+    container.setDepth(1);
+    container.setScale(0);
+
+    // Node circle — at local (0, 0).
+    const circle = this.add.circle(0, 0, 22, color, unlocked ? 1 : 0.4);
+    circle.setStrokeStyle(3, unlocked ? 0xffffff : 0x888888);
+    container.add(circle);
+
+    // Icon — at local (0, 0).
+    const icon = this.add.text(0, 0, unlocked ? loc.icon : '🔒', {
+      fontSize: '20px',
+    }).setOrigin(0.5);
+    container.add(icon);
+
+    // Name label — at local (0, 32).
+    const nameLabel = this.add.text(0, 32, loc.name, {
+      fontSize: '11px', fontFamily: 'sans-serif', fontStyle: 'bold',
+      color: unlocked ? '#3b1e08' : '#888888',
+      stroke: '#f5e6c8', strokeThickness: 2,
+      align: 'center', wordWrap: { width: 120 },
+    }).setOrigin(0.5, 0);
+    if (!unlocked) nameLabel.setAlpha(0.7);
+    container.add(nameLabel);
+
+    // Difficulty stars — at local (0, 48).
+    if (unlocked) {
+      const stars = '⭐'.repeat(loc.difficulty);
+      container.add(this.add.text(0, 48, stars, { fontSize: '10px' }).setOrigin(0.5));
+    }
+
+    // Make the circle interactive. Because the circle is inside a container,
+    // Phaser's input system resolves pointer events relative to the container's
+    // world transform automatically. setInteractive() on the container itself
+    // would need an explicit hit area; instead we keep the circle interactive
+    // and the container's scale tween from 0→1 naturally scales the hit zone.
+    circle.setInteractive({ useHandCursor: unlocked });
+    if (unlocked) {
+      circle.on('pointerdown', () => this._selectLocation(loc));
+      circle.on('pointerover', () => {
+        this.tweens.add({ targets: circle, scaleX: 1.2, scaleY: 1.2, duration: 150, ease: 'Back.easeOut' });
+      });
+      circle.on('pointerout', () => {
+        this.tweens.add({ targets: circle, scaleX: 1, scaleY: 1, duration: 150 });
+      });
+    } else {
+      circle.setInteractive({ useHandCursor: false });
+      circle.on('pointerdown', () => this._showLockHint(loc, state));
+    }
+
+    this._markers.push({ loc, circle, icon, nameLabel });
+    this._nodeObjects[loc.id] = { container, circle, icon, nameLabel, x, y };
+  }
+
+  /**
+   * Play the reveal animation on a node's game objects.
+   *
+   * If a `container` is present (nodes spawned by _spawnNodeObjects after fog
+   * reveal), scale the container 0 → 1 and alpha-pulse the circle + icon.
+   * If only individual objects are present (nodes already rendered in create()
+   * that were already at scale 1), alpha-pulse only — no scale tween needed.
+   *
+   * Duration: 400 ms. Back.easeOut gives a satisfying "pop" overshoot.
+   * Non-blocking — Phaser tweens are asynchronous; never blocks input.
+   *
+   * @param {{ container?, circle, icon, nameLabel }} objs
+   */
+  _playRevealAnimation({ container, circle, icon, nameLabel }) {
+    const DURATION = 400;
+
+    if (container) {
+      // Container approach (freshly spawned node): scale the whole group in.
+      this.tweens.add({
+        targets: container,
+        scale: 1,
+        duration: DURATION,
+        ease: 'Back.easeOut',
+      });
+    }
+
+    // Alpha pulse on circle + icon (nameLabel alpha is 0.7 for locked nodes;
+    // don't override it). Works for both container and non-container paths.
+    const pulseTargets = [circle, icon].filter(Boolean);
+    if (pulseTargets.length > 0) {
+      this.tweens.add({
+        targets: pulseTargets,
+        alpha: 0.5,
+        duration: DURATION * 0.35,
+        ease: 'Sine.easeIn',
+        onComplete: () => {
+          this.tweens.add({
+            targets: pulseTargets,
+            alpha: 1,
+            duration: DURATION * 0.65,
+            ease: 'Sine.easeOut',
+          });
+        },
+      });
+    }
   }
 
   _getTypeColor(type) {

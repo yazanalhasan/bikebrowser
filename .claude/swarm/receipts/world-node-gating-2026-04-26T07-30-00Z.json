@@ -1,0 +1,65 @@
+{
+  "agent": "world-node-gating",
+  "ts": "2026-04-26T07:30:00Z",
+  "status": "complete_with_recovery",
+  "synthesized_by": "swarm-orchestrator",
+  "synthesis_reason": "Worker stalled at max_turns (tool-use 31) AFTER all load-bearing code had landed on disk. The agent's framework-reported summary was 'HMR preserved at line 1550. Now let me write the receipt and memory files. First let me confirm the exact line ranges...' — the worker had completed the spec implementation and was preparing to write the receipt + memory files when the turn budget exhausted. Receipt synthesized from disk evidence per saved memory feedback_receipt_recovery.md.",
+  "synthesis_evidence": {
+    "code_complete_on_disk": "git diff HEAD -- src/renderer/game/scenes/WorldMapScene.js shows ~308 lines changed (additions + modifications) including the full revealNode/_spawnNodeObjects/_playRevealAnimation method trio. node --check passes. npm run build passes (333 modules transformed in 11.67s).",
+    "import_extension_correct": "Line 21: extended discoverySystem import to add revealArea + getDiscoveryState (was: isDiscovered + DISCOVERY_TILE_SIZE only). All four are used by the new methods.",
+    "discovery_gating_applied": [
+      "Base/biome layer loop — skip iteration if !isDiscovered(x, y) (line 200ish)",
+      "Node layer loop (circles/icons/labels) — skip iteration if !isDiscovered(x, y) (line 270ish)",
+      "Path layer — skip path segment if destination !isDiscovered(bx, by) (line 497ish). Home/neighborhood treated as always-visible source — confirmed by inline comment.",
+      "Home/neighborhood marker block (separate from WORLD_LOCATIONS loop) NOT modified — intentional, keeps player's start point visible."
+    ],
+    "reveal_method_present": "revealNode(nodeId) class method on WorldMapScene. 8-step orchestration: lookup loc, validate _mapLayout, compute coords, detect first-ever via getDiscoveryState().tiles.length===0, revealArea(x,y,80px), saveGame(state), redrawFog(), spawn-or-reuse node objects + animate, SFX with discover→reward_stinger fallback, first-discovery dialog ('Zuzu' speaker).",
+    "spawned_node_helper": "_spawnNodeObjects(loc, x, y, state) creates a Phaser Container at depth 1 holding circle/icon/label/stars at local origin. Click handlers wired identically to create()-time nodes. Container approach allows clean scale tween from 0 to 1.",
+    "tween_helper": "_playRevealAnimation({container, circle, icon, nameLabel}) — if container exists, scale 0→1 with Back.easeOut over 400 ms; alpha pulse on circle+icon for both paths (35% in, 65% out). Non-blocking; nameLabel alpha untouched to preserve locked-state 0.7 dimming.",
+    "hmr_block_intact": "registerSceneHmr(SCENE_KEY, import.meta.hot, WorldMapScene) at bottom of file — preserved verbatim per worker's own framework-summary 'HMR preserved at line 1550'.",
+    "fog_layer_untouched": "_renderFogLayer / redrawFog / _drawFogTiles methods are untouched in the diff. Worker is a redrawFog() consumer, not modifier — per dispatch instruction."
+  },
+  "files_changed": [
+    {
+      "type": "edit",
+      "path": "src/renderer/game/scenes/WorldMapScene.js",
+      "diff_summary": "+~280 net lines, -~10. Three new class methods (revealNode, _spawnNodeObjects, _playRevealAnimation), three discovery-gate early-returns in existing loops, one import-line extension, one _mapLayout assignment, one _nodeObjects map declaration."
+    }
+  ],
+  "exports_added": [],
+  "tests_added": [],
+  "blockers_discovered": [],
+  "next_agent_suggestions": ["world-discovery-quests"],
+  "notes": {
+    "design_decisions": {
+      "skip_vs_silhouette": "SKIP entirely (no silhouette). Reasoning per inline comment: 'Skipping entirely (not silhouette) prevents leaking world layout through the fog layer, consistent with the path-gating rule below.' Aligns with spec recommendation in dispatch prompt.",
+      "first_discovery_detection": "Pre-revealArea check `getDiscoveryState().tiles.length === 0`. No save schema bump required. Edge case handled: if a player loads a save where the discovery set is non-empty, no first-discovery dialog fires (correct — they've discovered before).",
+      "reveal_radius": "80 px (2.5 × DISCOVERY_TILE_SIZE = 2.5 × 32). Covers node circle (r=22) + comfortable surrounding area aligned to fog grid.",
+      "discover_sfx": "audioManifest has NO 'discover' SFX key. Worker confirmed by grep — manifest defines a 'desert_discovery' MUSIC track (mood:discovery, but currently 0-byte file per audio-asset-cleanup notes) and a 'reward_stinger' STINGER. Implementation tries hasSfx('discover') first (defensive against future addition), then falls back to playStinger('reward_stinger'). Recommend follow-up: a real `discover` SFX entry in audioManifest + a short audio file."
+    },
+    "manual_verification_scenarios": [
+      "1. Fresh save (or reset) → world map shows: terrain visible, fog covering most tiles, only the home/neighborhood node visible (it's rendered separately and not in the discovery gate). No paths to other locations.",
+      "2. Trigger revealNode('arizona_desert') from devtools console (e.g., via window.__phaserGame.scene.getScene('WorldMapScene').revealNode('arizona_desert')) → arizona node appears with scale 0→1 Back.easeOut bounce + alpha pulse. reward_stinger SFX plays. First-time only: 'You discovered a new place! arizona_desert is now on your map.' dialog. Path from home to arizona becomes visible. Fog clears in a ~80 px radius around the node.",
+      "3. Reload page after revealing → arizona stays revealed (load path picks up persisted discovery state). No re-animation. Subsequent revealNode calls during the same session do NOT re-fire the first-discovery dialog (gating is per-save, not per-session)."
+    ],
+    "follow_ups_recommended": {
+      "home_fog_clearance": "MEDIUM/LOW — Home/neighborhood node is always rendered (above fog), but the fog tile under the home is NOT pre-revealed on scene start. Player sees the home node clearly but the surrounding area is dark fog. Cosmetic. Fix in future polish: call revealArea(homeX, homeY, ~80) at scene create end-of-fog-rendering, OR seed initial discovery state in initDiscovery for the home tile.",
+      "spawned_vs_created_visual_asymmetry": "LOW — Nodes rendered at create() time get the full visual treatment (drop shadow, biome anchor base, conditional difficulty stars, pulse animation if active quest). Nodes rendered via _spawnNodeObjects() get circle + icon + label + stars only — no biome anchor, no drop shadow. Visually they pop in cleanly but lack the geological anchor below. Mitigations: either replicate the biome-anchor logic in _spawnNodeObjects, or accept the asymmetry until next world-map-polish cycle.",
+      "discover_sfx_authoring": "LOW — Truly correct SFX would be a short, gentle bell or chime. reward_stinger is loud and celebratory; works but slightly heavy for routine discoveries. Future audio cycle could compose a quieter discover.ogg."
+    },
+    "scope_compliance": {
+      "files_touched": "Only src/renderer/game/scenes/WorldMapScene.js, as scoped.",
+      "files_NOT_touched": [
+        "src/renderer/game/systems/discoverySystem.js (read-only consumed)",
+        "src/renderer/game/data/regions.js (read-only consumed)",
+        "src/renderer/game/data/worldMapData.js (read-only consumed)",
+        "src/renderer/game/audio/audioManifest.js (read-only grep'd)",
+        "All other scenes",
+        "All files under src/renderer/game3d/"
+      ],
+      "fog_methods_untouched": "_renderFogLayer / redrawFog / _drawFogTiles untouched per dispatch constraint.",
+      "hmr_preserved": "Top phaserHmr import (line 19) and bottom registerSceneHmr call preserved verbatim."
+    },
+    "build_validation": "npm run build succeeded post-worker-edit (concurrent with the runtime-audit-system hotfix in commit c2fae90). 333 modules transformed in 11.67s. No build warnings introduced by this worker."
+  }
+}
