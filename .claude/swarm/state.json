@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-25T22:05:00Z",
+  "last_updated": "2026-04-25T20:45:00Z",
   "current_week": 2,
   "current_pod_focus": "World & Discovery",
   "completed": [
@@ -89,11 +89,20 @@
       "cycle1_review_retracted": ".claude/swarm/receipts/code-quality-reviewer-2026-04-25T19-20-00Z.json",
       "cycle1_review_authoritative": ".claude/swarm/receipts/code-quality-reviewer-2026-04-25T19-45-00Z.json",
       "notes": "Took two cycles. Cycle 1 (NEEDS_REVISION on 2nd reviewer pass): resolveSpeakerToNpcId helper at GameContainer.jsx:47-69 + dialog-TTS effect rewrite at lines 509-531 + speaker→npcId fallback fix + Option N: choice-text append matching the physics-question pattern. Worker correctly left the physics path alone; the first reviewer pass FAIL on a 'physics path scope violation' was a misattribution of a pre-existing user edit (GameContainer.jsx hadn't been committed since e2531ce, so git diff HEAD mixed the user's earlier physics-TTS edit with the worker's actual changes — re-review with corrected baseline retracted the FAIL). The remaining HIGH was that HONORIFIC_RE stripped Mr/Mrs/Ms/Dr but the actual CHARACTER_GENDER keys keep those prefixes. Cycle 2 (PASS): single-line regex change /^(mr|mrs|ms|dr|ranger)\\.?\\s+/i → /^(ranger)\\.?\\s+/i. Now Mrs. Ramirez/Mr. Chen resolve to mrs_ramirez/mr_chen and hit the gender map. Routed via general-purpose for both cycles since the new tts-dialog-integration agent type isn't in this session's Agent registry."
+    },
+    {
+      "agent": "world-biome-classifier",
+      "ts": "2026-04-25T20:45:00Z",
+      "commit": "42427b670fdc3f0890bb038620e39b2b6745cac1",
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-world-biome-classifier-2026-04-25T20-45-00Z.json",
+      "receipt": ".claude/swarm/receipts/world-biome-classifier-2026-04-25T20-30-00Z.json",
+      "notes": "First World & Discovery pod agent. 9 regions discovered + tagged: arizona/arabian → desert, andes/pakistan → mountain, turkish → grassland, persian → rock, swahili → water, chinese/malay → unknown (enum has no multi-biome or jungle/forest values). BIOME frozen enum + getBiome(regionId) helper added; existing exports (REGIONS default, REGION_MAP, getRegionMaterial, getAllMineableMaterials, RARITY_CHANCE) preserved. Notable judgment call (PASS confirmed): every region already had a non-canonical `biome:` field with descriptive strings ('desert_scrub', 'temperate_steppe', etc.); worker normalized values in-place to the canonical enum rather than introduce a parallel field. Reviewer's independent grep confirmed no consumer reads `region.biome` from region data — all `.biome` references in src/ are runtime `state.environment.biome` paths. Zero behavioral risk. Reviewer also caught a latent bug in the spec: spec example used REGIONS[regionId]?.biome (REGIONS is an array, would always return undefined); worker correctly used REGION_MAP[regionId]?.biome. MEDIUM follow-up: questGenerator.js:210 and MCPSystem.js:221 still use stale `'desert_scrub'` fallback string — pre-existing, not a regression, flagged for a future migration agent. Routed via general-purpose since the new agent type isn't in this session's Agent registry; reviewer was native (sonnet override per saved memory)."
     }
   ],
   "in_progress": [],
   "blocked": [],
   "human_gates_pending": [],
-  "dispatch_count": 21,
+  "dispatch_count": 23,
   "session_token_estimate": 0
 }
