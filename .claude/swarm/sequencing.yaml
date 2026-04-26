@@ -106,3 +106,66 @@ agents:
     requires_human_gate: false
     notes: "Legacy 2D game scope. Wires the voice config into GameContainer.jsx dialog TTS — fixes speaker→npcId mismatch and appends quiz answer choices to the spoken utterance (matching the physics-question pattern). Scope strictly limited to the dialog-TTS effect block; reviewer should flag any other GameContainer edits as CRITICAL scope violation."
     max_turns: 20
+
+  # ── World & Discovery pod (legacy 2D game) ──────────────────────────────
+  # Transforms WorldMapScene from a static menu of locations into a
+  # terrain-based, fog-of-war, discovery-driven world. Civilization-style
+  # progression. Pure 2D legacy game scope; nothing under src/renderer/game3d/.
+
+  world-biome-classifier:
+    prerequisites: []
+    week: 2
+    pod: World & Discovery
+    requires_human_gate: false
+    notes: "Pure data work in regions.js. Tags every region with a BIOME enum (DESERT/GRASSLAND/WATER/ROCK/MOUNTAIN/URBAN/UNKNOWN). Strictly additive; no field renames. Foundation for terrain rendering."
+    max_turns: 20
+
+  world-terrain-renderer:
+    prerequisites: [world-biome-classifier]
+    week: 2
+    pod: World & Discovery
+    requires_human_gate: false
+    notes: "Adds a terrain layer BENEATH existing nodes/paths/labels in WorldMapScene.js. Soft-blob biome painting per region using the warm desert palette. World stops looking like a blank canvas. Performance: render once at scene create."
+    max_turns: 25
+
+  world-discovery-state:
+    prerequisites: []
+    week: 2
+    pod: World & Discovery
+    parallel_safe_with: [world-biome-classifier, world-terrain-renderer]
+    requires_human_gate: false
+    notes: "New systems/discoverySystem.js — sparse Set-keyed grid, save/load integration via existing saveSystem (additive, no version bump unless required). Data-only this cycle; rendering owned by other agents."
+    max_turns: 22
+
+  world-fog-overlay:
+    prerequisites: [world-terrain-renderer, world-discovery-state]
+    week: 2
+    pod: World & Discovery
+    requires_human_gate: false
+    notes: "Renders fog above terrain, below paths/nodes/labels in WorldMapScene. Solid black for never-seen tiles; redrawFog() callable on discovery state changes. Must not block node click handlers."
+    max_turns: 22
+
+  world-node-gating:
+    prerequisites: [world-discovery-state]
+    week: 2
+    pod: World & Discovery
+    requires_human_gate: false
+    notes: "Hides region nodes + paths-between-nodes until both endpoints are discovered. Adds revealNode(id) with Back.easeOut tween + optional discover SFX + first-time narrative dialog event."
+    max_turns: 25
+
+  world-discovery-quests:
+    prerequisites: [world-discovery-state]
+    week: 2
+    pod: World & Discovery
+    requires_human_gate: false
+    notes: "Cross-system glue. New discoveryUnlocks.js maps regionId → unlock specs. Wires onRegionDiscovered events into existing quest-system unlockQuest API. Read-only on quests.js; pending:true for any region without a matching existing quest."
+    max_turns: 22
+
+  runtime-audit-system:
+    prerequisites: []
+    week: 2
+    pod: World & Discovery
+    parallel_safe_with: [world-biome-classifier, world-terrain-renderer, world-discovery-state]
+    requires_human_gate: false
+    notes: "New systems/runtimeAudit.js — in-game cross-system invariant checker (quest givers exist, items exist, scenes registered, regions have biomes, discoveryUnlocks point to real quests). DEV-only call from GameContainer boot. Read-only observer; logs to console without blocking. Counterpart to dev-time code-quality-reviewer."
+    max_turns: 22
