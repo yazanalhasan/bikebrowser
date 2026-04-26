@@ -15,8 +15,35 @@ import { saveGame } from '../systems/saveSystem.js';
 import { WORLD_LOCATIONS, REGIONS, isLocationUnlocked, getLocationsByRegion } from '../data/worldMapData.js';
 import { getSideQuestStatus } from '../systems/sideQuestSystem.js';
 import { setBusy } from '../systems/gameplayArbiter.js';
+import { BIOME } from '../data/regions.js';
 
 const SCENE_KEY = 'WorldMapScene';
+
+// ── Terrain palette ─────────────────────────────────────────────────────────
+// Warm palette from the rebuild blueprint. Hex literals are used because
+// Phaser Graphics fillStyle expects 0xRRGGBB integers.
+const BIOME_COLORS = Object.freeze({
+  [BIOME.DESERT]:    0xf0d18a, // sand
+  [BIOME.GRASSLAND]: 0x4f7a52, // warm green
+  [BIOME.WATER]:     0x2b5f91, // deep blue
+  [BIOME.ROCK]:      0x7a6a5a, // warm gray
+  [BIOME.MOUNTAIN]:  0x5a5560, // cool gray
+  [BIOME.URBAN]:     0xb8a07a, // warm tan / dirt
+  [BIOME.UNKNOWN]:   0x1a1a2e, // dark void (matches existing background)
+});
+
+// Mapping of worldMapData REGIONS ids → biome enum. The richer biome data
+// in regions.js uses different ids (arizona, andes, …); this map bridges the
+// two so the local world-map regions can paint terrain. Defaults to DESERT
+// for the Sonoran setting, MOUNTAIN for the Superstition placeholder.
+const WORLD_REGION_BIOME = Object.freeze({
+  arizona_desert: BIOME.DESERT,
+  mountain_range: BIOME.MOUNTAIN,
+});
+
+function biomeForWorldRegion(regionId) {
+  return WORLD_REGION_BIOME[regionId] || BIOME.UNKNOWN;
+}
 
 export default class WorldMapScene extends Phaser.Scene {
   constructor() {
@@ -44,6 +71,19 @@ export default class WorldMapScene extends Phaser.Scene {
     const mapX = width / 2;
     const mapY = height / 2 + 10;
     this.add.rectangle(mapX, mapY, mapW, mapH, 0xf5e6c8).setStrokeStyle(3, 0x8b6914);
+
+    // ── Terrain layer ──
+    // Painted ONCE at create. Lives strictly beneath paths / nodes / labels
+    // so click handlers and hover effects are unaffected. Held in a single
+    // container so the fog overlay agent (next pass) can swap or tint without
+    // touching unrelated graphics.
+    this._renderTerrainLayer({
+      padX: width * 0.1,
+      padY: height * 0.15,
+      usableW: width - width * 0.1 * 2,
+      usableH: height - height * 0.15 * 2 - 20,
+      mapBounds: { x: mapX, y: mapY, w: mapW, h: mapH },
+    });
 
     // Title
     this.add.text(width / 2, 30, '🗺️  WORLD MAP  🗺️', {
@@ -169,9 +209,88 @@ export default class WorldMapScene extends Phaser.Scene {
     // Fade in
     this.cameras.main.fadeIn(350, 0, 0, 0);
 
-    // Audio
+    // Audio — goes through SCENE_MUSIC so the file-backed track for this
+    // scene is used (desert_discovery had no real audio file and killed the
+    // music every time the player opened the map).
     const audioMgr = this.registry.get('audioManager');
-    audioMgr?.playMusic('desert_discovery');
+    audioMgr?.transitionToScene('WorldMapScene');
+  }
+
+  // ── Terrain rendering ───────────────────────────────────────────────────
+
+  /**
+   * Paint biome-colored blobs for every world-map location. Runs once at
+   * scene create. The result is added to {@link _terrainContainer} which is
+   * inserted at depth 0 so it sits beneath every other display object on the
+   * scene (paths, nodes, labels). No per-frame work, no input listeners.
+   */
+  _renderTerrainLayer({ padX, padY, usableW, usableH, mapBounds }) {
+    const container = this.add.container(0, 0);
+    // No explicit depth — relying on creation order. The container is added
+    // in create() at line ~80, after the parchment rectangle (line ~73) and
+    // before the title (line ~89), so it naturally renders above parchment
+    // and below all foreground elements (title, paths, nodes, labels, HUD).
+    // Setting depth(-100) here previously hid the terrain BEHIND the
+    // parchment because parchment is at default depth 0.
+    this._terrainContainer = container;
+
+    const g = this.add.graphics();
+
+    // Per-location blob: soft-edged gradient achieved by stacking three
+    // translucent fills of decreasing radius. Phaser's Graphics has no real
+    // radial gradient, but layered alpha circles read as a soft edge.
+    const locations = Object.values(WORLD_LOCATIONS);
+    const baseR = Math.max(usableW, usableH) * 0.22; // ~225 px on a 1024 map
+    for (const loc of locations) {
+      const x = padX + loc.mapPos.x * usableW;
+      const y = padY + loc.mapPos.y * usableH + 20;
+      const biome = biomeForWorldRegion(loc.region);
+      const color = BIOME_COLORS[biome] ?? BIOME_COLORS[BIOME.UNKNOWN];
+
+      // Soft halo (outer)
+      g.fillStyle(color, 0.18);
+      g.fillCircle(x, y, baseR);
+      // Mid
+      g.fillStyle(color, 0.32);
+      g.fillCircle(x, y, baseR * 0.72);
+      // Core
+      g.fillStyle(color, 0.55);
+      g.fillCircle(x, y, baseR * 0.45);
+    }
+
+    // Desert stipple — a sparse dot pattern on top of the desert blobs adds
+    // a touch of texture without per-frame cost. Only desert locations get
+    // dots (other biomes read fine flat at this scale).
+    g.fillStyle(0xc9a86a, 0.55);
+    for (const loc of locations) {
+      if (biomeForWorldRegion(loc.region) !== BIOME.DESERT) continue;
+      const cx = padX + loc.mapPos.x * usableW;
+      const cy = padY + loc.mapPos.y * usableH + 20;
+      const stippleR = baseR * 0.6;
+      // Deterministic offsets (no RNG so the map is stable across reopens).
+      const seeds = [
+        [-0.6, -0.3], [0.4, -0.5], [-0.2, 0.55], [0.7, 0.15],
+        [0.05, -0.2], [-0.45, 0.2], [0.3, 0.5], [-0.7, -0.6],
+        [0.55, -0.1], [-0.1, 0.0], [0.2, -0.7], [-0.55, 0.55],
+      ];
+      for (const [dx, dy] of seeds) {
+        g.fillCircle(cx + dx * stippleR, cy + dy * stippleR, 1.6);
+      }
+    }
+
+    // Mask the terrain to the parchment rectangle so blobs don't bleed onto
+    // the dark border outside the map.
+    const mask = this.make.graphics({ x: 0, y: 0, add: false });
+    mask.fillStyle(0xffffff, 1);
+    mask.fillRect(
+      mapBounds.x - mapBounds.w / 2,
+      mapBounds.y - mapBounds.h / 2,
+      mapBounds.w,
+      mapBounds.h,
+    );
+    g.setMask(mask.createGeometryMask());
+
+    container.add(g);
   }
 
   // ── Travel to location ──────────────────────────────────────────────────
