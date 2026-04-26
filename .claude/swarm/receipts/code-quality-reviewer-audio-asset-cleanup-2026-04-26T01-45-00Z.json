@@ -1,0 +1,36 @@
+{
+  "agent": "code-quality-reviewer",
+  "ts": "2026-04-26T01:45:00Z",
+  "status": "complete",
+  "verdict": "NEEDS_REVISION",
+  "reviewed_agent": "audio-asset-cleanup",
+  "files_changed": [],
+  "notes": [
+    {
+      "priority": "CRITICAL",
+      "check": "Runtime regression — audio silence for 5 tracks",
+      "detail": "The 5 archived WAV masters were the active fallback for 5 stems whose .ogg siblings are confirmed 0-byte placeholders. AudioManager._findAssetUrl (AudioManager.js:527-539) iterates ['.ogg', '.mp3', '.wav'] in order. It skips 0-byte responses via `if (len === '0') continue` (line 534-535). No .mp3 exists for these stems. Before the archive: .ogg skipped → .wav found → plays. After the archive: .ogg skipped → .mp3 not found → .wav not found → _findAssetUrl returns null → silence. Affected tracks: garage_warm_oud, neighborhood_hybrid_ride, quest_focus_hybrid (world-map music), reward_tarabi_stinger, upgrade_unlock_hybrid."
+    },
+    {
+      "priority": "CRITICAL",
+      "check": "Worker's core reasoning was incorrect",
+      "detail": "The worker's receipt states 'AudioManager tries .ogg first, then .mp3. The .wav files are never reached by the loader.' This is factually wrong. AudioManager.js line 189 shows `const exts = ['.ogg', '.mp3', '.wav']` — .wav IS in the fallback chain. The worker failed to read the actual code path before concluding the WAVs were unreachable. This error caused the worker to archive files that were load-bearing at runtime."
+    },
+    {
+      "priority": "HIGH",
+      "check": "Spec gap: 'compressed sibling exists' did not require non-zero sibling",
+      "detail": "The worker's spec (audio-asset-cleanup.md, Step 3 triage table) defines 'Uncompressed master' as a .wav whose compressed sibling is the referenced one — but did not require the sibling to be non-zero bytes. The spec should be updated with: 'compressed sibling must be a non-zero file; a 0-byte placeholder does not qualify.' The worker followed the literal spec but the spec was incomplete."
+    },
+    {
+      "priority": "LOW",
+      "check": "Scope clean — no out-of-scope files touched",
+      "detail": "git diff HEAD --name-only shows only the 5 expected WAV moves under public/audio/_archived/. The .claude/swarm/state.json, package.json, and package-lock.json modifications are swarm infrastructure changes unrelated to this worker. audioManifest.js: confirmed unmodified (diff empty). npcSpeech.js and npcProfiles.js: not touched."
+    },
+    {
+      "priority": "LOW",
+      "check": "Receipt accuracy acceptable",
+      "detail": "files_changed lists exactly the 5 moved WAVs. The worker's per-file byte counts match the actual file sizes. blockers_discovered correctly flags the 0-byte .ogg issue. The critical flaw is the incorrect conclusion drawn from that discovery, not the data collection."
+    }
+  ],
+  "recommendation": "RESTORE the 5 archived WAVs via git mv from _archived/ back to their original paths. Specific restore commands: `git mv public/audio/_archived/game/audio/music/garage_warm_oud.wav public/game/audio/music/garage_warm_oud.wav` (repeat for the other 4 stems). Do not re-archive any WAV until a real non-zero compressed sibling exists at the original path. Follow-up action: add an audio-compression cycle that exports playable .ogg or .mp3 from the WAV masters; once those compressed files are verified non-zero, the WAV archive is safe to redo. Also add the rule to the agent spec: 'compressed sibling must be non-zero bytes to qualify as the referenced copy.'"
+}

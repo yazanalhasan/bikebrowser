@@ -1,0 +1,35 @@
+{
+  "agent": "dep-overrides-housekeeping",
+  "status": "complete",
+  "ts": "2026-04-26T01:35:00Z",
+  "files_changed": ["package.json", "package-lock.json"],
+  "notes": {
+    "three_before": "TWO versions present:\n  three@0.184.0  (top-level + all transitives deduped)\n  three@0.170.0  (pulled by stats-gl@2.4.2 under @react-three/drei)",
+    "three_after": "ONE version:\n  three@0.184.0  (all transitives including stats-gl@2.4.2 now deduped)",
+    "override_added": "Added top-level `overrides: { \"three\": \"$three\" }` to package.json (sibling of build block, 2-space indent matched).",
+    "npm_install_warnings": "No peer-dep warnings from the override. Pre-existing EPERM on better-sqlite3 native rebuild (file locked by running process) — unrelated to this change, pre-existing condition.",
+    "dedupe_dry_run_changes": [
+      "picomatch 4.0.3 => 4.0.4",
+      "jsonfile 6.2.0 => 6.2.1 (multiple instances)",
+      "resolve 1.22.11 => 1.22.12 (multiple instances)",
+      "string_decoder 1.3.0 => 1.1.1 (+ add safe-buffer 5.1.2)",
+      "picomatch 2.3.1 => 2.3.2",
+      "brace-expansion 1.1.12 => 1.1.14 (multiple instances)",
+      "brace-expansion 2.0.2 => 2.1.0",
+      "body-parser 1.20.4 => 1.20.5 (+ add qs 6.15.1)",
+      "ajv 8.18.0 => 8.20.0",
+      "ajv 6.14.0 => 6.15.0",
+      "Total: added 2, removed 2, changed 29 — all minor/patch only, no major bumps"
+    ],
+    "dedupe_result": "npm dedupe ran successfully. added 2, removed 2, changed 29 packages.",
+    "vuln_delta": "Pre-dedupe: 21 vulnerabilities (4 low, 8 moderate, 9 high). Post-dedupe: 19 vulnerabilities (4 low, 7 moderate, 8 high). 2 resolved by patch bumps.",
+    "build_result": "SUCCESS — vite build completed in 10.93s, 862 modules transformed. No errors.",
+    "bundle_size_delta": {
+      "vendor_three": "739.83 kB (gzip: 192.44 kB) — matches prior baseline exactly. Rollup already deduped three in the bundle before this fix; the ~26 MB savings are in node_modules (stats-gl's local three@0.170.0 copy eliminated), not bundle output.",
+      "note": "No regression in any chunk size."
+    },
+    "node_modules_savings": "~26 MB expected per auditor; three@0.170.0 directory removed from node_modules. Rough du not run to avoid blocking."
+  },
+  "blockers_discovered": [],
+  "next_agent_suggestions": []
+}

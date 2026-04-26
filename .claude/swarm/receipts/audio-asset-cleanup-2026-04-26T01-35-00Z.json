@@ -1,0 +1,125 @@
+{
+  "agent": "audio-asset-cleanup",
+  "status": "complete",
+  "ts": "2026-04-26T01:35:00Z",
+  "files_changed": [
+    {
+      "type": "git mv",
+      "from": "public/game/audio/music/garage_warm_oud.wav",
+      "to": "public/audio/_archived/game/audio/music/garage_warm_oud.wav",
+      "reason": "uncompressed WAV master; .ogg sibling (0-byte placeholder) is the loader-referenced path"
+    },
+    {
+      "type": "git mv",
+      "from": "public/game/audio/music/neighborhood_hybrid_ride.wav",
+      "to": "public/audio/_archived/game/audio/music/neighborhood_hybrid_ride.wav",
+      "reason": "uncompressed WAV master; .ogg sibling (0-byte placeholder) is the loader-referenced path"
+    },
+    {
+      "type": "git mv",
+      "from": "public/game/audio/music/quest_focus_hybrid.wav",
+      "to": "public/audio/_archived/game/audio/music/quest_focus_hybrid.wav",
+      "reason": "uncompressed WAV master; .ogg sibling (0-byte placeholder) is the loader-referenced path"
+    },
+    {
+      "type": "git mv",
+      "from": "public/game/audio/stingers/reward_tarabi_stinger.wav",
+      "to": "public/audio/_archived/game/audio/stingers/reward_tarabi_stinger.wav",
+      "reason": "uncompressed WAV master; .ogg sibling (0-byte placeholder) is the loader-referenced path"
+    },
+    {
+      "type": "git mv",
+      "from": "public/game/audio/stingers/upgrade_unlock_hybrid.wav",
+      "to": "public/audio/_archived/game/audio/stingers/upgrade_unlock_hybrid.wav",
+      "reason": "uncompressed WAV master; .ogg sibling (0-byte placeholder) is the loader-referenced path"
+    }
+  ],
+  "manifest_updated": false,
+  "notes": {
+    "loader_behavior": "audioManifest.js specifies paths without extension (e.g. '/game/audio/music/garage_warm_oud'). AudioManager tries .ogg first, then .mp3. The .wav files are never reached by the loader.",
+    "per_file_table": [
+      { "old": "public/game/audio/music/garage_warm_oud.wav",           "new": "public/audio/_archived/game/audio/music/garage_warm_oud.wav",           "bytes_archived": 2822444 },
+      { "old": "public/game/audio/music/neighborhood_hybrid_ride.wav",  "new": "public/audio/_archived/game/audio/music/neighborhood_hybrid_ride.wav",  "bytes_archived": 2822444 },
+      { "old": "public/game/audio/music/quest_focus_hybrid.wav",        "new": "public/audio/_archived/game/audio/music/quest_focus_hybrid.wav",        "bytes_archived": 2116844 },
+      { "old": "public/game/audio/stingers/reward_tarabi_stinger.wav",  "new": "public/audio/_archived/game/audio/stingers/reward_tarabi_stinger.wav",  "bytes_archived": 388124  },
+      { "old": "public/game/audio/stingers/upgrade_unlock_hybrid.wav",  "new": "public/audio/_archived/game/audio/stingers/upgrade_unlock_hybrid.wav",  "bytes_archived": 458684  }
+    ],
+    "total_bytes_archived": 8608540,
+    "total_mb_archived": "8.21 MB",
+    "build_verification": "npm run build succeeded with 0 missing-asset errors. Build completed in 11.07s.",
+    "manifest_path_check": "grep for '_archived' in audioManifest.js returned 0 matches. No manifest paths resolve into _archived/.",
+    "manual_review_needed": [
+      {
+        "file": "public/game/audio/music/desert_discovery.ogg",
+        "size_bytes": 0,
+        "reason": "0-byte placeholder .ogg. Referenced by manifest key 'desert_discovery'. The audioManifest comment (line 358) confirms this was already known: 'desert_discovery has no real audio file on disk (only a 0-byte placeholder .ogg). Any scene that mapped to it used to go silent.' No .wav or .mp3 companion exists. Action needed: produce a real .ogg or .mp3 for this track, or remove the manifest entry if the track is unused. This is a content task, not an archival task — left untouched."
+      },
+      {
+        "file": "public/game/audio/music/garage_warm_oud.ogg",
+        "size_bytes": 0,
+        "reason": "0-byte placeholder .ogg. Referenced by manifest key 'garage_warm_oud'. WAV master has been archived. This track will produce silence in-game until a real .ogg or .mp3 is provided."
+      },
+      {
+        "file": "public/game/audio/music/neighborhood_hybrid_ride.ogg",
+        "size_bytes": 0,
+        "reason": "0-byte placeholder .ogg. Referenced by manifest key 'neighborhood_hybrid_ride'. WAV master has been archived. This track will produce silence in-game until a real .ogg or .mp3 is provided."
+      },
+      {
+        "file": "public/game/audio/music/quest_focus_hybrid.ogg",
+        "size_bytes": 0,
+        "reason": "0-byte placeholder .ogg. Referenced by manifest key 'quest_focus_hybrid'. WAV master has been archived. This track will produce silence in-game until a real .ogg or .mp3 is provided."
+      },
+      {
+        "file": "public/game/audio/stingers/reward_tarabi_stinger.ogg",
+        "size_bytes": 0,
+        "reason": "0-byte placeholder .ogg. Referenced by manifest key 'reward_tarabi_stinger'. WAV master has been archived. Will produce silence until a real compressed version is provided."
+      },
+      {
+        "file": "public/game/audio/stingers/upgrade_unlock_hybrid.ogg",
+        "size_bytes": 0,
+        "reason": "0-byte placeholder .ogg. Referenced by manifest key 'upgrade_unlock_hybrid'. WAV master has been archived. Will produce silence until a real compressed version is provided."
+      }
+    ],
+    "kept_files": [
+      { "file": "public/game/audio/music/pixel_pedal_parade.mp3",    "bytes": 2896426, "reason": "referenced by manifest key 'pixel_pedal_parade'" },
+      { "file": "public/game/audio/music/pixel_pedal_parade_v2.mp3", "bytes": 3266538, "reason": "referenced by manifest key 'pixel_pedal_parade_v2'" },
+      { "file": "public/game/audio/music/pixel_pedal_parade_v3.mp3", "bytes": 2096998, "reason": "referenced by manifest key 'pixel_pedal_parade_v3'" },
+      { "file": "public/game/audio/music/pixel_pedal_parade_v4.mp3", "bytes": 3153250, "reason": "referenced by manifest key 'pixel_pedal_parade_v4'" },
+      { "file": "public/game/audio/music/qanun_jar_lid.mp3",         "bytes": 2223716, "reason": "referenced by manifest key 'qanun_jar_lid'" },
+      { "file": "public/game/audio/music/warm_hands_quiet_gears.mp3","bytes": 3643716, "reason": "referenced by manifest key 'warm_hands_quiet_gears'" },
+      { "file": "public/game/audio/music/workshop_tarab.mp3",        "bytes": 988768,  "reason": "referenced by manifest key 'workshop_tarab'" },
+      { "note": "All 0-byte .ogg placeholders kept — they are the loader-referenced files; removing them would prevent even silent load attempts" }
+    ],
+    "pixel_pedal_parade_note": "All 4 pixel_pedal_parade variants (base, v2, v3, v4) are explicitly declared in audioManifest.js MUSIC array with distinct keys, descriptions, moods, and scene assignments. They are NOT orphan alt-mix drafts — they are intentional distinct tracks. All kept.",
+    "sfx_ambient_note": "All SFX bike/ui/world and ambient directories contain only .gitkeep (no actual audio files). These are placeholder directories for future content — not archived (nothing to archive)."
+  },
+  "blockers_discovered": [
+    {
+      "issue": "6 referenced .ogg files are 0-byte placeholders",
+      "files": [
+        "public/game/audio/music/desert_discovery.ogg",
+        "public/game/audio/music/garage_warm_oud.ogg",
+        "public/game/audio/music/neighborhood_hybrid_ride.ogg",
+        "public/game/audio/music/quest_focus_hybrid.ogg",
+        "public/game/audio/stingers/reward_tarabi_stinger.ogg",
+        "public/game/audio/stingers/upgrade_unlock_hybrid.ogg"
+      ],
+      "impact": "These tracks produce silence in-game. The WAV masters for 5 of them have been archived (they were never reachable by the loader). The WAV masters should be exported to .ogg/.mp3 and placed at the same paths before the next content milestone.",
+      "action_required": "Export compressed versions (.ogg or .mp3) from the archived WAV masters and place at original paths, OR restore the WAVs from _archived/ as a temporary measure. This is a content production task, not a code task."
+    }
+  ],
+  "next_agent_suggestions": [
+    {
+      "agent": "audio-compression-pass",
+      "description": "Convert the 5 archived .wav masters to .ogg (or .mp3 fallback) and place compressed versions at the original public/game/audio/ paths. Required before those tracks are playable in-game.",
+      "priority": "medium",
+      "files_to_process": [
+        "public/audio/_archived/game/audio/music/garage_warm_oud.wav",
+        "public/audio/_archived/game/audio/music/neighborhood_hybrid_ride.wav",
+        "public/audio/_archived/game/audio/music/quest_focus_hybrid.wav",
+        "public/audio/_archived/game/audio/stingers/reward_tarabi_stinger.wav",
+        "public/audio/_archived/game/audio/stingers/upgrade_unlock_hybrid.wav"
+      ]
+    }
+  ]
+}
