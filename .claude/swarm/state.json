@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-26T02:35:00Z",
+  "last_updated": "2026-04-26T06:05:00Z",
   "current_week": 2,
   "current_pod_focus": "World & Discovery",
   "completed": [
@@ -203,6 +203,21 @@
       "receipt": ".claude/swarm/receipts/world-terrain-renderer-v2-2026-04-25T22-30-00Z.json",
       "supersedes": "world-terrain-renderer (v1, see superseded[])",
       "notes": "v2 REWRITE — replaced v1's radial fillCircle blobs with continuous tile-based terrain. Implementation: 32 px tiles (~28×21=~588 tiles on 900×615 parchment) iterated via nested for-loops, single batched Graphics object using fillRect per tile. v2 strong-identity palette (DESERT 0xE6C27A, GRASSLAND 0x7FBF6A, WATER 0x3A7BA8, MOUNTAIN 0x7E6855, ROCK 0x5C5048, URBAN 0x9C886A, UNKNOWN 0x3C3530). Inter-region blending via 1/d² weighted blend of 3 nearest region anchors per tile → smooth biome transitions, no hard borders. Coarse fbm heightmap (HM_DIVISOR=5, ~6×5 cells) modulates tile brightness 0.85+h*0.30 with +0.3*weight uphill bias for MOUNTAIN-anchored tiles. Per-biome detail pass adds desert sand-grain stipple, grassland green patches, water faint horizontal bands, rock dots, urban grid hint — all gated by dominant biome and routed through deterministic rand2(seed,ix,iy). NEW src/renderer/game/utils/terrainNoise.js (65 LOC, 0 deps) exports hash2/rand2/valueNoise2/fbm2/generateHeightmap/sampleHeightmap. v1 deletion confirmed: 3-stack fillCircle loop and 12-seed desert stipple loop fully removed; reviewer verified no fallback/toggle preserved. Pre-existing phaser-hmr-bridge 4-line block (line 19 import + bottom registration at lines 542-543) preserved verbatim. Performance estimate: 3-6ms inside the 16ms budget; console.debug logs actual measured ms on every load (kept intentionally as dev signal). LOW observations (non-blocking): grassland/water/urban/rock detail passes are latent — only fire when world-biome-classifier registers additional regions in worldMapData (currently only arizona_desert=DESERT and mountain_range=MOUNTAIN); console.debug retained could be removed in polish. Routed via general-purpose; reviewer native sonnet override."
+    },
+    {
+      "agent": "audio-asset-cleanup",
+      "cycle": 2,
+      "ts": "2026-04-26T06:05:00Z",
+      "commit": null,
+      "review_verdict": "PASS",
+      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-audio-asset-cleanup-cycle2-2026-04-26T06-02-44Z.json",
+      "receipt": ".claude/swarm/receipts/audio-asset-cleanup-cycle2-2026-04-26T03-15-00Z.json",
+      "human_gate_approval": "User said 'go' 2026-04-26T03:00:00Z after orchestrator presented RRV-embedded plan with the 5 pre-validated candidates and full Runtime Reality Validation Protocol.",
+      "cycle1_receipt": ".claude/swarm/receipts/audio-asset-cleanup-2026-04-26T01-35-00Z.json",
+      "cycle1_review_verdict": "NEEDS_REVISION",
+      "cycle1_failure_class": "SPEC_VALID_BUT_RUNTIME_INVALID",
+      "cycle1_revision_note": ".claude/swarm/blockers/audio-asset-cleanup-needs-revision-2026-04-26T01-50-00Z.md",
+      "notes": "Re-attempt under Runtime Reality Validation Protocol after audio-compression-pass (commit e52867b) generated valid Vorbis .ogg siblings. All 5 RRV candidates verified: each .ogg sibling non-zero with OggS magic bytes, fallback chain now lands on .ogg before .wav. 5 git mv operations (garage_warm_oud / neighborhood_hybrid_ride / quest_focus_hybrid / reward_tarabi_stinger / upgrade_unlock_hybrid) → public/audio/_archived/game/audio/{music,stingers}/. Total 8.21 MB (8,608,540 B) reclaimed from source tree. audio-pack.json updated surgically — exactly 10 lines removed (the .wav URL from each of the 5 named entries); .ogg URLs intact, no other entries modified. audioManifest.js NOT touched (uses extensionless stems; loader appends ext via fallback chain). npm run build verified clean. Reviewer independently spot-checked 2 candidates (quest_focus_hybrid the cycle-1 silenced track + upgrade_unlock_hybrid stinger): both .ogg files confirmed non-zero with OggS magic, .wav files confirmed in _archived/. AudioManager fallback chain order independently re-verified at AudioManager.js:526. All CRITICAL clean (scope/rm-del/manifest/build), all HIGH clean (RRV spot-check×2/AudioManager order/audio-pack edit minimal/files_changed accuracy). LOW non-blocking note: _archived/ subtree under public/ is copied to Vite build/ — matches spec safety-net policy; future cycle could add a Vite copy-plugin exclusion if production build size matters. Out-of-scope follow-up flagged: desert_discovery.ogg (0-byte, no .wav master) needs source audio production, not file moves. Routed via general-purpose (mid-session agent registry limitation per saved memory); reviewer native sonnet override."
     }
   ],
   "superseded": [
@@ -220,21 +235,7 @@
       "notes": "Parallel dispatch with world-discovery-state. Added terrain rendering layer to WorldMapScene.js in three isolated zones: lines 13-46 (BIOME import + BIOME_COLORS warm palette + WORLD_REGION_BIOME bridge map + biomeForWorldRegion helper), lines 75-86 (call to _renderTerrainLayer in create() after parchment rect), lines 219-289 (the _renderTerrainLayer method itself — single _terrainContainer at depth -100, 3 concentric translucent fillCircles per location for soft-edged blobs ~225px radius on 1024px map, deterministic stipple dots on desert blobs, geometry-mask clipped to parchment). Spec palette matched exactly. Render-once at create(). Click handlers (setInteractive/pointerdown/pointerover/pointerout) byte-identical. Notable judgment call (PASS confirmed): worldMapData.js REGIONS use different ids (arizona_desert, mountain_range) than the cross-cultural regions.js (arizona, andes); worker added an inline WORLD_REGION_BIOME bridge map inside WorldMapScene rather than touch worldMapData.js (which is data-layer scope owned by biome-classifier). Pre-existing dirty-baseline audio block at lines 212-216 (transitionToScene swap) preserved verbatim per dispatch warning. First reviewer dispatch stalled mid-task before writing receipt — re-dispatched fresh and second run completed cleanly with PASS. LOW observations (non-blocking): all 3 current locations are in arizona_desert so DESERT blobs heavily overlap (intentional — reads as one Sonoran landscape); home/neighborhood node has no terrain blob underneath (floats on parchment); future tuning when non-Sonoran locations land. Routed via general-purpose; reviewer native sonnet override."
     }
   ],
-  "in_progress": [
-    {
-      "agent": "audio-asset-cleanup",
-      "status": "partial",
-      "failure_class": "SPEC_VALID_BUT_RUNTIME_INVALID",
-      "ts": "2026-04-26T01:50:00Z",
-      "review_verdict": "NEEDS_REVISION",
-      "review_receipt": ".claude/swarm/receipts/code-quality-reviewer-audio-asset-cleanup-2026-04-26T01-45-00Z.json",
-      "receipt": ".claude/swarm/receipts/audio-asset-cleanup-2026-04-26T01-35-00Z.json",
-      "revision_note": ".claude/swarm/blockers/audio-asset-cleanup-needs-revision-2026-04-26T01-50-00Z.md",
-      "resolution_applied": "Orchestrator restored all 5 archived WAVs via git mv from public/audio/_archived/ back to original paths. Runtime regression no longer in working tree.",
-      "retroactive_protocol_applied": "Runtime Reality Validation Protocol — see .claude/agent-memory/swarm-orchestrator/feedback_runtime_reality_validation.md. Future re-dispatch will be gated through RRV: candidates traced for runtime usage + fallback-chain validity; .wav masters whose .ogg siblings are 0-byte must emit requires_upstream_fix and recommend audio-compression-pass instead of acting.",
-      "summary": "Worker followed spec literally — archived 5 WAVs whose .ogg siblings were present on disk. But ALL 5 .ogg siblings are 0-byte placeholders, no .mp3 exists, and AudioManager.findAssetUrl falls through ['.ogg', '.mp3', '.wav'] skipping 0-byte sources. The .wav files were the active runtime audio source for garage music, neighborhood music, world-map music, and 2 stingers. Spec criterion lacked 'compressed sibling must be non-zero bytes' rule. Cannot re-dispatch until either (a) spec is updated or (b) a new audio-compression-pass agent runs first to populate playable .ogg files, then this can re-run safely."
-    }
-  ],
+  "in_progress": [],
   "blocked": [],
   "blocker_history": [
     {
@@ -248,6 +249,6 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 50,
+  "dispatch_count": 2,
   "session_token_estimate": 0
 }

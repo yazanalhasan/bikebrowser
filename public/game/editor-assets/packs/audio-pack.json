@@ -5,8 +5,7 @@
         "type": "audio",
         "key": "garage_warm_oud",
         "urls": [
-          "game/audio/music/garage_warm_oud.ogg",
-          "game/audio/music/garage_warm_oud.wav"
+          "game/audio/music/garage_warm_oud.ogg"
         ]
       },
       {
@@ -20,16 +19,14 @@
         "type": "audio",
         "key": "neighborhood_hybrid_ride",
         "urls": [
-          "game/audio/music/neighborhood_hybrid_ride.ogg",
-          "game/audio/music/neighborhood_hybrid_ride.wav"
+          "game/audio/music/neighborhood_hybrid_ride.ogg"
         ]
       },
       {
         "type": "audio",
         "key": "quest_focus_hybrid",
         "urls": [
-          "game/audio/music/quest_focus_hybrid.ogg",
-          "game/audio/music/quest_focus_hybrid.wav"
+          "game/audio/music/quest_focus_hybrid.ogg"
         ]
       },
       {
@@ -85,16 +82,14 @@
         "type": "audio",
         "key": "reward_tarabi_stinger",
         "urls": [
-          "game/audio/stingers/reward_tarabi_stinger.ogg",
-          "game/audio/stingers/reward_tarabi_stinger.wav"
+          "game/audio/stingers/reward_tarabi_stinger.ogg"
         ]
       },
       {
         "type": "audio",
         "key": "upgrade_unlock_hybrid",
         "urls": [
-          "game/audio/stingers/upgrade_unlock_hybrid.ogg",
-          "game/audio/stingers/upgrade_unlock_hybrid.wav"
+          "game/audio/stingers/upgrade_unlock_hybrid.ogg"
         ]
       }
     ],

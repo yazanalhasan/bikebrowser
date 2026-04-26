@@ -1,0 +1,123 @@
+{
+  "agent": "audio-asset-cleanup",
+  "cycle": 2,
+  "cycle1_receipt": ".claude/swarm/receipts/audio-asset-cleanup-2026-04-26T01-35-00Z.json",
+  "status": "complete",
+  "ts": "2026-04-26T03:15:00Z",
+  "summary": "Re-attempted archival of 5 uncompressed WAV masters under the Runtime Reality Validation Protocol. After audio-compression-pass (commit e52867b) generated valid Vorbis-encoded .ogg siblings for all 5 stems, RRV passes for every candidate. All 5 WAVs archived; audio-pack.json updated to drop now-archived .wav fallbacks; build verified clean.",
+  "rrv_protocol": {
+    "fallback_chain_confirmed": "AudioManager._findAssetUrl iterates ['.ogg', '.mp3', '.wav'] (src/renderer/game/audio/AudioManager.js line 526). Skips on HEAD content-length === '0'. Confirmed at line 527-539 this cycle.",
+    "audio_manifest_resolution": "audioManifest.js declares stems WITHOUT extension (e.g. '/game/audio/music/garage_warm_oud'). Loader appends extension via fallback chain at runtime."
+  },
+  "rrv_candidates": [
+    {
+      "path": "public/game/audio/music/garage_warm_oud.wav",
+      "runtime_check": "Manifest key 'garage_warm_oud' (audioManifest.js MUSIC array). audio-pack.json key 'garage_warm_oud' lists ogg + wav (now reduced to ogg only).",
+      "fallback_chain_check": ".ogg=225578B (valid OggS magic), .mp3=missing, .wav=2822444B",
+      "upstream_validity": "valid — .ogg starts with OggS magic bytes, encoded by audio-compression-pass commit e52867b",
+      "decision": "act"
+    },
+    {
+      "path": "public/game/audio/music/neighborhood_hybrid_ride.wav",
+      "runtime_check": "Manifest key 'neighborhood_hybrid_ride' (audioManifest.js MUSIC array; mapped to several scenes via SCENE_MUSIC_ALT). audio-pack.json updated.",
+      "fallback_chain_check": ".ogg=225269B (valid OggS magic), .mp3=missing, .wav=2822444B",
+      "upstream_validity": "valid — .ogg starts with OggS magic bytes",
+      "decision": "act"
+    },
+    {
+      "path": "public/game/audio/music/quest_focus_hybrid.wav",
+      "runtime_check": "Manifest key 'quest_focus_hybrid' (audioManifest.js MUSIC array; SCENE_MUSIC.WorldMapScene -> 'quest_focus_hybrid'). This was the world-map music silenced last cycle. audio-pack.json updated.",
+      "fallback_chain_check": ".ogg=171189B (valid OggS magic), .mp3=missing, .wav=2116844B",
+      "upstream_validity": "valid — .ogg starts with OggS magic bytes",
+      "decision": "act"
+    },
+    {
+      "path": "public/game/audio/stingers/reward_tarabi_stinger.wav",
+      "runtime_check": "Manifest key 'reward_tarabi_stinger' (audioManifest.js STINGERS array). audio-pack.json updated.",
+      "fallback_chain_check": ".ogg=19849B (valid OggS magic), .mp3=missing, .wav=388124B",
+      "upstream_validity": "valid — .ogg starts with OggS magic bytes",
+      "decision": "act"
+    },
+    {
+      "path": "public/game/audio/stingers/upgrade_unlock_hybrid.wav",
+      "runtime_check": "Manifest key 'upgrade_unlock_hybrid' (audioManifest.js STINGERS array). audio-pack.json updated.",
+      "fallback_chain_check": ".ogg=14314B (valid OggS magic), .mp3=missing, .wav=458684B",
+      "upstream_validity": "valid — .ogg starts with OggS magic bytes",
+      "decision": "act"
+    }
+  ],
+  "files_changed": [
+    {
+      "type": "git mv",
+      "from": "public/game/audio/music/garage_warm_oud.wav",
+      "to": "public/audio/_archived/game/audio/music/garage_warm_oud.wav"
+    },
+    {
+      "type": "git mv",
+      "from": "public/game/audio/music/neighborhood_hybrid_ride.wav",
+      "to": "public/audio/_archived/game/audio/music/neighborhood_hybrid_ride.wav"
+    },
+    {
+      "type": "git mv",
+      "from": "public/game/audio/music/quest_focus_hybrid.wav",
+      "to": "public/audio/_archived/game/audio/music/quest_focus_hybrid.wav"
+    },
+    {
+      "type": "git mv",
+      "from": "public/game/audio/stingers/reward_tarabi_stinger.wav",
+      "to": "public/audio/_archived/game/audio/stingers/reward_tarabi_stinger.wav"
+    },
+    {
+      "type": "git mv",
+      "from": "public/game/audio/stingers/upgrade_unlock_hybrid.wav",
+      "to": "public/audio/_archived/game/audio/stingers/upgrade_unlock_hybrid.wav"
+    },
+    {
+      "type": "edit",
+      "path": "public/game/editor-assets/packs/audio-pack.json",
+      "reason": "Removed .wav fallback URLs from 5 audio entries (garage_warm_oud, neighborhood_hybrid_ride, quest_focus_hybrid, reward_tarabi_stinger, upgrade_unlock_hybrid) since the .wav files are now archived. Each entry now lists only the .ogg URL. The .ogg files are valid Vorbis encodings produced by audio-compression-pass."
+    }
+  ],
+  "manifest_updated": true,
+  "manifest_path": "public/game/editor-assets/packs/audio-pack.json",
+  "manifest_change_note": "src/renderer/game/audio/audioManifest.js was NOT touched — it specifies stems without extension and remains valid. Only the Phaser editor asset pack (which lists URLs explicitly with extension) needed updating. Note: assetPackLoader.js does NOT include 'audio' in any scene's preload() call grep, so this pack appears to be metadata-only for Phaser Editor; updating it is a correctness/hygiene fix, not a runtime requirement.",
+  "notes": {
+    "loader_behavior": "audioManifest.js declares paths as '/game/audio/.../<stem>' (no extension). AudioManager._findAssetUrl tries .ogg → .mp3 → .wav, skipping any HEAD response with Content-Length 0 or non-audio content-type. With valid .ogg siblings now in place for all 5 stems, the .ogg always wins.",
+    "per_file_table": [
+      { "old": "public/game/audio/music/garage_warm_oud.wav",            "new": "public/audio/_archived/game/audio/music/garage_warm_oud.wav",            "bytes_archived": 2822444 },
+      { "old": "public/game/audio/music/neighborhood_hybrid_ride.wav",   "new": "public/audio/_archived/game/audio/music/neighborhood_hybrid_ride.wav",   "bytes_archived": 2822444 },
+      { "old": "public/game/audio/music/quest_focus_hybrid.wav",         "new": "public/audio/_archived/game/audio/music/quest_focus_hybrid.wav",         "bytes_archived": 2116844 },
+      { "old": "public/game/audio/stingers/reward_tarabi_stinger.wav",   "new": "public/audio/_archived/game/audio/stingers/reward_tarabi_stinger.wav",   "bytes_archived": 388124  },
+      { "old": "public/game/audio/stingers/upgrade_unlock_hybrid.wav",   "new": "public/audio/_archived/game/audio/stingers/upgrade_unlock_hybrid.wav",   "bytes_archived": 458684  }
+    ],
+    "total_bytes_archived": 8608540,
+    "total_mb_archived": "8.21 MB",
+    "build_verification": "npm run build succeeded in 10.67s with no missing-asset warnings. Output build/game/audio/music/ contains all 3 .ogg files (garage_warm_oud, neighborhood_hybrid_ride, quest_focus_hybrid). Output build/game/audio/stingers/ contains both .ogg files. No .wav files in build output (Vite copies public/ contents and the .wav masters are now under public/audio/_archived/ which still ships but is in a clearly-marked archive subtree).",
+    "archive_path_note": "The _archived/ subtree is under public/, so it WILL be copied to build/ by Vite. This matches the spec ('archived files should remain in version control as a safety net'). If disk-space reduction in the production build is required as a follow-up, configure a Vite copy plugin exclusion for public/audio/_archived/ in a separate cycle.",
+    "manual_review_needed": [
+      {
+        "file": "public/game/audio/music/desert_discovery.ogg",
+        "size_bytes": 0,
+        "status": "out_of_scope_this_cycle",
+        "reason": "0-byte placeholder .ogg. Referenced by manifest key 'desert_discovery'. No .wav master exists to compress from — needs source audio production, not a file move. Documented per cycle 2 dispatch instructions."
+      }
+    ],
+    "scope_guards_observed": [
+      "git mv used exclusively (no rm/del)",
+      "services/npcSpeech.js untouched (TTS scope)",
+      "data/npcProfiles.js untouched (TTS scope)",
+      "audioManifest.js paths use stems without extension; no manifest edit needed for stems",
+      "audio-pack.json updated in same change set since it referenced .wav paths explicitly with extension"
+    ],
+    "cycle1_vs_cycle2_difference": "Cycle 1 archived these same 5 WAVs but the .ogg siblings were 0-byte placeholders, so the runtime fallback chain went .ogg(skip)→.mp3(missing)→.wav(active source). Archiving the .wav silenced the tracks. Between cycles, audio-compression-pass (commit e52867b) generated real Vorbis .ogg files at 14.3 KB to 225.6 KB. Now .ogg is the active source, .wav is genuinely redundant, and archival is safe. Verified by HEAD-checking magic bytes (all 5 start with OggS) and running npm build (clean)."
+  },
+  "blockers_discovered": [],
+  "next_agent_suggestions": [
+    {
+      "agent": "manual_or_audio_production",
+      "concern": "public/game/audio/music/desert_discovery.ogg",
+      "description": "Out of scope for archival. The track is referenced by audioManifest.js but only a 0-byte placeholder .ogg exists with no .wav/.mp3 master to compress from. Requires source audio production (compose or source the track), then place a real .ogg at the original path. This is a content task, not a swarm-archival task.",
+      "priority": "medium"
+    }
+  ]
+}
