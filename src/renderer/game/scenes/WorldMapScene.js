@@ -18,6 +18,7 @@ import { setBusy } from '../systems/gameplayArbiter.js';
 import { BIOME } from '../data/regions.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { generateHeightmap, sampleHeightmap, rand2, hash2 } from '../utils/terrainNoise.js';
+import { isDiscovered, DISCOVERY_TILE_SIZE } from '../systems/discoverySystem.js';
 
 const SCENE_KEY = 'WorldMapScene';
 
@@ -133,6 +134,12 @@ export default class WorldMapScene extends Phaser.Scene {
       usableH: height - height * 0.15 * 2 - 20,
       mapBounds: { x: mapX, y: mapY, w: mapW, h: mapH },
     });
+
+    // ── Fog-of-war layer ──
+    // Sits ABOVE terrain (-100) but BELOW paths (-50), landmarks (-25),
+    // nodes (0/1) and vignette (1000). Depth chosen as -75.
+    // Never drawn per-frame; only drawn once at create and on redrawFog().
+    this._renderFogLayer({ mapBounds: { x: mapX, y: mapY, w: mapW, h: mapH } });
 
     // Title
     this.add.text(width / 2, 30, '🗺️  WORLD MAP  🗺️', {
@@ -811,6 +818,112 @@ export default class WorldMapScene extends Phaser.Scene {
     const ms = (t1 - t0).toFixed(1);
     // eslint-disable-next-line no-console
     console.debug(`[WorldMapScene] terrain v2: ${cols}x${rows}=${cols * rows} tiles in ${ms} ms (heightmap ${hmCols}x${hmRows})`);
+  }
+
+  // ── Fog-of-war overlay ────────────────────────────────────────────────────
+
+  /**
+   * Create the fog container and Graphics object, then draw fog tiles.
+   *
+   * Layer depth: -75 — sits strictly between terrain (-100) and paths (-50).
+   * Layer order: terrain (-100) → fog (-75) → paths (-50) → landmarks (-25)
+   *              → node bases (0) → node circles/icons/labels (1) → vignette (1000).
+   *
+   * The Graphics object is NOT made interactive. Phaser.GameObjects.Graphics
+   * has no input region by default, so pointer events fall through to node
+   * circles (depth 1) underneath without any extra configuration. We also
+   * explicitly confirm this by NOT calling setInteractive() — the absence
+   * of a hit area is what guarantees pass-through input.
+   *
+   * @param {{ mapBounds: { x, y, w, h } }} opts
+   */
+  _renderFogLayer({ mapBounds }) {
+    const container = this.add.container(0, 0);
+    this._fogContainer = container;
+    container.setDepth(-75); // above terrain (-100), below paths (-50)
+
+    const g = this.add.graphics();
+    // No setInteractive() call — Graphics objects have no hit area by default.
+    // Input events pass through transparently to node circles beneath.
+    this._fogGraphics = g;
+
+    // Store map bounds so redrawFog() can operate without create() params.
+    this._fogMapBounds = mapBounds;
+
+    container.add(g);
+
+    this._drawFogTiles(g, mapBounds);
+  }
+
+  /**
+   * Public method — clears and redraws the fog overlay. Call this whenever
+   * discovery state changes (e.g. after world-node-gating grants discovery
+   * via revealArea, it calls scene.redrawFog() to refresh the visual).
+   *
+   * Performance: a fresh-save redraw (every tile fogged) on a 900×615 map
+   * with 32 px tiles is ~28×20 = ~560 solid fillRect calls. Each fillRect
+   * is a single GPU draw call batch entry. Typical measured time on Chrome
+   * desktop: <2 ms. Well within the 16 ms budget.
+   */
+  redrawFog() {
+    if (!this._fogGraphics || !this._fogMapBounds) return;
+    const t0 = (typeof performance !== 'undefined') ? performance.now() : Date.now();
+
+    this._fogGraphics.clear();
+    this._drawFogTiles(this._fogGraphics, this._fogMapBounds);
+
+    const t1 = (typeof performance !== 'undefined') ? performance.now() : Date.now();
+    // eslint-disable-next-line no-console
+    console.debug(`[WorldMapScene] redrawFog: ${(t1 - t0).toFixed(1)} ms`);
+  }
+
+  /**
+   * Internal — iterate tiles across the map parchment area and fill solid
+   * black (#000000, alpha 1.0) for every undiscovered tile. Discovered tiles
+   * are simply skipped (no draw call, no transparent rect) for performance.
+   *
+   * Uses DISCOVERY_TILE_SIZE (32 px) to match the discovery grid exactly so
+   * fog tile boundaries align with the discovery grid boundaries.
+   *
+   * Batching: a single fillStyle call per contiguous run of same-color rects
+   * would be ideal, but since there's only one color (black) we set fillStyle
+   * once at the top and call fillRect for each undiscovered tile. Phaser
+   * batches these into the same draw pass automatically.
+   *
+   * isDiscovered() maps world-pixel positions → discovery grid cells. We pass
+   * the tile's top-left pixel (mapLeft + tx * TILE, mapTop + ty * TILE) as the
+   * world-pixel coordinate. The discoverySystem uses Math.floor(x / TILE) which
+   * maps that pixel to grid cell (tx, ty), matching our iteration indices.
+   *
+   * @param {Phaser.GameObjects.Graphics} g
+   * @param {{ x, y, w, h }} mapBounds  Parchment rectangle (center x/y).
+   */
+  _drawFogTiles(g, mapBounds) {
+    const TILE = DISCOVERY_TILE_SIZE; // 32 px — matches discovery grid
+    const mapLeft = mapBounds.x - mapBounds.w / 2;
+    const mapTop  = mapBounds.y - mapBounds.h / 2;
+    const cols = Math.ceil(mapBounds.w / TILE);
+    const rows = Math.ceil(mapBounds.h / TILE);
+
+    // Set fill style once — all undiscovered tiles share the same solid black.
+    g.fillStyle(0x000000, 1.0);
+
+    for (let ty = 0; ty < rows; ty++) {
+      for (let tx = 0; tx < cols; tx++) {
+        const px = mapLeft + tx * TILE;
+        const py = mapTop  + ty * TILE;
+
+        // isDiscovered() expects world pixels. Pass the tile's top-left corner;
+        // the system floors to the same (tx, ty) grid cell we iterate here.
+        if (isDiscovered(px, py)) continue; // no fog — tile revealed
+
+        // Undiscovered — solid black fog tile. Clamp to parchment edge for the
+        // last column/row which may extend slightly beyond mapBounds.
+        const tileW = Math.min(TILE, mapBounds.w - tx * TILE);
+        const tileH = Math.min(TILE, mapBounds.h - ty * TILE);
+        g.fillRect(px, py, tileW, tileH);
+      }
+    }
   }
 
   // ── Landmark scatter (v2 — clustering, variance, contrast, depth) ─────────

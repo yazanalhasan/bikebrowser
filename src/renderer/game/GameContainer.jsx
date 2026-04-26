@@ -36,6 +36,7 @@ import {
 } from './services/npcSpeech.js';
 import { clearDialogueCache } from './services/npcAiClient.js';
 import { setBusy, recordQuestionDismissed } from './systems/gameplayArbiter.js';
+import { runRuntimeAudit } from './systems/runtimeAudit.js';
 
 // ---------------------------------------------------------------------------
 // Mobile detection helper
@@ -283,6 +284,7 @@ export default function GameContainer() {
     // your console doesn't already have it in scope).
     if (import.meta.env.DEV) {
       window.__phaserGame = game;
+      runRuntimeAudit();
     }
 
     // Track parent-element resizes so Phaser re-fits the canvas whenever

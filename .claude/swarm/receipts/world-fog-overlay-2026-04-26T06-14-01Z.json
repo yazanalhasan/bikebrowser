@@ -1,0 +1,13 @@
+{
+  "agent": "world-fog-overlay",
+  "ts": "2026-04-26T06:14:01.414Z",
+  "status": "complete",
+  "files_changed": [
+    "src/renderer/game/scenes/WorldMapScene.js"
+  ],
+  "exports_added": [],
+  "tests_added": [],
+  "blockers_discovered": [],
+  "next_agent_suggestions": ["world-node-gating"],
+  "notes": "LAYER ORDER CONFIRMED (actual depth values observed in file):\n  terrain       depth -100  (_terrainContainer, _renderTerrainLayer)\n  fog           depth -75   (_fogContainer, new — this cycle)\n  paths         depth -50   (_pathContainer, _renderPathLayer)\n  landmarks     depth -25   (_landmarkContainer, _renderLandmarkLayer)\n  node bases    depth  0    (nodeBaseG, inline in create())\n  node circles / icons / labels  depth 1  (per-loc loop in create())\n  vignette      depth 1000  (_renderVignette)\n\nFOG DOES NOT BLOCK NODE CLICK HANDLERS:\n  Node circles are set interactive at: circle.setInteractive({ useHandCursor: unlocked }) in the per-location loop in create(). The fog Graphics object (_fogGraphics) is never passed to setInteractive(). Phaser.GameObjects.Graphics has no hit area by default (unlike Image/Sprite which auto-register on their texture bounds). Without an explicit setInteractive() call, no InputPlugin hit-test is registered for the Graphics object, so all pointer events fall through to the node circles at depth 1. No additional configuration is required.\n\nTILE SIZE:\n  DISCOVERY_TILE_SIZE = 32 px (imported from discoverySystem.js). Fog tiles are 32x32 px, matching the discovery grid exactly so fog cell boundaries align with discovered/undiscovered cell boundaries.\n\nFOG DEPTH CHOSEN:\n  -75. Terrain sits at -100; paths sit at -50. The midpoint -75 gives fog a clean slot above terrain but below all interactive and decorative layers. Landmarks at -25 and nodes at 0/1 are both above fog, so decorated geography and node icons always render on top of fog.\n\nFRAME-TIME ESTIMATE FOR redrawFog() ON FRESH SAVE (everything fogged):\n  Map parchment ~900x615 px with 32 px tiles = ceil(900/32) x ceil(615/32) = 29x20 = 580 tiles. On a fresh save every tile is undiscovered, so all 580 tiles receive a fillRect call. A single fillStyle(0x000000, 1.0) call is made once before the loop; Phaser Graphics batches all fillRect calls into one WebGL draw group. The terrain layer (same tile count + blended RGB per tile + heightmap sampling) renders in ~5-8 ms per the debug console log. Fog is strictly simpler (one colour, no blending math, no transparency). Estimated: ~0.5-2 ms on Chrome desktop. Well within the 16 ms budget. The redrawFog() method itself emits a console.debug timing line so actual measurements are available at runtime."
+}
