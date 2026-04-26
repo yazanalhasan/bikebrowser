@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-26T01:15:00Z",
+  "last_updated": "2026-04-26T02:05:00Z",
   "current_week": 2,
   "current_pod_focus": "World & Discovery",
   "completed": [
@@ -225,8 +225,20 @@
       "summary": "Worker followed spec literally — archived 5 WAVs whose .ogg siblings were present on disk. But ALL 5 .ogg siblings are 0-byte placeholders, no .mp3 exists, and AudioManager.findAssetUrl falls through ['.ogg', '.mp3', '.wav'] skipping 0-byte sources. The .wav files were the active runtime audio source for garage music, neighborhood music, world-map music, and 2 stingers. Spec criterion lacked 'compressed sibling must be non-zero bytes' rule. Cannot re-dispatch until either (a) spec is updated or (b) a new audio-compression-pass agent runs first to populate playable .ogg files, then this can re-run safely."
     }
   ],
-  "blocked": [],
+  "blocked": [
+    {
+      "agent": "audio-compression-pass",
+      "status": "blocked",
+      "ts": "2026-04-26T02:05:00Z",
+      "receipt": ".claude/swarm/receipts/audio-compression-pass-2026-04-26T02-00-00Z.json",
+      "blocker": "ffmpeg not on PATH",
+      "blocker_detail": "Verified ffmpeg absent via bash, PowerShell, and direct probes of Chocolatey/scoop/WinGet/standard install paths. Per spec Step 2, no fallback encoders attempted.",
+      "remediation": "Install ffmpeg with libvorbis. Recommended: `winget install Gyan.FFmpeg` (preferred — stable Windows builds with libvorbis + libmp3lame). Alternative: `choco install ffmpeg`. After install, open a fresh shell and confirm `ffmpeg -version` works, then re-dispatch.",
+      "downstream_blocked": ["audio-asset-cleanup"],
+      "work_queue_preserved": "5 .wav files identified — public/game/audio/music/{garage_warm_oud,neighborhood_hybrid_ride,quest_focus_hybrid}.wav at 128 kbps + public/game/audio/stingers/{reward_tarabi_stinger,upgrade_unlock_hybrid}.wav at 96 kbps. Inventory in receipt notes; no re-discovery needed on re-dispatch."
+    }
+  ],
   "human_gates_pending": [],
-  "dispatch_count": 47,
+  "dispatch_count": 48,
   "session_token_estimate": 0
 }
