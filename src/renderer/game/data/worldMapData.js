@@ -84,6 +84,23 @@ export const WORLD_LOCATIONS = {
     travelTime: 'Long ride',
     travelIcon: '🚲',
   },
+
+  dry_wash: {
+    id: 'dry_wash',
+    name: 'Dry Wash',
+    description:
+      'A flash-flood arroyo with broken bridge remnants — the place where bridge_collapse plays out.',
+    icon: '🏜️',
+    region: 'arizona_desert',
+    type: 'exploration',
+    difficulty: 1,
+    entryScene: 'DryWashScene',
+    mapPos: { x: 0.5, y: 0.55 },
+    unlockReq: { questsAny: ['bridge_collapse'] },
+    rewards: ['bridge_construction_knowledge'],
+    travelTime: 'Short ride',
+    travelIcon: '🚲',
+  },
 };
 
 // ── Helper Functions ────────────────────────────────────────────────────────

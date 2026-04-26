@@ -1,0 +1,71 @@
+{
+  "agent": "construction-system-with-bridge-first-consumer",
+  "pod": "Reusable Interaction Systems",
+  "ts": "2026-04-26T17:25:00Z",
+  "status": "complete",
+  "files_changed": [
+    {
+      "type": "create",
+      "path": "src/renderer/game/systems/construction/constructionSystem.js",
+      "summary": "Reusable scene-mountable manager class. Restores placed slots from save state, renders ghost+placed via host-supplied callbacks, persists on every place, awaits async onPlace/onAllPlaced hooks, dispatches completion via observation+stateFlag+quest-tagged dialog (mirrors LabRigBase._emitCompletionDialog)."
+    },
+    {
+      "type": "create",
+      "path": "src/renderer/game/data/blueprints/bridgeBlueprint.js",
+      "summary": "BRIDGE_MESQUITE_BLUEPRINT — 4-beam horizontal blueprint at y=400. stateKey=bridgeBuiltSlots, completion observation=bridge_built, stateFlag=bridgeBuilt, questId=bridge_collapse, Mr. Chen 'It holds!' dialog text."
+    },
+    {
+      "type": "create",
+      "path": "src/renderer/game/scenes/DryWashScene.js",
+      "summary": "First consumer of ConstructionSystem. 3 phases: visit (broken remnants, Mr. Chen nudges back to lab), build (mounts construction, click ghost beams to place, bike load-test tween across bridge after final placement, explicit completeBuild), post-build (renders finished bridge, no construction system). Custom wash channel via Phaser Graphics, monsoon warning sign, locked far-trail indicator. HMR registered."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/config.js",
+      "summary": "Imported DryWashScene and added it to ALL_SCENES."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/systems/sceneRegistry.js",
+      "summary": "Added DryWashScene registry entry (local layer, arizona_desert region, fromWorldMap spawn at 100,480, exit→WorldMapScene with fromDryWash spawn). Added fromDryWash spawn to WorldMapScene."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/data/worldMapData.js",
+      "summary": "Added dry_wash to WORLD_LOCATIONS — entryScene=DryWashScene, mapPos {0.5,0.55} (offset from salt_river to avoid overlap), unlockReq questsAny:['bridge_collapse'] so the location appears once the quest is in the player's log."
+    },
+    {
+      "type": "edit",
+      "path": "src/renderer/game/data/quests.js",
+      "summary": "bridge_collapse step 15 (build_bridge) gained scene: 'DryWashScene' field. No other changes."
+    }
+  ],
+  "build_validation": {
+    "command": "npm run build",
+    "result": "pass",
+    "duration": "11.25s"
+  },
+  "components_landed": {
+    "construction_system_class": true,
+    "bridge_blueprint": true,
+    "dry_wash_scene_visit_phase": true,
+    "dry_wash_scene_build_phase": true,
+    "dry_wash_scene_post_build_phase": true,
+    "bike_load_test_animation": true,
+    "config_registered": true,
+    "scene_registry_entry": true,
+    "world_map_location_entry": true,
+    "quest_step_scene_field": true,
+    "save_persistence": true,
+    "hmr_registered": true
+  },
+  "second_consumer_thought_experiment": {
+    "for_shelter": "Shelter would declare a SHELTER_BLUEPRINT with slots like {id:'wall_n',type:'wall',...}, {id:'roof',type:'roof',...} etc, stateKey:'shelterBuiltSlots', completion {observation:'shelter_built', stateFlag:'shelterBuilt', questId:<some shelter quest>, dialog: ...}. The host scene's onPlace would inventory-check appropriate parts (canvas, posts, ties). Its onAllPlaced could run a 'wind test' animation (shake the shelter, gust particles) before resolving — exactly mirroring the bike-load-test flow. Confidence: HIGH that the system holds without changes for any 'click ghosts to place parts → run validation animation → emit completion observation' pattern.",
+    "missing_hooks_for_shelter": [
+      "Per-slot validation (e.g. 'roof can only be placed after all 4 walls') — currently any ghost can be clicked at any time. If shelter has placement order constraints, the host's onPlace can enforce order by checking getPlacedSlotIds() before returning, but a built-in dependency-graph hook would be cleaner.",
+      "Pre-mount placement preview / ghost-rotation — current renderer treats slot.x/y/w/h as fixed. Shelter parts may want player-rotatable previews; the system's drawGhost contract is open enough to support this in the host, but no built-in helpers.",
+      "Validator strategy registry — deferred per spec. If shelter introduces a third validation type beyond bike-roll and wind-test it would justify lifting onAllPlaced into a registry."
+    ]
+  },
+  "notes": "Used autoCompleteAfterAllPlaced=false in DryWashScene so the bike load-test tween runs to completion before completeBuild() emits. The onAllPlaced callback returns a Promise that the system awaits — this is the cleanest way to gate completion on an async animation. saveSystem.js was NOT touched: the existing { ...defaultSave(), ...migrated } merge handles bridgeBuiltSlots:undefined and bridgeBuilt:undefined gracefully, and ConstructionSystem.getPlacedSlotIds() defaults to [] if state.bridgeBuiltSlots is undefined. The salt_river WORLD_LOCATIONS entry uses mapPos {0.5,0.7} so I placed dry_wash at {0.5,0.55} to avoid identical map positions. WorldMapScene already routes via loc.entryScene from worldMapData (no WorldMapScene.js edits needed). Mr. Chen NPC uses the existing Npc entity via addNpc (no new entity types)."
+}

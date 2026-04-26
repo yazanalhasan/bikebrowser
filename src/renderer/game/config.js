@@ -32,6 +32,7 @@ import WorldMapScene from './scenes/WorldMapScene.js';
 import DesertForagingScene from './scenes/DesertForagingScene.js';
 import CopperMineScene from './scenes/CopperMineScene.js';
 import SaltRiverScene from './scenes/SaltRiverScene.js';
+import DryWashScene from './scenes/DryWashScene.js';
 
 // Legacy scenes (kept for save compat — old saves reference these keys)
 import GarageScene from './scenes/GarageScene.js';
@@ -59,6 +60,7 @@ const ALL_SCENES = [
   DesertForagingScene,
   CopperMineScene,
   SaltRiverScene,
+  DryWashScene,
   // Legacy scenes (for old saves that reference GarageScene/NeighborhoodScene)
   GarageScene,
   NeighborhoodScene,

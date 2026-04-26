@@ -279,7 +279,10 @@ const SCENES = {
     icon: '🗺️',
     description: 'Explore the wider Arizona region',
     worldPos: null,
-    spawns: { default: { x: 400, y: 300 } },
+    spawns: {
+      default: { x: 400, y: 300 },
+      fromDryWash: { x: 400, y: 300 },
+    },
     exits: {},
     unlockReq: null,
     region: 'world',
@@ -350,6 +353,26 @@ const SCENES = {
     },
     region: 'desert',
     defaultMusic: 'desert_discovery',
+  },
+
+  DryWashScene: {
+    key: 'DryWashScene',
+    layer: 'local',
+    name: 'Dry Wash',
+    icon: '🏜️',
+    description:
+      "A dry arroyo cutting through the desert — broken bridge remnants on both sides.",
+    worldPos: null,        // visible via worldMapData.WORLD_LOCATIONS, not a region anchor
+    spawns: {
+      default: { x: 100, y: 480 },
+      fromWorldMap: { x: 100, y: 480 },
+    },
+    exits: {
+      toWorldMap: { target: 'WorldMapScene', spawn: 'fromDryWash' },
+    },
+    unlockReq: null,       // visibility gated through worldMapData.WORLD_LOCATIONS unlockReq
+    region: 'arizona_desert',
+    defaultMusic: 'pixel_pedal_parade_v4',
   },
 };
 

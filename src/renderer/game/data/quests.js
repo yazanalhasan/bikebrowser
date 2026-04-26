@@ -1273,6 +1273,7 @@ const QUESTS = {
         text: 'Build the bridge with your chosen material and test it with a loaded bike!',
         requiredObservation: 'bridge_built',
         hint: 'Place the mesquite beams across the wash and secure them.',
+        scene: 'DryWashScene',
       },
       {
         id: 'complete_bridge',
