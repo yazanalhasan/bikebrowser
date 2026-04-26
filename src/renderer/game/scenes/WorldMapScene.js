@@ -26,7 +26,7 @@ const SCENE_KEY = 'WorldMapScene';
 // Phaser Graphics fillStyle wants 0xRRGGBB integers, so each entry is the
 // hex value from the v2 spec converted from #RRGGBB.
 const BIOME_COLORS = Object.freeze({
-  [BIOME.DESERT]:    0xE6C27A, // sandy
+  [BIOME.DESERT]:    0xD4A656, // sandy
   [BIOME.GRASSLAND]: 0x7FBF6A, // warm green
   [BIOME.WATER]:     0x3A7BA8, // blue
   [BIOME.MOUNTAIN]:  0x7E6855, // gray-brown
@@ -387,8 +387,8 @@ export default class WorldMapScene extends Phaser.Scene {
    * so input passes through to nodes beneath it automatically).
    */
   _renderVignette({ width, height }) {
-    const EDGE = Math.round(Math.min(width, height) * 0.22); // vignette depth ~22% of short side
-    const ALPHA_OUTER = 0.30; // darkness at viewport edge
+    const EDGE = Math.round(Math.min(width, height) * 0.32); // vignette depth ~32% of short side
+    const ALPHA_OUTER = 0.50; // darkness at viewport edge
     const ALPHA_INNER = 0;    // transparent at center
 
     const vg = this.add.graphics();
@@ -505,22 +505,22 @@ export default class WorldMapScene extends Phaser.Scene {
         case BIOME.DESERT:
           strokeColor = 0xa08250;
           strokeAlpha = 0.50; // was 0.60 → -10 pp
-          strokeWidth = 2;
+          strokeWidth = 3;
           break;
         case BIOME.GRASSLAND:
           strokeColor = 0x6e5a32;
           strokeAlpha = 0.55; // was 0.65 → -10 pp
-          strokeWidth = 2;
+          strokeWidth = 3;
           break;
         case BIOME.MOUNTAIN:
           strokeColor = 0x3c3228;
           strokeAlpha = 0.65; // was 0.75 → -10 pp
-          strokeWidth = 3;
+          strokeWidth = 5;
           break;
         default:
           strokeColor = 0x786446;
           strokeAlpha = 0.50; // was 0.60 → -10 pp
-          strokeWidth = 2;
+          strokeWidth = 3;
       }
 
       // Locked paths recede more (multiplier reduced 0.35 → 0.25 per #4).
@@ -548,9 +548,9 @@ export default class WorldMapScene extends Phaser.Scene {
       //   others   → 12% (unchanged)
       let offsetPct;
       if (majorityBiome === BIOME.DESERT) {
-        offsetPct = 0.16;
+        offsetPct = 0.22;
       } else if (majorityBiome === BIOME.MOUNTAIN) {
-        offsetPct = 0.10; // tighter mountain curvature
+        offsetPct = 0.25; // stronger mountain curvature
       } else {
         offsetPct = 0.12;
       }
@@ -566,7 +566,7 @@ export default class WorldMapScene extends Phaser.Scene {
       const isMountain = majorityBiome === BIOME.MOUNTAIN;
 
       // STEPS: 14 for mountain (faceted look per spec), 20 otherwise.
-      const STEPS = isMountain ? 14 : 20;
+      const STEPS = isMountain ? 10 : 20;
 
       g.lineStyle(strokeWidth, strokeColor, strokeAlpha);
 
@@ -924,18 +924,18 @@ export default class WorldMapScene extends Phaser.Scene {
           // Cactus — 1 or 2 arm pairs (upgrade #6 micro-variation).
           const armCount = rand2(SEED ^ 0x7777, tx, ty) < 0.5 ? 1 : 2;
           // Alpha 1.0 (upgrade #7 micro-contrast).
-          g.fillStyle(0x3A7A3A, 1.0);
-          const trunk0 = rp(-1, -4);
-          const trunk1 = rp( 2, -4);
-          const trunk2 = rp( 2,  4);
-          const trunk3 = rp(-1,  4);
+          g.fillStyle(0x2D5C2D, 1.0);
+          const trunk0 = rp(-2, -8);
+          const trunk1 = rp( 2, -8);
+          const trunk2 = rp( 2,  8);
+          const trunk3 = rp(-2,  8);
           g.fillPoints([trunk0, trunk1, trunk2, trunk3], true);
           // First arm pair
-          const la0 = rp(-4, -1); const la1 = rp(-1, -1);
-          const la2 = rp(-1,  1); const la3 = rp(-4,  1);
+          const la0 = rp(-6, -2); const la1 = rp(-2, -2);
+          const la2 = rp(-2,  1); const la3 = rp(-6,  1);
           g.fillPoints([la0, la1, la2, la3], true);
-          const ra0 = rp(2, -2); const ra1 = rp(5, -2);
-          const ra2 = rp(5,  0); const ra3 = rp(2,  0);
+          const ra0 = rp(2, -4); const ra1 = rp(6, -4);
+          const ra2 = rp(6, -1); const ra3 = rp(2, -1);
           g.fillPoints([ra0, ra1, ra2, ra3], true);
           // Second arm pair if armCount === 2
           if (armCount === 2) {

@@ -1,0 +1,19 @@
+{
+  "agent": "world-map-loudness-pass",
+  "status": "complete",
+  "ts": "2026-04-26T00:55:00Z",
+  "files_changed": ["src/renderer/game/scenes/WorldMapScene.js"],
+  "notes": {
+    "change_1_desert_palette": "BIOME_COLORS[BIOME.DESERT]: 0xE6C27A → 0xD4A656 (richer amber, separates from parchment bg)",
+    "change_2_world_region_biome": "mountain_range: BIOME.MOUNTAIN already present in WORLD_REGION_BIOME (prior pass had landed it) — no token change required, verified at line 44",
+    "change_3_cactus_trunk": "fillStyle 0x3A7A3A → 0x2D5C2D; trunk coords rp(-1,-4)/rp(2,-4)/rp(2,4)/rp(-1,4) → rp(-2,-8)/rp(2,-8)/rp(2,8)/rp(-2,8); left arm rp(-4,-1)…rp(-4,1) → rp(-6,-2)…rp(-6,1); right arm rp(2,-2)…rp(2,0) → rp(2,-4)…rp(2,-1). Note: code uses fillPoints (not fillRect) with rp() rotatable offsets — equivalent geometry applied.",
+    "change_4_path_offset": "Desert offsetPct 0.16 → 0.22; mountain offsetPct 0.10 → 0.25",
+    "change_5_mountain_steps": "STEPS for mountain branch: 14 → 10 (more faceted/angular)",
+    "change_6_stroke_widths": "DESERT 2→3, GRASSLAND 2→3, MOUNTAIN 3→5, default 2→3",
+    "change_7_alpha_outer": "ALPHA_OUTER 0.30 → 0.50",
+    "change_8_edge_depth": "EDGE multiplier 0.22 → 0.32",
+    "syntax_check": "PASS — node --check returned exit 0",
+    "diff_summary": "8 distinct hunks, ~30 lines changed across BIOME_COLORS, _renderVignette (2 tokens), switch strokeWidths (4 tokens), offsetPct block (2 tokens), STEPS (1 token), cactus fillStyle+coords (10 tokens)"
+  },
+  "next_agent_suggestions": []
+}

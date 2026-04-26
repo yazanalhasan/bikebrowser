@@ -467,6 +467,18 @@ export default function GameContainer() {
   }, [phase, bootKey, containerReady]);
 
   // ------------------------------------------------------------------
+  // Re-inject AudioManager into Phaser registry when unlock state changes
+  // (covers HMR hot-swap: useGameAudio resets isUnlocked→false then the
+  // overlay tap sets it true again, but the Phaser init effect won't rerun
+  // because [phase, bootKey, containerReady] didn't change).
+  // ------------------------------------------------------------------
+  useEffect(() => {
+    if (isUnlocked && audio && gameRef.current) {
+      gameRef.current.registry.set('audioManager', audio);
+    }
+  }, [isUnlocked, audio]);
+
+  // ------------------------------------------------------------------
   // Pause / resume on visibility change
   // ------------------------------------------------------------------
   useEffect(() => {

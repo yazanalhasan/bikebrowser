@@ -1,0 +1,46 @@
+{
+  "agent": "audio-regression-triage",
+  "status": "complete",
+  "ts": "2026-04-26T00:55:00Z",
+  "files_changed": [
+    "src/renderer/game/audio/useGameAudio.js",
+    "src/renderer/game/GameContainer.jsx"
+  ],
+  "notes": {
+    "root_cause": "HMR hot-swap (React Refresh) race condition between useGameAudio state and Phaser registry injection. When Vite HMRs GameContainer.jsx during polish iterations, React Refresh re-runs all useEffects (cleanup + setup) but PRESERVES useState values. This means: (1) the old AudioManager is destroyed in cleanup, (2) a new AudioManager is created and stored in managerRef.current, BUT (3) isUnlocked stays true (React Refresh preserves it) so the unlock overlay is never shown again, AND (4) the Phaser init effect does NOT re-run (its deps [phase, bootKey, containerReady] are unchanged), so the Phaser registry still points to null (or old destroyed manager). Result: all audio calls from Phaser scenes get null from registry.get('audioManager') and no-op.",
+    "secondary_findings": [
+      "AudioManager.js and audioManifest.js are clean at HEAD — the rollup commit (00aa038) correctly rewrote AudioManager to use HTMLAudioElement streaming for music and added WorldMapScene→quest_focus_hybrid mapping.",
+      "WorldMapScene.js line 368: audioMgr?.transitionToScene('WorldMapScene') is intact and unchanged.",
+      "quest_focus_hybrid.ogg is 0 bytes (placeholder) but quest_focus_hybrid.wav exists at 2.1MB — _findAssetUrl correctly skips the 0-byte .ogg via the content-length check and falls through to .wav.",
+      "All SFX directories are empty (only .gitkeep) — SFX falls through to proceduralAudio.js which has generators for all expected keys.",
+      "audioSettings.js defaults show no muted state. No setVolume(0) calls found.",
+      "SCENE_MUSIC has a correct 'WorldMapScene' entry — no path mismatch.",
+      "The GameContainer visibilitychange handler only calls suspend() (never resume()) but this is harmless since AudioManager._onVisibility handles both directions via its own listener added in unlock()."
+    ],
+    "fix_applied": {
+      "fix_1": {
+        "file": "src/renderer/game/audio/useGameAudio.js",
+        "change": "Added setIsUnlocked(false) to the useEffect cleanup function. When HMR re-runs the effect, isUnlocked resets to false, the unlock overlay re-appears, and the new AudioManager instance gets properly initialized via a fresh user tap.",
+        "lines": "useEffect cleanup block"
+      },
+      "fix_2": {
+        "file": "src/renderer/game/GameContainer.jsx",
+        "change": "Added a new useEffect([isUnlocked, audio]) that re-injects the AudioManager into Phaser's registry whenever isUnlocked becomes true. This covers the HMR path where the Phaser init effect doesn't rerun but the user has re-tapped the overlay.",
+        "lines": "New useEffect after the Phaser init block, before the visibility change block"
+      }
+    },
+    "not_changed": [
+      "AudioManager.js — logic is correct, no changes needed",
+      "audioManifest.js — WorldMapScene mapping is present and correct",
+      "The dialog/TTS effect block in GameContainer — untouched as instructed",
+      "WorldMapScene.js audio calls — intact"
+    ]
+  },
+  "next_agent_suggestions": [
+    "If audio is still silent after applying this fix: check localStorage for saved bikebrowser_audio_settings with masterMute:true or masterVolume:0 (can be cleared via DevTools > Application > Storage).",
+    "If music plays but SFX is silent: confirm proceduralAudio.js MUSIC_GENERATORS covers quest_focus_hybrid (it does — confirmed). Check if AudioContext is in 'suspended' state in DevTools > Memory.",
+    "Consider making useGameAudio return audio as reactive useState rather than managerRef.current to avoid any future stale-ref issues.",
+    "The content-length check in _findAssetUrl may not catch 0-byte files if Vite omits Content-Length for HEAD responses on empty files (unlikely but possible). Could add a fallback GET check for extremely small files.",
+    "el.play() called after multiple awaits in _playStreamOrBuffer is safe on Chrome (document has had gesture) but may fail on Safari which has stricter per-call gesture requirements. Consider calling el.play() within a synchronous user gesture and using Web Audio API's AudioBufferSourceNode for all platforms."
+  ]
+}

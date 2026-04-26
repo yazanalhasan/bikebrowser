@@ -22,7 +22,12 @@ export default function useGameAudio() {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [settings, setSettings] = useState(null);
 
-  // Create manager on mount, destroy on unmount
+  // Create manager on mount, destroy on unmount.
+  // On HMR hot-swap (React Refresh), React Refresh re-runs this effect but
+  // preserves useState values — meaning isUnlocked could stay true while the
+  // underlying AudioManager is destroyed and replaced. Reset isUnlocked in
+  // cleanup so the unlock overlay re-appears and the new instance gets
+  // properly initialized via a fresh user gesture.
   useEffect(() => {
     const mgr = new AudioManager();
     managerRef.current = mgr;
@@ -31,6 +36,7 @@ export default function useGameAudio() {
     return () => {
       mgr.destroy();
       managerRef.current = null;
+      setIsUnlocked(false); // force overlay re-show if HMR swaps the module
     };
   }, []);
 
