@@ -1,0 +1,2 @@
+- [Scenes processed](project_scenes_processed.md) — running list of scenes converted to layout JSON
+- [OverworldScene architecture](project_overworld_architecture.md) — largely data-driven, mostly relative offsets in loops

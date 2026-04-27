@@ -1,7 +1,11 @@
 {
   "scene": "ZuzuGarageScene",
   "version": 1,
-  "_world": { "width": 800, "height": 600, "_note": "Matches getWorldSize() in ZuzuGarageScene.js." },
+  "_world": {
+    "width": 800,
+    "height": 600,
+    "_note": "Matches getWorldSize() in ZuzuGarageScene.js."
+  },
   "objects": {
     "floor": {
       "x": 400,
@@ -10,7 +14,6 @@
       "h": 600,
       "_note": "Original: x = width / 2 (800), y = height / 2 (600), w = width, h = height."
     },
-
     "wall_top": {
       "x": 400,
       "y": 20,
@@ -46,7 +49,6 @@
       "h": 40,
       "_note": "Original: x = width - 150 (800-150), y = height - 20."
     },
-
     "window_top": {
       "x": 780,
       "y": 200,
@@ -75,7 +77,6 @@
       "h": 50,
       "_note": "Original: x = width - 20."
     },
-
     "peg_board": {
       "x": 400,
       "y": 50,
@@ -88,24 +89,79 @@
       "y": 50,
       "_note": "Original: x = width / 2."
     },
-
-    "workbench": { "x": 140, "y": 160, "w": 180, "h": 70 },
-    "workbench_leg_left": { "x": 60, "y": 200, "w": 10, "h": 26 },
-    "workbench_leg_right": { "x": 220, "y": 200, "w": 10, "h": 26 },
-    "workbench_wrench": { "x": 110, "y": 152 },
-    "workbench_screwdriver": { "x": 140, "y": 152 },
-    "workbench_toolbox": { "x": 170, "y": 152 },
-    "workbench_collision": { "x": 140, "y": 160, "w": 180, "h": 70 },
-    "interact_workbench": { "x": 140, "y": 220, "_note": "Interaction radius 70 stays in code." },
-
-    "lab_door": { "x": 60, "y": 130, "w": 38, "h": 56 },
-    "lab_door_glyph": { "x": 60, "y": 100, "_note": "Original: y = labDoorY - 30 (130-30)." },
-    "interact_lab": { "x": 90, "y": 170, "_note": "Original: x = labDoorX + 30, y = labDoorY + 40." },
-
-    "thermal_door": { "x": 60, "y": 200, "w": 38, "h": 56 },
-    "thermal_door_glyph": { "x": 60, "y": 170, "_note": "Original: y = thermalDoorY - 30." },
-    "interact_thermal": { "x": 90, "y": 240, "_note": "Original: x = thermalDoorX + 30, y = thermalDoorY + 40." },
-
+    "workbench": {
+      "x": 141,
+      "y": 92,
+      "w": 180,
+      "h": 70
+    },
+    "workbench_leg_left": {
+      "x": 56,
+      "y": 142,
+      "w": 10,
+      "h": 26
+    },
+    "workbench_leg_right": {
+      "x": 227,
+      "y": 143,
+      "w": 10,
+      "h": 26
+    },
+    "workbench_wrench": {
+      "x": 141,
+      "y": 115
+    },
+    "workbench_screwdriver": {
+      "x": 214,
+      "y": 114
+    },
+    "workbench_toolbox": {
+      "x": 217,
+      "y": 73
+    },
+    "workbench_collision": {
+      "x": 141,
+      "y": 93,
+      "w": 180,
+      "h": 70
+    },
+    "interact_workbench": {
+      "x": 85,
+      "y": 110,
+      "_note": "Interaction radius 70 stays in code."
+    },
+    "lab_door": {
+      "x": 54,
+      "y": 240,
+      "w": 38,
+      "h": 56
+    },
+    "lab_door_glyph": {
+      "x": 60,
+      "y": 239,
+      "_note": "Original: y = labDoorY - 30 (130-30)."
+    },
+    "interact_lab": {
+      "x": 57,
+      "y": 240,
+      "_note": "Original: x = labDoorX + 30, y = labDoorY + 40."
+    },
+    "thermal_door": {
+      "x": 53,
+      "y": 301,
+      "w": 38,
+      "h": 56
+    },
+    "thermal_door_glyph": {
+      "x": 55,
+      "y": 293,
+      "_note": "Original: y = thermalDoorY - 30."
+    },
+    "interact_thermal": {
+      "x": 55,
+      "y": 292,
+      "_note": "Original: x = thermalDoorX + 30, y = thermalDoorY + 40."
+    },
     "bike_mat": {
       "x": 330,
       "y": 150,
@@ -169,24 +225,62 @@
       "y": 250,
       "_note": "Original: bikeX, bikeY + 80. Interaction radius 80 stays in code."
     },
-
-    "notebook_desk": { "x": 660, "y": 160, "w": 140, "h": 65 },
-    "notebook_glyph": { "x": 640, "y": 152 },
-    "notebook_pencil": { "x": 680, "y": 152 },
-    "notebook_collision": { "x": 660, "y": 160, "w": 140, "h": 65 },
-    "interact_notebook": { "x": 660, "y": 210, "_note": "Interaction radius 70 stays in code." },
-
-    "oil_stain_main": { "x": 480, "y": 380, "r": 30 },
-    "oil_stain_drip": { "x": 460, "y": 410, "r": 18 },
-
-    "tire_left_top": { "x": 52, "y": 320 },
-    "tire_left_bottom": { "x": 52, "y": 380 },
-
-    "wall_tool_top": { "x": 52, "y": 260 },
-    "wall_tool_bottom": { "x": 52, "y": 430 },
-
-    "water_bottle": { "x": 748, "y": 420, "_note": "Original: x = width - 52." },
-
+    "notebook_desk": {
+      "x": 660,
+      "y": 160,
+      "w": 140,
+      "h": 65
+    },
+    "notebook_glyph": {
+      "x": 640,
+      "y": 152
+    },
+    "notebook_pencil": {
+      "x": 680,
+      "y": 152
+    },
+    "notebook_collision": {
+      "x": 660,
+      "y": 160,
+      "w": 140,
+      "h": 65
+    },
+    "interact_notebook": {
+      "x": 660,
+      "y": 210,
+      "_note": "Interaction radius 70 stays in code."
+    },
+    "oil_stain_main": {
+      "x": 480,
+      "y": 380,
+      "r": 30
+    },
+    "oil_stain_drip": {
+      "x": 460,
+      "y": 410,
+      "r": 18
+    },
+    "tire_left_top": {
+      "x": 67,
+      "y": 398
+    },
+    "tire_left_bottom": {
+      "x": 64,
+      "y": 444
+    },
+    "wall_tool_top": {
+      "x": 66,
+      "y": 359
+    },
+    "wall_tool_bottom": {
+      "x": 67,
+      "y": 497
+    },
+    "water_bottle": {
+      "x": 748,
+      "y": 420,
+      "_note": "Original: x = width - 52."
+    },
     "upgrade_tool_rack_shelf": {
       "x": 748,
       "y": 260,
@@ -209,25 +303,37 @@
       "y": 290,
       "_note": "Original: x = width - 52."
     },
-
-    "upgrade_work_light_glyph": { "x": 200, "y": 130 },
-    "upgrade_work_light_glow": {
+    "upgrade_work_light_glyph": {
       "x": 140,
-      "y": 160,
+      "y": 68
+    },
+    "upgrade_work_light_glow": {
+      "x": 103,
+      "y": 92,
       "r": 60,
       "_note": "fillCircle radius 60."
     },
-
-    "upgrade_repair_stand_post": { "x": 340, "y": 360, "w": 8, "h": 55 },
-    "upgrade_repair_stand_arm": { "x": 340, "y": 335, "w": 32, "h": 6 },
-    "upgrade_repair_stand_label": { "x": 340, "y": 395 },
-
+    "upgrade_repair_stand_post": {
+      "x": 340,
+      "y": 360,
+      "w": 8,
+      "h": 55
+    },
+    "upgrade_repair_stand_arm": {
+      "x": 340,
+      "y": 335,
+      "w": 32,
+      "h": 6
+    },
+    "upgrade_repair_stand_label": {
+      "x": 340,
+      "y": 395
+    },
     "scene_title": {
       "x": 400,
       "y": 70,
       "_note": "Original: x = width / 2."
     },
-
     "sun_glow": {
       "x": 300,
       "y": 545,
@@ -235,7 +341,6 @@
       "h": 55,
       "_note": "Original: y = height - 55 (600-55). Used by fillRect at the south door."
     },
-
     "exit_zone_south": {
       "x": 400,
       "y": 586,
