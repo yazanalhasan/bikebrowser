@@ -260,6 +260,29 @@ Hoist the `beams` array to JSON as `"beams": [{x:200,y:400},...]`.
 Keep the for-loop in code unchanged; it now iterates
 `this.layout.beams`.
 
+## Editor opt-in (mandatory)
+
+After extracting the layout JSON, add this static property to the
+target scene class. Insert it immediately after the class declaration's
+opening brace, before any other static or instance members:
+
+```js
+static layoutEditorConfig = {
+  layoutAssetKey: '<layoutAssetKey>',
+  layoutPath: '<layoutPath>',
+};
+```
+
+Use the dispatch's `layoutAssetKey` and `layoutPath` parameters verbatim.
+
+This opts the scene into the in-game layout editor (`LayoutEditorOverlayScene`).
+The editor auto-detects scenes with this property; without it, F2 prints
+a console warning on the scene and does nothing.
+
+This addition counts as part of the strict-refactor scope: it adds 5 LOC
+to the scene file, but no behavior changes (the property is read only by
+the editor overlay, which is sleeping during normal gameplay).
+
 ## Standards
 
 - JavaScript (`.js`), not TypeScript.
@@ -276,9 +299,13 @@ Keep the for-loop in code unchanged; it now iterates
 - Every literal that did exist is preserved in the JSON.
 - The shared `loadLayout` helper exists.
 - `CLAUDE.md` contains the layout-system rule.
-- `git diff` of the scene file shows ONLY position/size changes —
-  zero touches to event handlers, dialog strings, conditionals,
-  inventory checks, save calls, audio, etc.
+- The target scene class declares `static layoutEditorConfig = { layoutAssetKey, layoutPath }`
+  using the dispatch parameters verbatim. Verify by grep:
+  `grep -n "static layoutEditorConfig" <targetSceneFile>`
+- `git diff` of the scene file shows ONLY position/size changes
+  PLUS the 5-LOC layoutEditorConfig opt-in — zero touches to event
+  handlers, dialog strings, conditionals, inventory checks, save
+  calls, audio, etc.
 
 ### Useful greps to self-audit
 
