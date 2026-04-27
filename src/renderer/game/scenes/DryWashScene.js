@@ -33,6 +33,7 @@ import {
   attachEdgeSensor,
   performSeamlessTransition,
 } from '../systems/seamlessTraversal.js';
+import { loadLayout } from '../utils/loadLayout.js';
 
 const SCENE_KEY = 'DryWashScene';
 
@@ -49,6 +50,11 @@ const WASH_Y = 400;
 const WASH_HALF_HEIGHT = 40;
 
 export default class DryWashScene extends LocalSceneBase {
+  static layoutEditorConfig = {
+    layoutAssetKey: 'dryWashLayout',
+    layoutPath: 'layouts/dry-wash.layout.json',
+  };
+
   constructor() {
     super(SCENE_KEY);
     /** @type {ConstructionSystem|null} */
@@ -60,6 +66,11 @@ export default class DryWashScene extends LocalSceneBase {
   getWorldSize() { return { width: 900, height: 600 }; }
 
   // ── Lifecycle ──────────────────────────────────────────────────────
+
+  preload() {
+    super.preload?.();
+    this.load.json('dryWashLayout', 'layouts/dry-wash.layout.json');
+  }
 
   /**
    * Stash incoming scene-start data so create() can apply seamless-entry
@@ -93,6 +104,7 @@ export default class DryWashScene extends LocalSceneBase {
   // ── World construction ─────────────────────────────────────────────
 
   createWorld() {
+    this.layout = loadLayout(this, 'dryWashLayout');
     const { width, height } = this.getWorldSize();
     const state = this.registry.get('gameState') || {};
 
@@ -104,11 +116,11 @@ export default class DryWashScene extends LocalSceneBase {
     }
 
     // ── Sky / background ──
-    this.add.rectangle(width / 2, 120, width, 240, 0xf2c98f);
+    this.add.rectangle(this.layout.sky.x, this.layout.sky.y, this.layout.sky.w, this.layout.sky.h, 0xf2c98f);
     // ── Sandy near-side ground ──
-    this.add.rectangle(width / 2, 240, width, 240, 0xc8a274);
+    this.add.rectangle(this.layout.ground_near.x, this.layout.ground_near.y, this.layout.ground_near.w, this.layout.ground_near.h, 0xc8a274);
     // ── Far-side ground (slightly different tone to read as "across") ──
-    this.add.rectangle(width / 2, height - 80, width, 160, 0xb89368);
+    this.add.rectangle(this.layout.ground_far.x, this.layout.ground_far.y, this.layout.ground_far.w, this.layout.ground_far.h, 0xb89368);
 
     // ── Wash channel (jagged tan-brown arroyo at y≈400) ──
     this._renderWashChannel(width);
@@ -116,18 +128,18 @@ export default class DryWashScene extends LocalSceneBase {
     // ── Distant mesa silhouette ──
     const mesa = this.add.graphics();
     mesa.fillStyle(0x9b7958, 0.6);
-    mesa.fillTriangle(80, 220, 200, 60, 320, 220);
-    mesa.fillTriangle(420, 220, 540, 90, 660, 220);
-    mesa.fillTriangle(720, 220, 820, 110, 880, 220);
+    mesa.fillTriangle(this.layout.mesa_1.x1, this.layout.mesa_1.y1, this.layout.mesa_1.x2, this.layout.mesa_1.y2, this.layout.mesa_1.x3, this.layout.mesa_1.y3);
+    mesa.fillTriangle(this.layout.mesa_2.x1, this.layout.mesa_2.y1, this.layout.mesa_2.x2, this.layout.mesa_2.y2, this.layout.mesa_2.x3, this.layout.mesa_2.y3);
+    mesa.fillTriangle(this.layout.mesa_3.x1, this.layout.mesa_3.y1, this.layout.mesa_3.x2, this.layout.mesa_3.y2, this.layout.mesa_3.x3, this.layout.mesa_3.y3);
 
     // ── Decorative cacti / brush ──
-    this.add.text(60, 300, '🌵', { fontSize: '34px' }).setOrigin(0.5).setDepth(2);
-    this.add.text(width - 80, 320, '🌵', { fontSize: '28px' }).setOrigin(0.5).setDepth(2);
-    this.add.text(width - 50, 200, '🌿', { fontSize: '22px' }).setOrigin(0.5).setDepth(2);
-    this.add.text(140, 220, '🌿', { fontSize: '18px' }).setOrigin(0.5).setDepth(2);
+    this.add.text(this.layout.cactus_left.x, this.layout.cactus_left.y, '🌵', { fontSize: '34px' }).setOrigin(0.5).setDepth(2);
+    this.add.text(this.layout.cactus_right.x, this.layout.cactus_right.y, '🌵', { fontSize: '28px' }).setOrigin(0.5).setDepth(2);
+    this.add.text(this.layout.brush_right.x, this.layout.brush_right.y, '🌿', { fontSize: '22px' }).setOrigin(0.5).setDepth(2);
+    this.add.text(this.layout.brush_left.x, this.layout.brush_left.y, '🌿', { fontSize: '18px' }).setOrigin(0.5).setDepth(2);
 
     // ── Monsoon warning sign ──
-    this._renderMonsoonSign(60, 200);
+    this._renderMonsoonSign(this.layout.monsoon_sign.x, this.layout.monsoon_sign.y);
 
     // ── Broken bridge remnants — only visible until built ──
     if (!state.bridgeBuilt) {
@@ -142,21 +154,21 @@ export default class DryWashScene extends LocalSceneBase {
     this.addNpc({
       id: 'mr_chen',
       name: 'Mr. Chen',
-      x: 200, y: 300,
+      x: this.layout.mr_chen_npc.x, y: this.layout.mr_chen_npc.y,
       color: 0x6b3410,
       onInteract: () => this._onMrChenInteract(),
     });
 
     // ── Scene title ──
-    this.add.text(width / 2, 30, '🏜️ Dry Wash', {
+    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🏜️ Dry Wash', {
       fontSize: '18px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#7c2d12', stroke: '#fef3c7', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(10).setScrollFactor(0);
 
     // ── Exit back to world map ──
     this.addExit({
-      x: width / 2, y: height - 14,
-      width: 220, height: 28,
+      x: this.layout.exit_zone_south.x, y: this.layout.exit_zone_south.y,
+      width: this.layout.exit_zone_south.w, height: this.layout.exit_zone_south.h,
       targetScene: 'WorldMapScene',
       targetSpawn: 'fromDryWash',
       label: '← World Map',
@@ -175,20 +187,22 @@ export default class DryWashScene extends LocalSceneBase {
    * @private
    */
   _renderWashChannel(width) {
+    const washY = this.layout.wash_channel.y;
+    const washHalf = this.layout.wash_channel.half_height;
     const g = this.add.graphics();
     // Floor of the channel
     g.fillStyle(0x8b6940, 1);
-    g.fillRect(0, WASH_Y - WASH_HALF_HEIGHT, width, WASH_HALF_HEIGHT * 2);
+    g.fillRect(0, washY - washHalf, width, washHalf * 2);
     // Darker shading at the very bottom
     g.fillStyle(0x6b4d2a, 1);
-    g.fillRect(0, WASH_Y + 10, width, WASH_HALF_HEIGHT - 10);
+    g.fillRect(0, washY + 10, width, washHalf - 10);
     // Jagged top edge
     g.fillStyle(0xc8a274, 1);
     let x = 0;
     while (x < width) {
       const dx = 18 + Math.floor(Math.random() * 14);
       const dy = -4 - Math.floor(Math.random() * 8);
-      g.fillTriangle(x, WASH_Y - WASH_HALF_HEIGHT, x + dx, WASH_Y - WASH_HALF_HEIGHT, x + dx / 2, WASH_Y - WASH_HALF_HEIGHT + dy);
+      g.fillTriangle(x, washY - washHalf, x + dx, washY - washHalf, x + dx / 2, washY - washHalf + dy);
       x += dx;
     }
     // Jagged bottom edge
@@ -197,7 +211,7 @@ export default class DryWashScene extends LocalSceneBase {
       const dx = 22 + Math.floor(Math.random() * 16);
       const dy = 4 + Math.floor(Math.random() * 6);
       g.fillStyle(0xb89368, 1);
-      g.fillTriangle(x, WASH_Y + WASH_HALF_HEIGHT, x + dx, WASH_Y + WASH_HALF_HEIGHT, x + dx / 2, WASH_Y + WASH_HALF_HEIGHT + dy);
+      g.fillTriangle(x, washY + washHalf, x + dx, washY + washHalf, x + dx / 2, washY + washHalf + dy);
       x += dx;
     }
     // Pebbles on the wash floor
@@ -205,7 +219,7 @@ export default class DryWashScene extends LocalSceneBase {
     pebbles.fillStyle(0x4a3520, 0.6);
     for (let i = 0; i < 28; i++) {
       const px = 20 + Math.random() * (width - 40);
-      const py = WASH_Y - 18 + Math.random() * 50;
+      const py = washY - 18 + Math.random() * 50;
       pebbles.fillCircle(px, py, 2 + Math.random() * 2);
     }
   }
@@ -220,32 +234,32 @@ export default class DryWashScene extends LocalSceneBase {
 
     // Near-side stub (left edge of wash)
     g.fillStyle(0x6b4423);
-    g.fillRect(120, WASH_Y - 8, 60, 14);
+    g.fillRect(this.layout.broken_stub_near.x, this.layout.broken_stub_near.y, this.layout.broken_stub_near.w, this.layout.broken_stub_near.h);
     // Cracked end
     g.fillStyle(0x4a2e16);
-    g.fillTriangle(180, WASH_Y - 8, 195, WASH_Y - 2, 178, WASH_Y + 6);
+    g.fillTriangle(this.layout.broken_stub_near_crack.x1, this.layout.broken_stub_near_crack.y1, this.layout.broken_stub_near_crack.x2, this.layout.broken_stub_near_crack.y2, this.layout.broken_stub_near_crack.x3, this.layout.broken_stub_near_crack.y3);
 
     // Near-side stub (slightly out into wash)
     g.fillStyle(0x6b4423);
-    g.fillRect(170, WASH_Y - 4, 30, 8);
+    g.fillRect(this.layout.broken_stub_near_2.x, this.layout.broken_stub_near_2.y, this.layout.broken_stub_near_2.w, this.layout.broken_stub_near_2.h);
 
     // Far-side stub
     g.fillStyle(0x6b4423);
-    g.fillRect(720, WASH_Y - 8, 60, 14);
+    g.fillRect(this.layout.broken_stub_far.x, this.layout.broken_stub_far.y, this.layout.broken_stub_far.w, this.layout.broken_stub_far.h);
     g.fillStyle(0x4a2e16);
-    g.fillTriangle(720, WASH_Y - 8, 705, WASH_Y - 2, 722, WASH_Y + 6);
+    g.fillTriangle(this.layout.broken_stub_far_crack.x1, this.layout.broken_stub_far_crack.y1, this.layout.broken_stub_far_crack.x2, this.layout.broken_stub_far_crack.y2, this.layout.broken_stub_far_crack.x3, this.layout.broken_stub_far_crack.y3);
 
     // Loose half-buried beam in wash floor
     g.fillStyle(0x5a3920);
-    g.fillRect(360, WASH_Y + 24, 80, 10);
-    g.fillRect(540, WASH_Y + 28, 60, 8);
+    g.fillRect(this.layout.broken_beam_1.x, this.layout.broken_beam_1.y, this.layout.broken_beam_1.w, this.layout.broken_beam_1.h);
+    g.fillRect(this.layout.broken_beam_2.x, this.layout.broken_beam_2.y, this.layout.broken_beam_2.w, this.layout.broken_beam_2.h);
 
     // Splintered debris dots
     g.fillStyle(0x3a2310);
-    g.fillCircle(245, WASH_Y + 20, 3);
-    g.fillCircle(290, WASH_Y + 30, 2);
-    g.fillCircle(620, WASH_Y + 26, 3);
-    g.fillCircle(680, WASH_Y + 16, 2);
+    g.fillCircle(this.layout.broken_debris_1.x, this.layout.broken_debris_1.y, 3);
+    g.fillCircle(this.layout.broken_debris_2.x, this.layout.broken_debris_2.y, 2);
+    g.fillCircle(this.layout.broken_debris_3.x, this.layout.broken_debris_3.y, 3);
+    g.fillCircle(this.layout.broken_debris_4.x, this.layout.broken_debris_4.y, 2);
 
     // Tag the remnant graphics so we can hide it after build (defensive
     // — current flow re-renders the whole scene on revisit, so this is
@@ -275,13 +289,13 @@ export default class DryWashScene extends LocalSceneBase {
     const g = this.add.graphics();
     g.lineStyle(2, 0x6b5b3a, 0.45);
     g.beginPath();
-    g.moveTo(width - 60, height - 90);
-    g.lineTo(width - 30, height - 140);
-    g.lineTo(width - 10, height - 200);
+    g.moveTo(this.layout.locked_trail_start.x, this.layout.locked_trail_start.y);
+    g.lineTo(this.layout.locked_trail_mid.x, this.layout.locked_trail_mid.y);
+    g.lineTo(this.layout.locked_trail_end.x, this.layout.locked_trail_end.y);
     g.strokePath();
-    this.add.text(width - 30, height - 140, '🔒', { fontSize: '20px' })
+    this.add.text(this.layout.locked_trail_lock_icon.x, this.layout.locked_trail_lock_icon.y, '🔒', { fontSize: '20px' })
       .setOrigin(0.5).setDepth(3).setAlpha(0.85);
-    this.add.text(width - 30, height - 168, 'Far Trail', {
+    this.add.text(this.layout.locked_trail_label.x, this.layout.locked_trail_label.y, 'Far Trail', {
       fontSize: '10px', fontFamily: 'sans-serif',
       color: '#4a3520', fontStyle: 'bold',
       stroke: '#fef3c7', strokeThickness: 2,

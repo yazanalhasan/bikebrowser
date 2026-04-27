@@ -1,0 +1,195 @@
+{
+  "scene": "DryWashScene",
+  "version": 1,
+  "objects": {
+    "sky": {
+      "x": 450,
+      "y": 120,
+      "w": 900,
+      "h": 240,
+      "_note": "Original: x = width / 2 (900), w = width (900)."
+    },
+    "ground_near": {
+      "x": 450,
+      "y": 240,
+      "w": 900,
+      "h": 240,
+      "_note": "Original: x = width / 2 (900), w = width (900)."
+    },
+    "ground_far": {
+      "x": 450,
+      "y": 520,
+      "w": 900,
+      "h": 160,
+      "_note": "Original: x = width / 2 (900), y = height - 80 (600-80=520), w = width (900)."
+    },
+    "mesa_1": {
+      "x1": 80,
+      "y1": 220,
+      "x2": 200,
+      "y2": 60,
+      "x3": 320,
+      "y3": 220,
+      "_note": "fillTriangle points for the left distant mesa silhouette."
+    },
+    "mesa_2": {
+      "x1": 420,
+      "y1": 220,
+      "x2": 540,
+      "y2": 90,
+      "x3": 660,
+      "y3": 220,
+      "_note": "fillTriangle points for the centre distant mesa silhouette."
+    },
+    "mesa_3": {
+      "x1": 720,
+      "y1": 220,
+      "x2": 820,
+      "y2": 110,
+      "x3": 880,
+      "y3": 220,
+      "_note": "fillTriangle points for the right distant mesa silhouette."
+    },
+    "cactus_left": {
+      "x": 60,
+      "y": 300
+    },
+    "cactus_right": {
+      "x": 820,
+      "y": 320,
+      "_note": "Original: x = width - 80 (900-80=820)."
+    },
+    "brush_right": {
+      "x": 850,
+      "y": 200,
+      "_note": "Original: x = width - 50 (900-50=850)."
+    },
+    "brush_left": {
+      "x": 140,
+      "y": 220
+    },
+    "monsoon_sign": {
+      "x": 60,
+      "y": 200
+    },
+    "mr_chen_npc": {
+      "x": 200,
+      "y": 300
+    },
+    "scene_title": {
+      "x": 450,
+      "y": 30,
+      "_note": "Original: x = width / 2 (900)."
+    },
+    "exit_zone_south": {
+      "x": 450,
+      "y": 586,
+      "w": 220,
+      "h": 28,
+      "_note": "Original: x = width / 2 (900), y = height - 14 (600-14=586)."
+    },
+    "wash_channel": {
+      "y": 400,
+      "half_height": 40,
+      "_note": "Module-level constants WASH_Y and WASH_HALF_HEIGHT. Used by _renderWashChannel and _renderBrokenRemnants."
+    },
+    "broken_stub_near": {
+      "x": 120,
+      "y": 392,
+      "w": 60,
+      "h": 14,
+      "_note": "Original: y = WASH_Y - 8 (400-8=392)."
+    },
+    "broken_stub_near_crack": {
+      "x1": 180,
+      "y1": 392,
+      "x2": 195,
+      "y2": 398,
+      "x3": 178,
+      "y3": 406,
+      "_note": "fillTriangle crack end. y1 = WASH_Y-8=392, y2 = WASH_Y-2=398, y3 = WASH_Y+6=406."
+    },
+    "broken_stub_near_2": {
+      "x": 170,
+      "y": 396,
+      "w": 30,
+      "h": 8,
+      "_note": "Original: y = WASH_Y - 4 (400-4=396)."
+    },
+    "broken_stub_far": {
+      "x": 720,
+      "y": 392,
+      "w": 60,
+      "h": 14,
+      "_note": "Original: y = WASH_Y - 8 (400-8=392)."
+    },
+    "broken_stub_far_crack": {
+      "x1": 720,
+      "y1": 392,
+      "x2": 705,
+      "y2": 398,
+      "x3": 722,
+      "y3": 406,
+      "_note": "fillTriangle crack end. y1 = WASH_Y-8=392, y2 = WASH_Y-2=398, y3 = WASH_Y+6=406."
+    },
+    "broken_beam_1": {
+      "x": 360,
+      "y": 424,
+      "w": 80,
+      "h": 10,
+      "_note": "Original: y = WASH_Y + 24 (400+24=424)."
+    },
+    "broken_beam_2": {
+      "x": 540,
+      "y": 428,
+      "w": 60,
+      "h": 8,
+      "_note": "Original: y = WASH_Y + 28 (400+28=428)."
+    },
+    "broken_debris_1": {
+      "x": 245,
+      "y": 420,
+      "_note": "Original: y = WASH_Y + 20 (400+20=420)."
+    },
+    "broken_debris_2": {
+      "x": 290,
+      "y": 430,
+      "_note": "Original: y = WASH_Y + 30 (400+30=430)."
+    },
+    "broken_debris_3": {
+      "x": 620,
+      "y": 426,
+      "_note": "Original: y = WASH_Y + 26 (400+26=426)."
+    },
+    "broken_debris_4": {
+      "x": 680,
+      "y": 416,
+      "_note": "Original: y = WASH_Y + 16 (400+16=416)."
+    },
+    "locked_trail_start": {
+      "x": 840,
+      "y": 510,
+      "_note": "Original: x = width - 60 (900-60=840), y = height - 90 (600-90=510)."
+    },
+    "locked_trail_mid": {
+      "x": 870,
+      "y": 460,
+      "_note": "Original: x = width - 30 (900-30=870), y = height - 140 (600-140=460)."
+    },
+    "locked_trail_end": {
+      "x": 890,
+      "y": 400,
+      "_note": "Original: x = width - 10 (900-10=890), y = height - 200 (600-200=400)."
+    },
+    "locked_trail_lock_icon": {
+      "x": 870,
+      "y": 460,
+      "_note": "Original: x = width - 30 (900-30=870), y = height - 140 (600-140=460)."
+    },
+    "locked_trail_label": {
+      "x": 870,
+      "y": 432,
+      "_note": "Original: x = width - 30 (900-30=870), y = height - 168 (600-168=432)."
+    }
+  }
+}

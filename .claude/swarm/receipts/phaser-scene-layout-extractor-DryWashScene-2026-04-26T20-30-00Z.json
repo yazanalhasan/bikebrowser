@@ -1,0 +1,89 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "status": "PASS",
+  "targetSceneKey": "DryWashScene",
+  "targetSceneFile": "src/renderer/game/scenes/DryWashScene.js",
+  "layoutAssetKey": "dryWashLayout",
+  "layoutPath": "layouts/dry-wash.layout.json",
+  "timestamp": "2026-04-26T20:30:00Z",
+  "files_changed": [
+    "src/renderer/game/scenes/DryWashScene.js",
+    "public/layouts/dry-wash.layout.json"
+  ],
+  "idempotent_files": {
+    "loadLayout_js": "already existed — not touched",
+    "CLAUDE_md": "already existed — not touched"
+  },
+  "layout_object_count": 31,
+  "layout_line_count": 195,
+  "layout_objects": [
+    "sky",
+    "ground_near",
+    "ground_far",
+    "mesa_1",
+    "mesa_2",
+    "mesa_3",
+    "cactus_left",
+    "cactus_right",
+    "brush_right",
+    "brush_left",
+    "monsoon_sign",
+    "mr_chen_npc",
+    "scene_title",
+    "exit_zone_south",
+    "wash_channel",
+    "broken_stub_near",
+    "broken_stub_near_crack",
+    "broken_stub_near_2",
+    "broken_stub_far",
+    "broken_stub_far_crack",
+    "broken_beam_1",
+    "broken_beam_2",
+    "broken_debris_1",
+    "broken_debris_2",
+    "broken_debris_3",
+    "broken_debris_4",
+    "locked_trail_start",
+    "locked_trail_mid",
+    "locked_trail_end",
+    "locked_trail_lock_icon",
+    "locked_trail_label"
+  ],
+  "self_audit": {
+    "leftover_literal_grep": "CLEAN — grep -E 'this\\.add\\.\\w+\\(\\s*[0-9]+\\s*,' returned no matches",
+    "all_keys_referenced": "PASS — all 31 layout keys confirmed referenced in scene via node script",
+    "json_valid": "PASS — node JSON.parse succeeded",
+    "layout_line_count_under_200": "PASS — 195 lines",
+    "layoutEditorConfig_present": "PASS — line 53",
+    "diff_logic_clean": "PASS — diff shows only position/size substitutions plus import, preload(), layoutEditorConfig, and loadLayout call"
+  },
+  "positions_left_in_code": [
+    {
+      "location": "_onAllPlaced, line 460 (original numbering)",
+      "code": "const bike = scene.add.text(0, WASH_Y - 14, '🚴', { fontSize: '34px' })",
+      "reason": "Bike spawn point is part of a tween animation sequence (load-test bike crossing the bridge). Both x=0 and y=WASH_Y-14 are the dynamic start position of a tween target, exempt per rule 7 (per-frame/dynamic positions). The tween's x target (width) is also dynamic. Extracting these would not benefit the editor — they are animation anchors driven by the bridge construction event, not static scene decorations."
+    },
+    {
+      "location": "_renderWashChannel — jagged edge random triangles and pebble circles",
+      "reason": "Random positions computed per-call via Math.random(). Exempt per rule 7 / procedural generation. The channel anchor values (WASH_Y / WASH_HALF_HEIGHT) ARE captured in layout as wash_channel.y and wash_channel.half_height."
+    },
+    {
+      "location": "_renderMonsoonSign(x, y) — relative offsets: y+30, y-4, y+9, w=6/60/64/36",
+      "reason": "The function takes an (x,y) anchor parameter. The offsets (+30, -4, +9) and sizes (6, 60, 64, 36) are structural proportions of the sign element, not independent positioned objects. The anchor (x=60, y=200) is captured in layout as monsoon_sign. The sub-element sizes (post: 6x60, face: 64x36) are decorative geometry dimensions, not independently positionable; leaving them in code is consistent with treating the sign as a single composited element. They can be extracted in a future pass if the editor needs per-part control."
+    },
+    {
+      "location": "_drawGhostBeam / _drawPlacedBeam — slot.x, slot.y, w, h, glow offset slot.y - 22",
+      "reason": "These render hooks consume positions from BRIDGE_MESQUITE_BLUEPRINT.slots (a data structure belonging to the bridge blueprint, not this scene). The -22 glow offset is a fixed decorative offset within the ghost-beam primitive. These are exempt — they are blueprint-driven, not scene-layout literals."
+    }
+  ],
+  "notes": [
+    "Scene: DryWashScene (900x600). 31 objects extracted to public/layouts/dry-wash.layout.json (195 lines — just under the 200-line cap).",
+    "The wash_channel object captures the module-level constants WASH_Y=400 and WASH_HALF_HEIGHT=40 which were used as anchors throughout _renderWashChannel and _renderBrokenRemnants. Both methods now read from this.layout.wash_channel.y / .half_height.",
+    "Triangle points (mesa_1/2/3, broken_stub_near_crack, broken_stub_far_crack) use x1/y1/x2/y2/x3/y3 fields since fillTriangle takes 6 positional arguments.",
+    "The WASH_Y and WASH_HALF_HEIGHT module-level constants remain in the source file as dead code after the refactor — they are no longer referenced by any code path. This is a pre-existing observation, NOT a logic change. Leaving them in place per rule 4 (no logic changes). A future cleanup pass can remove them.",
+    "loadLayout.js: already existed, not touched.",
+    "CLAUDE.md: already existed, not touched.",
+    "layoutEditorConfig static property added at line 53 — opts scene into LayoutEditorOverlayScene."
+  ],
+  "suggested_next_agent": "phaser-scene-layout-extractor (next scene in sweep)"
+}
