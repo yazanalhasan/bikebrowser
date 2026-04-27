@@ -328,3 +328,25 @@ agents:
     requires_human_gate: false
     notes: "Tightly coupled three-subsystem agent — schema bump + scene scale + quest data must ship together. Strict scope: do NOT touch UTM rig / stress-strain chart / material selector / failure animations / quiz_choice. Reviewer FAILs on cross-feature edits. Adds public/-style assets via in-scene Phaser primitives only (no new image files). Mesquite=8.50g, Steel=78.50g, Copper=89.60g for fixed 10cm³ coupons."
     max_turns: 30
+
+  # ── Layout editor overlay (closes the Claude → visual edit → Claude loop) ──
+  # Sibling Phaser scene LayoutEditorOverlayScene launched on top of the
+  # active local scene via this.scene.launch(). Hotkey-toggled (F2).
+  # Reads the same layout JSON the game scene reads, mutates a local
+  # working copy on drag, persists via a new POST /api/save-layout Vite
+  # dev-server middleware. Schema preservation strict — only x/y
+  # writes back; _note / _world / scene / version / object insertion
+  # order all preserved.
+  #
+  # Strict scope: no shape creation, no rotation, no layers, no
+  # multi-select, no resize, no grid snap, no new dependencies. Hard
+  # cap 600 LOC across all files. ZuzuGarageScene gets a single-line
+  # static layoutEditorConfig property; no other scene file modified.
+  phaser-layout-editor-overlay:
+    prerequisites: [phaser-scene-layout-extractor]
+    week: 3
+    pod: Phaser Refactor
+    parallel_safe_with: [phaser-lab-notebook-pipeline]
+    requires_human_gate: false
+    notes: "Closes the dev-loop: extractor moved positions to JSON, this makes the JSON editable in-game. Reads cached layout via existing loadLayout(); optional one-line short-circuit in loadLayout for window.__layoutEditorWorkingCopy override. Save endpoint gated by Vite command === 'serve' (dev-only). DOM Save button (NOT a Phaser GameObject) for v1 simplicity. ZuzuGarageScene only this dispatch — StreetBlockScene + others are follow-ups."
+    max_turns: 28
