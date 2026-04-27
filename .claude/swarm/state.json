@@ -434,7 +434,7 @@
       "agent": "phaser-scene-layout-extractor",
       "target_scene": "NeighborhoodScene",
       "ts": "2026-04-26T17:00:00Z",
-      "commit": null,
+      "commit": "0b1d300",
       "review_verdict": "PASS",
       "review_status": "orchestrator_completed",
       "review_receipt": null,
