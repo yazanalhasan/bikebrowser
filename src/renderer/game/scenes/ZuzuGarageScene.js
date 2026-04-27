@@ -19,6 +19,11 @@ import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 
 export default class ZuzuGarageScene extends LocalSceneBase {
+  static layoutEditorConfig = {
+    layoutAssetKey: 'zuzuGarageLayout',
+    layoutPath: 'layouts/zuzu-garage.layout.json',
+  };
+
   constructor() {
     super('ZuzuGarageScene');
   }

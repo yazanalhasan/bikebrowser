@@ -1,0 +1,79 @@
+{
+  "agent": "phaser-layout-editor-overlay",
+  "target_scene": "ZuzuGarageScene",
+  "timestamp": "2026-04-26T19:25:00Z",
+  "status": "complete",
+  "files_modified": [
+    "src/renderer/game/scenes/LayoutEditorOverlayScene.js (NEW, 303 LOC)",
+    "src/renderer/game/scenes/ZuzuGarageScene.js (+5 LOC, static layoutEditorConfig only)",
+    "src/renderer/game/config.js (+5 LOC, scene import + registration)",
+    "vite.config.js (+41 / -1 LOC, layoutSaverPlugin for POST /api/save-layout)"
+  ],
+  "files_NOT_modified": [
+    "src/renderer/game/utils/loadLayout.js (path b chosen — short-circuit not needed)",
+    "any other scene .js file",
+    "package.json / package-lock.json (no new dependencies)"
+  ],
+  "loc_delta": {
+    "total_insertions": 353,
+    "limit": 600,
+    "under_cap": true,
+    "per_file": {
+      "LayoutEditorOverlayScene.js": 303,
+      "ZuzuGarageScene.js": 5,
+      "config.js": 5,
+      "vite.config.js": 40
+    }
+  },
+  "f2_collision_grep": {
+    "command": "grep -rn \"Phaser.Input.Keyboard.KeyCodes.F2|'F2'|\\\"F2\\\"\" src/",
+    "result": "no matches",
+    "secondary_check": "grep -rn 'KeyCodes\\.F[0-9]' src/ → no matches",
+    "chosen_hotkey": "F2 (no conflicts)"
+  },
+  "live_preview_path": {
+    "chosen": "b (save-only fallback)",
+    "reasoning": "ZuzuGarageScene.createWorld() has many side effects (player ctor, NPC placement, audio, save reads, dialog triggers, upgrade-conditional renders). Re-running createWorld() mid-session against a working copy risks duplicating sprites, leaking timers, or corrupting save state. The save-only path is safer: editor's overlay tracks drags live, on Save we (1) POST the working copy to /api/save-layout, (2) update Phaser's cache.json with the new layout, (3) restart the underlying scene so it re-reads the saved positions cleanly. window.__layoutEditorWorkingCopy is still set during edit mode (per spec) but loadLayout.js was not modified — the global is a no-op for production code paths and would only be consumed by a future path-(a) extension."
+  },
+  "verification_steps": {
+    "1_npm_run_dev": "Not executed (agent does not launch dev server). Expected: dev server boots, ZuzuGarageScene renders normally, F2 inactive until pressed.",
+    "2_press_F2": "Expected: LayoutEditorOverlayScene reveals all 60 layout entries as draggable shapes (rect=blue, ellipse=purple, point=orange) with name labels, plus DOM 'Save Layout' button top-right.",
+    "3_click_workbench": "Expected: workbench overlay highlights with white 3px stroke; previous selection (if any) reverts to its kind color.",
+    "4_drag_workbench_100px_right": "Expected: container x advances ~100px clamped to [0, 800]; label moves with shape; underlying real workbench stays put (path b — only updates on Save).",
+    "5_click_save": "Expected: POST /api/save-layout returns 200; button flashes green 'Saved ✓' for 2s; then editor exits, scene restarts with new positions visible.",
+    "6_check_json_diff": "Expected: workbench.x updated to ~240; all _note fields, scene/version/_world top-level, and object insertion order preserved (we deep-clone via JSON.parse/stringify and only mutate x/y; serializer uses 2-space pretty-print + trailing newline to match repo style).",
+    "7_press_F2_again": "Expected: overlays + save button vanish, scene continues normally; window.__layoutEditorWorkingCopy[key] is deleted.",
+    "8_refresh_browser": "Expected: workbench at the new saved position (since the JSON file on disk now reflects the edit).",
+    "9_git_diff_layout_json": "Expected: only the moved entry's x/y lines change (and possibly final-newline if absent originally). Schema fields all preserved. Insertion order preserved (Object.keys preserves insertion order; we never recreate the objects map)."
+  },
+  "build_result": {
+    "command": "npm run build",
+    "result": "PASS",
+    "modules_transformed": 880,
+    "duration_seconds": 14.38,
+    "warnings": "Pre-existing chunk-size warnings (vendor-phaser, vendor-rapier, vendor-three, GamePage). No new errors."
+  },
+  "must_not_compliance": "no rotation, no shape creation, no layers, no resize, no multi-select, no grid snap, no new dependencies",
+  "save_endpoint_security": {
+    "rejects_double_dot": true,
+    "rejects_absolute_path": true,
+    "rejects_non_layouts_prefix": true,
+    "dev_only_gate": "apply: 'serve' on the Vite plugin",
+    "deps": "fs/promises + path only (Node built-ins)"
+  },
+  "schema_preservation_strategy": "Working copy is a deep clone of the entire JSON (JSON.parse(JSON.stringify(data))). Editor only mutates obj.x and obj.y on drag — never touches r, w, h, _note, scene, version, _world, or any other field. Object.keys() iteration in _buildOverlays preserves insertion order, and JSON.stringify(workingCopy, null, 2) re-serializes the entire object with all original fields intact.",
+  "blockers_discovered": [],
+  "suggested_next_agent": {
+    "agent": "phaser-layout-editor-overlay",
+    "target": "StreetBlockScene",
+    "rationale": "phaser-scene-layout-extractor already shipped StreetBlockScene's layout JSON at commit 9e66e50. This dispatch's editor infra is now in place — adding the next scene is literally a single static-property addition (~5 LOC) plus a one-line scope statement. No editor code changes required.",
+    "expected_diff": "src/renderer/game/scenes/StreetBlockScene.js: +5 LOC (static layoutEditorConfig)"
+  },
+  "notes": [
+    "Editor scene constructor uses { active: true } so it boots alongside other scenes and the F2 hotkey is always live.",
+    "Editor's camera is hidden (alpha 0, visible false) until F2 enters edit mode — no rendering cost when idle.",
+    "Save click triggers a hard scene restart via this.scene.manager.getScene(targetKey).scene.restart() after writing to disk + updating cache.json — this is the cleanest way to reflect saved positions without touching createWorld() side-effects.",
+    "All editor display objects tagged occlusionRole: 'safe' per spec to avoid runtime audit flags.",
+    "Vite middleware registered synchronously inside configureServer (NOT post-hook) so it runs BEFORE the existing /api → localhost:3001 proxy. This is critical: the proxy would otherwise eat /api/save-layout requests."
+  ]
+}

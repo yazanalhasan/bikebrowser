@@ -38,6 +38,9 @@ import DryWashScene from './scenes/DryWashScene.js';
 import GarageScene from './scenes/GarageScene.js';
 import NeighborhoodScene from './scenes/NeighborhoodScene.js';
 
+// Dev-only overlay (F2 layout editor). Always registered; activates on F2.
+import LayoutEditorOverlayScene from './scenes/LayoutEditorOverlayScene.js';
+
 /**
  * All scenes in boot order. The first scene in the array boots first.
  * For new games, ZuzuGarageScene is the start. For saves, we reorder
@@ -64,6 +67,8 @@ const ALL_SCENES = [
   // Legacy scenes (for old saves that reference GarageScene/NeighborhoodScene)
   GarageScene,
   NeighborhoodScene,
+  // Dev overlay (must be last so it's last to boot but always-active)
+  LayoutEditorOverlayScene,
 ];
 
 /**
