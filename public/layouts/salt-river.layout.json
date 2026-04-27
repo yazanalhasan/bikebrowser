@@ -1,0 +1,91 @@
+{
+  "scene": "SaltRiverScene",
+  "version": 1,
+  "_world": { "width": 1100, "height": 800 },
+  "objects": {
+    "terrain_south_grass": {
+      "x": 550, "y": 700, "w": 1100, "h": 200,
+      "_note": "Original: x=width/2 (1100), y=height-100 (800-100)."
+    },
+    "terrain_sandy_riverbank": {
+      "x": 550, "y": 580, "w": 1100, "h": 60,
+      "_note": "Original: x=width/2 (1100), y=height-220 (800-220)."
+    },
+    "terrain_river": {
+      "x": 550, "y": 380, "w": 1100, "h": 280,
+      "_note": "Original: x=width/2 (1100), y=height/2-20 (400-20)."
+    },
+    "terrain_north_grass": {
+      "x": 550, "y": 120, "w": 1100, "h": 240,
+      "_note": "Original: x=width/2 (1100), y=120."
+    },
+    "terrain_north_sandy_shore": {
+      "x": 550, "y": 250, "w": 1100, "h": 40,
+      "_note": "Original: x=width/2 (1100), y=250."
+    },
+    "river_rocks": [
+      { "x": 200, "y": 350 },
+      { "x": 500, "y": 400 },
+      { "x": 800, "y": 370 },
+      { "x": 350, "y": 430 },
+      { "x": 650, "y": 320 },
+      { "x": 950, "y": 410 }
+    ],
+    "trees": [
+      { "x": 120, "y": 80 },
+      { "x": 300, "y": 100 },
+      { "x": 500, "y": 70 },
+      { "x": 700, "y": 90 },
+      { "x": 900, "y": 80 },
+      { "x": 1000, "y": 110 }
+    ],
+    "reeds": [
+      { "x": 100, "y": 260 },
+      { "x": 250, "y": 255 },
+      { "x": 400, "y": 265 },
+      { "x": 600, "y": 258 },
+      { "x": 800, "y": 262 },
+      { "x": 950, "y": 260 },
+      { "x": 150, "y": 510 },
+      { "x": 350, "y": 515 },
+      { "x": 550, "y": 508 },
+      { "x": 750, "y": 512 },
+      { "x": 900, "y": 518 }
+    ],
+    "heron": { "x": 750, "y": 250 },
+    "frog": { "x": 300, "y": 510 },
+    "channel_a_top": { "x1": 300, "y1": 550, "x2": 300, "y2": 700 },
+    "channel_a_bottom": { "x1": 300, "y1": 700, "x2": 200, "y2": 750 },
+    "channel_b_top": { "x1": 550, "y1": 550, "x2": 550, "y2": 700 },
+    "channel_b_bottom": { "x1": 550, "y1": 700, "x2": 550, "y2": 750 },
+    "channel_c_top": { "x1": 800, "y1": 550, "x2": 800, "y2": 700 },
+    "channel_c_bottom": { "x1": 800, "y1": 700, "x2": 900, "y2": 750 },
+    "channel_label_a": { "x": 200, "y": 760 },
+    "channel_label_b": { "x": 550, "y": 760 },
+    "channel_label_c": { "x": 900, "y": 760 },
+    "wall_top": {
+      "x": 550, "y": 0, "w": 1100, "h": 20,
+      "_note": "Original: x=width/2 (1100), y=0."
+    },
+    "wall_left": {
+      "x": 0, "y": 400, "w": 20, "h": 800,
+      "_note": "Original: x=0, y=height/2 (800)."
+    },
+    "wall_right": {
+      "x": 1100, "y": 400, "w": 20, "h": 800,
+      "_note": "Original: x=width (1100), y=height/2 (800)."
+    },
+    "resource_algae_sample": { "x": 450, "y": 390 },
+    "resource_microbial_sample": { "x": 250, "y": 340 },
+    "resource_mineral_deposit": { "x": 850, "y": 380 },
+    "resource_reed_fiber": { "x": 650, "y": 620 },
+    "npc_biologist": { "x": 550, "y": 180 },
+    "scene_label": {
+      "x": 550, "y": 20,
+      "_note": "Original: x=width/2 (1100), y=20."
+    },
+    "challenge_flow_rate": { "x": 650, "y": 440 },
+    "challenge_food_chain": { "x": 150, "y": 170 },
+    "challenge_irrigation": { "x": 550, "y": 680 }
+  }
+}

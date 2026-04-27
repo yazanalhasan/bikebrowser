@@ -1,0 +1,97 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "status": "PASS",
+  "timestamp": "2026-04-26T19:45:00Z",
+  "targetSceneFile": "src/renderer/game/scenes/SaltRiverScene.js",
+  "targetSceneKey": "SaltRiverScene",
+  "layoutAssetKey": "saltRiverLayout",
+  "layoutPath": "layouts/salt-river.layout.json",
+  "canvas": { "width": 1100, "height": 800 },
+  "files_changed": [
+    "src/renderer/game/scenes/SaltRiverScene.js",
+    "public/layouts/salt-river.layout.json"
+  ],
+  "one_time_files": {
+    "loadLayout_js": "already existed — not touched",
+    "CLAUDE_md": "already existed — not touched (per dispatch: idempotent files skipped)"
+  },
+  "layout_objects_extracted": 31,
+  "layout_json_lines": 91,
+  "layout_object_names": [
+    "terrain_south_grass",
+    "terrain_sandy_riverbank",
+    "terrain_river",
+    "terrain_north_grass",
+    "terrain_north_sandy_shore",
+    "river_rocks",
+    "trees",
+    "reeds",
+    "heron",
+    "frog",
+    "channel_a_top",
+    "channel_a_bottom",
+    "channel_b_top",
+    "channel_b_bottom",
+    "channel_c_top",
+    "channel_c_bottom",
+    "channel_label_a",
+    "channel_label_b",
+    "channel_label_c",
+    "wall_top",
+    "wall_left",
+    "wall_right",
+    "resource_algae_sample",
+    "resource_microbial_sample",
+    "resource_mineral_deposit",
+    "resource_reed_fiber",
+    "npc_biologist",
+    "scene_label",
+    "challenge_flow_rate",
+    "challenge_food_chain",
+    "challenge_irrigation"
+  ],
+  "positions_left_in_code": [
+    {
+      "description": "Water animation ripples (waterGraphics loop): rx/ry use Math.random() — dynamic per-frame randomized positions, exempt.",
+      "lines": "40-46"
+    },
+    {
+      "description": "Flowing leaf tween positions: Math.random() * width for x, 290 + Math.random() * 200 for y — random initial spawn, dynamic.",
+      "lines": "49-61"
+    },
+    {
+      "description": "Fish positions: 200 + i*200 for x (loop-computed), 340 + Math.random()*100 for y — dynamic tween anchors with random component.",
+      "lines": "97-106"
+    },
+    {
+      "description": "Heron tween target y=245 — dynamic tween endpoint (not spawn anchor), stays in code.",
+      "line": 112
+    },
+    {
+      "description": "Frog tween targets x=340, y=500 — dynamic tween endpoints (not spawn anchor), stays in code.",
+      "line": 119
+    }
+  ],
+  "computed_positions_resolved": [
+    "terrain_south_grass: x=width/2→550, y=height-100→700",
+    "terrain_sandy_riverbank: x=width/2→550, y=height-220→580",
+    "terrain_river: x=width/2→550, y=height/2-20→380",
+    "terrain_north_grass: x=width/2→550, y=120",
+    "terrain_north_sandy_shore: x=width/2→550, y=250",
+    "wall_top: x=width/2→550, y=0, w=width→1100",
+    "wall_left: x=0, y=height/2→400, h=height→800",
+    "wall_right: x=width→1100, y=height/2→400, h=height→800",
+    "scene_label: x=width/2→550, y=20"
+  ],
+  "layout_editor_config": "static layoutEditorConfig = { layoutAssetKey: 'saltRiverLayout', layoutPath: 'layouts/salt-river.layout.json' } inserted at line 16",
+  "self_audit": {
+    "leftover_literals_grep": "PASS — no matches for this.add.\\w+(\\s*[0-9]+\\s*,",
+    "all_keys_referenced": "PASS — all 31 layout keys present in scene file",
+    "json_valid": "PASS — node JSON.parse succeeded",
+    "json_lines": "91 (under 200 limit)",
+    "diff_scope": "PASS — only positions/sizes changed + import + preload() + this.layout init + layoutEditorConfig. Zero logic/dialog/quest/audio changes."
+  },
+  "bugs_observed": null,
+  "notes": "Scene SaltRiverScene processed. 31 layout objects extracted into public/layouts/salt-river.layout.json (91 lines). Arrays river_rocks (6 entries), trees (6 entries), and reeds (11 entries) hoisted to JSON as arrays per loop-hoisting rule. Channel line graphics use x1/y1/x2/y2 shape (not the standard x/y/w/h) since lineBetween requires two endpoints. Dynamic positions (water ripples, leaf tweens, fish tweens, heron/frog tween targets) left in code as exempt. loadLayout.js and CLAUDE.md already existed and were not touched.",
+  "suggested_next_agent": "phaser-scene-layout-extractor (next scene) OR code-quality-reviewer"
+}
