@@ -5,9 +5,36 @@
   "current_pod_focus": "Daytime Autonomous V2 (bug-fix Phase-1 prep)",
   "completed": [
     {
+      "agent": "c2-east-edge-traversal-phase1-instrumentation",
+      "ts": "2026-04-27T12:15:00Z",
+      "commit": null,
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/c2-east-edge-traversal-phase1-instrumentation-2026-04-27T12-15-00Z.json",
+      "verdict_tag": "static-only",
+      "phase_1_only": true,
+      "phase_2_intentionally_skipped": true,
+      "needs_runtime_validation": true,
+      "user_directive": "Daytime V2 queue dispatch C2 — Bug 2 (east-edge silent failure) Phase 1 only. User reads logs tonight + dispatches Phase 2 fix supervised.",
+      "section_8_declaration": {
+        "environmental_primitives_consulted": "none",
+        "progression_primitives_updated": "none — read-only console.log instrumentation",
+        "act_1_to_3_scaling_strategy": "traversal primitive is act-agnostic; instrumentation applies uniformly across all scene-pair adjacencies"
+      },
+      "log_points_added": 5,
+      "log_count_grep_verified": "grep -c '\\[traversal-debug\\]' src/renderer/game/systems/seamlessTraversal.js = 5",
+      "one_step_ahead_checks_passed": "all 4 — exports present, NeighborhoodScene attach call at line 184, DryWashScene init(data) at line 84, NeighborhoodScene.east→DryWashScene.west adjacency at seamlessTraversal.js:86",
+      "minor_refactor_note": "scene.scene.start(adj.to, {...}) inline literal hoisted into `const startData = {...}; scene.scene.start(adj.to, startData)` form to make the data payload referenceable for the log. Contents byte-identical; behavior unchanged. capturePlayerKinematics is pure (verified — no side effects), so the log-time peek call alongside the real capture call is safe.",
+      "user_runtime_protocol": "1. npm run dev, 2. Load save with Zuzu in NeighborhoodScene, 3. Walk east off canvas edge, 4. DevTools filter '[traversal-debug]', 5. Note which logs fire vs silent — silent links reveal the break point. 5 patterns to match: (a) only attachEdgeSensor fires, no overlap → sensor positioned wrong or player has no physics body; (b) overlap fires but performSeamlessTransition early-returns → adjacency lookup miss; (c) performSeamlessTransition fires but no scene.scene.start log → callback wiring broken; (d) scene.scene.start fires but no applySeamlessEntry on dest → init flow broken on DryWashScene side; (e) applySeamlessEntry fires but player ends up wrong → coordinate calculation bug.",
+      "diff_stat": "+25 -2 lines, single file (seamlessTraversal.js)",
+      "build_result": "PASS in 11.12s",
+      "notes": "Surgical instrumentation. 25 insertions, 2 deletions across 5 log points. No public-export changes, no SCENE_ADJACENCY shape change, no signature changes. Phase 2 fix gated on user reading the runtime log sequence. Static-only verdict."
+    },
+    {
       "agent": "c1-pause-storm-phase1-instrumentation",
       "ts": "2026-04-27T12:00:00Z",
-      "commit": null,
+      "commit": "23de6c4",
       "review_verdict": "PASS",
       "review_status": "orchestrator_completed",
       "review_receipt": null,
@@ -752,6 +779,6 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 43,
+  "dispatch_count": 44,
   "session_token_estimate": 0
 }

@@ -1,0 +1,62 @@
+{
+  "agent": "c2-east-edge-traversal-phase1-instrumentation",
+  "ts": "2026-04-27T12:15:00Z",
+  "status": "complete",
+  "verdict_tag": "static-only",
+  "phase_1_only": true,
+  "phase_2_intentionally_skipped": true,
+  "files_edited": ["src/renderer/game/systems/seamlessTraversal.js"],
+  "one_step_ahead_checks": {
+    "seamless_traversal_4_exports_present": "YES — SCENE_ADJACENCY (line 84), performSeamlessTransition (line 236), applySeamlessEntry (line 296 pre-edit / line 305 post-edit), attachEdgeSensor (line 343 pre-edit / line 360 post-edit)",
+    "neighborhood_scene_attach_call_present": "YES at line 184 — attachEdgeSensor(this, this.player, (edge) => { performSeamlessTransition(this, edge, this.player); })",
+    "dry_wash_scene_init_consumes_entry_edge": "YES at line 84 — init(data) { this._initData = data; } and applySeamlessEntry call at line 98",
+    "scene_adjacency_neighborhood_east_to_drywash_west_present": "YES — seamlessTraversal.js line 86: east: { to: 'DryWashScene', entrySide: 'west' }"
+  },
+  "log_points_added": [
+    {
+      "category": "attach_sensor_zone_creation",
+      "function": "attachEdgeSensor",
+      "line": 381,
+      "snippet": "console.log(`[traversal-debug] attachEdgeSensor: created zone ${edge} sceneKey=${scene?.scene?.key ?? 'UNKNOWN'} x=${x} y=${y} width=${w} height=${h}`)"
+    },
+    {
+      "category": "overlap_callback_fired",
+      "function": "attachEdgeSensor (overlap callback)",
+      "line": 387,
+      "snippet": "console.log(`[traversal-debug] overlap fired: edge=${edge} sceneKey=${scene?.scene?.key ?? 'UNKNOWN'} playerX=${_px} playerY=${_py}`) — placed BEFORE the existing try/callback so it fires even on short-circuit"
+    },
+    {
+      "category": "performSeamlessTransition_entry",
+      "function": "performSeamlessTransition",
+      "line": 247,
+      "snippet": "console.log(`[traversal-debug] performSeamlessTransition: scene=${fromKey} edge=${edge} targetSceneId=${adj?.to ?? 'NONE'} vx=${_peekVx} vy=${_peekVy} facing=${_peekFacing} adjacencyLookup=${JSON.stringify(adj ?? null)}`) — surfaces adjacency lookup result so missing entries are visible"
+    },
+    {
+      "category": "scene_start_call_site",
+      "function": "performSeamlessTransition",
+      "line": 279,
+      "snippet": "console.log(`[traversal-debug] scene.scene.start() about to be called: target=${adj.to} data=${_startDataStr}`) — _startDataStr wrapped in try/catch around JSON.stringify(startData)"
+    },
+    {
+      "category": "applySeamlessEntry_entry",
+      "function": "applySeamlessEntry",
+      "line": 310,
+      "snippet": "console.log(`[traversal-debug] applySeamlessEntry: scene=${scene?.scene?.key ?? 'UNKNOWN'} data=${_dataStr}`) — _dataStr wrapped in try/catch around JSON.stringify(data); placed at the very top before the !data || !data.entryEdge guard so even no-op invocations are visible"
+    }
+  ],
+  "log_count_grep_result": 5,
+  "build_result": "PASS in 11.12s",
+  "scope_evidence": {
+    "single_file_modified": "git diff --stat src/renderer/game/systems/seamlessTraversal.js → 1 file changed, 25 insertions(+), 2 deletions(-). The other two files in `git status --short` (.claude/swarm/reports/daytime-2026-04-27-v2-progress.md and .claude/swarm/state.json) were already modified before this session began — agent did NOT touch them per the constraints.",
+    "no_signature_changes": "Public exports unchanged (SCENE_ADJACENCY, performSeamlessTransition, applySeamlessEntry, attachEdgeSensor — all 4 still exported with identical signatures). SCENE_ADJACENCY shape unchanged (still { NeighborhoodScene: { east: {...} }, DryWashScene: { west: {...} } }). No imports added or removed. Function parameter lists unchanged.",
+    "no_phase2_fixes": "Zero behavior changes — only console.log inserts plus one trivial refactor that hoists the existing scene.scene.start(adj.to, {...}) call into a const startData = {...}; scene.scene.start(adj.to, startData) form so the data payload could be referenced for the log. The startData object literal contents are byte-identical to the original. No control flow, no early returns, no positional math, no zone bounds, no adjacency lookup logic touched."
+  },
+  "section_8_declaration": {
+    "environmental_primitives_consulted": "none",
+    "progression_primitives_updated": "none — read-only console.log instrumentation",
+    "act_1_to_3_scaling_strategy": "traversal primitive is act-agnostic; instrumentation applies uniformly across all scene-pair adjacencies"
+  },
+  "user_runtime_protocol": "1. npm run dev, 2. Open game and load save with Zuzu in NeighborhoodScene, 3. Walk east off the canvas edge, 4. Open DevTools console, 5. Filter by '[traversal-debug]', 6. Note WHICH log lines fire vs which are silent — silent links reveal where the chain breaks. Common patterns: (a) only attachEdgeSensor logs fire, no overlap → sensor zones positioned wrong or player has no physics body, (b) overlap fires but performSeamlessTransition early-returns → adjacency lookup miss (typo or missing data), (c) performSeamlessTransition fires but no scene.scene.start log → callback wiring broken, (d) scene.scene.start fires but no applySeamlessEntry on dest → init flow broken on DryWashScene side, (e) applySeamlessEntry fires but player ends up wrong → coordinate calculation bug. Paste log output back to dispatch Phase 2.",
+  "needs_runtime_validation": true,
+  "notes": "Phase 1 instrumentation only. Phase 2 fix gated on user reading log sequence first. Static-only verdict. Speculation (NOT applied to code): static read of seamlessTraversal.js suggests the likeliest culprits, in order: (1) attachEdgeSensor at line 351 reads world size at call-time via getSceneWorldSize(scene); if NeighborhoodScene's create() runs attachEdgeSensor BEFORE the world bounds / scene.getWorldSize() is configured, the east zone could be positioned at scale.width=800 default rather than the actual world edge — sensor would sit far inside the visible canvas or far outside it. (2) The overlap zones use scene.add.rectangle which depth-defaults to 0; if the player sprite's body is set up with a moveTo / world bounds clamp that prevents it from reaching x=world.width-4, the overlap simply never collides. (3) SCENE_ADJACENCY.NeighborhoodScene.east.to is 'DryWashScene' — confirm scene key registration in main.js / Phaser config matches that exact string. The Phase 1 logs disambiguate all three: (1) shows up as zones logged with stale x values, (2) shows up as zone-creation logs but no overlap-fired log, (3) shows up as performSeamlessTransition with targetSceneId=DryWashScene followed by scene.scene.start firing but DryWashScene never logs applySeamlessEntry."
+}

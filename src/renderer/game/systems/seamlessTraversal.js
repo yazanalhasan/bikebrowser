@@ -242,6 +242,10 @@ export function performSeamlessTransition(scene, edge, player) {
 
   const sceneEdges = SCENE_ADJACENCY[fromKey];
   const adj = sceneEdges?.[edge];
+  const { vx: _peekVx, vy: _peekVy, facing: _peekFacing } = capturePlayerKinematics(player);
+  console.log(
+    `[traversal-debug] performSeamlessTransition: scene=${fromKey} edge=${edge} targetSceneId=${adj?.to ?? 'NONE'} vx=${_peekVx} vy=${_peekVy} facing=${_peekFacing} adjacencyLookup=${JSON.stringify(adj ?? null)}`,
+  );
   if (!adj || !adj.to) {
     console.warn(
       `[seamlessTraversal] No adjacency for ${fromKey}.${edge}; ignoring edge cross.`,
@@ -262,13 +266,19 @@ export function performSeamlessTransition(scene, edge, player) {
   // Hand off to the target scene. The init payload is what the next
   // scene reads in its own `init(data)` and forwards to
   // `applySeamlessEntry`.
-  scene.scene.start(adj.to, {
+  const startData = {
     seamless: true,
     entryEdge,
     vx,
     vy,
     facing,
-  });
+  };
+  let _startDataStr;
+  try { _startDataStr = JSON.stringify(startData); } catch (_e) { _startDataStr = '<unstringifiable>'; }
+  console.log(
+    `[traversal-debug] scene.scene.start() about to be called: target=${adj.to} data=${_startDataStr}`,
+  );
+  scene.scene.start(adj.to, startData);
 }
 
 /**
@@ -294,6 +304,11 @@ export function performSeamlessTransition(scene, edge, player) {
  * @returns {boolean} true if the payload was applied, false on no-op.
  */
 export function applySeamlessEntry(scene, data) {
+  let _dataStr;
+  try { _dataStr = JSON.stringify(data); } catch (_e) { _dataStr = '<unstringifiable>'; }
+  console.log(
+    `[traversal-debug] applySeamlessEntry: scene=${scene?.scene?.key ?? 'UNKNOWN'} data=${_dataStr}`,
+  );
   if (!data || !data.entryEdge) return false;
 
   const player = scene?.player;
@@ -362,7 +377,15 @@ export function attachEdgeSensor(scene, player, callback) {
   const buildZone = (edge, x, y, w, h) => {
     const zone = scene.add.rectangle(x, y, w, h, 0x000000, 0);
     scene.physics.add.existing(zone, true); // static body
+    console.log(
+      `[traversal-debug] attachEdgeSensor: created zone ${edge} sceneKey=${scene?.scene?.key ?? 'UNKNOWN'} x=${x} y=${y} width=${w} height=${h}`,
+    );
     scene.physics.add.overlap(player.sprite, zone, () => {
+      const _px = player?.sprite?.x ?? player?.x ?? null;
+      const _py = player?.sprite?.y ?? player?.y ?? null;
+      console.log(
+        `[traversal-debug] overlap fired: edge=${edge} sceneKey=${scene?.scene?.key ?? 'UNKNOWN'} playerX=${_px} playerY=${_py}`,
+      );
       try {
         callback(edge);
       } catch (err) {
