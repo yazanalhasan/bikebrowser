@@ -123,6 +123,14 @@ agents:
     notes: "On-demand precondition for audio-asset-cleanup. Scans .wav masters; for any whose .ogg/.mp3 sibling is missing or 0-byte, encodes a valid compressed file via ffmpeg (libvorbis preferred, libmp3lame fallback). 128 kbps for music, 96 kbps for SFX. Pure additive — never deletes a .wav, never renames. If ffmpeg isn't on PATH, returns blocker without trying alternatives."
     max_turns: 25
 
+  phaser-editor-opt-in-backfill:
+    prerequisites: []
+    week: 1
+    pod: Quality
+    requires_human_gate: false
+    notes: "Reusable. Adds the 5-LOC `static layoutEditorConfig` property to a scene that was extracted by phaser-scene-layout-extractor BEFORE commit 2b117a3 added the opt-in requirement. Idempotent (no-op if already present). Reads layoutAssetKey/layoutPath out of the scene's existing this.load.json() call rather than accepting them as inputs — cannot disagree with the wired values. Strict scope: ≤5 LOC added, one file per dispatch, no JSON or other code changes."
+    max_turns: 10
+
   # ── Phaser DryWash pod (legacy 2D game) ──────────────────────────────
   # Adds edge-walk access to DryWashScene + drag/drop construction mode.
   # EXTENDS the just-shipped commit 451e7a4 (DryWashScene + ConstructionSystem
