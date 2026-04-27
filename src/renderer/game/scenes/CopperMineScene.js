@@ -10,10 +10,16 @@ import BaseSubScene from './BaseSubScene.js';
 import { saveGame } from '../systems/saveSystem.js';
 import QUESTS from '../data/quests.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { loadLayout } from '../utils/loadLayout.js';
 
 const SCENE_KEY = 'CopperMineScene';
 
 export default class CopperMineScene extends BaseSubScene {
+  static layoutEditorConfig = {
+    layoutAssetKey: 'copperMineLayout',
+    layoutPath: 'layouts/copper-mine.layout.json',
+  };
+
   constructor() {
     super(SCENE_KEY);
   }
@@ -22,7 +28,13 @@ export default class CopperMineScene extends BaseSubScene {
   getLocationId() { return 'copper_mine'; }
   getWorldSize() { return { width: 1000, height: 900 }; }
 
+  preload() {
+    super.preload?.();
+    this.load.json('copperMineLayout', 'layouts/copper-mine.layout.json');
+  }
+
   createWorld() {
+    this.layout = loadLayout(this, 'copperMineLayout');
     const { width, height } = this.getWorldSize();
 
     // ── Bridge-quest copper bridge (no pun intended) ──
@@ -39,31 +51,26 @@ export default class CopperMineScene extends BaseSubScene {
 
     // ── Ground layers ── mine entrance transitions to underground
     // Surface (top third)
-    this.add.rectangle(width / 2, 120, width, 240, 0xb8956a);
+    this.add.rectangle(this.layout.ground_surface.x, this.layout.ground_surface.y, this.layout.ground_surface.w, this.layout.ground_surface.h, 0xb8956a);
     // Mine entrance (transition zone)
-    this.add.rectangle(width / 2, 300, width, 120, 0x6b5b4f);
+    this.add.rectangle(this.layout.ground_entrance.x, this.layout.ground_entrance.y, this.layout.ground_entrance.w, this.layout.ground_entrance.h, 0x6b5b4f);
     // Underground (bottom two-thirds)
-    this.add.rectangle(width / 2, 600, width, 600, 0x3d3329);
+    this.add.rectangle(this.layout.ground_underground.x, this.layout.ground_underground.y, this.layout.ground_underground.w, this.layout.ground_underground.h, 0x3d3329);
 
     // ── Mine entrance arch ──
     const arch = this.add.graphics();
     arch.fillStyle(0x4a3728);
-    arch.fillRoundedRect(350, 200, 300, 160, { tl: 40, tr: 40, bl: 0, br: 0 });
+    arch.fillRoundedRect(this.layout.arch_outer.x, this.layout.arch_outer.y, this.layout.arch_outer.w, this.layout.arch_outer.h, { tl: 40, tr: 40, bl: 0, br: 0 });
     arch.fillStyle(0x1a1410);
-    arch.fillRoundedRect(380, 230, 240, 130, { tl: 30, tr: 30, bl: 0, br: 0 });
-    this.add.text(500, 195, '⛏️ COPPER MINE', {
+    arch.fillRoundedRect(this.layout.arch_inner.x, this.layout.arch_inner.y, this.layout.arch_inner.w, this.layout.arch_inner.h, { tl: 30, tr: 30, bl: 0, br: 0 });
+    this.add.text(this.layout.arch_label.x, this.layout.arch_label.y, '⛏️ COPPER MINE', {
       fontSize: '14px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#f5e6c8', stroke: '#3d2b1f', strokeThickness: 3,
     }).setOrigin(0.5);
 
     // ── Support beams ──
     const beamColor = 0x6b4423;
-    const beams = [
-      { x: 200, y: 400 }, { x: 500, y: 400 }, { x: 800, y: 400 },
-      { x: 300, y: 600 }, { x: 650, y: 600 },
-      { x: 150, y: 750 }, { x: 500, y: 750 }, { x: 850, y: 750 },
-    ];
-    for (const b of beams) {
+    for (const b of this.layout.beams) {
       // Vertical post
       this.add.rectangle(b.x, b.y, 12, 80, beamColor).setDepth(1);
       // Horizontal beam
@@ -80,10 +87,7 @@ export default class CopperMineScene extends BaseSubScene {
     // Vein 3
     veins.beginPath(); veins.moveTo(300, 680); veins.lineTo(400, 700); veins.lineTo(480, 690); veins.stroke();
     // Sparkle on veins
-    const sparkles = [
-      { x: 180, y: 468 }, { x: 720, y: 518 }, { x: 400, y: 698 },
-    ];
-    for (const s of sparkles) {
+    for (const s of this.layout.sparkles) {
       const sparkle = this.add.text(s.x, s.y, '✨', { fontSize: '14px' }).setOrigin(0.5).setAlpha(0.6);
       this.tweens.add({
         targets: sparkle, alpha: 0.2, duration: 1500,
@@ -92,34 +96,22 @@ export default class CopperMineScene extends BaseSubScene {
     }
 
     // ── Rock walls (collision) ──
-    const walls = [
-      { x: 50, y: 500, w: 60, h: 200 },
-      { x: 950, y: 500, w: 60, h: 200 },
-      { x: 50, y: 750, w: 60, h: 200 },
-      { x: 950, y: 750, w: 60, h: 200 },
-    ];
-    for (const w of walls) {
+    for (const w of this.layout.rock_walls) {
       this.addVisibleWall(w.x, w.y, w.w, w.h, 0x4a3728, 0x2d1b0e);
     }
 
     // ── Rubble piles (collision + decoration) ──
-    const rubble = [
-      { x: 350, y: 500, s: '🪨' }, { x: 700, y: 450, s: '🪨' },
-      { x: 200, y: 680, s: '🪨' }, { x: 800, y: 700, s: '🪨' },
-    ];
-    for (const r of rubble) {
+    for (const r of this.layout.rubble) {
       this.add.text(r.x, r.y, r.s, { fontSize: '28px' }).setOrigin(0.5);
       this.addWall(r.x, r.y, 35, 25);
     }
 
     // ── Mine cart (decoration) ──
-    this.add.text(600, 380, '🚃', { fontSize: '30px' }).setOrigin(0.5);
-    this.addWall(600, 380, 50, 30);
+    this.add.text(this.layout.mine_cart.x, this.layout.mine_cart.y, '🚃', { fontSize: '30px' }).setOrigin(0.5);
+    this.addWall(this.layout.mine_cart.x, this.layout.mine_cart.y, 50, 30);
 
     // ── Lanterns ──
-    const lanterns = [{ x: 200, y: 380 }, { x: 500, y: 380 }, { x: 800, y: 380 },
-                      { x: 300, y: 580 }, { x: 650, y: 580 }];
-    for (const l of lanterns) {
+    for (const l of this.layout.lanterns) {
       const glow = this.add.circle(l.x, l.y, 30, 0xfbbf24, 0.15).setDepth(0);
       this.add.text(l.x, l.y, '🏮', { fontSize: '18px' }).setOrigin(0.5).setDepth(2);
       this.tweens.add({
@@ -129,25 +121,25 @@ export default class CopperMineScene extends BaseSubScene {
     }
 
     // ── Boundary ──
-    this.addWall(width / 2, 0, width, 20);
-    this.addWall(0, height / 2, 20, height);
-    this.addWall(width, height / 2, 20, height);
+    this.addWall(this.layout.boundary_top.x, this.layout.boundary_top.y, this.layout.boundary_top.w, this.layout.boundary_top.h);
+    this.addWall(this.layout.boundary_left.x, this.layout.boundary_left.y, this.layout.boundary_left.w, this.layout.boundary_left.h);
+    this.addWall(this.layout.boundary_right.x, this.layout.boundary_right.y, this.layout.boundary_right.w, this.layout.boundary_right.h);
 
     // ── Resources ──
     this.addResource({
-      x: 180, y: 470, icon: '🟤', label: 'Surface Copper',
+      x: this.layout.resource_surface_copper.x, y: this.layout.resource_surface_copper.y, icon: '🟤', label: 'Surface Copper',
       itemId: 'surface_copper',
       description: 'Oxidized copper ore from the surface — greenish patina (verdigris).',
       onAfterCollect: () => this._mintCopperOreSampleIfNeeded(),
     });
     this.addResource({
-      x: 720, y: 520, icon: '🔶', label: 'Deep Copper Ore',
+      x: this.layout.resource_deep_copper.x, y: this.layout.resource_deep_copper.y, icon: '🔶', label: 'Deep Copper Ore',
       itemId: 'deep_copper',
       description: 'Pure chalcopyrite from deep in the mine — higher conductivity.',
       onAfterCollect: () => this._mintCopperOreSampleIfNeeded(),
     });
     this.addResource({
-      x: 400, y: 700, icon: '🔌', label: 'Wire Sample',
+      x: this.layout.resource_wire_spool.x, y: this.layout.resource_wire_spool.y, icon: '🔌', label: 'Wire Sample',
       itemId: 'wire_spool',
       description: 'A spool of hand-drawn copper wire left by old miners.',
     });
@@ -156,13 +148,13 @@ export default class CopperMineScene extends BaseSubScene {
     this.addNpc({
       id: 'old_miner',
       name: 'Old Miner Pete',
-      x: 500, y: 500,
+      x: this.layout.npc_old_miner.x, y: this.layout.npc_old_miner.y,
       color: 0x8b6914,
       onInteract: () => this._handleMinerInteract(),
     });
 
     // ── Scene label ──
-    this.add.text(width / 2, 30, '⛏️ Abandoned Copper Mine', {
+    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '⛏️ Abandoned Copper Mine', {
       fontSize: '16px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#f5e6c8', stroke: '#3d2b1f', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(10).setScrollFactor(0);
@@ -171,7 +163,7 @@ export default class CopperMineScene extends BaseSubScene {
   setupChallenges() {
     // Embedded challenge 1: Conductivity comparison
     this.addChallenge({
-      x: 150, y: 550,
+      x: this.layout.challenge_conductivity.x, y: this.layout.challenge_conductivity.y,
       icon: '⚡',
       label: 'Conductivity Test',
       question: 'Copper conducts 59 million siemens/meter. Aluminum conducts 37 million. What fraction of copper\'s conductivity does aluminum have? (Round to nearest tenth)',
@@ -188,7 +180,7 @@ export default class CopperMineScene extends BaseSubScene {
 
     // Embedded challenge 2: Mine cart load
     this.addChallenge({
-      x: 700, y: 650,
+      x: this.layout.challenge_mine_cart.x, y: this.layout.challenge_mine_cart.y,
       icon: '⚖️',
       label: 'Load Calculation',
       question: 'A mine cart holds 200 kg max. Each copper ore chunk weighs 12.5 kg. How many chunks fit safely?',
@@ -205,7 +197,7 @@ export default class CopperMineScene extends BaseSubScene {
 
     // Embedded challenge 3: Mine shaft depth
     this.addChallenge({
-      x: 450, y: 820,
+      x: this.layout.challenge_mine_shaft.x, y: this.layout.challenge_mine_shaft.y,
       icon: '📏',
       label: 'Depth Check',
       question: 'A dropped rock takes 2 seconds to hit the bottom. Distance = 5 × time². How deep is the shaft?',

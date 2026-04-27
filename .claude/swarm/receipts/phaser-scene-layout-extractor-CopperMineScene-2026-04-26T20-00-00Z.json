@@ -1,0 +1,41 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "target": "CopperMineScene",
+  "ts": "2026-04-26T20:00:00Z",
+  "status": "complete_with_recovery",
+  "recovery_event": "Worker stalled mid-investigation while verifying createWorld → setupChallenges call order; receipt was never written. Orchestrator confirmed work landed cleanly and synthesized this receipt.",
+  "dispatch_parameters": {
+    "targetSceneFile": "src/renderer/game/scenes/CopperMineScene.js",
+    "targetSceneKey": "CopperMineScene",
+    "layoutAssetKey": "copperMineLayout",
+    "layoutPath": "layouts/copper-mine.layout.json"
+  },
+  "files_changed": [
+    "src/renderer/game/scenes/CopperMineScene.js (M — added loadLayout import, static layoutEditorConfig, preload() override, this.layout = loadLayout() at top of createWorld(), and replaced literal coordinates with this.layout.<name> references)",
+    "public/layouts/copper-mine.layout.json (NEW — 140 lines, 23 layout objects)"
+  ],
+  "files_skipped_already_present": [
+    "src/renderer/game/utils/loadLayout.js (idempotent)",
+    "CLAUDE.md (idempotent)"
+  ],
+  "verification": {
+    "build": "PASS 10.97s",
+    "diff_stat_scene": "+38/-32 (orchestrator-verified scope: import + opt-in + preload + layout read + literal swaps)",
+    "json_lines": 140,
+    "json_under_200_cap": true,
+    "json_object_count": 23,
+    "layoutEditorConfig_present": "line 16",
+    "residual_literal_grep": "0 matches in this.add.*(N, ...) form",
+    "lifecycle_concern_resolved": "Worker stalled while investigating whether setupChallenges (in BaseSubScene.create at line 66) reads this.layout before createWorld assigns it. Verified by orchestrator: LocalSceneBase.create calls this.createWorld() at line 155 (which sets this.layout), AFTER super.create() returns control to BaseSubScene.create() which calls this.setupChallenges() at line 66. Order is safe — layout is defined before challenges read it. The setupChallenges references at lines 166/183/200 of CopperMineScene work correctly.",
+    "world_canvas_used": "1000x900 (per CopperMineScene.getWorldSize())"
+  },
+  "notes": [
+    "RECEIPT_RECOVERY synthesized by orchestrator after worker stalled mid-investigation at tool-use 27/30. Worker's last on-disk action was checking BaseSubScene.js for setupChallenges call site. The investigation question — whether this.layout is defined before setupChallenges runs — was resolved by orchestrator with grep evidence (BaseSubScene.create line 66 calls setupChallenges AFTER super.create()/createWorld()). Code is correct.",
+    "23 layout objects extracted: ground_surface, ground_entrance, ground_underground, arch_outer, arch_inner, arch_label, beams (array), sparkles (array), rock_walls (array), rubble (array), mine_cart, lanterns (array), boundary_top, boundary_left, boundary_right, resource_surface_copper, resource_deep_copper, resource_wire_spool, npc_old_miner, scene_title, challenge_conductivity, challenge_mine_cart, challenge_mine_shaft.",
+    "Mine cart wall added via addWall(this.layout.mine_cart.x, this.layout.mine_cart.y, 50, 30) — wall size 50x30 left as physics constants (not visual positioning).",
+    "Editor opt-in confirmed at class declaration line 16."
+  ],
+  "exemptions_documented": [
+    "addWall size constants (50x30 mine cart, 18x18 trees in similar scenes) — physics body sizes, not visual positions"
+  ]
+}
