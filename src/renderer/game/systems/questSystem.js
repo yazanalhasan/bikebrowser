@@ -196,21 +196,17 @@ export function advanceQuest(state, choiceIndex) {
     }
   }
 
-  // FIXME(2026-04-27): This branch is empty. It assumes the only path
-  // calling advanceQuest() for an observe step is one that has already
-  // verified the observation arrived. But LocalSceneBase.advanceFromDialog
-  // calls advanceQuest() blindly on every dialog dismissal — so observe
-  // steps silently auto-advance regardless of whether step.requiredObservation
-  // is in state.observations. This bricks any quest whose observe step
-  // requires an observation that has no emission code path elsewhere
-  // (currently 19 of 21 requiredObservation values across quests.js).
-  // See .claude/bugs/2026-04-27-quest-engine-and-traversal.md (Bug 1)
-  // for evidence, affected-quest list, and the proposed three-line gate.
-  // DO NOT add the gate without also resolving the unwired-observation
-  // problem (Layer 2) per the bug log's three-option discussion.
   if (step.type === 'observe') {
-    // Observe steps auto-advance when the player is near the target
-    // The scene handles detection; if we reach advanceQuest, it's met
+    if (
+      step.requiredObservation &&
+      !state.observations?.includes(step.requiredObservation)
+    ) {
+      return {
+        state,
+        ok: false,
+        message: step.hint || `Observe: ${step.requiredObservation}`,
+      };
+    }
   }
 
   if (step.type === 'quiz') {

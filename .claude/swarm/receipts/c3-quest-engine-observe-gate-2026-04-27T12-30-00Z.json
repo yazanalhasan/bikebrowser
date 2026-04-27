@@ -1,0 +1,90 @@
+{
+  "agent": "c3-quest-engine-observe-gate",
+  "ts": "2026-04-27T12:30:00Z",
+  "status": "complete",
+  "verdict_tag": "static-only",
+  "phases_executed": ["1 (engine fix)", "2 (side-effects audit)"],
+  "phases_intentionally_skipped": [
+    "3 (bridge_collapse replay — runtime by user)",
+    "4 (regression — runtime)",
+    "5 (commit — orchestrator handles)",
+    "6 (worklog)",
+    "7 (per-quest design pass — separate session)"
+  ],
+  "files_edited": ["src/renderer/game/systems/questSystem.js"],
+  "one_step_ahead_checks": {
+    "fixme_block_present_pre_edit": "YES at lines 199-210",
+    "empty_observe_branch_present_pre_edit": "YES at lines 211-214",
+    "construction_emits_bridge_built": "YES at src/renderer/game/systems/construction/constructionSystem.js:530 (push to state.observations of completion.observation, where blueprint = bridgeBlueprint.js sets observation: 'bridge_built' at line 39)",
+    "labrigbase_emits_load_test_completed": "YES at src/renderer/game/scenes/LabRigBase.js:559 (push to state.observations of getCompletionObservation(); MaterialLabScene.js:77 returns 'load_test_completed')"
+  },
+  "phase_1_change": {
+    "lines_replaced": "199-214 (16 lines)",
+    "lines_added": 12,
+    "lines_removed": 16,
+    "new_gate_starts_at_line": 199,
+    "diff_summary": "Removed FIXME comment block (lines 199-210) and empty observe branch body (lines 211-214). Replaced with the 3-line gate: if step.requiredObservation is set and state.observations does not include it, return { state, ok: false, message: step.hint || `Observe: ${step.requiredObservation}` }. Net -4 lines. Surrounding code (forage/craft branches above, quiz branch and Advance section below) untouched."
+  },
+  "phase_2_audit": {
+    "wired_observations": [
+      {
+        "name": "bridge_built",
+        "emission_file": "src/renderer/game/systems/construction/constructionSystem.js",
+        "emission_line": 530,
+        "driver": "src/renderer/game/data/blueprints/bridgeBlueprint.js:39 (observation: 'bridge_built')"
+      },
+      {
+        "name": "load_test_completed",
+        "emission_file": "src/renderer/game/scenes/LabRigBase.js",
+        "emission_line": 559,
+        "driver": "src/renderer/game/scenes/MaterialLabScene.js:77 (getCompletionObservation() => 'load_test_completed')"
+      },
+      {
+        "name": "thermal_expansion_observed",
+        "emission_file": "src/renderer/game/scenes/LabRigBase.js",
+        "emission_line": 559,
+        "driver": "src/renderer/game/scenes/ThermalRigScene.js:325 (getCompletionObservation() => 'thermal_expansion_observed'). Note: ThermalRigScene IS registered (config.js:21,52; sceneRegistry.js:99) — so this observation has a working emission path despite the bug log calling it 'LabRig (config not present)'. Bug log may have been written before ThermalRigScene shipped, or before its config registration landed."
+    ],
+    "unwired_observations": [
+      "mesquite",
+      "javelina",
+      "dna_extracted",
+      "rna_extracted",
+      "expression_simulated",
+      "gene_inserted",
+      "bio_production_complete",
+      "bio_electrolyte_created",
+      "fluid_zone_found",
+      "basin_crossed",
+      "topology_zone_entered",
+      "topology_loop_completed",
+      "memory_zone_entered",
+      "water_found_blind",
+      "composite_created",
+      "buoyancy_test_passed",
+      "motor_cleaned",
+      "coating_applied"
+    ],
+    "wired_count": 3,
+    "unwired_count": 18,
+    "audit_method": "for each of the 21 names, grep src/renderer/game/ for the literal string and inspect each match for whether it pushes to state.observations vs reads from it. Cross-checked against the only two emission code paths in the codebase: constructionSystem.js:530 (driven by blueprint.completion.observation) and LabRigBase.js:559 (driven by subclass getCompletionObservation()). Only 3 distinct observation strings flow through these paths today: bridge_built (bridgeBlueprint), load_test_completed (MaterialLabScene), thermal_expansion_observed (ThermalRigScene).",
+    "discrepancy_with_bug_log": "Bug log .claude/bugs/2026-04-27-quest-engine-and-traversal.md (lines 36-67) reports 2 wired / 19 unwired and lists thermal_expansion_observed under unwired with note 'LabRig (config not present)'. Static audit today shows ThermalRigScene IS registered in config.js and sceneRegistry.js, and its getCompletionObservation() returns 'thermal_expansion_observed'. So the actual count is 3 wired / 18 unwired. This does not change Path D semantics — 18 quests will still visibly block at observe step until per-quest wiring lands per observation-wiring-plan.md. The wiring-plan should be updated to reflect heat_failure being already-wired (recommend the orchestrator surface this to the per-quest design pass session)."
+  },
+  "build_result": "PASS in 11.06s",
+  "scope_evidence": {
+    "single_file_modified": "git status shows three modified files; only src/renderer/game/systems/questSystem.js was modified by this dispatch. The other two (.claude/swarm/reports/daytime-2026-04-27-v2-progress.md and .claude/swarm/state.json) were already dirty in the working tree before this dispatch began (orchestrator-owned, untouched by me).",
+    "no_quests_js_change": "git diff --stat src/renderer/game/data/quests.js → empty (0 changes)",
+    "no_scene_file_change": "no scene files in src/renderer/game/scenes/ were edited (verified by git status; only systems/questSystem.js modified)",
+    "no_console_added": "grep console. in src/renderer/game/systems/questSystem.js shows 4 pre-existing console statements at lines 47, 53, 114, 125 (in unrelated functions handleQuestPickup / revealLocationsByQuestId / progression audit). None inside the new gate and none added by this dispatch.",
+    "no_other_questsystem_change": "git diff src/renderer/game/systems/questSystem.js shows a single contiguous hunk replacing lines 199-214 (FIXME comment + empty observe branch body) with the 12-line gate (function body lines 199-210 in the new file). No other lines in questSystem.js touched."
+  },
+  "section_8_declaration": {
+    "environmental_primitives_consulted": "none",
+    "progression_primitives_updated": "state.observations is READ-only consulted via .includes(); the gate does not write to state.observations or any other progression primitive",
+    "act_1_to_3_scaling_strategy": "act-agnostic — observe-step gate applies uniformly to all observe steps in all quests across all acts. NO act-specific branches per Section 8.2 (verified — no `if (act === N)` or equivalent introduced)"
+  },
+  "path_d_acknowledgment": "Per Path D: this gate WILL visibly block the 18 unwired-observation quests at their first observe step. This is INTENTIONAL. Per-quest wiring is scheduled in observation-wiring-plan.md and will happen in separate per-quest sessions, NOT in this dispatch. (Note: heat_failure / thermal_expansion_observed should be reclassified as already-wired in that plan; see discrepancy_with_bug_log above.)",
+  "needs_runtime_validation": true,
+  "user_runtime_protocol": "Tonight's playbook Task 3 Phases 3-7. Most critical checks: (1) Resume save with bridge_collapse already in completedQuests — must remain completed (no retroactive uncomplete). (2) Use tools/inspect-save.js to remove bridge_collapse from completedQuests; replay quest. After Mr. Chen's 'go build the bridge' dialog, the quest must NOT auto-complete on subsequent dialog dismissal. It must wait for actual `bridge_built` observation from completeBuild(). (3) Confirm state.observations contains 'bridge_built' after building, quest advances exactly then. (4) For one of the 18 unwired quests (e.g. food_chain_tracker), confirm it now sits at its observe step instead of auto-completing. Optional bonus: try heat_failure (thermal expansion) end-to-end since per static audit it appears to have a working emission path through ThermalRigScene/LabRigBase — confirms the wired list is actually 3, not 2. Paste runtime evidence back to mark this dispatch runtime-validated.",
+  "notes": "REQUIRES RUNTIME VALIDATION TONIGHT — engine-level change with broad blast radius. Static-only PASS until tonight's bridge_collapse replay confirms (a) wired quests still complete via real observation emit, (b) unwired quests now visibly hang at observe step (Path D intent), (c) no retroactive uncompletes. Per arc.md v1.3 hardened rule: a static-only PASS on a critical path is yellow, not green. One audit finding to surface to wiring-plan author: thermal_expansion_observed appears wired (ThermalRigScene + LabRigBase) — if confirmed at runtime, the unwired list shrinks from 19 to 18 quests."
+}
