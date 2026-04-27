@@ -1,0 +1,151 @@
+{
+  "scene": "SportsFieldsScene",
+  "version": 1,
+  "objects": {
+    "ground": {
+      "x": 500,
+      "y": 350,
+      "w": 1000,
+      "h": 700,
+      "_note": "Original: x = width/2 (1000), y = height/2 (700), w = width, h = height."
+    },
+    "soccer_field": {
+      "x": 280,
+      "y": 200,
+      "w": 380,
+      "h": 280,
+      "_note": "sfx=280, sfy=200, sfw=380, sfh=280. All soccer field derived positions use these as anchors in code."
+    },
+    "soccer_field_bg": {
+      "x": 470,
+      "y": 340,
+      "w": 380,
+      "h": 280,
+      "_note": "Original: x = sfx + sfw/2 (280+190=470), y = sfy + sfh/2 (200+140=340)."
+    },
+    "goal_left": {
+      "x": 275,
+      "y": 340,
+      "w": 10,
+      "h": 60,
+      "_note": "Original: x = sfx - 5 (280-5=275), y = sfy + sfh/2 (200+140=340)."
+    },
+    "goal_right": {
+      "x": 665,
+      "y": 340,
+      "w": 10,
+      "h": 60,
+      "_note": "Original: x = sfx + sfw + 5 (280+380+5=665), y = sfy + sfh/2 (200+140=340)."
+    },
+    "basketball_court": {
+      "x": 720,
+      "y": 220,
+      "w": 200,
+      "h": 260,
+      "_note": "bcx=720, bcy=220, bcw=200, bch=260. All basketball court derived positions use these as anchors in code."
+    },
+    "basketball_court_bg": {
+      "x": 820,
+      "y": 350,
+      "w": 200,
+      "h": 260,
+      "_note": "Original: x = bcx + bcw/2 (720+100=820), y = bcy + bch/2 (220+130=350)."
+    },
+    "hoop_top": {
+      "x": 820,
+      "y": 235,
+      "_note": "Original: x = bcx + bcw/2 (720+100=820), y = bcy + 15 (220+15=235)."
+    },
+    "hoop_bottom": {
+      "x": 820,
+      "y": 465,
+      "_note": "Original: x = bcx + bcw/2 (720+100=820), y = bcy + bch - 15 (220+260-15=465)."
+    },
+    "backboard_top": {
+      "x": 820,
+      "y": 225,
+      "w": 40,
+      "h": 6,
+      "_note": "Original: x = bcx + bcw/2 (820), y = bcy + 5 (220+5=225)."
+    },
+    "backboard_bottom": {
+      "x": 820,
+      "y": 475,
+      "w": 40,
+      "h": 6,
+      "_note": "Original: x = bcx + bcw/2 (820), y = bcy + bch - 5 (220+260-5=475)."
+    },
+    "bleachers_north": {
+      "x": 300,
+      "y": 120,
+      "w": 250,
+      "h": 40
+    },
+    "bleachers_east": {
+      "x": 950,
+      "y": 350,
+      "w": 40,
+      "h": 200
+    },
+    "bench_spots": [
+      { "x": 100, "y": 340 },
+      { "x": 100, "y": 460 },
+      { "x": 580, "y": 550 }
+    ],
+    "trees": [
+      { "x": 50, "y": 80 },
+      { "x": 50, "y": 600 },
+      { "x": 500, "y": 80 },
+      { "x": 950, "y": 80 },
+      { "x": 950, "y": 600 }
+    ],
+    "wall_north": {
+      "x": 500,
+      "y": 0,
+      "w": 1000,
+      "h": 20,
+      "_note": "Original: x = width/2 (500), y = 0, w = width (1000)."
+    },
+    "wall_west": {
+      "x": 0,
+      "y": 350,
+      "w": 20,
+      "h": 700,
+      "_note": "Original: y = height/2 (350), h = height (700)."
+    },
+    "wall_east": {
+      "x": 1000,
+      "y": 350,
+      "w": 20,
+      "h": 700,
+      "_note": "Original: x = width (1000), y = height/2 (350), h = height (700)."
+    },
+    "interact_soccer_ball": {
+      "x": 470,
+      "y": 340,
+      "radius": 55
+    },
+    "interact_race_start": {
+      "x": 300,
+      "y": 560,
+      "radius": 55
+    },
+    "interact_water_fountain": {
+      "x": 580,
+      "y": 160,
+      "radius": 50
+    },
+    "scene_title": {
+      "x": 500,
+      "y": 50,
+      "_note": "Original: x = width/2 (500)."
+    },
+    "exit_south": {
+      "x": 500,
+      "y": 686,
+      "w": 160,
+      "h": 28,
+      "_note": "Original: x = width/2 (500), y = height - 14 (700-14=686)."
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "status": "PASS",
+  "targetSceneKey": "SportsFieldsScene",
+  "targetSceneFile": "src/renderer/game/scenes/SportsFieldsScene.js",
+  "layoutAssetKey": "sportsFieldsLayout",
+  "layoutPath": "layouts/sports-fields.layout.json",
+  "timestamp": "2026-04-26T18:15:00Z",
+  "files_changed": [
+    "src/renderer/game/scenes/SportsFieldsScene.js",
+    "public/layouts/sports-fields.layout.json"
+  ],
+  "idempotency": {
+    "loadLayout_js": "already existed — not modified",
+    "CLAUDE_md_layout_rule": "already existed — not modified"
+  },
+  "layout_json_line_count": 151,
+  "layout_objects_extracted": 23,
+  "layout_object_names": [
+    "ground",
+    "soccer_field",
+    "soccer_field_bg",
+    "goal_left",
+    "goal_right",
+    "basketball_court",
+    "basketball_court_bg",
+    "hoop_top",
+    "hoop_bottom",
+    "backboard_top",
+    "backboard_bottom",
+    "bleachers_north",
+    "bleachers_east",
+    "bench_spots",
+    "trees",
+    "wall_north",
+    "wall_west",
+    "wall_east",
+    "interact_soccer_ball",
+    "interact_race_start",
+    "interact_water_fountain",
+    "scene_title",
+    "exit_south"
+  ],
+  "literal_inventory": {
+    "ground": "width/2=500, height/2=350, width=1000, height=700 — resolved and captured with _note",
+    "soccer_field": "sfx=280, sfy=200, sfw=380, sfh=280 — captured as primary anchor; Graphics API derivations (strokeRect, strokeCircle, fillCircle) kept in code using sfx/sfy/sfw/sfh local vars bound to this.layout.soccer_field",
+    "soccer_field_bg": "sfx+sfw/2=470, sfy+sfh/2=340, sfw=380, sfh=280 — resolved with _note",
+    "goal_left": "sfx-5=275, sfy+sfh/2=340, w=10, h=60 — resolved with _note",
+    "goal_right": "sfx+sfw+5=665, sfy+sfh/2=340, w=10, h=60 — resolved with _note",
+    "basketball_court": "bcx=720, bcy=220, bcw=200, bch=260 — captured as primary anchor; Graphics API derivations kept in code using bcx/bcy/bcw/bch local vars bound to this.layout.basketball_court",
+    "basketball_court_bg": "bcx+bcw/2=820, bcy+bch/2=350, bcw=200, bch=260 — resolved with _note",
+    "hoop_top": "bcx+bcw/2=820, bcy+15=235 — resolved with _note",
+    "hoop_bottom": "bcx+bcw/2=820, bcy+bch-15=465 — resolved with _note",
+    "backboard_top": "bcx+bcw/2=820, bcy+5=225, w=40, h=6 — resolved with _note",
+    "backboard_bottom": "bcx+bcw/2=820, bcy+bch-5=475, w=40, h=6 — resolved with _note",
+    "bleachers_north": "x=300, y=120, w=250, h=40 — literal",
+    "bleachers_east": "x=950, y=350, w=40, h=200 — literal",
+    "bench_spots": "[[100,340],[100,460],[580,550]] — array hoisted to JSON; for-loop iterates this.layout.bench_spots.map(s => [s.x, s.y])",
+    "trees": "[[50,80],[50,600],[500,80],[950,80],[950,600]] — array hoisted to JSON; for-loop iterates this.layout.trees.map(s => [s.x, s.y])",
+    "wall_north": "width/2=500, y=0, width=1000, h=20 — resolved with _note",
+    "wall_west": "x=0, height/2=350, w=20, height=700 — resolved with _note",
+    "wall_east": "width=1000, height/2=350, w=20, height=700 — resolved with _note",
+    "interact_soccer_ball": "x=470, y=340, radius=55 — literal",
+    "interact_race_start": "x=300, y=560, radius=55 — literal",
+    "interact_water_fountain": "x=580, y=160, radius=50 — literal",
+    "scene_title": "width/2=500, y=50 — resolved with _note",
+    "exit_south": "width/2=500, height-14=686, w=160, h=28 — resolved with _note"
+  },
+  "positions_left_in_code": [
+    {
+      "reason": "Graphics API calls (fieldGfx.strokeRect, strokeCircle, fillCircle, courtGfx.strokeRect, strokeCircle) use derived expressions from sfx/sfy/sfw/sfh and bcx/bcy/bcw/bch. These are internal marking computations that are fully determined by the primary soccer_field and basketball_court anchor objects in JSON. The local vars sfx/sfy/sfw/sfh and bcx/bcy/bcw/bch are now bound to this.layout.soccer_field and this.layout.basketball_court respectively, so graphics remain pixel-identical.",
+      "lines": "51-52 (fieldGfx derivations), 67-68 (courtGfx derivations)",
+      "verdict": "Correct per spec — Graphics API internal derivations use anchor values from JSON."
+    },
+    {
+      "reason": "Bench size literals (50, 18) and wall size literals (50, 18) inside the bench for-loop, and tree wall size (20, 20) inside the tree for-loop. These are dimensions not positions and are uniform for all entries; they are inline constants consistent within their loops. The x/y positions are driven from this.layout.bench_spots and this.layout.trees respectively.",
+      "lines": "bench loop line ~90, tree loop line ~95",
+      "verdict": "Acceptable — these are fixed dimension constants for uniform rendering, not positional literals."
+    }
+  ],
+  "self_audit": {
+    "leftover_literals_grep": "PASS — grep -E 'this\\.add\\.\\w+\\(\\s*[0-9]+\\s*,' returned no matches",
+    "all_layout_keys_referenced": "PASS — all 23 keys referenced (node cross-check confirmed)",
+    "json_valid": "PASS — JSON.parse succeeded, node output confirmed",
+    "json_line_count": "PASS — 151 lines < 200 limit",
+    "layoutEditorConfig_present": "PASS — grep found 'static layoutEditorConfig' at line 19",
+    "no_logic_changes": "PASS — only position/size literals replaced; all dialog strings, onInteract callbacks, targetScene, targetSpawn, labels, setOrigin, setDepth, setStrokeStyle, colors, bleacherColor, fontSize, fontFamily, fontStyle, stroke, strokeThickness unchanged"
+  },
+  "notes": [
+    "Scene processed: SportsFieldsScene (1000x700 canvas).",
+    "23 layout objects extracted across: ground, soccer field anchor + bg + goals, basketball court anchor + bg + hoops + backboards, bleachers (north + east), bench_spots array, trees array, boundary walls (north/west/east), 3 interactables, scene title, exit south.",
+    "Graphics API (Phaser Graphics object) derivations are intentionally left as code — they compute marking positions relative to the soccer_field and basketball_court anchor objects which live in JSON. This is the correct pattern per spec (derived positions stay in code, anchors go in JSON).",
+    "Bench/tree uniform dimension constants (50x18, 20x20) left inline — these are rendering constants, not positional data.",
+    "loadLayout.js was NOT created (already existed — idempotent pass).",
+    "CLAUDE.md layout rule was NOT modified (already existed — idempotent pass).",
+    "No bugs spotted during extraction.",
+    "Suggested next agent: phaser-scene-layout-extractor for the next scene, or code-quality-reviewer for SportsFieldsScene."
+  ],
+  "suggested_next_agent": "code-quality-reviewer OR phaser-scene-layout-extractor for next scene"
+}
