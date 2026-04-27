@@ -1,0 +1,7 @@
+{
+  "agent": "phaser-editor-opt-in-backfill",
+  "ts": "2026-04-26T20:45:00Z",
+  "status": "complete",
+  "files_changed": ["src/renderer/game/scenes/StreetBlockScene.js"],
+  "notes": "Backfilled `static layoutEditorConfig` opt-in for StreetBlockScene. Captured values verbatim from the existing `this.load.json('streetBlockLayout', 'layouts/street-block.layout.json')` call in preload() (line 41 post-edit). Inserted the 5-LOC property block at lines 26-30, immediately after the class opening brace and before the constructor. `git diff` confirms exactly 5 insertions and zero deletions; no other line in the file was modified. preload(), createWorld(), and all other members untouched. grep for `static layoutEditorConfig` returns exactly one match (line 26). LayoutEditorOverlayScene will now auto-detect this scene on F2."
+}

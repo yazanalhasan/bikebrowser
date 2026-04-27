@@ -23,6 +23,11 @@ import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 
 export default class StreetBlockScene extends LocalSceneBase {
+  static layoutEditorConfig = {
+    layoutAssetKey: 'streetBlockLayout',
+    layoutPath: 'layouts/street-block.layout.json',
+  };
+
   constructor() {
     super('StreetBlockScene');
   }
