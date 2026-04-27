@@ -1,0 +1,121 @@
+{
+  "scene": "DogParkScene",
+  "version": 1,
+  "objects": {
+    "grass_field": {
+      "x": 450,
+      "y": 350,
+      "w": 900,
+      "h": 700,
+      "_note": "Original: x = width / 2 (900), y = height / 2 (700), w = width, h = height."
+    },
+    "dirt_patch_1": { "x": 300, "y": 350, "r": 50 },
+    "dirt_patch_2": { "x": 600, "y": 400, "r": 40 },
+    "dirt_patch_3": { "x": 450, "y": 250, "r": 35 },
+    "path_top": { "x": 50, "y": 80, "w": 800, "h": 40 },
+    "path_center_vertical": {
+      "x": 430,
+      "y": 80,
+      "w": 40,
+      "h": 540,
+      "_note": "Original: x = width / 2 - 20 (900 / 2 - 20 = 430), h = height - 160 (700 - 160 = 540)."
+    },
+    "path_bottom": {
+      "x": 50,
+      "y": 580,
+      "w": 800,
+      "h": 40,
+      "_note": "Original: y = height - 120 (700 - 120 = 580)."
+    },
+    "fence_top": {
+      "x": 450,
+      "y": 30,
+      "w": 860,
+      "h": 10,
+      "_note": "Original: x = width / 2 (900 / 2 = 450), w = width - 40 (900 - 40 = 860)."
+    },
+    "fence_bottom_left": {
+      "x": 200,
+      "y": 670,
+      "w": 360,
+      "h": 10,
+      "_note": "Original: y = height - 30 (700 - 30 = 670)."
+    },
+    "fence_bottom_right": {
+      "x": 700,
+      "y": 670,
+      "w": 360,
+      "h": 10,
+      "_note": "Original: y = height - 30 (700 - 30 = 670)."
+    },
+    "fence_left": {
+      "x": 30,
+      "y": 350,
+      "w": 10,
+      "h": 660,
+      "_note": "Original: y = height / 2 (700 / 2 = 350), h = height - 40 (700 - 40 = 660)."
+    },
+    "fence_right": {
+      "x": 870,
+      "y": 350,
+      "w": 10,
+      "h": 660,
+      "_note": "Original: x = width - 30 (900 - 30 = 870), y = height / 2 (700 / 2 = 350), h = height - 40 (700 - 40 = 660)."
+    },
+    "fence_posts": {
+      "x_start": 50,
+      "x_step": 80,
+      "y_top": 30,
+      "y_bottom": 670,
+      "w": 6,
+      "h": 14,
+      "gap_min_x": 380,
+      "gap_max_x": 520,
+      "_note": "Loop: for x = 50; x < 900; x += 80. y_bottom = height - 30 (700 - 30 = 670). gap_min_x / gap_max_x are the literal thresholds in the original conditional (x < 380 || x > 520)."
+    },
+    "gate_sign": {
+      "x": 450,
+      "y": 645,
+      "_note": "Original: x = width / 2 (900 / 2 = 450), y = height - 55 (700 - 55 = 645)."
+    },
+    "benches": [
+      { "x": 150, "y": 200 },
+      { "x": 700, "y": 200 },
+      { "x": 150, "y": 500 },
+      { "x": 700, "y": 500 }
+    ],
+    "bench_size": { "w": 50, "h": 20 },
+    "trees": [
+      { "x": 80, "y": 120 },
+      { "x": 820, "y": 120 },
+      { "x": 80, "y": 580 },
+      { "x": 820, "y": 580 },
+      { "x": 400, "y": 150 },
+      { "x": 250, "y": 400 },
+      { "x": 650, "y": 300 }
+    ],
+    "dog_spots": [
+      { "x": 300, "y": 300 },
+      { "x": 500, "y": 350 },
+      { "x": 200, "y": 450 }
+    ],
+    "plant_ephedra": { "x": 100, "y": 300, "radius": 55 },
+    "plant_yerba_mansa": { "x": 500, "y": 250, "radius": 50 },
+    "plant_creosote": { "x": 750, "y": 400, "radius": 55 },
+    "interact_water_bowl": { "x": 450, "y": 350, "radius": 50 },
+    "interact_tennis_ball": { "x": 600, "y": 250, "radius": 50 },
+    "interact_lost_collar": { "x": 180, "y": 340, "radius": 50 },
+    "scene_title": {
+      "x": 450,
+      "y": 55,
+      "_note": "Original: x = width / 2 (900 / 2 = 450)."
+    },
+    "exit_south": {
+      "x": 450,
+      "y": 686,
+      "w": 140,
+      "h": 28,
+      "_note": "Original: x = width / 2 (900 / 2 = 450), y = height - 14 (700 - 14 = 686)."
+    }
+  }
+}

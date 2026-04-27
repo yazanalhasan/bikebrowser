@@ -16,8 +16,14 @@ import QUESTS from '../data/quests.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { drawPlant } from '../utils/plantRenderer.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { loadLayout } from '../utils/loadLayout.js';
 
 export default class DogParkScene extends LocalSceneBase {
+  static layoutEditorConfig = {
+    layoutAssetKey: 'dogParkLayout',
+    layoutPath: 'layouts/dog-park.layout.json',
+  };
+
   constructor() {
     super('DogParkScene');
   }
@@ -26,78 +32,78 @@ export default class DogParkScene extends LocalSceneBase {
     return { width: 900, height: 700 };
   }
 
+  preload() {
+    super.preload?.();
+    this.load.json('dogParkLayout', 'layouts/dog-park.layout.json');
+  }
+
   createWorld() {
-    const { width, height } = this.getWorldSize();
+    this.layout = loadLayout(this, 'dogParkLayout');
 
     // === GROUND ===
     // Grass field
-    this.add.rectangle(width / 2, height / 2, width, height, 0x8bc34a);
+    this.add.rectangle(this.layout.grass_field.x, this.layout.grass_field.y, this.layout.grass_field.w, this.layout.grass_field.h, 0x8bc34a);
 
     // Dirt patches
     const dirtGfx = this.add.graphics();
     dirtGfx.fillStyle(0xa1887f, 0.4);
-    dirtGfx.fillCircle(300, 350, 50);
-    dirtGfx.fillCircle(600, 400, 40);
-    dirtGfx.fillCircle(450, 250, 35);
+    dirtGfx.fillCircle(this.layout.dirt_patch_1.x, this.layout.dirt_patch_1.y, this.layout.dirt_patch_1.r);
+    dirtGfx.fillCircle(this.layout.dirt_patch_2.x, this.layout.dirt_patch_2.y, this.layout.dirt_patch_2.r);
+    dirtGfx.fillCircle(this.layout.dirt_patch_3.x, this.layout.dirt_patch_3.y, this.layout.dirt_patch_3.r);
 
     // Walking path (gravel)
     const pathGfx = this.add.graphics();
     pathGfx.fillStyle(0xd7ccc8, 0.8);
-    pathGfx.fillRoundedRect(50, 80, 800, 40, 10);
-    pathGfx.fillRoundedRect(width / 2 - 20, 80, 40, height - 160, 10);
-    pathGfx.fillRoundedRect(50, height - 120, 800, 40, 10);
+    pathGfx.fillRoundedRect(this.layout.path_top.x, this.layout.path_top.y, this.layout.path_top.w, this.layout.path_top.h, 10);
+    pathGfx.fillRoundedRect(this.layout.path_center_vertical.x, this.layout.path_center_vertical.y, this.layout.path_center_vertical.w, this.layout.path_center_vertical.h, 10);
+    pathGfx.fillRoundedRect(this.layout.path_bottom.x, this.layout.path_bottom.y, this.layout.path_bottom.w, this.layout.path_bottom.h, 10);
 
     // === FENCE (collision boundary) ===
     const fenceColor = 0x795548;
     // Top fence
-    this.addVisibleWall(width / 2, 30, width - 40, 10, fenceColor, 0x5d4037);
+    this.addVisibleWall(this.layout.fence_top.x, this.layout.fence_top.y, this.layout.fence_top.w, this.layout.fence_top.h, fenceColor, 0x5d4037);
     // Bottom fence (gap for gate)
-    this.addVisibleWall(200, height - 30, 360, 10, fenceColor, 0x5d4037);
-    this.addVisibleWall(700, height - 30, 360, 10, fenceColor, 0x5d4037);
+    this.addVisibleWall(this.layout.fence_bottom_left.x, this.layout.fence_bottom_left.y, this.layout.fence_bottom_left.w, this.layout.fence_bottom_left.h, fenceColor, 0x5d4037);
+    this.addVisibleWall(this.layout.fence_bottom_right.x, this.layout.fence_bottom_right.y, this.layout.fence_bottom_right.w, this.layout.fence_bottom_right.h, fenceColor, 0x5d4037);
     // Left fence
-    this.addVisibleWall(30, height / 2, 10, height - 40, fenceColor, 0x5d4037);
+    this.addVisibleWall(this.layout.fence_left.x, this.layout.fence_left.y, this.layout.fence_left.w, this.layout.fence_left.h, fenceColor, 0x5d4037);
     // Right fence
-    this.addVisibleWall(width - 30, height / 2, 10, height - 40, fenceColor, 0x5d4037);
+    this.addVisibleWall(this.layout.fence_right.x, this.layout.fence_right.y, this.layout.fence_right.w, this.layout.fence_right.h, fenceColor, 0x5d4037);
 
     // Fence posts (decorative)
-    for (let x = 50; x < width; x += 80) {
-      this.add.rectangle(x, 30, 6, 14, 0x5d4037).setDepth(1);
-      if (x < 380 || x > 520) {
-        this.add.rectangle(x, height - 30, 6, 14, 0x5d4037).setDepth(1);
+    const fp = this.layout.fence_posts;
+    for (let x = fp.x_start; x < this.getWorldSize().width; x += fp.x_step) {
+      this.add.rectangle(x, fp.y_top, fp.w, fp.h, 0x5d4037).setDepth(1);
+      if (x < fp.gap_min_x || x > fp.gap_max_x) {
+        this.add.rectangle(x, fp.y_bottom, fp.w, fp.h, 0x5d4037).setDepth(1);
       }
     }
 
     // Gate sign
-    this.add.text(width / 2, height - 55, '🐕 Dog Park', {
+    this.add.text(this.layout.gate_sign.x, this.layout.gate_sign.y, '🐕 Dog Park', {
       fontSize: '16px', fontFamily: 'sans-serif', color: '#4e342e',
       fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(5);
 
     // === BENCHES ===
-    const benches = [[150, 200], [700, 200], [150, 500], [700, 500]];
-    for (const [bx, by] of benches) {
-      this.add.rectangle(bx, by, 50, 20, 0x795548).setStrokeStyle(2, 0x5d4037).setDepth(1);
-      this.addWall(bx, by, 50, 20);
+    for (const { x: bx, y: by } of this.layout.benches) {
+      this.add.rectangle(bx, by, this.layout.bench_size.w, this.layout.bench_size.h, 0x795548).setStrokeStyle(2, 0x5d4037).setDepth(1);
+      this.addWall(bx, by, this.layout.bench_size.w, this.layout.bench_size.h);
     }
 
     // === TREES ===
-    const trees = [[80, 120], [820, 120], [80, 580], [820, 580],
-                   [400, 150], [250, 400], [650, 300]];
-    for (const [tx, ty] of trees) {
+    for (const { x: tx, y: ty } of this.layout.trees) {
       this.add.text(tx, ty, '🌳', { fontSize: '32px' }).setOrigin(0.5).setDepth(3);
       this.addWall(tx, ty, 20, 20);
     }
 
     // === DOGS (decorative, walking) ===
     this._dogs = [];
-    const dogPositions = [
-      { x: 300, y: 300, emoji: '🐕', speed: 30 },
-      { x: 500, y: 350, emoji: '🐩', speed: 25 },
-      { x: 200, y: 450, emoji: '🐕‍🦺', speed: 35 },
-    ];
+    const dogEmojis = ['🐕', '🐩', '🐕‍🦺'];
 
-    for (const dog of dogPositions) {
-      const sprite = this.add.text(dog.x, dog.y, dog.emoji, { fontSize: '28px' })
+    for (let i = 0; i < this.layout.dog_spots.length; i++) {
+      const dog = this.layout.dog_spots[i];
+      const sprite = this.add.text(dog.x, dog.y, dogEmojis[i], { fontSize: '28px' })
         .setOrigin(0.5).setDepth(4);
 
       // Simple wander behavior
@@ -119,9 +125,9 @@ export default class DogParkScene extends LocalSceneBase {
     this._ecologyPlants = [];
 
     const parkPlants = [
-      { species: 'ephedra', label: 'Ephedra (Mormon Tea)', x: 100, y: 300, radius: 55 },
-      { species: 'yerba_mansa', label: 'Yerba Mansa', x: 500, y: 250, radius: 50 },
-      { species: 'creosote', label: 'Creosote Bush', x: 750, y: 400, radius: 55 },
+      { species: 'ephedra', label: 'Ephedra (Mormon Tea)', ...this.layout.plant_ephedra },
+      { species: 'yerba_mansa', label: 'Yerba Mansa', ...this.layout.plant_yerba_mansa },
+      { species: 'creosote', label: 'Creosote Bush', ...this.layout.plant_creosote },
     ];
 
     for (const p of parkPlants) {
@@ -137,10 +143,10 @@ export default class DogParkScene extends LocalSceneBase {
 
     // === WATER BOWL ===
     this.addInteractable({
-      x: 450, y: 350,
+      x: this.layout.interact_water_bowl.x, y: this.layout.interact_water_bowl.y,
       label: 'Water Bowl',
       icon: '🥣',
-      radius: 50,
+      radius: this.layout.interact_water_bowl.radius,
       onInteract: () => {
         this.registry.set('dialogEvent', {
           speaker: 'Zuzu',
@@ -152,10 +158,10 @@ export default class DogParkScene extends LocalSceneBase {
 
     // === TENNIS BALL ===
     this.addInteractable({
-      x: 600, y: 250,
+      x: this.layout.interact_tennis_ball.x, y: this.layout.interact_tennis_ball.y,
       label: 'Tennis Ball',
       icon: '🎾',
-      radius: 50,
+      radius: this.layout.interact_tennis_ball.radius,
       onInteract: () => {
         this.registry.set('dialogEvent', {
           speaker: 'Zuzu',
@@ -167,10 +173,10 @@ export default class DogParkScene extends LocalSceneBase {
 
     // === LOST COLLAR (future quest hook) ===
     this.addInteractable({
-      x: 180, y: 340,
+      x: this.layout.interact_lost_collar.x, y: this.layout.interact_lost_collar.y,
       label: 'Lost Collar',
       icon: '📿',
-      radius: 50,
+      radius: this.layout.interact_lost_collar.radius,
       onInteract: () => {
         this.registry.set('dialogEvent', {
           speaker: 'Zuzu',
@@ -181,15 +187,15 @@ export default class DogParkScene extends LocalSceneBase {
     });
 
     // === SCENE TITLE ===
-    this.add.text(width / 2, 55, '🐕 Dog Park', {
+    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🐕 Dog Park', {
       fontSize: '20px', fontFamily: 'sans-serif', color: '#33691e',
       fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(5);
 
     // === EXIT (south gate → overworld) ===
     this.addExit({
-      x: width / 2, y: height - 14,
-      width: 140, height: 28,
+      x: this.layout.exit_south.x, y: this.layout.exit_south.y,
+      width: this.layout.exit_south.w, height: this.layout.exit_south.h,
       targetScene: 'OverworldScene',
       targetSpawn: 'fromDogPark',
       label: '🗺️ Leave Park ⬇',

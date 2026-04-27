@@ -1,0 +1,75 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "status": "PASS",
+  "timestamp": "2026-04-26T19:15:00Z",
+  "targetSceneKey": "DogParkScene",
+  "targetSceneFile": "src/renderer/game/scenes/DogParkScene.js",
+  "layoutAssetKey": "dogParkLayout",
+  "layoutPath": "layouts/dog-park.layout.json",
+  "canvasSize": { "width": 900, "height": 700 },
+  "files_changed": [
+    "src/renderer/game/scenes/DogParkScene.js",
+    "public/layouts/dog-park.layout.json"
+  ],
+  "idempotent_files": {
+    "loadLayout_js": "already existed — not touched",
+    "CLAUDE_md": "already existed — not touched"
+  },
+  "layout_objects_count": 26,
+  "layout_line_count": 121,
+  "layout_objects": [
+    "grass_field",
+    "dirt_patch_1",
+    "dirt_patch_2",
+    "dirt_patch_3",
+    "path_top",
+    "path_center_vertical",
+    "path_bottom",
+    "fence_top",
+    "fence_bottom_left",
+    "fence_bottom_right",
+    "fence_left",
+    "fence_right",
+    "fence_posts",
+    "gate_sign",
+    "benches",
+    "bench_size",
+    "trees",
+    "dog_spots",
+    "plant_ephedra",
+    "plant_yerba_mansa",
+    "plant_creosote",
+    "interact_water_bowl",
+    "interact_tennis_ball",
+    "interact_lost_collar",
+    "scene_title",
+    "exit_south"
+  ],
+  "positions_left_in_code": [
+    {
+      "description": "Tree wall collision size",
+      "source": "this.addWall(tx, ty, 20, 20)",
+      "reason": "The 20×20 collision box for trees is a fixed gameplay constant shared by all tree instances. It is not a visual coordinate and is not scene-specific layout data. Extracting it would conflate collision physics constants with layout positions. Left in code as a named constant (20×20) consistent with how the original was written."
+    }
+  ],
+  "notes": [
+    "DogParkScene (900×700) processed. 26 layout objects extracted.",
+    "All computed positions resolved against canvas size (width=900, height=700): grass_field, path_center_vertical, path_bottom, fence_top, fence_bottom_left, fence_bottom_right, fence_left, fence_right, gate_sign, scene_title, exit_south all carry _note fields documenting the original formula.",
+    "fence_posts loop parameters (x_start, x_step, gap_min_x, gap_max_x, y_top, y_bottom, w, h) extracted as a single object. Loop body in code now iterates using this.layout.fence_posts fields.",
+    "Dog wander tweens remain dynamic (random offsets applied at runtime). Dog spawn positions (dog_spots) extracted to JSON as static anchors; tween targets reference dog.x/dog.y from the layout array.",
+    "Original dogPositions array had unused 'speed' properties on each dog object — speed was never read anywhere in the tween or loop. These were not extracted (speed is not a layout concern). The dogEmojis array in the refactored code replaces the per-object emoji property to preserve the same rendering.",
+    "Tree collision box (20×20) left in code — see positions_left_in_code.",
+    "Self-audit: grep for literal coords in this.add.* calls returned zero results. All 26 JSON keys confirmed referenced via this.layout.<name> in the scene file.",
+    "JSON is 121 lines — well under 200-line limit.",
+    "static layoutEditorConfig added immediately after class declaration opening brace with verbatim layoutAssetKey and layoutPath per dispatch parameters.",
+    "loadLayout.js and CLAUDE.md already existed from prior dispatches — not touched (idempotent)."
+  ],
+  "self_audit": {
+    "leftover_literals_grep": "CLEAN — no output",
+    "all_keys_referenced": "PASS — all 26 keys confirmed referenced",
+    "json_valid": "PASS — node parse succeeded",
+    "layout_editor_config": "PASS — grep found 'static layoutEditorConfig' at line 22",
+    "logic_unchanged": "PASS — only positions, sizes, import, preload, layoutEditorConfig changed in git diff"
+  },
+  "suggested_next_agent": "phaser-scene-layout-extractor for next scene, or code-quality-reviewer"
+}
