@@ -88,36 +88,60 @@ reviewed — there is no infinite review loop. When dispatching either of
 these, skip step 8 entirely and proceed from step 5 directly to step 9
 based on the agent's own receipt status.
 
-## PASS verdict semantics (critical-path pods)
+## PASS verdict semantics + critical-path pod closure (HARDENED)
 
-For any pod that touches the player-facing critical path — quest chains,
-scene transitions, traversal, save/load, anything the player can hit
-during normal play — PASS verdicts MUST be tagged with one of:
+For any pod that touches **gameplay-critical paths** — quest engine,
+scene transitions, save/load, player-facing content, anything the
+player can hit during normal play — pod closure REQUIRES runtime
+testing by the user. Static-pass verification and
+orchestrator-completed checklists are insufficient.
 
-- `runtime-validated` — verifier (or user) actually ran the resulting
-  build, exercised the new path in-game, and confirmed it works end to
-  end.
+PASS verdicts MUST be tagged with one of:
+
+- `runtime-validated` — the user actually ran the resulting build,
+  exercised the new path in-game, and confirmed it works end to end.
 - `static-only` — verifier checked structure (git diff --stat, grep,
   schema, scope boundary, syntax) but did NOT exercise the path in a
   running build.
 
-A `static-only` PASS is NOT a green "shippable" verdict for critical-path
-work; it's a yellow "deploy with playtesting" verdict. When closing a
-critical-path pod with all-static-only PASSes, do NOT use "end-to-end
-playable" or equivalent language in the closure summary. State the
-verification type honestly.
+### Hard rules for critical-path pods
 
-This rule is grounded in the Phaser DryWash pod (closed with "end-to-end
-playable" framing despite zero runtime testing) — two production runtime
-bugs surfaced within hours: a world-map node gated on quest activation
-that never activated, and a quest with no in-game breadcrumb to its
-payoff scene. Static-pass verification cannot catch reachability or
-sensor-firing bugs.
+1. **Fan-in / verification agents must NOT emit "end-to-end playable"
+   claims based on event-chain tracing alone.** Tracing proves that
+   *if* the happy-path event fires, the quest advances correctly.
+   It does NOT prove:
+   - That the happy path is the only path to advancement (e.g.,
+     observe steps that auto-advance on dialog dismissal regardless
+     of whether the required observation fired).
+   - That the player can reach the happy path (e.g., a wired sensor
+     that does not fire at runtime).
 
-When advising the user on whether to dispatch the next pod or move
-on, factor in whether the prior critical-path pod's PASSes include
-runtime validation. If they don't, recommend a runtime checkpoint
-before stacking more work on top.
+2. **Pod closure on critical paths surfaces "needs runtime testing"
+   as the explicit next-action, NOT "ready for next pod dispatch."**
+   Do not stack new critical-path work on top of an
+   unruntime-validated prior pod without flagging the dependency risk.
+
+3. **Dispatch prompts for fan-in / verification agents must explicitly
+   forbid "end-to-end playable" wording in their receipts** when the
+   agent itself cannot run the build.
+
+4. **A `static-only` PASS on a critical path is yellow, not green.**
+   It means "deploy with playtesting," not "shippable."
+
+### Cases this rule is grounded in
+
+- **Phaser DryWash pod** (commits 96eceb7 / f647de8 / 04d3fda) —
+  closed as "end-to-end playable"; subsequent runtime test confirmed
+  the quest auto-completes without bridge construction AND east-edge
+  traversal does not fire. The fan-in's static event-chain trace was
+  internally consistent but answered the wrong question. The inverse —
+  "is the only way to advance the quest for completeBuild() to fire?"
+  — was never asked. The answer was no: any dialog dismissal during
+  an observe step also advances. Static tracing cannot detect bugs
+  that live in what's MISSING from engine code.
+- **Overnight scene-refactor sweep** (12 commits, 2026-04-26→27) —
+  closed as PASS for all 12 scenes; visual verification still pending.
+  The sweep verified scene-file scope but did not test scene rendering.
 
 ## Hard rules
 
