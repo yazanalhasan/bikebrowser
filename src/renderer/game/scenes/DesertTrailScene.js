@@ -13,10 +13,21 @@
 
 import LocalSceneBase from './LocalSceneBase.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { loadLayout } from '../utils/loadLayout.js';
 
 export default class DesertTrailScene extends LocalSceneBase {
+  static layoutEditorConfig = {
+    layoutAssetKey: 'desertTrailLayout',
+    layoutPath: 'layouts/desert-trail.layout.json',
+  };
+
   constructor() {
     super('DesertTrailScene');
+  }
+
+  preload() {
+    super.preload?.();
+    this.load.json('desertTrailLayout', 'layouts/desert-trail.layout.json');
   }
 
   getWorldSize() {
@@ -24,31 +35,33 @@ export default class DesertTrailScene extends LocalSceneBase {
   }
 
   createWorld() {
+    this.layout = loadLayout(this, 'desertTrailLayout');
+
     const { width, height } = this.getWorldSize();
 
     // === GROUND ===
     // Desert sand base
-    this.add.rectangle(width / 2, height / 2, width, height, 0xe8c170);
+    this.add.rectangle(this.layout.ground_base.x, this.layout.ground_base.y, this.layout.ground_base.w, this.layout.ground_base.h, 0xe8c170);
 
     // Color variation patches
     const sandGfx = this.add.graphics();
     sandGfx.fillStyle(0xd4a853, 0.4);
-    sandGfx.fillCircle(300, 200, 120);
-    sandGfx.fillCircle(800, 500, 150);
-    sandGfx.fillCircle(1000, 200, 100);
+    sandGfx.fillCircle(this.layout.sand_patches[0].x, this.layout.sand_patches[0].y, this.layout.sand_patches[0].r);
+    sandGfx.fillCircle(this.layout.sand_patches[1].x, this.layout.sand_patches[1].y, this.layout.sand_patches[1].r);
+    sandGfx.fillCircle(this.layout.sand_patches[2].x, this.layout.sand_patches[2].y, this.layout.sand_patches[2].r);
     sandGfx.fillStyle(0xf0d68a, 0.3);
-    sandGfx.fillCircle(600, 600, 140);
-    sandGfx.fillCircle(200, 500, 100);
+    sandGfx.fillCircle(this.layout.sand_patches[3].x, this.layout.sand_patches[3].y, this.layout.sand_patches[3].r);
+    sandGfx.fillCircle(this.layout.sand_patches[4].x, this.layout.sand_patches[4].y, this.layout.sand_patches[4].r);
 
     // === TRAILS ===
     const pathGfx = this.add.graphics();
     pathGfx.fillStyle(0xc9a85c, 0.8);
     // Main horizontal trail
-    pathGfx.fillRoundedRect(0, 360, 900, 40, 10);
+    pathGfx.fillRoundedRect(this.layout.path_main.x, this.layout.path_main.y, this.layout.path_main.w, this.layout.path_main.h, 10);
     // Branch north
-    pathGfx.fillRoundedRect(500, 100, 40, 280, 10);
+    pathGfx.fillRoundedRect(this.layout.path_branch_north.x, this.layout.path_branch_north.y, this.layout.path_branch_north.w, this.layout.path_branch_north.h, 10);
     // Branch south-east
-    pathGfx.fillRoundedRect(700, 380, 40, 300, 10);
+    pathGfx.fillRoundedRect(this.layout.path_branch_southeast.x, this.layout.path_branch_southeast.y, this.layout.path_branch_southeast.w, this.layout.path_branch_southeast.h, 10);
     // Shortcut diagonal (small stepping stones)
     pathGfx.fillStyle(0xb8944a, 0.6);
     for (let i = 0; i < 8; i++) {
@@ -56,49 +69,35 @@ export default class DesertTrailScene extends LocalSceneBase {
     }
     // East continuation
     pathGfx.fillStyle(0xc9a85c, 0.8);
-    pathGfx.fillRoundedRect(880, 360, 320, 40, 10);
+    pathGfx.fillRoundedRect(this.layout.path_east.x, this.layout.path_east.y, this.layout.path_east.w, this.layout.path_east.h, 10);
 
     // === BOUNDARY WALLS ===
-    this.addWall(width / 2, 0, width, 20);       // top
-    this.addWall(width / 2, height, width, 20);   // bottom
-    this.addWall(width, height / 2, 20, height);  // right
+    this.addWall(this.layout.wall_top.x, this.layout.wall_top.y, this.layout.wall_top.w, this.layout.wall_top.h);       // top
+    this.addWall(this.layout.wall_bottom.x, this.layout.wall_bottom.y, this.layout.wall_bottom.w, this.layout.wall_bottom.h);   // bottom
+    this.addWall(this.layout.wall_right.x, this.layout.wall_right.y, this.layout.wall_right.w, this.layout.wall_right.h);  // right
 
     // === ROCKS (collision) ===
-    const rocks = [
-      [150, 150, 40], [400, 280, 35], [850, 200, 45],
-      [1050, 350, 50], [300, 600, 30], [950, 650, 40],
-      [600, 700, 35], [1100, 550, 45],
-    ];
-    for (const [rx, ry, size] of rocks) {
-      this.add.text(rx, ry, '🪨', { fontSize: `${size}px` }).setOrigin(0.5).setDepth(3);
-      this.addWall(rx, ry, size * 0.7, size * 0.6);
+    for (const rock of this.layout.rocks) {
+      this.add.text(rock.x, rock.y, '🪨', { fontSize: `${rock.size}px` }).setOrigin(0.5).setDepth(3);
+      this.addWall(rock.x, rock.y, rock.size * 0.7, rock.size * 0.6);
     }
 
     // === CACTI ===
-    const cacti = [
-      [200, 300], [450, 180], [700, 250], [900, 450],
-      [350, 480], [1050, 150], [1100, 400], [550, 550],
-      [800, 650], [150, 650],
-    ];
-    for (const [cx, cy] of cacti) {
-      this.add.text(cx, cy, '🌵', { fontSize: '30px' }).setOrigin(0.5).setDepth(3);
-      this.addWall(cx, cy, 16, 16);
+    for (const cactus of this.layout.cacti) {
+      this.add.text(cactus.x, cactus.y, '🌵', { fontSize: '30px' }).setOrigin(0.5).setDepth(3);
+      this.addWall(cactus.x, cactus.y, 16, 16);
     }
 
     // === DESERT SHRUBS (decorative, no collision) ===
-    const shrubs = [
-      [100, 400], [250, 200], [650, 150], [750, 500],
-      [1000, 300], [400, 700], [900, 100], [1150, 250],
-    ];
-    for (const [sx, sy] of shrubs) {
-      this.add.text(sx, sy, '🌿', { fontSize: '18px' }).setOrigin(0.5).setDepth(2);
+    for (const shrub of this.layout.shrubs) {
+      this.add.text(shrub.x, shrub.y, '🌿', { fontSize: '18px' }).setOrigin(0.5).setDepth(2);
     }
 
     // === SKULL (decorative) ===
-    this.add.text(1050, 680, '💀', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
+    this.add.text(this.layout.skull.x, this.layout.skull.y, '💀', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
 
     // === LIZARD (decorative, wandering) ===
-    const lizard = this.add.text(600, 400, '🦎', { fontSize: '22px' }).setOrigin(0.5).setDepth(4);
+    const lizard = this.add.text(this.layout.lizard.x, this.layout.lizard.y, '🦎', { fontSize: '22px' }).setOrigin(0.5).setDepth(4);
     this.tweens.add({
       targets: lizard,
       x: 680, y: 350,
@@ -112,10 +111,10 @@ export default class DesertTrailScene extends LocalSceneBase {
 
     // Scavenging spot
     this.addInteractable({
-      x: 520, y: 140,
+      x: this.layout.interact_scavenge_spot.x, y: this.layout.interact_scavenge_spot.y,
       label: 'Scavenge Spot',
       icon: '🔍',
-      radius: 60,
+      radius: this.layout.interact_scavenge_spot.radius,
       onInteract: () => {
         this.registry.set('dialogEvent', {
           speaker: 'Zuzu',
@@ -127,10 +126,10 @@ export default class DesertTrailScene extends LocalSceneBase {
 
     // Mysterious crate
     this.addInteractable({
-      x: 1050, y: 500,
+      x: this.layout.interact_old_crate.x, y: this.layout.interact_old_crate.y,
       label: 'Old Crate',
       icon: '📦',
-      radius: 55,
+      radius: this.layout.interact_old_crate.radius,
       onInteract: () => {
         this.registry.set('dialogEvent', {
           speaker: 'Zuzu',
@@ -142,10 +141,10 @@ export default class DesertTrailScene extends LocalSceneBase {
 
     // Trail marker sign
     this.addInteractable({
-      x: 200, y: 370,
+      x: this.layout.interact_trail_marker.x, y: this.layout.interact_trail_marker.y,
       label: 'Trail Marker',
       icon: '🪧',
-      radius: 50,
+      radius: this.layout.interact_trail_marker.radius,
       onInteract: () => {
         this.registry.set('dialogEvent', {
           speaker: 'Zuzu',
@@ -156,15 +155,15 @@ export default class DesertTrailScene extends LocalSceneBase {
     });
 
     // === SCENE TITLE ===
-    this.add.text(width / 2, 40, '🏜️ Desert Trail', {
+    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🏜️ Desert Trail', {
       fontSize: '20px', fontFamily: 'sans-serif', color: '#795548',
       fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(5);
 
     // === EXIT (west → overworld) ===
     this.addExit({
-      x: 14, y: height / 2,
-      width: 28, height: 140,
+      x: this.layout.exit_west.x, y: this.layout.exit_west.y,
+      width: this.layout.exit_west.w, height: this.layout.exit_west.h,
       targetScene: 'OverworldScene',
       targetSpawn: 'fromDesertTrail',
       label: '🗺️ Leave ⬅',

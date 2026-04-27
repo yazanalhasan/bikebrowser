@@ -1,0 +1,209 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "status": "PASS",
+  "targetSceneKey": "DesertTrailScene",
+  "timestamp": "2026-04-26T18:00:00Z",
+  "files_changed": [
+    "src/renderer/game/scenes/DesertTrailScene.js",
+    "public/layouts/desert-trail.layout.json"
+  ],
+  "files_not_touched": [
+    "src/renderer/game/utils/loadLayout.js — already existed, left unchanged",
+    "CLAUDE.md — already contained the Layout system rule, left unchanged"
+  ],
+  "notes": {
+    "scene_processed": "DesertTrailScene",
+    "canvas_dimensions_used": "1200x800 (verified from getWorldSize() at line 22-24)",
+    "layout_object_count": 19,
+    "layout_json_line_count": 94,
+    "editor_opt_in_confirmed": "static layoutEditorConfig = { layoutAssetKey: 'desertTrailLayout', layoutPath: 'layouts/desert-trail.layout.json' } inserted immediately after class opening brace at line 19",
+    "loadLayout_js_status": "Already existed at src/renderer/game/utils/loadLayout.js — not re-created",
+    "CLAUDE_md_status": "Already contained ## Layout system rule block — not mutated",
+    "literal_inventory": [
+      {
+        "source_line": 31,
+        "original": "this.add.rectangle(width / 2, height / 2, width, height, 0xe8c170)",
+        "disposition": "EXTRACTED",
+        "json_key": "ground_base",
+        "resolved_values": "x=600, y=400, w=1200, h=800",
+        "note": "width/2=600, height/2=400"
+      },
+      {
+        "source_lines": "36-41",
+        "original": "sandGfx.fillCircle(300,200,120), fillCircle(800,500,150), fillCircle(1000,200,100), fillCircle(600,600,140), fillCircle(200,500,100)",
+        "disposition": "EXTRACTED",
+        "json_key": "sand_patches",
+        "note": "Array of 5 circles with x, y, r. First 3 use fillStyle 0xd4a853/0.4, last 2 use 0xf0d68a/0.3 — style grouping preserved in code"
+      },
+      {
+        "source_line": 47,
+        "original": "pathGfx.fillRoundedRect(0, 360, 900, 40, 10)",
+        "disposition": "EXTRACTED",
+        "json_key": "path_main"
+      },
+      {
+        "source_line": 49,
+        "original": "pathGfx.fillRoundedRect(500, 100, 40, 280, 10)",
+        "disposition": "EXTRACTED",
+        "json_key": "path_branch_north"
+      },
+      {
+        "source_line": 51,
+        "original": "pathGfx.fillRoundedRect(700, 380, 40, 300, 10)",
+        "disposition": "EXTRACTED",
+        "json_key": "path_branch_southeast"
+      },
+      {
+        "source_lines": "54-56",
+        "original": "for (let i = 0; i < 8; i++) { pathGfx.fillCircle(320 + i * 30, 320 - i * 25, 12); }",
+        "disposition": "LEFT_IN_CODE — DYNAMIC_EXEMPT",
+        "reason": "Loop with computed indices (320 + i*30, 320 - i*25). Per spec rule 8, loop-generated positions with computed expressions stay in code. The formula defines a diagonal stepping-stone pattern; hoisting would require a 8-element array of nearly identical computed points which would be less readable and harder to maintain than the formula."
+      },
+      {
+        "source_line": 59,
+        "original": "pathGfx.fillRoundedRect(880, 360, 320, 40, 10)",
+        "disposition": "EXTRACTED",
+        "json_key": "path_east"
+      },
+      {
+        "source_line": 62,
+        "original": "this.addWall(width / 2, 0, width, 20)",
+        "disposition": "EXTRACTED",
+        "json_key": "wall_top",
+        "resolved_values": "x=600, y=0, w=1200, h=20"
+      },
+      {
+        "source_line": 63,
+        "original": "this.addWall(width / 2, height, width, 20)",
+        "disposition": "EXTRACTED",
+        "json_key": "wall_bottom",
+        "resolved_values": "x=600, y=800, w=1200, h=20"
+      },
+      {
+        "source_line": 64,
+        "original": "this.addWall(width, height / 2, 20, height)",
+        "disposition": "EXTRACTED",
+        "json_key": "wall_right",
+        "resolved_values": "x=1200, y=400, w=20, h=800"
+      },
+      {
+        "source_lines": "68-75",
+        "original": "const rocks = [[150,150,40],[400,280,35],[850,200,45],[1050,350,50],[300,600,30],[950,650,40],[600,700,35],[1100,550,45]]",
+        "disposition": "EXTRACTED — ARRAY_HOISTED",
+        "json_key": "rocks",
+        "note": "8-element array with x, y, size per rock. Loop refactored to iterate this.layout.rocks. Wall sizing formula (size*0.7, size*0.6) preserved in code."
+      },
+      {
+        "source_lines": "79-86",
+        "original": "const cacti = [[200,300],[450,180],[700,250],[900,450],[350,480],[1050,150],[1100,400],[550,550],[800,650],[150,650]]",
+        "disposition": "EXTRACTED — ARRAY_HOISTED",
+        "json_key": "cacti",
+        "note": "10-element array with x, y per cactus. fontSize '30px' and wall size 16,16 are non-position style/physics constants left in code."
+      },
+      {
+        "source_lines": "90-95",
+        "original": "const shrubs = [[100,400],[250,200],[650,150],[750,500],[1000,300],[400,700],[900,100],[1150,250]]",
+        "disposition": "EXTRACTED — ARRAY_HOISTED",
+        "json_key": "shrubs",
+        "note": "8-element array with x, y per shrub. fontSize '18px' is a style constant, left in code."
+      },
+      {
+        "source_line": 98,
+        "original": "this.add.text(1050, 680, '💀', ...)",
+        "disposition": "EXTRACTED",
+        "json_key": "skull"
+      },
+      {
+        "source_line": 101,
+        "original": "this.add.text(600, 400, '🦎', ...)",
+        "disposition": "EXTRACTED — spawn anchor only",
+        "json_key": "lizard",
+        "note": "Static spawn position extracted. Tween targets (x:680, y:350) remain in code — they are animation endpoints, not static anchors."
+      },
+      {
+        "source_lines": "104-105",
+        "original": "tweens.add({ x: 680, y: 350, ... })",
+        "disposition": "LEFT_IN_CODE — TWEEN_EXEMPT",
+        "reason": "Per spec rule 7: tween target coordinates are animation endpoints, not static anchors. They remain in code."
+      },
+      {
+        "source_lines": "114-115",
+        "original": "addInteractable({ x: 520, y: 140, radius: 60 })",
+        "disposition": "EXTRACTED",
+        "json_key": "interact_scavenge_spot"
+      },
+      {
+        "source_lines": "130-131",
+        "original": "addInteractable({ x: 1050, y: 500, radius: 55 })",
+        "disposition": "EXTRACTED",
+        "json_key": "interact_old_crate"
+      },
+      {
+        "source_lines": "144-145",
+        "original": "addInteractable({ x: 200, y: 370, radius: 50 })",
+        "disposition": "EXTRACTED",
+        "json_key": "interact_trail_marker"
+      },
+      {
+        "source_line": 159,
+        "original": "this.add.text(width / 2, 40, '🏜️ Desert Trail', ...)",
+        "disposition": "EXTRACTED",
+        "json_key": "scene_title",
+        "resolved_values": "x=600, y=40",
+        "note": "width/2 = 600"
+      },
+      {
+        "source_lines": "165-167",
+        "original": "addExit({ x: 14, y: height / 2, width: 28, height: 140 })",
+        "disposition": "EXTRACTED",
+        "json_key": "exit_west",
+        "resolved_values": "x=14, y=400, w=28, h=140",
+        "note": "height/2 = 400"
+      }
+    ],
+    "json_objects_added": [
+      "ground_base",
+      "sand_patches",
+      "path_main",
+      "path_branch_north",
+      "path_branch_southeast",
+      "path_east",
+      "wall_top",
+      "wall_bottom",
+      "wall_right",
+      "rocks",
+      "cacti",
+      "shrubs",
+      "skull",
+      "lizard",
+      "interact_scavenge_spot",
+      "interact_old_crate",
+      "interact_trail_marker",
+      "scene_title",
+      "exit_west"
+    ],
+    "positions_left_in_code": [
+      {
+        "location": "DesertTrailScene.js createWorld() line ~56 (original)",
+        "code": "for (let i = 0; i < 8; i++) { pathGfx.fillCircle(320 + i * 30, 320 - i * 25, 12); }",
+        "reason": "Computed indices (formula-driven loop). Per spec rule 8, exempt from extraction. The positions are defined by a mathematical expression rather than discrete literals."
+      },
+      {
+        "location": "DesertTrailScene.js tween block (lizard)",
+        "code": "x: 680, y: 350",
+        "reason": "Tween animation endpoints. Per spec rule 7, dynamic/animation positions stay in code. The static spawn anchor (600, 400) was extracted as 'lizard'."
+      }
+    ],
+    "self_audit": {
+      "grep_leftover_literals": "PASS — grep -E 'this\\.add\\.\\w+\\(\\s*[0-9]+\\s*,' returned no matches",
+      "all_keys_referenced": "PASS — node script confirmed all 19 layout keys referenced via this.layout.<key> in scene",
+      "json_valid": "PASS — node JSON.parse confirmed",
+      "json_line_count": 94,
+      "layout_under_200_lines": true,
+      "layoutEditorConfig_present": "PASS — grep confirmed at line 19",
+      "diff_scope": "PASS — git diff shows only: import addition, preload() addition, layoutEditorConfig static property, this.layout = loadLayout() call, position/size replacement, array hoisting. Zero logic/dialog/audio changes."
+    },
+    "bugs_spotted": "None. No logic bugs observed during extraction."
+  },
+  "suggested_next_agent": "phaser-scene-layout-extractor for the next scene, or orchestrator-completed verification (git diff scope check + grep self-audit + JSON parse + npm run build)"
+}
