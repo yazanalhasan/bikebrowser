@@ -1192,12 +1192,15 @@ const QUESTS = {
       {
         id: 'quiz_weight',
         type: 'quiz',
+        // Template tokens resolved by NeighborhoodScene._emitEnrichedDialog
+        // via systems/questTemplating.js. {massTable} pulls from
+        // state.materialLog so the readout reflects the *player's* scale
+        // measurements, not a canonical literal. Choices unchanged so
+        // the canonical correct answer (mesquite) still works.
         text:
-          'You weighed each sample. Results:\n' +
-          '  Mesquite: 0.83 g/cm³\n' +
-          '  Copper: 8.9 g/cm³\n' +
-          '  Steel: 7.8 g/cm³\n\n' +
-          'Which is lightest per unit volume?',
+          'You weighed each sample.\n{massTable}\n\n' +
+          'Which is lightest per cm³?',
+        templateVars: ['massTable'],
         choices: [
           { label: 'Mesquite wood (0.83 g/cm³)', correct: true },
           { label: 'Copper (8.9 g/cm³)', correct: false },
@@ -1226,12 +1229,13 @@ const QUESTS = {
       {
         id: 'quiz_strength',
         type: 'quiz',
+        // {strengthTable} resolves from state.materialTestsCompleted via
+        // questTemplating.interpolateStepText — strength % derived from
+        // each material's ultimateStrengthMPa (see helper docs).
         text:
-          'Load test results (strength rating 0–100%):\n' +
-          '  Mesquite: 55% — fractures under moderate load\n' +
-          '  Copper: 35% — bends and deforms easily\n' +
-          '  Steel: 85% — holds until very high force\n\n' +
-          'Which material is strongest?',
+          'Load test results: {strengthTable}\n\n' +
+          'Which holds up best?',
+        templateVars: ['strengthTable'],
         choices: [
           { label: 'Steel (85% strength)', correct: true },
           { label: 'Mesquite wood (55% strength)', correct: false },

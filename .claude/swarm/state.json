@@ -5,9 +5,45 @@
   "current_pod_focus": "Daytime Autonomous V2 (bug-fix Phase-1 prep)",
   "completed": [
     {
+      "agent": "phaser-lab-notebook-pipeline",
+      "ts": "2026-04-27T11:48:00Z",
+      "commit": null,
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/phaser-lab-notebook-pipeline-2026-04-27T11-15-00Z.json",
+      "verdict_tag": "static-only",
+      "needs_runtime_validation": true,
+      "user_directive": "Daytime V2 queue dispatch B — closes the density-side gap of bridge_collapse.",
+      "pod": "Phaser",
+      "section_8_declaration": {
+        "environmental_primitives_consulted": "none",
+        "progression_primitives_updated": ["state.observations (vocabulary expanded)", "state.materialLog (NEW)", "state.derivedAnswers (NEW)", "state.journal (structured entries)"],
+        "act_1_to_3_scaling_strategy": "Scale/calipers/density slate are act-agnostic. Act 2 adds materials to materialDatabase; same pipeline records them. Act 3 (alien materials) reuses materialLog shape and interpolateStepText template tokens. No act-specific branches introduced (verified via grep)."
+      },
+      "deviations_from_spec": [
+        "Save version v5→v6 instead of spec's v4→v5 — CURRENT_VERSION was already 5 from a prior unrelated soft-lock fix migration. Field shape and migration semantics match spec exactly.",
+        "Layout: scale buttons relocated below the existing START button (y 440-570, x<200) due to coordinate collision at (60-220, 388-432). Documented in MaterialLabScene._instrumentLayout().",
+        "Strength rating derived from ultimateStrengthMPa (600 MPa ceiling) since materialDatabase.strengthPct doesn't exist.",
+        "Inventory IDs: copper canonical is copper_ore_sample (with mine aliases surface_copper/deep_copper). SAMPLE_ITEM_IDS map handles aliases."
+      ],
+      "verification_evidence": {
+        "build": "PASS in 11.21s (worker) — orchestrator did not re-run, spot-checked instead",
+        "migration_test": "PASS — orchestrator re-ran scripts/test-lab-notebook-migration.js, output: 'PASS — v5→v6 migration: schema correct, fields preserved, idempotent, serializable.'",
+        "utm_rig_methods_undeleted": "git diff MaterialLabScene.js showed 0 deletions of drawApparatus/drawSpecimenForSample/animateProgress/animateCompletion/_animateSplinter/_animateNeckSnap/_animateStretchTear/getReadoutFields",
+        "other_quests_untouched": "git diff quests.js | grep for quiz_choice/heat_failure/flat_tire_repair/chain_repair/food_chain_tracker — zero matches",
+        "section_8_compliance": "grep across new files for Knowledge\\. and if (act === — zero matches in systems/lab/, questTemplating.js, MaterialLogEntry.jsx",
+        "save_schema_chain_intact": "CURRENT_VERSION=6, migrateV5toV6 defined, chain wiring (`if (migrated.version === 5) migrated = migrateV5toV6(migrated)`) present"
+      },
+      "files_created_count": 7,
+      "files_edited_count": 6,
+      "diff_stat": "+488 -22 lines across 8 tracked files (6 edited + 2 new — orchestrator commit added the 5 untracked NEW files)",
+      "notes": "REQUIRES RUNTIME VALIDATION TONIGHT — 10-step acceptance criteria in receipt, key checks: (a) scale records mass via Record button → state.materialLog persists, (b) density slate auto-fill highlights mesquite, (c) chart toggle renders 3 density bars, (d) Mr. Chen quiz_weight shows interpolated player measurements (not canonical 0.83/8.9/7.8), (e) save migration v5→v6 round-trips on existing save without data loss. Static-only PASS; runtime validation gates the verdict promotion to runtime-validated tonight as part of bridge_collapse replay (playbook Task 3 Phase 5)."
+    },
+    {
       "agent": "arc-md-v1-3-promotion",
       "ts": "2026-04-27T11:05:00Z",
-      "commit": null,
+      "commit": "bc8aa83",
       "review_verdict": "PASS",
       "review_status": "orchestrator_completed",
       "review_receipt": null,
@@ -692,6 +728,6 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 41,
+  "dispatch_count": 42,
   "session_token_estimate": 0
 }

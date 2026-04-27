@@ -178,6 +178,28 @@ export default class LabRigBase extends LocalSceneBase {
    *  UTM: returns yield + ultimate markers.  Thermal: returns null. */
   getChartAnnotations(_result) { return null; }
 
+  /**
+   * Optional alternate chart mode (e.g. UTM's "Density" view).
+   * If the subclass returns a non-null object, the base renders a
+   * small toggle button at the top-right of the chart header. The
+   * subclass is responsible for drawing the alt-mode contents via
+   * `drawAlternateChart(g, geometry)` when `_chartMode === 'alt'`.
+   *
+   * Shape: { label: string, isAvailable: () => boolean }
+   * Default: null — no toggle, only stress-strain.
+   */
+  getAlternateChartMode() { return null; }
+
+  /**
+   * Render the alt-chart content. Called by the base when the toggle
+   * is in the alt position. Subclass owns the drawing on the supplied
+   * graphics object; the base provides chart-panel geometry.
+   *
+   * @param {Phaser.GameObjects.Graphics} _g
+   * @param {{x:number, y:number, w:number, h:number}} _geom
+   */
+  drawAlternateChart(_g, _geom) { /* subclass implements */ }
+
   /** gameState field that persists tested ids. UTM: 'materialTestsCompleted'. */
   getTestedStateKey() { return 'labRigSamplesTested'; }
 
@@ -557,7 +579,30 @@ export default class LabRigBase extends LocalSceneBase {
   // Chart — base owns the rendering. Subclass declares config or null.
   // ─────────────────────────────────────────────────────────────────────
 
+  /**
+   * Chart-mode toggle — when a subclass declares `getAlternateChartMode()`
+   * non-null, we render a small button at the chart header that flips
+   * between 'default' (stress-strain) and 'alt' (e.g. density).
+   * Default mode preserved exactly when no alt mode is declared.
+   */
+  setChartMode(mode) {
+    this._chartMode = mode === 'alt' ? 'alt' : 'default';
+    this._renderChart(this._chartPoints?.length ? this._chartPoints : null, this._lastResult || null);
+  }
+
   _renderChart(progressCurve, result) {
+    // Cache the most-recent result so toggle re-renders don't lose it.
+    if (result) this._lastResult = result;
+    if (this._chartMode == null) this._chartMode = 'default';
+
+    const altMode = this.getAlternateChartMode();
+    const altActive = !!altMode && this._chartMode === 'alt';
+
+    if (altActive) {
+      this._renderAlternateChart(altMode);
+      return;
+    }
+
     const cfg = this.getChartConfig(result || null);
     if (!cfg) {
       // Hide a chart that may have been drawn previously.
@@ -578,6 +623,11 @@ export default class LabRigBase extends LocalSceneBase {
       this._chartAnnotations.forEach(t => t.destroy());
     }
     this._chartAnnotations = [];
+    // Clear any leftover alt-chart text labels from a prior alt render.
+    if (this._altChartTexts) {
+      this._altChartTexts.forEach(t => t?.destroy?.());
+      this._altChartTexts = [];
+    }
 
     if (!this._chartG) this._chartG = this.add.graphics().setDepth(2);
     const g = this._chartG;
@@ -587,6 +637,9 @@ export default class LabRigBase extends LocalSceneBase {
     g.fillRect(CHART_X, CHART_Y, CHART_W, CHART_H);
     g.lineStyle(2, COL_PANEL_EDGE, 1);
     g.strokeRect(CHART_X, CHART_Y, CHART_W, CHART_H);
+
+    // Chart-mode toggle button (only renders when subclass exposes one).
+    this._ensureModeToggle();
 
     if (!this._chartTitle) {
       this._chartTitle = this.add.text(
@@ -706,6 +759,93 @@ export default class LabRigBase extends LocalSceneBase {
         }
       }
     }
+  }
+
+  // ─────────────────────────────────────────────────────────────────────
+  // Chart-mode toggle helpers (additive — disabled unless the subclass
+  // declares getAlternateChartMode()).
+  // ─────────────────────────────────────────────────────────────────────
+
+  _ensureModeToggle() {
+    const altMode = this.getAlternateChartMode();
+    if (!altMode) {
+      // Subclass does not declare an alt mode — clean up any prior button.
+      if (this._modeToggleBg) { this._modeToggleBg.destroy(); this._modeToggleBg = null; }
+      if (this._modeToggleLbl) { this._modeToggleLbl.destroy(); this._modeToggleLbl = null; }
+      return;
+    }
+    const tx = CHART_X + CHART_W - 50;
+    const ty = CHART_Y - 14;
+    if (!this._modeToggleBg) {
+      this._modeToggleBg = this.add.rectangle(tx, ty, 92, 18, 0x2c2e34)
+        .setStrokeStyle(1, 0x4a4d55).setDepth(4)
+        .setInteractive({ useHandCursor: true });
+      this._modeToggleLbl = this.add.text(tx, ty, '', {
+        fontSize: '9px', fontFamily: 'sans-serif', color: '#e7e9ee',
+        fontStyle: 'bold',
+      }).setOrigin(0.5).setDepth(5);
+      this._modeToggleBg.on('pointerdown', () => {
+        const next = this._chartMode === 'alt' ? 'default' : 'alt';
+        this.setChartMode(next);
+      });
+    }
+    const isAvailable = typeof altMode.isAvailable === 'function'
+      ? !!altMode.isAvailable() : true;
+    const labelText = this._chartMode === 'alt'
+      ? `↺ ${altMode.label || 'Alt'}`
+      : `↺ Stress / Strain`;
+    this._modeToggleLbl.setText(labelText);
+    this._modeToggleBg.setAlpha(isAvailable ? 1 : 0.5);
+    if (isAvailable) {
+      this._modeToggleBg.setInteractive({ useHandCursor: true });
+    } else {
+      this._modeToggleBg.disableInteractive();
+    }
+  }
+
+  _renderAlternateChart(altMode) {
+    // Clear prior chart drawings.
+    if (this._chartAnnotations) {
+      this._chartAnnotations.forEach(t => t.destroy());
+      this._chartAnnotations = [];
+    }
+    if (this._chartAxisLabels) {
+      this._chartAxisLabels.forEach(t => t.destroy());
+      this._chartAxisLabels = [];
+    }
+    // Also clear any alt-mode texts from a prior render.
+    if (this._altChartTexts) {
+      this._altChartTexts.forEach(t => t?.destroy?.());
+      this._altChartTexts = [];
+    }
+    if (!this._chartG) this._chartG = this.add.graphics().setDepth(2);
+    const g = this._chartG;
+    g.clear();
+
+    // Title for alt mode (use altMode.label or default).
+    if (!this._chartTitle) {
+      this._chartTitle = this.add.text(
+        CHART_X + CHART_W / 2, CHART_Y - 14,
+        altMode.label || 'Alt Chart', {
+          fontSize: '12px', fontFamily: 'sans-serif', color: COL_TEXT,
+          fontStyle: 'bold',
+        },
+      ).setOrigin(0.5).setDepth(3);
+    } else {
+      this._chartTitle.setText(altMode.label || 'Alt Chart');
+    }
+
+    // Subclass paints the actual content. May return { texts: [...] }
+    // which we track for cleanup on next render.
+    const drawResult = this.drawAlternateChart(g, {
+      x: CHART_X, y: CHART_Y, w: CHART_W, h: CHART_H,
+    });
+    if (drawResult && Array.isArray(drawResult.texts)) {
+      this._altChartTexts = drawResult.texts;
+    }
+
+    // Toggle button stays visible in alt mode.
+    this._ensureModeToggle();
   }
 
   // ─────────────────────────────────────────────────────────────────────

@@ -29,6 +29,7 @@ import { checkMilestones, applyRewards, getAvailableMilestones, getCompletedMile
 import { CATEGORY_ICONS, PHASE_NAMES } from './data/milestones.js';
 import { canCraft, craft, getAllRecipes } from './systems/craftingSystem.js';
 import ITEMS from './data/items.js';
+import MaterialLogEntry from './components/MaterialLogEntry.jsx';
 import {
   autoSpeak, speak, replay as replaySpeech, cancelSpeech, resetLastSpoken,
   isSpeechAvailable, isSpeechEnabled, setSpeechEnabled,
@@ -938,11 +939,19 @@ export default function GameContainer() {
       {showNotebook && (
         <div className="absolute top-14 right-2 z-20 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-3 w-64 max-h-72 overflow-y-auto">
           <div className="font-bold text-gray-700 mb-2 text-sm">📓 Zuzu's Notebook</div>
-          {journal.map((entry, i) => (
-            <div key={i} className="text-xs text-gray-600 py-1 border-b border-gray-100 last:border-0">
-              {entry}
-            </div>
-          ))}
+          {journal.map((entry, i) => {
+            if (typeof entry === 'string') {
+              return (
+                <div key={i} className="text-xs text-gray-600 py-1 border-b border-gray-100 last:border-0">
+                  {entry}
+                </div>
+              );
+            }
+            if (entry && typeof entry === 'object' && entry.kind === 'materialLog') {
+              return <MaterialLogEntry key={i} data={entry} />;
+            }
+            return null;
+          })}
         </div>
       )}
 

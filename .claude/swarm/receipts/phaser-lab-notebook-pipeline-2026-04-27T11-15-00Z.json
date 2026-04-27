@@ -1,0 +1,64 @@
+{
+  "agent": "phaser-lab-notebook-pipeline",
+  "ts": "2026-04-27T11:48:00Z",
+  "status": "complete",
+  "verdict_tag": "static-only",
+  "files_created": [
+    "src/renderer/game/systems/lab/scaleStation.js",
+    "src/renderer/game/systems/lab/calipers.js",
+    "src/renderer/game/systems/lab/densitySlate.js",
+    "src/renderer/game/systems/lab/densityChart.js",
+    "src/renderer/game/systems/questTemplating.js",
+    "src/renderer/game/components/MaterialLogEntry.jsx",
+    "scripts/test-lab-notebook-migration.js"
+  ],
+  "files_edited": [
+    "src/renderer/game/systems/saveSystem.js",
+    "src/renderer/game/scenes/MaterialLabScene.js",
+    "src/renderer/game/scenes/LabRigBase.js",
+    "src/renderer/game/scenes/NeighborhoodScene.js",
+    "src/renderer/game/data/quests.js",
+    "src/renderer/game/GameContainer.jsx"
+  ],
+  "files_per_file_scope": {
+    "src/renderer/game/systems/saveSystem.js": "Bumped CURRENT_VERSION 5→6 (NOT 4→5 as spec said — v4→v5 was already taken by an unrelated soft-lock fix). Added migrateV5toV6 (initializes materialLog: [], derivedAnswers: {}). defaultSave() now declares materialLog/derivedAnswers/observations with v6 vocabulary comments. No other migrations modified.",
+    "src/renderer/game/scenes/MaterialLabScene.js": "Strictly additive. Added imports (saveGame, scaleStation, calipers, densitySlate, densityChart). Added SAMPLE_ITEM_IDS map (inventory aliases per material). Added _instrumentLayout(), createWorld() override (super then mount instruments), _mountLeftBayInstruments, _recordMass, _onCalipersClick, _onSlateAutoFill, _appendMaterialLogJournalOnce, override of _emitCompletionDialog (super then journal), getCompletionDialog (super then append 'take to Mr. Chen' line), getAlternateChartMode, drawAlternateChart. UTM rig (drawApparatus, drawSpecimenForSample, animateProgress, animateCompletion, _animateSplinter/_animateNeckSnap/_animateStretchTear), stress-strain chart config (getChartConfig, getChartAnnotations), readout (getReadoutFields), and material selector — all UNCHANGED. Instruments confined to x ≈ 60-200 (left bay, below START button at y > 440).",
+    "src/renderer/game/scenes/LabRigBase.js": "Strictly additive — zero deletions. Added override hooks getAlternateChartMode() (default null) and drawAlternateChart() (default no-op). Added setChartMode public method. Added _ensureModeToggle() (only renders button when subclass declares alt mode), _renderAlternateChart() (clears state, calls subclass), _altChartTexts cleanup tracker. Existing _renderChart preserved; alt-mode is a guard at the top that early-returns when active.",
+    "src/renderer/game/scenes/NeighborhoodScene.js": "Added import { interpolateStepText }. In _emitEnrichedDialog: pre-resolved {massTable}/{strengthTable} tokens against state for the immediate fallback emit AND the AI-enriched emit. Falls through unchanged when step.templateVars is absent (non-templated steps stay byte-identical).",
+    "src/renderer/game/data/quests.js": "Modified ONLY bridge_collapse.steps[quiz_weight] and [quiz_strength]: rewrote text as templates ({massTable}, {strengthTable}), added templateVars arrays. Choices unchanged in shape, label, or correct flags. quiz_choice UNTOUCHED. All other quests UNTOUCHED.",
+    "src/renderer/game/GameContainer.jsx": "Added import MaterialLogEntry. Replaced journal.map((entry, i) => <div...>{entry}</div>) with a 3-arm dispatcher: string → existing div, { kind: 'materialLog' } → <MaterialLogEntry/>, else null. Backward compatible — all legacy string entries still render."
+  },
+  "save_version": { "before": 5, "after": 6 },
+  "save_version_note": "Spec called v4→v5; CURRENT_VERSION was already 5 (from unrelated soft-lock band-aid). Implemented as v5→v6 with the same field shape spec asked for. Surfaced as deviation, not improvisation.",
+  "migration_test_result": "PASS — v5→v6 migration: schema correct (materialLog: [], derivedAnswers: {}), existing fields preserved (observations, materialTestsCompleted, activeQuest), idempotent (re-run preserves populated data), JSON-serializable.",
+  "build_result": "PASS in 11.21s — npm run build, vite v5.4.21, 886 modules transformed, no errors. Chunk-size warnings are pre-existing (vendor-phaser 1.5MB, vendor-rapier 2MB) — unrelated to this dispatch.",
+  "scope_evidence": {
+    "utm_rig_untouched": "git diff src/renderer/game/scenes/MaterialLabScene.js shows ZERO modifications to drawApparatus/drawSpecimenForSample/animateProgress/animateCompletion/_animateSplinter/_animateNeckSnap/_animateStretchTear/getReadoutFields. Instruments mount via NEW createWorld override that calls super.createWorld() first, then _mountLeftBayInstruments(). All RIG_X/RIG_BASE/CROSSHEAD constants unchanged. Verified via: git diff | grep -E '^[+-][[:space:]]*(drawApparatus|...)' returns no output for existing methods.",
+    "stress_strain_chart_untouched": "getChartConfig and getChartAnnotations methods in MaterialLabScene unchanged. The alt-mode addition in LabRigBase is purely additive — _renderChart's stress-strain code path is preserved verbatim; alt-mode early-returns at the top when active. CHART_X/CHART_Y/CHART_W/CHART_H constants untouched.",
+    "material_selector_untouched": "_buildSelector / _refreshSlotHighlight / _selectSample in LabRigBase unchanged (zero deletions in LabRigBase per `git diff | grep ^- | grep -v ^---` returning empty). SELECTOR_X/Y/W/H constants untouched.",
+    "quiz_choice_step_untouched": "git diff src/renderer/game/data/quests.js | grep -c 'quiz_choice' returns 0. Step text 'Your bridge must hold 100 kg but span 2 meters...' and all choices preserved verbatim.",
+    "other_quests_untouched": "git diff --stat shows quests.js: 26 lines changed (only quiz_weight + quiz_strength inside bridge_collapse). heat_failure quest, all sideQuests, etc. — UNTOUCHED. flat_tire_repair / chain_repair / bridge_collapse other steps — UNTOUCHED.",
+    "knowledge_state_query_absent": "grep -r 'Knowledge\\.\\w+' across MaterialLabScene.js, systems/lab/*, systems/questTemplating.js — NO MATCHES. Per Section 8.5: Knowledge State System is unbuilt and gated. We read state.observations / state.materialLog / state.materialTestsCompleted directly.",
+    "act_specific_branch_absent": "grep -r 'if\\s*\\(\\s*act\\s*===' across MaterialLabScene.js, systems/lab/*, systems/questTemplating.js — NO MATCHES. Per Section 8.2: act-specific branches are halt-and-surface triggers. The pipeline is act-agnostic — Act 2/3 will reuse the same materialLog shape and interpolateStepText helper without code changes."
+  },
+  "section_8_declaration": {
+    "environmental_primitives_consulted": "none — purely in-scene instrument system; reads no biome/terrain.",
+    "progression_primitives_updated": [
+      "state.observations (existing, append-only) — vocabulary expanded: 'volume_known' (calipers click), 'masses_measured' (all 3 recorded), 'densities_calculated' (slate auto-fill), 'materials_lab_journaled' (idempotent journal-append guard).",
+      "state.materialLog (NEW) — array of { id, name, massGrams, recordedAt }. Appended by scaleStation onRecord callback. v6 default: [].",
+      "state.derivedAnswers (NEW) — { lightestMaterial?: string }. Written by densitySlate auto-fill. v6 default: {}.",
+      "state.journal (existing) — gains structured { kind: 'materialLog', label, rows, capturedAt } entries alongside legacy strings. GameContainer dispatcher handles both shapes."
+    ],
+    "act_1_to_3_scaling_strategy": "The scale / calipers / density slate are act-agnostic. Act 2 simply adds entries to materialDatabase.MATERIALS — the scale auto-iterates MATERIAL_IDS and the slate auto-iterates state.materialLog. Act 3 (alien materials) reuses the materialLog shape and interpolateStepText template tokens; no act-conditional branches were introduced. The {massTable} token resolves uniformly across acts because it pulls from state.materialLog regardless of which materials are recorded. Verified via grep — no `if (act === N)` style conditionals exist in any new or modified file."
+  },
+  "needs_runtime_validation": true,
+  "runtime_validation_protocol": "10-step acceptance criteria from agent spec: (1) Player walks into MaterialLabScene with all 3 samples in inventory. (2) Player clicks scale → mesquite button → sees 8.50 g → presses Record → green ✓ replaces button. (3) state.materialLog contains the entry; save survives reload. (4) Player records all 3 → density slate shows 3 entries with computed densities; auto-fill button highlights mesquite. (5) Density-mode chart toggle on the chart header → renders 3 bars, bar fill darker for materials the player has load-tested. (6) Player runs UTM tests on all 3 → completion dialog now says 'Take the data back to Mr. Chen' → notebook gains a structured 'Materials Test Lab — <date>' entry. (7) Player walks to Mr. Chen → at quiz_weight, dialog text shows the player's actual measurements (e.g. 'Mesquite: 8.50 g (0.85 g/cm³), Steel: 78.50 g (7.85 g/cm³), Copper: 89.60 g (8.96 g/cm³)'), not canonical 0.83/8.9/7.8. (8) Notebook (📓 button) shows 1 structured entry + any prior string entries. '📋 Copy' puts tab-separated text on clipboard. (9) Migration test loads a v5 save (note: spec said v4→v5; reality is v5→v6), asserts new fields after migration, asserts version=6. (10) v5 → v6 → reload round-trip works; no data loss.",
+  "deviations_from_spec": [
+    "Save version: spec said v4→v5; actual implementation is v5→v6 because CURRENT_VERSION was already 5 from a prior unrelated soft-lock fix migration. Field shape and migration semantics match spec exactly — only the version-number slot shifted.",
+    "Layout: spec said scale buttons at (60/110/160, 400) but those coordinates collide with the existing START button at (60-220, 388-432). Resolved by placing instruments BELOW START in the lower-left bay (y 440-570, all still x < 200 per spec rule). Documented in MaterialLabScene._instrumentLayout() with rationale.",
+    "Strength rating: spec referenced materialDatabase.strengthPct, which does not exist. Derived strength % from ultimateStrengthMPa using a 600 MPa ceiling (steel ~75%, copper ~42%, mesquite ~17%). Documented in questTemplating.js with rationale comment.",
+    "Inventory item IDs: spec referenced 'mesquite_sample / steel_sample / copper_sample' but the actual item granted by the quest chain for copper is 'copper_ore_sample' (with 'surface_copper'/'deep_copper' as mine alternates). SAMPLE_ITEM_IDS map covers all aliases."
+  ],
+  "notes": "REQUIRES RUNTIME VALIDATION TONIGHT — full bridge_collapse replay needed to confirm: scale records mass, density slate computes correctly, density-chart toggle renders, Mr. Chen quiz_weight shows interpolated player measurements, save migration v5→v6 round-trips cleanly. Static-only PASS until then.\n\nNative code-quality-reviewer is stalled — orchestrator-completed verification will run after this receipt lands. Per-file scope summary in `files_per_file_scope` makes verification mechanical.\n\nNo orchestration files modified. No package.json changes. No new dependencies. No dynamic imports. No knowledge-state queries. No act-specific branches.",
+  "suggested_next_agent": "none — completes the density-measurement loop. Possible follow-ups (NOT required): per-sample variable volumes, achievements for full-loop completion."
+}

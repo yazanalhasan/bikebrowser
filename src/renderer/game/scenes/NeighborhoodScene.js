@@ -37,6 +37,7 @@ import { getNpcProfile } from '../data/npcProfiles.js';
 import { computeDifficultyBand } from '../systems/dialogueDifficulty.js';
 import { QUEST_TOPIC_MAP } from '../../learning/topics.js';
 import { getFallbackDialogue } from '../data/npcDialogueTemplates.js';
+import { interpolateStepText } from '../systems/questTemplating.js';
 import { populateWorld } from '../systems/ecologyEngine.js';
 import { initDepthSort, updateDepthSort, applyDepth } from '../systems/depthSort.js';
 import { FLORA_MAP } from '../data/flora.js';
@@ -368,7 +369,14 @@ export default class NeighborhoodScene extends NeighborhoodSceneBase {
 
     // Get immediate fallback content
     const fallback = getFallbackDialogue(questId, step.id, band);
-    const immediateText = fallback?.captionLine || step.text;
+    // Resolve any quest-templating tokens (e.g. {massTable},
+    // {strengthTable}) using the player's measurement state. Falls
+    // through unchanged when step.templateVars is absent — non-templated
+    // steps stay byte-identical.
+    const rawText = fallback?.captionLine || step.text;
+    const immediateText = step.templateVars
+      ? interpolateStepText(rawText, step.templateVars, state)
+      : rawText;
     const immediateChoices = step.type === 'quiz'
       ? (fallback?.answerChoices || step.choices)
       : null;
@@ -404,9 +412,16 @@ export default class NeighborhoodScene extends NeighborhoodSceneBase {
         ? (dialogue.answerChoices || immediateChoices)
         : null;
 
+      // Re-interpolate against the latest gameState in case measurement
+      // data updated between the fallback emit and the AI response.
+      const liveState = this.registry.get('gameState') || state;
+      const enrichedRaw = dialogue.captionLine || immediateText;
+      const enrichedText = step.templateVars
+        ? interpolateStepText(enrichedRaw, step.templateVars, liveState)
+        : enrichedRaw;
       this.registry.set('dialogEvent', {
         speaker,
-        text: dialogue.captionLine || immediateText,
+        text: enrichedText,
         choices: enrichedChoices,
         step,
         npcId,

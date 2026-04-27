@@ -13,7 +13,23 @@
 import LabRigBase from './LabRigBase.js';
 import { MATERIALS, MATERIAL_IDS, getMaterial } from '../systems/materials/materialDatabase.js';
 import { runTensileTest, detectFailurePoint } from '../systems/materials/materialTestingEngine.js';
+import { saveGame } from '../systems/saveSystem.js';
+import { createScaleStation } from '../systems/lab/scaleStation.js';
+import { createCalipers } from '../systems/lab/calipers.js';
+import { createDensitySlate } from '../systems/lab/densitySlate.js';
+import { renderDensityChart } from '../systems/lab/densityChart.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+
+// Sample-id → inventory item mapping. The scale enables a button only
+// when the player owns the corresponding sample item. Aligned with the
+// items granted by bridge_collapse steps 1–7 (mesquite_sample, etc.).
+// Copper: ZuzuGarageScene grants 'copper_ore_sample' as the canonical
+// item; the mine grants 'surface_copper'/'deep_copper' as alternates.
+const SAMPLE_ITEM_IDS = {
+  mesquite_wood: ['mesquite_sample', 'mesquite_branch'],
+  structural_steel: ['steel_sample', 'steel_bracket'],
+  copper: ['copper_ore_sample', 'surface_copper', 'deep_copper'],
+};
 
 const SCENE_KEY = 'MaterialLabScene';
 
@@ -76,6 +92,36 @@ export default class MaterialLabScene extends LabRigBase {
 
   runSampleTest(materialId) {
     return runTensileTest(materialId, { gaugeLengthMm: 50, crossSectionAreaMm2: 100 });
+  }
+
+  // ── Left-bay instrument layout ──────────────────────────────────────
+  // Spec calls for the scale/calipers/slate in the left bay (x < 200).
+  // The bay is shared with the existing selector (y 110-314) and START
+  // button (y ≈ 388-432); these instruments sit BELOW the START button.
+  // World height is 600 with the back-to-garage exit at y≈582 — leaves
+  // 440-570 free in the left column.
+
+  /** Spec-aligned: scale platform/display lives in the lower-left bay. */
+  _instrumentLayout() {
+    return {
+      // Scale: vertically stacked with display above platform.
+      scaleDisplayY: 460,
+      scalePlatformY: 482,
+      scaleX: 100,
+      // Calipers: small beaker to the right of the scale.
+      calipersX: 170,
+      calipersY: 470,
+      // Slate: chalkboard below scale.
+      slateX: 100,
+      slateY: 540,
+    };
+  }
+
+  // ── createWorld: extend base to mount left-bay instruments after the
+  //   selector / START / chart are built. ────────────────────────────────
+  createWorld() {
+    super.createWorld();
+    this._mountLeftBayInstruments();
   }
 
   // ── Apparatus ───────────────────────────────────────────────────────
@@ -408,6 +454,221 @@ export default class MaterialLabScene extends LabRigBase {
         "Pick a material from the panel, then press START TEST. " +
         "Test all three to see which is best for the bridge.",
     };
+  }
+
+  // ── Completion dialog: append "take the data back to Mr. Chen" + add
+  //   structured journal entry on first all-tested completion. ──────────
+  _emitCompletionDialog(result) {
+    super._emitCompletionDialog(result);
+    // After base persists `load_test_completed`, append a structured
+    // materialLog journal entry so the player can re-read it later.
+    // Idempotent: don't double-append if the player re-runs the test.
+    this._appendMaterialLogJournalOnce();
+  }
+
+  /** Append a structured journal entry for this test session.
+   *  Idempotent via state.observations.includes('materials_lab_journaled'). */
+  _appendMaterialLogJournalOnce() {
+    const state = this.registry.get('gameState') || {};
+    const obs = Array.isArray(state.observations) ? state.observations : [];
+    if (obs.includes('materials_lab_journaled')) return;
+    const log = Array.isArray(state.materialLog) ? state.materialLog : [];
+    if (log.length === 0) return; // Nothing to journal.
+
+    const journal = Array.isArray(state.journal) ? state.journal : [];
+    const now = Date.now();
+    const isoDate = new Date(now).toISOString().slice(0, 10);
+    const entry = {
+      kind: 'materialLog',
+      label: `Materials Test Lab — ${isoDate}`,
+      rows: log.map(r => ({ ...r })),
+      capturedAt: now,
+    };
+    const updated = {
+      ...state,
+      journal: [...journal, entry],
+      observations: [...obs, 'materials_lab_journaled'],
+    };
+    this.registry.set('gameState', updated);
+    saveGame(updated);
+  }
+
+  // ── Append the "take it to Mr. Chen" line to the canonical dialog. ──
+  getCompletionDialog() {
+    const base = super.getCompletionDialog();
+    return {
+      ...base,
+      text: base.text +
+        "\n\n📓 Take the data back to Mr. Chen — he'll want to see the numbers.",
+    };
+  }
+
+  // ─── Alt chart mode: density bars ───────────────────────────────────
+  getAlternateChartMode() {
+    return {
+      label: 'Density',
+      isAvailable: () => {
+        const state = this.registry.get('gameState') || {};
+        return Array.isArray(state.materialLog) && state.materialLog.length > 0;
+      },
+    };
+  }
+
+  drawAlternateChart(g, geom) {
+    const state = this.registry.get('gameState') || {};
+    const log = Array.isArray(state.materialLog) ? state.materialLog : [];
+    const tested = Array.isArray(state.materialTestsCompleted)
+      ? state.materialTestsCompleted : [];
+    const allMaterials = MATERIAL_IDS.map((id) => {
+      const m = MATERIALS[id];
+      return {
+        id,
+        name: m.name,
+        color: hexToInt(m.visual.color),
+        ultimateStrengthMPa: m.ultimateStrengthMPa,
+      };
+    });
+    return renderDensityChart(this, g, {
+      x: geom.x, y: geom.y, w: geom.w, h: geom.h,
+      allMaterials,
+      materialLog: log,
+      testedIds: tested,
+    });
+  }
+
+  // ─── Left-bay instrument mounting ───────────────────────────────────
+  _mountLeftBayInstruments() {
+    const layout = this._instrumentLayout();
+    const state = this.registry.get('gameState') || {};
+    const inv = Array.isArray(state.inventory) ? state.inventory : [];
+
+    const samples = MATERIAL_IDS.map((id) => {
+      const m = MATERIALS[id];
+      const itemAliases = SAMPLE_ITEM_IDS[id] || [];
+      const hasItem = itemAliases.some(alias => inv.includes(alias));
+      return {
+        id,
+        name: m.name,
+        color: hexToInt(m.visual.color),
+        hasItem,
+      };
+    });
+
+    // Scale station — buttons enabled only when player owns sample.
+    this._scale = createScaleStation(this, {
+      x: layout.scaleX,
+      platformY: layout.scalePlatformY,
+      displayY: layout.scaleDisplayY,
+      samples,
+      // computeMass: 10 cm³ uniform coupon × densityKgM3 → grams.
+      // This is the ONE place that reads materialDatabase density for a
+      // mass value; scaleStation never reads it directly.
+      computeMass: (id) => {
+        const m = MATERIALS[id];
+        if (!m || !Number.isFinite(m.densityKgM3)) return 0;
+        return (m.densityKgM3 * 10) / 1000; // 10 cm³ in m³ × kg/m³ → g
+      },
+      getRecorded: () => {
+        const live = this.registry.get('gameState') || {};
+        return Array.isArray(live.materialLog) ? live.materialLog : [];
+      },
+      onRecord: (entry) => this._recordMass(entry),
+    });
+
+    // Calipers / coupon — emits a Lab-Notes dialog and writes 'volume_known'.
+    this._calipers = createCalipers(this, {
+      x: layout.calipersX,
+      y: layout.calipersY,
+      onClick: () => this._onCalipersClick(),
+    });
+
+    // Density slate — opens a panel summarizing recorded measurements.
+    this._slate = createDensitySlate(this, {
+      x: layout.slateX,
+      y: layout.slateY,
+      getRecorded: () => {
+        const live = this.registry.get('gameState') || {};
+        return Array.isArray(live.materialLog) ? live.materialLog : [];
+      },
+      onAutoFill: (id, _name) => this._onSlateAutoFill(id),
+    });
+
+    // Also expose each as a proximity-prompt interactable so the player
+    // can walk up and press E. Click-to-interact stays available too.
+    this.addInteractable({
+      x: layout.scaleX, y: layout.scaleDisplayY, radius: 70,
+      icon: '⚖️', label: 'Scale',
+      onInteract: () => { /* scale buttons handle their own clicks */ },
+    });
+    this.addInteractable({
+      x: layout.calipersX, y: layout.calipersY, radius: 60,
+      icon: '🧪', label: 'Coupons',
+      onInteract: () => this._onCalipersClick(),
+    });
+    this.addInteractable({
+      x: layout.slateX, y: layout.slateY, radius: 60,
+      icon: '📋', label: 'Density Slate',
+      onInteract: () => this._slate?.openPanel?.(),
+    });
+  }
+
+  /** Push a measurement into state.materialLog and persist.
+   *  When all 3 are recorded, also push 'masses_measured'. */
+  _recordMass({ id, name, massGrams }) {
+    const state = this.registry.get('gameState') || {};
+    const log = Array.isArray(state.materialLog) ? state.materialLog : [];
+    if (log.find(r => r.id === id)) return; // No double-record.
+
+    const entry = { id, name, massGrams, recordedAt: Date.now() };
+    const newLog = [...log, entry];
+    const obs = Array.isArray(state.observations) ? state.observations : [];
+    const newObs = [...obs];
+    if (newLog.length >= MATERIAL_IDS.length && !newObs.includes('masses_measured')) {
+      newObs.push('masses_measured');
+    }
+    const updated = { ...state, materialLog: newLog, observations: newObs };
+    this.registry.set('gameState', updated);
+    saveGame(updated);
+
+    // If chart is in alt mode, re-render to reflect the new bar.
+    if (this._chartMode === 'alt') {
+      this.setChartMode('alt');
+    }
+  }
+
+  /** Calipers click — Lab-Notes dialog + 'volume_known' observation. */
+  _onCalipersClick() {
+    const state = this.registry.get('gameState') || {};
+    const obs = Array.isArray(state.observations) ? state.observations : [];
+    if (!obs.includes('volume_known')) {
+      const updated = { ...state, observations: [...obs, 'volume_known'] };
+      this.registry.set('gameState', updated);
+      saveGame(updated);
+    }
+    this.registry.set('dialogEvent', {
+      speaker: 'Lab Notes',
+      text:
+        'All three coupons are machined to 10 cm³.\n\n' +
+        'Density = mass ÷ volume.\n' +
+        'So whatever the scale reads, divide by 10 to get g/cm³.',
+      choices: null,
+      step: null,
+    });
+  }
+
+  /** Slate auto-fill — write derivedAnswers + 'densities_calculated'. */
+  _onSlateAutoFill(id) {
+    const state = this.registry.get('gameState') || {};
+    const obs = Array.isArray(state.observations) ? state.observations : [];
+    const newObs = obs.includes('densities_calculated')
+      ? obs : [...obs, 'densities_calculated'];
+    const updated = {
+      ...state,
+      derivedAnswers: { ...(state.derivedAnswers || {}), lightestMaterial: id },
+      observations: newObs,
+    };
+    this.registry.set('gameState', updated);
+    saveGame(updated);
   }
 }
 

@@ -20,7 +20,7 @@
 import { getDiscoveryState, loadDiscoveryState } from './discoverySystem.js';
 
 const SAVE_KEY = 'bikebrowser_game_save';
-const CURRENT_VERSION = 5;
+const CURRENT_VERSION = 6;
 
 /** Map old scene keys to new ones. */
 const SCENE_MIGRATION = {
@@ -98,6 +98,20 @@ function defaultSave() {
       unlocked: [],        // system/feature IDs unlocked by rewards
       currentPhase: 1,     // highest phase with a completed milestone
     },
+    // Materials Lab — density-measurement loop (v6).
+    // Each entry: { id, name, massGrams, recordedAt }. Driven by the scale
+    // station in MaterialLabScene; consumed by densitySlate, densityChart,
+    // questTemplating ({massTable}), and MaterialLogEntry in the Notebook.
+    materialLog: [],
+    // Player-derived answers (e.g. lightestMaterial chosen via density slate
+    // auto-fill). Distinct from observations because these are *values*, not
+    // boolean flags. v6.
+    derivedAnswers: {},
+    // Append-only observation flags. v6 vocabulary additions:
+    //   'volume_known' — clicked the calipers / coupon
+    //   'masses_measured' — recorded all 3 sample masses
+    //   'densities_calculated' — used the slate auto-fill
+    observations: [],
     // Mining & resources
     minedResources: {},      // { [rawMaterialId]: count }
     miningToolLevel: 0,      // 0=hand, 1=pickaxe, 2=drill, 3=rig
@@ -195,6 +209,26 @@ function migrateV4toV5(data) {
   };
 }
 
+/**
+ * Migrate from v5 → v6: Initialize the Materials-Lab density-measurement
+ * pipeline fields (`materialLog`, `derivedAnswers`). Existing observations
+ * stay as-is. Idempotent — no-op for saves that already have the fields.
+ *
+ * Vocabulary additions to state.observations (handled at write-time, not
+ * here): 'volume_known', 'masses_measured', 'densities_calculated'.
+ */
+function migrateV5toV6(data) {
+  return {
+    ...data,
+    version: 6,
+    materialLog: Array.isArray(data.materialLog) ? data.materialLog : [],
+    derivedAnswers:
+      data.derivedAnswers && typeof data.derivedAnswers === 'object'
+        ? data.derivedAnswers
+        : {},
+  };
+}
+
 /** Read save from localStorage, or return defaults. */
 export function loadGame() {
   try {
@@ -213,6 +247,7 @@ export function loadGame() {
     if (migrated.version === 2) migrated = migrateV2toV3(migrated);
     if (migrated.version === 3) migrated = migrateV3toV4(migrated);
     if (migrated.version === 4) migrated = migrateV4toV5(migrated);
+    if (migrated.version === 5) migrated = migrateV5toV6(migrated);
 
     // Fill any fields that may be missing from older saves.
     const merged = {
