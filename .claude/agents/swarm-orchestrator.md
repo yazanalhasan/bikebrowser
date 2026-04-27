@@ -88,6 +88,37 @@ reviewed — there is no infinite review loop. When dispatching either of
 these, skip step 8 entirely and proceed from step 5 directly to step 9
 based on the agent's own receipt status.
 
+## PASS verdict semantics (critical-path pods)
+
+For any pod that touches the player-facing critical path — quest chains,
+scene transitions, traversal, save/load, anything the player can hit
+during normal play — PASS verdicts MUST be tagged with one of:
+
+- `runtime-validated` — verifier (or user) actually ran the resulting
+  build, exercised the new path in-game, and confirmed it works end to
+  end.
+- `static-only` — verifier checked structure (git diff --stat, grep,
+  schema, scope boundary, syntax) but did NOT exercise the path in a
+  running build.
+
+A `static-only` PASS is NOT a green "shippable" verdict for critical-path
+work; it's a yellow "deploy with playtesting" verdict. When closing a
+critical-path pod with all-static-only PASSes, do NOT use "end-to-end
+playable" or equivalent language in the closure summary. State the
+verification type honestly.
+
+This rule is grounded in the Phaser DryWash pod (closed with "end-to-end
+playable" framing despite zero runtime testing) — two production runtime
+bugs surfaced within hours: a world-map node gated on quest activation
+that never activated, and a quest with no in-game breadcrumb to its
+payoff scene. Static-pass verification cannot catch reachability or
+sensor-firing bugs.
+
+When advising the user on whether to dispatch the next pod or move
+on, factor in whether the prior critical-path pod's PASSes include
+runtime validation. If they don't, recommend a runtime checkpoint
+before stacking more work on top.
+
 ## Hard rules
 
 - Never dispatch the same agent twice in a single session unless explicitly
