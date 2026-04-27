@@ -1,9 +1,21 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-26T08:15:00Z",
+  "last_updated": "2026-04-27T11:05:00Z",
   "current_week": 3,
-  "current_pod_focus": "Phaser Refactor",
+  "current_pod_focus": "Daytime Autonomous V2 (bug-fix Phase-1 prep)",
   "completed": [
+    {
+      "agent": "arc-md-v1-3-promotion",
+      "ts": "2026-04-27T11:05:00Z",
+      "commit": null,
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/arc-md-v1-3-promotion-2026-04-27T11-00-00Z.json",
+      "verdict_tag": "static-only",
+      "user_directive": "Option 2 from drift-halt: bump arc.md to v1.3 by promoting Section 8 from orchestrator memory before resuming the daytime V2 queue (A skip → B → C1 → C2 → C3).",
+      "notes": "Pre-flight gate of the daytime V2 queue. arc.md was at v1.2 on disk while the V2 queue prompt referenced v1.3 Section 8 as non-negotiable. Section 8 content lived only in orchestrator memory at .claude/agent-memory/swarm-orchestrator/project_arc_v1_3_world_model_alignment.md. Worker (general-purpose, no agent .md exists for one-off doc consolidation) appended Section 8 (subsections 8.1-8.6 + audit-implication closer) between Section 7's closing `---` and Document History at line 872, then added a v1.3 entry to Document History matching the existing v1.0/v1.1/v1.2 bullet style. Diff: +79 lines, 0 deletions, scope clean (only arc.md modified, only the receipt added as untracked). Orchestrator-completed verification: git status (only arc.md + receipt), git diff --stat (+79/0), grep confirmed Section 8 + 6 subsections + v1.3 history line all present. No build invoked (arc.md is docs-only). Memory file at .claude/agent-memory/swarm-orchestrator/project_arc_v1_3_world_model_alignment.md preserved as original source."
+    },
     {
       "agent": "r3f-scaffolder",
       "ts": "2026-04-20T00:00:00Z",
@@ -680,6 +692,6 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 40,
+  "dispatch_count": 41,
   "session_token_estimate": 0
 }

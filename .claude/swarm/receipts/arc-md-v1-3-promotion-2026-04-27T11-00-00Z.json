@@ -1,0 +1,19 @@
+{
+  "agent": "arc-md-v1-3-promotion",
+  "ts": "2026-04-27T11:00:00Z",
+  "status": "complete",
+  "files_changed": ["arc.md"],
+  "files_NOT_changed": ["everything else — verified by git status before write"],
+  "edits": {
+    "section_8_inserted_after_line": 870,
+    "section_8_lines_added": 74,
+    "doc_history_v1_3_appended": true
+  },
+  "verification": {
+    "section_8_present": true,
+    "section_7_unchanged": true,
+    "v1_0_through_v1_2_history_unchanged": true,
+    "no_orchestration_files_touched": true
+  },
+  "notes": "Section 8 World Model Alignment Layer inserted between Section 7's closing `---` and the `## Document History` heading. Six subsections (8.1-8.6) plus the audit-implication closer, followed by a `---` separator before Document History. v1.3 entry appended to Document History matching the bullet style of v1.0/v1.1/v1.2. Verified via `git status` that only arc.md is modified; orchestrator memory file at `.claude/agent-memory/swarm-orchestrator/project_arc_v1_3_world_model_alignment.md` was not touched."
+}

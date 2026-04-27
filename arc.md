@@ -869,6 +869,80 @@ These are intentionally out of scope unless explicitly re-opened.
 
 ---
 
+## 8. World Model Alignment Layer
+
+The carry-forward systems described in Section 4 (Construction, UTM,
+Thermal Rig, Chemistry Lab, Inventory, Quest Engine) operate over a
+shared world model. As more systems land — terrain, biomes, discovery
+state, landmarks, knowledge state — the binding between systems and
+world becomes load-bearing. The rules below are non-negotiable: agents
+that violate them must halt-and-surface rather than improvise.
+
+### 8.1 Primitive declarations on every carry-forward system
+
+Future dispatch prompts that create or modify a carry-forward system
+must explicitly declare:
+
+- Which environmental primitives the system consults (biome, terrain).
+- Which progression primitives the system updates (discovery state,
+  knowledge state, landmarks).
+- How the system scales Act 1 → Act 3 without diverging across acts.
+
+Agents that don't declare these halt-and-surface, not improvise.
+
+### 8.2 No act-specific carve-outs
+
+A "for Act 3 only" branch in a portable system is an explicit
+halt-and-surface trigger. The acts are layers of capability over one
+continuous world, not separate games.
+
+### 8.3 No biomes or landmarks without an educational domain
+
+Visual-variety-only additions halt-and-surface. Each biome carries a
+primary curriculum domain (desert → heat / water / silica; savanna →
+ecology / ironworking; subtropical highland → traditional medicine +
+rare earths; etc.). Each landmark anchors a system or concept (broken
+bridge → structural engineering; mine → metallurgy; greenhouse →
+biology workbench; observatory → spaceflight).
+
+### 8.4 Terrain is a constraint engine, not decoration
+
+Future construction / movement / foraging / UTM agents must consult
+terrain (sand → unstable foundations; rock → strong anchors; ice →
+brittle; volcanic → thermal damage). Terrain-blind systems
+halt-and-surface.
+
+### 8.5 Knowledge State System is unbuilt and gated
+
+A three-state model — Seen / Interacted / Understood — is to be
+declared in a future `knowledge-state-substrate.md` design document.
+NO system may consume knowledge-state queries before that design doc
+lands. If a quest / crafting / dialog agent needs "does the player
+understand X?" the dispatch must halt-and-surface for the design-doc
+work first.
+
+Discovery state (geographic) and knowledge state (conceptual) are
+explicitly distinct data models with distinct query APIs — conflating
+them is a halt-and-surface trigger.
+
+### 8.6 Primitive fragmentation is CRITICAL, not MEDIUM
+
+Reviewers checking scope should treat any bypass of world-model
+primitives as a CRITICAL violation. Systems that fragment primitives
+(reading biome from a hardcoded fallback string instead of the
+classifier; storing a parallel discovery set; adding a landmark by
+free-floating sprite scatter) are added to Section 7's out-of-scope
+list.
+
+### Audit implication for already-shipped systems
+
+The carry-forward systems already shipped likely don't yet declare
+their primitive interactions explicitly. This is a known gap, not a
+regression — future modifications to those systems should add the
+declaration as part of the work, not as a separate audit sweep.
+
+---
+
 ## Document History
 
 - v1.0 — 2026-04-27 — initial draft
@@ -883,3 +957,8 @@ These are intentionally out of scope unless explicitly re-opened.
   systems with workbench portability noted explicitly; portability
   mechanism added to high-priority open questions; cross-pillar
   scope rule added to Section 7.
+- v1.3 — 2026-04-27 — Section 8 World Model Alignment Layer added,
+  promoted from orchestrator memory; primitive declarations + no
+  act-specific carve-outs + no biomes/landmarks without educational
+  domain + terrain-as-constraint + Knowledge State System gated +
+  primitive fragmentation = CRITICAL all formalized in the document.
