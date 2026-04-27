@@ -8,10 +8,16 @@
 
 import BaseSubScene from './BaseSubScene.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { loadLayout } from '../utils/loadLayout.js';
 
 const SCENE_KEY = 'DesertForagingScene';
 
 export default class DesertForagingScene extends BaseSubScene {
+  static layoutEditorConfig = {
+    layoutAssetKey: 'desertForagingLayout',
+    layoutPath: 'layouts/desert-foraging.layout.json',
+  };
+
   constructor() {
     super(SCENE_KEY);
   }
@@ -20,93 +26,83 @@ export default class DesertForagingScene extends BaseSubScene {
   getLocationId() { return 'desert_foraging'; }
   getWorldSize() { return { width: 1200, height: 800 }; }
 
+  preload() {
+    super.preload?.();
+    this.load.json('desertForagingLayout', 'layouts/desert-foraging.layout.json');
+  }
+
   createWorld() {
-    const { width, height } = this.getWorldSize();
+    this.layout = loadLayout(this, 'desertForagingLayout');
 
     // ── Ground ── sandy desert with vegetation patches
-    this.add.rectangle(width / 2, height / 2, width, height, 0xd4a574);
+    this.add.rectangle(this.layout.ground.x, this.layout.ground.y, this.layout.ground.w, this.layout.ground.h, 0xd4a574);
 
     // Vegetation patches (darker ground)
-    const patches = [
-      { x: 200, y: 200, w: 150, h: 100 },
-      { x: 600, y: 350, w: 200, h: 120 },
-      { x: 900, y: 500, w: 160, h: 100 },
-      { x: 350, y: 600, w: 180, h: 90 },
-    ];
-    for (const p of patches) {
+    for (const p of this.layout.patches) {
       this.add.rectangle(p.x, p.y, p.w, p.h, 0xb8956a, 0.6);
     }
 
     // Dry riverbed (winding path)
     const riverbed = this.add.graphics();
     riverbed.fillStyle(0xc4a882, 0.4);
-    riverbed.fillRoundedRect(100, 350, 400, 30, 15);
-    riverbed.fillRoundedRect(450, 330, 300, 35, 15);
-    riverbed.fillRoundedRect(700, 340, 250, 30, 15);
+    riverbed.fillRoundedRect(this.layout.riverbed_west.x, this.layout.riverbed_west.y, this.layout.riverbed_west.w, this.layout.riverbed_west.h, 15);
+    riverbed.fillRoundedRect(this.layout.riverbed_mid.x, this.layout.riverbed_mid.y, this.layout.riverbed_mid.w, this.layout.riverbed_mid.h, 15);
+    riverbed.fillRoundedRect(this.layout.riverbed_east.x, this.layout.riverbed_east.y, this.layout.riverbed_east.w, this.layout.riverbed_east.h, 15);
 
     // ── Rock formations ──
-    const rocks = [
-      { x: 100, y: 150, s: '🪨' }, { x: 750, y: 200, s: '🪨' },
-      { x: 1050, y: 400, s: '🪨' }, { x: 300, y: 700, s: '🪨' },
-      { x: 850, y: 650, s: '🪨' },
-    ];
-    for (const r of rocks) {
-      this.add.text(r.x, r.y, r.s, { fontSize: '32px' }).setOrigin(0.5);
+    for (const r of this.layout.rocks) {
+      this.add.text(r.x, r.y, '🪨', { fontSize: '32px' }).setOrigin(0.5);
       this.addWall(r.x, r.y, 40, 30);
     }
 
     // ── Cacti (collision) ──
-    const cacti = [
-      { x: 180, y: 400 }, { x: 500, y: 250 }, { x: 700, y: 150 },
-      { x: 1000, y: 300 }, { x: 400, y: 550 }, { x: 1100, y: 600 },
-    ];
-    for (const c of cacti) {
+    for (const c of this.layout.cacti) {
       this.add.text(c.x, c.y, '🌵', { fontSize: '36px' }).setOrigin(0.5);
       this.addWall(c.x, c.y, 30, 40);
     }
 
     // ── Desert wildlife ──
-    const lizard = this.add.text(600, 500, '🦎', { fontSize: '20px' }).setOrigin(0.5);
+    const lizard = this.add.text(this.layout.lizard.x, this.layout.lizard.y, '🦎', { fontSize: '20px' }).setOrigin(0.5);
     this.tweens.add({
       targets: lizard, x: 680, y: 480, duration: 4000,
       yoyo: true, repeat: -1, ease: 'Sine.easeInOut',
     });
 
-    const hawk = this.add.text(400, 80, '🦅', { fontSize: '24px' }).setOrigin(0.5).setAlpha(0.7);
+    const hawk = this.add.text(this.layout.hawk.x, this.layout.hawk.y, '🦅', { fontSize: '24px' }).setOrigin(0.5).setAlpha(0.7);
     this.tweens.add({
       targets: hawk, x: 900, y: 60, duration: 8000,
       yoyo: true, repeat: -1, ease: 'Sine.easeInOut',
     });
 
     // ── Boundary walls ──
-    this.addWall(width / 2, 0, width, 20);       // top
-    this.addWall(0, height / 2, 20, height);      // left
-    this.addWall(width, height / 2, 20, height);  // right
+    this.addWall(this.layout.wall_top.x, this.layout.wall_top.y, this.layout.wall_top.w, this.layout.wall_top.h);       // top
+    this.addWall(this.layout.wall_left.x, this.layout.wall_left.y, this.layout.wall_left.w, this.layout.wall_left.h);    // left
+    this.addWall(this.layout.wall_right.x, this.layout.wall_right.y, this.layout.wall_right.w, this.layout.wall_right.h); // right
     // bottom has the exit zone (from BaseSubScene._registerExitPoint)
 
     // ── Forageable Resources ──
     this.addResource({
-      x: 250, y: 230, icon: '🌿', label: 'Yucca Fiber',
+      x: this.layout.resource_yucca_fiber.x, y: this.layout.resource_yucca_fiber.y, icon: '🌿', label: 'Yucca Fiber',
       itemId: 'yucca_fiber',
       description: 'Strong natural fiber — used by indigenous peoples for rope and baskets.',
     });
     this.addResource({
-      x: 650, y: 380, icon: '🌱', label: 'Agave Fiber',
+      x: this.layout.resource_agave_fiber.x, y: this.layout.resource_agave_fiber.y, icon: '🌱', label: 'Agave Fiber',
       itemId: 'agave_fiber',
       description: 'Tough sisal fiber from agave — natural adhesive properties.',
     });
     this.addResource({
-      x: 950, y: 530, icon: '🫧', label: 'Jojoba Extract',
+      x: this.layout.resource_jojoba_extract.x, y: this.layout.resource_jojoba_extract.y, icon: '🫧', label: 'Jojoba Extract',
       itemId: 'jojoba_extract',
       description: 'Liquid wax from jojoba seeds — natural lubricant and solvent.',
     });
     this.addResource({
-      x: 400, y: 630, icon: '🧴', label: 'Creosote Resin',
+      x: this.layout.resource_creosote_resin.x, y: this.layout.resource_creosote_resin.y, icon: '🧴', label: 'Creosote Resin',
       itemId: 'creosote_resin',
       description: 'Antiseptic resin from creosote bush — used as natural sealant.',
     });
     this.addResource({
-      x: 800, y: 200, icon: '💧', label: 'Barrel Cactus Water',
+      x: this.layout.resource_barrel_cactus_water.x, y: this.layout.resource_barrel_cactus_water.y, icon: '💧', label: 'Barrel Cactus Water',
       itemId: 'cactus_water',
       description: 'Emergency water from barrel cactus pulp.',
     });
@@ -115,13 +111,13 @@ export default class DesertForagingScene extends BaseSubScene {
     this.addNpc({
       id: 'desert_guide',
       name: 'Ranger Nita',
-      x: 550, y: 450,
+      x: this.layout.npc_desert_guide.x, y: this.layout.npc_desert_guide.y,
       color: 0x92400e,
       onInteract: () => this._handleGuideInteract(),
     });
 
     // ── Scene label ──
-    this.add.text(width / 2, 30, '🏜️ Sonoran Foraging Grounds', {
+    this.add.text(this.layout.scene_label.x, this.layout.scene_label.y, '🏜️ Sonoran Foraging Grounds', {
       fontSize: '16px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#5c3d10', stroke: '#f5e6c8', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(10).setScrollFactor(0);
@@ -130,7 +126,7 @@ export default class DesertForagingScene extends BaseSubScene {
   setupChallenges() {
     // Embedded challenge 1: Water management math
     this.addChallenge({
-      x: 800, y: 350,
+      x: this.layout.challenge_water_math.x, y: this.layout.challenge_water_math.y,
       icon: '🧮',
       label: 'Water Math',
       question: 'You have 1.5 liters of water. Each hour in the desert, you need 350ml. How many full hours can you survive?',
@@ -147,7 +143,7 @@ export default class DesertForagingScene extends BaseSubScene {
 
     // Embedded challenge 2: Plant identification ratio
     this.addChallenge({
-      x: 350, y: 300,
+      x: this.layout.challenge_plant_ratio.x, y: this.layout.challenge_plant_ratio.y,
       icon: '🔬',
       label: 'Plant Ratio',
       question: 'In this area, for every 5 cacti there are 3 shrubs and 2 wildflowers. If you counted 20 cacti, how many shrubs would you expect?',
@@ -164,7 +160,7 @@ export default class DesertForagingScene extends BaseSubScene {
 
     // Embedded challenge 3: Temperature estimation
     this.addChallenge({
-      x: 1050, y: 250,
+      x: this.layout.challenge_heat_math.x, y: this.layout.challenge_heat_math.y,
       icon: '🌡️',
       label: 'Heat Math',
       question: 'The temperature rises 3°F every hour starting from 85°F at 8am. What will it be at noon?',

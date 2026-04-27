@@ -1,0 +1,101 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "status": "PASS",
+  "timestamp": "2026-04-26T19:00:00Z",
+  "scene": "DesertForagingScene",
+  "files_changed": [
+    "src/renderer/game/scenes/DesertForagingScene.js",
+    "public/layouts/desert-foraging.layout.json"
+  ],
+  "idempotent_files": {
+    "loadLayout_js": "already existed — not touched",
+    "CLAUDE_md": "already existed — not touched"
+  },
+  "layout_objects_extracted": 22,
+  "layout_json_line_count": 74,
+  "objects": [
+    "ground",
+    "patches",
+    "riverbed_west",
+    "riverbed_mid",
+    "riverbed_east",
+    "rocks",
+    "cacti",
+    "lizard",
+    "hawk",
+    "wall_top",
+    "wall_left",
+    "wall_right",
+    "resource_yucca_fiber",
+    "resource_agave_fiber",
+    "resource_jojoba_extract",
+    "resource_creosote_resin",
+    "resource_barrel_cactus_water",
+    "npc_desert_guide",
+    "scene_label",
+    "challenge_water_math",
+    "challenge_plant_ratio",
+    "challenge_heat_math"
+  ],
+  "positions_left_in_code": [
+    {
+      "location": "createWorld() — lizard tween targets",
+      "code": "this.tweens.add({ targets: lizard, x: 680, y: 480, duration: 4000, ... })",
+      "reason": "Tween destination coordinates (680, 480) are animation targets, not static anchors. The lizard's start anchor (600, 500) was extracted to JSON as 'lizard'. Per rule 7, tween destinations stay in code."
+    },
+    {
+      "location": "createWorld() — hawk tween targets",
+      "code": "this.tweens.add({ targets: hawk, x: 900, y: 60, duration: 8000, ... })",
+      "reason": "Tween destination coordinates (900, 60) are animation targets, not static anchors. The hawk's start anchor (400, 80) was extracted to JSON as 'hawk'. Per rule 7, tween destinations stay in code."
+    }
+  ],
+  "resolved_computed_positions": [
+    {
+      "name": "ground",
+      "original": "width / 2, height / 2, width, height",
+      "resolved": "600, 400, 1200, 800",
+      "canvas": "1200x800"
+    },
+    {
+      "name": "wall_top",
+      "original": "width / 2, 0, width, 20",
+      "resolved": "600, 0, 1200, 20",
+      "canvas": "1200x800"
+    },
+    {
+      "name": "wall_left",
+      "original": "0, height / 2, 20, height",
+      "resolved": "0, 400, 20, 800",
+      "canvas": "1200x800"
+    },
+    {
+      "name": "wall_right",
+      "original": "width, height / 2, 20, height",
+      "resolved": "1200, 400, 20, 800",
+      "canvas": "1200x800"
+    },
+    {
+      "name": "scene_label",
+      "original": "width / 2, 30",
+      "resolved": "600, 30",
+      "canvas": "1200x800"
+    }
+  ],
+  "audit": {
+    "leftover_literals_grep": "PASS — no this.add.*(literal) pattern found",
+    "all_keys_referenced": "PASS — node script confirmed all 22 keys referenced in scene",
+    "json_well_formed": "PASS — JSON.parse succeeded",
+    "json_line_count": "74 (well under 200-line limit)",
+    "layoutEditorConfig_present": "PASS — line 16: static layoutEditorConfig = { layoutAssetKey: 'desertForagingLayout', layoutPath: 'layouts/desert-foraging.layout.json' }",
+    "preload_added": "PASS — preload() override added, calls super.preload?.() then this.load.json('desertForagingLayout', 'layouts/desert-foraging.layout.json')",
+    "bugs_spotted": "None"
+  },
+  "notes": [
+    "Processed DesertForagingScene (1200x800 canvas). 22 layout objects extracted across ground, decoration arrays (patches, rocks, cacti), riverbed graphics segments, wildlife anchors, boundary walls, 5 forageable resources, 1 NPC, scene label, and 3 challenges.",
+    "Arrays (patches, rocks, cacti) were hoisted to JSON as arrays per rule 8. Loops in code now iterate this.layout.patches / this.layout.rocks / this.layout.cacti unchanged.",
+    "Tween destinations for lizard (680, 480) and hawk (900, 60) left in code — these are dynamic animation targets, not static anchors. Their initial placement anchors (lizard: 600,500 and hawk: 400,80) ARE in JSON.",
+    "DesertForagingScene had no preload() method — a thin override was added that calls super.preload?.() before registering the layout JSON.",
+    "loadLayout.js already existed; CLAUDE.md already existed — neither was touched (idempotent dispatch)."
+  ],
+  "suggested_next_agent": "phaser-scene-layout-extractor (next scene) or code-quality-reviewer"
+}
