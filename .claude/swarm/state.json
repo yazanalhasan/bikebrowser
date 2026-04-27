@@ -431,6 +431,25 @@
       "notes": "Comprehensive vertical slice (868 LOC scene + 4 file edits). Cycle 2 of 2 — cycle 1 stalled silently with zero on-disk output (likely prior-session context-window exhaustion); cycle 2 dispatched fresh with prescriptive write-order in prompt and shipped clean. Build verified PASS by orchestrator (10.86s). Reviewer was the standard reviewer-stall pattern (response 'Good. Now let me check sceneRegistry.js:' with no receipt) — orchestrator-completed verification ran the full standards checklist via git diff per file + grep + npm run build, all CRITICAL clean, all HIGH clean, three MEDIUM/LOW non-blocking notes (Materials Lab doorway visual subtlety, magic-number stepIndex 8, optional chart-axis cleanup). Components: visible UTM rig + 3-slot material selector + START button + live stress-strain chart with elastic/plastic/failure region coloring + per-material failure animations (mesquite splinter / steel necking / copper stretch) + 3-material loop persisted to state.materialTestsCompleted + load_test_completed observation event with step: state.activeQuest for LocalSceneBase.advanceFromDialog hook + exit zone back to ZuzuGarageScene. Workbench gate is inclusive OR: haveAllSamples OR (bridge_collapse stepIndex >= 8). Routed via general-purpose (no .md exists for this one-off slice)."
     },
     {
+      "agent": "phaser-scene-layout-extractor",
+      "target_scene": "NeighborhoodScene",
+      "ts": "2026-04-26T17:00:00Z",
+      "commit": null,
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/phaser-scene-layout-extractor-NeighborhoodScene-2026-04-26T17-00-00Z.json",
+      "pod": "Phaser Refactor",
+      "dispatch_params": {
+        "targetSceneFile": "src/renderer/game/scenes/NeighborhoodScene.js",
+        "targetSceneKey": "NeighborhoodScene",
+        "layoutAssetKey": "neighborhoodLayout",
+        "layoutPath": "layouts/neighborhood.layout.json"
+      },
+      "user_directive": "Process NeighborhoodScene as second consumer of the layout extractor (after ZuzuGarageScene). Halt-conditions-to-surface in effect. Reviewer bypassed (5/5 stall pattern this session) — orchestrator-completed verification only. Do NOT auto-queue subsequent dispatches.",
+      "notes": "Second scene processed by the extractor. Outcome was 'no extractable static literals' — a valid result documented in spec. The subclass file scenes/NeighborhoodScene.js is architecturally clean: static composition lives in editor-scenes/NeighborhoodSceneBase.js which already imports from data/neighborhoodLayout.js (WORLD/SPAWNS/LANDMARKS/NPC_PLACEMENTS/COLLISION_ZONES/BOUNDARY_PADDING/CAMERA — world canvas 1536x1024). Worker added: import loadLayout (1 LOC), static layoutEditorConfig opt-in (5 LOC), preload() override that calls super.preload?.() then loads the empty JSON (4 LOC), this.layout = loadLayout() at top of create() (1 LOC). Created public/layouts/neighborhood.layout.json with {scene:'NeighborhoodScene',version:1,objects:{}} — the editor will open the scene with no draggable shapes (correct: scene already data-driven, future work could migrate the JS data module to JSON but that's out of scope for this refactor). Diff is exactly +11/-1; ZERO touches to event handlers, dialog, quests, physics, audio, save calls. Orchestrator-completed verification PASS via: git diff scope check (clean), JSON parse (well-formed), residual literal grep (only the (0,0) placeholder for _landmarkLabel which is correctly identified as exempt — runtime-repositioned via setPosition in _checkLandmarkZones), one-time-setup idempotency (loadLayout.js + CLAUDE.md rule already exist, not re-touched), full literal inventory in receipt notes (every candidate evaluated with explicit disposition: exempt-dynamic / exempt-loop-procedural / already-data-driven-via-import / placeholder). Reviewer bypass per user directive given 5/5 reviewer stall pattern this session. No follow-up needed — the empty JSON is itself the correct shape; if/when the editor opens this scene and the user adds new static layout, those positions will populate the JSON via the editor's save endpoint."
+    },
+    {
       "agent": "world-discovery-quests",
       "ts": "2026-04-26T08:15:00Z",
       "commit": "459b90d9cb8d4faa5729a212d325a062b90adb1f",
@@ -482,6 +501,6 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 27,
+  "dispatch_count": 28,
   "session_token_estimate": 0
 }

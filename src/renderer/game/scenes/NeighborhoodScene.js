@@ -22,6 +22,7 @@
 
 import Phaser from 'phaser';
 import NeighborhoodSceneBase from '../editor-scenes/NeighborhoodSceneBase.js';
+import { loadLayout } from '../utils/loadLayout.js';
 import Player from '../entities/Player.js';
 import Npc from '../entities/Npc.js';
 import { saveGame } from '../systems/saveSystem.js';
@@ -48,11 +49,20 @@ const SCENE_KEY = 'NeighborhoodScene';
 const DEBUG_WORLD = false;
 
 export default class NeighborhoodScene extends NeighborhoodSceneBase {
+  static layoutEditorConfig = {
+    layoutAssetKey: 'neighborhoodLayout',
+    layoutPath: 'layouts/neighborhood.layout.json',
+  };
+
   // Note: constructor is inherited from NeighborhoodSceneBase (key: 'NeighborhoodScene')
 
-  // preload() is inherited from NeighborhoodSceneBase (loads asset packs)
+  preload() {
+    super.preload?.();
+    this.load.json('neighborhoodLayout', 'layouts/neighborhood.layout.json');
+  }
 
   create() {
+    this.layout = loadLayout(this, 'neighborhoodLayout');
     this._transitioning = false;
     const state = this.registry.get('gameState');
 

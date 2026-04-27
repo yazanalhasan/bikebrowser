@@ -1,0 +1,52 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "status": "pass",
+  "timestamp": "2026-04-26T17:00:00Z",
+  "targetSceneKey": "NeighborhoodScene",
+  "targetSceneFile": "src/renderer/game/scenes/NeighborhoodScene.js",
+  "layoutAssetKey": "neighborhoodLayout",
+  "layoutPath": "layouts/neighborhood.layout.json",
+  "files_changed": [
+    {
+      "path": "src/renderer/game/scenes/NeighborhoodScene.js",
+      "action": "edit",
+      "description": "Added loadLayout import, static layoutEditorConfig, preload() override with this.load.json, and this.layout = loadLayout() at top of create(). Zero logic changes."
+    },
+    {
+      "path": "public/layouts/neighborhood.layout.json",
+      "action": "create",
+      "description": "Empty layout JSON (objects: {}) — no static literals were extractable from the subclass. Scene is already fully data-driven via neighborhoodLayout.js data module."
+    }
+  ],
+  "one_time_setup": {
+    "loadLayout_js": "already existed at src/renderer/game/utils/loadLayout.js — not re-created",
+    "CLAUDE_md_rule": "already existed at CLAUDE.md — not re-appended"
+  },
+  "layout_objects_count": 0,
+  "layout_objects": [],
+  "world_canvas_dimensions": "1536x1024 (per WORLD.width / WORLD.height in data/neighborhoodLayout.js)",
+  "editor_opt_in_confirmed": true,
+  "notes": [
+    "Read agent definition 'Editor opt-in (mandatory)' section: confirmed static layoutEditorConfig = { layoutAssetKey: 'neighborhoodLayout', layoutPath: 'layouts/neighborhood.layout.json' } added immediately after class declaration opening brace.",
+    "loadLayout.js and CLAUDE.md layout rule already existed from ZuzuGarageScene dispatch — not touched.",
+    "Layout objects count: 0. This is a valid outcome — the subclass is architecturally clean.",
+    "FULL LITERAL INVENTORY — every numeric literal considered and its disposition:",
+    "  LINE 72: this.add.text(0, 0, '', ...) — placeholder (0,0) for _landmarkLabel. Immediately overridden by setPosition() at line 309. NOT a static anchor. Left in code.",
+    "  LINE 81: .setOrigin(0.5) — origin float (0..1), not pixel coordinate. Left in code per spec.",
+    "  LINE 94: npc.x, npc.y, npcData.bikeOffset.x/y — all from NPC_PLACEMENTS import in neighborhoodLayout.js. Already data-driven. Left in code.",
+    "  LINE 150: Math.sqrt(dx*dx + dy*dy) < 70 — interaction radius threshold, game logic constant, not a visual position. Left in code.",
+    "  LINES 197-215: g.fillRect(-2, -plant.heightOffset, 4, ...), g.fillCircle(0, -plant.heightOffset, 10), etc. — shape-relative offsets inside procedurally-generated plant rendering loop. Values are relative to the graphics object origin (0,0), set via g.setPosition(plant.x, plant.y) from ecology engine data. Exempt per spec section 8: dynamic/procedural loop positions. Left in code.",
+    "  LINE 244: heightOffset: 20 — depth-sort metadata for player, not a pixel position for rendering. Left in code.",
+    "  LINE 250: heightOffset: 22 — depth-sort metadata for NPCs, not a pixel position. Left in code.",
+    "  LINE 309: .setPosition(cam.width / 2, 60) — the literal 60 is a y-offset for landmark label popup. However this call is inside _checkLandmarkZones() which runs every frame from update(). The label repositions every time a new landmark is entered (per-event, camera-relative). Exempt per spec section 7: per-frame/dynamic position. Left in code.",
+    "  LINE 545: cam.scrollX + cam.width / 2 — fully dynamic camera-relative position. Exempt.",
+    "  LINE 546: cam.scrollY + cam.height / 2 - 40 — dynamic with -40 offset; camera-relative, reward celebration FX. Exempt per spec section 7.",
+    "  LINES 548, 554, 564, 569, 579, 580: all derived from cx/cy dynamic values, or are tween targets with Math.random() offsets inside _showRewardCelebration(). All exempt per spec sections 7 and the 'Per-frame & dynamic' rule.",
+    "Self-audit grep: 'grep -E this\\.add\\.\\w+\\(\\s*[0-9]+\\s*,' NeighborhoodScene.js' — would find this.add.text(0, 0, ...) at line 72. This (0,0) is a placeholder immediately overridden; not a layout anchor. Acceptable per dispatch brief which explicitly calls this pattern out.",
+    "Self-audit: No layout object names in JSON (objects is empty), so 'jq unreferenced' check passes trivially.",
+    "Self-audit: git diff shows ONLY the 4 additions: import, static layoutEditorConfig (5 LOC), preload() override (4 LOC), this.layout assignment (1 LOC). Zero touches to event handlers, dialog, quests, physics, audio, save calls.",
+    "JSON file is 5 lines, well under the 200-line limit.",
+    "Bug note: None found during extraction. The (0,0) placeholder pattern for _landmarkLabel is intentional architecture — not a bug."
+  ],
+  "suggested_next_agent": "code-quality-reviewer or phaser-scene-layout-extractor for next scene"
+}
