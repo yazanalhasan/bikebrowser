@@ -14,10 +14,21 @@
 
 import LocalSceneBase from './LocalSceneBase.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { loadLayout } from '../utils/loadLayout.js';
 
 export default class LakeEdgeScene extends LocalSceneBase {
+  static layoutEditorConfig = {
+    layoutAssetKey: 'lakeEdgeLayout',
+    layoutPath: 'layouts/lake-edge.layout.json',
+  };
+
   constructor() {
     super('LakeEdgeScene');
+  }
+
+  preload() {
+    super.preload?.();
+    this.load.json('lakeEdgeLayout', 'layouts/lake-edge.layout.json');
   }
 
   getWorldSize() {
@@ -26,20 +37,21 @@ export default class LakeEdgeScene extends LocalSceneBase {
 
   createWorld() {
     const { width, height } = this.getWorldSize();
+    this.layout = loadLayout(this, 'lakeEdgeLayout');
 
     // === GROUND ===
     // Grass (southern half)
-    this.add.rectangle(width / 2, height * 0.75, width, height * 0.5, 0x7cb342);
+    this.add.rectangle(this.layout.ground_grass.x, this.layout.ground_grass.y, this.layout.ground_grass.w, this.layout.ground_grass.h, 0x7cb342);
     // Sand/tan strip (middle)
-    this.add.rectangle(width / 2, height * 0.42, width, 160, 0xe8d5a3);
+    this.add.rectangle(this.layout.ground_sand.x, this.layout.ground_sand.y, this.layout.ground_sand.w, this.layout.ground_sand.h, 0xe8d5a3);
     // Water (northern portion)
-    this.add.rectangle(width / 2, 100, width, 200, 0x42a5f5);
+    this.add.rectangle(this.layout.water.x, this.layout.water.y, this.layout.water.w, this.layout.water.h, 0x42a5f5);
 
     // Shoreline edge detail
     const shoreGfx = this.add.graphics();
     shoreGfx.fillStyle(0xc8b88a, 0.5);
     for (let x = 0; x < width; x += 60) {
-      shoreGfx.fillEllipse(x + 30, 205, 70, 20);
+      shoreGfx.fillEllipse(x + 30, this.layout.shore_ripple_y.y, 70, 20);
     }
 
     // Water ripples (decorative)
@@ -52,46 +64,43 @@ export default class LakeEdgeScene extends LocalSceneBase {
     }
 
     // === WATER COLLISION (top zone) ===
-    this.addWall(width / 2, 90, width, 180);
+    this.addWall(this.layout.wall_water.x, this.layout.wall_water.y, this.layout.wall_water.w, this.layout.wall_water.h);
 
     // === BOUNDARY WALLS ===
-    this.addWall(width / 2, 0, width, 20);       // top
-    this.addWall(0, height / 2, 20, height);      // left
-    this.addWall(width, height / 2, 20, height);  // right
+    this.addWall(this.layout.wall_top.x, this.layout.wall_top.y, this.layout.wall_top.w, this.layout.wall_top.h);       // top
+    this.addWall(this.layout.wall_left.x, this.layout.wall_left.y, this.layout.wall_left.w, this.layout.wall_left.h);   // left
+    this.addWall(this.layout.wall_right.x, this.layout.wall_right.y, this.layout.wall_right.w, this.layout.wall_right.h); // right
 
     // === DOCK / PIER ===
-    const dockX = 450;
+    const dockX = this.layout.interact_fishing_spot.x;
     const dockGfx = this.add.graphics();
     dockGfx.fillStyle(0x8d6e63, 1);
-    dockGfx.fillRect(dockX - 25, 140, 50, 200);
+    dockGfx.fillRect(this.layout.dock.x, this.layout.dock.y, this.layout.dock.w, this.layout.dock.h);
     // Dock planks
     dockGfx.lineStyle(1, 0x6d4c41, 0.6);
     for (let py = 150; py < 340; py += 15) {
       dockGfx.strokeRect(dockX - 24, py, 48, 14);
     }
     // Dock posts
-    this.add.rectangle(dockX - 20, 150, 8, 8, 0x5d4037).setDepth(2);
-    this.add.rectangle(dockX + 20, 150, 8, 8, 0x5d4037).setDepth(2);
+    this.add.rectangle(this.layout.dock_post_left.x, this.layout.dock_post_left.y, this.layout.dock_post_left.w, this.layout.dock_post_left.h, 0x5d4037).setDepth(2);
+    this.add.rectangle(this.layout.dock_post_right.x, this.layout.dock_post_right.y, this.layout.dock_post_right.w, this.layout.dock_post_right.h, 0x5d4037).setDepth(2);
     // Dock walls (sides only so player can walk on it)
-    this.addWall(dockX - 28, 240, 6, 200);
-    this.addWall(dockX + 28, 240, 6, 200);
+    this.addWall(this.layout.dock_wall_left.x, this.layout.dock_wall_left.y, this.layout.dock_wall_left.w, this.layout.dock_wall_left.h);
+    this.addWall(this.layout.dock_wall_right.x, this.layout.dock_wall_right.y, this.layout.dock_wall_right.w, this.layout.dock_wall_right.h);
 
     // === ROCKS ===
-    const rocks = [[120, 260], [780, 240], [350, 230], [650, 270], [200, 450]];
-    for (const [rx, ry] of rocks) {
+    for (const { x: rx, y: ry } of this.layout.rocks) {
       this.add.text(rx, ry, '🪨', { fontSize: '24px' }).setOrigin(0.5).setDepth(3);
       this.addWall(rx, ry, 22, 18);
     }
 
     // === REEDS ===
-    const reeds = [[80, 210], [160, 200], [280, 215], [560, 205], [720, 210], [830, 215]];
-    for (const [rx, ry] of reeds) {
+    for (const { x: rx, y: ry } of this.layout.reeds) {
       this.add.text(rx, ry, '🌾', { fontSize: '20px' }).setOrigin(0.5).setDepth(3);
     }
 
     // === TREES ===
-    const trees = [[60, 380], [180, 520], [750, 400], [850, 550], [400, 580], [600, 600]];
-    for (const [tx, ty] of trees) {
+    for (const { x: tx, y: ty } of this.layout.trees) {
       this.add.text(tx, ty, '🌳', { fontSize: '32px' }).setOrigin(0.5).setDepth(3);
       this.addWall(tx, ty, 20, 20);
     }
@@ -99,13 +108,13 @@ export default class LakeEdgeScene extends LocalSceneBase {
     // === PATH along shore ===
     const pathGfx = this.add.graphics();
     pathGfx.fillStyle(0xd7ccc8, 0.7);
-    pathGfx.fillRoundedRect(40, 330, 820, 35, 8);
+    pathGfx.fillRoundedRect(this.layout.path.x, this.layout.path.y, this.layout.path.w, this.layout.path.h, 8);
 
     // === INTERACTABLES ===
 
     // Fishing spot (end of dock)
     this.addInteractable({
-      x: dockX, y: 170,
+      x: this.layout.interact_fishing_spot.x, y: this.layout.interact_fishing_spot.y,
       label: 'Fishing Spot',
       icon: '🎣',
       radius: 55,
@@ -120,7 +129,7 @@ export default class LakeEdgeScene extends LocalSceneBase {
 
     // Cave entrance (east side)
     this.addInteractable({
-      x: 820, y: 320,
+      x: this.layout.interact_cave_entrance.x, y: this.layout.interact_cave_entrance.y,
       label: 'Cave Entrance',
       icon: '🕳️',
       radius: 55,
@@ -135,7 +144,7 @@ export default class LakeEdgeScene extends LocalSceneBase {
 
     // Interesting shell on the beach
     this.addInteractable({
-      x: 260, y: 290,
+      x: this.layout.interact_seashell.x, y: this.layout.interact_seashell.y,
       label: 'Seashell',
       icon: '🐚',
       radius: 50,
@@ -149,15 +158,15 @@ export default class LakeEdgeScene extends LocalSceneBase {
     });
 
     // === SCENE TITLE ===
-    this.add.text(width / 2, 220, '🏞️ Lake Edge', {
+    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🏞️ Lake Edge', {
       fontSize: '20px', fontFamily: 'sans-serif', color: '#1b5e20',
       fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(5);
 
     // === EXIT (south → overworld) ===
     this.addExit({
-      x: width / 2, y: height - 14,
-      width: 160, height: 28,
+      x: this.layout.exit_south.x, y: this.layout.exit_south.y,
+      width: this.layout.exit_south.w, height: this.layout.exit_south.h,
       targetScene: 'OverworldScene',
       targetSpawn: 'fromLakeEdge',
       label: '🗺️ Leave Lake ⬇',

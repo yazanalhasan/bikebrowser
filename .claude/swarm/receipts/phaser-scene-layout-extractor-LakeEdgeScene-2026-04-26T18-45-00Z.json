@@ -1,0 +1,92 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "status": "pass",
+  "targetSceneKey": "LakeEdgeScene",
+  "targetSceneFile": "src/renderer/game/scenes/LakeEdgeScene.js",
+  "layoutAssetKey": "lakeEdgeLayout",
+  "layoutPath": "layouts/lake-edge.layout.json",
+  "timestamp": "2026-04-26T18:45:00Z",
+  "canvas": { "width": 900, "height": 700 },
+  "files_changed": [
+    "src/renderer/game/scenes/LakeEdgeScene.js",
+    "public/layouts/lake-edge.layout.json"
+  ],
+  "idempotent_files": {
+    "loadLayout_js": "already existed — not modified",
+    "CLAUDE_md": "already existed — not modified"
+  },
+  "layout_objects_extracted": 21,
+  "layout_objects": [
+    "ground_grass",
+    "ground_sand",
+    "water",
+    "shore_ripple_y",
+    "wall_water",
+    "wall_top",
+    "wall_left",
+    "wall_right",
+    "dock",
+    "dock_post_left",
+    "dock_post_right",
+    "dock_wall_left",
+    "dock_wall_right",
+    "rocks",
+    "reeds",
+    "trees",
+    "path",
+    "interact_fishing_spot",
+    "interact_cave_entrance",
+    "interact_seashell",
+    "scene_title",
+    "exit_south"
+  ],
+  "positions_left_in_code": [
+    {
+      "location": "LakeEdgeScene.js line ~81-83 (dock plank loop)",
+      "code": "for (let py = 150; py < 340; py += 15) { dockGfx.strokeRect(dockX - 24, py, 48, 14); }",
+      "reason": "Loop-generated graphics for dock planks. The loop bounds (150, 340, 15) and rect offsets (24, 48, 14) are intrinsic plank geometry tightly coupled to the loop counter. Extracting the loop bounds to JSON would require also changing how the loop consumes them — a logic change. Left in code per rule 8 (loop-generated positions exempt unless trivially hoistable)."
+    },
+    {
+      "location": "LakeEdgeScene.js water ripple loop",
+      "code": "for (let y = 40; y < 190; y += 30) { for (let x = 50; x < width; x += 120) { waterGfx.strokeEllipse(x, y, 40, 8); } }",
+      "reason": "Purely decorative animated-style ripple graphics generated entirely by loop. No single anchor; all positions are loop-computed. Left in code per rule 7/8."
+    }
+  ],
+  "computed_positions_resolved": [
+    { "name": "ground_grass", "formula": "x=width/2, y=height*0.75, w=width, h=height*0.5", "resolved": "x=450, y=525, w=900, h=350" },
+    { "name": "ground_sand", "formula": "x=width/2, y=height*0.42, w=width", "resolved": "x=450, y=294, w=900" },
+    { "name": "water", "formula": "x=width/2, w=width", "resolved": "x=450, w=900" },
+    { "name": "wall_water", "formula": "x=width/2, w=width", "resolved": "x=450, w=900" },
+    { "name": "wall_top", "formula": "x=width/2, w=width", "resolved": "x=450, w=900" },
+    { "name": "wall_left", "formula": "y=height/2, h=height", "resolved": "y=350, h=700" },
+    { "name": "wall_right", "formula": "x=width, y=height/2, h=height", "resolved": "x=900, y=350, h=700" },
+    { "name": "dock", "formula": "x=dockX-25 (450-25=425)", "resolved": "x=425" },
+    { "name": "dock_post_left", "formula": "x=dockX-20 (450-20=430)", "resolved": "x=430" },
+    { "name": "dock_post_right", "formula": "x=dockX+20 (450+20=470)", "resolved": "x=470" },
+    { "name": "dock_wall_left", "formula": "x=dockX-28 (450-28=422)", "resolved": "x=422" },
+    { "name": "dock_wall_right", "formula": "x=dockX+28 (450+28=478)", "resolved": "x=478" },
+    { "name": "interact_fishing_spot", "formula": "x=dockX (450)", "resolved": "x=450" },
+    { "name": "scene_title", "formula": "x=width/2", "resolved": "x=450" },
+    { "name": "exit_south", "formula": "x=width/2, y=height-14 (700-14=686)", "resolved": "x=450, y=686" }
+  ],
+  "self_audit": {
+    "no_leftover_literal_add_calls": true,
+    "json_line_count": 149,
+    "json_under_200_lines": true,
+    "json_parses_cleanly": true,
+    "layout_editor_config_present": true,
+    "diff_only_positions_and_opt_in": true,
+    "all_json_keys_snake_case": true,
+    "all_json_names_referenced_in_code": true
+  },
+  "bugs_spotted": [],
+  "notes": [
+    "LakeEdgeScene (900x700) fully converted to data-driven layout.",
+    "21 layout objects extracted (13 scalar entries + 3 array entries for rocks/reeds/trees hoisted per rule 8).",
+    "dockX variable in code now derives from this.layout.interact_fishing_spot.x (450) so dock plank loop still works correctly.",
+    "shore_ripple_y is a y-only entry — the ellipse x positions are loop-computed and stay in code.",
+    "loadLayout.js and CLAUDE.md were already present from a prior dispatch — not modified.",
+    "JSON is 149 lines, well under the 200-line limit."
+  ],
+  "suggested_next_agent": "phaser-scene-layout-extractor (next scene) OR code-quality-reviewer"
+}
