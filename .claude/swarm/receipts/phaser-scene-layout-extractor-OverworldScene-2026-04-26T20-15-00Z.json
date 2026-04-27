@@ -1,0 +1,106 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "status": "PASS",
+  "timestamp": "2026-04-26T20:15:00Z",
+  "scene": "OverworldScene",
+  "layoutAssetKey": "overworldLayout",
+  "layoutPath": "layouts/overworld.layout.json",
+  "files_changed": [
+    {
+      "path": "src/renderer/game/scenes/OverworldScene.js",
+      "action": "EDIT",
+      "summary": "Added loadLayout import, static layoutEditorConfig, this.load.json in preload(), this.layout = loadLayout() at top of create(), replaced all literal coordinates and sizes with this.layout.* references."
+    },
+    {
+      "path": "public/layouts/overworld.layout.json",
+      "action": "NEW",
+      "summary": "Created layout JSON with 6 objects: marker_circle, marker_label, marker_prompt, marker_quest_indicator, progress_bar, map_label."
+    }
+  ],
+  "idempotent_files": {
+    "src/renderer/game/utils/loadLayout.js": "ALREADY_EXISTS — not touched",
+    "CLAUDE.md": "ALREADY_EXISTS — not touched"
+  },
+  "layout_objects_extracted": 6,
+  "layout_objects": [
+    {
+      "name": "marker_circle",
+      "fields": ["r", "stroke_width"],
+      "source": "this.add.circle(x, y, 22, ...) + .setStrokeStyle(3, ...) — uniform across all location markers in per-location loop"
+    },
+    {
+      "name": "marker_label",
+      "fields": ["y_offset"],
+      "source": "y + 30 — label text y offset relative to marker center in per-location loop"
+    },
+    {
+      "name": "marker_prompt",
+      "fields": ["y_offset"],
+      "source": "y - 34 — enter/lock prompt y offset (same literal in both unlocked and locked branches)"
+    },
+    {
+      "name": "marker_quest_indicator",
+      "fields": ["x_offset", "y_offset"],
+      "source": "x + 18, y - 18 — quest exclamation mark offset relative to marker center"
+    },
+    {
+      "name": "progress_bar",
+      "fields": ["w", "h", "y_offset"],
+      "source": "barW = 40, height = 4, y + 42 — progress bar dimensions and y offset for locked markers"
+    },
+    {
+      "name": "map_label",
+      "fields": ["x", "y"],
+      "source": "WORLD.width / 2 → 768, WORLD.height - 14 → 1010 — static scene label at bottom-center"
+    }
+  ],
+  "positions_left_in_code": [
+    {
+      "reason": "EXEMPT — game-logic constant",
+      "code": "const ENTER_RADIUS = 70;",
+      "line": 31,
+      "note": "ENTER_RADIUS is a gameplay interaction radius used in proximity checks, not a visual position. Left as named constant per dispatch spec which explicitly calls it out as EXEMPT."
+    },
+    {
+      "reason": "EXEMPT — tap-to-enter touch radius, game-logic constant",
+      "code": "Math.sqrt(dx * dx + dy * dy) < 40",
+      "line": 275,
+      "note": "The value 40 in _handlePointerDown is a pointer tap radius for entering locations, not a visual position."
+    },
+    {
+      "reason": "EXEMPT — camera animation duration",
+      "code": "cam.fadeIn(350, 0, 0, 0)",
+      "line": 158,
+      "note": "350 is a fade-in duration in milliseconds, not a pixel coordinate."
+    },
+    {
+      "reason": "EXEMPT — dynamic positions from registry data",
+      "code": "WORLD.width / 2, WORLD.height / 2 — map background image centering",
+      "line": 64,
+      "note": "The world map image position is computed from WORLD constants (already externalized in neighborhoodLayout.js). No raw literal — WORLD.width and WORLD.height are the data constants."
+    },
+    {
+      "reason": "EXEMPT — physics bounds derived entirely from imported constants",
+      "code": "this.physics.world.setBounds(BOUNDARY_PADDING.left, BOUNDARY_PADDING.top, ...)",
+      "lines": "56-61",
+      "note": "All four values are BOUNDARY_PADDING and WORLD constants from neighborhoodLayout.js — no raw literals."
+    }
+  ],
+  "architecture_notes": [
+    "OverworldScene is largely data-driven — marker positions come from getLocalScenes() registry data (sceneDef.worldPos.x/y), not inline literals. Canvas dimensions come from WORLD const in neighborhoodLayout.js.",
+    "The 5 extracted loop-relative constants (marker_circle, marker_label, marker_prompt, marker_quest_indicator, progress_bar) are uniform offsets applied to dynamic per-marker positions. They are inside a per-location render loop. Per spec §8, loop-generated positions are exempt; however these are literal constants (not computed) so they were extracted to give the layout editor visibility into marker styling.",
+    "The map_label is the only truly static absolute position — resolved from WORLD.width / 2 = 768 and WORLD.height - 14 = 1010.",
+    "No static room geometry exists in this scene (no walls, floors, exits). NeighborhoodScene precedent of empty objects:{} would also have been valid.",
+    "No bugs found during extraction. The _hasQuestAt logic that always returns true for any quest not in completedQuests (even before being active) was observed but left untouched per Reviewer FAIL rule."
+  ],
+  "self_audit": {
+    "no_leftover_literals_in_add_calls": "PASS — grep -E 'this\\.add\\.\\w+\\(\\s*[0-9]+\\s*,' returned no matches",
+    "all_json_keys_referenced": "PASS — all 6 keys confirmed referenced via grep",
+    "json_valid": "PASS — node JSON.parse roundtrip succeeded",
+    "json_line_count": 30,
+    "json_under_200_lines": "PASS",
+    "layout_editor_config": "PASS — static layoutEditorConfig confirmed at line 34",
+    "diff_only_positions": "PASS — git diff shows only: import, layoutEditorConfig, preload load.json, create loadLayout, literal-to-layout replacements. Zero logic changes."
+  },
+  "suggested_next_agent": "code-quality-reviewer or another phaser-scene-layout-extractor invocation for the next scene"
+}

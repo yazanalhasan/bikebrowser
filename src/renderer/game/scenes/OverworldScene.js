@@ -25,22 +25,30 @@ import {
 import MCPSystem from '../systems/MCPSystem.js';
 import { getUnlockProgress } from '../systems/sceneRegistry.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { loadLayout } from '../utils/loadLayout.js';
 
 const SCENE_KEY = 'OverworldScene';
 const ENTER_RADIUS = 70; // how close player must be to enter a location
 
 export default class OverworldScene extends Phaser.Scene {
+  static layoutEditorConfig = {
+    layoutAssetKey: 'overworldLayout',
+    layoutPath: 'layouts/overworld.layout.json',
+  };
+
   constructor() {
     super({ key: SCENE_KEY });
   }
 
   preload() {
+    this.load.json('overworldLayout', 'layouts/overworld.layout.json');
     if (!this.textures.exists(WORLD.mapAsset)) {
       this.load.image(WORLD.mapAsset, WORLD.mapPath);
     }
   }
 
   create() {
+    this.layout = loadLayout(this, 'overworldLayout');
     this._transitioning = false;
     const state = this.registry.get('gameState');
 
@@ -68,8 +76,8 @@ export default class OverworldScene extends Phaser.Scene {
 
       // Marker circle
       const markerColor = unlocked ? 0xfbbf24 : 0x6b7280;
-      const marker = this.add.circle(x, y, 22, markerColor, 0.7)
-        .setStrokeStyle(3, unlocked ? 0xf59e0b : 0x4b5563)
+      const marker = this.add.circle(x, y, this.layout.marker_circle.r, markerColor, 0.7)
+        .setStrokeStyle(this.layout.marker_circle.stroke_width, unlocked ? 0xf59e0b : 0x4b5563)
         .setDepth(10);
 
       // Icon
@@ -78,7 +86,7 @@ export default class OverworldScene extends Phaser.Scene {
       }).setOrigin(0.5).setDepth(11);
 
       // Name label
-      const label = this.add.text(x, y + 30, sceneDef.name, {
+      const label = this.add.text(x, y + this.layout.marker_label.y_offset, sceneDef.name, {
         fontSize: '12px', fontFamily: 'sans-serif',
         fontStyle: 'bold',
         color: unlocked ? '#78350f' : '#6b7280',
@@ -88,7 +96,7 @@ export default class OverworldScene extends Phaser.Scene {
       // Enter prompt (hidden) OR lock hint
       let prompt;
       if (unlocked) {
-        prompt = this.add.text(x, y - 34, '⬆ Enter', {
+        prompt = this.add.text(x, y + this.layout.marker_prompt.y_offset, '⬆ Enter', {
           fontSize: '13px', fontFamily: 'sans-serif',
           fontStyle: 'bold', color: '#ffffff',
           backgroundColor: '#1e40af',
@@ -97,7 +105,7 @@ export default class OverworldScene extends Phaser.Scene {
       } else {
         // Show lock requirements
         const progress = getUnlockProgress(sceneDef.key, state);
-        prompt = this.add.text(x, y - 34, `🔒 ${progress.hint}`, {
+        prompt = this.add.text(x, y + this.layout.marker_prompt.y_offset, `🔒 ${progress.hint}`, {
           fontSize: '10px', fontFamily: 'sans-serif',
           color: '#ffffff',
           backgroundColor: '#6b7280',
@@ -107,9 +115,9 @@ export default class OverworldScene extends Phaser.Scene {
 
         // Progress bar under locked marker
         if (progress.progress > 0 && progress.progress < 1) {
-          const barW = 40;
-          this.add.rectangle(x, y + 42, barW, 4, 0x4b5563).setDepth(11);
-          this.add.rectangle(x - barW / 2 + (barW * progress.progress) / 2, y + 42, barW * progress.progress, 4, 0xfbbf24).setOrigin(0, 0.5).setDepth(12);
+          const barW = this.layout.progress_bar.w;
+          this.add.rectangle(x, y + this.layout.progress_bar.y_offset, barW, this.layout.progress_bar.h, 0x4b5563).setDepth(11);
+          this.add.rectangle(x - barW / 2 + (barW * progress.progress) / 2, y + this.layout.progress_bar.y_offset, barW * progress.progress, this.layout.progress_bar.h, 0xfbbf24).setOrigin(0, 0.5).setDepth(12);
         }
       }
 
@@ -117,7 +125,7 @@ export default class OverworldScene extends Phaser.Scene {
       const hasQuest = this._hasQuestAt(sceneDef.key, state);
       let questMarker = null;
       if (hasQuest && unlocked) {
-        questMarker = this.add.text(x + 18, y - 18, '❗', {
+        questMarker = this.add.text(x + this.layout.marker_quest_indicator.x_offset, y + this.layout.marker_quest_indicator.y_offset, '❗', {
           fontSize: '16px',
         }).setOrigin(0.5).setDepth(12);
       }
@@ -161,7 +169,7 @@ export default class OverworldScene extends Phaser.Scene {
     if (audioMgr) audioMgr.transitionToScene(SCENE_KEY);
 
     // --- Scene label ---
-    this.add.text(WORLD.width / 2, WORLD.height - 14, '🗺️ Neighborhood Map', {
+    this.add.text(this.layout.map_label.x, this.layout.map_label.y, '🗺️ Neighborhood Map', {
       fontSize: '16px', fontFamily: 'sans-serif', color: '#78350f',
       fontStyle: 'bold', stroke: '#fef3c7', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(5);

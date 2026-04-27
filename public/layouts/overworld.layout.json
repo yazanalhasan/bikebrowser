@@ -1,0 +1,40 @@
+{
+  "scene": "OverworldScene",
+  "version": 1,
+  "_world": {
+    "width": 1536,
+    "height": 1024,
+    "_note": "Dimensions from WORLD const in data/neighborhoodLayout.js. No getWorldSize() method."
+  },
+  "objects": {
+    "marker_circle": {
+      "r": 22,
+      "stroke_width": 3,
+      "_note": "Uniform radius and stroke applied to every location marker circle in the per-location loop."
+    },
+    "marker_label": {
+      "y_offset": 30,
+      "_note": "Label text placed at y + 30 below each marker center. Relative offset in per-location loop."
+    },
+    "marker_prompt": {
+      "y_offset": -34,
+      "_note": "Enter/lock prompt placed at y - 34 above each marker center. Same offset for unlocked and locked branches."
+    },
+    "marker_quest_indicator": {
+      "x_offset": 18,
+      "y_offset": -18,
+      "_note": "Quest exclamation mark placed at x + 18, y - 18 relative to marker center."
+    },
+    "progress_bar": {
+      "w": 40,
+      "h": 4,
+      "y_offset": 42,
+      "_note": "Progress bar (background + fill) for partially-unlocked markers. Placed at y + 42 below marker center. barW=40, height=4."
+    },
+    "map_label": {
+      "x": 768,
+      "y": 1010,
+      "_note": "Static scene label at bottom-center. Original: x = WORLD.width / 2 (1536/2=768), y = WORLD.height - 14 (1024-14=1010)."
+    }
+  }
+}
