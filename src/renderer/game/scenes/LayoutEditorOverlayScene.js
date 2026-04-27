@@ -67,6 +67,7 @@ export default class LayoutEditorOverlayScene extends Phaser.Scene {
 
   _findActiveLocal() {
     const all = this.scene.manager.getScenes(true);
+    console.log(`[pause-storm-debug] iterating manager scenes at _findActiveLocal: count=${all.length}`);
     for (const s of all) {
       if (s === this) continue;
       const cfg = s.constructor?.layoutEditorConfig;
@@ -108,6 +109,7 @@ export default class LayoutEditorOverlayScene extends Phaser.Scene {
   }
 
   _exitEditMode() {
+    console.log(`[pause-storm-debug] _exitEditMode at ${Date.now()} target=${this._target?.scene?.key}`);
     this._select(null);
     for (const it of this._items) it.container.destroy();
     this._items = [];
@@ -276,6 +278,7 @@ export default class LayoutEditorOverlayScene extends Phaser.Scene {
 
   async _save() {
     if (!this._workingCopy || !this._cfg) return;
+    console.log(`[pause-storm-debug] _save entered at ${Date.now()} layoutAssetKey=${this._cfg?.layoutAssetKey} targetKey=${this._target?.scene?.key}`);
     try {
       const res = await fetch('/api/save-layout', {
         method: 'POST',
@@ -293,7 +296,9 @@ export default class LayoutEditorOverlayScene extends Phaser.Scene {
       const targetKey = this._target?.scene?.key;
       if (targetKey) {
         this._exitEditMode();
+        console.log(`[pause-storm-debug] about to restart ${targetKey}`);
         this.scene.manager.getScene(targetKey)?.scene.restart();
+        console.log(`[pause-storm-debug] restart returned for ${targetKey}`);
       }
     } catch (err) {
       console.error('[LayoutEditor] Save failed:', err);

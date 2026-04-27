@@ -1,0 +1,55 @@
+{
+  "agent": "c1-pause-storm-phase1-instrumentation",
+  "ts": "2026-04-27T12:00:00Z",
+  "status": "complete",
+  "verdict_tag": "static-only",
+  "phase_1_only": true,
+  "phase_2_intentionally_skipped": true,
+  "files_edited": ["src/renderer/game/scenes/LayoutEditorOverlayScene.js"],
+  "log_points_added": [
+    {
+      "category": "save_handler_entry",
+      "line": 281,
+      "snippet": "console.log(`[pause-storm-debug] _save entered at ${Date.now()} layoutAssetKey=${this._cfg?.layoutAssetKey} targetKey=${this._target?.scene?.key}`);"
+    },
+    {
+      "category": "scene_restart_call_site_before",
+      "line": 299,
+      "snippet": "console.log(`[pause-storm-debug] about to restart ${targetKey}`);"
+    },
+    {
+      "category": "scene_restart_call_site_after",
+      "line": 301,
+      "snippet": "console.log(`[pause-storm-debug] restart returned for ${targetKey}`);"
+    },
+    {
+      "category": "scene_manager_iteration",
+      "line": 70,
+      "snippet": "console.log(`[pause-storm-debug] iterating manager scenes at _findActiveLocal: count=${all.length}`);"
+    },
+    {
+      "category": "exit_edit_mode_entry",
+      "line": 112,
+      "snippet": "console.log(`[pause-storm-debug] _exitEditMode at ${Date.now()} target=${this._target?.scene?.key}`);"
+    },
+    {
+      "category": "pause_or_resume_call_site",
+      "line": "none found",
+      "snippet": "Grep for `pause(` and `resume(` in LayoutEditorOverlayScene.js returned no matches — confirming the warning storm is not produced from a direct pause/resume loop in this file. The iteration trigger must be downstream of `scene.restart()` (likely Phaser core or another scene's lifecycle hook). Phase 2 will need to follow the restart() teardown chain."
+    }
+  ],
+  "log_count_grep_result": 5,
+  "build_result": "PASS in 11.16s",
+  "scope_evidence": {
+    "single_file_modified": "git status --short shows LayoutEditorOverlayScene.js as the only file I edited. (Two other tracked files — .claude/swarm/state.json and .claude/swarm/reports/daytime-2026-04-27-v2-progress.md — were modified by the swarm runtime, not by this agent; git diff confirms my +5 lines are scoped to LayoutEditorOverlayScene.js exclusively.)",
+    "no_other_edits": "no method renames, no removed code, no Phase 2 fixes — only 5 inline console.log inserts totaling +5 lines"
+  },
+  "section_8_declaration": {
+    "environmental_primitives_consulted": "none",
+    "progression_primitives_updated": "none — read-only console.log instrumentation",
+    "act_1_to_3_scaling_strategy": "dev tool, not act-bound — applies uniformly to all editable scenes"
+  },
+  "user_runtime_protocol": "1. npm run dev, 2. Open game, 3. Press F2 to enter editor on any opted-in scene, 4. Drag any layout shape, 5. Hit Save, 6. Open DevTools console, 7. Filter by '[pause-storm-debug]', 8. Read the sequence of fired log points — the gap before the pause warnings reveals which iteration is firing them. Paste log output back to start Phase 2 dispatch.",
+  "needs_runtime_validation": true,
+  "notes": "Phase 1 instrumentation only. Phase 2 (the actual fix) is gated on user reading the logs first — do not pre-empt it. Diagnostic logs use the consistent prefix '[pause-storm-debug]' so the user can DevTools-filter cleanly. All logs include enough context (timestamp, scene key, count) to identify which call path fires the warning storm. Notable static finding: no pause()/resume() call sites exist in LayoutEditorOverlayScene.js itself — the warning storm must originate from code reachable via `scene.restart()` (Phaser core teardown or another scene's shutdown hook), so the runtime log sequence will pinpoint whether the warnings interleave between 'about to restart' and 'restart returned' (synchronous Phaser internal) vs. fire after both (async/deferred via another scene)."
+}

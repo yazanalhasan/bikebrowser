@@ -5,9 +5,33 @@
   "current_pod_focus": "Daytime Autonomous V2 (bug-fix Phase-1 prep)",
   "completed": [
     {
+      "agent": "c1-pause-storm-phase1-instrumentation",
+      "ts": "2026-04-27T12:00:00Z",
+      "commit": null,
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/c1-pause-storm-phase1-instrumentation-2026-04-27T12-00-00Z.json",
+      "verdict_tag": "static-only",
+      "phase_1_only": true,
+      "phase_2_intentionally_skipped": true,
+      "needs_runtime_validation": true,
+      "user_directive": "Daytime V2 queue dispatch C1 — Bug 3 (pause storm) Phase 1 only. User reads logs tonight + dispatches Phase 2 fix supervised.",
+      "section_8_declaration": {
+        "environmental_primitives_consulted": "none",
+        "progression_primitives_updated": "none — read-only console.log instrumentation",
+        "act_1_to_3_scaling_strategy": "dev tool, not act-bound"
+      },
+      "log_points_added": 5,
+      "log_count_grep_verified": "grep -c '\\[pause-storm-debug\\]' src/renderer/game/scenes/LayoutEditorOverlayScene.js = 5",
+      "diagnostic_finding": "No pause()/resume() call sites exist in LayoutEditorOverlayScene.js itself — warning storm originates downstream of scene.restart(). Tonight's runtime log will reveal whether warnings interleave between 'about to restart' and 'restart returned' (synchronous Phaser core teardown) or fire after both (async/deferred via another scene's shutdown hook). This determines Phase 2 scope: a Phaser-core workaround vs. tracking a specific scene's lifecycle hook.",
+      "user_runtime_protocol": "1. npm run dev, 2. F2 into editor on any opted-in scene, 3. Drag a layout shape, 4. Hit Save, 5. DevTools console filter '[pause-storm-debug]', 6. Read fired log sequence + the gap where pause warnings appear. Paste output back to dispatch Phase 2.",
+      "notes": "Smallest possible dispatch — +5 lines, single file, no other edits. Static-only verdict. Build PASS 11.16s. Scope evidence: only LayoutEditorOverlayScene.js modified by worker (state.json + progress.md were pre-existing orchestration-file modifications from earlier in this V2 session, not worker output)."
+    },
+    {
       "agent": "phaser-lab-notebook-pipeline",
       "ts": "2026-04-27T11:48:00Z",
-      "commit": null,
+      "commit": "2cff42d",
       "review_verdict": "PASS",
       "review_status": "orchestrator_completed",
       "review_receipt": null,
@@ -728,6 +752,6 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 42,
+  "dispatch_count": 43,
   "session_token_estimate": 0
 }
