@@ -1,0 +1,127 @@
+{
+  "scene": "CommunityPoolScene",
+  "version": 1,
+  "objects": {
+    "ground_deck": {
+      "x": 400,
+      "y": 300,
+      "w": 800,
+      "h": 600,
+      "_note": "Original: x = width/2 (800), y = height/2 (600). Full background concrete."
+    },
+    "grass_border_top": { "x": 0, "y": 0, "w": 800, "h": 25,
+      "_note": "Original: fillRect(0, 0, width, 25). width=800." },
+    "grass_border_bottom": { "x": 0, "y": 575, "w": 800, "h": 25,
+      "_note": "Original: fillRect(0, height-25, width, 25). height=600." },
+    "grass_border_left": { "x": 0, "y": 0, "w": 25, "h": 600,
+      "_note": "Original: fillRect(0, 0, 25, height). height=600." },
+    "grass_border_right": { "x": 775, "y": 0, "w": 25, "h": 600,
+      "_note": "Original: fillRect(width-25, 0, 25, height). width=800." },
+    "pool_deck": {
+      "x": 400,
+      "y": 290,
+      "w": 500,
+      "h": 280,
+      "_note": "Original: x = width/2 (800), y = height/2-10 (600)."
+    },
+    "pool_water": {
+      "x": 400,
+      "y": 290,
+      "w": 340,
+      "h": 180,
+      "_note": "Original: x = width/2 (800), y = height/2-10 (600)."
+    },
+    "pool_wall": {
+      "x": 400,
+      "y": 290,
+      "w": 330,
+      "h": 170,
+      "_note": "Original: addWall(poolX, poolY, poolW-10, poolH-10). poolW=340, poolH=180."
+    },
+    "fence_top": {
+      "x": 400,
+      "y": 35,
+      "w": 740,
+      "h": 8,
+      "_note": "Original: x = width/2 (800), w = width-60 (800)."
+    },
+    "fence_left": {
+      "x": 35,
+      "y": 300,
+      "w": 8,
+      "h": 540,
+      "_note": "Original: y = height/2 (600), h = height-60 (600)."
+    },
+    "fence_right": {
+      "x": 765,
+      "y": 300,
+      "w": 8,
+      "h": 540,
+      "_note": "Original: x = width-35 (800), y = height/2 (600), h = height-60 (600)."
+    },
+    "fence_bottom_west": {
+      "x": 180,
+      "y": 565,
+      "w": 300,
+      "h": 8,
+      "_note": "Original: y = height-35 (600)."
+    },
+    "fence_bottom_east": {
+      "x": 620,
+      "y": 565,
+      "w": 300,
+      "h": 8,
+      "_note": "Original: y = height-35 (600)."
+    },
+    "fence_posts": {
+      "x_start": 50,
+      "x_step": 60,
+      "y_top": 35,
+      "y_bottom": 565,
+      "w": 4,
+      "h": 12,
+      "gap_min_x": 330,
+      "gap_max_x": 470,
+      "_note": "Loop: for x=50; x<800; x+=60. Bottom posts skipped when 330<x<470 (entrance gap). y_bottom = height-35 (600)."
+    },
+    "lounge_chairs": [
+      { "x": 140, "y": 180 },
+      { "x": 140, "y": 260 },
+      { "x": 140, "y": 340 },
+      { "x": 660, "y": 180 },
+      { "x": 660, "y": 260 },
+      { "x": 660, "y": 340 }
+    ],
+    "lounge_chair_size": { "w": 36, "h": 14 },
+    "lifeguard_chair": { "x": 720, "y": 160, "w": 24, "h": 30 },
+    "lifeguard_label": { "x": 720, "y": 150 },
+    "slide": {
+      "x": 500,
+      "y": 180,
+      "w": 30,
+      "h": 30,
+      "_note": "Original: x = poolX+100 (400+100), y = poolY-poolH/2-20 (290-90-20)."
+    },
+    "umbrella_left": { "x": 140, "y": 140 },
+    "umbrella_right": { "x": 660, "y": 140 },
+    "interact_pool_rules": { "x": 100, "y": 80 },
+    "interact_diving_board": {
+      "x": 300,
+      "y": 185,
+      "_note": "Original: x = poolX-100 (400-100), y = poolY-poolH/2-15 (290-90-15)."
+    },
+    "interact_towel_rack": { "x": 700, "y": 420 },
+    "scene_title": {
+      "x": 400,
+      "y": 55,
+      "_note": "Original: x = width/2 (800)."
+    },
+    "exit_south": {
+      "x": 400,
+      "y": 586,
+      "w": 140,
+      "h": 28,
+      "_note": "Original: x = width/2 (800), y = height-14 (600)."
+    }
+  }
+}

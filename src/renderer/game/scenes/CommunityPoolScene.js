@@ -14,8 +14,14 @@
 
 import LocalSceneBase from './LocalSceneBase.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { loadLayout } from '../utils/loadLayout.js';
 
 export default class CommunityPoolScene extends LocalSceneBase {
+  static layoutEditorConfig = {
+    layoutAssetKey: 'communityPoolLayout',
+    layoutPath: 'layouts/community-pool.layout.json',
+  };
+
   constructor() {
     super('CommunityPoolScene');
   }
@@ -24,27 +30,32 @@ export default class CommunityPoolScene extends LocalSceneBase {
     return { width: 800, height: 600 };
   }
 
+  preload() {
+    super.preload?.();
+    this.load.json('communityPoolLayout', 'layouts/community-pool.layout.json');
+  }
+
   createWorld() {
-    const { width, height } = this.getWorldSize();
+    this.layout = loadLayout(this, 'communityPoolLayout');
 
     // === GROUND ===
     // Concrete deck (full background)
-    this.add.rectangle(width / 2, height / 2, width, height, 0xd6d2c4);
+    this.add.rectangle(this.layout.ground_deck.x, this.layout.ground_deck.y, this.layout.ground_deck.w, this.layout.ground_deck.h, 0xd6d2c4);
 
     // Grass border outside the fence
     const grassGfx = this.add.graphics();
     grassGfx.fillStyle(0x7cb342, 1);
-    grassGfx.fillRect(0, 0, width, 25);
-    grassGfx.fillRect(0, height - 25, width, 25);
-    grassGfx.fillRect(0, 0, 25, height);
-    grassGfx.fillRect(width - 25, 0, 25, height);
+    grassGfx.fillRect(this.layout.grass_border_top.x, this.layout.grass_border_top.y, this.layout.grass_border_top.w, this.layout.grass_border_top.h);
+    grassGfx.fillRect(this.layout.grass_border_bottom.x, this.layout.grass_border_bottom.y, this.layout.grass_border_bottom.w, this.layout.grass_border_bottom.h);
+    grassGfx.fillRect(this.layout.grass_border_left.x, this.layout.grass_border_left.y, this.layout.grass_border_left.w, this.layout.grass_border_left.h);
+    grassGfx.fillRect(this.layout.grass_border_right.x, this.layout.grass_border_right.y, this.layout.grass_border_right.w, this.layout.grass_border_right.h);
 
     // Pool deck (lighter area around pool)
-    this.add.rectangle(width / 2, height / 2 - 10, 500, 280, 0xe8e0d0);
+    this.add.rectangle(this.layout.pool_deck.x, this.layout.pool_deck.y, this.layout.pool_deck.w, this.layout.pool_deck.h, 0xe8e0d0);
 
     // === POOL (water collision) ===
-    const poolX = width / 2, poolY = height / 2 - 10;
-    const poolW = 340, poolH = 180;
+    const poolX = this.layout.pool_water.x, poolY = this.layout.pool_water.y;
+    const poolW = this.layout.pool_water.w, poolH = this.layout.pool_water.h;
     // Pool water
     this.add.rectangle(poolX, poolY, poolW, poolH, 0x42a5f5);
     // Pool border
@@ -57,54 +68,55 @@ export default class CommunityPoolScene extends LocalSceneBase {
       poolGfx.strokeRect(poolX - poolW / 2 + 10, ly, poolW - 20, 0);
     }
     // Pool water collision
-    this.addWall(poolX, poolY, poolW - 10, poolH - 10);
+    this.addWall(this.layout.pool_wall.x, this.layout.pool_wall.y, this.layout.pool_wall.w, this.layout.pool_wall.h);
 
     // === FENCE (perimeter) ===
     const fenceColor = 0x9e9e9e;
     // Top
-    this.addVisibleWall(width / 2, 35, width - 60, 8, fenceColor, 0x757575);
+    this.addVisibleWall(this.layout.fence_top.x, this.layout.fence_top.y, this.layout.fence_top.w, this.layout.fence_top.h, fenceColor, 0x757575);
     // Left
-    this.addVisibleWall(35, height / 2, 8, height - 60, fenceColor, 0x757575);
+    this.addVisibleWall(this.layout.fence_left.x, this.layout.fence_left.y, this.layout.fence_left.w, this.layout.fence_left.h, fenceColor, 0x757575);
     // Right
-    this.addVisibleWall(width - 35, height / 2, 8, height - 60, fenceColor, 0x757575);
+    this.addVisibleWall(this.layout.fence_right.x, this.layout.fence_right.y, this.layout.fence_right.w, this.layout.fence_right.h, fenceColor, 0x757575);
     // Bottom (gap for entrance)
-    this.addVisibleWall(180, height - 35, 300, 8, fenceColor, 0x757575);
-    this.addVisibleWall(620, height - 35, 300, 8, fenceColor, 0x757575);
+    this.addVisibleWall(this.layout.fence_bottom_west.x, this.layout.fence_bottom_west.y, this.layout.fence_bottom_west.w, this.layout.fence_bottom_west.h, fenceColor, 0x757575);
+    this.addVisibleWall(this.layout.fence_bottom_east.x, this.layout.fence_bottom_east.y, this.layout.fence_bottom_east.w, this.layout.fence_bottom_east.h, fenceColor, 0x757575);
 
     // Fence posts
-    for (let x = 50; x < width; x += 60) {
-      this.add.rectangle(x, 35, 4, 12, 0x757575).setDepth(1);
-      if (x < 330 || x > 470) {
-        this.add.rectangle(x, height - 35, 4, 12, 0x757575).setDepth(1);
+    const fp = this.layout.fence_posts;
+    for (let x = fp.x_start; x < this.getWorldSize().width; x += fp.x_step) {
+      this.add.rectangle(x, fp.y_top, fp.w, fp.h, 0x757575).setDepth(1);
+      if (x < fp.gap_min_x || x > fp.gap_max_x) {
+        this.add.rectangle(x, fp.y_bottom, fp.w, fp.h, 0x757575).setDepth(1);
       }
     }
 
     // === LOUNGE CHAIRS ===
-    const loungeSpots = [[140, 180], [140, 260], [140, 340], [660, 180], [660, 260], [660, 340]];
-    for (const [lx, ly] of loungeSpots) {
-      this.add.rectangle(lx, ly, 36, 14, 0xf5f5f5).setStrokeStyle(1, 0xbdbdbd).setDepth(1);
-      this.addWall(lx, ly, 36, 14);
+    const loungeSpots = this.layout.lounge_chairs;
+    for (const { x: lx, y: ly } of loungeSpots) {
+      this.add.rectangle(lx, ly, this.layout.lounge_chair_size.w, this.layout.lounge_chair_size.h, 0xf5f5f5).setStrokeStyle(1, 0xbdbdbd).setDepth(1);
+      this.addWall(lx, ly, this.layout.lounge_chair_size.w, this.layout.lounge_chair_size.h);
     }
 
     // === LIFEGUARD CHAIR (east side) ===
-    this.add.rectangle(720, 160, 24, 30, 0xffa726).setStrokeStyle(2, 0xf57c00).setDepth(2);
-    this.add.text(720, 150, '🏖️', { fontSize: '18px' }).setOrigin(0.5).setDepth(3);
-    this.addWall(720, 160, 24, 30);
+    this.add.rectangle(this.layout.lifeguard_chair.x, this.layout.lifeguard_chair.y, this.layout.lifeguard_chair.w, this.layout.lifeguard_chair.h, 0xffa726).setStrokeStyle(2, 0xf57c00).setDepth(2);
+    this.add.text(this.layout.lifeguard_label.x, this.layout.lifeguard_label.y, '🏖️', { fontSize: '18px' }).setOrigin(0.5).setDepth(3);
+    this.addWall(this.layout.lifeguard_chair.x, this.layout.lifeguard_chair.y, this.layout.lifeguard_chair.w, this.layout.lifeguard_chair.h);
 
     // === SLIDE (north side of pool) ===
-    this.add.rectangle(poolX + 100, poolY - poolH / 2 - 20, 30, 30, 0x42a5f5).setStrokeStyle(2, 0x1e88e5).setDepth(2);
-    this.add.text(poolX + 100, poolY - poolH / 2 - 20, '🛝', { fontSize: '22px' }).setOrigin(0.5).setDepth(3);
-    this.addWall(poolX + 100, poolY - poolH / 2 - 20, 30, 30);
+    this.add.rectangle(this.layout.slide.x, this.layout.slide.y, this.layout.slide.w, this.layout.slide.h, 0x42a5f5).setStrokeStyle(2, 0x1e88e5).setDepth(2);
+    this.add.text(this.layout.slide.x, this.layout.slide.y, '🛝', { fontSize: '22px' }).setOrigin(0.5).setDepth(3);
+    this.addWall(this.layout.slide.x, this.layout.slide.y, this.layout.slide.w, this.layout.slide.h);
 
     // === UMBRELLA (decorative) ===
-    this.add.text(140, 140, '⛱️', { fontSize: '28px' }).setOrigin(0.5).setDepth(3);
-    this.add.text(660, 140, '⛱️', { fontSize: '28px' }).setOrigin(0.5).setDepth(3);
+    this.add.text(this.layout.umbrella_left.x, this.layout.umbrella_left.y, '⛱️', { fontSize: '28px' }).setOrigin(0.5).setDepth(3);
+    this.add.text(this.layout.umbrella_right.x, this.layout.umbrella_right.y, '⛱️', { fontSize: '28px' }).setOrigin(0.5).setDepth(3);
 
     // === INTERACTABLES ===
 
     // Pool rules sign
     this.addInteractable({
-      x: 100, y: 80,
+      x: this.layout.interact_pool_rules.x, y: this.layout.interact_pool_rules.y,
       label: 'Pool Rules',
       icon: '📋',
       radius: 55,
@@ -119,7 +131,7 @@ export default class CommunityPoolScene extends LocalSceneBase {
 
     // Diving board
     this.addInteractable({
-      x: poolX - 100, y: poolY - poolH / 2 - 15,
+      x: this.layout.interact_diving_board.x, y: this.layout.interact_diving_board.y,
       label: 'Diving Board',
       icon: '🤿',
       radius: 55,
@@ -134,7 +146,7 @@ export default class CommunityPoolScene extends LocalSceneBase {
 
     // Towel rack
     this.addInteractable({
-      x: 700, y: 420,
+      x: this.layout.interact_towel_rack.x, y: this.layout.interact_towel_rack.y,
       label: 'Towel Rack',
       icon: '🧴',
       radius: 50,
@@ -148,15 +160,15 @@ export default class CommunityPoolScene extends LocalSceneBase {
     });
 
     // === SCENE TITLE ===
-    this.add.text(width / 2, 55, '🏊 Community Pool', {
+    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🏊 Community Pool', {
       fontSize: '20px', fontFamily: 'sans-serif', color: '#0d47a1',
       fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(5);
 
     // === EXIT (south gate → overworld) ===
     this.addExit({
-      x: width / 2, y: height - 14,
-      width: 140, height: 28,
+      x: this.layout.exit_south.x, y: this.layout.exit_south.y,
+      width: this.layout.exit_south.w, height: this.layout.exit_south.h,
       targetScene: 'OverworldScene',
       targetSpawn: 'fromCommunityPool',
       label: '🗺️ Leave Pool ⬇',

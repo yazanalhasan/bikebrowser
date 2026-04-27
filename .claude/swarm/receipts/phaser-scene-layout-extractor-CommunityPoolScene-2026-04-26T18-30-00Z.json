@@ -1,0 +1,279 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "status": "PASS",
+  "targetSceneKey": "CommunityPoolScene",
+  "targetSceneFile": "src/renderer/game/scenes/CommunityPoolScene.js",
+  "layoutAssetKey": "communityPoolLayout",
+  "layoutPath": "layouts/community-pool.layout.json",
+  "timestamp": "2026-04-26T18:30:00Z",
+  "canvas": { "width": 800, "height": 600 },
+  "files_changed": [
+    {
+      "file": "src/renderer/game/scenes/CommunityPoolScene.js",
+      "action": "edited",
+      "description": "Added loadLayout import, preload() method, layoutEditorConfig static property, replaced all literal coordinates with this.layout.* references."
+    },
+    {
+      "file": "public/layouts/community-pool.layout.json",
+      "action": "created",
+      "description": "26 layout objects extracted from CommunityPoolScene. 127 lines total (under 200-line limit)."
+    },
+    {
+      "file": "src/renderer/game/utils/loadLayout.js",
+      "action": "skipped",
+      "description": "Already existed from prior dispatch — idempotent."
+    },
+    {
+      "file": "CLAUDE.md",
+      "action": "skipped",
+      "description": "Layout system rule already present — idempotent."
+    }
+  ],
+  "layout_objects_extracted": 26,
+  "layout_object_names": [
+    "ground_deck",
+    "grass_border_top",
+    "grass_border_bottom",
+    "grass_border_left",
+    "grass_border_right",
+    "pool_deck",
+    "pool_water",
+    "pool_wall",
+    "fence_top",
+    "fence_left",
+    "fence_right",
+    "fence_bottom_west",
+    "fence_bottom_east",
+    "fence_posts",
+    "lounge_chairs",
+    "lounge_chair_size",
+    "lifeguard_chair",
+    "lifeguard_label",
+    "slide",
+    "umbrella_left",
+    "umbrella_right",
+    "interact_pool_rules",
+    "interact_diving_board",
+    "interact_towel_rack",
+    "scene_title",
+    "exit_south"
+  ],
+  "self_audit": {
+    "literal_inventory": [
+      {
+        "original_line": 32,
+        "expression": "this.add.rectangle(width/2, height/2, width, height, 0xd6d2c4)",
+        "resolved": "x=400, y=300, w=800, h=600",
+        "json_key": "ground_deck",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 37,
+        "expression": "grassGfx.fillRect(0, 0, width, 25)",
+        "resolved": "x=0, y=0, w=800, h=25",
+        "json_key": "grass_border_top",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 38,
+        "expression": "grassGfx.fillRect(0, height-25, width, 25)",
+        "resolved": "x=0, y=575, w=800, h=25",
+        "json_key": "grass_border_bottom",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 39,
+        "expression": "grassGfx.fillRect(0, 0, 25, height)",
+        "resolved": "x=0, y=0, w=25, h=600",
+        "json_key": "grass_border_left",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 40,
+        "expression": "grassGfx.fillRect(width-25, 0, 25, height)",
+        "resolved": "x=775, y=0, w=25, h=600",
+        "json_key": "grass_border_right",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 43,
+        "expression": "this.add.rectangle(width/2, height/2-10, 500, 280, 0xe8e0d0)",
+        "resolved": "x=400, y=290, w=500, h=280",
+        "json_key": "pool_deck",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": "46-47",
+        "expression": "poolX=width/2=400, poolY=height/2-10=290, poolW=340, poolH=180",
+        "resolved": "pool_water: x=400, y=290, w=340, h=180",
+        "json_key": "pool_water",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 49,
+        "expression": "this.add.rectangle(poolX, poolY, poolW, poolH, 0x42a5f5)",
+        "resolved": "driven by pool_water in JSON",
+        "json_key": "pool_water",
+        "disposition": "extracted — reuses pool_water key; poolX/poolY/poolW/poolH local vars now read from layout"
+      },
+      {
+        "original_line": "53-58",
+        "expression": "poolGfx.strokeRect/strokeRect (border and lane lines derived from poolX/poolY/poolW/poolH)",
+        "resolved": "Dynamic draw calls using local vars poolX/poolY/poolW/poolH, which are now read from this.layout.pool_water",
+        "json_key": "pool_water",
+        "disposition": "left in code (dynamic graphics derived from pool anchor) — anchor captured in pool_water"
+      },
+      {
+        "original_line": 60,
+        "expression": "this.addWall(poolX, poolY, poolW-10, poolH-10)",
+        "resolved": "x=400, y=290, w=330, h=170",
+        "json_key": "pool_wall",
+        "disposition": "extracted — pre-resolved poolW-10 and poolH-10 into literal values"
+      },
+      {
+        "original_line": 65,
+        "expression": "this.addVisibleWall(width/2, 35, width-60, 8, ...)",
+        "resolved": "x=400, y=35, w=740, h=8",
+        "json_key": "fence_top",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 67,
+        "expression": "this.addVisibleWall(35, height/2, 8, height-60, ...)",
+        "resolved": "x=35, y=300, w=8, h=540",
+        "json_key": "fence_left",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 69,
+        "expression": "this.addVisibleWall(width-35, height/2, 8, height-60, ...)",
+        "resolved": "x=765, y=300, w=8, h=540",
+        "json_key": "fence_right",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 71,
+        "expression": "this.addVisibleWall(180, height-35, 300, 8, ...)",
+        "resolved": "x=180, y=565, w=300, h=8",
+        "json_key": "fence_bottom_west",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 72,
+        "expression": "this.addVisibleWall(620, height-35, 300, 8, ...)",
+        "resolved": "x=620, y=565, w=300, h=8",
+        "json_key": "fence_bottom_east",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": "75-80",
+        "expression": "for (let x=50; x<width; x+=60) — post positions at y=35 and y=height-35=565, size 4x12, gap [330,470]",
+        "resolved": "fence_posts: x_start=50, x_step=60, y_top=35, y_bottom=565, w=4, h=12, gap_min_x=330, gap_max_x=470",
+        "json_key": "fence_posts",
+        "disposition": "extracted — loop bounds and geometry hoisted to JSON; loop body left in code reading fp.* fields"
+      },
+      {
+        "original_line": 83,
+        "expression": "const loungeSpots = [[140,180],[140,260],[140,340],[660,180],[660,260],[660,340]]",
+        "resolved": "array of 6 {x,y} pairs",
+        "json_key": "lounge_chairs",
+        "disposition": "extracted — array hoisted to JSON; loop destructuring changed from [lx,ly] to {x:lx,y:ly}"
+      },
+      {
+        "original_line": 85,
+        "expression": "this.add.rectangle(lx, ly, 36, 14, ...) / this.addWall(lx, ly, 36, 14)",
+        "resolved": "w=36, h=14",
+        "json_key": "lounge_chair_size",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 90,
+        "expression": "this.add.rectangle(720, 160, 24, 30, ...)",
+        "resolved": "x=720, y=160, w=24, h=30",
+        "json_key": "lifeguard_chair",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 91,
+        "expression": "this.add.text(720, 150, '🏖️', ...)",
+        "resolved": "x=720, y=150",
+        "json_key": "lifeguard_label",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": "95-97",
+        "expression": "poolX+100=500, poolY-poolH/2-20=290-90-20=180, size 30x30",
+        "resolved": "x=500, y=180, w=30, h=30",
+        "json_key": "slide",
+        "disposition": "extracted — resolved computed expression; _note records formula"
+      },
+      {
+        "original_line": 100,
+        "expression": "this.add.text(140, 140, '⛱️', ...)",
+        "resolved": "x=140, y=140",
+        "json_key": "umbrella_left",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 101,
+        "expression": "this.add.text(660, 140, '⛱️', ...)",
+        "resolved": "x=660, y=140",
+        "json_key": "umbrella_right",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 107,
+        "expression": "addInteractable({x:100, y:80, ...})",
+        "resolved": "x=100, y=80",
+        "json_key": "interact_pool_rules",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 122,
+        "expression": "addInteractable({x: poolX-100, y: poolY-poolH/2-15, ...}) = x=300, y=185",
+        "resolved": "x=300, y=185",
+        "json_key": "interact_diving_board",
+        "disposition": "extracted — resolved computed expression; _note records formula"
+      },
+      {
+        "original_line": 137,
+        "expression": "addInteractable({x:700, y:420, ...})",
+        "resolved": "x=700, y=420",
+        "json_key": "interact_towel_rack",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": 151,
+        "expression": "this.add.text(width/2, 55, ...)",
+        "resolved": "x=400, y=55",
+        "json_key": "scene_title",
+        "disposition": "extracted"
+      },
+      {
+        "original_line": "157-163",
+        "expression": "addExit({x: width/2, y: height-14, width:140, height:28, ...})",
+        "resolved": "x=400, y=586, w=140, h=28",
+        "json_key": "exit_south",
+        "disposition": "extracted"
+      }
+    ],
+    "positions_left_in_code": [],
+    "unreferenced_json_keys": "NONE (verified by node script — all 26 keys found in scene file)",
+    "leftover_literals_grep": "NONE (grep -E 'this\\.add\\.\\w+\\(\\s*[0-9]+\\s*,' returned empty)",
+    "json_line_count": 127,
+    "json_line_limit": 200,
+    "layoutEditorConfig_verified": true,
+    "bugs_spotted": "None found during extraction."
+  },
+  "notes": [
+    "Scene processed: CommunityPoolScene (800x600 canvas).",
+    "26 layout objects extracted; 0 positions left in code.",
+    "The pool graphics draw calls (strokeRect for border and lane lines, lines 53-58) remain in code because they are dynamic geometry derived from poolX/poolY/poolW/poolH local variables, which are themselves now read from this.layout.pool_water. The anchor is captured; the derived drawing is correct.",
+    "fence_posts loop bounds (x_start, x_step, y_top, y_bottom, gap_min_x, gap_max_x, w, h) were all hoisted to the fence_posts JSON object. The loop body in code now reads fp.* fields.",
+    "lounge_chairs array was hoisted to JSON as an array of {x,y} objects. The for-loop destructuring was updated from [lx,ly] to {x:lx,y:ly} — this is a purely mechanical change with identical runtime behavior.",
+    "loadLayout.js: already existed — skipped (idempotent).",
+    "CLAUDE.md layout system rule: already present — skipped (idempotent).",
+    "layoutEditorConfig added immediately after class opening brace at line 20."
+  ],
+  "suggested_next_agent": "phaser-scene-layout-extractor (next scene) OR code-quality-reviewer"
+}
