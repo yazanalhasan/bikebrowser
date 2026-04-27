@@ -7,7 +7,7 @@
     {
       "agent": "c3-quest-engine-observe-gate",
       "ts": "2026-04-27T12:30:00Z",
-      "commit": null,
+      "commit": "922da63",
       "review_verdict": "PASS",
       "review_status": "orchestrator_completed",
       "review_receipt": null,
