@@ -1,0 +1,99 @@
+{
+  "agent": "phaser-scene-layout-extractor",
+  "status": "PASS",
+  "scene": "MountainScene",
+  "timestamp": "2026-04-26T19:30:00Z",
+  "files_changed": [
+    "src/renderer/game/scenes/MountainScene.js",
+    "public/layouts/mountain.layout.json"
+  ],
+  "idempotent_files": {
+    "loadLayout_js": "already existed — not touched",
+    "CLAUDE_md": "already existed — not touched"
+  },
+  "layout_json": {
+    "path": "public/layouts/mountain.layout.json",
+    "line_count": 86,
+    "object_count": 36
+  },
+  "objects_extracted": [
+    "terrain_snow_peak",
+    "terrain_rocky_upper",
+    "terrain_mid_mountain",
+    "terrain_foothills",
+    "terrain_grassy_base",
+    "path_lower",
+    "path_switchback_right_1",
+    "path_switchback_horizontal_1",
+    "path_switchback_left_1",
+    "path_switchback_horizontal_2",
+    "path_switchback_right_2",
+    "path_switchback_horizontal_3",
+    "path_upper_vertical",
+    "path_upper_horizontal",
+    "wall_top",
+    "wall_left",
+    "wall_right",
+    "cliff_upper_left",
+    "cliff_upper_right",
+    "cliff_mid_left",
+    "cliff_mid_right",
+    "cliff_peak_left",
+    "cliff_peak_right",
+    "boulders (array of 8 entries: x, y, size)",
+    "trees (array of 7 entries: x, y)",
+    "eagle",
+    "goat",
+    "interact_cave",
+    "interact_minerals",
+    "interact_summit",
+    "interact_spring",
+    "scene_title",
+    "exit_south"
+  ],
+  "positions_left_in_code": [
+    {
+      "description": "Eagle tween target: x: 800, y: 80 — tween destination is dynamic (animates per frame), not a static anchor.",
+      "line": "eagle tween targets block"
+    },
+    {
+      "description": "Goat tween target: x: 250, y: 330 — tween destination is dynamic (animates per frame), not a static anchor.",
+      "line": "goat tween targets block"
+    },
+    {
+      "description": "Terrain blending graphics: fillTriangle calls use loop-computed x values with Math.random() offsets — fully exempt (randomized per-frame-zero draw).",
+      "line": "blendGfx loop blocks"
+    },
+    {
+      "description": "Snow graphics: fillCircle calls use Math.random() offsets — fully exempt (decorative randomized placement).",
+      "line": "snowGfx loop block"
+    },
+    {
+      "description": "Boulder wall: size * 0.7 and size * 0.6 — derived from layout's `size` field; derivation stays in code as specified.",
+      "line": "addWall inside boulders loop"
+    },
+    {
+      "description": "Tree wall: 18, 18 — these are fixed-size wall extents for ALL trees (not per-tree literals). Left as literal per-rule (not a position/size extracted from the scene visual, but a physics wall size constant). Could be hoisted if desired.",
+      "line": "addWall inside trees loop"
+    }
+  ],
+  "self_audit": {
+    "leftover_literals_grep": "CLEAN — grep -E 'this\\.add\\.\\w+\\(\\s*[0-9]+\\s*,' returned zero matches",
+    "all_keys_referenced": "PASS — node script confirmed ALL KEYS REFERENCED OK",
+    "json_valid": "PASS — node JSON.parse succeeded",
+    "json_line_count": "86 (under 200 limit)",
+    "layoutEditorConfig": "PRESENT at line 21",
+    "diff_scope": "Import + layoutEditorConfig + preload() + loadLayout call + position/size replacements only — zero logic changes"
+  },
+  "notes": [
+    "MountainScene processed. Canvas size 1000x900 per getWorldSize().",
+    "33 named objects + 1 boulders array (8 entries) + 1 trees array (7 entries) = 36 total JSON entries.",
+    "Five terrain rectangles used width/2 and width — resolved to 500 and 1000, noted with _note.",
+    "Three boundary walls used width/2, height/2, width, height — all resolved and noted.",
+    "Nine path segments from pathGfx.fillRoundedRect were extracted (not this.add.* but static coordinate literals).",
+    "Eagle and goat tween START positions extracted; tween TARGET positions (x:800/y:80 and x:250/y:330) left in code as they are animation endpoints, not static anchors.",
+    "loadLayout.js and CLAUDE.md were not touched (already existed from first dispatch).",
+    "No bugs found during extraction."
+  ],
+  "suggested_next_agent": "phaser-scene-layout-extractor (next scene) or code-quality-reviewer"
+}

@@ -15,8 +15,14 @@ import LocalSceneBase from './LocalSceneBase.js';
 import { saveGame } from '../systems/saveSystem.js';
 import QUESTS from '../data/quests.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { loadLayout } from '../utils/loadLayout.js';
 
 export default class MountainScene extends LocalSceneBase {
+  static layoutEditorConfig = {
+    layoutAssetKey: 'mountainLayout',
+    layoutPath: 'layouts/mountain.layout.json',
+  };
+
   constructor() {
     super('MountainScene');
   }
@@ -25,20 +31,27 @@ export default class MountainScene extends LocalSceneBase {
     return { width: 1000, height: 900 };
   }
 
+  preload() {
+    super.preload?.();
+    this.load.json('mountainLayout', 'layouts/mountain.layout.json');
+  }
+
   createWorld() {
+    this.layout = loadLayout(this, 'mountainLayout');
+
     const { width, height } = this.getWorldSize();
 
     // === GROUND (terrain zones, top to bottom) ===
     // Snow-capped peak (very top)
-    this.add.rectangle(width / 2, 60, width, 120, 0xeceff1);
+    this.add.rectangle(this.layout.terrain_snow_peak.x, this.layout.terrain_snow_peak.y, this.layout.terrain_snow_peak.w, this.layout.terrain_snow_peak.h, 0xeceff1);
     // Rocky upper mountain
-    this.add.rectangle(width / 2, 200, width, 160, 0x9e9e9e);
+    this.add.rectangle(this.layout.terrain_rocky_upper.x, this.layout.terrain_rocky_upper.y, this.layout.terrain_rocky_upper.w, this.layout.terrain_rocky_upper.h, 0x9e9e9e);
     // Mid-mountain (brown/grey rock)
-    this.add.rectangle(width / 2, 380, width, 200, 0x8d6e63);
+    this.add.rectangle(this.layout.terrain_mid_mountain.x, this.layout.terrain_mid_mountain.y, this.layout.terrain_mid_mountain.w, this.layout.terrain_mid_mountain.h, 0x8d6e63);
     // Foothills (green-brown transition)
-    this.add.rectangle(width / 2, 560, width, 160, 0xa5956b);
+    this.add.rectangle(this.layout.terrain_foothills.x, this.layout.terrain_foothills.y, this.layout.terrain_foothills.w, this.layout.terrain_foothills.h, 0xa5956b);
     // Grassy base
-    this.add.rectangle(width / 2, 740, width, 320, 0x7cb342);
+    this.add.rectangle(this.layout.terrain_grassy_base.x, this.layout.terrain_grassy_base.y, this.layout.terrain_grassy_base.w, this.layout.terrain_grassy_base.h, 0x7cb342);
 
     // Terrain blending
     const blendGfx = this.add.graphics();
@@ -55,50 +68,41 @@ export default class MountainScene extends LocalSceneBase {
     const pathGfx = this.add.graphics();
     pathGfx.fillStyle(0xc9a85c, 0.7);
     // Lower path
-    pathGfx.fillRoundedRect(350, 750, 300, 35, 8);
+    pathGfx.fillRoundedRect(this.layout.path_lower.x, this.layout.path_lower.y, this.layout.path_lower.w, this.layout.path_lower.h, 8);
     // Switchback up
-    pathGfx.fillRoundedRect(600, 600, 35, 180, 8);
-    pathGfx.fillRoundedRect(350, 580, 280, 35, 8);
-    pathGfx.fillRoundedRect(340, 430, 35, 180, 8);
-    pathGfx.fillRoundedRect(340, 420, 250, 35, 8);
-    pathGfx.fillRoundedRect(560, 300, 35, 150, 8);
-    pathGfx.fillRoundedRect(400, 290, 190, 30, 8);
+    pathGfx.fillRoundedRect(this.layout.path_switchback_right_1.x, this.layout.path_switchback_right_1.y, this.layout.path_switchback_right_1.w, this.layout.path_switchback_right_1.h, 8);
+    pathGfx.fillRoundedRect(this.layout.path_switchback_horizontal_1.x, this.layout.path_switchback_horizontal_1.y, this.layout.path_switchback_horizontal_1.w, this.layout.path_switchback_horizontal_1.h, 8);
+    pathGfx.fillRoundedRect(this.layout.path_switchback_left_1.x, this.layout.path_switchback_left_1.y, this.layout.path_switchback_left_1.w, this.layout.path_switchback_left_1.h, 8);
+    pathGfx.fillRoundedRect(this.layout.path_switchback_horizontal_2.x, this.layout.path_switchback_horizontal_2.y, this.layout.path_switchback_horizontal_2.w, this.layout.path_switchback_horizontal_2.h, 8);
+    pathGfx.fillRoundedRect(this.layout.path_switchback_right_2.x, this.layout.path_switchback_right_2.y, this.layout.path_switchback_right_2.w, this.layout.path_switchback_right_2.h, 8);
+    pathGfx.fillRoundedRect(this.layout.path_switchback_horizontal_3.x, this.layout.path_switchback_horizontal_3.y, this.layout.path_switchback_horizontal_3.w, this.layout.path_switchback_horizontal_3.h, 8);
     // Upper path to peak
-    pathGfx.fillRoundedRect(390, 160, 30, 150, 8);
-    pathGfx.fillRoundedRect(390, 150, 200, 28, 8);
+    pathGfx.fillRoundedRect(this.layout.path_upper_vertical.x, this.layout.path_upper_vertical.y, this.layout.path_upper_vertical.w, this.layout.path_upper_vertical.h, 8);
+    pathGfx.fillRoundedRect(this.layout.path_upper_horizontal.x, this.layout.path_upper_horizontal.y, this.layout.path_upper_horizontal.w, this.layout.path_upper_horizontal.h, 8);
 
     // === BOUNDARY WALLS ===
-    this.addWall(width / 2, 0, width, 20);       // top
-    this.addWall(0, height / 2, 20, height);      // left
-    this.addWall(width, height / 2, 20, height);  // right
+    this.addWall(this.layout.wall_top.x, this.layout.wall_top.y, this.layout.wall_top.w, this.layout.wall_top.h);       // top
+    this.addWall(this.layout.wall_left.x, this.layout.wall_left.y, this.layout.wall_left.w, this.layout.wall_left.h);      // left
+    this.addWall(this.layout.wall_right.x, this.layout.wall_right.y, this.layout.wall_right.w, this.layout.wall_right.h);  // right
 
     // === ROCKY CLIFFS (collision walls representing impassable rock) ===
     // Upper mountain barriers (force player to use switchback path)
-    this.addVisibleWall(170, 250, 280, 30, 0x757575, 0x616161);
-    this.addVisibleWall(750, 300, 300, 30, 0x757575, 0x616161);
-    this.addVisibleWall(170, 420, 200, 25, 0x6d4c41, 0x5d4037);
-    this.addVisibleWall(750, 480, 250, 25, 0x6d4c41, 0x5d4037);
+    this.addVisibleWall(this.layout.cliff_upper_left.x, this.layout.cliff_upper_left.y, this.layout.cliff_upper_left.w, this.layout.cliff_upper_left.h, 0x757575, 0x616161);
+    this.addVisibleWall(this.layout.cliff_upper_right.x, this.layout.cliff_upper_right.y, this.layout.cliff_upper_right.w, this.layout.cliff_upper_right.h, 0x757575, 0x616161);
+    this.addVisibleWall(this.layout.cliff_mid_left.x, this.layout.cliff_mid_left.y, this.layout.cliff_mid_left.w, this.layout.cliff_mid_left.h, 0x6d4c41, 0x5d4037);
+    this.addVisibleWall(this.layout.cliff_mid_right.x, this.layout.cliff_mid_right.y, this.layout.cliff_mid_right.w, this.layout.cliff_mid_right.h, 0x6d4c41, 0x5d4037);
     // Peak barriers
-    this.addVisibleWall(250, 130, 180, 25, 0xbdbdbd, 0x9e9e9e);
-    this.addVisibleWall(700, 170, 200, 25, 0xbdbdbd, 0x9e9e9e);
+    this.addVisibleWall(this.layout.cliff_peak_left.x, this.layout.cliff_peak_left.y, this.layout.cliff_peak_left.w, this.layout.cliff_peak_left.h, 0xbdbdbd, 0x9e9e9e);
+    this.addVisibleWall(this.layout.cliff_peak_right.x, this.layout.cliff_peak_right.y, this.layout.cliff_peak_right.w, this.layout.cliff_peak_right.h, 0xbdbdbd, 0x9e9e9e);
 
     // === BOULDERS ===
-    const boulders = [
-      [100, 350, 50], [850, 380, 45], [500, 500, 40],
-      [200, 600, 35], [750, 650, 40], [900, 250, 35],
-      [450, 200, 30], [650, 220, 30],
-    ];
-    for (const [bx, by, size] of boulders) {
+    for (const { x: bx, y: by, size } of this.layout.boulders) {
       this.add.text(bx, by, '🪨', { fontSize: `${size}px` }).setOrigin(0.5).setDepth(3);
       this.addWall(bx, by, size * 0.7, size * 0.6);
     }
 
     // === TREES (foothills only) ===
-    const trees = [
-      [80, 700], [250, 750], [700, 780], [900, 720],
-      [150, 820], [500, 850], [800, 840],
-    ];
-    for (const [tx, ty] of trees) {
+    for (const { x: tx, y: ty } of this.layout.trees) {
       this.add.text(tx, ty, '🌲', { fontSize: '32px' }).setOrigin(0.5).setDepth(3);
       this.addWall(tx, ty, 18, 18);
     }
@@ -111,7 +115,7 @@ export default class MountainScene extends LocalSceneBase {
     }
 
     // === EAGLE (decorative, soaring) ===
-    const eagle = this.add.text(500, 100, '🦅', { fontSize: '26px' }).setOrigin(0.5).setDepth(5);
+    const eagle = this.add.text(this.layout.eagle.x, this.layout.eagle.y, '🦅', { fontSize: '26px' }).setOrigin(0.5).setDepth(5);
     this.tweens.add({
       targets: eagle,
       x: 800, y: 80,
@@ -122,7 +126,7 @@ export default class MountainScene extends LocalSceneBase {
     });
 
     // === MOUNTAIN GOAT (decorative) ===
-    const goat = this.add.text(300, 350, '🐐', { fontSize: '22px' }).setOrigin(0.5).setDepth(4);
+    const goat = this.add.text(this.layout.goat.x, this.layout.goat.y, '🐐', { fontSize: '22px' }).setOrigin(0.5).setDepth(4);
     this.tweens.add({
       targets: goat,
       x: 250, y: 330,
@@ -136,7 +140,7 @@ export default class MountainScene extends LocalSceneBase {
 
     // Cave entrance (upper mountain)
     this.addInteractable({
-      x: 560, y: 170,
+      x: this.layout.interact_cave.x, y: this.layout.interact_cave.y,
       label: 'Cave Entrance',
       icon: '🕳️',
       radius: 60,
@@ -151,7 +155,7 @@ export default class MountainScene extends LocalSceneBase {
 
     // Rare minerals / copper ore
     this.addInteractable({
-      x: 380, y: 350,
+      x: this.layout.interact_minerals.x, y: this.layout.interact_minerals.y,
       label: 'Rare Minerals',
       icon: '💎',
       radius: 55,
@@ -185,7 +189,7 @@ export default class MountainScene extends LocalSceneBase {
 
     // Summit viewpoint
     this.addInteractable({
-      x: 500, y: 55,
+      x: this.layout.interact_summit.x, y: this.layout.interact_summit.y,
       label: 'Summit View',
       icon: '🔭',
       radius: 55,
@@ -200,7 +204,7 @@ export default class MountainScene extends LocalSceneBase {
 
     // Mountain spring
     this.addInteractable({
-      x: 650, y: 550,
+      x: this.layout.interact_spring.x, y: this.layout.interact_spring.y,
       label: 'Mountain Spring',
       icon: '💧',
       radius: 50,
@@ -214,15 +218,15 @@ export default class MountainScene extends LocalSceneBase {
     });
 
     // === SCENE TITLE ===
-    this.add.text(width / 2, 30, '🏔️ Mountain Trail', {
+    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🏔️ Mountain Trail', {
       fontSize: '20px', fontFamily: 'sans-serif', color: '#37474f',
       fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(5);
 
     // === EXIT (south → overworld) ===
     this.addExit({
-      x: width / 2, y: height - 14,
-      width: 160, height: 28,
+      x: this.layout.exit_south.x, y: this.layout.exit_south.y,
+      width: this.layout.exit_south.w, height: this.layout.exit_south.h,
       targetScene: 'OverworldScene',
       targetSpawn: 'fromMountain',
       label: '🗺️ Descend ⬇',
