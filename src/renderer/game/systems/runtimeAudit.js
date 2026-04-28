@@ -330,5 +330,10 @@ export async function runRuntimeAudit({ silent = false } = {}) {
     console.groupEnd();
   }
 
-  return { errors: allErrors, warnings: allWarnings, passed };
+  const result = { errors: allErrors, warnings: allWarnings, passed };
+  // E2E test handle: expose audit result on window for Playwright assertions.
+  if (typeof window !== 'undefined' && import.meta.env?.DEV) {
+    window.__runtimeAuditResult = result;
+  }
+  return result;
 }

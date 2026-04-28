@@ -21,7 +21,10 @@
     "build:electron": "electron-builder",
     "lint": "eslint src --ext js,jsx",
     "tunnel": "cloudflared tunnel run bikebrowser",
-    "check:health": "node scripts/check-health.js"
+    "check:health": "node scripts/check-health.js",
+    "test:e2e": "playwright test",
+    "test:e2e:smoke": "playwright test runtime-audit.smoke",
+    "test:e2e:install": "playwright install chromium"
   },
   "keywords": [
     "electron",

@@ -1,0 +1,58 @@
+{
+  "agent": "general-purpose",
+  "target_subject": "Playwright runtime-audit smoke test infrastructure",
+  "ts": "2026-04-28T09:00:00Z",
+  "status": "complete",
+  "verdict_tag": "test-infrastructure",
+  "commit_hash": "b3cdada0f206a51d1f1fca33f41ea436afe23f61",
+  "files_changed": [
+    { "path": "playwright.config.js", "lines_added": 41, "lines_removed": 0 },
+    { "path": "tests/e2e/helpers/gameBoot.js", "lines_added": 80, "lines_removed": 0 },
+    { "path": "tests/e2e/runtime-audit.smoke.spec.js", "lines_added": 47, "lines_removed": 0 },
+    { "path": "tests/README.md", "lines_added": 110, "lines_removed": 0 },
+    { "path": "src/renderer/game/systems/runtimeAudit.js", "lines_added": 6, "lines_removed": 1 },
+    { "path": "package.json", "lines_added": 4, "lines_removed": 1 },
+    { "path": ".gitignore", "lines_added": 3, "lines_removed": 0 }
+  ],
+  "build": {
+    "result": "pass",
+    "duration_seconds": 10.3,
+    "exit_code": 0
+  },
+  "notes": {
+    "preflight_quotes": {
+      "audit_doc": "Option A — Smallest: data-integrity smoke. A single Playwright test that boots /play, waits for window.__phaserGame to exist, then evaluates ... runRuntimeAudit ... and asserts passed === true with errors.length === 0.",
+      "package_json": "\"playwright\": \"^1.59.1\" — present in devDependencies; no existing test:* npm scripts.",
+      "runtimeAudit_js": "export async function runRuntimeAudit({ silent = false } = {}) { ... return { errors: allErrors, warnings: allWarnings, passed }; } — module returned the audit result but did NOT expose it on window prior to this dispatch.",
+      "progressionReachabilityAudit_js": "progressionReachabilityAudit.js — DEV-only soft-lock detector. Catches the bridge_collapse bug class: a quest is started but the resources/scenes it needs are gated behind that very quest.",
+      "GameContainer_jsx": "if (import.meta.env.DEV) { window.__phaserGame = game; runRuntimeAudit(); } — at GameContainer.jsx:297-300 (file is at src/renderer/game/GameContainer.jsx, not src/renderer/GameContainer.jsx as referenced in the dispatch).",
+      "scripts_check_mjs": "scripts/check-app.mjs uses chromium.launch directly (plain `playwright`, not `playwright/test`) and exits 1 on failure — the existing ad-hoc smoke pattern the audit references.",
+      "swarm_orchestrator_md": "Use `git add <specific files>` ONLY — the orchestrator guardrails warn against blanket adds during parallel dispatches; this dispatch staged only its own files."
+    },
+    "audit_handle_mechanism": "added window.__runtimeAuditResult (5 LOC, DEV-mode-only)",
+    "runtime_audit_modified": "true — added 5 LOC at end of runRuntimeAudit() in src/renderer/game/systems/runtimeAudit.js to assign window.__runtimeAuditResult = result when typeof window !== 'undefined' && import.meta.env?.DEV. Diff: replaced single `return { ... }` line with named-result assignment + DEV-guarded window assignment + return.",
+    "playwright_test_list_output": "Listing tests:\n  [chromium] > runtime-audit.smoke.spec.js:16:7 > runtime audit smoke > runtime audit reports zero errors at boot\nTotal: 1 test in 1 file",
+    "npm_scripts_added": ["test:e2e", "test:e2e:smoke", "test:e2e:install"],
+    "files_created": [
+      "playwright.config.js",
+      "tests/e2e/helpers/gameBoot.js",
+      "tests/e2e/runtime-audit.smoke.spec.js",
+      "tests/README.md"
+    ],
+    "files_modified": [
+      "src/renderer/game/systems/runtimeAudit.js",
+      "package.json",
+      ".gitignore"
+    ],
+    "webserver_command_choice": "Used 'npm run dev:react' (Vite-only) rather than 'npm run dev' (Electron+Vite) per the explicit dispatch decision: 'The smoke test runs against the Vite dev server in chromium, not Electron.' npm run dev would unnecessarily spawn Electron alongside Vite; dev:react is the minimal Vite-only command that matches the design intent.",
+    "playwright_runner": "Used 'playwright/test' (re-exported from the plain `playwright` package as of 1.38+); confirmed via node -e \"require('playwright/test')\" — no new dependencies required.",
+    "parallel_agent_safety": "Did NOT stage .claude/swarm/state.json (parallel orchestrator state) or src/renderer/game/data/discoveryUnlocks.js (other agent's work). Used git add with explicit file list, NOT git add -A.",
+    "known_caveats": [
+      "Test was NOT executed per dispatch rule (npx playwright test --list ONLY). Runtime pass/fail unverified — listed as next-action for the user.",
+      "Chromium browser binary may not be installed; user must run `npm run test:e2e:install` once before first run.",
+      "The smoke test depends on import.meta.env.DEV-only handles; it cannot run against a production build.",
+      "Phaser 3 in headless chromium can occasionally hit WebGL context init issues; if the test fails on `waitForGameBoot`, check the Vite server logs and the trace artifact at playwright-report/.",
+      "playwright.config.js webServer auto-starts `npm run dev:react`. If port 5173 is occupied by a prior dev session that did not fully clean up, reuseExistingServer:true will reuse it; otherwise the test fails fast with a port conflict."
+    ]
+  }
+}

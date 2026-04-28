@@ -21,3 +21,6 @@ performance/
 .cloudflared/
 *.pem
 push-to-github.ps1
+playwright-report/
+test-results/
+playwright/.cache/
