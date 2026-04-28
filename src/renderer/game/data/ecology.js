@@ -76,6 +76,40 @@ export const PLANT_ECOLOGY = {
     biome: 'woodland',
     producesFood: true,
   },
+  agave: {
+    supports: ['rabbit'],
+    predatorsNearby: ['coyote'],
+    pollinators: ['bats', 'insects'],
+    spawnBoost: 0.3,
+    biome: 'desert_scrub',
+    producesFiber: true,
+  },
+  yucca: {
+    supports: [],
+    predatorsNearby: [],
+    pollinators: ['insects'],
+    spawnBoost: 0.3,
+    biome: 'desert_scrub',
+    producesSaponin: true,
+    producesFiber: true,
+  },
+  desert_lavender: {
+    supports: [],
+    predatorsNearby: [],
+    pollinators: ['insects'],
+    spawnBoost: 0.3,
+    biome: 'chaparral',
+    producesMedicine: true,
+  },
+  ephedra: {
+    supports: [],
+    predatorsNearby: [],
+    pollinators: ['insects'],
+    spawnBoost: 0.2,
+    biome: 'chaparral',
+    producesStimulant: true,
+    dangerousAtHighDose: true,
+  },
 };
 
 // ── Animal → Animal relationships (predator chains) ──────────────────────────

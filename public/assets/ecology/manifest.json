@@ -81,6 +81,30 @@
       "scientificName": "Ephedra viridis",
       "interactions": ["observe", "forage"],
       "tags": ["producer", "medicinal", "chaparral"]
+    },
+    "palo_verde": {
+      "file": "plants/palo_verde.png",
+      "type": "plant",
+      "displayName": "Palo Verde",
+      "scientificName": "Parkinsonia microphylla",
+      "interactions": ["observe"],
+      "tags": ["producer", "tree", "shade", "iconic", "sonoran_desert", "supports:rabbit", "supports:quail"]
+    },
+    "juniper": {
+      "file": "plants/juniper.png",
+      "type": "plant",
+      "displayName": "Juniper",
+      "scientificName": "Juniperus osteosperma",
+      "interactions": ["observe", "forage"],
+      "tags": ["producer", "tree", "evergreen", "woodland", "supports:elk", "supports:quail"]
+    },
+    "pinyon": {
+      "file": "plants/pinyon.png",
+      "type": "plant",
+      "displayName": "Pinyon Pine",
+      "scientificName": "Pinus edulis",
+      "interactions": ["observe", "forage"],
+      "tags": ["producer", "tree", "evergreen", "food", "woodland", "supports:elk"]
     }
   },
   "animals": {
@@ -147,6 +171,14 @@
       "scientificName": "Buteo jamaicensis",
       "interactions": ["observe"],
       "tags": ["predator", "bird", "raptor", "diurnal", "eats:rabbit", "eats:kangaroo_rat", "eats:quail", "near:saguaro"]
+    },
+    "elk": {
+      "file": "animals/elk.png",
+      "type": "animal",
+      "displayName": "Elk",
+      "scientificName": "Cervus canadensis",
+      "interactions": ["observe"],
+      "tags": ["herbivore", "mammal", "large", "diurnal", "woodland", "eats:juniper", "eats:pinyon"]
     }
   },
   "terrain": {

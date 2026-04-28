@@ -1,6 +1,6 @@
 # Ecology Asset Pack — Attribution
 
-All 22 PNG assets in this pack are project-owned placeholders generated
+All 26 PNG assets in this pack are project-owned placeholders generated
 locally via `scripts/generate-ecology-assets.js` (SVG silhouettes
 rasterized to 128x128 PNG with `sharp`). They are recognizable
 silhouettes in a flat-color desert palette, intended as
@@ -21,6 +21,9 @@ project, MIT-aligned). No third-party assets are bundled.
 | plants/yucca.png                  | original project asset  | local generation | project-owned  | placeholder pending real art           |
 | plants/desert_lavender.png        | original project asset  | local generation | project-owned  | placeholder pending real art           |
 | plants/ephedra.png                | original project asset  | local generation | project-owned  | placeholder pending real art           |
+| plants/palo_verde.png             | original project asset  | local generation | project-owned  | placeholder pending real art           |
+| plants/juniper.png                | original project asset  | local generation | project-owned  | placeholder pending real art           |
+| plants/pinyon.png                 | original project asset  | local generation | project-owned  | placeholder pending real art           |
 | animals/javelina.png              | original project asset  | local generation | project-owned  | placeholder pending real art           |
 | animals/rabbit.png                | original project asset  | local generation | project-owned  | placeholder pending real art           |
 | animals/kangaroo_rat.png          | original project asset  | local generation | project-owned  | placeholder pending real art           |
@@ -29,6 +32,7 @@ project, MIT-aligned). No third-party assets are bundled.
 | animals/quail.png                 | original project asset  | local generation | project-owned  | placeholder pending real art           |
 | animals/gila_monster.png          | original project asset  | local generation | project-owned  | placeholder pending real art           |
 | animals/hawk.png                  | original project asset  | local generation | project-owned  | placeholder pending real art           |
+| animals/elk.png                   | original project asset  | local generation | project-owned  | placeholder pending real art           |
 | terrain/sand.png                  | original project asset  | local generation | project-owned  | tileable; placeholder pending real art |
 | terrain/dry_wash.png              | original project asset  | local generation | project-owned  | placeholder pending real art           |
 | terrain/rock.png                  | original project asset  | local generation | project-owned  | placeholder pending real art           |

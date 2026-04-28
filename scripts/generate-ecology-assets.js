@@ -1,13 +1,17 @@
 /**
  * Ecology Asset Pack — placeholder generator.
  *
- * Renders 22 SVG silhouettes into 128x128 PNGs with transparent
+ * Renders 26 SVG silhouettes into 128x128 PNGs with transparent
  * backgrounds via `sharp`. One asset per file, centered, no labels.
  *
  * Output: public/assets/ecology/{plants,animals,terrain}/*.png
  *
  * Style: flat-color desert palette, recognizable silhouette per
  * species/feature. Production-shaped placeholders pending real art.
+ *
+ * Default mode is additive: files already present on disk are skipped
+ * so the existing committed pack stays byte-identical. Pass `--force`
+ * to regenerate everything from scratch.
  */
 
 const fs = require('fs');
@@ -336,6 +340,92 @@ function ephedra() {
   `);
 }
 
+function paloVerde() {
+  // Small flowering desert tree silhouette: yellow-green slender trunk
+  // and branching canopy with yellow flower accents.
+  return svg(`
+    <ellipse cx="64" cy="118" rx="42" ry="6" fill="${C.bushGreenDk}" opacity="0.4"/>
+    <!-- pale green trunk (palo verde = "green stick") -->
+    <path d="M 64 118 Q 60 96 62 76 Q 64 60 60 44" stroke="${C.agaveGreen}" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M 62 90 Q 80 86 90 76" stroke="${C.agaveGreen}" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M 62 84 Q 44 80 36 70" stroke="${C.agaveGreen}" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M 60 60 Q 80 54 92 46" stroke="${C.agaveGreen}" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M 60 60 Q 40 54 30 46" stroke="${C.agaveGreen}" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- airy yellow-green canopy -->
+    <ellipse cx="60" cy="42" rx="26" ry="18" fill="${C.cactusGreenLt}" opacity="0.85"/>
+    <ellipse cx="40" cy="52" rx="14" ry="10" fill="${C.cactusGreenLt}" opacity="0.85"/>
+    <ellipse cx="86" cy="50" rx="16" ry="12" fill="${C.cactusGreenLt}" opacity="0.85"/>
+    <ellipse cx="64" cy="30" rx="14" ry="10" fill="${C.cactusGreenLt}" opacity="0.85"/>
+    <ellipse cx="64" cy="44" rx="20" ry="10" fill="${C.bushGreen}" opacity="0.5"/>
+    <!-- yellow flower accents (palo verde blooms in spring) -->
+    <g fill="${C.flowerYellow}">
+      <circle cx="46" cy="38" r="2.5"/>
+      <circle cx="54" cy="28" r="2.5"/>
+      <circle cx="64" cy="22" r="3"/>
+      <circle cx="74" cy="28" r="2.5"/>
+      <circle cx="82" cy="38" r="2.5"/>
+      <circle cx="38" cy="48" r="2"/>
+      <circle cx="92" cy="48" r="2"/>
+      <circle cx="58" cy="50" r="2"/>
+      <circle cx="72" cy="50" r="2"/>
+    </g>
+  `);
+}
+
+function juniper() {
+  // Small evergreen tree silhouette, dark green dense conical canopy.
+  return svg(`
+    <ellipse cx="64" cy="118" rx="36" ry="5" fill="${C.juniperGreen}" opacity="0.5"/>
+    <!-- short trunk -->
+    <rect x="60" y="98" width="8" height="20" fill="${C.trunkBrown}"/>
+    <!-- conical dense evergreen canopy -->
+    <ellipse cx="64" cy="92" rx="36" ry="14" fill="${C.juniperGreen}"/>
+    <ellipse cx="64" cy="78" rx="32" ry="14" fill="${C.juniperGreen}"/>
+    <ellipse cx="64" cy="64" rx="26" ry="14" fill="${C.juniperGreen}"/>
+    <ellipse cx="64" cy="50" rx="20" ry="12" fill="${C.juniperGreen}"/>
+    <ellipse cx="64" cy="38" rx="14" ry="10" fill="${C.juniperGreen}"/>
+    <ellipse cx="64" cy="28" rx="8" ry="8" fill="${C.juniperGreen}"/>
+    <!-- darker shadow side -->
+    <ellipse cx="74" cy="84" rx="14" ry="20" fill="${C.cactusGreenDk}" opacity="0.45"/>
+    <ellipse cx="74" cy="60" rx="10" ry="14" fill="${C.cactusGreenDk}" opacity="0.45"/>
+    <!-- small blue-gray berry hints -->
+    <g fill="${C.rockGrayLt}" stroke="${C.juniperGreen}" stroke-width="0.5">
+      <circle cx="50" cy="78" r="1.5"/>
+      <circle cx="78" cy="74" r="1.5"/>
+      <circle cx="58" cy="92" r="1.5"/>
+      <circle cx="74" cy="98" r="1.5"/>
+    </g>
+  `);
+}
+
+function pinyon() {
+  // Small evergreen pine silhouette — rounder, fluffier crown, distinct
+  // from juniper's conical shape; slightly lighter green.
+  return svg(`
+    <ellipse cx="64" cy="118" rx="38" ry="5" fill="${C.juniperGreen}" opacity="0.5"/>
+    <!-- trunk (forked) -->
+    <path d="M 64 118 L 60 92" stroke="${C.trunkBrown}" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 64 110 Q 70 100 74 90" stroke="${C.trunkBrown}" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <!-- rounded fluffy needle clumps (pinyon pine crown) -->
+    <circle cx="46" cy="78" r="20" fill="${C.cactusGreen}"/>
+    <circle cx="82" cy="76" r="22" fill="${C.cactusGreen}"/>
+    <circle cx="64" cy="62" r="24" fill="${C.cactusGreen}"/>
+    <circle cx="44" cy="58" r="14" fill="${C.cactusGreen}"/>
+    <circle cx="86" cy="56" r="16" fill="${C.cactusGreen}"/>
+    <circle cx="64" cy="42" r="16" fill="${C.cactusGreen}"/>
+    <!-- darker depth -->
+    <circle cx="56" cy="74" r="10" fill="${C.cactusGreenDk}" opacity="0.45"/>
+    <circle cx="76" cy="68" r="12" fill="${C.cactusGreenDk}" opacity="0.45"/>
+    <circle cx="68" cy="56" r="8" fill="${C.cactusGreenDk}" opacity="0.4"/>
+    <!-- pine cone hints -->
+    <g fill="${C.trunkBrownLt}">
+      <ellipse cx="50" cy="68" rx="2" ry="3"/>
+      <ellipse cx="78" cy="62" rx="2" ry="3"/>
+      <ellipse cx="60" cy="50" rx="2" ry="3"/>
+    </g>
+  `);
+}
+
 // ── Animal SVGs ─────────────────────────────────────────────────────────────
 
 function javelina() {
@@ -628,6 +718,65 @@ function hawk() {
   `);
 }
 
+function elk() {
+  // Large mammal silhouette in dark brown, antlers visible, side view.
+  return svg(`
+    <ellipse cx="64" cy="116" rx="50" ry="5" fill="${C.furGrayDk}" opacity="0.45"/>
+    <!-- antlers (branched rack above the head) -->
+    <g stroke="${C.trunkBrownLt}" stroke-width="2.5" stroke-linecap="round" fill="none">
+      <path d="M 26 30 L 22 14"/>
+      <path d="M 26 30 L 14 18"/>
+      <path d="M 26 30 L 30 12"/>
+      <path d="M 26 30 L 38 16"/>
+      <path d="M 26 30 L 8 28"/>
+      <path d="M 26 30 L 44 26"/>
+    </g>
+    <!-- main beam tips (small knobs) -->
+    <g fill="${C.trunkBrownLt}">
+      <circle cx="22" cy="14" r="1.6"/>
+      <circle cx="14" cy="18" r="1.6"/>
+      <circle cx="30" cy="12" r="1.6"/>
+      <circle cx="38" cy="16" r="1.6"/>
+      <circle cx="8" cy="28" r="1.6"/>
+      <circle cx="44" cy="26" r="1.6"/>
+    </g>
+    <!-- body -->
+    <ellipse cx="72" cy="68" rx="40" ry="20" fill="${C.furBrown}"/>
+    <!-- shoulder hump -->
+    <ellipse cx="56" cy="58" rx="14" ry="12" fill="${C.furBrown}"/>
+    <!-- haunch -->
+    <ellipse cx="98" cy="68" rx="14" ry="16" fill="${C.furBrown}"/>
+    <!-- neck -->
+    <path d="M 36 60 Q 30 48 28 38" stroke="${C.furBrown}" stroke-width="14" fill="none" stroke-linecap="round"/>
+    <!-- head -->
+    <ellipse cx="26" cy="40" rx="10" ry="8" fill="${C.furBrown}"/>
+    <!-- muzzle -->
+    <ellipse cx="14" cy="44" rx="8" ry="5" fill="${C.furGrayDk}"/>
+    <!-- ear -->
+    <polygon points="34,32 38,24 36,34" fill="${C.furGrayDk}"/>
+    <!-- eye -->
+    <circle cx="24" cy="38" r="1.4" fill="${C.reptileBlack}"/>
+    <!-- nose -->
+    <circle cx="8" cy="44" r="1.4" fill="${C.reptileBlack}"/>
+    <!-- light rump patch (elk are known for this) -->
+    <ellipse cx="106" cy="64" rx="8" ry="10" fill="${C.furLight}" opacity="0.85"/>
+    <!-- legs -->
+    <rect x="46" y="84" width="5" height="28" fill="${C.furGrayDk}"/>
+    <rect x="58" y="84" width="5" height="28" fill="${C.furGrayDk}"/>
+    <rect x="92" y="84" width="5" height="28" fill="${C.furGrayDk}"/>
+    <rect x="104" y="84" width="5" height="28" fill="${C.furGrayDk}"/>
+    <!-- hooves -->
+    <g fill="${C.reptileBlack}">
+      <rect x="46" y="110" width="5" height="3"/>
+      <rect x="58" y="110" width="5" height="3"/>
+      <rect x="92" y="110" width="5" height="3"/>
+      <rect x="104" y="110" width="5" height="3"/>
+    </g>
+    <!-- short tail -->
+    <ellipse cx="112" cy="58" rx="3" ry="4" fill="${C.furLight}"/>
+  `);
+}
+
 // ── Terrain SVGs ────────────────────────────────────────────────────────────
 
 function sand() {
@@ -763,6 +912,9 @@ const ASSETS = [
   { kind: 'plants',  key: 'yucca',            build: yucca },
   { kind: 'plants',  key: 'desert_lavender',  build: desertLavender },
   { kind: 'plants',  key: 'ephedra',          build: ephedra },
+  { kind: 'plants',  key: 'palo_verde',       build: paloVerde },
+  { kind: 'plants',  key: 'juniper',          build: juniper },
+  { kind: 'plants',  key: 'pinyon',           build: pinyon },
   { kind: 'animals', key: 'javelina',         build: javelina },
   { kind: 'animals', key: 'rabbit',           build: rabbit },
   { kind: 'animals', key: 'kangaroo_rat',     build: kangarooRat },
@@ -771,6 +923,7 @@ const ASSETS = [
   { kind: 'animals', key: 'quail',            build: quail },
   { kind: 'animals', key: 'gila_monster',     build: gilaMonster },
   { kind: 'animals', key: 'hawk',             build: hawk },
+  { kind: 'animals', key: 'elk',              build: elk },
   { kind: 'terrain', key: 'sand',             build: sand },
   { kind: 'terrain', key: 'dry_wash',         build: dryWash },
   { kind: 'terrain', key: 'rock',             build: rock },
@@ -778,12 +931,23 @@ const ASSETS = [
 ];
 
 async function main() {
+  // CLI flag: --force regenerates everything; default is "additive only"
+  // mode where files already on disk are skipped (so the original 22-asset
+  // pack stays byte-identical when later additions are appended).
+  const force = process.argv.includes('--force');
+
   let made = 0;
+  let skipped = 0;
   let failures = [];
   for (const asset of ASSETS) {
     const dir = path.join(OUT_DIR, asset.kind);
     fs.mkdirSync(dir, { recursive: true });
     const filePath = path.join(dir, `${asset.key}.png`);
+    if (!force && fs.existsSync(filePath)) {
+      skipped++;
+      console.log(`  skip ${asset.kind}/${asset.key}.png (already exists)`);
+      continue;
+    }
     try {
       const svgString = asset.build();
       const buf = Buffer.from(svgString, 'utf8');
@@ -800,14 +964,14 @@ async function main() {
         throw new Error('missing alpha channel');
       }
       made++;
-      console.log(`  ok  ${asset.kind}/${asset.key}.png  (${meta.width}x${meta.height} alpha=${meta.hasAlpha})`);
+      console.log(`  ok   ${asset.kind}/${asset.key}.png  (${meta.width}x${meta.height} alpha=${meta.hasAlpha})`);
     } catch (err) {
       failures.push({ asset, err: err.message });
       console.error(`  FAIL ${asset.kind}/${asset.key}.png — ${err.message}`);
     }
   }
 
-  console.log(`\nGenerated ${made}/${ASSETS.length} assets.`);
+  console.log(`\nGenerated ${made}, skipped ${skipped} (already on disk), of ${ASSETS.length} assets.`);
   if (failures.length) {
     console.error('\nFailures:');
     failures.forEach((f) => console.error(`  - ${f.asset.kind}/${f.asset.key}: ${f.err}`));

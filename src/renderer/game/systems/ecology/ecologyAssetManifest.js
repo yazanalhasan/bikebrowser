@@ -38,6 +38,9 @@ const ECOLOGY_ASSET_FILES = Object.freeze({
     yucca:           `${ECOLOGY_ASSET_BASE}/plants/yucca.png`,
     desert_lavender: `${ECOLOGY_ASSET_BASE}/plants/desert_lavender.png`,
     ephedra:         `${ECOLOGY_ASSET_BASE}/plants/ephedra.png`,
+    palo_verde:      `${ECOLOGY_ASSET_BASE}/plants/palo_verde.png`,
+    juniper:         `${ECOLOGY_ASSET_BASE}/plants/juniper.png`,
+    pinyon:          `${ECOLOGY_ASSET_BASE}/plants/pinyon.png`,
   }),
   animals: Object.freeze({
     javelina:        `${ECOLOGY_ASSET_BASE}/animals/javelina.png`,
@@ -48,6 +51,7 @@ const ECOLOGY_ASSET_FILES = Object.freeze({
     quail:           `${ECOLOGY_ASSET_BASE}/animals/quail.png`,
     gila_monster:    `${ECOLOGY_ASSET_BASE}/animals/gila_monster.png`,
     hawk:            `${ECOLOGY_ASSET_BASE}/animals/hawk.png`,
+    elk:             `${ECOLOGY_ASSET_BASE}/animals/elk.png`,
   }),
   terrain: Object.freeze({
     sand:            `${ECOLOGY_ASSET_BASE}/terrain/sand.png`,
