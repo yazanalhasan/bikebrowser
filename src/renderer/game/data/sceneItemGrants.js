@@ -87,6 +87,18 @@ export const SCENE_ITEM_GRANTS = {
       itemId: 'steel_sample',
       condition: { activeQuest: 'bridge_collapse' },
     },
+    // Crafted via RECIPES['healing_salve'] in craftingSystem.js
+    // (creosote_leaves + agave_fiber). Recipe is learnedFrom mrs_ramirez
+    // and unlocked by desert_healer quest reward (quests.js:254).
+    // Listed here so the progression-reachability audit recognises a
+    // source for the desert_healer.use_salve step.
+    {
+      itemId: 'healing_salve',
+      condition: {
+        activeQuest: 'desert_healer',
+        transform: 'recipe',
+      },
+    },
   ],
 };
 
