@@ -195,19 +195,32 @@ export default class ZuzuGarageScene extends LocalSceneBase {
       onInteract: () => {
         const s = this.registry.get('gameState') || {};
         const inv = s.inventory || [];
-        const haveAll = inv.includes('mesquite_wood_sample') &&
-          inv.includes('copper_ore_sample') &&
-          inv.includes('steel_sample');
-        // Active step gating — index 8 is `weigh_instruction` per quests.js.
-        const aq = s.activeQuest;
-        const onTrack = aq?.id === 'bridge_collapse' && (aq.stepIndex || 0) >= 8;
 
-        if (haveAll || onTrack) {
+        // Generalized gate: open when (a) the active quest has any step
+        // that targets MaterialLabScene via `step.scene`, or (b) the
+        // player holds any item the lab can test. Aliases mirror
+        // MaterialLabScene.SAMPLE_ITEM_IDS plus the canonical
+        // mesquite_wood_sample id granted by bridge_collapse.
+        const LAB_TESTABLE_ITEMS = [
+          'mesquite_wood_sample', 'mesquite_sample', 'mesquite_branch',
+          'copper_ore_sample', 'surface_copper', 'deep_copper',
+          'steel_sample', 'steel_bracket',
+        ];
+        const aq = s.activeQuest;
+        const activeQuestData = aq?.id ? QUESTS[aq.id] : null;
+        const labStepInActiveQuest = !!activeQuestData?.steps?.some(
+          (step) => step.scene === 'MaterialLabScene',
+        );
+        const haveLabSample = inv.some((item) => LAB_TESTABLE_ITEMS.includes(item));
+
+        if (labStepInActiveQuest || haveLabSample) {
           this.scene.start('MaterialLabScene', { spawn: 'fromGarage' });
           return;
         }
 
         // Otherwise — friendly nudge so the player knows where to go.
+        // The nudge is bridge-flavored because that's the canonical first-time
+        // entry path; generalizing the message is out of scope for this fix.
         const missing = [];
         if (!inv.includes('mesquite_wood_sample')) missing.push('🪵 mesquite');
         if (!inv.includes('copper_ore_sample')) missing.push('🟠 copper');
