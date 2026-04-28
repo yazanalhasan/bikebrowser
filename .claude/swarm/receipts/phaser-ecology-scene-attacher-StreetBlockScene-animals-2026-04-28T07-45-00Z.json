@@ -1,0 +1,89 @@
+{
+  "agent": "phaser-ecology-scene-attacher",
+  "target_scene": "StreetBlockScene",
+  "target_subject": "animal entities (javelina, rabbit, coyote)",
+  "ts": "2026-04-28T08:10:00Z",
+  "status": "complete",
+  "verdict_tag": "design-only-implementation",
+  "commit_hash": "2861632d2049203a78701d72cd7b8f3997d974ec",
+  "files_changed": [
+    {
+      "path": "src/renderer/game/scenes/StreetBlockScene.js",
+      "lines_added": 35,
+      "lines_removed": 0
+    },
+    {
+      "path": "public/layouts/street-block.layout.json",
+      "lines_added": 28,
+      "lines_removed": 1
+    }
+  ],
+  "build": {
+    "result": "PASS",
+    "duration_seconds": 11.63,
+    "exit_code": 0
+  },
+  "notes": {
+    "continuation_of": "prior stalled phaser-ecology-scene-attacher run 2026-04-28T07:30:00Z (no receipt; partial work on disk — import block at lines 30-33 and preloadEcologyAssets call at lines 52-55 were already present)",
+    "preflight_quotes": {
+      "arc_md_section4": "Carry-forward systems live in `src/renderer/game/systems/` with no scene imports. Systems do not know what scene they are mounted in. (arc.md §4 Architectural Discipline)",
+      "ecology_substrate_md": "EcologyEntity is not a renderer. It does not own sprites, tweens, or visual style. It does not own scene layout — those positions live in `public/layouts/<scene>.layout.json` and are loaded via `loadLayout()`. (ecology-substrate.md §1 Purpose)",
+      "index_js_registerEntity_docstring": "Register a single EcologyEntity into the substrate's per-scene registry. Resolves defaults, derives relationship fields, attaches the interaction zone, and returns the populated entity. (src/renderer/game/systems/ecology/index.js registerEntity docstring)",
+      "ecologyAssetManifest_js": "ECOLOGY_ASSET_KEYS.animals.coyote -> 'ecology.animal.coyote' (ecologyAssetManifest.js lines 95-99 ECOLOGY_ASSET_KEYS shape, built via buildKey('animals', name) -> 'ecology.animal.<name>')",
+      "StreetBlockScene_js_plant_comment": "Register each layout-driven plant as an EcologyEntity so the ecology substrate can track observations and forage events alongside the existing plant-interaction flow. (StreetBlockScene.js lines 267-272)",
+      "quests_js_food_chain_tracker": "id: 'observe_prey', type: 'observe', text: 'Look for javelina or rabbits near the mesquite trees.', requiredObservation: 'javelina' (quests.js food_chain_tracker step observe_prey line ~294)",
+      "ecology_js_fauna_relationships": "PREDATOR_CHAINS: { prey: 'javelina', predator: 'coyote', probability: 0.3 }, { prey: 'rabbit', predator: 'coyote', probability: 0.4 } — javelina, rabbit, coyote all present in fauna relationship maps (data/ecology.js lines 118-119)",
+      "phaser_ecology_scene_attacher_md": "This is strictly additive. The scene's existing plant / animal interactables, item-grant logic, dialog, quest gating, and save calls must remain BYTE-IDENTICAL after your edit. (.claude/agents/phaser-ecology-scene-attacher.md)"
+    },
+    "registered_animals": [
+      {
+        "speciesId": "javelina",
+        "x": 330,
+        "y": 500,
+        "texture_key": "ecology.animal.javelina",
+        "id": "StreetBlockScene_animal_0_javelina",
+        "interactionRadius": 60
+      },
+      {
+        "speciesId": "rabbit",
+        "x": 120,
+        "y": 500,
+        "texture_key": "ecology.animal.rabbit",
+        "id": "StreetBlockScene_animal_1_rabbit",
+        "interactionRadius": 55
+      },
+      {
+        "speciesId": "coyote",
+        "x": 760,
+        "y": 520,
+        "texture_key": "ecology.animal.coyote",
+        "id": "StreetBlockScene_animal_2_coyote",
+        "interactionRadius": 65
+      }
+    ],
+    "diff_stat_StreetBlockScene": "src/renderer/game/scenes/StreetBlockScene.js | 35 +++++++++++++++++++++++++++++++++++  (35 insertions, 0 deletions)",
+    "diff_stat_layout_json": "public/layouts/street-block.layout.json | 28 ++++++++++++++++++++++ (28 insertions, 1 deletion — the 1 deletion is the trailing brace that was reformatted when the animals array was appended; existing object entries are byte-identical)",
+    "existing_plant_lines_byte_identical": true,
+    "existing_plant_lines_proof": "grep -n 'attachEcologyTicker(this)' returns exactly line 291 (one occurrence). grep -n '_ecologyEntityIndex' returns lines 287, 289, 471 — all intact and unchanged.",
+    "ticker_type_agnostic_confirmed": true,
+    "ticker_type_agnostic_citation": "ecologyTicker.js:107-112 proximity-observation loop iterates all entities returned by listEntitiesForScene regardless of type field; fauna entities registered here will be polled identically to flora entities.",
+    "asset_existence_verified": {
+      "javelina": "public/assets/ecology/animals/javelina.png — EXISTS",
+      "rabbit": "public/assets/ecology/animals/rabbit.png — EXISTS",
+      "coyote": "public/assets/ecology/animals/coyote.png — EXISTS"
+    },
+    "sprite_display_size": "setDisplaySize(48, 48) applied to match plant footprint — could not introspect PNG pixel dimensions from within this dispatch, so 48x48 is a safe default matching plant scale.",
+    "runtime_caveats": [
+      "Coyote is night-active per data/ecology.js TIME_BEHAVIOR.night.activeAnimals (line 138). With the fauna-default timeOfDayRule, coyote will only fire proximity observations at night; during daytime the interaction zone is suppressed and sprite alpha is reduced per ecology-substrate.md §13.4. Javelina and rabbit are day-active (TIME_BEHAVIOR.day.activeAnimals) and will fire observations during normal play, satisfying food_chain_tracker step 4 (observe_prey 'javelina').",
+      "Sprite scale: setDisplaySize(48, 48) assumed. If PNGs are smaller than 48px the sprites will be upscaled. Runtime test should verify visual size matches plant footprint."
+    ],
+    "predicted_runtime_progression": "food_chain_tracker step 4/8 (observe_prey 'javelina') → player walks near javelina at x=330,y=500 → proximity observation fires → step advances to 5/8 (learn_predator dialogue) → 6/8 (quiz_chain) → 7/8 (harvest_mesquite forage) → 8/8 (complete_tracker)",
+    "no_other_scenes_modified": true,
+    "no_quests_modified": true,
+    "no_ecology_system_modified": true,
+    "halt_and_surface_points": []
+  },
+  "next_agent_suggestions": [
+    "phaser-ecology-scene-attacher (next scene: DogParkScene animals)"
+  ]
+}

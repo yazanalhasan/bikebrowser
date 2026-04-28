@@ -1,9 +1,54 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-28T07:00:00Z",
+  "last_updated": "2026-04-28T08:15:00Z",
   "current_week": 3,
   "current_pod_focus": "Daytime Autonomous V2 (bug-fix Phase-1 prep)",
   "completed": [
+    {
+      "agent": "phaser-ecology-scene-attacher",
+      "target_subject": "StreetBlockScene animal entities (javelina, rabbit, coyote)",
+      "ts": "2026-04-28T08:10:00Z",
+      "commit": "2861632",
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/phaser-ecology-scene-attacher-StreetBlockScene-animals-2026-04-28T07-45-00Z.json",
+      "verdict_tag": "design-only-implementation",
+      "needs_runtime_validation": true,
+      "user_directive": "Unblock food_chain_tracker step 4/8 (observe_prey requires 'javelina'). Plants already runtime-validated in StreetBlockScene; animals are the parallel addition.",
+      "dispatch_pattern": "two-cycle (cycle 1 stalled mid-write with partial file edits + import block; cycle 2 continuation completed sprite render + registerEntities + debug logs + build + commit + receipt)",
+      "cycle_1_partial_state": {
+        "stalled_ts": "2026-04-28T07:33:00Z",
+        "no_receipt_written": true,
+        "partial_changes_left_on_disk": [
+          "public/layouts/street-block.layout.json animals[] array (correct positions)",
+          "src/renderer/game/scenes/StreetBlockScene.js import + preloadEcologyAssets in preload()"
+        ],
+        "agent_id_for_reference": "abbee4d545878e826"
+      },
+      "cycle_2_completion": {
+        "agent_id_for_reference": "ac7b252463acbd99f",
+        "build": "PASS in 11.63s",
+        "files_changed": [
+          { "path": "src/renderer/game/scenes/StreetBlockScene.js", "lines_added": 35, "lines_removed": 0 },
+          { "path": "public/layouts/street-block.layout.json", "lines_added": 28, "lines_removed": 1 }
+        ],
+        "registered_animals": [
+          { "speciesId": "javelina", "x": 330, "y": 500, "interactionRadius": 60, "texture_key": "ecology.animal.javelina" },
+          { "speciesId": "rabbit",   "x": 120, "y": 500, "interactionRadius": 55, "texture_key": "ecology.animal.rabbit" },
+          { "speciesId": "coyote",   "x": 760, "y": 520, "interactionRadius": 65, "texture_key": "ecology.animal.coyote" }
+        ],
+        "existing_plant_block_byte_identical": true,
+        "ticker_call_count": "1 (unchanged at line 291; type-agnostic per ecologyTicker.js:107-112)"
+      },
+      "runtime_caveats": [
+        "coyote is night-active per data/ecology.js:138 TIME_BEHAVIOR.night.activeAnimals; with default fauna-default timeOfDayRule, coyote will fire observation only at night and appear at reduced alpha during day per ecology-substrate.md §13.4. javelina + rabbit are day-active and satisfy food_chain_tracker step 4 in normal daytime play."
+      ],
+      "user_runtime_protocol": "Boot game, load save with food_chain_tracker active at step 4/8 (or restart quest). Walk into StreetBlockScene. Confirm: (1) three animal sprites render at registered positions, (2) console shows three [ecology-debug] registered animal lines on scene mount, (3) walking near javelina advances quest from step 4/8 to step 5/8 and 'javelina' appears in state.observations, (4) existing plant interaction + dialog flow unchanged. Coyote night-active behavior is intentional substrate design.",
+      "predicted_runtime_progression": "step 4/8 (observe javelina) → step 5/8 (predator-chain dialogue) → step 6/8 (quiz) → step 7/8 (forage mesquite_pods) → step 8/8 complete",
+      "next_agent_suggestion": "phaser-ecology-scene-attacher (next scene: DogParkScene animals)",
+      "notes": "REQUIRES RUNTIME VALIDATION. Ships tagged design-only-implementation per agent definition. Two-cycle dispatch — cycle 1 stalled mid-write without a receipt; cycle 2 completed remaining work on top of partial-but-correct cycle 1 output. Pattern applied: partial-work-on-disk continuation framing rather than redo from scratch."
+    },
     {
       "agent": "c3-quest-engine-observe-gate",
       "ts": "2026-04-27T12:30:00Z",
@@ -990,7 +1035,7 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 50,
+  "dispatch_count": 52,
   "session_token_estimate": 0,
   "parallel_session_reconciliation": {
     "reconciled_at": "2026-04-28T07:00:00Z",
