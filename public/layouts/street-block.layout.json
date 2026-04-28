@@ -126,6 +126,32 @@
       "w": 1000,
       "h": 20,
       "_note": "Original: x = width / 2 (1000), y = height + 10 (700+10), w = width."
-    }
+    },
+    "animals": [
+      {
+        "speciesId": "javelina",
+        "label": "Javelina",
+        "x": 330,
+        "y": 500,
+        "interactionRadius": 60,
+        "_note": "Near mesquite at x=260,y=460 — javelina feeds on mesquite pods"
+      },
+      {
+        "speciesId": "rabbit",
+        "label": "Desert Cottontail",
+        "x": 120,
+        "y": 500,
+        "interactionRadius": 55,
+        "_note": "Near creosote at x=80,y=460 — rabbit forages near creosote and mesquite"
+      },
+      {
+        "speciesId": "coyote",
+        "label": "Coyote",
+        "x": 760,
+        "y": 520,
+        "interactionRadius": 65,
+        "_note": "Predator roaming near mesquite at x=900,y=460 — follows javelina/rabbit prey"
+      }
+    ]
   }
 }

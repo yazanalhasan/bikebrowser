@@ -27,6 +27,10 @@ import {
   emitObservation,
   emitForage,
 } from '../systems/ecology/index.js';
+import {
+  preloadEcologyAssets,
+  ECOLOGY_ASSET_KEYS,
+} from '../systems/ecology/ecologyAssetManifest.js';
 
 export default class StreetBlockScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -45,6 +49,10 @@ export default class StreetBlockScene extends LocalSceneBase {
   preload() {
     super.preload?.();
     this.load.json('streetBlockLayout', 'layouts/street-block.layout.json');
+    // ECOLOGY (additive — Phase 4 animals): preload animal sprite textures.
+    // Plant textures are unused visually (plants use drawPlant graphics), but
+    // animal sprites are rendered via this.add.image using ecology texture keys.
+    preloadEcologyAssets(this);
   }
 
   createWorld() {
@@ -281,6 +289,34 @@ export default class StreetBlockScene extends LocalSceneBase {
       this._ecologyEntityIndex.set(`${ent.speciesId}|${ent.x}|${ent.y}`, ent);
     }
     attachEcologyTicker(this);
+
+    // === ECOLOGY ANIMALS (additive — Phase 4 animals) ========================
+    // Render layout-driven animal sprites and register them as EcologyEntity
+    // instances. The existing plant rendering/registration above is unchanged.
+    // `attachEcologyTicker` above is type-agnostic and already covers fauna.
+    for (const a of this.layout.animals) {
+      const key = ECOLOGY_ASSET_KEYS.animals[a.speciesId];
+      if (!key) continue;
+      this.add.image(a.x, a.y, key).setOrigin(0.5).setDepth(4).setDisplaySize(48, 48);
+    }
+
+    const animalConfigs = this.layout.animals.map((a, i) => ({
+      id: `${SCENE_KEY}_animal_${i}_${a.speciesId}`,
+      speciesId: a.speciesId,
+      sceneKey: SCENE_KEY,
+      x: a.x,
+      y: a.y,
+      spawnedBy: 'static',
+      interactionRadius: a.interactionRadius,
+      observable: true,
+      forageable: false,
+    }));
+    this._ecologyAnimalEntities = registerEntities(this, animalConfigs);
+    for (const ent of this._ecologyAnimalEntities) {
+      // eslint-disable-next-line no-console
+      console.log(`[ecology-debug] registered animal: ${ent.speciesId} at ${ent.x}, ${ent.y}`);
+    }
+    // =========================================================================
 
     // Fire hydrant
     {
