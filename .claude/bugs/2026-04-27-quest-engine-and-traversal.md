@@ -161,6 +161,27 @@ breaks. Likely culprits in order of probability:
 
 ## Bug 3 — `scene.restart()` in LayoutEditorOverlayScene causes pause-storm warnings
 
+**Status: RUNTIME-CONFIRMED FIXED 2026-04-27.** Verified across two save
+cycles (ZuzuGarageScene and StreetBlockScene). Zero
+"Cannot pause non-running Scene" warnings. `_findActiveLocal` sees
+`count=2` cleanly on every call.
+
+Cause: appears to have been resolved by an intervening commit between
+the original report (earlier today) and the C1 diagnostic test
+(commit `23de6c4` shipped Phase 1 instrumentation; the storm was
+already gone before any fix landed). Specific commit not isolated.
+
+Diagnostic instrumentation in `23de6c4` (the `[pause-storm-debug]`
+tagged console.log calls) is intentionally retained as stable
+diagnostic tooling — if the storm ever recurs, the tag makes it
+immediately visible. Cost is one log line per save cycle.
+
+Verdict for commit `23de6c4`: `runtime-validated` (the bug the
+instrumentation was diagnosing is fixed; the instrumentation itself
+is now stable diagnostic infrastructure).
+
+
+
 ### Where
 `src/renderer/game/scenes/LayoutEditorOverlayScene.js` (save handler)
 
@@ -193,3 +214,37 @@ broadcasting.
 ### Severity
 Cosmetic. No functional break. The editor save still works; the
 console is just noisy. Lowest priority of the three bugs.
+
+---
+
+## Surfaced 2026-04-27 by progressionReachabilityAudit (out of scope tonight)
+
+Three additional `[INCOMPLETE_DATA]` warnings fired during the C1
+runtime test. Documented here for future per-quest wiring sessions.
+Not blockers for tonight's three-task plan.
+
+### Bug 4 — `healing_salve` has no source
+- **Quest/step:** `desert_healer` step `use_salve`
+- **Audit message:** `WARN [INCOMPLETE_DATA] healing_salve has no source`
+- **Implication:** the quest expects the player to use a healing salve
+  but no recipe, drop, shop entry, or scene-level grant produces one.
+
+### Bug 5 — `bio_sample_agave` has no source
+- **Quest/step:** `extract_dna` step `collect_sample`
+- **Audit message:** `WARN [INCOMPLETE_DATA] bio_sample_agave has no source`
+- **Implication:** the bio system isn't yet wired (consistent with the
+  Bug 1 unwired-observation list — `dna_extracted` lacks an emitter and
+  the precondition sample lacks a source).
+
+### Bug 6 — `bio_sample_bacteria` has no source
+- **Quest/step:** `engineer_bacteria` step `collect_bacteria`
+- **Audit message:** `WARN [INCOMPLETE_DATA] bio_sample_bacteria has no source`
+- **Implication:** same root cause as Bug 5. The bio workbench (per
+  arc.md Section 4) is unbuilt; sample acquisition steps for its
+  quests have no item sources yet.
+
+### Disposition
+Schedule for the per-quest wiring sessions referenced in
+`.claude/plans/observation-wiring-plan.md`. Bugs 5 and 6 specifically
+should be tackled together when the biology workbench design lands
+(currently deferred per arc.md Section 6 open questions).
