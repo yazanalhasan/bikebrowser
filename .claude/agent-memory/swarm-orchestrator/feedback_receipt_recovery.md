@@ -47,3 +47,19 @@ blocked if any of: (a) files don't exist, (b) symbols missing, (c)
 syntax broken, (d) sibling receipts disagree, (e) diff is partial in a
 way the spec doesn't allow. The reviewer still runs after recovery —
 recovery doesn't bypass the quality gate, only the receipt gate.
+
+**Variant — partial-work continuation (added 2026-04-28):** When the
+stalled worker left partial-but-correct work on disk (e.g., layout JSON
+written, imports added, but the main implementation block missing) and
+the worker is type-reusable, prefer DISPATCH-CONTINUATION over recovery.
+Re-dispatch the same agent type with an explicit "WORK ALREADY ON DISK
+(do NOT redo)" framing that lists each completed change, plus a "WORK
+MISSING (your job)" framing that lists what remains. Inline pre-verified
+substrate facts (auto-resolved type fields, ticker semantics, asset key
+shapes) so the continuation worker doesn't have to re-derive them in
+its limited turn budget. Pattern proven 2026-04-28 with
+phaser-ecology-scene-attacher StreetBlockScene animals dispatch — cycle
+1 stalled mid-write at "Now add the animal registration..."; cycle 2
+completed in 24 tool uses with no rework of cycle 1's layout JSON or
+import block. Record both agent IDs in state.json under
+`dispatch_pattern: "two-cycle"` for audit.
