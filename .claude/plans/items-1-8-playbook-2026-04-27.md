@@ -762,6 +762,113 @@ Total LOC budget: ~1180 net (per audit Phase 1 §2).
 
 ---
 
+### A.10 — Recipe system unification (CONVERSATION, not dispatch)
+
+**Status:** PENDING DESIGN CONVERSATION. Parallel to A.5 (biology
+substrate), A.8 (knowledge state), A.9 navigation-substrate gate.
+Surfaced 2026-04-27 during Phase 3 implementation
+(commits `5884e5a` ecology + `1c164b4` biology Stage 1).
+
+**Background.** The codebase now has TWO parallel recipe surfaces:
+
+1. **`src/renderer/game/systems/craftingSystem.js`'s `RECIPES`** —
+   older, owned by the crafting system. Quest `craft`-type steps
+   (e.g. `desert_healer.craft_salve` at `quests.js:215-221`) gate
+   on these via the `requiredRecipe` field. Recipe shape:
+   `{ id, name, ingredients, processing, result, description,
+     effectSources, difficulty, learnedFrom }`.
+
+2. **`src/renderer/game/data/recipes.js`** — newer, owned by the
+   biology workbench (`systems/biology/recipeRegistry.js` reads
+   filtered by `category === 'biology'`). Recipe shape per
+   `biology-substrate.md` §3:
+   `{ id, displayName, category, requiredInputs, process, output,
+     outcomeObservationId, knowledgeUnlock }`.
+
+**Recipe id collision is real.** Example: `healing_salve` exists
+in both surfaces. The biology workbench emits
+`outcomeObservationId: 'salve_crafted'` on success; that
+observation is currently **wired-emitter-but-unconsumed** because
+no quest gates on it. Quest `craft`-type steps continue to advance
+via the existing `craftingSystem.js` path — that path is
+unaffected by the biology workbench's parallel recipe.
+
+**Why this isn't a bug today.** The two surfaces don't conflict
+because they don't coordinate beyond the input-item level. A
+player crafting `healing_salve` via the existing crafting UI
+hits `craftingSystem.js`'s flow, gains `healing_salve` in
+inventory, and `desert_healer.craft_salve` advances. The biology
+workbench is not yet mounted in any scene, so its parallel recipe
+is dormant. When biology Stage 1 mounts in a scene (Phase 5,
+deferred), the duplication becomes visible to the player.
+
+**Why this isn't worth fixing tonight.** The "right" answer
+depends on architectural questions that don't have clean defaults:
+
+- Is the crafting system a permanent peer of biology, or should it
+  eventually be subsumed into a category-tagged recipe pipeline?
+- Should `craft`-type quest steps gate on a recipe-execution
+  event from EITHER engine (bridge), or stay tightly bound to one?
+- Does the biology workbench's `outcomeObservationId` and
+  `knowledgeUnlock` metadata generalize to non-biology recipes
+  (chemistry, materials, foraging recipes), or are those
+  biology-specific?
+
+These cross the boundary from "implementation choice" into "what
+the recipe-driven curriculum looks like across the carry-forward
+systems," which arc.md §4 (UTM pattern + portability discipline)
+gestures at but doesn't prescribe.
+
+**Three resolution paths** (for the future design conversation):
+
+- **(R1) Coexist permanently.** Two surfaces, two engines, no
+  cross-talk beyond input items. Drop `outcomeObservationId` from
+  the biology surface as "unconsumed by quests anyway." Lowest
+  cost; locks in two parallel pipelines.
+
+- **(R2) Bridge.** Quest engine adds a generalized `craft`-step
+  listener for both `craftingSystem.recipeCompleted` and
+  `biology.recipe.outcome`. Recipe ids in either surface satisfy
+  `requiredRecipe`. Both surfaces keep their own metadata.
+  Medium cost; preserves both engines' identities.
+
+- **(R3) Migrate.** Move `craftingSystem.js`'s recipes into
+  `data/recipes.js` with their own `category: 'crafting'`.
+  Biology, crafting, and any future recipe consumer all read from
+  the same data file via category filters. The execution engines
+  become consumers of one recipe registry. Highest cost; cleanest
+  end-state.
+
+**Pre-flight checks (before authorizing a path):**
+
+1. Audit how many quest steps currently use `requiredRecipe` and
+   which recipes they reference. (R1 needs no work; R2 needs a
+   bridge; R3 needs migration of every referenced recipe.)
+2. Audit the existing `craftingSystem.js` API to see what events
+   it emits on success. R2 hinges on whether that event surface
+   is stable enough to bridge against.
+3. Confirm `biology-substrate.md` §3 Recipe shape is a strict
+   superset of `craftingSystem.js`'s shape, or document the
+   delta. If R3 is chosen, the migration needs to preserve every
+   field.
+
+**Agent selection.** Once a path is chosen, the work fits a new
+agent: `recipe-system-unifier` (R3) or `quest-engine-bridge` (R2).
+R1 needs no new agent — just a doc edit removing the unconsumed
+metadata.
+
+**Pre-recipe documentation hook landed 2026-04-27.** The
+acknowledged-technical-debt header in `data/recipes.js` (commit
+TBD) explicitly references this section. The biology workbench's
+`outcomeObservationId` field is preserved for now; future readers
+arriving at the duplication via that file are pointed here.
+
+**Verdict tag for resolution dispatch:** `[design-only]` for the
+substrate doc; `[static-only-fix]` or
+`[design-only-implementation]` for the chosen R-path.
+
+---
+
 ## Section B — Agent attribution for bugs found in current session
 
 ### B.1 Per-bug attribution

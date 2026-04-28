@@ -16,14 +16,49 @@
  *   - outcomeObservationId: string
  *   - knowledgeUnlock: string
  *
- * NOTE: this file is the home of biology-category recipes managed
- * by the biology workbench. Existing crafting recipes still live
- * in `systems/craftingSystem.js` `RECIPES` and are not duplicated
- * here — they belong to a separate recipe surface owned by the
- * crafting system. When/if those are migrated, they would be
- * tagged with their own category here. This file's contract:
- * read by `systems/biology/recipeRegistry.js` filtered by
- * `category === 'biology'`.
+ * ─── Acknowledged technical debt ────────────────────────────────
+ *
+ * This file COEXISTS with `systems/craftingSystem.js`'s RECIPES
+ * constant. There are now two parallel recipe surfaces in the
+ * codebase:
+ *
+ *   - `systems/craftingSystem.js`'s RECIPES — older, owned by the
+ *     crafting system. Quest `craft`-type steps (e.g.
+ *     `desert_healer.craft_salve`) gate on these via
+ *     `requiredRecipe`. Some recipe ids appear here verbatim
+ *     (e.g. `healing_salve`).
+ *   - `data/recipes.js` (THIS file) — newer, owned by the biology
+ *     workbench. Recipes carry `category: 'biology'` and emit a
+ *     `biology.recipe.outcome` event with an
+ *     `outcomeObservationId` on success.
+ *
+ * Recipe id collision (e.g. `healing_salve` exists in BOTH) is
+ * intentional under the current arrangement: the biology
+ * workbench produces additional metadata (`outcomeObservationId`,
+ * `knowledgeUnlock`) that the existing crafting system doesn't,
+ * while the existing crafting system still drives the quest
+ * `craft`-step gate. Quests that use `requiredRecipe` continue to
+ * work via `craftingSystem.js`. The biology engine's emission of
+ * `outcomeObservationId` (e.g. `salve_crafted`) is currently
+ * UNCONSUMED by any quest; it is wired-emitter-but-no-listener
+ * pending the future Recipe System Unification design.
+ *
+ * The unification of the two surfaces is a deliberate open
+ * design conversation — see
+ * `.claude/plans/items-1-8-playbook-2026-04-27.md` §A.10 "Recipe
+ * system unification" for the three resolution paths under
+ * consideration. No fix attempted in this file; the duplication
+ * is documented here so future readers don't try to "fix" one
+ * side without understanding the cross-system implications.
+ *
+ * Until A.10 lands, the contract is:
+ *   - `systems/biology/recipeRegistry.js` reads THIS file,
+ *     filtered by `category === 'biology'`.
+ *   - `systems/craftingSystem.js` reads its own internal RECIPES
+ *     constant and is the authoritative path for `craft`-type
+ *     quest steps.
+ *   - Recipe id collisions are tolerated; the two systems do not
+ *     coordinate beyond the input-item level.
  */
 
 /**
