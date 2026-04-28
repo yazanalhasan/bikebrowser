@@ -387,7 +387,20 @@ export default class LocalSceneBase extends Phaser.Scene {
       backgroundColor: '#1e293b', padding: { x: 4, y: 2 },
     }).setOrigin(0.5).setDepth(5).setVisible(false);
 
-    const interactable = { x, y, radius, onInteract, text, nameLabel, prompt, _nearby: false };
+    const interactable = {
+      x,
+      y,
+      radius,
+      label,
+      grantsItems: config.grantsItems || [],
+      metadata: config.metadata || {},
+      onInteract,
+      text,
+      nameLabel,
+      prompt,
+      _nearby: false,
+      _distanceToPlayer: Infinity,
+    };
     this._interactables.push(interactable);
     return interactable;
   }
@@ -404,6 +417,12 @@ export default class LocalSceneBase extends Phaser.Scene {
   }
 
   _handleActionKey() {
+    const priorityProp = this._getQuestPriorityInteractable();
+    if (priorityProp) {
+      priorityProp.onInteract();
+      return;
+    }
+
     // Try NPCs first
     for (const npc of Object.values(this._npcs)) {
       if (npc.isNearby()) {
@@ -412,15 +431,24 @@ export default class LocalSceneBase extends Phaser.Scene {
       }
     }
     // Then interactable props
-    for (const prop of this._interactables) {
-      if (prop._nearby) {
-        prop.onInteract();
-        return;
-      }
+    const nearestProp = this._getNearbyInteractables()[0];
+    if (nearestProp) {
+      nearestProp.onInteract();
+      return;
     }
   }
 
   _handlePointerInteract(pointer) {
+    const priorityProp = this._getQuestPriorityInteractable();
+    if (priorityProp) {
+      const dx = pointer.worldX - priorityProp.x;
+      const dy = pointer.worldY - priorityProp.y;
+      if (Math.sqrt(dx * dx + dy * dy) < priorityProp.radius && priorityProp._nearby) {
+        priorityProp.onInteract();
+        return;
+      }
+    }
+
     // NPCs
     for (const npc of Object.values(this._npcs)) {
       const dx = pointer.worldX - npc.circle.x;
@@ -431,7 +459,7 @@ export default class LocalSceneBase extends Phaser.Scene {
       }
     }
     // Interactable props
-    for (const prop of this._interactables) {
+    for (const prop of this._getNearbyInteractables()) {
       const dx = pointer.worldX - prop.x;
       const dy = pointer.worldY - prop.y;
       if (Math.sqrt(dx * dx + dy * dy) < prop.radius && prop._nearby) {
@@ -439,6 +467,25 @@ export default class LocalSceneBase extends Phaser.Scene {
         return;
       }
     }
+  }
+
+  _getNearbyInteractables() {
+    return this._interactables
+      .filter((prop) => prop._nearby)
+      .sort((a, b) => a._distanceToPlayer - b._distanceToPlayer);
+  }
+
+  _getQuestPriorityInteractable() {
+    const state = this.registry.get('gameState');
+    const step = getCurrentStep(state);
+    if (step?.type !== 'forage' || !step.requiredItem) return null;
+
+    return this._interactables
+      .filter((prop) =>
+        prop.grantsItems?.includes(step.requiredItem)
+        && prop._distanceToPlayer < prop.radius + 80,
+      )
+      .sort((a, b) => a._distanceToPlayer - b._distanceToPlayer)[0] || null;
   }
 
   _updateInteractablePrompts() {
@@ -451,6 +498,7 @@ export default class LocalSceneBase extends Phaser.Scene {
       const dy = py - prop.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
       prop._nearby = dist < prop.radius;
+      prop._distanceToPlayer = dist;
       prop.prompt.setVisible(prop._nearby);
     }
   }

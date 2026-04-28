@@ -33,6 +33,19 @@ import {
   ECOLOGY_ASSET_KEYS,
 } from '../systems/ecology/ecologyAssetManifest.js';
 
+const PLANT_GRANTS = {
+  mesquite: ['mesquite_pods', 'mesquite_wood_sample', 'bio_sample_bacteria'],
+  creosote: ['creosote_leaves'],
+  prickly_pear: ['prickly_pear_fruit'],
+  barrel_cactus: ['barrel_cactus_pulp'],
+  jojoba: ['jojoba_seeds'],
+  agave: ['agave_fiber', 'bio_sample_agave'],
+  yucca: ['yucca_root'],
+  desert_lavender: ['desert_lavender_flowers'],
+  ephedra: ['ephedra_stems'],
+  yerba_mansa: ['yerba_mansa_root'],
+};
+
 export default class StreetBlockScene extends LocalSceneBase {
   static layoutEditorConfig = {
     layoutAssetKey: 'streetBlockLayout',
@@ -260,6 +273,8 @@ export default class StreetBlockScene extends LocalSceneBase {
       this.addInteractable({
         x: p.x, y: p.y, label: p.label, icon: '', // no emoji — visual is drawn above
         radius: p.radius,
+        grantsItems: PLANT_GRANTS[p.species] || [],
+        metadata: { type: 'plant', species: p.species },
         onInteract: () => this._handlePlantInteract(p.species, p.label, p.x, p.y),
       });
       this._ecologyPlants.push({ species: p.species, x: p.x, y: p.y });
