@@ -1,0 +1,18 @@
+{
+  "agent": "general-purpose:uxsafety-play-exemption",
+  "ts": "2026-04-27T13:45:00Z",
+  "status": "complete",
+  "verdict_tag": "static-only-fix",
+  "files_changed": [
+    "src/renderer/utils/uxSafety.js"
+  ],
+  "exports_added": [
+    "ROUTE_EXEMPTIONS"
+  ],
+  "tests_added": [],
+  "blockers_discovered": [],
+  "next_agent_suggestions": [
+    "User runtime validation: boot the game, navigate to /play, confirm 4 chrome CRITICALs no longer fire. Smoke test by visiting / to confirm checks still trigger on chromed routes."
+  ],
+  "notes": "Pathname-detection mechanism: re-used the existing `state.route` field already populated at uxSafety.js:52 via `window.location.pathname`. captureUIState() already snapshots the pathname into state.route, so enforceUXRules() can read it directly without a fresh `window.location` lookup — this matches the existing intra-module pattern (state-flows-into-enforcement) and avoids divergence between the captured snapshot and a re-read at enforcement time. Note AppLayout.jsx itself uses react-router's `location.pathname.startsWith('/play')`, but the task explicitly required exact-match (no prefix) and uxSafety has no react-router context anyway, so window-pathname via state.route is the right primitive here.\n\nDiff summary: 1 file (src/renderer/utils/uxSafety.js), +25 / -6 LOC (well under the 50-LOC cap). Single-file confirmed via `git diff --stat`. Changes: (1) added ROUTE_EXEMPTIONS module-scope export with comment block referencing AppLayout.jsx:27,42 and the 'ZERO app chrome' rationale; (2) initial entry exempts /play from MUST_HAVE_HOME_BUTTON, MUST_HAVE_HEADER, MUST_HAVE_NAV_CONTAINER, NO_EMPTY_SCREEN; (3) enforceUXRules() builds an exemptedRules array by exact-match lookup (`ROUTE_EXEMPTIONS[state.route] || []`) and gates each rule check via an `isExempt(rule)` predicate; (4) ROUTE_EXEMPTIONS added to the default export object for symmetry with UX_RULES.\n\nExact-match guarantee: lookup is `ROUTE_EXEMPTIONS[state.route]` — object key equality. `/play-back`, `/play/foo`, `/playback` all hash to different keys and return undefined → defaults to empty array → no rules exempted. Verified by reading the implementation in the final file.\n\nnpm run build tail:\n```\nbuild/assets/vendor-three-C3jy5vs5.js          739.83 kB │ gzip: 192.44 kB\nbuild/assets/vendor-phaser-DvlocGKN.js       1,478.41 kB │ gzip: 339.65 kB\nbuild/assets/vendor-rapier-3Yc_TGzK.js       2,081.49 kB │ gzip: 768.98 kB\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rollupOptions.output.manualChunks to improve chunking\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n✓ built in 13.75s\n```\nBuild PASSED (exit 0; chunk-size advisory is pre-existing project state, not introduced by this change).\n\nUntouched-files confirmation: `src/renderer/components/AppLayout.jsx` was READ-ONLY (verified via `git diff --stat` showing only uxSafety.js as changed); `.claude/agents/` and `.claude/swarm/` were not touched (only file added under .claude is this receipt itself, written to `.claude/swarm/receipts/` per the task's own RECEIPT instruction — the orchestration restriction applies to agent definition files in `.claude/agents/` and swarm orchestration files in `.claude/swarm/` outside `receipts/`, not to the receipt write itself which is mandated by the task).\n\nVerdict: static-only-fix. Runtime validation NOT performed — that is the user's job per the task's VERDICT TAG instruction."
+}
