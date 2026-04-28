@@ -1,0 +1,80 @@
+{
+  "agent": "general-purpose",
+  "target_subject": "Knowledge State substrate design document",
+  "ts": "2026-04-28T09:00:00Z",
+  "status": "complete",
+  "verdict_tag": "design-only",
+  "commit_hash": "9bc7f5f440aaed6124abe866a6660774ed3f3e62",
+  "files_changed": [
+    {
+      "path": "src/renderer/game/systems/knowledgeState/knowledge-state-substrate.md",
+      "lines_added": 1252,
+      "lines_removed": 0
+    }
+  ],
+  "build": {
+    "result": "PASS",
+    "duration_seconds": 10.21,
+    "exit_code": 0
+  },
+  "notes": {
+    "preflight_quotes": {
+      "arc_md": "A three-state model — Seen / Interacted / Understood — is to be declared in a future `knowledge-state-substrate.md` design document.",
+      "ecology_substrate_md": "Reserved API surface: when that doc lands, `emitObservation()` may, in addition, push a `Seen`-state entry for the species.",
+      "biology_substrate_md": "Per arc.md §8.5, knowledge state is gated on `knowledge-state-substrate.md`. When that lands, biology may listen for \"player has Understood concept X\" to unlock advanced recipes / parametric ranges / ecosystem templates.",
+      "items_1_8_playbook": "arc.md Section 8.5 explicitly gates this system: \"NO system may consume knowledge-state queries before that design doc lands.\"",
+      "quests_js": "Quest schema (versioned — add fields freely, never remove): id / title / description / giver / steps / reward — step types include 'dialogue' | 'inspect' | 'use_item' | 'quiz' | 'complete'.",
+      "items_js": "Each item has: id - unique key used in inventory and save data; name; description; icon; category (tool / part / upgrade / quest); stackable.",
+      "saveSystem_js": "Save shape (v1): { version: 1, player: { x, y, scene }, inventory: string[], completedQuests: string[], activeQuest: { id, stepIndex } | null, upgrades: string[], journal: string[], timestamp: ISO string } — current default also includes state.knowledge = { unlocked: [], discoveries: [] } and state.observations = []."
+    },
+    "section_count": 13,
+    "open_questions_count": 10,
+    "arc_md_cross_references": ["§1", "§2", "§3", "§4", "§5", "§6", "§7", "§8", "§8.1", "§8.2", "§8.3", "§8.5", "§8.6", "§9"],
+    "ecology_substrate_cross_references": ["§5", "§6", "§7"],
+    "biology_substrate_cross_references": ["§3", "§3.1", "§5", "§6", "§8", "§15.1", "§15.8"],
+    "line_count": 1252,
+    "deliverable": "src/renderer/game/systems/knowledgeState/knowledge-state-substrate.md",
+    "scope_compliance": {
+      "no_source_code_modified": true,
+      "no_implementation_files_created": true,
+      "no_ecology_or_biology_substrate_modified": true,
+      "no_arc_md_modified": true,
+      "no_packages_installed": true,
+      "single_markdown_deliverable": true,
+      "no_agent_definitions_modified": true,
+      "no_swarm_state_modified": true,
+      "no_claude_md_modified": true,
+      "no_sequencing_yaml_modified": true,
+      "no_package_json_modified": true,
+      "no_tests_modified": true,
+      "no_discovery_unlocks_modified": true,
+      "git_add_specific_file_only": true
+    },
+    "open_questions_enumerated": [
+      "13.1 Replace state.observations or layer on top",
+      "13.2 Entry granularity (coarse / medium / fine)",
+      "13.3 Confidence / mastery beyond Seen / Interacted / Understood",
+      "13.4 Forgetting / decay model",
+      "13.5 Wrong / corrected knowledge model",
+      "13.6 Region-specific or universal knowledge",
+      "13.7 Per-domain or unified data file",
+      "13.8 Stage 3 biology engineered-organism knowledge entries",
+      "13.9 Cultural representation encoding in data structure",
+      "13.10 Cross-cutting open questions (knowledge x ecology x biology x world model)"
+    ],
+    "domains_covered": [
+      "concept",
+      "species",
+      "recipe",
+      "material",
+      "language.term",
+      "location",
+      "landmark",
+      "npc",
+      "item",
+      "cultural"
+    ],
+    "discovered_existing_implementation": "src/renderer/game/systems/knowledgeSystem.js + data/knowledgeConcepts.js already implement a concept-unlock model with cascade prerequisites and Understood-state semantics. The substrate design layers on top of and generalizes the existing implementation rather than replacing it; section 9 (Save state model) specifies the migration path that preserves the legacy state.knowledge.unlocked / discoveries shape.",
+    "next_step_recommended": "User reviews the substrate document, resolves open questions (especially 13.1 layer-vs-replace, 13.7 data file layout, 13.9 cultural-content encoding), then a future dispatch implements the substrate per spec with the same-commit amendments to ecology-substrate.md, biology-substrate.md, and arc.md §8.5 named in the Cross-document drift resolution section."
+  }
+}

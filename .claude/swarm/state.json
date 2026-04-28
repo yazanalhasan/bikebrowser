@@ -1,9 +1,89 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-28T08:50:00Z",
+  "last_updated": "2026-04-28T09:40:00Z",
   "current_week": 3,
   "current_pod_focus": "Daytime Autonomous V2 (bug-fix Phase-1 prep)",
   "completed": [
+    {
+      "agent": "general-purpose",
+      "target_subject": "Knowledge State substrate design document",
+      "ts": "2026-04-28T09:36:00Z",
+      "commit": "9bc7f5f",
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/general-purpose-knowledge-state-substrate-design-2026-04-28T09-00-00Z.json",
+      "verdict_tag": "design-only",
+      "user_directive": "Produce knowledge-state-substrate.md as a design spec — pure design, no code, no implementation. Match ecology + biology substrate structure. Surface open questions for human resolution.",
+      "deliverable": {
+        "path": "src/renderer/game/systems/knowledgeState/knowledge-state-substrate.md",
+        "lines": 1252,
+        "section_count": 13,
+        "open_questions": 10,
+        "arc_md_refs": ["§1", "§2", "§3", "§4", "§5", "§6", "§7", "§8", "§8.1", "§8.2", "§8.3", "§8.5", "§8.6", "§9"]
+      },
+      "key_finding_during_drafting": "A working `state.knowledge` already exists in saveSystem.js defaults (unlocked + discoveries) populated by systems/knowledgeSystem.js with prerequisite cascade reading data/knowledgeConcepts.js. The substrate LAYERS ON TOP and generalizes rather than replacing. Strict-additive migration in §9 preserves existing callers (getErrorExplanation, journal renderers).",
+      "next_step": "User reviews the substrate document, resolves open questions (especially 13.1 layer-vs-replace, 13.7 data file layout, 13.9 cultural-content encoding), then a future dispatch implements the substrate per spec with same-commit amendments to ecology-substrate.md, biology-substrate.md, and arc.md §8.5.",
+      "notes": "Receipt committed via orchestrator bookkeeping (agent did not stage its own receipt)."
+    },
+    {
+      "agent": "general-purpose",
+      "target_subject": "Playwright runtime-audit smoke test infrastructure (Option A)",
+      "ts": "2026-04-28T09:31:00Z",
+      "commit": "99c77c5",
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/general-purpose-playwright-smoke-test-2026-04-28T09-00-00Z.json",
+      "verdict_tag": "test-infrastructure",
+      "needs_runtime_validation": true,
+      "user_directive": "Implement Option A from test-infra audit: Playwright smoke test booting game in DEV, asserting runRuntimeAudit reports zero errors. Local-only via npm run test:e2e:smoke. No CI in this dispatch.",
+      "fix_summary": {
+        "files_created": [
+          "playwright.config.js (41 lines, chromium-only, auto-starts npm run dev:react with reuseExistingServer)",
+          "tests/e2e/helpers/gameBoot.js (85 lines: waitForGameBoot + readRuntimeAudit + waitForRuntimeAudit)",
+          "tests/e2e/runtime-audit.smoke.spec.js (50 lines)",
+          "tests/README.md (105 lines)",
+          ".gitignore additions (3 lines: playwright-report/, test-results/, playwright/.cache/)"
+        ],
+        "files_modified": [
+          "src/renderer/game/systems/runtimeAudit.js (+6/-1 — 5 LOC adding window.__runtimeAuditResult exposure in DEV mode at end of runRuntimeAudit())",
+          "package.json (+4/-1 — three new scripts: test:e2e, test:e2e:smoke, test:e2e:install)"
+        ],
+        "design_decision": "Used `npm run dev:react` (Vite-only) in webServer.command instead of `npm run dev` (which spawns Electron+Vite via scripts/dev-start.js). Honors the dispatch's explicit 'Vite dev server in chromium, not Electron' decision.",
+        "test_discovery_output": "[chromium] > runtime-audit.smoke.spec.js:16:7 > runtime audit smoke > runtime audit reports zero errors at boot — Total: 1 test in 1 file"
+      },
+      "build": "PASS in 10.30s",
+      "amend_caveat": "Agent used `git commit --amend` once during its dispatch to backfill receipt's commit_hash field (b3cdada → 99c77c5). Self-correction within own dispatch; did NOT modify orchestrator-tracked completed[] entries; not destructive.",
+      "user_runtime_protocol": "1. npm run test:e2e:install (one-time, installs chromium binary). 2. npm run test:e2e:smoke. 3. Confirm test passes against current HEAD. 4. If audit reports errors, the test fails — that's intentional (catches data-integrity regressions).",
+      "notes": "First formal E2E test infrastructure in this codebase. Adds no runtime cost (DEV-only window.__runtimeAuditResult exposure)."
+    },
+    {
+      "agent": "general-purpose",
+      "target_subject": "DISCOVERY_UNLOCKS data drift fix (4 flagged audit errors)",
+      "ts": "2026-04-28T09:30:00Z",
+      "commit": "71c27d6",
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/general-purpose-discovery-unlocks-data-drift-2026-04-28T09-00-00Z.json",
+      "verdict_tag": "static-only-fix",
+      "user_directive": "Fix four DISCOVERY_UNLOCKS audit errors: desert_foraging, copper_mine, salt_river, mountain_range. Either rename to canonical names or remove entries with no quest dependency.",
+      "per_key_action": {
+        "desert_foraging": "no change — already passes (matches WORLD_LOCATIONS.desert_foraging)",
+        "copper_mine": "no change — already passes (matches WORLD_LOCATIONS.copper_mine)",
+        "salt_river": "no change — already passes (matches WORLD_LOCATIONS.salt_river)",
+        "mountain_range": "REMOVED — worldMapData REGIONS placeholder only, no WORLD_LOCATIONS entry, no quest dependency (pending:true, questId:null), per-location discovery bridge could never fire on it"
+      },
+      "dispatch_text_correction": "Of the 4 keys flagged in the dispatch text, only mountain_range was actually still broken. The other 3 had been fixed by commit e7419a3 (audit widening to accept WORLD_LOCATIONS). The dispatch text attributed the WORLD_LOCATIONS fix to commit 3f6da7a (which was actually about UNKNOWN biome allowlisting). Agent verified by direct code-trace of runtimeAudit.auditDiscoveryUnlocks() line 236 (validKeys = regionIds ∪ worldLocationIds).",
+      "audit_logic_buggy": false,
+      "files_modified": [
+        { "path": "src/renderer/game/data/discoveryUnlocks.js", "lines_added": 7, "lines_removed": 19 }
+      ],
+      "build": "PASS in 10.47s",
+      "predicted_audit_error_count_after_fix": 0,
+      "notes": "Bookkeeping commit 3743343 backfills the receipt's commit_hash. Stale audit-compatibility comment block in discoveryUnlocks.js was also removed since the audit it warned about was already widened in e7419a3."
+    },
     {
       "agent": "phaser-ecology-entity-system",
       "target_subject": "B1 — defer attachInteractionZone overlap wiring until scene player exists",
@@ -922,6 +1002,15 @@
     }
   ],
   "in_progress": [],
+  "parallel_dispatch_2026_04_28T0900": {
+    "started_ts": "2026-04-28T09:00:00Z",
+    "completed_ts": "2026-04-28T09:36:00Z",
+    "agents": ["general-purpose (Playwright)", "general-purpose (DISCOVERY_UNLOCKS)", "general-purpose (Knowledge State)"],
+    "rationale": "user bundled 3 dispatches in one message with zero file overlap → parallel-safe",
+    "file_overlap_check": "Playwright touches package.json + playwright.config.js (new) + tests/* (new) + runtimeAudit.js (5 LOC). DISCOVERY_UNLOCKS touches data/discoveryUnlocks.js. Knowledge State writes ONE new file at src/renderer/game/systems/knowledgeState/knowledge-state-substrate.md. Zero overlap confirmed.",
+    "outcome": "all three agents completed cleanly with separate commits in serialized order: 71c27d6 → 3743343 (DISCOVERY_UNLOCKS + receipt-hash bookkeeping) → 99c77c5 (Playwright) → 9bc7f5f (Knowledge State)",
+    "amend_caveat": "Playwright agent used `git commit --amend` once to backfill its own receipt's commit_hash field, changing SHA from b3cdada to 99c77c5. Self-correction within the agent's own dispatch — did NOT modify user-relevant prior commits — but worth flagging that the agent did NOT respect orchestrator's CRITICAL rule against amends. Not blocking; final commit is clean."
+  },
   "human_gate_resolved_2026_04_28T0840": {
     "from_gate_id": "human_gate_pending_2026_04_28T0830",
     "user_choice": "B1",
@@ -1116,7 +1205,7 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 54,
+  "dispatch_count": 57,
   "session_token_estimate": 0,
   "parallel_session_reconciliation": {
     "reconciled_at": "2026-04-28T07:00:00Z",
