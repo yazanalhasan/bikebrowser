@@ -411,13 +411,36 @@ export default class StreetBlockScene extends LocalSceneBase {
 
     const info = PLANT_INFO[species] || { desc: `A ${label}.`, items: [] };
 
-    // If player has an active forage quest step, give the item
+    // Decide whether this plant grants an item to the player. Two gates:
+    //   (a) Canonical flow — current step is a forage step whose
+    //       requiredItem matches this plant's outputs.
+    //   (b) Recovery flow — the active quest has SOME forage step that
+    //       requires an item this plant produces, and the player
+    //       doesn't already have it. Catches the case where a quest
+    //       advanced past the gather step without the item (e.g. pre-
+    //       C3-fix saves where observe steps auto-advanced and pulled
+    //       the player past forage steps too aggressively).
+    let grantedItem = null;
     const step = state.activeQuest ? this._getCurrentStepIfForage(state) : null;
     if (step && info.items.includes(step.requiredItem)) {
-      // Grant the item
+      grantedItem = step.requiredItem;
+    }
+    if (!grantedItem && state.activeQuest) {
+      const quest = QUESTS[state.activeQuest.id];
+      if (quest) {
+        grantedItem = info.items.find((item) =>
+          !state.inventory.includes(item)
+          && quest.steps.some(
+            (s) => s.type === 'forage' && s.requiredItem === item,
+          ),
+        ) || null;
+      }
+    }
+
+    if (grantedItem) {
       const updated = {
         ...state,
-        inventory: [...state.inventory, step.requiredItem],
+        inventory: [...state.inventory, grantedItem],
       };
       this.registry.set('gameState', updated);
       // saveGame already imported at top of file
@@ -427,7 +450,7 @@ export default class StreetBlockScene extends LocalSceneBase {
 
       this.registry.set('dialogEvent', {
         speaker: 'Zuzu',
-        text: `Found ${step.requiredItem.replace(/_/g, ' ')}! ${info.desc}`,
+        text: `Found ${grantedItem.replace(/_/g, ' ')}! ${info.desc}`,
         choices: null, step: null,
       });
       return;
