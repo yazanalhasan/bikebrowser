@@ -21,6 +21,12 @@ import QUESTS from '../data/quests.js';
 import { drawPlant } from '../utils/plantRenderer.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import {
+  registerEntities,
+  attachEcologyTicker,
+  emitObservation,
+  emitForage,
+} from '../systems/ecology/index.js';
 
 export default class StreetBlockScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -245,10 +251,36 @@ export default class StreetBlockScene extends LocalSceneBase {
       this.addInteractable({
         x: p.x, y: p.y, label: p.label, icon: '', // no emoji — visual is drawn above
         radius: p.radius,
-        onInteract: () => this._handlePlantInteract(p.species, p.label),
+        onInteract: () => this._handlePlantInteract(p.species, p.label, p.x, p.y),
       });
       this._ecologyPlants.push({ species: p.species, x: p.x, y: p.y });
     }
+
+    // === ECOLOGY SUBSTRATE WIRING (additive — Phase 4) ===========================
+    // Register each layout-driven plant as an EcologyEntity so the ecology
+    // substrate can track observations and forage events alongside the
+    // existing plant-interaction flow. The original `_handlePlantInteract`
+    // path (forage gate, item grant, dialog) is preserved unchanged below;
+    // ecology emission is layered on top.
+    const SCENE_KEY = 'StreetBlockScene';
+    const ecologyConfigs = this.layout.plants.map((p, i) => ({
+      id: `${SCENE_KEY}_plant_${i}_${p.species}`,
+      speciesId: p.species,
+      sceneKey: SCENE_KEY,
+      x: p.x,
+      y: p.y,
+      spawnedBy: 'static',
+      interactionRadius: p.radius,
+    }));
+    /** @type {import('../systems/ecology/index.js').EcologyEntity[]} */
+    this._ecologyEntities = registerEntities(this, ecologyConfigs);
+    // Index by `${species}|${x}|${y}` so `_handlePlantInteract` can find
+    // the registered entity for the specific plant the player interacted with.
+    this._ecologyEntityIndex = new Map();
+    for (const ent of this._ecologyEntities) {
+      this._ecologyEntityIndex.set(`${ent.speciesId}|${ent.x}|${ent.y}`, ent);
+    }
+    attachEcologyTicker(this);
 
     // Fire hydrant
     {
@@ -384,7 +416,7 @@ export default class StreetBlockScene extends LocalSceneBase {
 
   // ── Plant Interaction ────────────────────────────────────────────────────────
 
-  _handlePlantInteract(species, label) {
+  _handlePlantInteract(species, label, plantX, plantY) {
     const state = this.registry.get('gameState');
     const audioMgr = this.registry.get('audioManager');
     audioMgr?.playSfx('interaction_ping');
@@ -394,6 +426,14 @@ export default class StreetBlockScene extends LocalSceneBase {
     if (mcp) {
       mcp.emit('FORAGE_AVAILABLE', { species, x: 0, y: 0 });
     }
+
+    // Resolve the registered ecology entity for this exact plant (by
+    // species + world position). Used after the existing flow completes
+    // to fire ecology observation/forage events alongside, without
+    // disturbing the canonical dialog/inventory path below.
+    const ecologyEntity = (typeof plantX === 'number' && typeof plantY === 'number')
+      ? this._ecologyEntityIndex?.get(`${species}|${plantX}|${plantY}`) ?? null
+      : null;
 
     // Plant info from flora data
     const PLANT_INFO = {
@@ -453,6 +493,13 @@ export default class StreetBlockScene extends LocalSceneBase {
         text: `Found ${grantedItem.replace(/_/g, ' ')}! ${info.desc}`,
         choices: null, step: null,
       });
+
+      // ECOLOGY (additive): fire observation + forage events alongside the
+      // existing dialog/inventory grant. Existing flow above is unchanged.
+      if (ecologyEntity) {
+        try { emitObservation(ecologyEntity, 'interact'); } catch { /* swallow */ }
+        try { emitForage(ecologyEntity, 'interact'); } catch { /* swallow */ }
+      }
       return;
     }
 
@@ -462,6 +509,12 @@ export default class StreetBlockScene extends LocalSceneBase {
       text: info.desc,
       choices: null, step: null,
     });
+
+    // ECOLOGY (additive): record the inspect-style interaction so
+    // observation state advances even when no item is granted.
+    if (ecologyEntity) {
+      try { emitObservation(ecologyEntity, 'interact'); } catch { /* swallow */ }
+    }
   }
 
   _getCurrentStepIfForage(state) {

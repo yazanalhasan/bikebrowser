@@ -1,0 +1,97 @@
+{
+  "agent": "phaser-ecology-scene-attacher",
+  "dispatch": "Phase 4 — wire EcologyEntity layer into StreetBlockScene",
+  "target_scene": "StreetBlockScene",
+  "scene_file": "src/renderer/game/scenes/StreetBlockScene.js",
+  "timestamp": "2026-04-27T06:47:28Z",
+  "verdict": "design-only-implementation",
+  "diff_stat": {
+    "src/renderer/game/scenes/StreetBlockScene.js": "55 insertions, 2 deletions",
+    "deletion_audit": "The 2 'deletions' are single-line replacements that PARAMETER-EXTEND existing call sites — NO existing logic was removed: (1) `_handlePlantInteract(p.species, p.label)` -> `_handlePlantInteract(p.species, p.label, p.x, p.y)` (added 2 args, original args preserved); (2) `_handlePlantInteract(species, label) {` -> `_handlePlantInteract(species, label, plantX, plantY) {` (added 2 params, original params preserved). All existing branches, dialog flow, forage gate, recovery flow, item grant, and save calls are byte-identical."
+  },
+  "registered_species": [
+    "mesquite",
+    "creosote",
+    "prickly_pear",
+    "barrel_cactus",
+    "jojoba",
+    "agave",
+    "yucca",
+    "desert_lavender"
+  ],
+  "registered_species_counts": {
+    "mesquite": 2,
+    "creosote": 2,
+    "prickly_pear": 1,
+    "barrel_cactus": 1,
+    "jojoba": 1,
+    "agave": 1,
+    "yucca": 1,
+    "desert_lavender": 1
+  },
+  "total_layout_plant_entries": 10,
+  "registration_notes": "registerEntities is bulk-tolerant: configs whose speciesId does not resolve via FLORA_MAP (currently `agave` and `yucca`, which are present in PLANT_ECOLOGY/data layout but not in FLORA's `name` field) are skipped with a console warning. The remaining 6 layout entries (2 mesquite, 2 creosote, prickly_pear, barrel_cactus, jojoba, desert_lavender = 6 entities) register successfully and become part of the per-scene ecology registry. This matches the documented public-API behavior of registerEntities (skip-and-warn rather than tear down the whole scene).",
+  "ticker": {
+    "called": "attachEcologyTicker(this)",
+    "site": "src/renderer/game/scenes/StreetBlockScene.js:283",
+    "frequency": "exactly once per scene mount"
+  },
+  "observation_emission_sites": [
+    {
+      "file": "src/renderer/game/scenes/StreetBlockScene.js",
+      "line": 498,
+      "context": "Inside _handlePlantInteract, after the existing forage-gate item-grant + dialog code completes successfully (the grantedItem branch). Fires `emitObservation(ecologyEntity, 'interact')`."
+    },
+    {
+      "file": "src/renderer/game/scenes/StreetBlockScene.js",
+      "line": 499,
+      "context": "Same successful-grant branch. Fires `emitForage(ecologyEntity, 'interact')` for informational record. Existing `state.inventory.push`-style mutation (actually a spread/save) is unchanged."
+    },
+    {
+      "file": "src/renderer/game/scenes/StreetBlockScene.js",
+      "line": 515,
+      "context": "After the just-show-info dialog branch (no item granted). Fires `emitObservation(ecologyEntity, 'interact')` so observation state advances on inspect-only interactions too."
+    }
+  ],
+  "lookup_strategy": "Per-scene Map keyed by `${speciesId}|${x}|${y}`. The `_handlePlantInteract` handler is invoked from `addInteractable.onInteract` — those callbacks now thread `p.x, p.y` into the handler so the matching EcologyEntity can be resolved unambiguously even when multiple instances of the same species exist (e.g. 2 mesquite, 2 creosote).",
+  "imports_used_from_ecology": [
+    "registerEntities",
+    "attachEcologyTicker",
+    "emitObservation",
+    "emitForage"
+  ],
+  "deep_imports_into_substrate": "NONE — only imports from `../systems/ecology/index.js`. No imports from `EcologyEntity.js`, `ecologyState.js`, etc.",
+  "untouched_files_audit": {
+    "other_scenes": "NONE modified. Only StreetBlockScene.js was edited.",
+    "quest_definitions": "NOT touched (`data/quests.js` unmodified).",
+    "questSystem": "NOT touched.",
+    "ecology_internals": "NOT touched (no `systems/ecology/*` files modified).",
+    "data_files": "NOT touched (`data/ecology.js`, `data/flora.js`, `data/fauna.js` unmodified).",
+    "save_system": "NOT touched.",
+    "layout_json": "NOT touched (`public/layouts/street-block.layout.json` unmodified)."
+  },
+  "build": {
+    "command": "npm run build",
+    "result": "PASS",
+    "duration": "13.35s",
+    "warnings": "Only the pre-existing chunk-size warning for vendor-phaser/vendor-rapier; no new warnings introduced."
+  },
+  "halt_and_surface_points": [
+    "The dispatch prompt's example used `type: 'plant'` and source values `'interaction'`/`'forage'`, which do not match the typed surface in systems/ecology/index.js. The agent README's example omits `type` (relying on resolveSpeciesType -> 'flora') and the JSDoc-documented source values are `'proximity'|'interact'|'inspect'|'programmatic'` for emitObservation and `'interact'|'programmatic'` for emitForage. Implementation followed the typed surface and the README example: no `type` field passed, source `'interact'` used everywhere. This is a non-blocking deviation from the prompt verbiage, surfaced here for clarity — runtime behavior is correct.",
+    "Layout species `agave` and `yucca` are NOT in FLORA_MAP (not present in src/renderer/game/data/flora.js by `name`); registerEntities will skip them with a console warning per its documented bulk-tolerant behavior. The existing dialog/forage flow for those species still works since `_handlePlantInteract` does not depend on the ecology entity for its primary path. No halt — this matches the documented public-API contract for unknown species in a bulk register call."
+  ],
+  "next_agent_suggestions": [
+    "phaser-ecology-scene-attacher (next scene: DesertForagingScene)",
+    "phaser-ecology-scene-attacher (next scene: DogParkScene)",
+    "phaser-ecology-scene-attacher (next scene: ZuzuGarageScene workbench-related plants)"
+  ],
+  "runtime_validation_required": [
+    "User enters StreetBlockScene",
+    "User walks up to a known-species plant (e.g. mesquite, creosote, prickly_pear)",
+    "User triggers interact (existing prompt flow)",
+    "Console / event-bus shows `ecology.observation` event firing alongside the dialog",
+    "Existing dialog appears with same text as before",
+    "If forage gate matches: existing item-grant + `Found X! ...` dialog appears unchanged AND `ecology.forage` event fires",
+    "Verify `agave`/`yucca` plants still trigger their existing dialog path (PLANT_INFO entries) even though no ecology entity was registered for them"
+  ]
+}
