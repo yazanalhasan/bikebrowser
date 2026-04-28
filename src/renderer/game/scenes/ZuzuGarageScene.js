@@ -147,6 +147,47 @@ export default class ZuzuGarageScene extends LocalSceneBase {
       onInteract: () => {
         const state = this.registry.get('gameState');
 
+        // Desert-coating quest: combine resin + wax → protective_coating.
+        // Emits 'coating_applied' for desert_coating.apply_coating
+        // (quests.js:1611). Item-source for resin/wax is out of scope
+        // for this fix (tracked as Bug 4 in the bug log) — the player
+        // is told what they're missing if their inventory is empty.
+        if (state?.activeQuest?.id === 'desert_coating') {
+          const inv = state.inventory || [];
+          const obs = state.observations || [];
+          const hasIngredients = inv.includes('resin') && inv.includes('wax');
+          if (hasIngredients && !obs.includes('coating_applied')) {
+            const newInv = inv
+              .filter((x) => x !== 'resin' && x !== 'wax')
+              .concat('protective_coating');
+            const updated = {
+              ...state,
+              inventory: newInv,
+              observations: [...obs, 'coating_applied'],
+            };
+            this.registry.set('gameState', updated);
+            saveGame(updated);
+            this.registry.get('audioManager')?.playSfx?.('item_pickup');
+            this.registry.set('dialogEvent', {
+              speaker: 'Zuzu',
+              text: "Mixed resin and wax into a protective coating!\n\n🛡️ Got: Protective Coating\n\nThis should keep my bike safe from the desert sun.",
+              choices: null, step: null,
+            });
+            return;
+          }
+          if (!hasIngredients) {
+            const missing = [];
+            if (!inv.includes('resin')) missing.push('🟡 resin');
+            if (!inv.includes('wax')) missing.push('🟤 wax');
+            this.registry.set('dialogEvent', {
+              speaker: 'Zuzu',
+              text: `I need to combine resin and wax for the coating.\n\nMissing: ${missing.join(', ')}`,
+              choices: null, step: null,
+            });
+            return;
+          }
+        }
+
         // Bridge quest: grant steel_sample from workbench
         if (state?.activeQuest?.id === 'bridge_collapse') {
           const quest = QUESTS['bridge_collapse'];
