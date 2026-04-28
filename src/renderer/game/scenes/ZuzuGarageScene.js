@@ -258,12 +258,19 @@ export default class ZuzuGarageScene extends LocalSceneBase {
       onInteract: () => {
         const s = this.registry.get('gameState') || {};
         const aq = s.activeQuest;
-        // Open to anyone on the heat_failure quest at the observe step or
-        // beyond. This means whichever step has id 'observe_expansion' or
-        // later — index 3 in the new step list.
+
+        // Generalized gate (mirror of the Materials Lab gate): open when
+        // any active quest has a step targeting ThermalRigScene. The
+        // legacy heat_failure stepIndex >= 3 check is preserved as a
+        // fallback so older saves whose step.scene field hasn't been
+        // backfilled still open the door.
+        const activeQuestData = aq?.id ? QUESTS[aq.id] : null;
+        const thermalStepInActiveQuest = !!activeQuestData?.steps?.some(
+          (step) => step.scene === 'ThermalRigScene',
+        );
         const onTrack = aq?.id === 'heat_failure' && (aq.stepIndex || 0) >= 3;
 
-        if (onTrack) {
+        if (thermalStepInActiveQuest || onTrack) {
           this.scene.start('ThermalRigScene', { spawn: 'fromGarage' });
           return;
         }
