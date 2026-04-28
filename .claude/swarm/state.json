@@ -1,9 +1,26 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-28T08:15:00Z",
+  "last_updated": "2026-04-28T08:35:00Z",
   "current_week": 3,
   "current_pod_focus": "Daytime Autonomous V2 (bug-fix Phase-1 prep)",
   "completed": [
+    {
+      "agent": "general-purpose",
+      "target_subject": "animal observation chain diagnosis (StreetBlockScene)",
+      "ts": "2026-04-28T08:30:00Z",
+      "commit": "28a99b4",
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/general-purpose-animal-observation-chain-diagnosis-2026-04-28T08-30-00Z.json",
+      "verdict_tag": "static-only-audit",
+      "user_directive": "Read-only diagnosis of why javelina/rabbit/coyote registrations don't reach state.observations even though plants do",
+      "primary_hypothesis": "H3 — bridge from ecology event to state.observations is interaction-based; animals have no addInteractable; substrate's automatic overlap path fails silently because scene.player is undefined at attachInteractionZone time",
+      "fix_scope": "small (12-20 LOC) — three options A/B1/B2 surfaced for human gate",
+      "files_changed": [{"path": ".claude/bugs/2026-04-28-animal-observation-chain.md", "lines_added": 246, "lines_removed": 0}],
+      "outcome": "human_gate_opened — substrate spec impact requires user choice; orchestrator does NOT auto-dispatch the fix per saved rules feedback_systems_not_quests + arc.md §8 design-before-consumption",
+      "notes": "Bug report is the source of truth; state.json carries the gate metadata. The diagnostic also surfaces a latent bug: attachInteractionZone's overlap path is broken for plants too — plants only work because they have a parallel addInteractable -> _handlePlantInteract -> emitObservation route."
+    },
     {
       "agent": "phaser-ecology-scene-attacher",
       "target_subject": "StreetBlockScene animal entities (javelina, rabbit, coyote)",
@@ -874,6 +891,33 @@
     }
   ],
   "in_progress": [],
+  "human_gate_pending_2026_04_28T0830": {
+    "trigger": "Animal observation chain diagnosis surfaced a substrate-spec design decision; per saved memory rules `feedback_systems_not_quests` + `project_arc_v1_3_world_model_alignment` substrate changes are design-before-consumption. NO auto-dispatch on the fix path.",
+    "bug_report": ".claude/bugs/2026-04-28-animal-observation-chain.md",
+    "primary_root_cause": "ecology substrate's intended automatic-observation path is silently broken: attachInteractionZone reads scene.player at registerEntity-time but LocalSceneBase.create() constructs this.player AFTER createWorld(). Plants survive because they have an independent _handlePlantInteract -> emitObservation path via addInteractable. Animals don't.",
+    "options": {
+      "A_per_scene": {
+        "loc": 12,
+        "files": ["src/renderer/game/scenes/StreetBlockScene.js"],
+        "substrate_spec_impact": "none",
+        "tradeoff": "ships food_chain_tracker tonight; perpetuates the substrate gap; every future scene attaching fauna must repeat the addInteractable pattern; recapitulates exactly the systems-not-quests rule (memory feedback_systems_not_quests, MaterialLabScene 09062ee cautionary example)."
+      },
+      "B1_overlap_fix": {
+        "loc": 15,
+        "files": ["src/renderer/game/systems/ecology/index.js"],
+        "substrate_spec_impact": "minor — semantic of when overlap wires up changes from registration-time to post-create",
+        "tradeoff": "minimal architectural shift; fixes substrate gap without changing observation semantics; defer overlap-wiring until scene.events.on('postcreate', ...). Affects plants too (currently their overlap is also broken, just non-load-bearing)."
+      },
+      "B2_proximity_canonical": {
+        "loc": 20,
+        "files": ["src/renderer/game/systems/ecology/ecologyTicker.js", "src/renderer/game/systems/ecology/ecology-substrate.md"],
+        "substrate_spec_impact": "moderate — promotes proximity to canonical observation source; aligns implementation with what substrate §5 already markets",
+        "tradeoff": "the cleanest design; proximity-by-walking-near becomes canonical; addInteractable -> emitObservation remains an additional source. Requires §5 + §10 spec updates first per arc.md §8 design-before-consumption rule."
+      }
+    },
+    "orchestrator_recommendation": "B1 if user wants minimal-change unblock with substrate hygiene; B2 if user wants the substrate spec to match its own §5 promise. Avoid A — it is the precise per-quest pattern the user's saved rule prohibits.",
+    "blocked_until": "user picks A | B1 | B2"
+  },
   "sweep_state": {
     "id": "overnight-unattended-2026-04-26T18-00",
     "user_directive": "Overnight unattended sweep — extract 11 scenes + backfill StreetBlockScene (+optional ZuzuGarageScene). Halt on first failure.",
@@ -1035,7 +1079,7 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 52,
+  "dispatch_count": 53,
   "session_token_estimate": 0,
   "parallel_session_reconciliation": {
     "reconciled_at": "2026-04-28T07:00:00Z",

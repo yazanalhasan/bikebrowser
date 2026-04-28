@@ -1,0 +1,68 @@
+{
+  "agent": "general-purpose",
+  "target_subject": "animal observation chain diagnosis (StreetBlockScene)",
+  "ts": "2026-04-28T08:30:00Z",
+  "status": "complete",
+  "verdict_tag": "static-only-audit",
+  "commit_hash": "28a99b4c61c6f2106a11d45f1092842b209b064b",
+  "files_read": [
+    "src/renderer/game/systems/ecology/EcologyEntity.js",
+    "src/renderer/game/systems/ecology/ecologyTicker.js",
+    "src/renderer/game/systems/ecology/ecologyEvents.js",
+    "src/renderer/game/systems/ecology/ecologyState.js",
+    "src/renderer/game/systems/ecology/index.js",
+    "src/renderer/game/systems/ecology/speciesResolver.js",
+    "src/renderer/game/systems/ecology/ecologyAssetManifest.js",
+    "src/renderer/game/scenes/StreetBlockScene.js",
+    "src/renderer/game/scenes/LocalSceneBase.js",
+    "src/renderer/game/data/ecology.js",
+    "src/renderer/game/data/quests.js",
+    "src/renderer/game/data/fauna.js",
+    "src/renderer/game/systems/questSystem.js",
+    "public/layouts/street-block.layout.json",
+    "public/assets/ecology/animals/* (filesystem listing)"
+  ],
+  "files_changed": [
+    {
+      "path": ".claude/bugs/2026-04-28-animal-observation-chain.md",
+      "lines_added": 246,
+      "lines_removed": 0
+    }
+  ],
+  "primary_hypothesis": "H3",
+  "primary_root_cause_one_liner": "Animals get an EcologyEntity + zone but no `addInteractable`, no working proximity-overlap callback (because `scene.player` is undefined when `registerEntity` runs during `createWorld()` at LocalSceneBase.js:155 before player creation at line 163), and the proximity ticker emits `ecology.proximity` only — never `emitObservation` — so `state.observations` never receives the fauna speciesId that quest step 4 (`observe_prey`/`requiredObservation: 'javelina'`) waits on.",
+  "fix_scope_estimate": "small",
+  "fix_loc_estimate": 12,
+  "needs_substrate_update": false,
+  "recommended_next_agent": "phaser-ecology-scene-attacher",
+  "notes": {
+    "orchestrator_substrate_facts_verified": {
+      "A_type_resolution": "CONFIRMED — ecology/index.js:296 auto-resolves type from speciesId via resolveSpeciesType when config.type is omitted; FAUNA_MAP contains javelina/rabbit/coyote so they resolve as 'fauna'.",
+      "B_ticker_type_agnostic": "PARTIALLY CONFIRMED — ecologyTicker.js:98-119 is genuinely type-agnostic (no fauna/flora filter). HOWEVER: the ticker's proximity loop calls emitProximity (publishes ecology.proximity event) NOT emitObservation. This is a critical correction to the orchestrator's stated assumption — the ticker is NOT the observation surface; it is only a proximity-event publisher.",
+      "C_coyote_tod_gating": "CONFIRMED — coyote in TIME_BEHAVIOR.night.activeAnimals only; javelina+rabbit in day. _computeActive correctly returns false for coyote during day. But this is moot since the ticker doesn't write observations regardless.",
+      "D_no_addInteractable_for_animals": "CONFIRMED — StreetBlockScene.js:297-318 only does this.add.image + registerEntities; no addInteractable per animal.",
+      "E_plant_chain_paths": "CORRECTED — the dispatch said two paths exist (proximity ticker + emitObservation in _handlePlantInteract). In reality: (1) the ticker does NOT call emitObservation at all; (2) the substrate's `attachInteractionZone` tries to wire a `physics.add.overlap` callback that DOES call emitObservation, but it fails silently because scene.player is null at registration time (createWorld runs before Player construction in LocalSceneBase.create). So in practice the ONLY working path for plants is the addInteractable callback at _handlePlantInteract:536/552. Animals have no equivalent."
+    },
+    "key_files_for_fix": {
+      "option_A_minimal": ["src/renderer/game/scenes/StreetBlockScene.js (mirror plant addInteractable for each layout animal, ~12 LOC after line 318)"],
+      "option_B_substrate": [
+        "src/renderer/game/systems/ecology/ecologyTicker.js (have the proximity loop call _emitObservation alongside emitProximity, with first-cross debounce)",
+        "src/renderer/game/systems/ecology/ecology-substrate.md (record proximity as a canonical observation source in §5 and §10)"
+      ]
+    },
+    "secondary_findings": {
+      "broken_proximity_overlap_in_attachInteractionZone": "ecology/index.js:206-233 wires a physics overlap that requires scene.player.sprite at registration time. Per LocalSceneBase.js:155 (createWorld) running before line 163 (new Player), this lookup is null and the overlap is never wired — for plants OR animals. Plants survive because their addInteractable path is independent. This is a latent bug worth flagging even if Option A is chosen.",
+      "coyote_tod_correctness": "Coyote correctly inactive during day per TIME_BEHAVIOR; this is data-correct behavior, not a bug. If quest design wants coyote observable during day, the data needs amending (NOT the substrate).",
+      "assets_intact": "All animal PNGs present at public/assets/ecology/animals/*.png and texture keys (ecology.animal.<name>) match scene lookup."
+    },
+    "guardrails_observed": [
+      "no source modifications",
+      "no substrate file modifications",
+      "no scene file modifications",
+      "no quest definition changes",
+      "no agent definition changes",
+      "no runtime testing — all evidence from static reads",
+      "single commit on main with the docs prefix and verdict tag"
+    ]
+  }
+}
