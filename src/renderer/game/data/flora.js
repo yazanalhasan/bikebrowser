@@ -205,6 +205,68 @@ export const FLORA = [
     },
   },
   {
+    name: 'agave',
+    label: 'Agave',
+    elevation: [1000, 5500],
+    moistureMax: 0.25,
+    density: 0.3,
+    cluster: false,
+    size: 'medium',
+    color: 0x8fa05c,
+    emoji: '🌱',
+    pharmacology: {
+      antiInflammatory: 0.2,
+      antimicrobial: 0.25,
+      nutritive: 0.15,
+      toxicity: 0.05,            // raw sap can irritate skin
+    },
+    scienceInteractions: {
+      contaminationResistance: 0.5,  // saponins repel microbes
+      chemicalReactivity: 0.4,
+      fluidContribution: 0.1,        // sap creates small fluid zones
+      topologyAffinity: 0.1,
+    },
+    foraging: {
+      maturityDays: 8,            // slow-growing succulent
+      potencyWindow: 'any',
+      nightBonus: 0,
+      nightDanger: 0.15,
+      contaminationRate: 0.04,
+      shelfLife: 0.85,            // dried fiber lasts a long time
+    },
+  },
+  {
+    name: 'yucca',
+    label: 'Yucca',
+    elevation: [1500, 6500],
+    moistureMax: 0.3,
+    density: 0.25,
+    cluster: false,
+    size: 'medium',
+    color: 0x6f8e4a,
+    emoji: '🌿',
+    heightOffset: 18,
+    pharmacology: {
+      antiInflammatory: 0.15,
+      antimicrobial: 0.3,         // saponins are mild antimicrobials
+      toxicity: 0.05,
+    },
+    scienceInteractions: {
+      contaminationResistance: 0.55,
+      chemicalReactivity: 0.5,    // saponins are surfactants
+      fluidContribution: 0.3,     // soaproot foams in water
+      topologyAffinity: 0.1,
+    },
+    foraging: {
+      maturityDays: 7,
+      potencyWindow: 'any',
+      nightBonus: 0,
+      nightDanger: 0.1,
+      contaminationRate: 0.04,
+      shelfLife: 0.9,             // dried root stores well
+    },
+  },
+  {
     name: 'barrel_cactus',
     label: 'Barrel Cactus',
     elevation: [0, 4500],
