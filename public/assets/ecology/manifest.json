@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "description": "Ecology asset pack — placeholder art for plants, animals, and terrain in the desert biome. Tags align with PLANT_ECOLOGY and PREDATOR_CHAINS in src/renderer/game/data/ecology.js where overlap exists.",
+  "plants": {
+    "creosote": {
+      "file": "plants/creosote.png",
+      "type": "plant",
+      "displayName": "Creosote Bush",
+      "scientificName": "Larrea tridentata",
+      "interactions": ["observe", "forage"],
+      "tags": ["producer", "medicinal", "resin", "desert", "desert_scrub", "supports:kangaroo_rat", "supports:rabbit", "supports:quail"]
+    },
+    "saguaro": {
+      "file": "plants/saguaro.png",
+      "type": "plant",
+      "displayName": "Saguaro Cactus",
+      "scientificName": "Carnegiea gigantea",
+      "interactions": ["observe"],
+      "tags": ["producer", "iconic", "nesting", "sonoran_desert", "supports:hawk", "supports:quail"]
+    },
+    "mesquite": {
+      "file": "plants/mesquite.png",
+      "type": "plant",
+      "displayName": "Mesquite",
+      "scientificName": "Prosopis velutina",
+      "interactions": ["observe", "forage"],
+      "tags": ["producer", "food", "desert_scrub", "supports:javelina", "supports:rabbit", "supports:quail"]
+    },
+    "prickly_pear": {
+      "file": "plants/prickly_pear.png",
+      "type": "plant",
+      "displayName": "Prickly Pear",
+      "scientificName": "Opuntia engelmannii",
+      "interactions": ["observe", "forage"],
+      "tags": ["producer", "food", "fruit", "desert_scrub", "supports:javelina", "supports:rabbit"]
+    },
+    "barrel_cactus": {
+      "file": "plants/barrel_cactus.png",
+      "type": "plant",
+      "displayName": "Barrel Cactus",
+      "scientificName": "Ferocactus wislizeni",
+      "interactions": ["observe"],
+      "tags": ["producer", "water_source", "sonoran_desert"]
+    },
+    "jojoba": {
+      "file": "plants/jojoba.png",
+      "type": "plant",
+      "displayName": "Jojoba",
+      "scientificName": "Simmondsia chinensis",
+      "interactions": ["observe", "forage"],
+      "tags": ["producer", "oil", "chaparral", "supports:kangaroo_rat", "supports:quail"]
+    },
+    "agave": {
+      "file": "plants/agave.png",
+      "type": "plant",
+      "displayName": "Agave",
+      "scientificName": "Agave parryi",
+      "interactions": ["observe", "forage"],
+      "tags": ["producer", "succulent", "desert_scrub"]
+    },
+    "yucca": {
+      "file": "plants/yucca.png",
+      "type": "plant",
+      "displayName": "Yucca",
+      "scientificName": "Yucca elata",
+      "interactions": ["observe"],
+      "tags": ["producer", "fiber", "iconic", "desert_scrub"]
+    },
+    "desert_lavender": {
+      "file": "plants/desert_lavender.png",
+      "type": "plant",
+      "displayName": "Desert Lavender",
+      "scientificName": "Hyptis emoryi",
+      "interactions": ["observe", "forage"],
+      "tags": ["producer", "aromatic", "pollinator_food", "desert_scrub"]
+    },
+    "ephedra": {
+      "file": "plants/ephedra.png",
+      "type": "plant",
+      "displayName": "Ephedra",
+      "scientificName": "Ephedra viridis",
+      "interactions": ["observe", "forage"],
+      "tags": ["producer", "medicinal", "chaparral"]
+    }
+  },
+  "animals": {
+    "javelina": {
+      "file": "animals/javelina.png",
+      "type": "animal",
+      "displayName": "Javelina",
+      "scientificName": "Pecari tajacu",
+      "interactions": ["observe"],
+      "tags": ["herbivore", "social", "diurnal", "prey:coyote", "eats:mesquite", "eats:prickly_pear"]
+    },
+    "rabbit": {
+      "file": "animals/rabbit.png",
+      "type": "animal",
+      "displayName": "Desert Cottontail",
+      "scientificName": "Sylvilagus audubonii",
+      "interactions": ["observe"],
+      "tags": ["herbivore", "diurnal", "prey:coyote", "prey:hawk", "eats:creosote", "eats:mesquite", "eats:prickly_pear"]
+    },
+    "kangaroo_rat": {
+      "file": "animals/kangaroo_rat.png",
+      "type": "animal",
+      "displayName": "Kangaroo Rat",
+      "scientificName": "Dipodomys merriami",
+      "interactions": ["observe"],
+      "tags": ["herbivore", "nocturnal", "seed_eater", "prey:coyote", "prey:roadrunner", "prey:hawk", "eats:creosote", "eats:jojoba"]
+    },
+    "coyote": {
+      "file": "animals/coyote.png",
+      "type": "animal",
+      "displayName": "Coyote",
+      "scientificName": "Canis latrans",
+      "interactions": ["observe"],
+      "tags": ["predator", "carnivore", "crepuscular", "eats:javelina", "eats:rabbit", "eats:kangaroo_rat", "eats:quail"]
+    },
+    "roadrunner": {
+      "file": "animals/roadrunner.png",
+      "type": "animal",
+      "displayName": "Greater Roadrunner",
+      "scientificName": "Geococcyx californianus",
+      "interactions": ["observe"],
+      "tags": ["predator", "bird", "diurnal", "fast", "eats:kangaroo_rat", "eats:gila_monster"]
+    },
+    "quail": {
+      "file": "animals/quail.png",
+      "type": "animal",
+      "displayName": "Gambel's Quail",
+      "scientificName": "Callipepla gambelii",
+      "interactions": ["observe"],
+      "tags": ["herbivore", "bird", "diurnal", "social", "prey:hawk", "prey:coyote", "eats:saguaro", "eats:mesquite", "eats:jojoba"]
+    },
+    "gila_monster": {
+      "file": "animals/gila_monster.png",
+      "type": "animal",
+      "displayName": "Gila Monster",
+      "scientificName": "Heloderma suspectum",
+      "interactions": ["observe"],
+      "tags": ["predator", "reptile", "venomous", "diurnal", "near:saguaro", "near:barrel_cactus"]
+    },
+    "hawk": {
+      "file": "animals/hawk.png",
+      "type": "animal",
+      "displayName": "Red-tailed Hawk",
+      "scientificName": "Buteo jamaicensis",
+      "interactions": ["observe"],
+      "tags": ["predator", "bird", "raptor", "diurnal", "eats:rabbit", "eats:kangaroo_rat", "eats:quail", "near:saguaro"]
+    }
+  },
+  "terrain": {
+    "sand": {
+      "file": "terrain/sand.png",
+      "type": "terrain",
+      "displayName": "Sand",
+      "interactions": [],
+      "tiled": true,
+      "tags": ["substrate", "soft", "desert"]
+    },
+    "dry_wash": {
+      "file": "terrain/dry_wash.png",
+      "type": "terrain",
+      "displayName": "Dry Wash",
+      "interactions": ["observe"],
+      "tiled": false,
+      "tags": ["substrate", "ephemeral_stream", "pebbly", "desert"]
+    },
+    "rock": {
+      "file": "terrain/rock.png",
+      "type": "terrain",
+      "displayName": "Boulder",
+      "interactions": ["observe"],
+      "tiled": false,
+      "tags": ["obstacle", "shelter", "desert"]
+    },
+    "desert_ground": {
+      "file": "terrain/desert_ground.png",
+      "type": "terrain",
+      "displayName": "Desert Ground",
+      "interactions": [],
+      "tiled": true,
+      "tags": ["substrate", "default", "desert"]
+    }
+  }
+}
