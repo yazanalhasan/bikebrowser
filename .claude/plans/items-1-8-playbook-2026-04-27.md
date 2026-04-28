@@ -417,6 +417,23 @@ the checks (smoke test by visiting `/`).
 
 ### A.7 — NeighborhoodScene ↔ OverworldScene save migration
 
+> **REFRAMED 2026-04-27 (user decision).** A.7 reframed — navigation
+> paradigm is a committed-canon design conversation, not a fix. Three
+> substrate docs now blocking A.1: biology, knowledge state, navigation.
+>
+> The three options below (O1 quarantine / O2 resurrect / O3 rewrite)
+> predate the user's stated preference for side-scrolling navigation as
+> a committed paradigm. The actual answer is closer to "O2 with a design
+> doc first" — a `navigation-substrate.md` conversation that defines
+> when scenes use edge-walking vs marker-based traversal, parallel to
+> the `biology-substrate.md` (A.5) and `knowledge-state-substrate.md`
+> (A.8) gates. That conversation is human design work; orchestrator
+> dispatch is blocked until the substrate doc lands.
+>
+> A.7 is therefore SKIPPED in the current implementation session. The
+> three options remain documented below as inputs to the design
+> conversation, not as dispatch candidates.
+
 **Background.** Tonight's Fix-1 halt. The seamless edge in
 `seamlessTraversal.js:84-94` references the legacy `NeighborhoodScene`
 which `config.js:77-80` migration redirects away. The result: the
@@ -726,13 +743,14 @@ Three recurring patterns drive most of the bugs in this session:
 | 2 | **A.6 — UX safety on /play** | Clears 4 boot CRITICALs. Smallest fix; runtime test takes 30 seconds. |
 | 3 | **A.2 — DISCOVERY_UNLOCKS audit** | Clears 4 boot ERRORs. Uses runtime-audit-system *post-.md-edit*. |
 | 4 | **A.3 — UNKNOWN biome audit** (R2) | Clears 2 boot WARNs. Uses runtime-audit-system. Defer R1 (enum widening) until a quest pod actually needs it. |
-| 5 | **A.7 — Neighborhood ↔ Overworld quarantine** (O1) | Settles tonight's Fix-1 halt. Unblocks future seamless-edge work via the amended agent. |
+| 5 | ~~A.7 — Neighborhood ↔ Overworld quarantine (O1)~~ **DEFERRED 2026-04-27** | Reframed as a navigation-paradigm design conversation, not a fix. Output: `navigation-substrate.md` (parallel to A.5 / A.8). See top of A.7 section. |
 | 6 | **A.4 — `healing_salve` source only** | Independent of biology; gives one of the three INCOMPLETE_DATA warnings a fix. Bugs 5 & 6 deferred until A.5 lands. |
 | 7 | **A.5 — Biology substrate design conversation** | Human decision. Output: `biology-substrate.md` + arc.md amendment. Gates 8 of A.1's observations + Bugs 5 & 6 of A.4. |
 | 8 | **A.8 — Knowledge state system design conversation** | Human decision. Output: `knowledge-state-substrate.md`. Gates the topology / invisible-map / understanding observations in A.1. |
-| 9 | **A.1 — non-biology, non-knowledge quest wiring** (5 quests: food_chain_tracker × 2, perfect_composite, boat_puzzle, engine_cleaning) | One per dispatch via general-purpose. Pattern emerges. |
+| 8b | **NEW — Navigation substrate design conversation** | Human decision (added 2026-04-27). Output: `navigation-substrate.md`. Defines when scenes use edge-walking vs marker-based; gates the seamless-edge wiring previously scoped under A.7 + the traversal-style A.1 observations (`fluid_zone_found`, `topology_zone_entered`, etc.). |
+| 9 | **A.1 — non-biology, non-knowledge, non-navigation quest wiring** (subset that doesn't require traversal-style observations) | One per dispatch via general-purpose. Pattern emerges. |
 | 10 | **`quest-observation-wirer` agent** | After ~3 quests via general-purpose, if the pattern is consistent, codify it as a new agent. Skip if the pattern doesn't generalize. |
-| 11 | **A.1 — biology + knowledge quest wiring** (8 quests) | Per-quest, post-design-doc. |
+| 11 | **A.1 — biology + knowledge + navigation quest wiring** (8+ quests) | Per-quest, post-design-doc. |
 
 ### Agent-fix → item-dispatch dependency graph
 
@@ -768,9 +786,11 @@ If the next session is long or design-focused:
 - Run A.5 and A.8 design conversations. These can't be agents;
   they need human judgment. They unblock A.1's largest block.
 
-A.1 should NOT be the next session unless A.5 and A.8 are at
-least drafted — wiring biology observations without the substrate
-design pre-locks design choices.
+A.1 should NOT be the next session unless A.5, A.8, AND
+`navigation-substrate.md` (added 2026-04-27 — see A.7 reframe block)
+are at least drafted — wiring biology, knowledge-state, OR
+traversal-style observations without their substrate designs
+pre-locks design choices.
 
 ---
 
