@@ -147,18 +147,24 @@ export default class ZuzuGarageScene extends LocalSceneBase {
       onInteract: () => {
         const state = this.registry.get('gameState');
 
-        // Desert-coating quest: combine resin + wax → protective_coating.
-        // Emits 'coating_applied' for desert_coating.apply_coating
-        // (quests.js:1611). Item-source for resin/wax is out of scope
-        // for this fix (tracked as Bug 4 in the bug log) — the player
-        // is told what they're missing if their inventory is empty.
+        // Desert-coating quest: combine creosote_leaves + jojoba_seeds
+        // → protective_coating. Emits 'coating_applied' for
+        // desert_coating.apply_coating (quests.js:1611). The quest's
+        // hint text talks about "resin + wax" — those are the
+        // *concepts* the plants produce; the actual inventory item
+        // ids are creosote_leaves (resin source) and jojoba_seeds
+        // (wax source). Both are foraged in StreetBlockScene
+        // (creosote bushes + jojoba shrubs) and DogParkScene (creosote
+        // bushes). Earlier quest steps (gather_resin, gather_wax) gate
+        // on these same item ids.
         if (state?.activeQuest?.id === 'desert_coating') {
           const inv = state.inventory || [];
           const obs = state.observations || [];
-          const hasIngredients = inv.includes('resin') && inv.includes('wax');
+          const hasIngredients =
+            inv.includes('creosote_leaves') && inv.includes('jojoba_seeds');
           if (hasIngredients && !obs.includes('coating_applied')) {
             const newInv = inv
-              .filter((x) => x !== 'resin' && x !== 'wax')
+              .filter((x) => x !== 'creosote_leaves' && x !== 'jojoba_seeds')
               .concat('protective_coating');
             const updated = {
               ...state,
@@ -170,18 +176,18 @@ export default class ZuzuGarageScene extends LocalSceneBase {
             this.registry.get('audioManager')?.playSfx?.('item_pickup');
             this.registry.set('dialogEvent', {
               speaker: 'Zuzu',
-              text: "Mixed resin and wax into a protective coating!\n\n🛡️ Got: Protective Coating\n\nThis should keep my bike safe from the desert sun.",
+              text: "Mixed creosote resin with jojoba wax — got a protective coating!\n\n🛡️ Got: Protective Coating\n\nThis should keep my bike safe from the desert sun.",
               choices: null, step: null,
             });
             return;
           }
           if (!hasIngredients) {
             const missing = [];
-            if (!inv.includes('resin')) missing.push('🟡 resin');
-            if (!inv.includes('wax')) missing.push('🟤 wax');
+            if (!inv.includes('creosote_leaves')) missing.push('🌿 creosote leaves');
+            if (!inv.includes('jojoba_seeds')) missing.push('🌰 jojoba seeds');
             this.registry.set('dialogEvent', {
               speaker: 'Zuzu',
-              text: `I need to combine resin and wax for the coating.\n\nMissing: ${missing.join(', ')}`,
+              text: `I need creosote leaves (resin) and jojoba seeds (wax) for the coating.\n\nMissing: ${missing.join(', ')}\n\nForage from creosote bushes and jojoba shrubs outside.`,
               choices: null, step: null,
             });
             return;
