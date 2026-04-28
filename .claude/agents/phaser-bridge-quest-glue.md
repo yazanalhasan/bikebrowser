@@ -38,6 +38,13 @@ and stop.
 - Modifying the seamless traversal primitive.
 - Anything under `src/renderer/game3d/`.
 
+## Hard rule (added 2026-04-27)
+
+When adding a scene-access gate, check whether the destination is
+reachable from multiple quests. If yes, write the predicate against
+step.scene membership or item-presence — not against a specific
+quest's id + stepIndex.
+
 ## First cycle goal
 
 1. **Trace the existing wiring** end-to-end:

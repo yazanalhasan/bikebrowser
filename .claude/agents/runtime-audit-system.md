@@ -28,6 +28,12 @@ surfaces broken loops to the dev console without blocking play.
   not a fixer — log issues; don't fix them).
 - Auto-running checks in production builds.
 
+## Hard rule (added 2026-04-27)
+
+Audit checks must consult the data file's inline documentation before
+validating. If the data file's authors documented a schema choice or
+known mismatch, the audit must accept it or halt-and-surface.
+
 ## First cycle goal
 
 1. Create `runtimeAudit.js` exporting:

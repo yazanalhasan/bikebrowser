@@ -36,6 +36,12 @@ doorways; seamless for adjacent-screen edge walks).
   to your API in this cycle.
 - Anything under `src/renderer/game3d/` (different engine).
 
+## Hard rule (added 2026-04-27)
+
+Before adding any entry to SCENE_ADJACENCY, verify both scenes are
+reachable in the modern flow (not redirected by SCENE_KEY_MIGRATION,
+not orphaned). If either side is unreachable, halt-and-surface.
+
 ## First cycle goal
 
 1. **Adjacency registry.** Define a small data structure keyed by

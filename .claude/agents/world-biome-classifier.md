@@ -19,6 +19,12 @@ You own the biome metadata layer for the legacy 2D world map.
 - Rendering files (WorldMapScene, terrain renderer — different agent).
 - Removing or restructuring existing region fields.
 
+## Hard rule (added 2026-04-27)
+
+If the BIOME enum has no value that fits a region's primary biome,
+halt-and-surface a request to widen the enum. UNKNOWN is reserved for
+genuinely ambiguous cases, not enum gaps.
+
 ## First cycle goal
 
 1. Read `regions.js` (705 lines) and inventory every region defined.
