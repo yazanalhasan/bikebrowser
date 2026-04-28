@@ -16,6 +16,7 @@ import { debugListVoiceAssignments } from '../services/npcSpeech.js';
 import NPC_PROFILES from '../data/npcProfiles.js';
 import { createGameConfig } from '../config.js';
 import DISCOVERY_UNLOCKS_REAL from '../data/discoveryUnlocks.js';
+import { WORLD_LOCATIONS } from '../data/worldMapData.js';
 import { runProgressionReachabilityAudit } from './progressionReachabilityAudit.js';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -187,15 +188,42 @@ function auditDiscoveryUnlocks() {
     return { errors, warnings };
   }
 
+  // ── Data-source assertion (amended-.md hard rule: consult inline docs before validating)
+  //
+  // discoveryUnlocks.js:14-21 documents that its keys are WORLD_LOCATIONS IDs
+  // (from worldMapData.js), NOT regions.js IDs. Validating against regions.js alone
+  // is therefore too coarse and produces false-positive errors for every valid
+  // location-level key (desert_foraging, copper_mine, salt_river, mountain_range).
+  // The audit must accept either a regions.js region ID or a worldMapData.js location ID.
+  //
+  // If either data source is unavailable, we fail loudly so future divergence is caught
+  // early rather than silently masking the audit.
+  const regionIds = new Set(REGIONS.map((r) => r.id));
+  const worldLocationIds = WORLD_LOCATIONS ? new Set(Object.keys(WORLD_LOCATIONS)) : null;
+  if (regionIds.size === 0 && !worldLocationIds) {
+    errors.push(makeError(
+      'data/discoveryUnlocks.js',
+      '[auditDiscoveryUnlocks] ASSERTION FAILED: neither regions.js nor worldMapData.js WORLD_LOCATIONS is importable — cannot validate keys'
+    ));
+    return { errors, warnings };
+  }
+  if (!worldLocationIds) {
+    warnings.push(makeWarning(
+      'data/discoveryUnlocks.js',
+      '[auditDiscoveryUnlocks] worldMapData.js WORLD_LOCATIONS not importable — key validation uses regions.js only (may produce false positives for location-level keys)'
+    ));
+  }
+  // Union: a key is valid if it matches any region OR any world-map location.
+  const validKeys = new Set([...regionIds, ...(worldLocationIds || [])]);
+
   try {
     const questIds = new Set(Object.keys(QUESTS));
-    const regionIds = new Set(REGIONS.map((r) => r.id));
 
     for (const [regionId, entry] of Object.entries(DISCOVERY_UNLOCKS)) {
-      if (!regionIds.has(regionId)) {
+      if (!validKeys.has(regionId)) {
         errors.push(makeError(
           'data/discoveryUnlocks.js',
-          `DISCOVERY_UNLOCKS entry "${regionId}" does not match any region in regions.js`
+          `DISCOVERY_UNLOCKS entry "${regionId}" does not match any region in regions.js or any location in worldMapData.js`
         ));
         continue;
       }
