@@ -322,6 +322,17 @@ inventory.
 
 ### A.5 — Biology workbench substrate (CONVERSATION, not dispatch)
 
+**Status (2026-04-27): Phase 2 design complete.** The biology substrate
+design document has landed at
+`src/renderer/game/systems/biology/biology-substrate.md` (paired in
+the same commit with the ecology substrate at
+`src/renderer/game/systems/ecology/ecology-substrate.md`). arc.md §4
+"Biology Workbench" was amended to point at the substrate document.
+Verdict tag: `[design-only]`. **Implementation (Stage 1) is the next
+dispatch**, gated on the user reading both substrate documents and
+resolving the open questions listed in §15 of `biology-substrate.md`
+(Stage 1 needs at minimum §15.3 — recipe authoring format).
+
 **Background.** arc.md Section 4 → "Biology Workbench" is the
 single largest unbuilt system. arc.md Section 6 lists three open
 design questions specifically about it:
@@ -329,33 +340,31 @@ design questions specifically about it:
 - Engineered-organism consequence model
 - Portability mechanism
 
-**Why this is a conversation, not a dispatch.** The biology
+**Why this was a conversation, not a dispatch.** The biology
 substrate is the *foundation* for 8 of the 13 unwired observations
 in A.1. Dispatching implementation before the design conversation
-would lock in answers to design questions through code.
+would have locked in answers to design questions through code.
 
-**Required design outputs before any biology dispatch:**
-1. `biology-substrate.md` design doc covering:
-   - Stage 1 (recipe biology) data schema and UI primitives.
-   - Stage 1 → Stage 2 unlock trigger.
-   - Stage 2 (parametric biology) parameter space schema.
-   - Stage 3 (simulation biology) ecosystem model schema.
-   - Engineered-organism consequence boundary (in-simulator only,
-     in-game cosmetic, or in-game material).
-   - Portability mechanism (item, ship-module, permanent unlock).
-2. arc.md Section 4 amendment if substrate design changes carry-
-   forward expectations.
+**Required design outputs before any biology dispatch (now satisfied):**
+1. `biology-substrate.md` design doc covering Stage 1 / 2 / 3 data
+   schemas, public API, event model, ecology bridge contract,
+   engineered-organism consequence model, portability discipline. **DONE.**
+2. arc.md Section 4 amendment pointing at the substrate document.
+   **DONE.**
 3. **Cultural representation gate**: arc.md Section 2 cultural rule
    says cultural-context content (medicine plants etc.) needs
-   human-authored design briefs. Confirm before dispatching.
+   human-authored design briefs. Confirm before dispatching Stage-2
+   regional content.
 
 **Conversation participants:** human (decision authority),
 arc.md as authoritative source. No agent.
 
-**Output:** `biology-substrate.md` design doc + arc.md amendment
-commit (if needed).
+**Output:** `biology-substrate.md` (now at
+`src/renderer/game/systems/biology/biology-substrate.md`) + arc.md §4
+amendment.
 
-**Verdict tag:** N/A — design conversation.
+**Verdict tag:** `[design-only]` — the design document landed; Stage 1
+implementation has not.
 
 ---
 
@@ -567,26 +576,44 @@ playbook items. Each is a separate dispatch.
 
 #### A.9.1 — Phase 2: `ecology-substrate.md` design doc (CONVERSATION)
 
-**Pre-flight checks:**
-1. Re-confirm Path B vs Path C with the audit's §4 reasoning. If the
-   curriculum benefit argument has shifted (e.g., arc.md §4 amends the
-   Stage-3 design), re-run Phase 0.
-2. Cross-check with A.5's `biology-substrate.md` if it has landed —
-   the two schemas must align (ecology data feeds biology Stage-3).
-3. Verify navigation-substrate decision (A.7 reframe) does not
-   foreclose edge-walking in a way that blocks Phase 6.
+**Status (2026-04-27): Phase 2 design complete.** The ecology substrate
+design document has landed at
+`src/renderer/game/systems/ecology/ecology-substrate.md` (paired in
+the same commit with the biology substrate at
+`src/renderer/game/systems/biology/biology-substrate.md`). arc.md §4
+was amended to add EcologyEntity as a Carry-Forward System with
+portability discipline. Verdict tag: `[design-only]`. **Phase 3
+(skeleton stand-up) is the next dispatch in this track**, gated on the
+user reading both substrate documents and resolving the open questions
+listed in §13 of `ecology-substrate.md` (Phase 3 needs at minimum
+§13.1 — atomic vs separate secondary observation events — and §13.4 —
+time-of-day rule enforcement).
 
-**Agent selection:** none — human + arc.md.
+**Pre-flight checks (now satisfied):**
+1. Re-confirmed Path B vs Path C with the audit's §4 reasoning. **DONE.**
+2. Cross-checked with A.5's `biology-substrate.md` (paired in same
+   commit) — schemas align per §7 ecology / §8 biology bridge contract
+   and the cross-document drift resolution at the bottom of
+   `biology-substrate.md` (NONE). **DONE.**
+3. Navigation-substrate decision (A.7 reframe) flagged in §8 of
+   `ecology-substrate.md` as a Phase-6 dependency only; Phases 3–5 are
+   independent. **DONE.**
 
-**Output:** `.claude/specs/ecology-substrate.md` covering:
+**Agent selection:** none — human + arc.md (Phase 2). General-purpose
+or specialized agent for Phase 3+.
+
+**Output:** `src/renderer/game/systems/ecology/ecology-substrate.md`
+(landed) covering:
 - `EcologyEntity` schema (species id, host-scene, observation hooks,
   visual token).
 - Per-region serialization shape (`state.ecology[regionId]`).
-- Tick / refresh schedule.
+- Tick / refresh schedule (deferred to Phase 6).
 - Primitive declarations per arc.md §8.1.
 - Asset-token boundary (separate from licensed asset import).
+- Stage 3 ecosystem data shape (paired with `biology-substrate.md` §8).
 
-**Verdict tag:** N/A — design conversation.
+**Verdict tag:** `[design-only]` — the design document landed; Phase 3
+implementation has not.
 
 #### A.9.2 — Phase 3: stand up `systems/ecology/` skeleton
 

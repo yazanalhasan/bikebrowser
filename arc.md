@@ -453,6 +453,13 @@ Not yet built. Will become one of the most important systems.
 visually understandable game mechanic that the child uses to
 solve actual problems.**
 
+**Design document:** see
+`src/renderer/game/systems/biology/biology-substrate.md` for the full
+three-stage data model, public API, event model, ecology-bridge
+contract, and open questions (Stage 2 unlock trigger, engineered-
+organism consequence model, Stage 3 tick rate, etc.). Paired with the
+ecology substrate above; the two share a Species concept.
+
 The biology workbench is a single system that progresses through
 three modes. Each mode is more powerful and more abstract than
 the last. Each mode is unlocked by demonstrating competence in
@@ -555,6 +562,55 @@ deliberately, not as a side effect of implementation.
   is a system the player owns, not a location they visit. Design
   the data model so "where this lives" is a runtime question, not
   a hardcoded scene reference.
+
+### Ecology Substrate (EcologyEntity)
+
+Carry-forward system at `src/renderer/game/systems/ecology/`. Owns
+living things in the world — plants, animals, microbes — as
+scene-independent typed instances with species ids, observation hooks,
+foraging hooks, and relational tags sourced from `data/ecology.js`
+(canonical: PLANT_ECOLOGY, PREDATOR_CHAINS, BIOMES, TIME_BEHAVIOR).
+Per the Portability Principle below: scenes mount EcologyEntity at a
+mount point, but the entity's state (and the procedural population
+layer in Phase 6) is owned by save, not by scene.
+
+Today: `data/ecology.js` defines plant↔animal relationships; the legacy
+`populateWorld` in `ecologyEngine.js` consumes them in NeighborhoodScene
+only. The substrate ports this into a portable carry-forward system per
+the audit at
+`.claude/bugs/2026-04-27-ecology-substrate-vs-static-layout-audit.md`
+(Path B selected).
+
+Scales to: Act 1 desert ecology (food-chain discovery, predator/prey
+observation), Act 2 regional ecology (extraction-has-consequences,
+seven Earth regions, depletion dynamics), Act 3 closed-loop ecology
+(Stage-3 simulation biology consumes EcologyEntity as its progenitor;
+alien species register through the same FLORA/FAUNA/PLANT_ECOLOGY
+pattern with no act-specific carve-outs per §8.2).
+
+Discipline: ecology relationships live in data, not hard-coded per
+scene. Species registration is data-additive, not code-additive. No
+scene imports inside the system module. No biome-string fragmentation
+per §8.6 — use `getBiomeAt()`. Visual tokens come from data so the
+licensed-asset import dispatch can swap tokens without code changes.
+
+**Primitive declarations (per §8.1):**
+
+- **Environmental primitives consulted:** biome (via `getBiomeAt()`),
+  terrain (per §8.4), time-of-day (via `TIME_BEHAVIOR`).
+- **Progression primitives updated:** observations (`state.observations`
+  receives speciesId on observation); knowledge state when
+  `knowledge-state-substrate.md` lands (deferred per §8.5; do not
+  consume before).
+- **Act 1 → Act 3 scaling:** Act 1 = single region; Act 2 = per-region
+  ecology tables and depletion; Act 3 = same schema feeds Stage-3
+  simulation biology.
+
+See `src/renderer/game/systems/ecology/ecology-substrate.md` for the
+full design document, public API, event model, save state, and open
+questions. Paired with `src/renderer/game/systems/biology/biology-substrate.md`
+in the same commit (the two systems share a Species concept and a
+relational data model).
 
 ### Foraging / Inventory System
 
