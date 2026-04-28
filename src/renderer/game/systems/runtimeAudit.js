@@ -137,9 +137,27 @@ function auditQuestScenes() {
   return { errors, warnings };
 }
 
+// Regions whose UNKNOWN biome is intentional and documented inline — these are
+// enum gaps, not data errors. Allowlist is CLOSED: any other region that drifts
+// to UNKNOWN biome should still warn so the mistake is caught.
+//
+//   'chinese' — regions.js:479-481: "China spans many biomes; enum has no
+//               multi-biome value, so UNKNOWN — terrain renderer can pick a
+//               default."
+//   'malay'   — regions.js:647-650: "Malay Archipelago — tropical rainforest
+//               islands. Enum has no jungle/forest value; archipelago could read
+//               as WATER but tin/bauxite/rubber are land resources, so UNKNOWN
+//               until the enum grows."
+//
+// Resolution path: R1 (widen BIOME enum) is deferred. R2 (this allowlist) was
+// chosen instead (user decision 2026-04-27). Remove entries here only when R1
+// lands and the corresponding regions.js biome field is updated.
+const ACKNOWLEDGED_UNKNOWN_BIOMES = ['chinese', 'malay'];
+
 /**
  * auditRegionBiomes — every region must have a non-UNKNOWN biome.
- * UNKNOWN = warning (known gap: chinese, malay).
+ * UNKNOWN = warning, except for regions in ACKNOWLEDGED_UNKNOWN_BIOMES where
+ * the assignment is intentional and documented in regions.js inline comments.
  */
 function auditRegionBiomes() {
   const errors = [];
@@ -148,6 +166,7 @@ function auditRegionBiomes() {
   for (const region of REGIONS) {
     const biome = getBiome(region.id);
     if (!biome || biome === BIOME.UNKNOWN) {
+      if (ACKNOWLEDGED_UNKNOWN_BIOMES.includes(region.id)) continue;
       warnings.push(makeWarning(
         'data/regions.js',
         `region "${region.id}" (${region.name}) has UNKNOWN biome — terrain renderer will use fallback`
