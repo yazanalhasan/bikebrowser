@@ -96,7 +96,12 @@ export const WORLD_LOCATIONS = {
     difficulty: 1,
     entryScene: 'DryWashScene',
     mapPos: { x: 0.5, y: 0.55 },
-    unlockReq: { questsAny: ['bridge_collapse'] },
+    // Active-or-completed: bridge_collapse's build_bridge step has
+    // step.scene === 'DryWashScene', so the player must be able to
+    // travel here while the quest is still active. Plain questsAny
+    // (completed-only) would lock the destination behind the very
+    // quest that sends them there.
+    unlockReq: { questsAnyOrActive: ['bridge_collapse'] },
     rewards: ['bridge_construction_knowledge'],
     travelTime: 'Short ride',
     travelIcon: '🚲',
@@ -121,8 +126,13 @@ export function isRegionUnlocked(regionId, state) {
   if (!region || !region.unlockReq) return true;
   const req = region.unlockReq;
   const completed = state?.completedQuests || [];
+  const activeId = state?.activeQuest?.id;
   if (req.reputation && (state?.reputation || 0) < req.reputation) return false;
   if (req.questsAny && !req.questsAny.some(q => completed.includes(q))) return false;
+  if (req.questsAnyOrActive
+      && !req.questsAnyOrActive.some(q => completed.includes(q) || q === activeId)) {
+    return false;
+  }
   return true;
 }
 
@@ -135,8 +145,16 @@ export function isLocationUnlocked(locationId, state) {
   if (!loc.unlockReq) return true;
   const req = loc.unlockReq;
   const completed = state?.completedQuests || [];
+  const activeId = state?.activeQuest?.id;
   if (req.reputation && (state?.reputation || 0) < req.reputation) return false;
   if (req.questsAny && !req.questsAny.some(q => completed.includes(q))) return false;
+  // questsAnyOrActive — mirrors sceneRegistry.isSceneUnlocked. Breaks
+  // circular locks where a quest's step targets a scene whose unlockReq
+  // is the same quest.
+  if (req.questsAnyOrActive
+      && !req.questsAnyOrActive.some(q => completed.includes(q) || q === activeId)) {
+    return false;
+  }
   if (req.questsAll) {
     for (const q of req.questsAll) { if (!completed.includes(q)) return false; }
   }
