@@ -284,6 +284,24 @@ const ITEMS = {
     stackable: true,
     effectType: 'hydrating',
   },
+  plant_composite: {
+    id: 'plant_composite',
+    name: 'Plant Composite',
+    description: 'Layered material of agave fiber bound in creosote resin. Fibers carry load while the resin matrix distributes stress — strong AND flexible, like carbon fiber.',
+    icon: '🧱',
+    category: 'crafted',
+    stackable: true,
+    effectType: 'structural',
+  },
+  protective_coating: {
+    id: 'protective_coating',
+    name: 'Protective Coating',
+    description: 'Creosote resin and jojoba wax blend — reflects heat, blocks UV, and repels moisture. Shields surfaces from sun damage and abrasion.',
+    icon: '🛡️',
+    category: 'crafted',
+    stackable: true,
+    effectType: 'protective',
+  },
 
   // ── Engineering materials ───────────────────────────────────────────────────
 
