@@ -248,3 +248,56 @@ Schedule for the per-quest wiring sessions referenced in
 `.claude/plans/observation-wiring-plan.md`. Bugs 5 and 6 specifically
 should be tackled together when the biology workbench design lands
 (currently deferred per arc.md Section 6 open questions).
+
+---
+
+## Surfaced 2026-04-27 by runtimeAudit — stale audit checks (out of scope tonight)
+
+Three additional warnings/errors fired during the second runtime
+boot. None are data-integrity bugs in the strict sense — each is a
+known mismatch between an audit check and the data it's checking.
+Documented for future cleanup.
+
+### Bug 7 — `auditDiscoveryUnlocks` reports false positives for valid location-ID keys
+- **Where:** `src/renderer/game/systems/runtimeAudit.js` —
+  `auditDiscoveryUnlocks()`
+- **Audit messages (all 4 fire on every boot):**
+  - `ERROR DISCOVERY_UNLOCKS entry "desert_foraging" does not match any region in regions.js`
+  - `ERROR DISCOVERY_UNLOCKS entry "copper_mine" does not match any region in regions.js`
+  - `ERROR DISCOVERY_UNLOCKS entry "salt_river" does not match any region in regions.js`
+  - `ERROR DISCOVERY_UNLOCKS entry "mountain_range" does not match any region in regions.js`
+- **Root cause:** the audit validates against `regions.js` IDs
+  (`arizona`, `andes`, `arabian`, `turkish`, `persian`, `swahili`,
+  `chinese`, `pakistan`, `malay`). The keys in `discoveryUnlocks.js`
+  are **WORLD_LOCATIONS IDs** from `worldMapData.js`, which is the
+  correct granularity for per-location discovery events — different
+  from region IDs.
+- **Documentation:** explicitly called out in
+  `src/renderer/game/data/discoveryUnlocks.js:14-21`. Quote:
+  *"The audit check is therefore too coarse and will report errors
+  for these valid keys. A future cycle should update
+  auditDiscoveryUnlocks() to also accept worldMapData location IDs."*
+- **Disposition:** the data is correct; the audit is too narrow.
+  **Fix the audit, not the data.** Update `auditDiscoveryUnlocks()`
+  to accept worldMapData location IDs.
+
+### Bug 8 — `chinese` region has UNKNOWN biome
+- **Where:** `src/renderer/game/data/regions.js:479-481`
+- **Audit message:** `WARN region "chinese" has UNKNOWN biome`
+- **Root cause:** intentional. The data file's inline comment says
+  *"China spans many biomes; enum has no multi-biome value, so
+  UNKNOWN — terrain renderer can pick a default."*
+- **Disposition:** widen the `BIOME` enum (e.g. add `MIXED` or
+  `MULTI`), or silence this specific warn in the audit. Pick one.
+  Not blocking gameplay.
+
+### Bug 9 — `malay` region has UNKNOWN biome
+- **Where:** `src/renderer/game/data/regions.js:647-650`
+- **Audit message:** `WARN region "malay" has UNKNOWN biome`
+- **Root cause:** intentional. The data file's inline comment says
+  *"Malay Archipelago — tropical rainforest islands. Enum has no
+  jungle/forest value; archipelago could read as WATER but
+  tin/bauxite/rubber are land resources, so UNKNOWN until the enum
+  grows."*
+- **Disposition:** same as Bug 8 — widen the enum (`JUNGLE`,
+  `RAINFOREST`?) or silence the audit. Pick one.
