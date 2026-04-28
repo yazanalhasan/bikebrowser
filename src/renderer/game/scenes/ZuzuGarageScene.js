@@ -17,6 +17,7 @@ import { saveGame } from '../systems/saveSystem.js';
 import QUESTS from '../data/quests.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
 import {
   formatMissingWorkbenchIngredients,
   formatWorkbenchMemoryLine,
@@ -214,6 +215,16 @@ export default class ZuzuGarageScene extends LocalSceneBase {
             inv.includes('creosote_leaves') && inv.includes('jojoba_seeds');
           const hasCoating = inv.includes('protective_coating');
 
+          if (step?.type === 'quiz') {
+            this.registry.set('dialogEvent', {
+              speaker: 'Zuzu (thinking)',
+              text: step.text,
+              choices: step.choices,
+              step,
+            });
+            return;
+          }
+
           if (isApplyStep && (obs.includes('coating_applied') || hasCoating)) {
             const updated = obs.includes('coating_applied')
               ? state
@@ -247,16 +258,22 @@ export default class ZuzuGarageScene extends LocalSceneBase {
               updated,
               `Made ${coatingRecipe.name} at the workbench.`,
             );
+            const advanced = advanceQuest(updated);
+            if (advanced.ok) {
+              updated = advanced.state;
+            }
+            const nextStep = getCurrentStep(updated);
             saveStateToRegistry(this, updated);
             this.registry.get('audioManager')?.playSfx?.('item_pickup');
             this.registry.set('dialogEvent', {
-              speaker: 'Zuzu',
+              speaker: nextStep?.type === 'quiz' ? 'Zuzu (thinking)' : 'Zuzu',
               text:
                 "Mixed creosote resin with jojoba wax - got a protective coating!\n\n" +
                 "Got: Protective Coating\n\n" +
-                "The bench saved this recipe in my notebook so I can make it again later.",
-              choices: null,
-              step: QUESTS.desert_coating?.steps?.[state.activeQuest.stepIndex] || null,
+                "The bench saved this recipe in my notebook so I can make it again later." +
+                (nextStep?.type === 'quiz' ? `\n\n${nextStep.text}` : ''),
+              choices: nextStep?.type === 'quiz' ? nextStep.choices : null,
+              step: nextStep || null,
             });
             return;
           }

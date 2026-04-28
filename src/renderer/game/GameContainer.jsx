@@ -1583,19 +1583,21 @@ export default function GameContainer() {
                 >
                   {primaryAction.label}
                 </button>
-                <button
-                  type="button"
-                  onPointerDown={(e) => e.stopPropagation()}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleDialogClose();
-                  }}
-                  className="bg-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm
-                             hover:bg-gray-300 active:scale-95"
-                >
-                  Close
-                </button>
+                {primaryAction.label !== 'Close' && (
+                  <button
+                    type="button"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDialogClose();
+                    }}
+                    className="bg-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm
+                               hover:bg-gray-300 active:scale-95"
+                  >
+                    Close
+                  </button>
+                )}
               </div>
             )}
                 </>
