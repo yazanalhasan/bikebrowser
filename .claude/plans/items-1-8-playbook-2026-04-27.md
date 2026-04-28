@@ -546,6 +546,195 @@ ones) imply they want a Seen/Interacted/Understood model.
 
 ---
 
+### A.9 — Ecology substrate (EcologyEntity carry-forward) — phased dispatch
+
+**Background.** Per the Phase 0 + Phase 1 audit at
+`.claude/bugs/2026-04-27-ecology-substrate-vs-static-layout-audit.md`,
+the recommendation is **Path B**: port the procedural ecology model
+(`populateWorld` + PLANT_ECOLOGY + PREDATOR_CHAINS) into a portable
+carry-forward system at `src/renderer/game/systems/ecology/`, with no
+scene imports inside the system. This is the Act-1 progenitor of the
+arc.md §4 Stage-3 Simulation Biology workbench.
+
+The audit also confirms (re-grep against tree at commit `8973d34`)
+that **zero current quest is blocked by the orphan**, so this work is
+*architectural*, not *bug-driven*. It runs parallel to A.5 (biology
+substrate) and A.8 (knowledge state) as a third design-doc-gated
+substrate.
+
+**Phase structure.** Phases 2–8 from the audit map onto these
+playbook items. Each is a separate dispatch.
+
+#### A.9.1 — Phase 2: `ecology-substrate.md` design doc (CONVERSATION)
+
+**Pre-flight checks:**
+1. Re-confirm Path B vs Path C with the audit's §4 reasoning. If the
+   curriculum benefit argument has shifted (e.g., arc.md §4 amends the
+   Stage-3 design), re-run Phase 0.
+2. Cross-check with A.5's `biology-substrate.md` if it has landed —
+   the two schemas must align (ecology data feeds biology Stage-3).
+3. Verify navigation-substrate decision (A.7 reframe) does not
+   foreclose edge-walking in a way that blocks Phase 6.
+
+**Agent selection:** none — human + arc.md.
+
+**Output:** `.claude/specs/ecology-substrate.md` covering:
+- `EcologyEntity` schema (species id, host-scene, observation hooks,
+  visual token).
+- Per-region serialization shape (`state.ecology[regionId]`).
+- Tick / refresh schedule.
+- Primitive declarations per arc.md §8.1.
+- Asset-token boundary (separate from licensed asset import).
+
+**Verdict tag:** N/A — design conversation.
+
+#### A.9.2 — Phase 3: stand up `systems/ecology/` skeleton
+
+**Pre-flight checks:**
+1. A.9.1 doc must be drafted.
+2. Confirm `data/ecology.js`, `data/flora.js`, `data/fauna.js` are
+   read-only inputs for this dispatch (no schema edits).
+3. Confirm the new system module has no scene imports (per arc.md §4).
+
+**Agent selection:** `general-purpose` (no specialized agent for
+ecology-substrate carry-forward yet; deferred per dispatch rule).
+
+**Dispatch prompt template:**
+
+```
+TASK — stand up EcologyEntity system per ecology-substrate.md
+
+Read .claude/specs/ecology-substrate.md (A.9.1 output) and
+arc.md §4 (Carry-Forward Systems) + §8 (World Model Alignment).
+
+Create src/renderer/game/systems/ecology/ with:
+  - ecologyState.js  — per-region state shape, save/load hooks
+  - ecologyQueries.js — read-only lookups (getSpeciesAt, etc.)
+  - ecologyTicker.js  — deterministic populate / refresh
+  - index.js          — barrel export
+
+Move populateWorld() body into ecologyTicker.js. Keep
+ecologyEngine.js as a thin wrapper for backwards compat with
+NeighborhoodScene's existing import (do not break NeighborhoodScene
+in this dispatch — quarantine fate decided in Phase 8).
+
+Hard rules:
+- No scene imports inside systems/ecology/.
+- No edits to data/ecology.js, data/flora.js, data/fauna.js.
+- Visual tokens (emoji / color) must come from data, not code.
+- Declare primitive interactions per arc.md §8.1 in a header
+  comment of each module.
+
+Verdict tag expected: static-only — runtime validation in Phase 5.
+```
+
+**Runtime validation criterion:** game boots; NeighborhoodScene still
+renders procedural flora/fauna identically to pre-dispatch behavior;
+new system module's queries return the same shape.
+
+**Verdict tag expected:** `runtime-validated` (after Phase 5 sweep).
+
+#### A.9.3 — Phase 4: wire EcologyEntity to modern scenes
+
+**Pre-flight checks:**
+1. A.9.2 complete and runtime-validated.
+2. Confirm StreetBlockScene + DogParkScene + DesertForagingScene
+   layout JSON entries are stable (no in-flight layout edits).
+3. Verify A.1 emitter wiring conventions (if any quests already
+   wired). EcologyEntity's emitters must use the same observation
+   string conventions as A.1.
+
+**Agent selection:** `general-purpose` for the first scene; promote
+to `quest-observation-wirer` (per A.1's recommendation) after
+pattern emerges across scenes.
+
+**Dispatch prompt template:**
+
+```
+TASK — attach EcologyEntity to <scene_name> existing static plants/animals
+
+Read systems/ecology/index.js. For each plant/animal already drawn
+by <scene_name> from layout data, attach a species id and (where
+the quest engine names a requiredObservation) an emitter that
+pushes the species name into state.observations on interaction or
+proximity.
+
+Hard rules:
+- DO NOT add new sprites, new layout entries, or new mechanics.
+- DO NOT touch layout JSON.
+- DO NOT modify questSystem.js.
+- DO NOT import licensed assets (separate dispatch).
+- One scene per dispatch.
+
+Verdict tag expected: static-only — runtime validation per scene.
+```
+
+**Runtime validation criterion:** player walks to the scene; observe
+the species → console shows observation pushed; quest step advances.
+
+**Verdict tag expected:** `runtime-validated`.
+
+#### A.9.4 — Phase 5: progression-reachability re-validation
+
+**Agent:** `runtime-audit-system` (post-A.2 .md amendment). Walk every
+quest after A.9.2 + A.9.3; emit a delta report vs commit `8973d34`.
+**Verdict tag expected:** `runtime-validated` (post boot test).
+
+#### A.9.5 — Phase 6: procedural population layer (NAVIGATION-DEPENDENT)
+
+Blocks on `navigation-substrate.md` (A.7 reframe). If marker-based wins,
+deferred — procedural population needs edge-walking. Agent: `general-purpose`.
+
+#### A.9.6 — Phase 7: Act-2 / Act-3 scaling pass
+
+Blocks on A.5 (`biology-substrate.md`) + cultural-representation
+briefs per arc.md §2 (naming any non-Sonoran species requires human
+brief). Halt-and-surface if absent. Agent: `general-purpose`.
+
+#### A.9.7 — Phase 8: legacy NeighborhoodScene + GarageScene cleanup
+
+**Pre-flight checks:**
+1. A.9.2–A.9.4 runtime-validated.
+2. Confirm save migration in `config.js:77-80` already redirects
+   players away from these scenes; deletion does not break loads.
+
+**Agent selection:** `general-purpose`.
+
+**Dispatch prompt template:**
+
+```
+TASK — retire legacy NeighborhoodScene and GarageScene
+
+After EcologyEntity has subsumed populateWorld's role:
+  - Remove NeighborhoodScene + GarageScene scene files.
+  - Remove their config.js registrations; keep migration entries
+    so existing saves load to ZuzuGarageScene / OverworldScene.
+  - Confirm no other system imports them.
+
+Hard rules:
+- DO NOT delete data/ecology.js (canonical substrate).
+- DO NOT delete ecologyEngine.js (thin wrapper retained).
+- Verdict tag: static-only — runtime validation = boot a save in
+  each migration-affected state and confirm load.
+```
+
+**Verdict tag expected:** `runtime-validated`.
+
+---
+
+#### A.9 sequencing summary
+
+A.9.1 (design doc) blocks A.9.2.
+A.9.2 (skeleton) blocks A.9.3, A.9.5.
+A.9.5 (re-audit) is independent of A.9.6 / A.9.7.
+A.9.6 blocks on `navigation-substrate.md`.
+A.9.7 (Act-2/3) blocks on cultural-representation briefs.
+A.9.8 (cleanup) is last and reversible.
+
+Total LOC budget: ~1180 net (per audit Phase 1 §2).
+
+---
+
 ## Section B — Agent attribution for bugs found in current session
 
 ### B.1 Per-bug attribution
