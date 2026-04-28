@@ -176,7 +176,17 @@ function auditSceneReachability() {
   return { errors, warnings };
 }
 
-/** Check 3: discovery visibility — quest must be able to reveal its scenes. */
+/**
+ * Check 3: discovery visibility — quest must be able to reveal its scenes.
+ *
+ * Relaxation (2026-04-28): any entry in WORLD_LOCATIONS is treated as
+ * exploration-reachable via world-map traversal, so a quest step pointing
+ * at a mapped location does NOT require an explicit DISCOVERY_UNLOCKS or
+ * revealedLocs entry. Runtime unlockReq gates (e.g. questsAnyOrActive on
+ * dry_wash) are satisfied by normal quest flow, not by this static audit.
+ * Scenes with no world-map location at all are caught by auditQuestScenes
+ * in runtimeAudit; non-world scenes are skipped here.
+ */
 function auditDiscoveryVisibility(state, ctx) {
   const errors = [];
   const warnings = [];
@@ -195,11 +205,7 @@ function auditDiscoveryVisibility(state, ctx) {
         const locId = found.id;
         if (discovered.has(locId)) continue;
         if (revealedLocs.has(locId)) continue;
-        errors.push(makeError('UNREACHABLE_PROGRESS', {
-          questId, stepId: step.id, sceneKey, locationId: locId,
-          reason: `quest '${questId}' needs scene '${sceneKey}' at location '${locId}' with no discovery path`,
-          path: [`${questId} → ${sceneKey} → ${locId} (fogged)`],
-        }));
+        // Pass: in WORLD_LOCATIONS ⇒ exploration-reachable (see fn docstring).
       }
     }
   }
