@@ -4,7 +4,7 @@
   "ts": "2026-04-28T09:00:00Z",
   "status": "complete",
   "verdict_tag": "static-only-fix",
-  "commit_hash": null,
+  "commit_hash": "71c27d6",
   "files_changed": [
     {
       "path": "src/renderer/game/data/discoveryUnlocks.js",
