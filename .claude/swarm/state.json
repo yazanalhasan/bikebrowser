@@ -1,9 +1,65 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-28T09:40:00Z",
+  "last_updated": "2026-04-28T10:05:00Z",
   "current_week": 3,
   "current_pod_focus": "Daytime Autonomous V2 (bug-fix Phase-1 prep)",
   "completed": [
+    {
+      "agent": "general-purpose",
+      "target_subject": "Test helper fix — click Start Adventure splash before waiting for Phaser handle",
+      "ts": "2026-04-28T09:50:00Z",
+      "commit": "ebb0071",
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed_runtime_validated",
+      "review_receipt": null,
+      "receipt": null,
+      "verdict_tag": "test-infrastructure",
+      "user_directive": "Smoke test was timing out at window.__phaserGame poll because /play renders a Start Adventure splash button (GameContainer.jsx:716-723) — Phaser only constructs after the click handler fires. Helper assumed auto-boot.",
+      "fix_summary": "tests/e2e/helpers/gameBoot.js — added 12 LOC: click 'Start Adventure!' button if visible (5s timeout), fall through to existing __phaserGame poll if absent. Either path resolves.",
+      "validation": "Smoke test now reaches the audit assertion every run (2.2-2.6s).",
+      "notes": "Receipt-less commit — orchestrator validated in-conversation by running the smoke test before and after the fix."
+    },
+    {
+      "agent": "general-purpose",
+      "target_subject": "Option B — relax progressionReachabilityAudit to recognize WORLD_LOCATIONS as exploration-discoverable",
+      "ts": "2026-04-28T10:00:00Z",
+      "commit": "ae8a313",
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed_runtime_validated",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/general-purpose-progression-reachability-audit-relax-2026-04-28T09-55-00Z.json",
+      "verdict_tag": "static-only-fix",
+      "needs_runtime_validation": false,
+      "user_directive": "Option B from bridge_collapse finding: relax audit's UNREACHABLE_PROGRESS check; treat WORLD_LOCATIONS as exploration-reachable. Preserve catch-alls for genuinely broken paths.",
+      "fix_summary": {
+        "files_changed": [{ "path": "src/renderer/game/systems/progressionReachabilityAudit.js", "lines_added": 12, "lines_removed": 6 }],
+        "function_modified": "auditDiscoveryVisibility",
+        "relaxation": "If findLocationForScene(sceneKey) returns a hit AND the location is in WORLD_LOCATIONS, the location is treated as exploration-reachable via world-map traversal. The two pre-existing pass conditions (state.discoveredLocations, quest's revealedLocs) are preserved.",
+        "preserved_catch_alls": [
+          "scene-not-registered (auditQuestScenes in runtimeAudit)",
+          "self-cycle gates (auditSceneReachability)",
+          "quest-dependency cycles (auditDependencyCycles)",
+          "unreachable item sources (auditItemReachability)",
+          "scene with no world-map location at all (findLocationForScene returns null → still emits)"
+        ],
+        "false_negative_concern": "If a future WORLD_LOCATIONS entry adds a per-location 'requires-quest-the-player-can-never-reach' gate, this audit would no longer catch it. Acceptable today since no such gating field exists in the schema. Tighter check can be added later when the schema grows that field."
+      },
+      "build": "PASS in 12.13s (agent), independently re-verified in PASS state (orchestrator)",
+      "smoke_test_runtime_validation": {
+        "result": "PASS",
+        "duration": "2.2s",
+        "audit_errors_after_fix": 0,
+        "audit_warnings": 2,
+        "audit_warnings_detail": [
+          "[progressionReachability] [INCOMPLETE_DATA] quest=extract_dna no source recorded for item 'bio_sample_agave'",
+          "[progressionReachability] [INCOMPLETE_DATA] quest=engineer_bacteria no source recorded for item 'bio_sample_bacteria'"
+        ],
+        "page_side_console_errors": [
+          "uxAuditService.js TypeError: Cannot read properties of undefined (reading 'ai') — at aiOrchestrator.js:41 — pre-existing UX audit infrastructure (separate from runtime audit), informational"
+        ]
+      },
+      "notes": "First runtime-validated audit fix in this session. The smoke test infra has now successfully caught and verified a real audit error — exactly the design intent."
+    },
     {
       "agent": "general-purpose",
       "target_subject": "Knowledge State substrate design document",
@@ -1205,7 +1261,7 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 57,
+  "dispatch_count": 58,
   "session_token_estimate": 0,
   "parallel_session_reconciliation": {
     "reconciled_at": "2026-04-28T07:00:00Z",

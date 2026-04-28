@@ -1,0 +1,49 @@
+{
+  "agent": "general-purpose",
+  "target_subject": "progressionReachabilityAudit Option B relaxation",
+  "ts": "2026-04-28T09:55:00Z",
+  "status": "complete",
+  "verdict_tag": "static-only-fix",
+  "commit_hash": "ae8a313afd58db9d63dff4bacafea91256212af9",
+  "files_changed": [
+    {
+      "path": "src/renderer/game/systems/progressionReachabilityAudit.js",
+      "lines_added": 12,
+      "lines_removed": 6
+    }
+  ],
+  "build": {
+    "result": "PASS",
+    "duration_seconds": 12.13,
+    "exit_code": 0
+  },
+  "smoke_test": {
+    "result": "PASS",
+    "output_excerpt": "1 passed (2.6s); 2 warnings remaining (INCOMPLETE_DATA on extract_dna/bio_sample_agave and engineer_bacteria/bio_sample_bacteria — unrelated to bridge_collapse); 0 errors. console.error during boot was uxAuditService.callOrchestrator (unrelated).",
+    "audit_errors_after_fix": 0
+  },
+  "notes": {
+    "preflight_quotes": {
+      "progressionReachabilityAudit_js_line_198_to_202": "errors.push(makeError('UNREACHABLE_PROGRESS', { questId, stepId: step.id, sceneKey, locationId: locId, reason: `quest '${questId}' needs scene '${sceneKey}' at location '${locId}' with no discovery path` })) — fired when neither discovered.has(locId) nor revealedLocs.has(locId) was true; existing pass conditions were 'already discovered' and 'in revealedLocs (DISCOVERY_UNLOCKS reverse map)'.",
+      "worldMapData_js_dry_wash_entry": "dry_wash: { id: 'dry_wash', name: 'Dry Wash', region: 'arizona_desert', type: 'exploration', entryScene: 'DryWashScene', unlockReq: { questsAnyOrActive: ['bridge_collapse'] }, ... } — every WORLD_LOCATIONS entry has region+entryScene; gating is via unlockReq (questsAny / questsAnyOrActive / reputation), not a hidden:true or requiresQuest flag.",
+      "regions_js_arizona_starting_region": "id: 'arizona', name: 'Arizona', biome: BIOME.DESERT, materials: [...], unlocks: [...], dependencies: [] — regions.js holds mineable-material region data, separate from WORLD_LOCATIONS (worldMapData.js); the audit only consults WORLD_LOCATIONS.",
+      "discoveryUnlocks_js_three_entries": "DISCOVERY_UNLOCKS = { desert_foraging: { questId: 'desert_healer' }, copper_mine: { questId: 'bridge_collapse' }, salt_river: { questId: 'boat_puzzle' } } — three non-pending entries; dry_wash deliberately not included because the player reaches it via world-map exploration after bridge_collapse activates.",
+      "discovery_state_owner": "There is no separate world-discovery-state module that exports an 'is exploration-reachable' API. progressionReachabilityAudit.js is the sole consumer of state.discoveredLocations|state.discovered (line 183). Exploration-reachability for static audit purposes is therefore inferred from membership in WORLD_LOCATIONS.",
+      "quests_js_bridge_collapse_build_bridge_step": "{ id: 'build_bridge', type: 'observe', text: 'Build the bridge with your chosen material and test it with a loaded bike!', requiredObservation: 'bridge_built', hint: 'Place the mesquite beams across the wash and secure them.', scene: 'DryWashScene' } at quests.js:1274–1281 — confirms the dry_wash dependency is real and intentional."
+    },
+    "world_locations_gating_flag_present": false,
+    "world_locations_gating_proof": "Inspection of WORLD_LOCATIONS in src/renderer/game/data/worldMapData.js shows 4 entries (desert_foraging, copper_mine, salt_river, dry_wash). None has a hidden:true, requiresQuest, or similar 'undiscoverable' flag. Each has either unlockReq:null (desert_foraging) or a runtime unlockReq satisfiable via questsAny / questsAnyOrActive / reputation that progresses through normal play. Therefore every entry in WORLD_LOCATIONS is exploration-reachable by default — the relaxation simplifies to 'findLocationForScene success ⇒ pass'.",
+    "relaxation_summary": "auditDiscoveryVisibility no longer emits UNREACHABLE_PROGRESS when findLocationForScene(sceneKey) returns a hit but the location is absent from both state.discoveredLocations and the quest's revealedLocs (DISCOVERY_UNLOCKS reverse map). The errors.push(makeError(...)) call was removed; the pass condition is now 'location exists in WORLD_LOCATIONS ⇒ exploration-reachable', documented in the function's JSDoc.",
+    "preserved_catch_alls": [
+      "Scene with no world-map location at all (findLocationForScene returns null) — already passes through here as 'continue' (not a world-map sub-scene); the genuine-bug version of this case (quest references a scene that does not exist) is caught by runtimeAudit.auditQuestScenes via the SCENES registry.",
+      "Quest self-cycle (questsAll/questsAny gates the quest on its own completion) — still flagged by auditSceneReachability.",
+      "Quest dependency cycle across multiple quests — still flagged by auditDependencyCycles.",
+      "Item with sources but none reachable for the asking quest — still flagged by auditItemReachability."
+    ],
+    "audit_error_count_before": 1,
+    "audit_error_count_before_proof": "Per the dispatch's own quoted smoke-test output: '[progressionReachability] [UNREACHABLE_PROGRESS] quest=bridge_collapse quest \\'bridge_collapse\\' needs scene \\'DryWashScene\\' at location \\'dry_wash\\' with no discovery path'. That was the only progression-reachability error reported by the smoke test prior to this fix.",
+    "audit_error_count_after": 0,
+    "audit_error_count_after_proof": "npm run test:e2e:smoke after the fix reports '1 passed (2.6s)' with audit.errors === [] and only 2 warnings remaining (INCOMPLETE_DATA on extract_dna/bio_sample_agave and engineer_bacteria/bio_sample_bacteria — unrelated, pre-existing data-completeness warnings, not errors).",
+    "false_negatives_concern": "The relaxation makes auditDiscoveryVisibility a no-op for any scene that has a WORLD_LOCATIONS entry. A future regression where a WORLD_LOCATIONS location is added with a hidden:true or requiresQuest flag — and a quest step still points at it — would now slip past this audit. Mitigation confidence: HIGH. (1) WORLD_LOCATIONS currently has no such gating flag and the schema does not define one. (2) Scene-existence breaks are still caught by runtimeAudit.auditQuestScenes via the SCENES registry. (3) Quest-self-cycle and quest-graph cycles are still caught by auditSceneReachability and auditDependencyCycles. (4) The dispatch explicitly accepts this trade-off: 'A location that exists in WORLD_LOCATIONS and is reachable by world-map exploration (not gated behind some other prereq) is FINE'. If a per-location 'requires-quest-the-player-can-never-reach' gate is ever added, a follow-up audit can introspect WORLD_LOCATIONS.unlockReq and check the quest-graph reachability of its referenced quests — but no such case exists today."
+  }
+}
