@@ -193,7 +193,7 @@ export default class OverworldScene extends Phaser.Scene {
 
     // Action key → enter nearest location
     if (Phaser.Input.Keyboard.JustDown(this.actionKey)) {
-      this._enterNearestLocation();
+      this._handleActionKey();
     }
 
     // MCP tick
@@ -265,6 +265,10 @@ export default class OverworldScene extends Phaser.Scene {
     if (nearest) {
       transitionTo(this, nearest.sceneDef.key, 'fromOverworld');
     }
+  }
+
+  _handleActionKey() {
+    this._enterNearestLocation();
   }
 
   _handlePointerDown(pointer) {
