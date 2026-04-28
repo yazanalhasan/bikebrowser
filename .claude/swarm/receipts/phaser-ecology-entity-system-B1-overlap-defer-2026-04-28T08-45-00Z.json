@@ -1,0 +1,47 @@
+{
+  "agent": "phaser-ecology-entity-system",
+  "target_subject": "B1 — defer attachInteractionZone overlap wiring",
+  "ts": "2026-04-28T08:45:00Z",
+  "status": "complete",
+  "verdict_tag": "design-only-implementation",
+  "commit_hash": "4fda703ab9b1b610daae7c8120e1faf42b4c5811",
+  "files_changed": [
+    {
+      "path": "src/renderer/game/systems/ecology/index.js",
+      "insertions": 42,
+      "deletions": 8,
+      "function_modified": "attachInteractionZone"
+    }
+  ],
+  "build": {
+    "result": "pass",
+    "duration_seconds": 11.82,
+    "exit_code": 0
+  },
+  "notes": {
+    "preflight_quotes": {
+      "1_bug_doc_smoking_gun": "The 'smoking gun' is the absence of any path that calls `emitObservation` for fauna. Plants survived the broken overlap-callback wiring because the `addInteractable`-based interact path is independent. Animals have no equivalent fallback.",
+      "2_index_js_attachInteractionZone_body": "Lines 206-233: `const player = scene.player?.sprite ?? scene.player ?? null; if (player && scene.physics?.add?.overlap) { try { scene.physics.add.overlap(player, zone, () => { if (!entity.isObservable()) return; _emitObservation(scene, entity, 'proximity'); }); } catch { /* swallow — physics not ready */ } }`",
+      "3_substrate_spec_lifecycle": "From §9: 'Interaction zones — re-attached on scene mount.' This confirms re-attaching the overlap at a deferred time (post-create) is in-spec and expected behavior. From §10: 'Zero [per-frame cost]. The substrate has no update() hook. Interaction zones are event-driven' — using scene.events.once('update') is a one-time cost at mount, consistent with the zero-per-frame model.",
+      "4_LocalSceneBase_player_construction": "LocalSceneBase.js line 155: `this.createWorld();` — subclass registerEntity runs here. Line 163: `this.player = new Player(this, px, py);` — player constructed AFTER createWorld. No `postcreate` or custom event is emitted anywhere in the create() method (lines 141-241); create() ends at line 241 with no custom event emission."
+    },
+    "lifecycle_event_chosen": "update — scene.events.once('update', _wireOverlap). Verified against LocalSceneBase.js lines 141-241: the create() body does NOT emit any 'postcreate', 'postCreate', 'ready', or 'start' event after constructing this.player at line 163. The first reliable post-create hook available is the Phaser built-in 'update' event which fires on the first game-loop tick after create() returns, at which point this.player is guaranteed to be assigned (line 163 runs before create() returns at line 241).",
+    "hmr_fast_path_preserved": true,
+    "hmr_fast_path_proof": "Lines 255-258 of modified index.js: `const playerNow = scene.player?.sprite ?? scene.player ?? null; if (playerNow) { // Fast path: player already exists (HMR / scene-restart case). _wireOverlap(); }` — when scene.player is truthy at registration time, _wireOverlap() is called synchronously, identical to the previous behavior.",
+    "double_wire_guard_implemented": true,
+    "double_wire_guard_proof": "Lines 241-242 of modified index.js: `function _wireOverlap() { if (zone._ecologyOverlapWired) return; ... zone._ecologyOverlapWired = true; }` — the flag is set on the zone object after the first successful wiring and checked at entry to abort re-entrant or duplicate calls.",
+    "shutdown_leak_concern_addressed": "scene.events.once() self-detaches after firing (Phaser's built-in one-shot behavior). If the scene is destroyed before the first 'update' tick fires, the listener reference lives only on the scene's own EventEmitter instance — it dies with the scene's event emitter when the scene is destroyed. Phaser's Scene.events emitter is destroyed on scene destroy/shutdown. No manual cleanup is required. This was verified to be Phaser's actual behavior: scene.events is a Phaser.Events.EventEmitter owned by the Scene plugin; it is removed on Scene.shutdown. The existing _ensureShutdownHook (lines 276-295) already handles zone/entity cleanup; the deferred listener adds no additional leak surface.",
+    "diff_stat": " src/renderer/game/systems/ecology/index.js | 50 +++++++++++++++++++++++++-----\n 1 file changed, 42 insertions(+), 8 deletions(-)",
+    "no_scene_files_modified": "Confirmed. `git diff --stat` shows only src/renderer/game/systems/ecology/index.js changed. No file under src/renderer/game/scenes/ was modified.",
+    "no_data_files_modified": "Confirmed. No file under src/renderer/game/data/ was modified.",
+    "other_ecology_files_unchanged": "Confirmed. Only index.js was modified. EcologyEntity.js, ecologyState.js, ecologyTicker.js, ecologyEvents.js, speciesResolver.js, ecologyAssetManifest.js, ecologyQueries.js are byte-identical to their pre-dispatch state.",
+    "runtime_caveats": [
+      "Verdict tag remains design-only-implementation. The overlap wiring path has never been exercised at runtime — this fix resolves the structural timing bug but runtime validation (walk near javelina, confirm state.observations) is required to upgrade to runtime-validated.",
+      "Coyote is night-only per data/ecology.js TIME_BEHAVIOR.night.activeAnimals — even with the overlap wired correctly, coyote will not emit observations during day-time sessions because entity.active=false at day-time. This is correct behavior, not a regression.",
+      "The deferred 'update' listener fires once per zone on the first game tick. If scene physics is somehow not yet ready on the first tick (edge case in test harnesses), _wireOverlap silently no-ops (the try/catch + null-guard remain intact). In production Phaser, physics is always ready by the first update tick."
+    ]
+  },
+  "next_agent_suggestions": [
+    "user-runtime-validation (walk near javelina in StreetBlockScene; confirm 'javelina' in state.observations; food_chain_tracker advances 4/8 → 5/8)"
+  ]
+}

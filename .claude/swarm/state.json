@@ -1,9 +1,40 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-28T08:35:00Z",
+  "last_updated": "2026-04-28T08:50:00Z",
   "current_week": 3,
   "current_pod_focus": "Daytime Autonomous V2 (bug-fix Phase-1 prep)",
   "completed": [
+    {
+      "agent": "phaser-ecology-entity-system",
+      "target_subject": "B1 — defer attachInteractionZone overlap wiring until scene player exists",
+      "ts": "2026-04-28T08:45:00Z",
+      "commit": "4fda703",
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/phaser-ecology-entity-system-B1-overlap-defer-2026-04-28T08-45-00Z.json",
+      "verdict_tag": "design-only-implementation",
+      "needs_runtime_validation": true,
+      "user_directive": "Authorize fix Option B1 — substrate overlap timing fix. Modify ecology/index.js attachInteractionZone to defer overlap wiring until scene player exists. HMR fast path preserved. No spec, no scene, no ticker, no quests, no packages.",
+      "fix_summary": {
+        "files_changed": [{ "path": "src/renderer/game/systems/ecology/index.js", "lines_added": 42, "lines_removed": 8, "function_modified": "attachInteractionZone" }],
+        "lifecycle_event_chosen": "scene.events.once('update', _wireOverlap)",
+        "lifecycle_rationale": "LocalSceneBase.create() does NOT emit a 'postcreate' or any custom post-player event between line 163 (player construction) and line 241 (end of create). The Phaser built-in 'update' event is the first reliable hook after create() returns. scene.events.once() self-detaches after firing.",
+        "hmr_fast_path_preserved": true,
+        "hmr_proof": "If scene.player is truthy at registerEntity-time, _wireOverlap is called synchronously — identical to the pre-fix behavior. Only deferred when player is null.",
+        "double_wire_guard": "zone._ecologyOverlapWired flag set after successful overlap wiring; entry guard aborts re-entrant calls.",
+        "shutdown_leak_addressed": "scene.events.once self-detaches; if scene destroyed before first update tick, listener dies with the scene's EventEmitter. _ensureShutdownHook already handles zone/entity cleanup."
+      },
+      "build": "PASS in 11.82s",
+      "user_runtime_protocol": "Boot game; load save with food_chain_tracker at step 4/8 (or restart quest). Walk into StreetBlockScene. Walk near javelina at (330, 500). Confirm: (1) state.observations gains 'javelina'; (2) quest advances 4/8 → 5/8 with predator-chain dialog; (3) plant interactions still work (regression check). If runtime validates, upgrade verdict to runtime-validated and apply same trigger pattern to rabbit (which is also day-active).",
+      "predicted_runtime_progression": "step 4/8 (observe javelina via proximity) → step 5/8 → step 6/8 (quiz) → step 7/8 (forage mesquite_pods) → step 8/8 complete",
+      "runtime_caveats": [
+        "Coyote remains night-only per data/ecology.js TIME_BEHAVIOR.night.activeAnimals — entity.active=false at day. This is correct ecology behavior; coyote will not fire observation during daytime walks. Not a regression.",
+        "All previously-registered plants ALSO get the deferred overlap wiring path now. This is a latent dual-path: plants currently fire observations via _handlePlantInteract (interaction button). With B1 they'll ALSO fire on proximity. The dedup in _appendObservation prevents double-push to state.observations, but it means walking past a plant without pressing E will now record an observation. The user may want this; if not, it's a follow-up scope decision."
+      ],
+      "next_dispatch_recommended": "USER RUNTIME VALIDATION (no agent). After validation passes, optionally dispatch phaser-ecology-scene-attacher to wire DogParkScene animals (the next scene in the food-chain expansion).",
+      "notes": "Closes the substrate-spec gap surfaced by .claude/bugs/2026-04-28-animal-observation-chain.md. The fix is the systems-not-quests path the user's saved memory rule recommends — not a per-scene addInteractable hack. Plants get the same deferred wiring as a side effect, fixing a latent silent-failure that was being masked by their independent _handlePlantInteract path."
+    },
     {
       "agent": "general-purpose",
       "target_subject": "animal observation chain diagnosis (StreetBlockScene)",
@@ -891,6 +922,12 @@
     }
   ],
   "in_progress": [],
+  "human_gate_resolved_2026_04_28T0840": {
+    "from_gate_id": "human_gate_pending_2026_04_28T0830",
+    "user_choice": "B1",
+    "rationale_user": "fix substrate overlap timing — defer until scene player exists; do not modify substrate spec text in this dispatch",
+    "resolved_ts": "2026-04-28T08:40:00Z"
+  },
   "human_gate_pending_2026_04_28T0830": {
     "trigger": "Animal observation chain diagnosis surfaced a substrate-spec design decision; per saved memory rules `feedback_systems_not_quests` + `project_arc_v1_3_world_model_alignment` substrate changes are design-before-consumption. NO auto-dispatch on the fix path.",
     "bug_report": ".claude/bugs/2026-04-28-animal-observation-chain.md",
@@ -1079,7 +1116,7 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 53,
+  "dispatch_count": 54,
   "session_token_estimate": 0,
   "parallel_session_reconciliation": {
     "reconciled_at": "2026-04-28T07:00:00Z",
