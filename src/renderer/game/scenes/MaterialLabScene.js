@@ -21,12 +21,18 @@ import { renderDensityChart } from '../systems/lab/densityChart.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 
 // Sample-id → inventory item mapping. The scale enables a button only
-// when the player owns the corresponding sample item. Aligned with the
-// items granted by bridge_collapse steps 1–7 (mesquite_sample, etc.).
-// Copper: ZuzuGarageScene grants 'copper_ore_sample' as the canonical
-// item; the mine grants 'surface_copper'/'deep_copper' as alternates.
+// when the player owns the corresponding sample item.
+// Canonical IDs (granted by quests/scenes that hand out the item):
+//   mesquite_wood     → 'mesquite_wood_sample' (granted by bridge_collapse)
+//   structural_steel  → 'steel_sample' (granted by ZuzuGarageScene workbench)
+//   copper            → 'copper_ore_sample' (granted by ZuzuGarageScene)
+// Aliases preserved so older saves and alternate grant paths still
+// recognize the same conceptual material:
+//   mesquite_sample / mesquite_branch — pre-canonicalization save state
+//   steel_bracket — alternate workbench grant id
+//   surface_copper / deep_copper — CopperMineScene-granted variants
 const SAMPLE_ITEM_IDS = {
-  mesquite_wood: ['mesquite_sample', 'mesquite_branch'],
+  mesquite_wood: ['mesquite_wood_sample', 'mesquite_sample', 'mesquite_branch'],
   structural_steel: ['steel_sample', 'steel_bracket'],
   copper: ['copper_ore_sample', 'surface_copper', 'deep_copper'],
 };
