@@ -1,0 +1,19 @@
+{
+  "agent": "test-infrastructure-audit",
+  "ts": "2026-04-28T06:30:45Z",
+  "status": "complete",
+  "verdict_tag": "static-only-audit",
+  "files_changed": [
+    ".claude/bugs/2026-04-27-test-infrastructure-audit.md",
+    ".claude/swarm/receipts/test-infrastructure-audit-2026-04-28T063045Z.json"
+  ],
+  "exports_added": [],
+  "tests_added": [],
+  "blockers_discovered": [],
+  "next_agent_suggestions": [
+    "Adopt Option A (Playwright + runRuntimeAudit assertion) as the first CI guard — ~3 hr setup",
+    "Before Option A, expose runRuntimeAudit on window in DEV mode (one line in GameContainer.jsx beside the existing window.__phaserGame assignment)",
+    "Add a scripts/check-observation-coverage.mjs static audit that flags every requiredObservation with no emitter — fits the existing scripts/check-*.mjs idiom and would catch the 19-of-21 unwired observations the C3 bug log identified"
+  ],
+  "notes": "Markdown deliverable is 340 lines / 32,424 bytes at .claude/bugs/2026-04-27-test-infrastructure-audit.md. git diff --stat HEAD before commit returned no changes (no source/config files modified). Pre-existing dirty layout JSONs (public/layouts/street-block.layout.json, public/layouts/zuzu-garage.layout.json) were NOT staged — confirmed clean working tree at audit start, those files never appeared in git status. A parallel agent had staged ecology entity-system files at the moment commit was prepared; those were unstaged with `git restore --staged` (explicit file paths) so this commit contains only the audit + receipt. Files remain intact on disk for the parallel agent to re-stage. Commit hash: see git log post-commit. TL;DR — (1) Project has zero conventional unit/E2E tests; only ad-hoc scripts/check-*.mjs Playwright smoke checks against the React shell plus two homegrown Node-script save tests. (2) Playwright 1.59.1 is already a devDependency; the runtimeAudit module is the highest-leverage assertion target since it already runs at every DEV boot and produces structured errors/warnings — turning it into a Playwright CI guard is a ~3-hour lift. (3) Phaser game logic does NOT require Electron for tests — chromium-against-Vite reaches /play directly; window.__phaserGame is exposed in DEV mode (GameContainer.jsx:289) and is the natural assertion handle, with localStorage save injection via page.addInitScript covering most fixture needs."
+}
