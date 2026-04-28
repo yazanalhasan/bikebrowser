@@ -11,14 +11,8 @@
  *   pending  {boolean}      — true if no suitable quest exists yet; wiring skips it.
  *   todo     {string}       — (pending:true only) description of the missing quest.
  *
- * IMPORTANT — audit compatibility note:
- *   runtimeAudit.auditDiscoveryUnlocks() validates keys against regions.js IDs
- *   (arizona, andes, arabian, etc.). These keys are WORLD_LOCATIONS IDs
- *   (locationIds from worldMapData.js), which is the correct granularity for
- *   per-location discovery events. The audit check is therefore too coarse and
- *   will report errors for these valid keys. A future cycle should update
- *   auditDiscoveryUnlocks() to also accept worldMapData location IDs.
- *   See: src/renderer/game/systems/runtimeAudit.js — auditDiscoveryUnlocks()
+ * Keys are WORLD_LOCATIONS ids (per-location granularity); the audit accepts
+ * either regions.js region ids or WORLD_LOCATIONS keys.
  *
  * Data only — no logic here. Wiring lives in questSystem.initDiscoveryQuestBridge().
  */
@@ -56,17 +50,11 @@ export const DISCOVERY_UNLOCKS = {
     pending: false,
   },
 
-  /**
-   * Superstition Mountains — rugged peaks, minerals, ancient trails.
-   * No matching force/gravity/incline quest exists in quests.js yet.
-   * one_sided_forest (Möbius cave) is the closest (cave system in a mountain),
-   * but it's topology/math — not force/gravity/incline. Leaving pending.
-   */
-  mountain_range: {
-    questId: null,
-    pending: true,
-    todo: 'Need a force/gravity/incline intro quest for mountain region — one_sided_forest is topology, not physics.',
-  },
+  // mountain_range removed 2026-04-28: it is a worldMapData REGIONS placeholder
+  // (not a WORLD_LOCATIONS key) and has no per-location discovery event to fire on.
+  // It also had no quest dependency (pending:true, questId:null). Re-add when a
+  // mountain *location* is added to WORLD_LOCATIONS and a force/gravity/incline
+  // intro quest exists.
 };
 
 export default DISCOVERY_UNLOCKS;

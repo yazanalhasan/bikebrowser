@@ -1,0 +1,61 @@
+{
+  "agent": "general-purpose",
+  "target_subject": "DISCOVERY_UNLOCKS data drift fix",
+  "ts": "2026-04-28T09:00:00Z",
+  "status": "complete",
+  "verdict_tag": "static-only-fix",
+  "commit_hash": null,
+  "files_changed": [
+    {
+      "path": "src/renderer/game/data/discoveryUnlocks.js",
+      "lines_added": 7,
+      "lines_removed": 19
+    }
+  ],
+  "build": {
+    "result": "PASS",
+    "duration_seconds": 10.47,
+    "exit_code": 0
+  },
+  "notes": {
+    "preflight_quotes": {
+      "discoveryUnlocks.js": "When a player discovers a world-map location (nodeId), the wiring in questSystem.initDiscoveryQuestBridge() looks up the locationId here and calls startQuest() for any non-pending entry.",
+      "regions.js": "Region unlock gates through the milestone engine via dependencies. Arizona is always available as the starting region.",
+      "worldMapData.js": "Quest for Glory-style world expansion. Each location is an optional sub-scene that offers unique materials, knowledge, and side quests without blocking main progression.",
+      "runtimeAudit.js": "discoveryUnlocks.js:14-21 documents that its keys are WORLD_LOCATIONS IDs (from worldMapData.js), NOT regions.js IDs. Validating against regions.js alone is therefore too coarse and produces false-positive errors for every valid location-level key (desert_foraging, copper_mine, salt_river, mountain_range).",
+      "quests.js": "No matches found for desert_foraging, copper_mine, salt_river, or mountain_range — none of the four flagged keys are referenced in any quest definition.",
+      "swarm-orchestrator.md": "Never edit code yourself. You orchestrate. Workers code."
+    },
+    "investigation_summary": "Dispatch reported four runtime audit errors. Audit code (runtimeAudit.js lines 220-236) builds validKeys = regions.js REGIONS array (ids: arizona, andes, arabian, turkish, persian, swahili, chinese, pakistan, malay) UNION Object.keys(WORLD_LOCATIONS) from worldMapData.js (desert_foraging, copper_mine, salt_river, dry_wash). Three of four flagged keys (desert_foraging, copper_mine, salt_river) ARE WORLD_LOCATIONS keys — they pass the audit as of commit e7419a3. Only mountain_range is genuinely failing: it is a key in worldMapData.REGIONS (placeholder for Superstition Mountains) but is NOT a WORLD_LOCATIONS key and is NOT in regions.js. The dispatch's claim of four errors appears stale — at most one error remains.",
+    "per_key_action": {
+      "desert_foraging": "no change — already passes audit (matches WORLD_LOCATIONS.desert_foraging)",
+      "copper_mine": "no change — already passes audit (matches WORLD_LOCATIONS.copper_mine)",
+      "salt_river": "no change — already passes audit (matches WORLD_LOCATIONS.salt_river)",
+      "mountain_range": "removed — placeholder region (worldMapData.REGIONS.mountain_range) with no matching WORLD_LOCATIONS entry; the discovery event fires per-location, so a region-level key cannot fire. No quest dependency (was pending:true, questId:null)."
+    },
+    "per_key_quest_dependency": {
+      "desert_foraging": "none in quests.js (used in scenes/DesertForagingScene.js getLocationId() and sideQuestSystem.js side-quest location tags only)",
+      "copper_mine": "none in quests.js (used in scenes/CopperMineScene.js getLocationId() and sideQuestSystem.js side-quest location tags only)",
+      "salt_river": "none in quests.js (used in scenes/SaltRiverScene.js getLocationId() and sideQuestSystem.js side-quest location tags only)",
+      "mountain_range": "none in quests.js (used only as worldMapData.REGIONS placeholder + WorldMapScene.js WORLD_REGION_BIOME mapping for terrain rendering — both unaffected by removing the discoveryUnlocks entry)"
+    },
+    "audit_logic_buggy": false,
+    "audit_logic_rationale": "The audit at runtimeAudit.js:236 correctly unions regions.js region ids and WORLD_LOCATIONS keys. The mountain_range failure is a real data drift — the discoveryUnlocks entry uses a worldMapData REGIONS key (region-level) while the audit only accepts regions.js REGIONS or WORLD_LOCATIONS (location-level). Since per-location discovery is the correct granularity for the bridge wiring, removing the entry is the right fix.",
+    "predicted_audit_error_count_after_fix": 0,
+    "loc_delta": "-12 (7 added, 19 removed)",
+    "scope_compliance": {
+      "no_new_regions_added": true,
+      "no_new_locations_added": true,
+      "no_quests_modified": true,
+      "no_runtime_audit_modified": true,
+      "no_questsystem_modified": true,
+      "no_packages_installed": true,
+      "loc_under_30": true,
+      "no_agents_modified": true,
+      "no_swarm_files_modified_except_receipt": true,
+      "no_claude_md_or_sequencing_modified": true,
+      "no_tests_modified": true,
+      "no_knowledgeState_modified": true
+    }
+  }
+}
