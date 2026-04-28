@@ -21,6 +21,7 @@ import QUESTS from '../data/quests.js';
 import { drawPlant } from '../utils/plantRenderer.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { startInteractiveExplainer } from '../systems/interactiveExplainerSystem.js';
 import {
   registerEntities,
   attachEcologyTicker,
@@ -362,9 +363,19 @@ export default class StreetBlockScene extends LocalSceneBase {
       this._ramirezBike = this.add.text(
         o.x, o.y,
         questDone ? '🚲✅' : '🚲❌',
-        { fontSize: '28px' },
+        { fontSize: o.fontSize || '36px' },
       ).setOrigin(0.5).setDepth(40);
     }
+
+    const ramirezBikeInteract = this.layout.ramirez_bike_icon;
+    this.addInteractable({
+      x: ramirezBikeInteract.x,
+      y: ramirezBikeInteract.y,
+      label: 'Flat Tire',
+      icon: '!',
+      radius: ramirezBikeInteract.interactionRadius || 75,
+      onInteract: () => this._handleRamirezBikeInteract(),
+    });
 
     // === MR. CHEN NPC ===
     const chenData = NPC_PLACEMENTS.find(n => n.id === 'mr_chen');
@@ -473,12 +484,12 @@ export default class StreetBlockScene extends LocalSceneBase {
 
     // Plant info from flora data
     const PLANT_INFO = {
-      mesquite: { desc: 'A mesquite tree! Its pods are nutritious and its wood makes excellent charcoal. Animals gather here to eat the pods.', items: ['mesquite_pods', 'mesquite_wood_sample'] },
+      mesquite: { desc: 'A mesquite tree! Its pods are nutritious and its wood makes excellent charcoal. Animals gather here to eat the pods. The soil around its roots is full of desert microbes.', items: ['mesquite_pods', 'mesquite_wood_sample', 'bio_sample_bacteria'] },
       creosote: { desc: 'Creosote bush — its resin is antimicrobial and anti-inflammatory. Careful: toxic in large doses!', items: ['creosote_leaves'] },
       prickly_pear: { desc: 'Prickly pear cactus! The fruit is sweet and hydrating. The pads are edible too.', items: ['prickly_pear_fruit'] },
       barrel_cactus: { desc: 'Barrel cactus — it has moisture inside but the pulp is bitter and can cause nausea.', items: ['barrel_cactus_pulp'] },
       jojoba: { desc: 'Jojoba shrub — its seeds produce a stable liquid wax. Natural sunscreen and lubricant!', items: ['jojoba_seeds'] },
-      agave: { desc: 'Agave plant — strong fibers for rope and bandages. The sap has healing properties.', items: ['agave_fiber'] },
+      agave: { desc: 'Agave plant — strong fibers for rope and bandages. The sap has healing properties.', items: ['agave_fiber', 'bio_sample_agave'] },
       yucca: { desc: 'Yucca — the root contains natural soap (saponins). Used for cleaning and surfactants for thousands of years.', items: ['yucca_root'] },
       desert_lavender: { desc: 'Desert lavender — purple flowers with a calming scent. Makes a soothing tea that improves focus.', items: ['desert_lavender_flowers'] },
       ephedra: { desc: 'Ephedra (Mormon Tea) — a powerful natural stimulant. Boosts energy but stresses the heart. Use with caution!', items: ['ephedra_stems'] },
@@ -514,6 +525,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     }
 
     if (grantedItem) {
+      const advancesCurrentStep = step?.requiredItem === grantedItem;
       const updated = {
         ...state,
         inventory: [...state.inventory, grantedItem],
@@ -526,8 +538,11 @@ export default class StreetBlockScene extends LocalSceneBase {
 
       this.registry.set('dialogEvent', {
         speaker: 'Zuzu',
-        text: `Found ${grantedItem.replace(/_/g, ' ')}! ${info.desc}`,
-        choices: null, step: null,
+        text: advancesCurrentStep
+          ? `Found ${grantedItem.replace(/_/g, ' ')}! ${info.desc}\n\nBring this back to Mrs. Ramirez.`
+          : `Found ${grantedItem.replace(/_/g, ' ')}! ${info.desc}`,
+        choices: null,
+        step: advancesCurrentStep ? step : null,
       });
 
       // ECOLOGY (additive): fire observation + forage events alongside the
@@ -587,6 +602,10 @@ export default class StreetBlockScene extends LocalSceneBase {
         // This NPC owns the active quest — show current step
         const step = getCurrentStep(state);
         if (step) {
+          if (step.type === 'explainer' && step.explainerId) {
+            startInteractiveExplainer(this, step.explainerId);
+            return;
+          }
           this.registry.set('dialogEvent', {
             speaker: step.type === 'quiz' ? 'Zuzu (thinking)' : npcName,
             text: step.text,
@@ -644,11 +663,104 @@ export default class StreetBlockScene extends LocalSceneBase {
     const step = getCurrentStep(state);
     if (!step) return;
 
+    if (step.type === 'explainer' && step.explainerId) {
+      startInteractiveExplainer(this, step.explainerId);
+      return;
+    }
+
     this.registry.set('dialogEvent', {
       speaker: step.type === 'quiz' ? 'Zuzu (thinking)' : npcName,
       text: step.text,
       choices: step.type === 'quiz' ? step.choices : null,
       step,
+    });
+  }
+
+  _handleRamirezBikeInteract() {
+    let state = this.registry.get('gameState');
+    const audioMgr = this.registry.get('audioManager');
+    audioMgr?.playSfx('interaction_ping');
+
+    if (state?.completedQuests?.includes('flat_tire_repair')) {
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu',
+        text: "Mrs. Ramirez's tire is fixed and holding air.",
+        choices: null,
+        step: null,
+      });
+      return;
+    }
+
+    if (!state?.activeQuest) {
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu',
+        text: "Mrs. Ramirez's tire is completely flat. I should ask her what happened first.",
+        choices: null,
+        step: null,
+      });
+      return;
+    }
+
+    if (state.activeQuest.id !== 'flat_tire_repair') {
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu',
+        text: "I should finish my current job before inspecting Mrs. Ramirez's tire.",
+        choices: null,
+        step: null,
+      });
+      return;
+    }
+
+    let step = getCurrentStep(state);
+    if (step?.id === 'talk') {
+      const advanced = advanceQuest(state);
+      if (advanced.ok) {
+        state = advanced.state;
+        this.registry.set('gameState', state);
+        saveGame(state);
+        step = getCurrentStep(state);
+        this.registry.set('dialogEvent', {
+          speaker: 'Zuzu',
+          text: step.text,
+          choices: null,
+          step,
+        });
+        return;
+      }
+    }
+
+    if (step?.type === 'explainer' && step.explainerId) {
+      startInteractiveExplainer(this, step.explainerId);
+      return;
+    }
+
+    if (step?.id === 'inspect') {
+      const advanced = advanceQuest(state);
+      if (advanced.ok) {
+        state = advanced.state;
+        this.registry.set('gameState', state);
+        saveGame(state);
+        step = getCurrentStep(state);
+        if (step?.type === 'explainer' && step.explainerId) {
+          startInteractiveExplainer(this, step.explainerId);
+          return;
+        }
+      }
+
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu',
+        text: "I found the nail. Now let's zoom in and work through the repair.",
+        choices: null,
+        step,
+      });
+      return;
+    }
+
+    this.registry.set('dialogEvent', {
+      speaker: 'Zuzu',
+      text: step?.text || "I've learned what happened to the tire. Now I should keep following the repair steps.",
+      choices: step?.type === 'quiz' ? step.choices : null,
+      step: step || null,
     });
   }
 
@@ -694,6 +806,10 @@ export default class StreetBlockScene extends LocalSceneBase {
 
     const nextStep = getCurrentStep(state);
     if (nextStep) {
+      if (nextStep.type === 'explainer' && nextStep.explainerId) {
+        startInteractiveExplainer(this, nextStep.explainerId);
+        return;
+      }
       // Get speaker from quest giver
       const NPC_NAMES = { mrs_ramirez: 'Mrs. Ramirez', mr_chen: 'Mr. Chen' };
       const activeQuest = QUESTS[state.activeQuest?.id];

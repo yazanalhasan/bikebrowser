@@ -8,6 +8,10 @@
 
 import QUESTS from '../data/quests.js';
 import ITEMS from '../data/items.js';
+import {
+  formatWorkbenchRecipeNote,
+  getKnownWorkbenchRecipes,
+} from '../data/workbenchRecipes.js';
 
 /** Return a short quest tracker string for the HUD. */
 export function getQuestSummary(state) {
@@ -69,5 +73,12 @@ function fallbackItem(id) {
 
 /** Build journal entries for the notebook panel. */
 export function getJournalEntries(state) {
-  return [...(state?.journal || [])].reverse();
+  const journal = [...(state?.journal || [])];
+  const recipeNotes = getKnownWorkbenchRecipes(state).map(formatWorkbenchRecipeNote);
+
+  for (const note of recipeNotes) {
+    if (!journal.includes(note)) journal.push(note);
+  }
+
+  return journal.reverse();
 }

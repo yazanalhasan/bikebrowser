@@ -30,70 +30,331 @@
       "h": 20,
       "_note": "Original: x = width / 2 (1000), w = width."
     },
-    "zuzu_house_body": { "x": 130, "y": 180, "w": 180, "h": 120 },
-    "zuzu_house_roof": { "x1": 40, "y1": 125, "x2": 130, "y2": 60, "x3": 220, "y3": 125 },
-    "zuzu_house_door": { "x": 130, "y": 220, "w": 35, "h": 50 },
-    "zuzu_house_doorknob": { "x": 142, "y": 220, "r": 3 },
-    "zuzu_house_window_left": { "x": 85, "y": 175, "w": 30, "h": 25 },
-    "zuzu_house_window_right": { "x": 175, "y": 175, "w": 30, "h": 25 },
-    "zuzu_house_label": { "x": 130, "y": 245 },
-    "zuzu_house_collision": { "x": 130, "y": 180, "w": 180, "h": 120 },
-    "zuzu_driveway": { "x": 130, "y": 262, "w": 60, "h": 16 },
-    "ramirez_house_body": { "x": 550, "y": 180, "w": 180, "h": 120 },
-    "ramirez_house_roof": { "x1": 460, "y1": 125, "x2": 550, "y2": 60, "x3": 640, "y3": 125 },
-    "ramirez_house_door": { "x": 550, "y": 220, "w": 35, "h": 50 },
-    "ramirez_house_doorknob": { "x": 562, "y": 220, "r": 3 },
-    "ramirez_house_window_left": { "x": 505, "y": 175, "w": 30, "h": 25 },
-    "ramirez_house_window_right": { "x": 595, "y": 175, "w": 30, "h": 25 },
-    "ramirez_house_label": { "x": 550, "y": 245 },
-    "ramirez_house_collision": { "x": 550, "y": 180, "w": 180, "h": 120 },
-    "blue_house_body": { "x": 850, "y": 180, "w": 160, "h": 110 },
-    "blue_house_roof": { "x1": 770, "y1": 130, "x2": 850, "y2": 70, "x3": 930, "y3": 130 },
-    "blue_house_door": { "x": 850, "y": 218, "w": 30, "h": 45 },
-    "blue_house_collision": { "x": 850, "y": 180, "w": 160, "h": 110 },
-    "green_house_body": { "x": 350, "y": 550, "w": 160, "h": 100 },
-    "green_house_roof": { "x1": 270, "y1": 505, "x2": 350, "y2": 445, "x3": 430, "y3": 505 },
-    "green_house_door": { "x": 350, "y": 580, "w": 30, "h": 40 },
-    "green_house_collision": { "x": 350, "y": 550, "w": 160, "h": 100 },
-    "yellow_house_body": { "x": 700, "y": 550, "w": 160, "h": 100 },
-    "yellow_house_roof": { "x1": 620, "y1": 505, "x2": 700, "y2": 445, "x3": 780, "y3": 505 },
-    "yellow_house_door": { "x": 700, "y": 580, "w": 30, "h": 40 },
-    "yellow_house_collision": { "x": 700, "y": 550, "w": 160, "h": 100 },
+    "zuzu_house_body": {
+      "x": 130,
+      "y": 180,
+      "w": 180,
+      "h": 120
+    },
+    "zuzu_house_roof": {
+      "x1": 40,
+      "y1": 125,
+      "x2": 130,
+      "y2": 60,
+      "x3": 220,
+      "y3": 125
+    },
+    "zuzu_house_door": {
+      "x": 130,
+      "y": 220,
+      "w": 35,
+      "h": 50
+    },
+    "zuzu_house_doorknob": {
+      "x": 142,
+      "y": 220,
+      "r": 3
+    },
+    "zuzu_house_window_left": {
+      "x": 85,
+      "y": 175,
+      "w": 30,
+      "h": 25
+    },
+    "zuzu_house_window_right": {
+      "x": 175,
+      "y": 175,
+      "w": 30,
+      "h": 25
+    },
+    "zuzu_house_label": {
+      "x": 130,
+      "y": 245
+    },
+    "zuzu_house_collision": {
+      "x": 130,
+      "y": 180,
+      "w": 180,
+      "h": 120
+    },
+    "zuzu_driveway": {
+      "x": 130,
+      "y": 262,
+      "w": 60,
+      "h": 16
+    },
+    "ramirez_house_body": {
+      "x": 550,
+      "y": 180,
+      "w": 180,
+      "h": 120
+    },
+    "ramirez_house_roof": {
+      "x1": 460,
+      "y1": 125,
+      "x2": 550,
+      "y2": 60,
+      "x3": 640,
+      "y3": 125
+    },
+    "ramirez_house_door": {
+      "x": 550,
+      "y": 220,
+      "w": 35,
+      "h": 50
+    },
+    "ramirez_house_doorknob": {
+      "x": 562,
+      "y": 220,
+      "r": 3
+    },
+    "ramirez_house_window_left": {
+      "x": 505,
+      "y": 175,
+      "w": 30,
+      "h": 25
+    },
+    "ramirez_house_window_right": {
+      "x": 595,
+      "y": 175,
+      "w": 30,
+      "h": 25
+    },
+    "ramirez_house_label": {
+      "x": 550,
+      "y": 245
+    },
+    "ramirez_house_collision": {
+      "x": 550,
+      "y": 180,
+      "w": 180,
+      "h": 120
+    },
+    "blue_house_body": {
+      "x": 850,
+      "y": 180,
+      "w": 160,
+      "h": 110
+    },
+    "blue_house_roof": {
+      "x1": 770,
+      "y1": 130,
+      "x2": 850,
+      "y2": 70,
+      "x3": 930,
+      "y3": 130
+    },
+    "blue_house_door": {
+      "x": 850,
+      "y": 218,
+      "w": 30,
+      "h": 45
+    },
+    "blue_house_collision": {
+      "x": 850,
+      "y": 180,
+      "w": 160,
+      "h": 110
+    },
+    "green_house_body": {
+      "x": 350,
+      "y": 550,
+      "w": 160,
+      "h": 100
+    },
+    "green_house_roof": {
+      "x1": 270,
+      "y1": 505,
+      "x2": 350,
+      "y2": 445,
+      "x3": 430,
+      "y3": 505
+    },
+    "green_house_door": {
+      "x": 350,
+      "y": 580,
+      "w": 30,
+      "h": 40
+    },
+    "green_house_collision": {
+      "x": 350,
+      "y": 550,
+      "w": 160,
+      "h": 100
+    },
+    "yellow_house_body": {
+      "x": 700,
+      "y": 550,
+      "w": 160,
+      "h": 100
+    },
+    "yellow_house_roof": {
+      "x1": 620,
+      "y1": 505,
+      "x2": 700,
+      "y2": 445,
+      "x3": 780,
+      "y3": 505
+    },
+    "yellow_house_door": {
+      "x": 700,
+      "y": 580,
+      "w": 30,
+      "h": 40
+    },
+    "yellow_house_collision": {
+      "x": 700,
+      "y": 550,
+      "w": 160,
+      "h": 100
+    },
     "trees": [
-      { "x": 30, "y": 340 },
-      { "x": 260, "y": 140 },
-      { "x": 400, "y": 140 },
-      { "x": 700, "y": 140 },
-      { "x": 950, "y": 340 },
-      { "x": 200, "y": 500 },
-      { "x": 500, "y": 620 },
-      { "x": 900, "y": 500 }
+      {
+        "x": 30,
+        "y": 340
+      },
+      {
+        "x": 260,
+        "y": 140
+      },
+      {
+        "x": 400,
+        "y": 140
+      },
+      {
+        "x": 700,
+        "y": 140
+      },
+      {
+        "x": 950,
+        "y": 340
+      },
+      {
+        "x": 200,
+        "y": 500
+      },
+      {
+        "x": 500,
+        "y": 620
+      },
+      {
+        "x": 900,
+        "y": 500
+      }
     ],
     "plants": [
-      { "species": "mesquite", "label": "Mesquite Tree", "x": 260, "y": 460, "radius": 65 },
-      { "species": "mesquite", "label": "Mesquite Tree", "x": 900, "y": 460, "radius": 65 },
-      { "species": "creosote", "label": "Creosote Bush", "x": 80, "y": 460, "radius": 55 },
-      { "species": "creosote", "label": "Creosote Bush", "x": 950, "y": 620, "radius": 55 },
-      { "species": "prickly_pear", "label": "Prickly Pear", "x": 480, "y": 640, "radius": 50 },
-      { "species": "barrel_cactus", "label": "Barrel Cactus", "x": 30, "y": 620, "radius": 45 },
-      { "species": "jojoba", "label": "Jojoba Shrub", "x": 780, "y": 640, "radius": 45 },
-      { "species": "agave", "label": "Agave Plant", "x": 450, "y": 460, "radius": 55 },
-      { "species": "yucca", "label": "Yucca Plant", "x": 150, "y": 620, "radius": 50 },
-      { "species": "desert_lavender", "label": "Desert Lavender", "x": 650, "y": 460, "radius": 50 }
+      {
+        "species": "mesquite",
+        "label": "Mesquite Tree",
+        "x": 260,
+        "y": 460,
+        "radius": 65
+      },
+      {
+        "species": "mesquite",
+        "label": "Mesquite Tree",
+        "x": 900,
+        "y": 460,
+        "radius": 65
+      },
+      {
+        "species": "creosote",
+        "label": "Creosote Bush",
+        "x": 80,
+        "y": 460,
+        "radius": 55
+      },
+      {
+        "species": "creosote",
+        "label": "Creosote Bush",
+        "x": 950,
+        "y": 620,
+        "radius": 55
+      },
+      {
+        "species": "prickly_pear",
+        "label": "Prickly Pear",
+        "x": 480,
+        "y": 640,
+        "radius": 50
+      },
+      {
+        "species": "barrel_cactus",
+        "label": "Barrel Cactus",
+        "x": 30,
+        "y": 620,
+        "radius": 45
+      },
+      {
+        "species": "jojoba",
+        "label": "Jojoba Shrub",
+        "x": 780,
+        "y": 640,
+        "radius": 45
+      },
+      {
+        "species": "agave",
+        "label": "Agave Plant",
+        "x": 450,
+        "y": 460,
+        "radius": 55
+      },
+      {
+        "species": "yucca",
+        "label": "Yucca Plant",
+        "x": 150,
+        "y": 620,
+        "radius": 50
+      },
+      {
+        "species": "desert_lavender",
+        "label": "Desert Lavender",
+        "x": 650,
+        "y": 460,
+        "radius": 50
+      }
     ],
-    "fire_hydrant": { "x": 340, "y": 275 },
-    "mailbox_left": { "x": 190, "y": 265 },
-    "mailbox_right": { "x": 610, "y": 265 },
+    "fire_hydrant": {
+      "x": 340,
+      "y": 275
+    },
+    "mailbox_left": {
+      "x": 190,
+      "y": 265
+    },
+    "mailbox_right": {
+      "x": 610,
+      "y": 265
+    },
     "street_sign": {
       "x": 500,
       "y": 275,
       "_note": "Original: x = width / 2 (1000)."
     },
-    "npc_mrs_ramirez": { "x": 550, "y": 310 },
-    "ramirez_bike_icon": { "x": 590, "y": 310 },
-    "npc_mr_chen": { "x": 250, "y": 430 },
-    "chen_bike_icon": { "x": 290, "y": 430 },
-    "exit_zone_west": { "x": 14, "y": 300, "w": 28, "h": 80 },
+    "npc_mrs_ramirez": {
+      "x": 550,
+      "y": 310
+    },
+    "ramirez_bike_icon": {
+      "x": 417.9720050288943,
+      "y": 277.99286296379034,
+      "fontSize": "46px",
+      "interactionRadius": 95
+    },
+    "npc_mr_chen": {
+      "x": 250,
+      "y": 430
+    },
+    "chen_bike_icon": {
+      "x": 290,
+      "y": 430
+    },
+    "exit_zone_west": {
+      "x": 14,
+      "y": 300,
+      "w": 28,
+      "h": 80
+    },
     "exit_zone_north": {
       "x": 500,
       "y": 14,

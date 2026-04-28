@@ -26,6 +26,18 @@ function normalizeProviderName(provider) {
 async function callOrchestrator(taskType, prompt, options = {}) {
   const preferredProvider = normalizeProviderName(options.preferredProvider);
 
+  if (!window.api?.ai?.orchestrate) {
+    if (options.fallbackData !== undefined) {
+      return {
+        success: true,
+        data: options.fallbackData,
+        providerUsed: 'offline',
+        confidence: 0,
+      };
+    }
+    throw new Error(`AI bridge unavailable for task ${taskType}`);
+  }
+
   const payload = {
     taskType,
     prompt,

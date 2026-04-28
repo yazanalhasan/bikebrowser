@@ -26,11 +26,13 @@ export const SCENE_ITEM_GRANTS = {
   StreetBlockScene: [
     { itemId: 'mesquite_pods' },
     { itemId: 'mesquite_wood_sample' },
+    { itemId: 'bio_sample_bacteria' },
     { itemId: 'creosote_leaves' },
     { itemId: 'prickly_pear_fruit' },
     { itemId: 'barrel_cactus_pulp' },
     { itemId: 'jojoba_seeds' },
     { itemId: 'agave_fiber' },
+    { itemId: 'bio_sample_agave' },
     { itemId: 'yucca_root' },
     { itemId: 'desert_lavender_flowers' },
     { itemId: 'ephedra_stems' },

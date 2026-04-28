@@ -41,6 +41,160 @@ import { runRuntimeAudit } from './systems/runtimeAudit.js';
 import { initDiscoveryQuestBridge } from './systems/questSystem.js';
 import { triggerQuestRevealsForState } from './systems/discoveryBridge.js';
 
+const GAMEPLAY_REPORTS_KEY = 'bikebrowser_gameplay_reports';
+
+function readGameplayReports() {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = window.localStorage.getItem(GAMEPLAY_REPORTS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveGameplayReports(reports) {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(GAMEPLAY_REPORTS_KEY, JSON.stringify(reports.slice(0, 20)));
+}
+
+function getActiveGameSnapshot(game) {
+  if (!game) return { activeScene: null, gameState: null, player: null, runtimeAudit: null };
+
+  const activeScene = game.scene?.scenes?.find((s) => s.scene?.isActive?.());
+  const state = game.registry?.get('gameState') || null;
+  const playerSprite = activeScene?.player?.sprite;
+
+  return {
+    activeScene: activeScene?.scene?.key || null,
+    gameState: state ? {
+      activeQuest: state.activeQuest || null,
+      inventory: state.inventory || [],
+      observations: state.observations || [],
+      completedQuests: state.completedQuests || [],
+      zuzubucks: state.zuzubucks || 0,
+      player: state.player || null,
+      version: state.version || null,
+    } : null,
+    player: playerSprite ? {
+      x: Math.round(playerSprite.x),
+      y: Math.round(playerSprite.y),
+    } : null,
+    runtimeAudit: typeof window !== 'undefined' ? window.__runtimeAuditResult || null : null,
+  };
+}
+
+function formatGameplayReport(report) {
+  const state = report.snapshot?.gameState || {};
+  const quest = state.activeQuest || {};
+  return [
+    '## Gameplay Report',
+    '',
+    `Time: ${report.createdAt}`,
+    `Scene: ${report.snapshot?.activeScene || 'unknown'}`,
+    `Quest: ${quest.id || 'none'}`,
+    `Step: ${typeof quest.stepIndex === 'number' ? quest.stepIndex : 'none'}`,
+    `Player: ${JSON.stringify(report.snapshot?.player || state.player || null)}`,
+    '',
+    '## Problem',
+    report.message,
+    '',
+    '## State',
+    `Inventory: ${(state.inventory || []).join(', ') || 'empty'}`,
+    `Observations: ${(state.observations || []).join(', ') || 'none'}`,
+    `Completed quests: ${(state.completedQuests || []).join(', ') || 'none'}`,
+    '',
+    '## Runtime audit',
+    JSON.stringify(report.snapshot?.runtimeAudit || null, null, 2),
+  ].join('\n');
+}
+
+async function copyTextWithFallback(text) {
+  if (!text) return false;
+
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // Fall through to the selectable textarea copy path below.
+  }
+
+  try {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    const copied = document.execCommand('copy');
+    document.body.removeChild(textarea);
+    return copied;
+  } catch {
+    return false;
+  }
+}
+
+function getDialogPrimaryAction(dialog, state) {
+  const step = dialog?.step;
+  if (!step) return { label: 'Continue ->', canAdvance: false };
+  if (step.isSideQuest || step.type === 'embedded_challenge') {
+    return { label: 'Continue ->', canAdvance: true };
+  }
+
+  const inventory = state?.inventory || [];
+  const observations = state?.observations || [];
+
+  if (step.type === 'forage') {
+    const hasRequiredItem = hasItem(inventory, step.requiredItem);
+    return {
+      label: hasRequiredItem ? 'Continue ->' : 'Close',
+      canAdvance: hasRequiredItem,
+      hint: step.hint || 'Find the required item first.',
+    };
+  }
+
+  if (step.type === 'craft') {
+    const hasRequiredItem = hasItem(inventory, step.requiredRecipe);
+    const craftCheck = canCraft(step.requiredRecipe, inventory);
+    return {
+      label: hasRequiredItem
+        ? 'Continue ->'
+        : craftCheck.canCraft
+          ? `Craft ${step.requiredRecipe.replace(/_/g, ' ')}`
+          : 'Close',
+      canAdvance: hasRequiredItem || craftCheck.canCraft,
+      craftRecipe: !hasRequiredItem && craftCheck.canCraft ? step.requiredRecipe : null,
+      hint: step.hint || 'Craft the required item first.',
+    };
+  }
+
+  if (step.type === 'use_item') {
+    const hasRequiredItem = hasItem(inventory, step.requiredItem);
+    return {
+      label: hasRequiredItem ? `Use ${step.requiredItem.replace(/_/g, ' ')}` : 'Close',
+      canAdvance: hasRequiredItem,
+      hint: step.hint || 'Find the required item first.',
+    };
+  }
+
+  if (step.type === 'observe') {
+    const observed = !step.requiredObservation || observations.includes(step.requiredObservation);
+    return {
+      label: observed ? 'Continue ->' : 'Close',
+      canAdvance: observed,
+      hint: step.hint || 'Observe the target first.',
+    };
+  }
+
+  return { label: 'Continue ->', canAdvance: true };
+}
+
 // ---------------------------------------------------------------------------
 // Mobile detection helper
 // ---------------------------------------------------------------------------
@@ -130,6 +284,13 @@ export default function GameContainer() {
   const [showAssistant, setShowAssistant] = useState(false);
   const [assistantMessages, setAssistantMessages] = useState([]);
   const [assistantStatus, setAssistantStatus] = useState('idle'); // 'idle' | 'analyzing' | 'warning'
+
+  // Gameplay report panel for handing bugs to programmers
+  const [showReportPanel, setShowReportPanel] = useState(false);
+  const [reportText, setReportText] = useState('');
+  const [reportStatus, setReportStatus] = useState(null);
+  const [reportCopyText, setReportCopyText] = useState('');
+  const [gameplayReports, setGameplayReports] = useState(() => readGameplayReports());
 
   // Touch controls
   const [showTouch, setShowTouch] = useState(false);
@@ -519,7 +680,7 @@ export default function GameContainer() {
     };
     document.addEventListener('visibilitychange', onVisChange);
     return () => document.removeEventListener('visibilitychange', onVisChange);
-  }, [audio]);
+  }, [audio, dialog]);
 
   // Auto-dismiss AI toasts after 6 seconds
   useEffect(() => {
@@ -536,8 +697,8 @@ export default function GameContainer() {
   useEffect(() => { setBusy('inDialogue', !!dialog); }, [dialog]);
   useEffect(() => { setBusy('crafting', showCrafting); }, [showCrafting]);
   useEffect(() => { setBusy('paused', paused); }, [paused]);
-  useEffect(() => { setBusy('inMenu', showQuestBoard || showShop || showInventory || showNotebook || showMilestones || showAssistant || showAudioSettings); },
-    [showQuestBoard, showShop, showInventory, showNotebook, showMilestones, showAssistant, showAudioSettings]);
+  useEffect(() => { setBusy('inMenu', showQuestBoard || showShop || showInventory || showNotebook || showMilestones || showAssistant || showReportPanel || showAudioSettings); },
+    [showQuestBoard, showShop, showInventory, showNotebook, showMilestones, showAssistant, showReportPanel, showAudioSettings]);
   useEffect(() => {
     const state = gameRef.current?.registry?.get?.('gameState');
     setBusy('activeQuestStep', !!state?.activeQuest);
@@ -597,6 +758,50 @@ export default function GameContainer() {
 
     audio?.playSfx('ui_tap');
 
+    if (!dialog?.step) {
+      setDialog(null);
+      game.registry?.set?.('dialogEvent', null);
+      return;
+    }
+
+    const action = getDialogPrimaryAction(dialog, game.registry?.get?.('gameState'));
+    if (!action.canAdvance) {
+      if (action.hint) {
+        game.registry?.set?.('mcpAlert', {
+          id: `dialog_hint_${Date.now()}`,
+          message: action.hint,
+          severity: 'info',
+        });
+      }
+      setDialog(null);
+      game.registry?.set?.('dialogEvent', null);
+      return;
+    }
+
+    if (action.craftRecipe) {
+      const state = game.registry?.get?.('gameState');
+      const result = craft(action.craftRecipe, state?.inventory || []);
+      if (!result.success) {
+        game.registry?.set?.('mcpAlert', {
+          id: `craft_blocked_${Date.now()}`,
+          message: result.message,
+          severity: 'warning',
+        });
+        return;
+      }
+
+      const updated = {
+        ...state,
+        inventory: result.inventory,
+        journal: [...(state?.journal || []), result.message],
+      };
+      game.registry.set('gameState', updated);
+      saveGame(updated);
+      setCraftResult({ success: true, message: result.message, itemName: result.result });
+      setTimeout(() => setCraftResult(null), 2500);
+      audio?.playSfx?.('item_pickup');
+    }
+
     // Find any active scene with advanceFromDialog and call it
     const activeScenes = game.scene.getScenes(true);
     let handled = false;
@@ -611,7 +816,7 @@ export default function GameContainer() {
       // Simple dialog (no quest advancement) — just close
       setDialog(null);
     }
-  }, [audio]);
+  }, [audio, dialog]);
 
   const handleDialogClose = useCallback(() => {
     cancelSpeech();
@@ -676,6 +881,49 @@ export default function GameContainer() {
   const handleNewGameFromPause = useCallback(() => {
     setConfirmNewGame(true);
   }, []);
+
+  const handleSaveGameplayReport = useCallback(async () => {
+    const message = reportText.trim();
+    if (!message) {
+      setReportStatus('Type what went wrong first.');
+      return;
+    }
+
+    const report = {
+      id: `gameplay_report_${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      message,
+      snapshot: getActiveGameSnapshot(gameRef.current),
+    };
+    const nextReports = [report, ...gameplayReports].slice(0, 20);
+    setGameplayReports(nextReports);
+    saveGameplayReports(nextReports);
+    setReportText('');
+
+    const formatted = formatGameplayReport(report);
+    setReportCopyText(formatted);
+    const copied = await copyTextWithFallback(formatted);
+    if (copied) {
+      setReportStatus('Saved and copied for the programmers.');
+    } else {
+      setReportStatus('Saved. Browser copy is blocked, so use the full report box below.');
+    }
+
+    audio?.playSfx?.('ui_success');
+  }, [audio, gameplayReports, reportText]);
+
+  const handleCopyGameplayReport = useCallback(async (report) => {
+    const formatted = formatGameplayReport(report);
+    setReportCopyText(formatted);
+    const copied = await copyTextWithFallback(formatted);
+    if (copied) {
+      setReportStatus('Copied report.');
+      audio?.playSfx?.('ui_tap');
+    } else {
+      setReportStatus('Browser copy is blocked. The full report is selected below.');
+      audio?.playSfx?.('ui_error');
+    }
+  }, [audio]);
 
   // ------------------------------------------------------------------
   // Render
@@ -844,10 +1092,10 @@ export default function GameContainer() {
             </div>
 
             {/* HUD buttons */}
-            <div className="flex gap-1.5 pointer-events-auto flex-wrap justify-end">
+            <div className="flex flex-col gap-1.5 pointer-events-auto items-end">
               <button
                 onClick={() => {
-                  setShowQuestBoard(!showQuestBoard); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowShop(false); setShowMilestones(false);
+                  setShowQuestBoard(!showQuestBoard); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowShop(false); setShowMilestones(false); setShowReportPanel(false);
                   audio?.playSfx('ui_tap');
                 }}
                 className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
@@ -855,7 +1103,7 @@ export default function GameContainer() {
               >📋</button>
               <button
                 onClick={() => {
-                  setShowShop(!showShop); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowMilestones(false);
+                  setShowShop(!showShop); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowMilestones(false); setShowReportPanel(false);
                   audio?.playSfx('ui_tap');
                 }}
                 className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
@@ -863,7 +1111,7 @@ export default function GameContainer() {
               >🏪</button>
               <button
                 onClick={() => {
-                  setShowInventory(!showInventory); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowMilestones(false);
+                  setShowInventory(!showInventory); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowMilestones(false); setShowReportPanel(false);
                   audio?.playSfx(!showInventory ? 'ui_panel_open' : 'ui_panel_close');
                 }}
                 className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
@@ -871,7 +1119,7 @@ export default function GameContainer() {
               >🎒</button>
               <button
                 onClick={() => {
-                  setShowNotebook(!showNotebook); setShowInventory(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowMilestones(false);
+                  setShowNotebook(!showNotebook); setShowInventory(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowMilestones(false); setShowReportPanel(false);
                   audio?.playSfx(!showNotebook ? 'ui_notebook_open' : 'ui_panel_close');
                 }}
                 className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
@@ -879,7 +1127,7 @@ export default function GameContainer() {
               >📓</button>
               <button
                 onClick={() => {
-                  setShowCrafting(!showCrafting); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowAssistant(false);
+                  setShowCrafting(!showCrafting); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowAssistant(false); setShowReportPanel(false);
                   audio?.playSfx('ui_tap');
                 }}
                 className={`rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 cursor-pointer ${showCrafting ? 'bg-amber-400 text-white' : 'bg-white/90 hover:bg-white'}`}
@@ -887,7 +1135,7 @@ export default function GameContainer() {
               >⚗️</button>
               <button
                 onClick={() => {
-                  setShowMilestones(!showMilestones); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowAssistant(false); setShowCrafting(false);
+                  setShowMilestones(!showMilestones); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowAssistant(false); setShowCrafting(false); setShowReportPanel(false);
                   audio?.playSfx('ui_tap');
                 }}
                 className={`rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 cursor-pointer ${showMilestones ? 'bg-purple-400 text-white' : 'bg-white/90 hover:bg-white'}`}
@@ -895,7 +1143,7 @@ export default function GameContainer() {
               >🏆</button>
               <button
                 onClick={() => {
-                  setShowAudioSettings(!showAudioSettings); setShowInventory(false); setShowNotebook(false);
+                  setShowAudioSettings(!showAudioSettings); setShowInventory(false); setShowNotebook(false); setShowReportPanel(false);
                   audio?.playSfx('ui_tap');
                 }}
                 className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
@@ -903,7 +1151,7 @@ export default function GameContainer() {
               >{audioSettings?.masterMute ? '🔇' : '🔊'}</button>
               <button
                 onClick={() => {
-                  setShowAssistant(!showAssistant); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false);
+                  setShowAssistant(!showAssistant); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowReportPanel(false);
                   audio?.playSfx('ui_tap');
                 }}
                 className={`rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 cursor-pointer ${
@@ -915,6 +1163,14 @@ export default function GameContainer() {
                 }`}
                 title="AI Assistant"
               >🧠</button>
+              <button
+                onClick={() => {
+                  setShowReportPanel(!showReportPanel); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowAssistant(false); setShowCrafting(false); setShowMilestones(false); setReportStatus(null);
+                  audio?.playSfx('ui_tap');
+                }}
+                className={`rounded-lg px-2 py-2 shadow text-xs font-bold transition-all duration-75 active:scale-90 cursor-pointer ${showReportPanel ? 'bg-red-500 text-white' : 'bg-white/90 hover:bg-white text-red-700'}`}
+                title="Report gameplay problem"
+              >BUG</button>
               <button
                 onClick={togglePause}
                 className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
@@ -1011,6 +1267,112 @@ export default function GameContainer() {
           onClose={() => setShowAssistant(false)}
           onClear={() => setAssistantMessages([])}
         />
+      )}
+
+      {/* ---- Gameplay report panel ---- */}
+      {showReportPanel && (
+        <div className="absolute top-14 right-2 z-30 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl p-4 w-[min(24rem,calc(100vw-1rem))] max-h-[80vh] overflow-y-auto">
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div>
+              <div className="font-bold text-gray-800 text-sm">Report gameplay problem</div>
+              <div className="text-xs text-gray-500">
+                This saves your note with scene, quest, inventory, observations, and audit context.
+              </div>
+            </div>
+            <button
+              onClick={() => setShowReportPanel(false)}
+              className="text-gray-400 hover:text-gray-700 text-lg leading-none px-1"
+              title="Close"
+            >
+              x
+            </button>
+          </div>
+
+          <textarea
+            value={reportText}
+            onChange={(e) => setReportText(e.target.value)}
+            onKeyDown={(e) => e.stopPropagation()}
+            onKeyUp={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+            placeholder="Type what happened. Example: I talked to Mr. Chen, closed the dialog, and the bridge quest completed even though I never built the bridge."
+            className="w-full min-h-44 max-h-[45vh] rounded-lg border border-gray-300 p-3 text-sm text-gray-800 resize-y focus:outline-none focus:ring-2 focus:ring-red-300"
+          />
+
+          <div className="flex items-center justify-between gap-2 mt-3">
+            <button
+              onClick={handleSaveGameplayReport}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-600 active:scale-95"
+            >
+              Save report
+            </button>
+            <div className="text-[11px] text-gray-500 text-right">
+              {gameplayReports.length} saved
+            </div>
+          </div>
+
+          {reportStatus && (
+            <div className="mt-2 text-xs text-red-700 bg-red-50 border border-red-100 rounded-lg px-2 py-1">
+              {reportStatus}
+            </div>
+          )}
+
+          {reportCopyText && (
+            <div className="mt-3 rounded-lg border border-blue-100 bg-blue-50 p-2">
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <div className="text-xs font-bold text-blue-900">Full report to send</div>
+                <button
+                  onClick={async () => {
+                    const copied = await copyTextWithFallback(reportCopyText);
+                    setReportStatus(
+                      copied
+                        ? 'Copied full report.'
+                        : 'Automatic copy is blocked. Select the report text and copy it manually.'
+                    );
+                    audio?.playSfx?.(copied ? 'ui_tap' : 'ui_error');
+                  }}
+                  className="text-xs font-semibold text-blue-700 hover:text-blue-900"
+                >
+                  Copy again
+                </button>
+              </div>
+              <textarea
+                readOnly
+                value={reportCopyText}
+                onFocus={(e) => e.target.select()}
+                onClick={(e) => e.target.select()}
+                onKeyDown={(e) => e.stopPropagation()}
+                onKeyUp={(e) => e.stopPropagation()}
+                onPointerDown={(e) => e.stopPropagation()}
+                className="w-full min-h-40 max-h-64 rounded-md border border-blue-200 bg-white p-2 font-mono text-[11px] text-gray-800 resize-y focus:outline-none focus:ring-2 focus:ring-blue-300"
+              />
+            </div>
+          )}
+
+          {gameplayReports.length > 0 && (
+            <div className="mt-4 border-t border-gray-200 pt-3">
+              <div className="text-xs font-bold text-gray-600 mb-2">Recent reports</div>
+              <div className="flex flex-col gap-2">
+                {gameplayReports.slice(0, 5).map((report) => (
+                  <div key={report.id} className="rounded-lg border border-gray-200 bg-gray-50 p-2">
+                    <div className="text-[11px] text-gray-500 flex justify-between gap-2">
+                      <span>{report.snapshot?.activeScene || 'unknown scene'}</span>
+                      <span>{new Date(report.createdAt).toLocaleString()}</span>
+                    </div>
+                    <div className="text-xs text-gray-800 mt-1 whitespace-pre-wrap break-words">
+                      {report.message}
+                    </div>
+                    <button
+                      onClick={() => handleCopyGameplayReport(report)}
+                      className="mt-2 text-xs font-semibold text-blue-700 hover:text-blue-900"
+                    >
+                      Show/copy full report
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
       {/* ---- Game settings panel (NPC & Dialogue) ---- */}
@@ -1116,8 +1478,23 @@ export default function GameContainer() {
 
       {/* ---- Dialog overlay (quest steps) ---- */}
       {dialog && (
-        <div className="absolute inset-x-0 bottom-0 z-30 p-2 sm:p-4">
-          <div className="bg-white rounded-2xl shadow-xl p-4 max-w-lg mx-auto border-2 border-blue-200">
+        <div
+          className="absolute inset-x-0 bottom-0 z-30 p-2 sm:p-4 pointer-events-auto"
+          onPointerDown={(e) => e.stopPropagation()}
+          onPointerUp={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-xl p-4 max-w-lg mx-auto border-2 border-blue-200"
+            onPointerDown={(e) => e.stopPropagation()}
+            onPointerUp={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {(() => {
+              const primaryAction = getDialogPrimaryAction(dialog, gameState);
+              return (
+                <>
             {/* Speaker label + speech controls */}
             <div className="flex items-center justify-between mb-1">
               <div className="font-bold text-blue-700 text-sm">{dialog.speaker}</div>
@@ -1175,8 +1552,14 @@ export default function GameContainer() {
               <div className="flex flex-col gap-2">
                 {dialog.choices.map((choice, i) => (
                   <button
+                    type="button"
                     key={i}
-                    onClick={() => handleDialogContinue(i)}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleDialogContinue(i);
+                    }}
                     className="bg-blue-50 border-2 border-blue-300 rounded-xl px-4 py-2 text-sm
                                font-medium text-blue-800 hover:bg-blue-100 active:scale-[0.98]
                                text-left"
@@ -1188,14 +1571,26 @@ export default function GameContainer() {
             ) : (
               <div className="flex gap-2 justify-end">
                 <button
-                  onClick={() => handleDialogContinue(null)}
+                  type="button"
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDialogContinue(null);
+                  }}
                   className="bg-blue-500 text-white px-5 py-2 rounded-xl text-sm font-semibold
                              hover:bg-blue-600 active:scale-95"
                 >
-                  Continue →
+                  {primaryAction.label}
                 </button>
                 <button
-                  onClick={handleDialogClose}
+                  type="button"
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleDialogClose();
+                  }}
                   className="bg-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm
                              hover:bg-gray-300 active:scale-95"
                 >
@@ -1203,6 +1598,9 @@ export default function GameContainer() {
                 </button>
               </div>
             )}
+                </>
+              );
+            })()}
           </div>
         </div>
       )}
@@ -1745,6 +2143,21 @@ function GameSettingsPanel({ state, speechOn, onChangeSetting, onClose }) {
           }`}
         >
           {gs.autoSpeak !== false ? 'ON' : 'OFF'}
+        </button>
+      </div>
+
+      <div className="flex items-center justify-between py-1.5">
+        <span className="text-xs text-gray-600">Mensa Mode</span>
+        <button
+          onClick={() => onChangeSetting('mensaMode', !gs.mensaMode)}
+          className={`text-xs px-2 py-1 rounded-lg ${
+            gs.mensaMode
+              ? 'bg-indigo-100 text-indigo-700 font-semibold'
+              : 'bg-gray-100 text-gray-400'
+          }`}
+          title="Harder cognitive puzzles: fewer hints, bonus rewards."
+        >
+          {gs.mensaMode ? 'ON' : 'OFF'}
         </button>
       </div>
 

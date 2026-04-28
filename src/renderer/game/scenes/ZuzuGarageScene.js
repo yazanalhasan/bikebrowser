@@ -17,6 +17,46 @@ import { saveGame } from '../systems/saveSystem.js';
 import QUESTS from '../data/quests.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import {
+  formatMissingWorkbenchIngredients,
+  formatWorkbenchMemoryLine,
+  formatWorkbenchRecipeNote,
+  getKnownWorkbenchRecipes,
+  getWorkbenchRecipe,
+} from '../data/workbenchRecipes.js';
+
+function saveStateToRegistry(scene, state) {
+  scene.registry.set('gameState', state);
+  saveGame(state);
+}
+
+function appendJournalOnce(state, entry) {
+  const journal = state?.journal || [];
+  if (journal.includes(entry)) return state;
+  return { ...state, journal: [...journal, entry] };
+}
+
+function rememberWorkbenchRecipe(state, recipeId) {
+  const recipe = getWorkbenchRecipe(recipeId);
+  if (!recipe) return state;
+
+  const known = state?.knownWorkbenchRecipes || [];
+  let next = known.includes(recipeId)
+    ? state
+    : { ...state, knownWorkbenchRecipes: [...known, recipeId] };
+
+  next = appendJournalOnce(next, formatWorkbenchRecipeNote(recipe));
+  return next;
+}
+
+function consumeIngredients(inventory, ingredients) {
+  const next = [...inventory];
+  for (const ingredient of ingredients) {
+    const index = next.indexOf(ingredient);
+    if (index !== -1) next.splice(index, 1);
+  }
+  return next;
+}
 
 export default class ZuzuGarageScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -145,7 +185,7 @@ export default class ZuzuGarageScene extends LocalSceneBase {
       icon: '🔧',
       radius: 70,
       onInteract: () => {
-        const state = this.registry.get('gameState');
+        let state = this.registry.get('gameState');
 
         // Desert-coating quest: combine creosote_leaves + jojoba_seeds
         // → protective_coating. Emits 'coating_applied' for
@@ -158,36 +198,77 @@ export default class ZuzuGarageScene extends LocalSceneBase {
         // bushes). Earlier quest steps (gather_resin, gather_wax) gate
         // on these same item ids.
         if (state?.activeQuest?.id === 'desert_coating') {
+          const remembered = rememberWorkbenchRecipe(state, 'protective_coating');
+          if (remembered !== state) {
+            state = remembered;
+            saveStateToRegistry(this, state);
+          }
+
+          const coatingRecipe = getWorkbenchRecipe('protective_coating');
           const inv = state.inventory || [];
           const obs = state.observations || [];
+          const quest = QUESTS.desert_coating;
+          const step = quest?.steps?.[state.activeQuest.stepIndex];
+          const isApplyStep = step?.id === 'apply_coating';
           const hasIngredients =
             inv.includes('creosote_leaves') && inv.includes('jojoba_seeds');
+          const hasCoating = inv.includes('protective_coating');
+
+          if (isApplyStep && (obs.includes('coating_applied') || hasCoating)) {
+            const updated = obs.includes('coating_applied')
+              ? state
+              : { ...state, observations: [...obs, 'coating_applied'] };
+            if (updated !== state) {
+              saveStateToRegistry(this, updated);
+            }
+            this.registry.set('dialogEvent', {
+              speaker: 'Zuzu',
+              text:
+                "The protective coating is ready.\n\n" +
+                "Creosote resin gives it a tough UV-resistant seal, and jojoba wax helps it repel moisture.\n\n" +
+                "Now I can apply it to the bike parts.",
+              choices: null,
+              step,
+            });
+            return;
+          }
+
           if (hasIngredients && !obs.includes('coating_applied')) {
-            const newInv = inv
-              .filter((x) => x !== 'creosote_leaves' && x !== 'jojoba_seeds')
-              .concat('protective_coating');
-            const updated = {
+            const newInv = consumeIngredients(inv, coatingRecipe.ingredients)
+              .concat(coatingRecipe.result);
+            let updated = {
               ...state,
               inventory: newInv,
-              observations: [...obs, 'coating_applied'],
+              observations: obs.includes(coatingRecipe.outcomeObservationId)
+                ? obs
+                : [...obs, coatingRecipe.outcomeObservationId],
             };
-            this.registry.set('gameState', updated);
-            saveGame(updated);
+            updated = appendJournalOnce(
+              updated,
+              `Made ${coatingRecipe.name} at the workbench.`,
+            );
+            saveStateToRegistry(this, updated);
             this.registry.get('audioManager')?.playSfx?.('item_pickup');
             this.registry.set('dialogEvent', {
               speaker: 'Zuzu',
-              text: "Mixed creosote resin with jojoba wax — got a protective coating!\n\n🛡️ Got: Protective Coating\n\nThis should keep my bike safe from the desert sun.",
-              choices: null, step: null,
+              text:
+                "Mixed creosote resin with jojoba wax - got a protective coating!\n\n" +
+                "Got: Protective Coating\n\n" +
+                "The bench saved this recipe in my notebook so I can make it again later.",
+              choices: null,
+              step: QUESTS.desert_coating?.steps?.[state.activeQuest.stepIndex] || null,
             });
             return;
           }
           if (!hasIngredients) {
-            const missing = [];
-            if (!inv.includes('creosote_leaves')) missing.push('🌿 creosote leaves');
-            if (!inv.includes('jojoba_seeds')) missing.push('🌰 jojoba seeds');
+            const missing = formatMissingWorkbenchIngredients(coatingRecipe, inv);
             this.registry.set('dialogEvent', {
               speaker: 'Zuzu',
-              text: `I need creosote leaves (resin) and jojoba seeds (wax) for the coating.\n\nMissing: ${missing.join(', ')}\n\nForage from creosote bushes and jojoba shrubs outside.`,
+              text:
+                "Workbench memory:\n" +
+                `${formatWorkbenchMemoryLine(coatingRecipe)}\n\n` +
+                `Missing: ${missing.join(', ')}\n\n` +
+                "Forage from creosote bushes and jojoba shrubs outside.",
               choices: null, step: null,
             });
             return;
@@ -213,9 +294,22 @@ export default class ZuzuGarageScene extends LocalSceneBase {
           }
         }
 
+        const knownWorkbenchRecipes = getKnownWorkbenchRecipes(state);
+        if (knownWorkbenchRecipes.length > 0) {
+          this.registry.set('dialogEvent', {
+            speaker: 'Zuzu',
+            text:
+              "Workbench memory:\n" +
+              knownWorkbenchRecipes.map(formatWorkbenchMemoryLine).join('\n') +
+              "\n\nThese recipe notes are also saved in the notebook.",
+            choices: null, step: null,
+          });
+          return;
+        }
+
         this.registry.set('dialogEvent', {
           speaker: 'Zuzu',
-          text: "My workbench! All my tools are here.\n\n🔧 Tire levers, patch kits, wrenches...\n\nWhen I get a repair job, this is where the magic happens!",
+          text: "My workbench! All my tools are here.\n\nTire levers, patch kits, wrenches...\n\nWhen I learn a recipe here, the bench remembers it and writes it in my notebook.",
           choices: null, step: null,
         });
       },
@@ -569,5 +663,5 @@ export default class ZuzuGarageScene extends LocalSceneBase {
   }
 }
 
-// ── HMR ──────────────────────────────────────────────────────────────
+// -- HMR -------------------------------------------------------------
 registerSceneHmr('ZuzuGarageScene', import.meta.hot, ZuzuGarageScene);

@@ -26,6 +26,8 @@ import SportsFieldsScene from './scenes/SportsFieldsScene.js';
 import CommunityPoolScene from './scenes/CommunityPoolScene.js';
 import DesertTrailScene from './scenes/DesertTrailScene.js';
 import MountainScene from './scenes/MountainScene.js';
+import ExplainerScene from './scenes/ExplainerScene.js';
+import CognitiveQuestScene from './scenes/CognitiveQuestScene.js';
 
 // World map + sub-scenes (Quest for Glory-style expansion)
 import WorldMapScene from './scenes/WorldMapScene.js';
@@ -58,6 +60,8 @@ const ALL_SCENES = [
   CommunityPoolScene,
   DesertTrailScene,
   MountainScene,
+  ExplainerScene,
+  CognitiveQuestScene,
   // World map + sub-scenes
   WorldMapScene,
   DesertForagingScene,

@@ -39,12 +39,14 @@ const QUESTS = {
         type: 'inspect',
         text:
           'Look closely at the tire. You can see a small nail stuck in it! ' +
-          'That\'s what caused the flat. We need to remove the tire first.',
+          'That\'s what caused the flat. Tap the flat tire again to zoom in and work through the repair.',
       },
       {
         id: 'reading',
-        type: 'dialogue',
-        text:
+        type: 'explainer',
+        explainerId: 'flat_tire',
+        text: 'Let\'s look closely at the tire and fix it together.',
+        legacyText:
           '📖 Quick tip: A bicycle tire has two parts — the outer tire ' +
           '(the tough rubber that touches the road) and the inner tube ' +
           '(a softer tube filled with air inside the tire). When a nail ' +
@@ -1583,7 +1585,9 @@ const QUESTS = {
         text:
           'Zuzu, the desert sun is destroying my bike\'s plastic parts. ' +
           'They\'re cracking and fading. We need a protective coating ' +
-          'that reflects heat and blocks UV.',
+          'that reflects heat and blocks UV.\n\n' +
+          'I think we can make one from two desert materials: creosote resin for a tough seal, ' +
+          'and jojoba wax for a stable moisture barrier.',
       },
       {
         id: 'learn_coating',
@@ -1592,28 +1596,31 @@ const QUESTS = {
           '📖 Coatings protect by creating a barrier between a material and its environment. ' +
           'Reflective coatings bounce heat. Hydrophobic coatings repel water. ' +
           'Antimicrobial coatings prevent biological fouling. ' +
-          'Coverage must be complete — even a small gap lets damage in.',
+          'Coverage must be complete — even a small gap lets damage in.\n\n' +
+          'Recipe clue: collect creosote leaves and jojoba seeds, then mix them at Zuzu\'s garage workbench.',
       },
       {
         id: 'gather_resin',
         type: 'forage',
-        text: 'Harvest creosote resin — a natural UV-resistant, waterproof coating.',
+        text: 'Harvest creosote leaves — their resin is the sealing ingredient for heat and UV protection.',
         requiredItem: 'creosote_leaves',
-        hint: 'Creosote resin has 85% coverage and excellent contamination resistance.',
+        hint: 'Find a Creosote Bush. Its leaves provide the resin half of the protective coating recipe.',
       },
       {
         id: 'gather_wax',
         type: 'forage',
-        text: 'Harvest jojoba wax — a stable moisture barrier.',
+        text: 'Harvest jojoba seeds — their wax is the moisture-barrier ingredient.',
         requiredItem: 'jojoba_seeds',
-        hint: 'Jojoba seeds produce liquid wax that doesn\'t go rancid.',
+        hint: 'Find a Jojoba Shrub. Its seeds provide the wax half of the protective coating recipe.',
       },
       {
         id: 'apply_coating',
         type: 'observe',
-        text: 'Combine and apply the resin-wax coating to the bike components.',
+        text:
+          'Now make the heat protection: go to Zuzu\'s garage workbench and mix ' +
+          'creosote resin + jojoba wax into a protective coating, then apply it to the bike parts.',
         requiredObservation: 'coating_applied',
-        hint: 'Use the material workbench to combine resin + wax into a protective coating.',
+        hint: 'Go to Zuzu\'s garage and use the workbench. You need creosote leaves plus jojoba seeds.',
       },
       {
         id: 'quiz_coating',

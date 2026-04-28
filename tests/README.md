@@ -18,6 +18,16 @@ Run the smoke suite:
 npm run test:e2e:smoke
 ```
 
+Run the gameplay gate after changing game code:
+
+```
+npm run test:e2e:playthrough
+```
+
+That command boots the browser game, runs the runtime audit, checks the
+fragile flat-tire/explainer path, and walks every shipped quest from start
+to completion with deterministic player actions.
+
 Run all E2E tests:
 
 ```
@@ -46,6 +56,19 @@ Asserts:
 Warnings are surfaced in the test log but do not fail the test. The audit
 covers: quest givers, quest items, quest scene refs, region biomes,
 `DISCOVERY_UNLOCKS` keys, and progression reachability.
+
+## What `full-game-playthrough.smoke.spec.js` asserts
+
+The playthrough test boots `/play`, imports the real quest data and quest
+system inside the browser runtime, then completes every quest in
+`src/renderer/game/data/quests.js`. For gated steps it records the same
+state facts that player interactions are expected to create: inventory
+items, observations, crafted recipes, material measurements, and correct
+quiz choices.
+
+This catches broad progression regressions: quests that cannot start, steps
+with impossible requirements, quizzes without a correct answer, and quests
+that never clear `activeQuest`.
 
 ## How to add a new E2E test
 

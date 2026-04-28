@@ -24,6 +24,7 @@
     "check:health": "node scripts/check-health.js",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test runtime-audit.smoke",
+    "test:e2e:playthrough": "playwright test full-game-playthrough.smoke flat-tire-flow.smoke gameplay-report-panel.smoke runtime-audit.smoke",
     "test:e2e:install": "playwright install chromium"
   },
   "keywords": [

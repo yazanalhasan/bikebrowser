@@ -29,11 +29,16 @@ export async function waitForGameBoot(page, options = {}) {
   // user clicks. Click it if present; otherwise assume the game is
   // already running (e.g., autosave-resumed).
   const startButton = page.getByRole('button', { name: 'Start Adventure!' });
+  const continueButton = page.getByRole('button', { name: 'Continue Adventure' });
   try {
     await startButton.click({ timeout: 5_000 });
   } catch {
-    // Splash not shown (existing save resumed straight to game) —
-    // proceed; the __phaserGame poll below covers either path.
+    try {
+      await continueButton.click({ timeout: 2_000 });
+    } catch {
+      // Splash not shown (existing save resumed straight to game) -
+      // proceed; the __phaserGame poll below covers either path.
+    }
   }
 
   // Wait for the DEV-only window.__phaserGame handle. This is set in

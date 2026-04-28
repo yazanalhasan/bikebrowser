@@ -45,6 +45,7 @@ function defaultSave() {
       autoSpeak: true,
       speechRate: 0.9,
       complexityMode: 'adaptive', // 'adaptive' | 'starter' | 'guided' | 'builder' | 'advanced'
+      mensaMode: false,
     },
     // Engineering progression
     chapter: 'bike_phase', // 'bike_phase' | 'battery_phase' | 'ebike_phase'
@@ -74,6 +75,7 @@ function defaultSave() {
       productions: [],   // bio-production outputs
     },
     knownRecipes: ['healing_salve', 'energy_cake', 'hydration_jelly'],
+    knownWorkbenchRecipes: [],
     language: {
       regions: {},       // { [regionId]: { xp, rank, terms } }
       activeRegion: null,
@@ -87,6 +89,21 @@ function defaultSave() {
     },
     sideQuests: {},        // { [questId]: { id, stepIndex, completed } }
     solvedChallenges: [],  // embedded challenge IDs solved in sub-scenes
+    solvedCognitiveQuests: [],
+    cognitiveProfile: {
+      patternSkill: 0.5,
+      spatialSkill: 0.5,
+      logicSkill: 0.5,
+      optimizationSkill: 0.5,
+      sequenceSkill: 0.5,
+    },
+    cognitiveUnlocks: [],
+    cognitiveStats: {
+      solved: 0,
+      attempts: 0,
+      byType: {},
+    },
+    cognitiveAnswers: [],
     worldMap: {            // world map exploration state
       lastVisited: null,
       visitCount: {},
