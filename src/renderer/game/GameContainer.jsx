@@ -277,6 +277,15 @@ export default function GameContainer() {
     const game = new Phaser.Game(config);
     gameRef.current = game;
 
+    // Dev-only: console buffer for AI-agent runtime visibility. Dynamic
+    // import keeps the module out of production bundles via Vite tree-
+    // shaking. See src/renderer/devtools/README.md for usage.
+    if (import.meta.env.DEV) {
+      import('../devtools/consoleBuffer.js').then(({ initConsoleBuffer }) => {
+        initConsoleBuffer();
+      });
+    }
+
     // Dev-only: expose the running Phaser game on window so DevTools and
     // the (planned) phaser-hmr-bridge can reach it. Phaser scenes are
     // stateful and don't HMR cleanly via Vite — to manually re-load a
