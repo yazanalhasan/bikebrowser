@@ -127,11 +127,17 @@ export default class ExplainerScene extends Phaser.Scene {
   }
 
   _createElementZones() {
-    for (const element of this.explainer.elements) {
-      const area = this.layout[element.layoutKey];
+    const elementsBySpecificity = [...this.explainer.elements]
+      .map((element) => {
+        const area = this.layout[element.layoutKey];
+        return { element, area, areaSize: (area?.w || 0) * (area?.h || 0) };
+      })
+      .sort((a, b) => b.areaSize - a.areaSize);
+
+    for (const { element, area } of elementsBySpecificity) {
       const zone = this.add.zone(area.x, area.y, area.w, area.h)
         .setInteractive({ useHandCursor: true })
-        .setDepth(110);
+        .setDepth(110 + this._zones.size);
 
       zone.on('pointerover', () => this._showElement(element));
       zone.on('pointerout', () => this._hideElement(element));
