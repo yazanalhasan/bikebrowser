@@ -1,0 +1,57 @@
+{
+  "agent": "general-purpose",
+  "target_subject": "FLORA agave/yucca registration gap close",
+  "ts": "2026-04-28T10:35:00Z",
+  "status": "complete",
+  "verdict_tag": "static-only-fix",
+  "commit_hash": "2f9659990fe3e320c79a55cee1756ce15e71b552",
+  "files_changed": [
+    {
+      "path": "src/renderer/game/data/flora.js",
+      "lines_added": 62,
+      "lines_removed": 0
+    }
+  ],
+  "build": {
+    "result": "PASS",
+    "duration_seconds": 11.4,
+    "exit_code": 0
+  },
+  "smoke_test": {
+    "result": "PASS",
+    "agave_warning_present": false,
+    "yucca_warning_present": false,
+    "output_excerpt": "[runtime-audit smoke] 2 warnings:\n  [progressionReachability] [INCOMPLETE_DATA] quest=extract_dna no source recorded for item 'bio_sample_agave' — add to sceneItemGrants.js or quests.js reward\n  [progressionReachability] [INCOMPLETE_DATA] quest=engineer_bacteria no source recorded for item 'bio_sample_bacteria' — add to sceneItemGrants.js or quests.js reward\n  1 passed (3.1s)\n\nNote: zero '[ecology] registerEntity: unknown speciesId' warnings for agave or yucca. The two remaining warnings are pre-existing progressionReachability INCOMPLETE_DATA notices for bio_sample_agave and bio_sample_bacteria (item-source mapping, unrelated to species registration)."
+  },
+  "notes": {
+    "preflight_quotes": {
+      "flora_js": "FLORA canonical pattern (prickly_pear): { name: 'prickly_pear', label: 'Prickly Pear', elevation: [0, 5000], moistureMax: 0.25, density: 0.6, cluster: true, clusterRadius: 25, clusterCount: 3, size: 'small', color: 0x3a7d44, emoji: '🌵', pharmacology: { hydrating: 0.3, nutritive: 0.25, metabolic: 0.2, toxicity: 0 }, scienceInteractions: { ... }, foraging: { maturityDays: 4, ... } }",
+      "ecology_js": "PLANT_ECOLOGY entries: agave: { supports: ['rabbit'], predatorsNearby: ['coyote'], pollinators: ['bats', 'insects'], spawnBoost: 0.3, biome: 'desert_scrub', producesFiber: true }; yucca: { supports: [], predatorsNearby: [], pollinators: ['insects'], spawnBoost: 0.3, biome: 'desert_scrub', producesSaponin: true, producesFiber: true }",
+      "items_js": "agave_fiber: { id: 'agave_fiber', name: 'Agave Fiber & Sap', description: 'Strong fibers for binding and healing sap for wounds.', icon: '🧵', category: 'foraged', stackable: true, plantSource: 'agave' }; yucca_root: { id: 'yucca_root', name: 'Yucca Root', description: 'Rich in saponins — natural soap. Used for cleaning and surfactant extraction.', icon: '🌴', category: 'foraged', stackable: true, plantSource: 'yucca' }",
+      "speciesResolver_js": "export function getFloraSpecies(speciesId) { if (typeof speciesId !== 'string') return null; return FLORA_MAP[speciesId] ?? null; } — speciesResolver looks up FLORA via FLORA_MAP (which is Object.fromEntries(FLORA.map(f => [f.name, f]))), and resolveSpeciesType returns 'flora' iff FLORA_MAP has the speciesId.",
+      "EcologyEntity_js": "registerEntity throw site (in systems/ecology/index.js, not EcologyEntity.js): throw new Error(`[ecology] registerEntity: unknown speciesId \"${speciesId}\" (not in FLORA/FAUNA)`); — fires when resolveSpeciesType returns null (no FLORA_MAP / FAUNA_MAP hit).",
+      "street_block_layout_json": "plants: [ ..., { species: 'agave', label: 'Agave Plant', x: 450, y: 460, radius: 55 }, { species: 'yucca', label: 'Yucca Plant', x: 150, y: 620, radius: 50 }, ... ] — confirmed 10 declared plants including agave and yucca.",
+      "ecology_manifest_json": "agave: { file: 'plants/agave.png', type: 'plant', displayName: 'Agave', scientificName: 'Agave parryi', interactions: ['observe', 'forage'], tags: ['producer', 'succulent', 'desert_scrub'] }; yucca: { file: 'plants/yucca.png', type: 'plant', displayName: 'Yucca', scientificName: 'Yucca elata', interactions: ['observe'], tags: ['producer', 'fiber', 'iconic', 'desert_scrub'] }",
+      "swarm_orchestrator_md": "Hard rules: 'Never edit code yourself. You orchestrate. Workers code.' — and PASS verdicts must be tagged runtime-validated or static-only on critical paths."
+    },
+    "canonical_pattern_source": "prickly_pear",
+    "new_entries": [
+      {
+        "id": "agave",
+        "displayName": "Agave",
+        "scientificName": "Agave parryi (per asset manifest)",
+        "biome": "desert_scrub (via PLANT_ECOLOGY.agave.biome)",
+        "forage_output": "agave_fiber (per items.js plantSource: 'agave')"
+      },
+      {
+        "id": "yucca",
+        "displayName": "Yucca",
+        "scientificName": "Yucca elata (per asset manifest)",
+        "biome": "desert_scrub (via PLANT_ECOLOGY.yucca.biome)",
+        "forage_output": "yucca_root (per items.js plantSource: 'yucca')"
+      }
+    ],
+    "speciesresolver_lookup_path": "registerEntity (systems/ecology/index.js) -> resolveSpeciesType (speciesResolver.js) -> isFloraSpecies -> Object.prototype.hasOwnProperty.call(FLORA_MAP, speciesId). FLORA_MAP is built at module load via Object.fromEntries(FLORA.map((f) => [f.name, f])). Adding entries with name: 'agave' and name: 'yucca' to FLORA was sufficient — no other registry surface needed updating.",
+    "runtime_validation_status": "agave + yucca warnings no longer appear in smoke test"
+  }
+}

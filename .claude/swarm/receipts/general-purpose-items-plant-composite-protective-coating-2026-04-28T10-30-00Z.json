@@ -1,0 +1,63 @@
+{
+  "agent": "general-purpose",
+  "target_subject": "items.js plant_composite + protective_coating completion",
+  "ts": "2026-04-28T10:30:00Z",
+  "status": "complete",
+  "verdict_tag": "static-only-fix",
+  "commit_hash": "da18077d404de8524c6cfa0909f6280dcd913688",
+  "files_changed": [
+    {
+      "path": "src/renderer/game/data/items.js",
+      "lines_added": 18,
+      "lines_removed": 0
+    }
+  ],
+  "build": {
+    "result": "pass",
+    "duration_seconds": 11.42,
+    "exit_code": 0
+  },
+  "notes": {
+    "preflight_quotes": {
+      "items_js_healing_salve": "healing_salve: { id: 'healing_salve', name: 'Healing Salve', description: 'Anti-inflammatory salve for cuts and scrapes. Heals over time.', icon: '🧴', category: 'crafted', stackable: true, effectType: 'anti_inflammatory' }",
+      "recipes_js_outputs": "plant_composite recipe: output: 'plant_composite', outcomeObservationId: 'composite_created'; protective_coating recipe: output: 'protective_coating', outcomeObservationId: 'coating_applied' (both category: 'biology').",
+      "quests_js_narrative": "perfect_composite quest teaches 'A composite combines two materials to get properties neither has alone... fiber carries load, the matrix holds the fibers in place'; desert_coating quest teaches 'Coatings protect by creating a barrier... Reflective coatings bounce heat. Hydrophobic coatings repel water.'",
+      "recipe_registry": "bootstrapRegistry() reads `getRecipesByCategory('biology')` from data/recipes.js and wraps each def in a Recipe instance — recipe.output is the itemId string used as the produced item key.",
+      "inventory_system": "resolveInventory uses ITEMS[id] || fallbackItem(id); fallbackItem builds a generic display from the id string (replaces _ with space, title-cases) — so missing items.js entries surface as raw-style ids with the 📦 emoji.",
+      "swarm_orchestrator": "Orchestrator picks one of A) dispatch next agent, B) stop at human gate, C) resolve blocker, D) report status — never more than one per turn."
+    },
+    "canonical_pattern_source": "healing_salve",
+    "new_entries": [
+      {
+        "id": "plant_composite",
+        "displayName": "Plant Composite",
+        "category": "crafted",
+        "fields_used": ["id", "name", "description", "icon", "category", "stackable", "effectType"]
+      },
+      {
+        "id": "protective_coating",
+        "displayName": "Protective Coating",
+        "category": "crafted",
+        "fields_used": ["id", "name", "description", "icon", "category", "stackable", "effectType"]
+      }
+    ],
+    "recipe_resolution_check": "perfect_composite output 'plant_composite' now resolves to items.js entry; desert_coating output 'protective_coating' same. Verified via grep: RECIPES.plant_composite.output === 'plant_composite' and RECIPES.protective_coating.output === 'protective_coating' both present in data/recipes.js, and matching ITEMS keys now exist in data/items.js.",
+    "field_parity_with_healing_salve": true,
+    "field_parity_detail": "Both new entries use the exact 7 fields healing_salve uses (id, name, description, icon, category, stackable, effectType). No new fields introduced. effectType values: plant_composite='structural' (new value, not new field — plant_composite is structural rather than physiological); protective_coating='protective' (matches existing sun_balm value). Category: 'crafted' for both, matching healing_salve.",
+    "loc_delta": "+18 / -0",
+    "guardrails_observed": [
+      "did not modify quest definitions",
+      "did not modify recipes.js",
+      "did not modify biology system",
+      "did not modify crafting system",
+      "did not modify scenes",
+      "did not install packages",
+      "did not amend commits",
+      "did not add new categories or fields",
+      "did not modify data/flora.js (parallel-agent territory)",
+      "did not modify .claude/agents/**",
+      "did not modify .claude/swarm/** except this receipt",
+      "used `git add <specific file>` only"
+    ]
+  }
+}

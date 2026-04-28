@@ -1,0 +1,53 @@
+{
+  "agent": "general-purpose",
+  "target_subject": "arc.md v1.4 alignment",
+  "ts": "2026-04-28T10:15:00Z",
+  "status": "complete",
+  "verdict_tag": "design-only",
+  "commit_hash": "b499987557d24a2d6f09637007e7159151fdd1a8",
+  "files_changed": [
+    { "path": "arc.md", "lines_added": 119, "lines_removed": 0 }
+  ],
+  "build": {
+    "result": "pass",
+    "duration_seconds": 10.35,
+    "exit_code": 0
+  },
+  "notes": {
+    "preflight_quotes": {
+      "arc_md": "BikeBrowser+ is an educational 2D Phaser game where the player begins as a child repairing and upgrading bikes in the Sonoran Desert, expands through six regionally-grounded Earth biomes — each with a real culture, language, and resource identity — and ultimately engineers life and ecosystems on an alien planet.",
+      "ecology_substrate_md": "EcologyEntity is the carry-forward system that owns living things in the game world — plants, animals, microbes, and (in Act 2+) regional flora and fauna — as scene-independent typed instances with species ids, observation hooks, foraging hooks, and relational tags sourced from data/ecology.js.",
+      "biology_substrate_md": "The biology workbench is one of the most consequential unbuilt carry-forward systems per arc.md §4. It is a single workbench with three modes — Recipe (Stage 1), Parametric (Stage 2), Simulation (Stage 3) — each more powerful and more abstract than the last.",
+      "knowledge_state_substrate_md": "The Knowledge State substrate at src/renderer/game/systems/knowledgeState/ is the carry-forward system that tracks what the player has seen, has interacted with, and understands across every domain in the game — species, recipes, materials, languages, locations, NPCs, scientific concepts, engineering principles, and cultural knowledge.",
+      "items_1_8_playbook_md": "Status (2026-04-27): Phase 2 design complete. The biology substrate design document has landed at src/renderer/game/systems/biology/biology-substrate.md (paired in the same commit with the ecology substrate at src/renderer/game/systems/ecology/ecology-substrate.md).",
+      "swarm_orchestrator_md": "On each turn, you do exactly one of: A) Dispatch the next agent B) Stop at a human gate and wait C) Resolve a blocker D) Report status if the user asks"
+    },
+    "arc_md_lines_before": 1020,
+    "arc_md_lines_after": 1139,
+    "net_loc_delta": 119,
+    "sections_modified": [
+      "§4 (added 'Detailed system specification' pointers on Biology Workbench and Ecology Substrate; added new Knowledge State System subsection with pointer)",
+      "§6 (open question count: 9 status markers added — 4 in Architectural/High Priority, 5 in Biology Workbench)",
+      "§8.5 (added 2026-04-28 status note pointing at knowledge-state-substrate.md §6 bridge contract)",
+      "§8 (added 'System integration declarations in shipped substrates' closing subsection citing all three substrates)",
+      "Document History (v1.4 entry, 2026-04-28)"
+    ],
+    "open_questions_marked_refined": [
+      { "question_text": "Biology workbench Stage 2 unlock trigger.", "status": "Refined in biology-substrate.md §15.1 (still open; proposed default: quest-gated at Act 2 transition; blocks Stage 2 implementation, not Stage 1)." },
+      { "question_text": "Engineered-organism consequence model.", "status": "Refined in biology-substrate.md §9 (still open; three models surfaced — A pure simulator, B soft consequence, C hard in-world propagation; recommended default Model A for Phase 3)." },
+      { "question_text": "Portability mechanism for carry-forward systems.", "status": "Refined in biology-substrate.md §7 and §15.7 (still open; proposed default: permanent unlock travels implicitly once narratively introduced)." },
+      { "question_text": "Knowledge State System data model (NEW high-priority entry).", "status": "Refined in knowledge-state-substrate.md §3 and §13 (substrate exists, 10 sub-questions still open; §8.5 gating clause discharges only when implementation ships)." },
+      { "question_text": "Does biology start in Act 1 with plants/medicine, Act 2 with greenhouse/life support, or both?", "status": "Refined in biology-substrate.md §2 (Stage 1 introduced Act 1 with plants/medicine; Stage 2 unlocks Act 2 with greenhouse/life-support framing)." },
+      { "question_text": "How much genetic engineering is appropriate for the target age?", "status": "Refined in biology-substrate.md §15.5 (proposed default: 5 visible parameter dimensions at first Stage 2 unlock, 4 advanced through progression; realistic GE simulation remains out-of-scope)." },
+      { "question_text": "Do engineered organisms have consequences immediately, or only in Act 3?", "status": "Refined in biology-substrate.md §9 (Stage 3-only by design; Phase-3 default Model A is in-silico-only)." },
+      { "question_text": "Can the player accidentally damage an ecosystem? If yes, is the consequence reversible?", "status": "Refined in biology-substrate.md §9 (Model C 'hard consequence' requires reversibility tooling per arc.md §3 Act 3; still open)." },
+      { "question_text": "How to teach ethics without becoming preachy?", "status": "Refined in biology-substrate.md §10 ('Ethics is gameplay, not lecture' — Stage 3 simulator demonstrates consequences via graphed time-series; failure-as-curriculum)." }
+    ],
+    "substrate_paths_cited": [
+      "src/renderer/game/systems/ecology/ecology-substrate.md",
+      "src/renderer/game/systems/biology/biology-substrate.md",
+      "src/renderer/game/systems/knowledgeState/knowledge-state-substrate.md"
+    ],
+    "v1_4_entry_summary": "Three substrate design documents now shipped and referenced (ecology and biology in commit 784e180; knowledge state in commit 9bc7f5f). Section 4 gains a Knowledge State System subsection plus explicit 'Detailed system specification' pointers on the Biology Workbench and Ecology Substrate subsections. Section 6 marks resolved/refined open questions with status lines (3 architectural/high-priority + 1 new Knowledge State entry + 5 Biology Workbench sub-questions). Section 8.5 records that the knowledge-state design doc has landed and references its §6 bridge contract; a closing 'System integration declarations in shipped substrates' subsection in Section 8 records that the three substrates each declare their primitive integration per §8.1. Existing arc.md prose preserved verbatim except for these additive references, status markers, and Document History entry."
+  }
+}

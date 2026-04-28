@@ -1,9 +1,91 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-28T10:05:00Z",
+  "last_updated": "2026-04-28T10:40:00Z",
   "current_week": 3,
   "current_pod_focus": "Daytime Autonomous V2 (bug-fix Phase-1 prep)",
   "completed": [
+    {
+      "agent": "general-purpose",
+      "target_subject": "items.js — add plant_composite + protective_coating (biology Stage 1 outputs)",
+      "ts": "2026-04-28T10:36:00Z",
+      "commit": "da18077",
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/general-purpose-items-plant-composite-protective-coating-2026-04-28T10-30-00Z.json",
+      "verdict_tag": "static-only-fix",
+      "needs_runtime_validation": "deferred (requires biology workbench mount)",
+      "user_directive": "Biology Stage 1 (commit 1c164b4) shipped recipes producing plant_composite and protective_coating but items.js had no entries. Inventory UI showed raw IDs. Add entries matching healing_salve template.",
+      "fix_summary": {
+        "files_changed": [{ "path": "src/renderer/game/data/items.js", "lines_added": 18, "lines_removed": 0 }],
+        "field_parity_with_healing_salve": "100% — same 7 fields (id, name, description, icon, category, stackable, effectType)",
+        "new_entries": [
+          { "id": "plant_composite", "name": "Plant Composite", "icon": "🧱", "category": "crafted", "effectType": "structural" },
+          { "id": "protective_coating", "name": "Protective Coating", "icon": "🛡️", "category": "crafted", "effectType": "protective" }
+        ],
+        "recipe_resolution_check": "RECIPES.perfect_composite.output → ITEMS.plant_composite ✓; RECIPES.desert_coating.output → ITEMS.protective_coating ✓"
+      },
+      "build": "PASS in 11.42s",
+      "notes": "Runtime-validation deferred until biology workbench mounts in a scene. Static-only verdict stable."
+    },
+    {
+      "agent": "general-purpose",
+      "target_subject": "FLORA — add agave + yucca to close StreetBlockScene mount-time registration warning",
+      "ts": "2026-04-28T10:35:00Z",
+      "commit": "2f96599",
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed_runtime_validated",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/general-purpose-flora-agave-yucca-2026-04-28T10-30-00Z.json",
+      "verdict_tag": "runtime-validated",
+      "verdict_tag_promotion": "Promoted from static-only-fix → runtime-validated. Promotion criterion: smoke test confirms agave + yucca speciesId warnings absent. Independently re-verified by orchestrator: smoke test PASS in 2.4s, neither warning fires.",
+      "user_directive": "Step 0 (commit 4640876) added agave/yucca to PLANT_ECOLOGY + asset manifest but not to FLORA. Phase 4 registration skipped them with 'unknown speciesId' warnings on every StreetBlockScene mount. Close the gap by authoring FLORA entries matching the established Sonoran-plant pattern.",
+      "fix_summary": {
+        "files_changed": [{ "path": "src/renderer/game/data/flora.js", "lines_added": 62, "lines_removed": 0 }],
+        "canonical_pattern_source": "prickly_pear / mesquite / creosote — same field set: name, label, elevation, moistureMax, density, cluster, size, color, emoji, optional heightOffset, pharmacology, scienceInteractions, foraging",
+        "new_entries": [
+          { "name": "agave", "label": "Agave", "biome": "desert_scrub", "maturityDays": 8, "forage_output": "agave_fiber", "notes": "Antimicrobial saponins; mild contact toxicity (raw sap)" },
+          { "name": "yucca", "label": "Yucca", "biome": "desert_scrub", "forage_output": "yucca_root", "notes": "Surfactant-active root (chemicalReactivity 0.5, fluidContribution 0.3 — soaproot foams)" }
+        ],
+        "speciesresolver_lookup_path": "registerEntity → resolveSpeciesType → isFloraSpecies → FLORA_MAP[speciesId]; FLORA_MAP = Object.fromEntries(FLORA.map(f => [f.name, f]))"
+      },
+      "build": "PASS in 11.40s (agent), independently verified PASS (orchestrator)",
+      "smoke_test_runtime_validation": {
+        "result": "PASS",
+        "duration": "2.4s",
+        "agave_warning_present": false,
+        "yucca_warning_present": false,
+        "remaining_warnings": [
+          "[progressionReachability] [INCOMPLETE_DATA] bio_sample_agave (pre-existing)",
+          "[progressionReachability] [INCOMPLETE_DATA] bio_sample_bacteria (pre-existing)"
+        ]
+      },
+      "notes": "Second runtime-validated audit fix this session. The StreetBlockScene mount no longer logs registration noise on every entry. Phase 4 plant registration now succeeds for all 10 layout-declared plants."
+    },
+    {
+      "agent": "general-purpose",
+      "target_subject": "arc.md v1.4 alignment with three shipped substrates",
+      "ts": "2026-04-28T10:25:00Z",
+      "commit": "b499987",
+      "review_verdict": "PASS",
+      "review_status": "orchestrator_completed",
+      "review_receipt": null,
+      "receipt": ".claude/swarm/receipts/general-purpose-arc-md-v1-4-alignment-2026-04-28T10-15-00Z.json",
+      "verdict_tag": "design-only",
+      "user_directive": "Update arc.md to v1.4: append substrate references in §4 and §8; mark resolved/refined open questions in §6; add v1.4 Document History entry. Existing prose preserved verbatim.",
+      "fix_summary": {
+        "files_changed": [{ "path": "arc.md", "lines_before": 1020, "lines_after": 1139, "net_loc_delta": 119 }],
+        "sections_modified": ["§4 (substrate pointers added on Ecology, Biology, Knowledge State subsections)", "§6 (9 open questions marked refined)", "§8.5 (knowledge-state bridge contract reference)", "§8 closing (system integration declarations subsection)", "Document History (v1.4 dated 2026-04-28)"],
+        "open_questions_marked_refined_count": 9,
+        "substrate_paths_cited": [
+          "src/renderer/game/systems/ecology/ecology-substrate.md",
+          "src/renderer/game/systems/biology/biology-substrate.md",
+          "src/renderer/game/systems/knowledgeState/knowledge-state-substrate.md"
+        ]
+      },
+      "build": "PASS",
+      "notes": "Strategic vision document now points at the three shipped substrate specs. arc.md remains the strategic frame; substrates remain the detailed system specs. No content moved between them."
+    },
     {
       "agent": "general-purpose",
       "target_subject": "Test helper fix — click Start Adventure splash before waiting for Phaser handle",
@@ -1261,7 +1343,7 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 58,
+  "dispatch_count": 61,
   "session_token_estimate": 0,
   "parallel_session_reconciliation": {
     "reconciled_at": "2026-04-28T07:00:00Z",
