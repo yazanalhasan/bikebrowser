@@ -221,14 +221,48 @@ function attachInteractionZone(scene, entity) {
   // `scene.player.sprite` get observation events when the player
   // enters the zone. The dedup in `emitObservation` ensures
   // `state.observations` only grows once per species.
-  const player = scene.player?.sprite ?? scene.player ?? null;
-  if (player && scene.physics?.add?.overlap) {
-    try {
-      scene.physics.add.overlap(player, zone, () => {
-        if (!entity.isObservable()) return;
-        _emitObservation(scene, entity, 'proximity');
-      });
-    } catch { /* swallow — physics not ready */ }
+  //
+  // TIMING ISSUE: in LocalSceneBase, `createWorld()` runs at line 155
+  // but `this.player` is only constructed at line 163. When
+  // `registerEntity` is called from inside `createWorld()`,
+  // `scene.player` is still undefined — so wiring must be deferred.
+  //
+  // Fast path: HMR / scene-restart — player already exists at
+  // registration time. Wire immediately.
+  // Deferred path: normal scene boot — listen for the first 'update'
+  // tick (guaranteed to fire after `create()` returns and after
+  // `this.player` is assigned). Per-zone, one-shot, idempotent.
+
+  /**
+   * Wire the physics overlap for this zone onto the scene player.
+   * Guarded by a `_ecologyOverlapWired` flag to prevent double-wiring
+   * (e.g., if somehow called twice).
+   */
+  function _wireOverlap() {
+    if (zone._ecologyOverlapWired) return;
+    const p = scene.player?.sprite ?? scene.player ?? null;
+    if (p && scene.physics?.add?.overlap) {
+      try {
+        scene.physics.add.overlap(p, zone, () => {
+          if (!entity.isObservable()) return;
+          _emitObservation(scene, entity, 'proximity');
+        });
+        zone._ecologyOverlapWired = true;
+      } catch { /* swallow — physics not ready */ }
+    }
+  }
+
+  const playerNow = scene.player?.sprite ?? scene.player ?? null;
+  if (playerNow) {
+    // Fast path: player already exists (HMR / scene-restart case).
+    _wireOverlap();
+  } else {
+    // Deferred path: wait for the first update tick after create()
+    // returns, by which time LocalSceneBase has assigned this.player.
+    // `scene.events.once` self-detaches after firing, so if the scene
+    // is destroyed before the first update the listener reference dies
+    // with the scene's event emitter — no manual cleanup needed.
+    scene.events?.once?.('update', _wireOverlap);
   }
 }
 
