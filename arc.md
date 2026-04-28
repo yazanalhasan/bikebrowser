@@ -460,6 +460,9 @@ contract, and open questions (Stage 2 unlock trigger, engineered-
 organism consequence model, Stage 3 tick rate, etc.). Paired with the
 ecology substrate above; the two share a Species concept.
 
+Detailed system specification: see
+`src/renderer/game/systems/biology/biology-substrate.md`.
+
 The biology workbench is a single system that progresses through
 three modes. Each mode is more powerful and more abstract than
 the last. Each mode is unlocked by demonstrating competence in
@@ -612,6 +615,9 @@ questions. Paired with `src/renderer/game/systems/biology/biology-substrate.md`
 in the same commit (the two systems share a Species concept and a
 relational data model).
 
+Detailed system specification: see
+`src/renderer/game/systems/ecology/ecology-substrate.md`.
+
 ### Foraging / Inventory System
 
 Today: collect plants, minerals, parts, useful materials.
@@ -636,6 +642,35 @@ Discipline: quests refer to systems and data, not hard-coded scene
 interactions. Observation gating must be implemented and respected
 (currently broken — pending fix per
 `.claude/bugs/2026-04-27-quest-engine-and-traversal.md`).
+
+### Knowledge State System
+
+Carry-forward progression primitive at
+`src/renderer/game/systems/knowledgeState/`. Owns the three-state
+Seen / Interacted / Understood model named in §8.5 across every
+domain in the game — species, recipes, materials, languages, NPCs,
+landmarks, scientific concepts, engineering principles, cultural
+knowledge. Layers on top of `state.observations` and
+`state.completedQuests` rather than replacing them; existing quest
+gating continues to work, with `requiredKnowledge` available as an
+opt-in step gate for new quest authoring.
+
+Today: design document landed; substrate not yet implemented. The
+existing `knowledgeSystem.js` + `data/knowledgeConcepts.js`
+concept-unlock pair is the seed the substrate generalizes.
+
+Scales to: Act 1 single-region domain coverage, Act 2 region-scoped
+language and cultural entries (under the §2 cultural representation
+rule), Act 3 alien-domain entries and Stage-3 simulation gating.
+
+Discipline: knowledge state and discovery state are explicitly
+distinct per §8.5; conflating them is a halt-and-surface trigger.
+Single state authority (the substrate is the only writer of
+`state.knowledge`); all entries are data-driven; cultural entries
+require a human-authored design brief.
+
+Detailed system specification: see
+`src/renderer/game/systems/knowledgeState/knowledge-state-substrate.md`.
 
 ### Layout Editor
 
@@ -785,14 +820,39 @@ document.
 - **Biology workbench Stage 2 unlock trigger.** Quest-gated?
   Act-gated? Skill-demonstration? Affects whether Stage 1 design
   needs to anticipate Stage 2 surfacing.
+  Status: Refined in biology-substrate.md §15.1 (still open;
+  proposed default: quest-gated, narratively appearing at Act 2
+  transition when parametric work is needed for a spacecraft
+  life-support module or greenhouse — blocks Stage 2
+  implementation, not Stage 1).
 - **Engineered-organism consequence model.** If consequences
   propagate beyond the simulator (escape, displacement, ecosystem
   damage), this needs simulation-tick architecture in the engine.
   Decision deferred but should be made before Stage 3 design.
+  Status: Refined in biology-substrate.md §9 (still open; three
+  models surfaced — Model A pure simulator, Model B soft
+  consequence, Model C hard in-world propagation; recommended
+  default Model A for Phase 3 implementation; flag for user
+  decision before Stage 3 is built).
 - **Portability mechanism for carry-forward systems.** Is "take
   the workbench with you" a literal inventory item? A permanent
   unlock? Part of the ship? Affects how every carry-forward system
   is architected from Act 1 onward.
+  Status: Refined in biology-substrate.md §7 and §15.7 (still
+  open; proposed default: permanent unlock that travels implicitly
+  once narratively introduced — affects scene-mount UX, not
+  substrate architecture).
+- **Knowledge State System data model.** Three-state Seen /
+  Interacted / Understood per §8.5. How are entries shaped, what
+  domains are covered, how does the substrate coexist with
+  `state.observations` and `state.completedQuests`?
+  Status: Refined in knowledge-state-substrate.md §3 (entry model)
+  and §13 (10 sub-questions still open — replace-vs-layer,
+  granularity, mastery score, forgetting, wrong/corrected
+  knowledge, region scoping, per-domain vs unified data, Stage 3
+  engineered-organism entries, cultural representation encoding,
+  cross-cutting bridges). Substrate document landed; §8.5 gating
+  clause discharges only when implementation ships.
 
 ### Act Structure
 
@@ -813,12 +873,32 @@ document.
 
 - Does biology start in Act 1 with plants/medicine, Act 2 with
   greenhouse/life support, or both?
+  Status: Refined in biology-substrate.md §2 (Stage 1 Recipe
+  Biology introduced Act 1 with plants/medicine; Stage 2
+  Parametric Biology unlocks Act 2 with greenhouse/life-support
+  framing).
 - How much genetic engineering is appropriate for the target age?
+  Status: Refined in biology-substrate.md §15.5 (proposed default:
+  5 visible parameter dimensions at first Stage 2 unlock,
+  4 advanced dimensions through progression; "realistic genetic
+  engineering simulation" remains explicitly out-of-scope per §14
+  and arc.md §7).
 - Do engineered organisms have consequences immediately, or only
   in Act 3?
+  Status: Refined in biology-substrate.md §9 (Stage 3-only by
+  design; Phase-3 default Model A is in-silico-only;
+  cross-references the high-priority "Engineered-organism
+  consequence model" question above).
 - Can the player accidentally damage an ecosystem? If yes, is the
   consequence reversible?
+  Status: Refined in biology-substrate.md §9 (Model C "hard
+  consequence" requires reversibility tooling per arc.md §3 Act 3
+  "risk, containment, reversibility"; still open).
 - How to teach ethics without becoming preachy?
+  Status: Refined in biology-substrate.md §10 ("Ethics is
+  gameplay, not lecture" — Stage 3 simulator demonstrates
+  consequences via graphed time-series; failure-as-curriculum;
+  NPC dialog acknowledges outcomes but does not deliver morals).
 
 ### Material Science
 
@@ -977,6 +1057,15 @@ lands. If a quest / crafting / dialog agent needs "does the player
 understand X?" the dispatch must halt-and-surface for the design-doc
 work first.
 
+**Status (2026-04-28):** the design document has landed at
+`src/renderer/game/systems/knowledgeState/knowledge-state-substrate.md`.
+See its §6 (world-model primitive integration) for the bridge contract
+between discovery state (geographic) and knowledge state (conceptual),
+and §8 (bridge contracts) for ecology, biology, quest engine, and
+materials lab integration. The §8.5 gating clause itself remains in
+force until implementation ships — substrate exists, no system yet
+consumes its query API.
+
 Discovery state (geographic) and knowledge state (conceptual) are
 explicitly distinct data models with distinct query APIs — conflating
 them is a halt-and-surface trigger.
@@ -996,6 +1085,19 @@ The carry-forward systems already shipped likely don't yet declare
 their primitive interactions explicitly. This is a known gap, not a
 regression — future modifications to those systems should add the
 declaration as part of the work, not as a separate audit sweep.
+
+### System integration declarations in shipped substrates
+
+The three substrate design documents shipped to date each declare
+their primitive integration explicitly per §8.1, satisfying the rule
+above for the systems they cover:
+
+- `src/renderer/game/systems/ecology/ecology-substrate.md` §6.
+- `src/renderer/game/systems/biology/biology-substrate.md` §6.
+- `src/renderer/game/systems/knowledgeState/knowledge-state-substrate.md` §6.
+
+Future carry-forward substrate documents must include an equivalent
+"World-model primitive integration" section.
 
 ---
 
@@ -1018,3 +1120,20 @@ declaration as part of the work, not as a separate audit sweep.
   act-specific carve-outs + no biomes/landmarks without educational
   domain + terrain-as-constraint + Knowledge State System gated +
   primitive fragmentation = CRITICAL all formalized in the document.
+- v1.4 — 2026-04-28 — three substrate design documents now shipped
+  and referenced: `ecology-substrate.md` (commit 784e180),
+  `biology-substrate.md` (commit 784e180), and
+  `knowledge-state-substrate.md` (commit 9bc7f5f). Section 4 gains
+  a Knowledge State System subsection and explicit
+  "Detailed system specification" pointers on Ecology Substrate
+  and Biology Workbench; Section 6 marks open questions refined by
+  the substrates with status lines (Stage 2 unlock trigger,
+  engineered-organism consequence model, portability mechanism,
+  Knowledge State System data model, plus five Biology Workbench
+  sub-questions); Section 8.5 records that the knowledge-state
+  design doc has landed and references its §6 bridge contract; a
+  closing "System integration declarations in shipped substrates"
+  note in Section 8 records that the three substrates each declare
+  their primitive integration per §8.1. Existing arc.md prose is
+  preserved verbatim except for these additive references and
+  status markers.
