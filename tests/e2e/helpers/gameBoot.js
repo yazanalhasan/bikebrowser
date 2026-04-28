@@ -24,6 +24,18 @@ export async function waitForGameBoot(page, options = {}) {
 
   await page.goto(route, { waitUntil: 'domcontentloaded' });
 
+  // The /play route renders a "Start Adventure!" splash screen
+  // (GameContainer.jsx:716-723). Phaser is only constructed after the
+  // user clicks. Click it if present; otherwise assume the game is
+  // already running (e.g., autosave-resumed).
+  const startButton = page.getByRole('button', { name: 'Start Adventure!' });
+  try {
+    await startButton.click({ timeout: 5_000 });
+  } catch {
+    // Splash not shown (existing save resumed straight to game) —
+    // proceed; the __phaserGame poll below covers either path.
+  }
+
   // Wait for the DEV-only window.__phaserGame handle. This is set in
   // GameContainer.jsx synchronously after `new Phaser.Game(config)`.
   await page.waitForFunction(
