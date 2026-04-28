@@ -1,0 +1,38 @@
+{
+  "agent": "phaser-ecology-entity-system",
+  "ts": "2026-04-28T06:29:34Z",
+  "status": "complete",
+  "files_changed": [
+    "src/renderer/game/systems/ecology/EcologyEntity.js",
+    "src/renderer/game/systems/ecology/ecologyState.js",
+    "src/renderer/game/systems/ecology/ecologyQueries.js",
+    "src/renderer/game/systems/ecology/ecologyEvents.js",
+    "src/renderer/game/systems/ecology/ecologyTicker.js",
+    "src/renderer/game/systems/ecology/speciesResolver.js",
+    "src/renderer/game/systems/ecology/index.js",
+    ".claude/swarm/receipts/phaser-ecology-entity-system-2026-04-28T062934Z.json"
+  ],
+  "exports_added": [
+    "EcologyEntity (class)",
+    "registerEntity(scene, config) -> EcologyEntity",
+    "registerEntities(scene, configs) -> EcologyEntity[]",
+    "registerProcedural(scene, options) -> never (halt-and-surface, Phase 6)",
+    "queryEntities(scene, predicate) -> EcologyEntity[] (function or object-shape predicate)",
+    "getEntityById(entityId, scene?) -> EcologyEntity|null",
+    "listEntitiesBySpecies(speciesId, scene?) -> EcologyEntity[]",
+    "listEntitiesByRelationTag(relationTag, scene?) -> EcologyEntity[]",
+    "listEntitiesByScene(scene) -> EcologyEntity[]",
+    "emitObservation(entity, source?) -> primary event payload",
+    "emitForage(entity, source?) -> forage event payload",
+    "debugDrawEcologyEntities(scene) -> dispose function",
+    "attachEcologyTicker(scene, options?) -> { tick, dispose }",
+    "tickEcology(scene) -> void",
+    "unregisterEntity(sceneKey, entityId) -> boolean",
+    "ECOLOGY_OBSERVATION_EVENT, ECOLOGY_FORAGE_EVENT, ECOLOGY_PROXIMITY_EVENT (constants)",
+    "speciesResolver re-exports: getFloraSpecies, getFaunaSpecies, getPlantEcology, getRelationTags, getPredators, getPreyFor, isFloraSpecies, isFaunaSpecies, listFloraSpeciesByBiome, listFaunaSpeciesByTime, listFaunaSpeciesRequiring, listChainEdges, getBiomeAt, getBiomeById, listBiomes, getTimeBehavior, isAnimalActiveAt, listActiveAnimals, resolveSpeciesType, getLinkedAnimals"
+  ],
+  "next_agent_suggestions": [
+    "phaser-ecology-scene-attacher (Phase 4 - first consumer is StreetBlockScene)"
+  ],
+  "notes": "Phase 3 EcologyEntity carry-forward layer per substrate spec at src/renderer/game/systems/ecology/ecology-substrate.md. All 7 modules created strictly under src/renderer/game/systems/ecology/. NO scene file modified (verified via git status -- only new files under systems/ecology/ plus this receipt). NO data/*.js modified. NO questSystem.js modified. NO ecologyAssetManifest.js modified. npm run build PASSES (13.44s, 886 modules, no errors). Resolved §13 open questions per dispatch prompt: §13.1 secondary observations fire as separate ecology.observation events (relationTag field set, relationTags empty on secondaries), NOT atomically packed; §13.3 state.observations dedupes (push only on first observation per species per save), event emits every time (hybrid); §13.4 hybrid time-of-day enforcement: ecologyTicker tweens entity.sprite alpha to 0.35 when window closes, disables zone.body.enable when inactive, removal-at-scene-reload semantics enforced via the per-scene shutdown hook releasing the registry. Deferred (per dispatch): §13.5 per-scene caps (no caps enforced); §13.6 procedural seed determinism (registerProcedural halts with explicit message). Event payloads match substrate §5: ecology.observation { type, speciesId, questObservationId, relationTags, relationTag, source, sceneKey, entityId, timestamp }; ecology.forage { type, speciesId, grantsItemId, source, sceneKey, entityId, remaining, timestamp }; ecology.proximity { type, speciesId, entityId, sceneKey, distance, timestamp }. Events publish via dual surface: scene.registry.set(eventName, payload) for in-scene consumers AND scene.game.events.emit(eventName, payload) for cross-scene consumers. Entity zones use scene.add.zone(x,y,w,h) + scene.physics.add.existing(zone, true) per substrate §4 contract. queryEntities supports both (entity)=>boolean function predicates and object-shape predicates with special handling for relationTag, relationTags, eats, eatenBy, nearbyAttractors keys. Default grantsItemId resolution looks up SCENE_ITEM_GRANTS for the (sceneKey, speciesId) pair, preferring '<species>_*' prefixed item ids. Verdict tag: design-only-implementation (upgrades to runtime-validated only when Phase 4 wires this into a scene and a runtime test passes)."
+}
