@@ -293,6 +293,13 @@
         "radius": 45
       },
       {
+        "species": "ephedra",
+        "label": "Ephedra (Mormon Tea)",
+        "x": 270,
+        "y": 155,
+        "radius": 45
+      },
+      {
         "species": "agave",
         "label": "Agave Plant",
         "x": 450,

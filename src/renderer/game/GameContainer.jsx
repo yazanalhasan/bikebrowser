@@ -875,6 +875,17 @@ export default function GameContainer() {
     });
   }, []);
 
+  const triggerWorldAction = useCallback(() => {
+    const game = gameRef.current;
+    if (!game) return;
+    const activeScenes = game.scene.getScenes(true);
+    const scene = activeScenes.find((s) => typeof s._handleActionKey === 'function');
+    if (scene) {
+      scene._handleActionKey();
+      audio?.playSfx('ui_tap');
+    }
+  }, [audio]);
+
   // ------------------------------------------------------------------
   // Pause menu: New Game handler
   // ------------------------------------------------------------------
@@ -1184,7 +1195,17 @@ export default function GameContainer() {
       {/* ---- Inventory panel ---- */}
       {showInventory && (
         <div className="absolute top-14 right-2 z-20 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-3 w-56 max-h-64 overflow-y-auto">
-          <div className="font-bold text-gray-700 mb-2 text-sm">🎒 Inventory</div>
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="font-bold text-gray-700 text-sm">🎒 Inventory</div>
+            <button
+              type="button"
+              onClick={() => setShowInventory(false)}
+              className="text-gray-400 hover:text-gray-600 text-sm px-1"
+              title="Close inventory"
+            >
+              ×
+            </button>
+          </div>
           {inventory.length === 0 && (
             <div className="text-gray-400 text-xs">Nothing yet.</div>
           )}
@@ -1717,7 +1738,7 @@ export default function GameContainer() {
 
       {/* ---- Virtual joystick (always visible for accessibility) ---- */}
       {phase === 'playing' && !paused && !dialog && (
-        <VirtualJoystick onMove={setJoystick} />
+        <VirtualJoystick onMove={setJoystick} onAction={triggerWorldAction} />
       )}
 
       {/* ---- Action button (interact with NPCs) ---- */}
@@ -2019,25 +2040,64 @@ function AIAssistantPanel({ messages, status, onClose, onClear }) {
 // ---------------------------------------------------------------------------
 // VirtualJoystick — simple 4-direction pad for mobile
 // ---------------------------------------------------------------------------
-function VirtualJoystick({ onMove }) {
+function VirtualJoystick({ onMove, onAction }) {
+  const tapTimerRef = useRef(null);
   const btnClass =
     'bg-white/60 backdrop-blur-sm rounded-xl shadow flex items-center justify-center text-xl ' +
     'select-none w-12 h-12 sm:w-14 sm:h-14 cursor-pointer ' +
     'transition-all duration-75 active:scale-90 active:bg-blue-300/80 hover:bg-white/80';
 
-  const press = (x, y) => onMove(x, y);
-  const release = () => onMove(0, 0);
+  const press = (x, y) => {
+    if (tapTimerRef.current) {
+      window.clearTimeout(tapTimerRef.current);
+      tapTimerRef.current = null;
+    }
+    onMove(x, y);
+  };
+  const release = () => {
+    if (!tapTimerRef.current) onMove(0, 0);
+  };
+  const tap = (x, y) => {
+    if (tapTimerRef.current) window.clearTimeout(tapTimerRef.current);
+    onMove(x, y);
+    tapTimerRef.current = window.setTimeout(() => {
+      onMove(0, 0);
+      tapTimerRef.current = null;
+    }, 120);
+  };
+
+  const controlButton = (label, x, y) => (
+    <button
+      type="button"
+      className={btnClass}
+      onClick={() => tap(x, y)}
+      onPointerDown={() => press(x, y)}
+      onPointerUp={release}
+      onPointerCancel={release}
+      onPointerLeave={release}
+    >
+      {label}
+    </button>
+  );
 
   return (
     <div className="absolute bottom-4 left-4 z-20 grid grid-cols-3 gap-1" style={{ width: '156px', paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)' }}>
       <div />
-      <button className={btnClass} onPointerDown={() => press(0, -1)} onPointerUp={release} onPointerLeave={release}>⬆</button>
+      {controlButton('⬆', 0, -1)}
       <div />
-      <button className={btnClass} onPointerDown={() => press(-1, 0)} onPointerUp={release} onPointerLeave={release}>⬅</button>
-      <div className="w-12 h-12 sm:w-14 sm:h-14" />
-      <button className={btnClass} onPointerDown={() => press(1, 0)} onPointerUp={release} onPointerLeave={release}>➡</button>
+      {controlButton('⬅', -1, 0)}
+      <button
+        type="button"
+        className={`${btnClass} text-sm font-bold`}
+        onClick={onAction}
+        onPointerDown={onAction}
+        title="Action"
+      >
+        E
+      </button>
+      {controlButton('➡', 1, 0)}
       <div />
-      <button className={btnClass} onPointerDown={() => press(0, 1)} onPointerUp={release} onPointerLeave={release}>⬇</button>
+      {controlButton('⬇', 0, 1)}
       <div />
     </div>
   );
