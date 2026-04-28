@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_updated": "2026-04-27T11:05:00Z",
+  "last_updated": "2026-04-28T07:00:00Z",
   "current_week": 3,
   "current_pod_focus": "Daytime Autonomous V2 (bug-fix Phase-1 prep)",
   "completed": [
@@ -13,8 +13,13 @@
       "review_receipt": null,
       "receipt": ".claude/swarm/receipts/c3-quest-engine-observe-gate-2026-04-27T12-30-00Z.json",
       "verdict_tag": "static-only",
-      "phases_executed": ["1 (engine fix)", "2 (side-effects audit)"],
-      "phases_intentionally_skipped": ["3-7 (bridge_collapse replay + regression — runtime by user)"],
+      "phases_executed": [
+        "1 (engine fix)",
+        "2 (side-effects audit)"
+      ],
+      "phases_intentionally_skipped": [
+        "3-7 (bridge_collapse replay + regression — runtime by user)"
+      ],
       "needs_runtime_validation": true,
       "user_directive": "Daytime V2 queue dispatch C3 — Bug 1 (empty observe-branch in advanceQuest). Phases 1+2 only. Path D: ship the gate honestly; unwired-observation quests become visibly blocked, intentional per arc.md.",
       "section_8_declaration": {
@@ -31,14 +36,47 @@
       },
       "phase_2_audit_finding": {
         "wired_observations": [
-          { "name": "bridge_built", "emission_file": "src/renderer/game/systems/construction/constructionSystem.js", "emission_line": 530 },
-          { "name": "load_test_completed", "emission_file": "src/renderer/game/scenes/LabRigBase.js", "emission_line": 559, "consumer": "MaterialLabScene via getCompletionObservation()" },
-          { "name": "thermal_expansion_observed", "emission_file": "src/renderer/game/scenes/LabRigBase.js", "emission_line": 559, "consumer": "ThermalRigScene.js:325 via getCompletionObservation() override (commit e292fc9)" }
+          {
+            "name": "bridge_built",
+            "emission_file": "src/renderer/game/systems/construction/constructionSystem.js",
+            "emission_line": 530
+          },
+          {
+            "name": "load_test_completed",
+            "emission_file": "src/renderer/game/scenes/LabRigBase.js",
+            "emission_line": 559,
+            "consumer": "MaterialLabScene via getCompletionObservation()"
+          },
+          {
+            "name": "thermal_expansion_observed",
+            "emission_file": "src/renderer/game/scenes/LabRigBase.js",
+            "emission_line": 559,
+            "consumer": "ThermalRigScene.js:325 via getCompletionObservation() override (commit e292fc9)"
+          }
         ],
         "wired_count_actual": 3,
         "unwired_count_actual": 18,
         "bug_log_count_correction": "Bug log .claude/bugs/2026-04-27-quest-engine-and-traversal.md states 19 unwired (heat_failure listed as 'LabRig config not present'). Reality: heat_failure IS wired via ThermalRigScene's getCompletionObservation() override → LabRigBase.js:551 pushes to state.observations. Verified: LabRigBase.js:551 const observation = this.getCompletionObservation(); ThermalRigScene.js:325 returns 'thermal_expansion_observed'. The thermal rig pod (commit e292fc9, 2026-04-26 16:50Z) closed this gap; the bug log was authored before realizing it.",
-        "unwired_observations_list": ["mesquite", "javelina", "dna_extracted", "rna_extracted", "expression_simulated", "gene_inserted", "bio_production_complete", "bio_electrolyte_created", "fluid_zone_found", "basin_crossed", "topology_zone_entered", "topology_loop_completed", "memory_zone_entered", "water_found_blind", "composite_created", "buoyancy_test_passed", "motor_cleaned", "coating_applied"]
+        "unwired_observations_list": [
+          "mesquite",
+          "javelina",
+          "dna_extracted",
+          "rna_extracted",
+          "expression_simulated",
+          "gene_inserted",
+          "bio_production_complete",
+          "bio_electrolyte_created",
+          "fluid_zone_found",
+          "basin_crossed",
+          "topology_zone_entered",
+          "topology_loop_completed",
+          "memory_zone_entered",
+          "water_found_blind",
+          "composite_created",
+          "buoyancy_test_passed",
+          "motor_cleaned",
+          "coating_applied"
+        ]
       },
       "path_d_acknowledgment": "Per Path D: this gate WILL visibly block the 18 (not 19) unwired-observation quests at their first observe step. INTENTIONAL. Per-quest wiring is scheduled in observation-wiring-plan.md and will happen in separate per-quest sessions, NOT in this dispatch.",
       "build_result": "PASS in 11.06s",
@@ -110,7 +148,12 @@
       "pod": "Phaser",
       "section_8_declaration": {
         "environmental_primitives_consulted": "none",
-        "progression_primitives_updated": ["state.observations (vocabulary expanded)", "state.materialLog (NEW)", "state.derivedAnswers (NEW)", "state.journal (structured entries)"],
+        "progression_primitives_updated": [
+          "state.observations (vocabulary expanded)",
+          "state.materialLog (NEW)",
+          "state.derivedAnswers (NEW)",
+          "state.journal (structured entries)"
+        ],
         "act_1_to_3_scaling_strategy": "Scale/calipers/density slate are act-agnostic. Act 2 adds materials to materialDatabase; same pipeline records them. Act 3 (alien materials) reuses materialLog shape and interpolateStepText template tokens. No act-specific branches introduced (verified via grep)."
       },
       "deviations_from_spec": [
@@ -508,8 +551,14 @@
         "layoutPath": "layouts/zuzu-garage.layout.json"
       },
       "reviewer_dispatch_history": [
-        {"attempt": "haiku (default)", "outcome": "stalled at tool-use 14, no receipt"},
-        {"attempt": "sonnet override", "outcome": "stalled at tool-use 17, no receipt"}
+        {
+          "attempt": "haiku (default)",
+          "outcome": "stalled at tool-use 14, no receipt"
+        },
+        {
+          "attempt": "sonnet override",
+          "outcome": "stalled at tool-use 17, no receipt"
+        }
       ],
       "reviewer_bypass_rationale": "7/7 reviewer-stall rate this session across both haiku and sonnet model variants. Per saved-memory feedback_reviewer_model.md, sonnet was supposed to be the recovery path but stalled too. Orchestrator-completed verification ran the full reviewer checklist directly — git diff inspection + JSON structural checks via node + world-size correctness check (all 7 width/2-centered objects resolve to x=400) + behavior-line grep (zero saveGame/audioMgr/dialogEvent/speaker/text changes) + build re-verification (PASS 11.03s).",
       "notes": "Strict refactor of ZuzuGarageScene from inline pixel literals to data-driven layout JSON. 60 layout objects extracted, 0 unreferenced, 0 leftover literals in this.add.* calls, 37 _note fields document computed expressions for human roundtrip. World-size correctness verified — all 7 width/2-centered objects resolve to x=400 (correct for 800-wide world; would be 512 if wrong). Zero behavior changes confirmed via grep on saveGame/audioMgr/playSfx/transitionToScene/dialogEvent/speaker/text — none of these strings appear in the diff (added or removed). Block-scope const helpers added around addInteractable/addVisibleWall/Graphics calls to reference this.layout.<name> values cleanly. this._workbenchX/Y instance assignments preserved (now read from this.layout.workbench rather than 140/160 literals) — defensive against other code paths. First-dispatch one-time files created: loadLayout.js (19 LOC, mirrors failureMath.js style with named + default exports, throws on missing cache key) and CLAUDE.md (12 LOC, layout-system rule under '## Layout system rule' heading). Three positions correctly LEFT IN CODE per spec exemptions: floor grid loop (lines 47-48, loop-generated), delayedCall(600) timer (line 485, temporal not spatial), setOrigin/strokeStyle/depth/fontSize/interactionRadius (styling not layout). Next scene per worker's suggestion: StreetBlockScene."
@@ -592,7 +641,11 @@
         "total_layout_json_lines_added": 1268,
         "total_layout_files_in_public": 14
       },
-      "scenes_skipped_per_directive": ["GarageScene", "WorldMapScene", "MaterialLabScene"],
+      "scenes_skipped_per_directive": [
+        "GarageScene",
+        "WorldMapScene",
+        "MaterialLabScene"
+      ],
       "optional_13th_zuzugarage_backfill": "not needed — already opted-in (line 22) by phaser-layout-editor-overlay (commit beb2517)",
       "scene_commits": {
         "DesertTrailScene": "9e2ac18",
@@ -641,6 +694,123 @@
       "user_directive": "Player-experience-first sequencing position 3 of 4 (terminal). Closes the discovery → progression loop.",
       "pod_completion": "World & Discovery pod CLOSED with this PASS. All 10 pod agents complete: world-biome-classifier, world-terrain-renderer (v2), world-path-renderer, world-landmarks, world-map-polish, world-discovery-state, world-fog-overlay, world-node-gating, world-discovery-quests, runtime-audit-system.",
       "notes": "RECEIPT_RECOVERY case (4th in this session) — worker hit max_turns at tool-use 29 just before Step 5 (the GameContainer boot wiring). Steps 1-4 fully landed: NEW src/renderer/game/data/discoveryUnlocks.js (73 lines, 4 entries — desert_foraging→desert_healer, copper_mine→bridge_collapse, salt_river→boat_puzzle, mountain_range→pending:true with TODO 'no force/gravity intro quest exists yet'); onRegionDiscovered(callback) + _emitRegionDiscovered(regionId) added to discoverySystem.js with module-private listener registry + try/catch wrapping + unsubscribe closure return; WorldMapScene.revealNode wired with _emitRegionDiscovered(nodeId) call (1 import binding + 3-line emit block); questSystem.js gained initDiscoveryQuestBridge() + consumePendingDiscoveryUnlocks(state) + module-private _pendingDiscoveryUnlocks queue (dedup guard on push, splice-as-you-go drain — partial-consumption safe, double-start safe via startQuest null-return discard). Orchestrator added Step-5 boot wiring to GameContainer.jsx: 1 import line + 4-line invocation block immediately after the existing import.meta.env.DEV block (NOT inside it — gameplay wiring, not dev-tooling). Mirrors the existing runRuntimeAudit pattern exactly. Reviewer PASS on first dispatch — all 6 CRITICAL clean (quests.js/regions.js/runtimeAudit.js/package.json all empty diffs; WorldMapScene scope minimal; build passes 12.24s; all 3 non-pending questIds verified to exist in quests.js at lines 176/1113/1429), all 4 HIGH clean (pub/sub unsubscribe + try/catch poison-isolation; queue partial-consumption safety; boot wiring orchestrator attribution clear; HMR intact at line 1571). Three MEDIUM/LOW follow-ups (non-blocking, documented): (1) DISCOVERY_UNLOCKS keys are locationIds not regions.js IDs — runtimeAudit will report 4 errors next dev boot; recommend follow-up to teach auditDiscoveryUnlocks about location-ID keying; (2) consumePendingDiscoveryUnlocks not yet wired into any scene checkpoint — queue silently accumulates until a scene consumes; (3) initDiscoveryQuestBridge docstring claims idempotency but duplicate calls would register duplicate listeners (queue dedup prevents double-queueing but not duplicate listener registration; low risk since called once at boot)."
+    },
+    {
+      "agent": "general-purpose-parallel",
+      "ts": "2026-04-28T02:16:13Z",
+      "commit": "6230cc4",
+      "dispatcher": "parallel-session-not-orchestrator",
+      "attribution": "user-authored",
+      "verdict_tag": "static-only-fix",
+      "pod": "Save Recovery Patch",
+      "files_changed": 1,
+      "loc_delta": "+27 / -4",
+      "summary": "StreetBlockScene recovery forage gate — grants quest-required forageables when pre-C3-fix saves are stuck past the canonical forage step.",
+      "notes": "Single-file fix to src/renderer/game/scenes/StreetBlockScene.js. Adds a second gate (recovery flow) that fires only when canonical forage gate fails AND the active quest has a forage step requiring an item this plant produces. Targets pre-C3-engine-fix saves that auto-advanced past forage steps on dialog dismissal — these saves cannot recover via canonical play. The C3 engine fix (commit 922da63) closes the going-forward bug; this commit makes pre-existing trapped saves recoverable."
+    },
+    {
+      "agent": "general-purpose-parallel",
+      "ts": "2026-04-28T05:38:37Z",
+      "commit": "88a441d",
+      "dispatcher": "parallel-session-not-orchestrator",
+      "attribution": "user-authored",
+      "verdict_tag": "static-only-audit",
+      "pod": "Ecology Substrate Planning",
+      "files_changed": 2,
+      "loc_delta": "+474 / 0",
+      "summary": "Phase 0 + Phase 1 ecology orphan resolution audit; recommends Path B (port populateWorld + PLANT_ECOLOGY + PREDATOR_CHAINS into carry-forward EcologyEntity system).",
+      "notes": "New audit doc at .claude/bugs/2026-04-27-ecology-substrate-vs-static-layout-audit.md (entity matrix, curriculum check, Path B recommendation, per-future-phase scope estimate, risk register, arc.md §4 amendment draft). Playbook .claude/plans/items-1-8-playbook-2026-04-27.md amended to add A.9 parallel to A.5 / A.8, sub-phased A.9.1-A.9.7, design-doc-gated. Phases 2-8 NOT executed — halted for human authorization."
+    },
+    {
+      "agent": "general-purpose-parallel",
+      "ts": "2026-04-28T06:02:30Z",
+      "commit": "784e180",
+      "dispatcher": "parallel-session-not-orchestrator",
+      "attribution": "user-authored",
+      "verdict_tag": "design-only",
+      "pod": "Substrate Design",
+      "files_changed": 4,
+      "loc_delta": "+1972 / -32",
+      "summary": "Pair-authored ecology + biology substrate design documents; arc.md §4 amended to point at them; playbook A.5 + A.9.1 marked Phase 2 complete.",
+      "notes": "New: src/renderer/game/systems/ecology/ecology-substrate.md (~955 LOC), src/renderer/game/systems/biology/biology-substrate.md (~902 LOC). Both designed together to prevent data-shape drift on the shared Species concept and relational data model. arc.md §4 added EcologyEntity Carry-Forward System with portability discipline + primitive declarations per §8.1; Biology Workbench section now points at biology-substrate.md. Playbook updated to mark A.5 + A.9.1 Phase 2 complete with links. Verdict design-only — upgrades to runtime-validated only when Phase 3+ implementations ship. Two of the three substrate docs flagged in Phase 5 of the orchestrator session (biology + the ecology counterpart) are now drafted; navigation-substrate.md remains pending per the A.7 reframe."
+    },
+    {
+      "agent": "general-purpose-parallel",
+      "ts": "2026-04-28T06:04:29Z",
+      "commit": "22e54e1",
+      "dispatcher": "parallel-session-not-orchestrator",
+      "attribution": "user-authored",
+      "verdict_tag": "static-only-audit",
+      "pod": "Ecology Substrate Planning",
+      "files_changed": 1,
+      "loc_delta": "+309 / 0",
+      "summary": "Neighborhood populateWorld() orphan inventory deliverable retroactively committed to make the Phase 0 ecology audit citation chain valid.",
+      "notes": "New audit doc at .claude/bugs/2026-04-27-neighborhood-orphan-inventory.md. Earlier session shipped the deliverable but never committed it; this commit closes the citation gap referenced by 88a441d (Phase 0 ecology substrate audit). Verdict: 0 quests fully blocked by the orphan; food_chain_tracker partially blocked by missing observation emitters (mesquite, javelina) — not by NeighborhoodScene's absence."
+    },
+    {
+      "agent": "general-purpose-parallel",
+      "ts": "2026-04-28T06:04:29Z",
+      "commit": "c7c5ff1",
+      "dispatcher": "parallel-session-not-orchestrator",
+      "attribution": "user-authored",
+      "verdict_tag": "static-only-fix",
+      "pod": "Ecology Asset Infrastructure",
+      "files_changed": 28,
+      "loc_delta": "+1390 / 0 (24 binary PNGs + 4 source/script files)",
+      "summary": "Ecology asset pack — 22 placeholder PNGs (10 plants / 8 animals / 4 terrain), manifest, attribution, loader, generation tooling.",
+      "notes": "public/assets/ecology/ + ATTRIBUTION + manifest.json. New src/renderer/game/systems/ecology/ecologyAssetManifest.js exporting frozen ECOLOGY_ASSET_KEYS, ECOLOGY_ASSET_PATHS, idempotent preloadEcologyAssets(scene), getEcologyTextureKey, ECOLOGY_ASSET_COUNT. NO scene calls the loader yet — opt-in is a later dispatch. New scripts/generate-ecology-assets.js (SVG silhouettes → PNG via sharp, already in devDependencies) + scripts/verify-ecology-assets.js. Soft notes from the dispatch: 4 plants in dispatch list (agave, yucca, desert_lavender, ephedra) absent from PLANT_ECOLOGY at this commit (resolved in 4640876); 4 species in data/ecology.js (palo_verde, juniper, pinyon, elk) absent from this asset pack (also resolved in 4640876). Build PASS in 22.11s. NO scene file modified. NO quest logic. NO data/ecology.js change in this commit."
+    },
+    {
+      "agent": "parallel-session-orchestrator",
+      "ts": "2026-04-28T06:15:22Z",
+      "commit": "6fc7db1",
+      "dispatcher": "parallel-session-not-orchestrator",
+      "attribution": "user-authored",
+      "verdict_tag": "scope-only",
+      "pod": "Agent Definition Authorship",
+      "files_changed": 2,
+      "loc_delta": "+343 / 0",
+      "summary": "Two new carry-forward worker agent definitions added: phaser-ecology-entity-system + phaser-biology-stage1.",
+      "notes": "New: .claude/agents/phaser-ecology-entity-system.md (154 LOC) — analog of phaser-traversal-system for the EcologyEntity layer at src/renderer/game/systems/ecology/. New: .claude/agents/phaser-biology-stage1.md (189 LOC) — analog for Stage 1 (Recipe Biology) at src/renderer/game/systems/biology/. Both agents: single source of truth (their substrate doc), hard architectural constraints per arc.md §4, full file-in-scope and out-of-scope lists, verification checklists, receipt requirement per swarm convention. NORMALLY this would violate feedback_workers_no_orchestration_files (workers cannot modify .claude/agents/) — but per user authorization 2026-04-28, these were created by the parallel session's orchestrator-equivalent process and are treated as user-authored, not worker-authored. Future orchestrator dispatches MAY use these agent definitions."
+    },
+    {
+      "agent": "general-purpose-parallel",
+      "ts": "2026-04-28T06:20:56Z",
+      "commit": "4640876",
+      "dispatcher": "parallel-session-not-orchestrator",
+      "attribution": "user-authored",
+      "verdict_tag": "static-only-fix",
+      "pod": "Ecology Asset Infrastructure",
+      "files_changed": 9,
+      "loc_delta": "+242 / -4",
+      "summary": "Pre-Phase-3 cleanup — align ecology asset pack with PLANT_ECOLOGY data; +4 species data, +4 placeholder PNGs.",
+      "notes": "PLANT_ECOLOGY additions in src/renderer/game/data/ecology.js for 4 plants quest-consumed but previously absent: agave (medicine_balance, perfect_composite), yucca (engine_cleaning), desert_lavender (medicine_balance), ephedra (medicine_balance, toxic_knowledge). 4 PNG placeholders generated for species in PLANT_ECOLOGY/FAUNA the prior asset pack skipped: palo_verde, juniper, pinyon, elk. Same SVG-via-sharp pipeline. Manifest + ATTRIBUTION + ecologyAssetManifest.js updated. Build PASS. NO scene file, quest, or questSystem.js touched."
+    },
+    {
+      "agent": "phaser-ecology-entity-system",
+      "ts": "2026-04-28T06:30:29Z",
+      "commit": "5884e5a",
+      "dispatcher": "parallel-session-not-orchestrator",
+      "attribution": "user-authored",
+      "verdict_tag": "design-only-implementation",
+      "pod": "Ecology Carry-Forward System",
+      "files_changed": 8,
+      "loc_delta": "+1845 / 0",
+      "summary": "Phase 3 ecology — EcologyEntity carry-forward layer at src/renderer/game/systems/ecology/ implementing ecology-substrate.md (commit 784e180).",
+      "notes": "8 modules under src/renderer/game/systems/ecology/: EcologyEntity.js (entity class, substrate §3), ecologyState.js (per-scene registry), ecologyQueries.js (queryEntities + lookups), ecologyEvents.js (registry-event emission per substrate §5), ecologyTicker.js (proximity + time-of-day enforcement), speciesResolver.js (data/ecology.js consumption per substrate §2), index.js (public API per substrate §4). Resolved open questions: §13.1 secondary observations as separate events, §13.3 first/repeated both fire (Knowledge State will dedup later), §13.4 hybrid time-of-day fade + non-interactive + scene-reload cleanup. Deferred: §13.5 per-scene caps, §13.6 procedural seed determinism, registerProcedural stub halts-and-surfaces \"Phase 6\". NO scene file modified. NO quest definition. NO data file beyond Step 0 reconciliation in 4640876. NO questSystem.js touched. Verdict design-only-implementation — runtime-validated when Phase 4 wires this into a scene."
+    },
+    {
+      "agent": "phaser-biology-stage1",
+      "ts": "2026-04-28T06:31:16Z",
+      "commit": "1c164b4",
+      "dispatcher": "parallel-session-not-orchestrator",
+      "attribution": "user-authored",
+      "verdict_tag": "design-only-implementation",
+      "pod": "Biology Workbench Stage 1",
+      "files_changed": 11,
+      "loc_delta": "+1714 / 0",
+      "summary": "Phase 3 biology — Stage 1 Recipe Engine at src/renderer/game/systems/biology/ implementing biology-substrate.md (commit 784e180); Stages 2 + 3 ship as halt-and-surface stubs.",
+      "notes": "7 modules under src/renderer/game/systems/biology/: Recipe.js (substrate §3), Organism.js (Stage 1 shape), recipeRegistry.js (data/recipes.js category:biology filter), Stage1RecipeEngine.js (validate + run + emit), biologyEvents.js (registry-event emission per §5), biologyState.js (per-recipe attempt counter + first-success ts), index.js (Stage 1 + Stage 2/3 stubs). 3 Stage-1 recipes registered (additive in src/renderer/game/data/recipes.js): healing_salve, plant_composite, protective_coating. Stage 2/3 stubs throw \"[biology] X is deferred to Phase Y. See biology-substrate.md §Z.\" Ecology bridge: subscribes to ecology.observation events when available; does not import EcologyEntity directly. Stage 1 operates without strict ecology dependency. Resolved §15.3 (recipes live in data/recipes.js with category:biology). Deferred §15.1 Stage 2 unlock trigger, §15.4 Stage 3 simulation tick rate, engineered-organism consequence model (substrate §9). NO scene file modified. NO quest definition. NO ecology system file. NO data/ecology.js/flora.js/fauna.js. NO questSystem.js. data/recipes.js edits ADDITIVE-ONLY (existing recipes byte-identical, verified via git diff). NOTE: this commit also accidentally bundled the test-infrastructure-audit deliverable + receipt due to a parallel-git-add race with the orchestrator's test-infrastructure-audit dispatch — the audit file content is intact and at the prescribed path; the bundling is documented in the test-infrastructure-audit receipt and in the next orchestrator commit (e850050) which carries the prescribed subject."
     }
   ],
   "superseded": [
@@ -820,6 +990,30 @@
     }
   ],
   "human_gates_pending": [],
-  "dispatch_count": 45,
-  "session_token_estimate": 0
+  "dispatch_count": 50,
+  "session_token_estimate": 0,
+  "parallel_session_reconciliation": {
+    "reconciled_at": "2026-04-28T07:00:00Z",
+    "flag": "parallel-session work between commits 4271e13 and e850050; orchestrator was not the dispatcher; tagged as user-authored",
+    "boundary_commits": {
+      "after_orchestrator_commit": "4271e13",
+      "before_orchestrator_commit": "e850050"
+    },
+    "dispatcher": "parallel Claude Code session running without the orchestrator agent profile",
+    "attribution": "user-authored",
+    "commits_count": 9,
+    "commits_in_chronological_order": [
+      "6230cc4",
+      "88a441d",
+      "784e180",
+      "22e54e1",
+      "c7c5ff1",
+      "6fc7db1",
+      "4640876",
+      "5884e5a",
+      "1c164b4"
+    ],
+    "notes": "These commits include: 2 substrate design documents (ecology, biology) that the orchestrator session's Phase 5 had explicitly deferred as human-design-only; 2 Phase 3 implementations (EcologyEntity + Biology Stage 1) that are design-only-implementations gated for runtime validation; 3 ecology infrastructure additions (orphan audits, asset pack, asset alignment); 1 save-recovery patch for pre-C3-engine-fix saves; 1 agent-definition addition (2 new worker agents). The two new agents (.claude/agents/phaser-ecology-entity-system.md, .claude/agents/phaser-biology-stage1.md) are explicitly treated as user-authored per user instruction 2026-04-28; they bypass the feedback_workers_no_orchestration_files rule because they were created in the parallel session, not by an orchestrator-dispatched worker. Future orchestrator sessions MAY dispatch these agents. Three substrate docs originally flagged as A.1 gates: biology-substrate.md (now drafted at commit 784e180), knowledge-state-substrate.md (still pending — A.8), navigation-substrate.md (still pending — reframed A.7). Two of three drafted; the third remains a design-conversation gate for A.1 wiring.",
+    "reconciliation_pattern": "completed[] entries appended with dispatcher=parallel-session-not-orchestrator and attribution=user-authored markers; future orchestrator runs should ignore review_verdict absence on these entries since they were not orchestrator-dispatched."
+  }
 }
