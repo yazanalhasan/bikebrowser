@@ -195,6 +195,17 @@ export const MUSIC = [
     style: 'modern',
     description: 'Pixel Pedal Parade v4 — workshop groove variant; garage tinkering vibes',
   },
+  {
+    key: 'pyramid_sandwalk',
+    path: '/game/audio/music/pyramid_sandwalk',
+    category: 'music',
+    loop: true,
+    volume: 0.46,
+    bus: 'music',
+    style: 'arabic-inspired',
+    mood: 'quest',
+    description: 'Pyramid Sandwalk — desert bridge-building and careful construction focus',
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -378,6 +389,7 @@ export const SCENE_MUSIC = {
   CopperMineScene: 'qanun_jar_lid',
   DesertForagingScene: 'qanun_jar_lid',
   SaltRiverScene: 'warm_hands_quiet_gears',
+  DryWashScene: 'pyramid_sandwalk',
 };
 
 export const SCENE_MUSIC_ALT = {

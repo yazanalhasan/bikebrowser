@@ -372,7 +372,7 @@ const SCENES = {
     },
     unlockReq: null,       // visibility gated through worldMapData.WORLD_LOCATIONS unlockReq
     region: 'arizona_desert',
-    defaultMusic: 'pixel_pedal_parade_v4',
+    defaultMusic: 'pyramid_sandwalk',
   },
 };
 
