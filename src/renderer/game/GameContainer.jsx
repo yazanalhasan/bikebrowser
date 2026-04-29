@@ -38,7 +38,8 @@ import {
 import { clearDialogueCache } from './services/npcAiClient.js';
 import { setBusy, recordQuestionDismissed } from './systems/gameplayArbiter.js';
 import { runRuntimeAudit } from './systems/runtimeAudit.js';
-import { initDiscoveryQuestBridge } from './systems/questSystem.js';
+import { getCurrentStep, initDiscoveryQuestBridge } from './systems/questSystem.js';
+import { interpolateStepText } from './systems/questTemplating.js';
 import { triggerQuestRevealsForState } from './systems/discoveryBridge.js';
 
 const GAMEPLAY_REPORTS_KEY = 'bikebrowser_gameplay_reports';
@@ -703,6 +704,22 @@ export default function GameContainer() {
     const state = gameRef.current?.registry?.get?.('gameState');
     setBusy('activeQuestStep', !!state?.activeQuest);
   });
+
+  useEffect(() => {
+    if (phase !== 'playing' || dialog || !gameState?.activeQuest) return;
+    const step = getCurrentStep(gameState);
+    if (step?.type !== 'quiz') return;
+    const text = step.templateVars
+      ? interpolateStepText(step.text, step.templateVars, gameState)
+      : step.text;
+    setDialog({
+      speaker: 'Zuzu (thinking)',
+      text,
+      choices: step.choices || null,
+      step,
+      questId: gameState.activeQuest.id,
+    });
+  }, [phase, dialog, gameState]);
 
   // Keyboard shortcut: C → toggle crafting panel
   useEffect(() => {

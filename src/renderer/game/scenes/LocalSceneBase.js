@@ -29,6 +29,7 @@ import { SCENE_MAP, getSpawn } from '../systems/sceneRegistry.js';
 import MCPSystem from '../systems/MCPSystem.js';
 import { spawnObstacles } from '../systems/obstacleSystem.js';
 import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
+import { interpolateStepText } from '../systems/questTemplating.js';
 import { getPhysicsState, wireCameraToMCP } from '../systems/physicsbridge.js';
 
 // Default world size for local scenes (viewport-scale, not overworld-scale)
@@ -105,6 +106,20 @@ export default class LocalSceneBase extends Phaser.Scene {
 
     if (!result.ok) {
       audioMgr?.playSfx?.('ui_error');
+      const step = getCurrentStep(state);
+      if (step?.type === 'quiz') {
+        const text = step.templateVars
+          ? interpolateStepText(step.text, step.templateVars, state)
+          : step.text;
+        this.registry.set('dialogEvent', {
+          speaker: 'Zuzu (thinking)',
+          text: `${result.message}\n\n${text}`,
+          choices: step.choices || null,
+          step,
+          questId: state?.activeQuest?.id,
+        });
+        return;
+      }
       this.registry.set('dialogEvent', {
         speaker: 'System',
         text: result.message,
@@ -131,7 +146,20 @@ export default class LocalSceneBase extends Phaser.Scene {
     // Close current dialog regardless — the next step's dialog will be
     // emitted by whichever interaction the player triggers next (NPC,
     // prop, scene transition).
-    this.registry.set('dialogEvent', null);
+    if (nextStep?.type === 'quiz') {
+      const text = nextStep.templateVars
+        ? interpolateStepText(nextStep.text, nextStep.templateVars, state)
+        : nextStep.text;
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu (thinking)',
+        text,
+        choices: nextStep.choices || null,
+        step: nextStep,
+        questId: state?.activeQuest?.id,
+      });
+    } else {
+      this.registry.set('dialogEvent', null);
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -153,6 +181,21 @@ export default class LocalSceneBase extends Phaser.Scene {
 
     // --- Build the scene (subclass) ---
     this.createWorld();
+    this.time.delayedCall(0, () => {
+      const live = this.registry.get('gameState') || state;
+      const liveStep = getCurrentStep(live);
+      if (liveStep?.type !== 'quiz') return;
+      const text = liveStep.templateVars
+        ? interpolateStepText(liveStep.text, liveStep.templateVars, live)
+        : liveStep.text;
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu (thinking)',
+        text,
+        choices: liveStep.choices || null,
+        step: liveStep,
+        questId: live?.activeQuest?.id,
+      });
+    });
 
     // --- Player ---
     const spawnName = this._resolveSpawnName(state);
@@ -251,6 +294,25 @@ export default class LocalSceneBase extends Phaser.Scene {
 
     // Update NPCs
     Object.values(this._npcs).forEach(npc => npc.update(this.player.sprite));
+
+    const liveState = this.registry.get('gameState');
+    const liveStep = getCurrentStep(liveState);
+    const autoQuizKey = liveStep?.type === 'quiz'
+      ? `${liveState?.activeQuest?.id}:${liveState?.activeQuest?.stepIndex}`
+      : null;
+    if (autoQuizKey && !this.registry.get('dialogEvent') && this._lastAutoQuizKey !== autoQuizKey) {
+      this._lastAutoQuizKey = autoQuizKey;
+      const text = liveStep.templateVars
+        ? interpolateStepText(liveStep.text, liveStep.templateVars, liveState)
+        : liveStep.text;
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu (thinking)',
+        text,
+        choices: liveStep.choices || null,
+        step: liveStep,
+        questId: liveState?.activeQuest?.id,
+      });
+    }
 
     // Action key interaction
     if (Phaser.Input.Keyboard.JustDown(this.actionKey)) {
