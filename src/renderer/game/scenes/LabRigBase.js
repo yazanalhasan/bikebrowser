@@ -785,22 +785,20 @@ export default class LabRigBase extends LocalSceneBase {
         fontStyle: 'bold',
       }).setOrigin(0.5).setDepth(5);
       this._modeToggleBg.on('pointerdown', () => {
+        if (!this._modeToggleAvailable) return;
         const next = this._chartMode === 'alt' ? 'default' : 'alt';
         this.setChartMode(next);
       });
     }
     const isAvailable = typeof altMode.isAvailable === 'function'
       ? !!altMode.isAvailable() : true;
+    this._modeToggleAvailable = isAvailable;
     const labelText = this._chartMode === 'alt'
       ? `↺ ${altMode.label || 'Alt'}`
       : `↺ Stress / Strain`;
     this._modeToggleLbl.setText(labelText);
     this._modeToggleBg.setAlpha(isAvailable ? 1 : 0.5);
-    if (isAvailable) {
-      this._modeToggleBg.setInteractive({ useHandCursor: true });
-    } else {
-      this._modeToggleBg.disableInteractive();
-    }
+    this._modeToggleBg.setInteractive({ useHandCursor: isAvailable });
   }
 
   _renderAlternateChart(altMode) {
