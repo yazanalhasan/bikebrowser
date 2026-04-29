@@ -164,6 +164,14 @@ export function getSpeechRate() {
   return _rate;
 }
 
+function normalizeSpeechText(text) {
+  return String(text)
+    .replace(/\bg\s*\/\s*cm(?:³|\^3|3)\b/gi, 'grams per cubic centimeter')
+    .replace(/\bper\s+cm(?:³|\^3|3)\b/gi, 'per cubic centimeter')
+    .replace(/\bcm(?:³|\^3|3)\b/gi, 'cubic centimeters')
+    .replace(/\bm(?:³|\^3|3)\b/gi, 'cubic meters');
+}
+
 /**
  * Speak a line of dialogue.
  *
@@ -178,16 +186,17 @@ export function getSpeechRate() {
  */
 export function speak(text, options = {}) {
   if (!synth || !_enabled || !text) return false;
+  const spokenText = normalizeSpeechText(text);
 
   // Prevent replaying the exact same line (re-render protection)
-  if (!options.force && text === _lastSpokenText && synth.speaking) {
+  if (!options.force && spokenText === _lastSpokenText && synth.speaking) {
     return false;
   }
 
   // Cancel any current speech
   cancelSpeech();
 
-  const utterance = new SpeechSynthesisUtterance(text);
+  const utterance = new SpeechSynthesisUtterance(spokenText);
   utterance.rate = options.rate || _rate;
   utterance.pitch = options.pitch || _pitch;
   utterance.lang = 'en-US';
@@ -223,7 +232,7 @@ export function speak(text, options = {}) {
   };
 
   _currentUtterance = utterance;
-  _lastSpokenText = text;
+  _lastSpokenText = spokenText;
   synth.speak(utterance);
   return true;
 }
