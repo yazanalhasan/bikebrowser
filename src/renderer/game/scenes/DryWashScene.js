@@ -455,14 +455,15 @@ export default class DryWashScene extends LocalSceneBase {
       const audioMgr = scene.registry.get('audioManager');
       audioMgr?.playSfx?.('ui_success');
 
-      const { width } = this.getWorldSize();
-      // Spawn a bike sprite at the left edge of the bridge.
-      const bike = scene.add.text(0, WASH_Y - 14, '🚴', { fontSize: '34px' })
-        .setOrigin(0.5).setDepth(6);
-      // Tween across the bridge.
+      const slots = BRIDGE_MESQUITE_BLUEPRINT.slots;
+      const left = Math.min(...slots.map((slot) => slot.x - slot.w / 2));
+      const right = Math.max(...slots.map((slot) => slot.x + slot.w / 2));
+      const bridgeY = slots.reduce((sum, slot) => sum + slot.y, 0) / slots.length;
+      const bike = this._createLoadedBikeTestRig(scene, left - 56, bridgeY - 42);
+
       scene.tweens.add({
         targets: bike,
-        x: width,
+        x: right + 56,
         duration: 2500,
         ease: 'Linear',
         onComplete: () => {
@@ -481,6 +482,51 @@ export default class DryWashScene extends LocalSceneBase {
   }
 
   // ── NPC interaction ───────────────────────────────────────────────
+
+  _createLoadedBikeTestRig(scene, x, y) {
+    const rig = scene.add.container(x, y).setDepth(8);
+    const bike = scene.add.graphics();
+
+    bike.lineStyle(5, 0x2563eb, 1);
+    bike.strokeCircle(-24, 16, 15);
+    bike.strokeCircle(24, 16, 15);
+    bike.lineStyle(4, 0x0f172a, 1);
+    bike.lineBetween(-24, 16, -6, -6);
+    bike.lineBetween(-6, -6, 10, 16);
+    bike.lineBetween(10, 16, -24, 16);
+    bike.lineBetween(10, 16, 24, 16);
+    bike.lineBetween(-6, -6, 24, 16);
+    bike.lineBetween(24, 16, 30, -6);
+    bike.lineBetween(22, -8, 34, -12);
+    bike.lineBetween(-6, -6, -12, -16);
+    bike.lineStyle(3, 0x111827, 1);
+    bike.lineBetween(-16, -16, -3, -16);
+
+    bike.fillStyle(0xf59e0b, 1);
+    bike.fillRoundedRect(-37, -12, 18, 16, 3);
+    bike.fillRoundedRect(15, -18, 18, 18, 3);
+    bike.lineStyle(2, 0x78350f, 1);
+    bike.strokeRoundedRect(-37, -12, 18, 16, 3);
+    bike.strokeRoundedRect(15, -18, 18, 18, 3);
+
+    const rider = scene.add.text(-4, -33, '🧒', {
+      fontSize: '30px',
+      stroke: '#1f2937',
+      strokeThickness: 2,
+    }).setOrigin(0.5);
+
+    const label = scene.add.text(0, 42, '100 kg load test', {
+      fontSize: '13px',
+      fontFamily: 'sans-serif',
+      fontStyle: 'bold',
+      color: '#14532d',
+      stroke: '#fef3c7',
+      strokeThickness: 3,
+    }).setOrigin(0.5);
+
+    rig.add([bike, rider, label]);
+    return rig;
+  }
 
   /** @private */
   _onMrChenInteract() {
