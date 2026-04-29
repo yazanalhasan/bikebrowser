@@ -1278,9 +1278,9 @@ const QUESTS = {
         type: 'observe',
         text:
           'Build the bridge with your chosen material and test it with a loaded bike! ' +
-          'Use the Bike GPS in the neighborhood, then choose Dry Wash on the world map.',
+          'Use the Bike GPS in the neighborhood, then choose Dry Wash Bridge on the world map.',
         requiredObservation: 'bridge_built',
-        hint: 'Use the Bike GPS on the east side of the neighborhood, choose Dry Wash, then place the mesquite beams across the wash.',
+        hint: 'Use the Bike GPS on the east side of the neighborhood, choose Dry Wash Bridge, then place the mesquite beams across the wash.',
         scene: 'DryWashScene',
       },
       {

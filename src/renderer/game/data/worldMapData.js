@@ -87,9 +87,9 @@ export const WORLD_LOCATIONS = {
 
   dry_wash: {
     id: 'dry_wash',
-    name: 'Dry Wash',
+    name: 'Dry Wash Bridge',
     description:
-      'A flash-flood arroyo with broken bridge remnants — the place where bridge_collapse plays out.',
+      'A flash-flood arroyo with broken bridge remnants — the bridge-building site.',
     icon: '🏜️',
     region: 'arizona_desert',
     type: 'exploration',
