@@ -14,6 +14,7 @@ import LabRigBase from './LabRigBase.js';
 import { MATERIALS, MATERIAL_IDS, getMaterial } from '../systems/materials/materialDatabase.js';
 import { runTensileTest, detectFailurePoint } from '../systems/materials/materialTestingEngine.js';
 import { saveGame } from '../systems/saveSystem.js';
+import { loadLayout } from '../utils/loadLayout.js';
 import { createScaleStation } from '../systems/lab/scaleStation.js';
 import { createCalipers } from '../systems/lab/calipers.js';
 import { createDensitySlate } from '../systems/lab/densitySlate.js';
@@ -38,9 +39,9 @@ const SAMPLE_ITEM_IDS = {
 };
 
 const SCENE_KEY = 'MaterialLabScene';
+const LAYOUT_KEY = 'materialLabLayout';
 
 // Rig geometry.
-const RIG_X = 220;
 const RIG_BASE_Y = 480;
 const RIG_BASE_W = 180;
 const RIG_BASE_H = 30;
@@ -73,6 +74,10 @@ function hexToInt(hex) {
 export default class MaterialLabScene extends LabRigBase {
   constructor() { super(SCENE_KEY); }
 
+  preload() {
+    this.load.json(LAYOUT_KEY, 'layouts/material-lab.layout.json');
+  }
+
   // ── Identity ────────────────────────────────────────────────────────
   getSceneKey() { return SCENE_KEY; }
   getRigTitle() { return 'MATERIALS LAB — UNIVERSAL TESTING MACHINE'; }
@@ -100,32 +105,28 @@ export default class MaterialLabScene extends LabRigBase {
     return runTensileTest(materialId, { gaugeLengthMm: 50, crossSectionAreaMm2: 100 });
   }
 
-  // ── Left-bay instrument layout ──────────────────────────────────────
-  // Spec calls for the scale/calipers/slate in the left bay (x < 200).
-  // The bay is shared with the existing selector (y 110-314) and START
-  // button (y ≈ 388-432); these instruments sit BELOW the START button.
-  // World height is 600 with the back-to-garage exit at y≈582 — leaves
-  // 440-570 free in the left column.
-
-  /** Spec-aligned: scale platform/display lives in the lower-left bay. */
+  // ── Density instrument layout ───────────────────────────────────────
+  // Keep the weighing/caliper/slate controls grouped below the chart so
+  // they read as a separate density station and do not cover the UTM.
   _instrumentLayout() {
+    const scale = this.layout.density_scale;
+    const calipers = this.layout.density_calipers;
+    const slate = this.layout.density_slate;
     return {
-      // Scale: vertically stacked with display above platform.
-      scaleDisplayY: 460,
-      scalePlatformY: 482,
-      scaleX: 100,
-      // Calipers: small beaker to the right of the scale.
-      calipersX: 170,
-      calipersY: 470,
-      // Slate: chalkboard below scale.
-      slateX: 100,
-      slateY: 540,
+      scaleDisplayY: scale.displayY,
+      scalePlatformY: scale.platformY,
+      scaleX: scale.x,
+      calipersX: calipers.x,
+      calipersY: calipers.y,
+      slateX: slate.x,
+      slateY: slate.y,
     };
   }
 
   // ── createWorld: extend base to mount left-bay instruments after the
   //   selector / START / chart are built. ────────────────────────────────
   createWorld() {
+    this.layout = loadLayout(this, LAYOUT_KEY);
     super.createWorld();
     this._mountLeftBayInstruments();
   }
@@ -133,33 +134,34 @@ export default class MaterialLabScene extends LabRigBase {
   // ── Apparatus ───────────────────────────────────────────────────────
   drawApparatus(ctx) {
     const L = ctx.layer;
-    L.add(this.add.rectangle(RIG_X, RIG_BASE_Y + RIG_BASE_H / 2, RIG_BASE_W, RIG_BASE_H, COL_BASE)
+    const rigX = this.layout.utm.x;
+    L.add(this.add.rectangle(rigX, RIG_BASE_Y + RIG_BASE_H / 2, RIG_BASE_W, RIG_BASE_H, COL_BASE)
       .setStrokeStyle(2, 0x111114).setDepth(2));
     [-1, 1].forEach((s) => {
-      L.add(this.add.circle(RIG_X + s * 70, RIG_BASE_Y + 8, 3, 0x9aa0aa).setDepth(3));
-      L.add(this.add.circle(RIG_X + s * 70, RIG_BASE_Y + 22, 3, 0x9aa0aa).setDepth(3));
+      L.add(this.add.circle(rigX + s * 70, RIG_BASE_Y + 8, 3, 0x9aa0aa).setDepth(3));
+      L.add(this.add.circle(rigX + s * 70, RIG_BASE_Y + 22, 3, 0x9aa0aa).setDepth(3));
       L.add(this.add.rectangle(
-        RIG_X + s * COLUMN_DX, RIG_BASE_Y - COLUMN_H / 2, COLUMN_W, COLUMN_H, COL_COLUMN,
+        rigX + s * COLUMN_DX, RIG_BASE_Y - COLUMN_H / 2, COLUMN_W, COLUMN_H, COL_COLUMN,
       ).setStrokeStyle(1, 0x33363c).setDepth(1));
     });
-    L.add(this.add.rectangle(RIG_X, CROSSBEAM_Y, CROSSBEAM_W, CROSSBEAM_H, COL_BEAM)
+    L.add(this.add.rectangle(rigX, CROSSBEAM_Y, CROSSBEAM_W, CROSSBEAM_H, COL_BEAM)
       .setStrokeStyle(2, 0x2c2e34).setDepth(2));
-    L.add(this.add.rectangle(RIG_X, CROSSBEAM_Y - 14, 22, 18, 0x5a5d63).setDepth(2));
-    L.add(this.add.circle(RIG_X, CROSSBEAM_Y - 14, 4, 0xfacc15).setDepth(3));
+    L.add(this.add.rectangle(rigX, CROSSBEAM_Y - 14, 22, 18, 0x5a5d63).setDepth(2));
+    L.add(this.add.circle(rigX, CROSSBEAM_Y - 14, 4, 0xfacc15).setDepth(3));
 
     // Movable crosshead + grips — refs needed by animateProgress.
     this._crossheadY = CROSSHEAD_HOME_Y;
     this._crosshead = this.add.rectangle(
-      RIG_X, this._crossheadY, CROSSHEAD_W, CROSSHEAD_H, 0x8a8e96,
+      rigX, this._crossheadY, CROSSHEAD_W, CROSSHEAD_H, 0x8a8e96,
     ).setStrokeStyle(2, 0x33363c).setDepth(3);
     L.add(this._crosshead);
     this._upperGrip = this.add.rectangle(
-      RIG_X, this._crossheadY + CROSSHEAD_H / 2 + GRIP_H / 2,
+      rigX, this._crossheadY + CROSSHEAD_H / 2 + GRIP_H / 2,
       GRIP_W, GRIP_H, COL_GRIP,
     ).setStrokeStyle(1, 0x111114).setDepth(3);
     L.add(this._upperGrip);
     this._lowerGrip = this.add.rectangle(
-      RIG_X, RIG_BASE_Y - GRIP_H / 2, GRIP_W, GRIP_H, COL_GRIP,
+      rigX, RIG_BASE_Y - GRIP_H / 2, GRIP_W, GRIP_H, COL_GRIP,
     ).setStrokeStyle(1, 0x111114).setDepth(3);
     L.add(this._lowerGrip);
   }
@@ -168,6 +170,7 @@ export default class MaterialLabScene extends LabRigBase {
   drawSpecimenForSample(materialId, ctx) {
     const mat = getMaterial(materialId);
     if (!mat) return;
+    const rigX = this.layout.utm.x;
     const color = hexToInt(mat.visual.color);
     const grain = mat.visual.grainColor ? hexToInt(mat.visual.grainColor) : null;
 
@@ -182,7 +185,7 @@ export default class MaterialLabScene extends LabRigBase {
     const h = lowerGripTop - upperGripBottom;
     this._specimenHomeW = SPECIMEN_HOME_W;
 
-    this._specimenRect = this.add.rectangle(RIG_X, cy, SPECIMEN_HOME_W, h, color)
+    this._specimenRect = this.add.rectangle(rigX, cy, SPECIMEN_HOME_W, h, color)
       .setStrokeStyle(1, 0x111114).setDepth(2);
     ctx.specimenLayer.add(this._specimenRect);
 
@@ -190,7 +193,7 @@ export default class MaterialLabScene extends LabRigBase {
       const g = this.add.graphics();
       g.lineStyle(1, grain, 0.7);
       for (let i = -2; i <= 2; i++) {
-        g.lineBetween(RIG_X + i * 4, cy - h / 2 + 2, RIG_X + i * 4, cy + h / 2 - 2);
+        g.lineBetween(rigX + i * 4, cy - h / 2 + 2, rigX + i * 4, cy + h / 2 - 2);
       }
       g.setDepth(2);
       this._specimenGrain = g;
@@ -235,12 +238,13 @@ export default class MaterialLabScene extends LabRigBase {
 
   _applyDeformation(scaleX) {
     if (!this._specimenRect || !this._crosshead) return;
+    const rigX = this.layout.utm.x;
     const upperGripBottom = this._crosshead.y + CROSSHEAD_H / 2 + GRIP_H;
     const lowerGripTop = RIG_BASE_Y - GRIP_H;
     const newH = lowerGripTop - upperGripBottom;
     const newY = (upperGripBottom + lowerGripTop) / 2;
     const newW = Math.max(2, this._specimenHomeW * scaleX);
-    this._specimenRect.setPosition(RIG_X, newY);
+    this._specimenRect.setPosition(rigX, newY);
     this._specimenRect.setSize(newW, Math.max(4, newH));
 
     if (this._specimenGrain) {
@@ -253,7 +257,7 @@ export default class MaterialLabScene extends LabRigBase {
         const step = Math.max(2, newW / 4);
         for (let xo = -half + 2; xo <= half - 2; xo += step) {
           this._specimenGrain.lineBetween(
-            RIG_X + xo, newY - newH / 2 + 2, RIG_X + xo, newY + newH / 2 - 2,
+            rigX + xo, newY - newH / 2 + 2, rigX + xo, newY + newH / 2 - 2,
           );
         }
       }

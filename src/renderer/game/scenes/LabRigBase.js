@@ -794,8 +794,8 @@ export default class LabRigBase extends LocalSceneBase {
       ? !!altMode.isAvailable() : true;
     this._modeToggleAvailable = isAvailable;
     const labelText = this._chartMode === 'alt'
-      ? `↺ ${altMode.label || 'Alt'}`
-      : `↺ Stress / Strain`;
+      ? '↺ Stress / Strain'
+      : `↺ ${altMode.label || 'Alt'}`;
     this._modeToggleLbl.setText(labelText);
     this._modeToggleBg.setAlpha(isAvailable ? 1 : 0.5);
     this._modeToggleBg.setInteractive({ useHandCursor: isAvailable });

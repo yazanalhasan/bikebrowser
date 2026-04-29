@@ -1,0 +1,30 @@
+{
+  "scene": "MaterialLabScene",
+  "version": 1,
+  "_world": {
+    "width": 800,
+    "height": 600
+  },
+  "objects": {
+    "utm": {
+      "x": 320,
+      "_note": "Universal testing machine centerline. Shifted right so material selector cards no longer cover the rig."
+    },
+    "density_scale": {
+      "x": 560,
+      "displayY": 436,
+      "platformY": 458,
+      "_note": "Density station scale, placed below the chart and away from the UTM."
+    },
+    "density_calipers": {
+      "x": 690,
+      "y": 458,
+      "_note": "Fixed-volume coupon beaker."
+    },
+    "density_slate": {
+      "x": 690,
+      "y": 535,
+      "_note": "Density summary board."
+    }
+  }
+}
