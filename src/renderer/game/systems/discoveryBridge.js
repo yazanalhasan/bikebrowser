@@ -36,6 +36,10 @@
 import { DISCOVERY_UNLOCKS } from '../data/discoveryUnlocks.js';
 import { WORLD_LOCATIONS } from '../data/worldMapData.js';
 
+const QUEST_TARGET_REVEALS = {
+  bridge_collapse: ['dry_wash'],
+};
+
 // Inverse: questId → [locationId, ...]. Built once at module load.
 const QUEST_TO_LOCATIONS = (() => {
   const out = {};
@@ -45,6 +49,12 @@ const QUEST_TO_LOCATIONS = (() => {
     if (!qid) continue;
     if (!out[qid]) out[qid] = [];
     out[qid].push(locId);
+  }
+  for (const [questId, locIds] of Object.entries(QUEST_TARGET_REVEALS)) {
+    if (!out[questId]) out[questId] = [];
+    for (const locId of locIds) {
+      if (!out[questId].includes(locId)) out[questId].push(locId);
+    }
   }
   return out;
 })();
