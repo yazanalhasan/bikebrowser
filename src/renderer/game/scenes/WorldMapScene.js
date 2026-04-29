@@ -19,7 +19,10 @@ import { BIOME } from '../data/regions.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { generateHeightmap, sampleHeightmap, rand2, hash2 } from '../utils/terrainNoise.js';
 import { isDiscovered, revealArea, getDiscoveryState, DISCOVERY_TILE_SIZE, _emitRegionDiscovered } from '../systems/discoverySystem.js';
-import { _drainPendingReveals as _drainPendingQuestReveals } from '../systems/discoveryBridge.js';
+import {
+  _drainPendingReveals as _drainPendingQuestReveals,
+  triggerQuestRevealsForState,
+} from '../systems/discoveryBridge.js';
 
 const SCENE_KEY = 'WorldMapScene';
 
@@ -190,6 +193,11 @@ export default class WorldMapScene extends Phaser.Scene {
     // save are no-ops. Then redraw fog to apply.
     revealArea(homeX, homeY, 96);
     this.redrawFog();
+
+    // Re-queue active-quest map targets every time the GPS opens. This
+    // protects mid-quest saves and older sessions where the quest began
+    // before a destination reveal was added to discoveryBridge.
+    triggerQuestRevealsForState(state);
 
     // ── Drain queued quest-activation reveals (reverse discovery bridge) ───
     // discoveryBridge queues location ids when a quest becomes active while
