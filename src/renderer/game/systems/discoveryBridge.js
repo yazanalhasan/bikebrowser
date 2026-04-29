@@ -131,17 +131,22 @@ export function _drainPendingReveals(scene) {
 
 /**
  * Drive reveals from a save state. Idempotent against already-revealed
- * tiles. Safe to call on:
+ * tiles. Reveals are based on active and completed quests so destinations
+ * do not disappear after their quest is finished. Safe to call on:
  *   - quest start (startQuest in questSystem.js)
  *   - save load (after loadGame seeds gameState)
+ *   - world map open (WorldMapScene.create)
  *
  * @param {object} state — game save state
  * @param {Phaser.Scene|null} [scene] — optional WorldMapScene instance
  */
 export function triggerQuestRevealsForState(state, scene = null) {
-  const aq = state && state.activeQuest;
-  if (!aq || !aq.id) return;
-  revealLocationsByQuestId(aq.id, scene);
+  if (!state) return;
+  const questIds = new Set(state.completedQuests || []);
+  if (state.activeQuest?.id) questIds.add(state.activeQuest.id);
+  for (const questId of questIds) {
+    revealLocationsByQuestId(questId, scene);
+  }
 }
 
 /**
