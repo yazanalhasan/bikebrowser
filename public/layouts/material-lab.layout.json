@@ -25,6 +25,13 @@
       "x": 690,
       "y": 535,
       "_note": "Density summary board."
+    },
+    "density_slate_panel": {
+      "x": 405,
+      "y": 265,
+      "w": 460,
+      "h": 220,
+      "_note": "Open slate panel. Kept in the upper lab area so it does not cover Zuzu near the bottom exit."
     }
   }
 }

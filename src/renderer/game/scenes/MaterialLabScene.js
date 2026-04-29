@@ -112,6 +112,7 @@ export default class MaterialLabScene extends LabRigBase {
     const scale = this.layout.density_scale;
     const calipers = this.layout.density_calipers;
     const slate = this.layout.density_slate;
+    const slatePanel = this.layout.density_slate_panel;
     return {
       scaleDisplayY: scale.displayY,
       scalePlatformY: scale.platformY,
@@ -120,6 +121,7 @@ export default class MaterialLabScene extends LabRigBase {
       calipersY: calipers.y,
       slateX: slate.x,
       slateY: slate.y,
+      slatePanel,
     };
   }
 
@@ -388,25 +390,59 @@ export default class MaterialLabScene extends LabRigBase {
 
   // ── Chart ───────────────────────────────────────────────────────────
   getChartConfig(result) {
+    const comparisonCurves = this._getTestedMaterialCurves(result?.summary?.materialId || result?.materialId);
+    const curveMax = this._getComparisonCurveMax(comparisonCurves);
     const baseCfg = {
-      title: 'STRESS vs STRAIN',
+      title: comparisonCurves.length > 1 ? 'UTM COMPARISON' : 'STRESS vs STRAIN',
       xLabel: 'strain', yLabel: 'stress',
       xUnit: 'mm/mm', yUnit: 'MPa',
       regionColors: { elastic: 0x22c55e, plastic: 0xf59e0b, failure: 0xef4444 },
+      comparisonCurves,
     };
     if (!result) {
       const mat = getMaterial(this._activeSampleId);
       return {
         ...baseCfg,
-        xMax: (mat?.fractureStrain ?? 0.20) * 1.05,
-        yMax: (mat?.ultimateStrengthMPa ?? 500) * 1.10,
+        xMax: Math.max(mat?.fractureStrain ?? 0.20, curveMax.x) * 1.05,
+        yMax: Math.max(mat?.ultimateStrengthMPa ?? 500, curveMax.y) * 1.10,
       };
     }
     return {
       ...baseCfg,
-      xMax: (result.summary?.fractureStrain || 0.10) * 1.05,
-      yMax: (result.summary?.ultimateStrengthMPa || 100) * 1.10,
+      xMax: Math.max(result.summary?.fractureStrain || 0.10, curveMax.x) * 1.05,
+      yMax: Math.max(result.summary?.ultimateStrengthMPa || 100, curveMax.y) * 1.10,
     };
+  }
+
+  _getTestedMaterialCurves(activeMaterialId = null) {
+    const state = this.registry.get('gameState') || {};
+    const tested = Array.isArray(state.materialTestsCompleted)
+      ? state.materialTestsCompleted
+      : [];
+    const ids = [...new Set(tested.filter(id => MATERIAL_IDS.includes(id)))];
+    if (activeMaterialId && !ids.includes(activeMaterialId)) ids.push(activeMaterialId);
+    return ids.map((id) => {
+      const mat = getMaterial(id);
+      const result = runTensileTest(id, { gaugeLengthMm: 50, crossSectionAreaMm2: 100 });
+      return {
+        id,
+        label: mat?.name?.split(' ')[0] || id,
+        color: hexToInt(mat?.visual?.color),
+        curve: result?.curve || [],
+        alpha: id === activeMaterialId ? 0.95 : 0.5,
+        lineWidth: id === activeMaterialId ? 3 : 2,
+      };
+    }).filter(entry => entry.curve.length > 1);
+  }
+
+  _getComparisonCurveMax(curves) {
+    return curves.reduce((acc, entry) => {
+      entry.curve.forEach((point) => {
+        acc.x = Math.max(acc.x, point.x || point.strain || 0);
+        acc.y = Math.max(acc.y, point.y || point.stress || 0);
+      });
+      return acc;
+    }, { x: 0, y: 0 });
   }
 
   getChartAnnotations(result) {
@@ -596,6 +632,7 @@ export default class MaterialLabScene extends LabRigBase {
     this._slate = createDensitySlate(this, {
       x: layout.slateX,
       y: layout.slateY,
+      panel: layout.slatePanel,
       getRecorded: () => {
         const live = this.registry.get('gameState') || {};
         return Array.isArray(live.materialLog) ? live.materialLog : [];

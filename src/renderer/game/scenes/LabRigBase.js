@@ -696,21 +696,6 @@ export default class LabRigBase extends LocalSceneBase {
     ).setOrigin(0.5).setDepth(3).setRotation(-Math.PI / 2);
     this._chartAxisLabels.push(yLabel);
 
-    if (!progressCurve || progressCurve.length < 2) {
-      const hint = this.add.text(CHART_X + CHART_W / 2, CHART_Y + CHART_H / 2,
-        'Press START TEST to begin', {
-          fontSize: '11px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
-        }).setOrigin(0.5).setDepth(3);
-      this._chartAxisLabels.push(hint);
-      return;
-    }
-
-    const colors = {
-      elastic: cfg.regionColors?.elastic ?? COL_ELASTIC_DEFAULT,
-      plastic: cfg.regionColors?.plastic ?? COL_PLASTIC_DEFAULT,
-      failure: cfg.regionColors?.failure ?? COL_FAILURE_DEFAULT,
-    };
-
     const toScreen = (p) => {
       // Each curve sample uses {x, y}. Subclasses with named fields
       // (strain/stress, tempC/lengthMm) should also set x and y on the
@@ -721,6 +706,48 @@ export default class LabRigBase extends LocalSceneBase {
         sx: innerX + (px / xMax) * innerW,
         sy: innerY + innerH - (py / yMax) * innerH,
       };
+    };
+
+    const comparisonCurves = Array.isArray(cfg.comparisonCurves)
+      ? cfg.comparisonCurves.filter(series => Array.isArray(series.curve) && series.curve.length > 1)
+      : [];
+
+    for (const series of comparisonCurves) {
+      g.lineStyle(series.lineWidth || 2, series.color ?? 0xa4a8b3, series.alpha ?? 0.55);
+      for (let i = 1; i < series.curve.length; i++) {
+        const pa = toScreen(series.curve[i - 1]);
+        const pb = toScreen(series.curve[i]);
+        g.lineBetween(pa.sx, pa.sy, pb.sx, pb.sy);
+      }
+    }
+
+    if (comparisonCurves.length > 1) {
+      comparisonCurves.slice(0, 4).forEach((series, idx) => {
+        const lx = innerX + 8 + idx * 70;
+        const ly = innerY + 10;
+        g.fillStyle(series.color ?? 0xa4a8b3, 1);
+        g.fillRect(lx, ly - 4, 12, 4);
+        const legend = this.add.text(lx + 16, ly, series.label || series.id || 'sample', {
+          fontSize: '8px', fontFamily: 'sans-serif', color: COL_TEXT,
+        }).setOrigin(0, 0.5).setDepth(3);
+        this._chartAxisLabels.push(legend);
+      });
+    }
+
+    if ((!progressCurve || progressCurve.length < 2) && comparisonCurves.length === 0) {
+      const hint = this.add.text(CHART_X + CHART_W / 2, CHART_Y + CHART_H / 2,
+        'Press START TEST to begin', {
+          fontSize: '11px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
+        }).setOrigin(0.5).setDepth(3);
+      this._chartAxisLabels.push(hint);
+      return;
+    }
+    if (!progressCurve || progressCurve.length < 2) return;
+
+    const colors = {
+      elastic: cfg.regionColors?.elastic ?? COL_ELASTIC_DEFAULT,
+      plastic: cfg.regionColors?.plastic ?? COL_PLASTIC_DEFAULT,
+      failure: cfg.regionColors?.failure ?? COL_FAILURE_DEFAULT,
     };
 
     let prevColor = null;
