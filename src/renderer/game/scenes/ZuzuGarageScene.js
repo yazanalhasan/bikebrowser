@@ -59,6 +59,22 @@ function consumeIngredients(inventory, ingredients) {
   return next;
 }
 
+function advanceSatisfiedBridgeMaterialSteps(state) {
+  let next = state;
+  for (let guard = 0; guard < 3; guard += 1) {
+    if (next?.activeQuest?.id !== 'bridge_collapse') break;
+    const step = getCurrentStep(next);
+    const waitsForMaterial =
+      (step?.type === 'forage' || step?.type === 'use_item') && step.requiredItem;
+    if (!waitsForMaterial || !(next.inventory || []).includes(step.requiredItem)) break;
+
+    const advanced = advanceQuest(next);
+    if (!advanced.ok) break;
+    next = advanced.state;
+  }
+  return next;
+}
+
 export default class ZuzuGarageScene extends LocalSceneBase {
   static layoutEditorConfig = {
     layoutAssetKey: 'zuzuGarageLayout',
@@ -173,6 +189,10 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     {
       const o = this.layout.workbench_toolbox;
       this.add.text(o.x, o.y, '🧰', { fontSize: '24px' }).setOrigin(0.5).setDepth(2);
+    }
+    {
+      const o = this.layout.workbench_steel_sample;
+      this.add.text(o.x, o.y, '🔩', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
     }
     // Workbench collision body
     {
@@ -294,18 +314,27 @@ export default class ZuzuGarageScene extends LocalSceneBase {
 
         // Bridge quest: grant steel_sample from workbench
         if (state?.activeQuest?.id === 'bridge_collapse') {
-          const quest = QUESTS['bridge_collapse'];
-          const step = quest?.steps[state.activeQuest.stepIndex];
+          state = advanceSatisfiedBridgeMaterialSteps(state);
+          if (state !== this.registry.get('gameState')) {
+            saveStateToRegistry(this, state);
+          }
+          const step = getCurrentStep(state);
           if (step?.requiredItem === 'steel_sample' && !(state.inventory || []).includes('steel_sample')) {
-            const updated = { ...state, inventory: [...state.inventory, 'steel_sample'] };
-            this.registry.set('gameState', updated);
-            saveGame(updated);
+            let updated = { ...state, inventory: [...state.inventory, 'steel_sample'] };
+            const advanced = advanceQuest(updated);
+            if (advanced.ok) {
+              updated = advanced.state;
+            }
+            const nextStep = getCurrentStep(updated);
+            saveStateToRegistry(this, updated);
             const audioMgr = this.registry.get('audioManager');
             audioMgr?.playSfx('item_pickup');
             this.registry.set('dialogEvent', {
-              speaker: 'Zuzu',
-              text: "Found a steel bracket on the workbench!\n\n🔩 Got: Steel Bracket\n\nHeavy but really strong. Let's see how it compares to the other materials.",
-              choices: null, step: null,
+              speaker: nextStep ? 'Mr. Chen' : 'Zuzu',
+              text: nextStep?.text ||
+                "Found a steel bracket on the workbench!\n\n🔩 Got: Steel Bracket\n\nHeavy but really strong. Let's see how it compares to the other materials.",
+              choices: nextStep?.type === 'quiz' ? nextStep.choices : null,
+              step: nextStep || null,
             });
             return;
           }
