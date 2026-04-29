@@ -395,12 +395,22 @@ export default class WorldMapScene extends Phaser.Scene {
 
     // ── Neighborhood marker (home base) ──
     // homeX / homeY declared above (before _renderPathLayer call).
-    this.add.circle(homeX, homeY, 18, 0x22c55e).setStrokeStyle(3, 0xffffff).setDepth(1);
+    const homeCircle = this.add.circle(homeX, homeY, 18, 0x22c55e).setStrokeStyle(3, 0xffffff).setDepth(1);
     this.add.text(homeX, homeY, '🏠', { fontSize: '18px' }).setOrigin(0.5).setDepth(1);
-    this.add.text(homeX, homeY + 28, 'Neighborhood', {
+    const homeLabel = this.add.text(homeX, homeY + 28, 'Neighborhood', {
       fontSize: '11px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#166534', stroke: '#f5e6c8', strokeThickness: 2,
     }).setOrigin(0.5, 0).setDepth(1);
+
+    const homeHitZone = this.add.zone(
+      homeX,
+      homeY + homeCircle.radius,
+      homeLabel.displayWidth + homeCircle.radius * 4,
+      homeLabel.displayHeight + homeCircle.radius * 4,
+    )
+      .setInteractive({ useHandCursor: true })
+      .setDepth(2);
+    homeHitZone.on('pointerdown', () => this._returnToNeighborhood());
 
     // ── Back button ──
     const backBtn = this.add.text(60, height - 35, '← Back to Neighborhood', {
