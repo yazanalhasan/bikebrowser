@@ -31,7 +31,7 @@ import { canCraft, craft, getAllRecipes } from './systems/craftingSystem.js';
 import ITEMS from './data/items.js';
 import MaterialLogEntry from './components/MaterialLogEntry.jsx';
 import {
-  autoSpeak, speak, replay as replaySpeech, cancelSpeech, resetLastSpoken,
+  autoSpeak, speak, speakAsNpc, replay as replaySpeech, cancelSpeech, resetLastSpoken,
   isSpeechAvailable, isSpeechEnabled, setSpeechEnabled,
   setAutoSpeak, isAutoSpeakEnabled,
 } from './services/npcSpeech.js';
@@ -225,6 +225,30 @@ function resolveSpeakerToNpcId(speaker) {
     .toLowerCase()
     .replace(/\s+/g, '_')
     .replace(/[^a-z0-9_]/g, '');
+}
+
+function getChoiceLabel(choice) {
+  if (typeof choice === 'string') return choice;
+  return choice?.label || choice?.text || '';
+}
+
+function buildQuestionSpeechText(stem, choices) {
+  const cleanStem = (stem || '').trim();
+  const optionText = (Array.isArray(choices) ? choices : [])
+    .map(getChoiceLabel)
+    .filter(Boolean)
+    .map((label, i) => `Option ${i + 1}: ${label}`)
+    .join('. ');
+
+  if (!optionText) return cleanStem;
+  if (!cleanStem) return `${optionText}.`;
+  const separator = cleanStem && /[.!?]$/.test(cleanStem) ? ' ' : '. ';
+  return `${cleanStem}${separator}${optionText}.`;
+}
+
+function isQuestionDialog(dialog) {
+  return dialog?.step?.type === 'quiz'
+    || (Array.isArray(dialog?.choices) && dialog.choices.length > 0);
 }
 
 // ---------------------------------------------------------------------------
@@ -619,12 +643,7 @@ export default function GameContainer() {
         // a brief pause on each period; the "Option N:" prefix anchors the
         // choice number to the visual button order.
         if (isSpeechEnabled()) {
-          const stem = (v.question || '').trim();
-          const choices = Array.isArray(v.choices) ? v.choices : [];
-          const choicesText = choices
-            .map((choice, i) => `Option ${i + 1}: ${choice}`)
-            .join('. ');
-          const fullText = choicesText ? `${stem} ${choicesText}.` : stem;
+          const fullText = buildQuestionSpeechText(v.question, v.choices);
           speak(fullText, { rate: 0.85, pitch: 1.0 });
         }
       } else {
@@ -850,18 +869,24 @@ export default function GameContainer() {
       return;
     }
     const stem = dialog.aiDialogue?.spokenLine || dialog.text;
-    if (stem && stem !== prevDialogTextRef.current) {
-      prevDialogTextRef.current = stem;
-      // If the dialog is a quiz, append each choice with the same
-      // "Option N: <label>" prefix used by the physics-question path
-      // so non-readers can pick by listening.
-      const choices = Array.isArray(dialog.choices) ? dialog.choices : [];
-      const choicesText = choices
-        .map((c, i) => `Option ${i + 1}: ${c.label}`)
-        .join('. ');
-      const textToSpeak = choicesText ? `${stem}. ${choicesText}.` : stem;
-      autoSpeak(textToSpeak, dialog.voicePreference, {
+    const question = isQuestionDialog(dialog);
+    const textToSpeak = question
+      ? buildQuestionSpeechText(stem, dialog.choices)
+      : stem;
+
+    if (textToSpeak && textToSpeak !== prevDialogTextRef.current) {
+      prevDialogTextRef.current = textToSpeak;
+      const voiceOptions = {
         npcId: dialog.npcId || resolveSpeakerToNpcId(dialog.speaker),
+      };
+
+      if (question && isSpeechEnabled()) {
+        speakAsNpc(textToSpeak, dialog.voicePreference, voiceOptions);
+        return;
+      }
+
+      autoSpeak(textToSpeak, dialog.voicePreference, {
+        ...voiceOptions,
       });
     }
   }, [dialog]);
