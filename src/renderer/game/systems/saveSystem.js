@@ -120,6 +120,10 @@ function defaultSave() {
     // station in MaterialLabScene; consumed by densitySlate, densityChart,
     // questTemplating ({massTable}), and MaterialLogEntry in the Notebook.
     materialLog: [],
+    // UTM material knowledge cache. Each key is a material id with measured
+    // yield/ultimate/failure behavior, written by MaterialLabScene and reused
+    // by later engineering quests.
+    materialKnowledge: {},
     // Player-derived answers (e.g. lightestMaterial chosen via density slate
     // auto-fill). Distinct from observations because these are *values*, not
     // boolean flags. v6.

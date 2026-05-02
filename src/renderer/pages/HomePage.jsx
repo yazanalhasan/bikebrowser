@@ -53,6 +53,14 @@ function HomePage() {
       color: 'from-amber-400 to-orange-500'
     },
     {
+      id: 'zaydan-spelling-trainer',
+      title: "Zaydan's Spelling Trainer",
+      subtitle: 'Practice spelling and worksheets',
+      emoji: 'ðŸ”¤',
+      isSpellingTrainer: true,
+      color: 'from-indigo-400 to-sky-500'
+    },
+    {
       id: 'bikes',
       title: 'Bikes',
       subtitle: 'Learn about regular bikes',
@@ -176,6 +184,8 @@ function HomePage() {
                   navigate('/shop');
                 } else if (topic.isGame) {
                   navigate('/play');
+                } else if (topic.isSpellingTrainer) {
+                  navigate('/spelling-trainer');
                 } else {
                   handleTopicClick(topic.query);
                 }

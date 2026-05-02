@@ -19,6 +19,7 @@ const BuildPlannerPage = lazy(() => import('./pages/BuildPlannerPage'));
 const AllProjectNotesPage = lazy(() => import('./pages/AllProjectNotesPage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
 const Game3DPage = lazy(() => import('./pages/Game3DPage'));
+const SpellingTrainerApp = lazy(() => import('./spellingTrainer/SpellingTrainerApp'));
 
 const VERSION_STORAGE_KEY = 'bikebrowser_cached_version';
 
@@ -75,6 +76,7 @@ function AppContent() {
           <Route path="/safe-search" element={<SafeSearchPage />} />
           <Route path="/play" element={<GamePage />} />
           <Route path="/play3d" element={<Game3DPage />} />
+          <Route path="/spelling-trainer" element={<SpellingTrainerApp />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

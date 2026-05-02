@@ -1,0 +1,593 @@
+/* Scoped copy of ZaydanSpellingTrainer styles. */
+.spelling-trainer-scope {
+  color: #17212b;
+  background: #f6f8fb;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}.spelling-trainer-scope * {
+  box-sizing: border-box;
+}.spelling-trainer-scope {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}.spelling-trainer-scope button,
+.spelling-trainer-scope input,
+.spelling-trainer-scope textarea {
+  font: inherit;
+}.spelling-trainer-scope button {
+  cursor: pointer;
+}.spelling-trainer-scope .app-shell {
+  min-height: 100vh;
+  padding: 18px;
+}.spelling-trainer-scope .topbar {
+  align-items: stretch;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  margin: 0 auto 12px;
+  max-width: 1260px;
+}.spelling-trainer-scope .profile-chip,
+.spelling-trainer-scope .status-card,
+.spelling-trainer-scope .feedback-card,
+.spelling-trainer-scope .word-card,
+.spelling-trainer-scope .rules-card,
+.spelling-trainer-scope .game-panel,
+.spelling-trainer-scope .side-panel {
+  background: #ffffff;
+  border: 1px solid #d7e0eb;
+  border-radius: 8px;
+}.spelling-trainer-scope .profile-chip {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  min-width: 220px;
+  padding: 12px;
+}.spelling-trainer-scope .avatar {
+  align-items: center;
+  background: #2459ff;
+  border-radius: 8px;
+  color: #ffffff;
+  display: flex;
+  font-size: 1.6rem;
+  font-weight: 900;
+  height: 54px;
+  justify-content: center;
+  width: 54px;
+}.spelling-trainer-scope .profile-chip p,
+.spelling-trainer-scope .mode-heading p,
+.spelling-trainer-scope .status-card span,
+.spelling-trainer-scope .word-card span {
+  color: #5d6f83;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin: 0 0 2px;
+  text-transform: uppercase;
+}.spelling-trainer-scope .profile-chip strong {
+  font-size: 1.35rem;
+}.spelling-trainer-scope .stat-row {
+  display: grid;
+  flex: 1;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}.spelling-trainer-scope .status-card {
+  min-height: 78px;
+  padding: 12px;
+}.spelling-trainer-scope .status-card svg {
+  color: #1a9c6d;
+  float: right;
+}.spelling-trainer-scope .status-card strong {
+  display: block;
+  font-size: 1.25rem;
+  line-height: 1.1;
+  margin-top: 4px;
+}.spelling-trainer-scope .progress-wrap {
+  align-items: center;
+  color: #40546a;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: auto minmax(120px, 1fr) auto;
+  margin: 0 auto 12px;
+  max-width: 1260px;
+}.spelling-trainer-scope .progress-track {
+  background: #dce5ef;
+  border-radius: 999px;
+  height: 12px;
+  overflow: hidden;
+}.spelling-trainer-scope .progress-track div {
+  background: #ffb330;
+  height: 100%;
+  transition: width 220ms ease;
+}.spelling-trainer-scope .mode-tabs {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0 auto 14px;
+  max-width: 1260px;
+}.spelling-trainer-scope .mode-tabs button,
+.spelling-trainer-scope .control-row button,
+.spelling-trainer-scope .file-button {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #c8d4e1;
+  border-radius: 8px;
+  color: #1e3144;
+  display: inline-flex;
+  font-weight: 900;
+  gap: 8px;
+  justify-content: center;
+  min-height: 46px;
+  padding: 10px 12px;
+}.spelling-trainer-scope .mode-tabs button.active,
+.spelling-trainer-scope .control-row button:first-child,
+.spelling-trainer-scope .speak-button {
+  background: #2459ff;
+  border-color: #2459ff;
+  color: #ffffff;
+}.spelling-trainer-scope .content-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  margin: 0 auto;
+  max-width: 1260px;
+}.spelling-trainer-scope .game-panel,
+.spelling-trainer-scope .side-panel {
+  padding: 18px;
+}.spelling-trainer-scope .game-panel {
+  min-height: 560px;
+}.spelling-trainer-scope .side-panel {
+  align-self: start;
+  background: transparent;
+  border: 0;
+  display: grid;
+  gap: 12px;
+  padding: 0;
+}.spelling-trainer-scope .feedback-card,
+.spelling-trainer-scope .word-card,
+.spelling-trainer-scope .rules-card {
+  padding: 14px;
+}.spelling-trainer-scope .feedback-card {
+  background: #f0fff7;
+  border-color: #bfe8d2;
+  color: #164a37;
+}.spelling-trainer-scope .feedback-card svg {
+  color: #1a9c6d;
+}.spelling-trainer-scope .feedback-card p {
+  line-height: 1.35;
+  margin: 8px 0;
+}.spelling-trainer-scope .feedback-card strong {
+  background: #d9f8e7;
+  border-radius: 999px;
+  display: inline-block;
+  padding: 7px 10px;
+}.spelling-trainer-scope .word-card strong {
+  display: block;
+  font-size: 1.9rem;
+  line-height: 1.1;
+  margin: 5px 0;
+  overflow-wrap: anywhere;
+}.spelling-trainer-scope .word-card p,
+.spelling-trainer-scope .rules-card p {
+  color: #526579;
+  line-height: 1.35;
+  margin: 8px 0 0;
+}.spelling-trainer-scope .rules-card h2,
+.spelling-trainer-scope .dashboard-grid span {
+  margin: 0;
+}.spelling-trainer-scope .mode-heading {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}.spelling-trainer-scope .mode-heading h1 {
+  font-size: clamp(2rem, 4vw, 4rem);
+  letter-spacing: 0;
+  line-height: 0.98;
+  margin: 0;
+}.spelling-trainer-scope .stars {
+  display: flex;
+  gap: 6px;
+}.spelling-trainer-scope .stars svg {
+  color: #c5d0dc;
+  fill: transparent;
+}.spelling-trainer-scope .stars svg.filled {
+  color: #ffb330;
+  fill: #ffb330;
+}.spelling-trainer-scope .slots {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 24px;
+}.spelling-trainer-scope .slot,
+.spelling-trainer-scope .letter-tile {
+  align-items: center;
+  border-radius: 8px;
+  display: flex;
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  font-weight: 900;
+  justify-content: center;
+  min-height: 74px;
+  text-transform: uppercase;
+}.spelling-trainer-scope .slot {
+  background: #edf3fa;
+  border: 2px dashed #9eb0c4;
+  color: #203448;
+}.spelling-trainer-scope .slot.correct {
+  animation: pop 180ms ease;
+  background: #dbf8e8;
+  border-color: #1a9c6d;
+}.spelling-trainer-scope .slot.wrong {
+  animation: shake 220ms ease;
+  background: #fff1dc;
+  border-color: #f29a35;
+}.spelling-trainer-scope .letter-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 0 0 22px;
+}.spelling-trainer-scope .letter-tile {
+  background: #fff7de;
+  border: 1px solid #e7b957;
+  box-shadow: 0 5px 0 #d79a2d;
+  color: #263a4d;
+  height: 72px;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  width: 72px;
+}.spelling-trainer-scope .letter-tile.selected {
+  background: #ffdf73;
+  box-shadow: 0 2px 0 #d79a2d;
+  transform: translateY(3px);
+}.spelling-trainer-scope .letter-tile:disabled {
+  cursor: default;
+  opacity: 0.22;
+}.spelling-trainer-scope .control-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}.spelling-trainer-scope .control-row button.quiet {
+  background: #ffffff;
+  border-color: #c8d4e1;
+  color: #1e3144;
+}.spelling-trainer-scope .speak-button {
+  border-radius: 8px;
+  border-style: solid;
+  min-height: 50px;
+  padding: 10px 14px;
+}.spelling-trainer-scope .audio-actions {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}.spelling-trainer-scope .audio-actions button {
+  min-height: 50px;
+}.spelling-trainer-scope .dictation-input,
+.spelling-trainer-scope textarea {
+  background: #ffffff;
+  border: 2px solid #c8d4e1;
+  border-radius: 8px;
+  color: #17212b;
+  outline: none;
+  width: 100%;
+}.spelling-trainer-scope .wifi-card {
+  align-items: center;
+  background: #eef8ff;
+  border: 1px solid #bfdcf3;
+  border-radius: 8px;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) 132px;
+  margin-bottom: 16px;
+  padding: 14px;
+}.spelling-trainer-scope .wifi-card p {
+  align-items: center;
+  color: #2459ff;
+  display: flex;
+  font-size: 0.82rem;
+  font-weight: 900;
+  gap: 7px;
+  letter-spacing: 0;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}.spelling-trainer-scope .wifi-card h2 {
+  font-size: 1.45rem;
+  line-height: 1.1;
+  margin: 0 0 6px;
+}.spelling-trainer-scope .wifi-card span,
+.spelling-trainer-scope .wifi-card a,
+.spelling-trainer-scope .wifi-card strong {
+  display: block;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}.spelling-trainer-scope .wifi-card span {
+  color: #40546a;
+}.spelling-trainer-scope .wifi-card a {
+  color: #1747d8;
+  font-weight: 800;
+  margin-top: 8px;
+}.spelling-trainer-scope .wifi-card strong {
+  color: #164a37;
+  margin-top: 8px;
+}.spelling-trainer-scope .qr-frame {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #c8d4e1;
+  border-radius: 8px;
+  display: flex;
+  height: 132px;
+  justify-content: center;
+  padding: 8px;
+  width: 132px;
+}.spelling-trainer-scope .qr-frame img {
+  display: block;
+  height: 116px;
+  width: 116px;
+}.spelling-trainer-scope .dictation-input {
+  font-size: clamp(1.6rem, 5vw, 3rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  margin: 18px 0;
+  min-height: 92px;
+  padding: 18px;
+}.spelling-trainer-scope .dictation-input:focus,
+.spelling-trainer-scope textarea:focus {
+  border-color: #2459ff;
+}.spelling-trainer-scope textarea {
+  line-height: 1.5;
+  min-height: 220px;
+  padding: 14px;
+  resize: vertical;
+}.spelling-trainer-scope .file-button {
+  position: relative;
+}.spelling-trainer-scope .file-button input {
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 1px;
+}.spelling-trainer-scope .review-card {
+  align-items: stretch;
+  background: #fffdf6;
+  border: 1px solid #ead49b;
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
+  margin: 16px 0;
+  padding: 14px;
+}.spelling-trainer-scope .review-preview {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #d7e0eb;
+  border-radius: 8px;
+  display: flex;
+  height: 230px;
+  justify-content: center;
+  overflow: hidden;
+  padding: 12px;
+}.spelling-trainer-scope .review-preview img {
+  display: block;
+  max-height: 88%;
+  max-width: 88%;
+  object-fit: contain;
+  transition: transform 180ms ease;
+}.spelling-trainer-scope .review-actions {
+  align-self: center;
+}.spelling-trainer-scope .review-actions p {
+  color: #a56a00;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+}.spelling-trainer-scope .review-actions h2 {
+  font-size: 1.35rem;
+  line-height: 1.15;
+  margin: 0 0 6px;
+  overflow-wrap: anywhere;
+}.spelling-trainer-scope .review-actions span {
+  color: #526579;
+  display: block;
+  margin-bottom: 12px;
+}.spelling-trainer-scope .ocr-status {
+  background: #eef5ff;
+  border: 1px solid #c8d9f5;
+  border-radius: 8px;
+  color: #274362;
+  margin: 14px 0;
+  padding: 12px;
+}.spelling-trainer-scope .ocr-status div {
+  background: #d5e2f1;
+  border-radius: 999px;
+  height: 8px;
+  margin-top: 8px;
+  overflow: hidden;
+}.spelling-trainer-scope .ocr-status i {
+  background: #2459ff;
+  display: block;
+  height: 100%;
+}.spelling-trainer-scope .extraction-card {
+  background: #f8fbff;
+  border: 1px solid #d7e0eb;
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 14px 0;
+  padding: 14px;
+}.spelling-trainer-scope .extraction-card p {
+  color: #5d6f83;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}.spelling-trainer-scope .extraction-card strong,
+.spelling-trainer-scope .extraction-card span {
+  display: block;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}.spelling-trainer-scope .extraction-card strong {
+  color: #2459ff;
+  margin-bottom: 6px;
+}.spelling-trainer-scope .extraction-card span {
+  color: #263a4d;
+  margin-top: 4px;
+}.spelling-trainer-scope .loaded-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}.spelling-trainer-scope .word-list-toolbar {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-top: 14px;
+}.spelling-trainer-scope .word-list-toolbar strong {
+  color: #40546a;
+}.spelling-trainer-scope .word-list-toolbar button {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #c8d4e1;
+  border-radius: 8px;
+  color: #1e3144;
+  display: inline-flex;
+  font-weight: 900;
+  min-height: 38px;
+  padding: 7px 10px;
+}.spelling-trainer-scope .word-list-toolbar button.danger {
+  border-color: #f1b6a7;
+  color: #a8341b;
+}.spelling-trainer-scope .word-list-toolbar button.danger:hover:not(:disabled) {
+  background: #fff1ed;
+}.spelling-trainer-scope .word-list-toolbar button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}.spelling-trainer-scope .loaded-words span {
+  background: #edf3fa;
+  border: 1px solid #d0dbe7;
+  border-radius: 999px;
+  color: #203448;
+  font-weight: 800;
+  padding: 7px 10px;
+}.spelling-trainer-scope .word-chip {
+  align-items: center;
+  background: #edf3fa;
+  border: 1px solid #d0dbe7;
+  border-radius: 999px;
+  color: #203448;
+  display: inline-flex;
+  font-weight: 800;
+  gap: 7px;
+  min-height: 36px;
+  padding: 7px 8px 7px 11px;
+}.spelling-trainer-scope .word-chip.removable:hover {
+  background: #fff1dc;
+  border-color: #f29a35;
+}.spelling-trainer-scope .word-chip b {
+  align-items: center;
+  background: #c8d4e1;
+  border-radius: 999px;
+  color: #1e3144;
+  display: inline-flex;
+  font-size: 0.78rem;
+  height: 18px;
+  justify-content: center;
+  line-height: 1;
+  width: 18px;
+}.spelling-trainer-scope .empty-words {
+  align-items: flex-start;
+  background: #f8fbff;
+  border: 1px solid #d7e0eb;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 320px;
+  justify-content: center;
+  padding: 24px;
+}.spelling-trainer-scope .empty-words svg {
+  color: #2459ff;
+}.spelling-trainer-scope .empty-words h1 {
+  font-size: clamp(2rem, 4vw, 4rem);
+  line-height: 1;
+  margin: 0;
+}.spelling-trainer-scope .empty-words p {
+  color: #526579;
+  line-height: 1.45;
+  margin: 0;
+}.spelling-trainer-scope .empty-words button {
+  align-items: center;
+  background: #2459ff;
+  border: 1px solid #2459ff;
+  border-radius: 8px;
+  color: white;
+  display: inline-flex;
+  font-weight: 900;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 12px;
+}.spelling-trainer-scope .dashboard-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 20px;
+}.spelling-trainer-scope .dashboard-grid div {
+  background: #f8fbff;
+  border: 1px solid #d7e0eb;
+  border-radius: 8px;
+  padding: 14px;
+}.spelling-trainer-scope .dashboard-grid strong {
+  display: block;
+  font-size: 1.5rem;
+  margin-top: 6px;
+}
+
+@keyframes pop {50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes shake {25% {
+    transform: translateX(-3px);
+  }75% {
+    transform: translateX(3px);
+  }
+}
+
+@media (max-width: 980px) {.spelling-trainer-scope .topbar,
+.spelling-trainer-scope .content-grid {
+    grid-template-columns: 1fr;
+  }.spelling-trainer-scope .topbar {
+    display: grid;
+  }.spelling-trainer-scope .content-grid {
+    display: grid;
+  }.spelling-trainer-scope .side-panel {
+    order: -1;
+  }
+}
+
+@media (max-width: 700px) {.spelling-trainer-scope .app-shell {
+    padding: 12px;
+  }.spelling-trainer-scope .stat-row,
+.spelling-trainer-scope .mode-tabs,
+.spelling-trainer-scope .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }.spelling-trainer-scope .mode-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }.spelling-trainer-scope .slot,
+.spelling-trainer-scope .letter-tile {
+    min-height: 54px;
+  }.spelling-trainer-scope .wifi-card {
+    grid-template-columns: 1fr;
+  }.spelling-trainer-scope .review-card {
+    grid-template-columns: 1fr;
+  }.spelling-trainer-scope .extraction-card {
+    grid-template-columns: 1fr;
+  }.spelling-trainer-scope .letter-tile {
+    height: 58px;
+    width: 58px;
+  }
+}

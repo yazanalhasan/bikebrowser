@@ -163,6 +163,7 @@ function getBreadcrumbText(pathname) {
     '/shop': 'Shop Materials',
     '/safe-search': 'Safe Search',
     '/play': 'Play Game',
+    '/spelling-trainer': "Zaydan's Spelling Trainer",
   };
 
   // Try exact match first

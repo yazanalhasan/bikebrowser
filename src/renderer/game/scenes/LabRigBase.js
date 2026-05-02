@@ -765,6 +765,19 @@ export default class LabRigBase extends LocalSceneBase {
       g.lineBetween(pa.sx, pa.sy, pb.sx, pb.sy);
     }
 
+    // Moving cursor: ties the specimen deformation to the current point on
+    // the curve. Full completed curves leave the cursor at the final sample.
+    const cursorPoint = progressCurve[progressCurve.length - 1];
+    if (cursorPoint) {
+      const c = toScreen(cursorPoint);
+      g.lineStyle(1, 0xffffff, 0.55);
+      g.lineBetween(c.sx, innerY, c.sx, innerY + innerH);
+      g.fillStyle(0xffffff, 1);
+      g.fillCircle(c.sx, c.sy, 5);
+      g.fillStyle(0x111827, 1);
+      g.fillCircle(c.sx, c.sy, 2);
+    }
+
     // Optional annotations (e.g. yield/ultimate markers).
     const annotations = this.getChartAnnotations(result || null);
     if (Array.isArray(annotations)) {

@@ -12,7 +12,11 @@
 
 import LabRigBase from './LabRigBase.js';
 import { MATERIALS, MATERIAL_IDS, getMaterial } from '../systems/materials/materialDatabase.js';
-import { runTensileTest, detectFailurePoint } from '../systems/materials/materialTestingEngine.js';
+import {
+  computeSharedStressStrainAxes,
+  runTensileTest,
+  detectFailurePoint,
+} from '../systems/materials/materialTestingEngine.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { createScaleStation } from '../systems/lab/scaleStation.js';
@@ -131,6 +135,7 @@ export default class MaterialLabScene extends LabRigBase {
     this.layout = loadLayout(this, LAYOUT_KEY);
     super.createWorld();
     this._mountLeftBayInstruments();
+    this._buildSlowToggle();
   }
 
   // ── Apparatus ───────────────────────────────────────────────────────
@@ -203,6 +208,12 @@ export default class MaterialLabScene extends LabRigBase {
     } else {
       this._specimenGrain = null;
     }
+
+    this._lastTeachingKey = null;
+    this._setTeachingCallout(
+      'Elastic: the sample should spring back until it reaches yield.',
+      0x22c55e,
+    );
   }
 
   // ── Per-tick deformation ────────────────────────────────────────────
@@ -221,6 +232,7 @@ export default class MaterialLabScene extends LabRigBase {
 
     // Specimen height tracks the gap between grips; width thins per failure mode.
     this._applyDeformation(this._widthFactorFor(mat, sample, fracStrain));
+    this._updateTeachingCallout(sample, result);
   }
 
   _widthFactorFor(mat, sample, fracStrain) {
@@ -385,13 +397,22 @@ export default class MaterialLabScene extends LabRigBase {
       { label: 'Force', value: `${Math.round(force).toLocaleString()} N` },
       { label: 'Strain', value: `${(sample.strain * 100).toFixed(1)}%` },
       { label: 'Stress', value: `${Math.round(sample.stress)} MPa` },
+      { label: 'Phase', value: this._labelRegion(sample.region) },
     ];
+  }
+
+  getTestDurationMs() {
+    return this._slowMode ? 7000 : 3500;
   }
 
   // ── Chart ───────────────────────────────────────────────────────────
   getChartConfig(result) {
     const comparisonCurves = this._getTestedMaterialCurves(result?.summary?.materialId || result?.materialId);
     const curveMax = this._getComparisonCurveMax(comparisonCurves);
+    const sharedAxes = computeSharedStressStrainAxes(MATERIAL_IDS, {
+      gaugeLengthMm: 50,
+      crossSectionAreaMm2: 100,
+    });
     const baseCfg = {
       title: comparisonCurves.length > 1 ? 'UTM COMPARISON' : 'STRESS vs STRAIN',
       xLabel: 'strain', yLabel: 'stress',
@@ -400,17 +421,16 @@ export default class MaterialLabScene extends LabRigBase {
       comparisonCurves,
     };
     if (!result) {
-      const mat = getMaterial(this._activeSampleId);
       return {
         ...baseCfg,
-        xMax: Math.max(mat?.fractureStrain ?? 0.20, curveMax.x) * 1.05,
-        yMax: Math.max(mat?.ultimateStrengthMPa ?? 500, curveMax.y) * 1.10,
+        xMax: Math.max(sharedAxes.xMax, curveMax.x * 1.05),
+        yMax: Math.max(sharedAxes.yMax, curveMax.y * 1.10),
       };
     }
     return {
       ...baseCfg,
-      xMax: Math.max(result.summary?.fractureStrain || 0.10, curveMax.x) * 1.05,
-      yMax: Math.max(result.summary?.ultimateStrengthMPa || 100, curveMax.y) * 1.10,
+      xMax: Math.max(sharedAxes.xMax, curveMax.x * 1.05),
+      yMax: Math.max(sharedAxes.yMax, curveMax.y * 1.10),
     };
   }
 
@@ -467,8 +487,92 @@ export default class MaterialLabScene extends LabRigBase {
     return annotations.length ? annotations : null;
   }
 
+  // ── Teaching layer ────────────────────────────────────────────────────────
+  _buildSlowToggle() {
+    const cfg = this.layout.slow_toggle;
+    if (!cfg) return;
+    this._slowMode = false;
+    this._slowToggleBg = this.add.rectangle(cfg.x, cfg.y, cfg.w, cfg.h, 0x2c2e34)
+      .setStrokeStyle(1, 0x4a4d55).setDepth(4)
+      .setInteractive({ useHandCursor: true });
+    this._slowToggleLabel = this.add.text(cfg.x, cfg.y, 'Slow replay: OFF', {
+      fontSize: '10px', fontFamily: 'sans-serif', color: '#e7e9ee',
+      fontStyle: 'bold',
+    }).setOrigin(0.5).setDepth(5);
+    this._slowToggleBg.on('pointerdown', () => {
+      if (this._testInProgress) return;
+      this._slowMode = !this._slowMode;
+      this._slowToggleLabel.setText(`Slow replay: ${this._slowMode ? 'ON' : 'OFF'}`);
+      this._slowToggleBg.setFillStyle(this._slowMode ? 0x14532d : 0x2c2e34);
+    });
+  }
+
+  _setTeachingCallout(text, color = 0x22c55e) {
+    const cfg = this.layout.teaching_callout;
+    if (!cfg) return;
+
+    if (!this._teachingCalloutBg) {
+      this._teachingCalloutBg = this.add.rectangle(cfg.x, cfg.y, cfg.w, 38, 0x111827, 0.9)
+        .setStrokeStyle(2, color).setDepth(5);
+      this._teachingCalloutText = this.add.text(cfg.x, cfg.y, '', {
+        fontSize: '10px', fontFamily: 'sans-serif', color: '#f8fafc',
+        fontStyle: 'bold', align: 'center', wordWrap: { width: cfg.w - 18 },
+      }).setOrigin(0.5).setDepth(6);
+    }
+
+    this._teachingCalloutBg.setStrokeStyle(2, color);
+    this._teachingCalloutText.setText(text);
+  }
+
+  _updateTeachingCallout(sample, result) {
+    if (!sample || !result?.curve) return;
+    const { yieldPoint, ultimatePoint } = detectFailurePoint(result.curve);
+    const materialId = result.summary?.materialId || result.materialId;
+    const mat = getMaterial(materialId);
+    const near = (a, b, tolerance) => Math.abs((a || 0) - (b || 0)) <= tolerance;
+
+    let key = sample.region || 'elastic';
+    let color = 0x22c55e;
+    let text = 'Elastic: force removed now would mostly spring back.';
+
+    if (yieldPoint && near(sample.strain, yieldPoint.strain, 0.002)) {
+      key = 'yield';
+      color = 0x60a5fa;
+      text = 'Yield: permanent deformation starts here.';
+    } else if (ultimatePoint && near(sample.strain, ultimatePoint.strain, 0.003)) {
+      key = 'ultimate';
+      color = 0xfbbf24;
+      text = 'Ultimate strength: this is the peak load before failure takes over.';
+    } else if (sample.region === 'plastic') {
+      key = 'plastic';
+      color = 0xf59e0b;
+      text = `${mat?.name || 'Material'} is plastic now: its shape is changing for good.`;
+    } else if (sample.region === 'failure') {
+      key = 'failure';
+      color = 0xef4444;
+      text = this._failureCalloutFor(mat);
+    }
+
+    if (key === this._lastTeachingKey) return;
+    this._lastTeachingKey = key;
+    this._setTeachingCallout(text, color);
+  }
+
+  _failureCalloutFor(mat) {
+    if (mat?.failureMode === 'splinter') return 'Failure: wood splinters suddenly after its fibers give way.';
+    if (mat?.failureMode === 'ductile-necking') return 'Failure: steel necks down, then snaps at the thinnest point.';
+    if (mat?.failureMode === 'ductile-stretch') return 'Failure: copper stretches a long way before tearing.';
+    return 'Failure: the sample can no longer carry the load.';
+  }
+
+  _labelRegion(region) {
+    if (region === 'plastic') return 'plastic';
+    if (region === 'failure') return 'failure';
+    return 'elastic';
+  }
+
   // ── Quest dialogs ───────────────────────────────────────────────────
-  getCompletionDialog() {
+  _getUtmCompletionDialog() {
     return {
       speaker: 'Mr. Chen',
       text:
@@ -506,10 +610,70 @@ export default class MaterialLabScene extends LabRigBase {
   //   structured journal entry on first all-tested completion. ──────────
   _emitCompletionDialog(result) {
     super._emitCompletionDialog(result);
+    this._showComparisonPanel();
     // After base persists `load_test_completed`, append a structured
     // materialLog journal entry so the player can re-read it later.
     // Idempotent: don't double-append if the player re-runs the test.
     this._appendMaterialLogJournalOnce();
+  }
+
+  _markTestComplete(sampleId, result) {
+    super._markTestComplete(sampleId, result);
+    this._recordMaterialKnowledge(sampleId, result);
+  }
+
+  _recordMaterialKnowledge(sampleId, result) {
+    const mat = getMaterial(sampleId);
+    if (!mat || !result) return;
+    const { yieldPoint, ultimatePoint, fracturePoint } = detectFailurePoint(result.curve || []);
+    const state = this.registry.get('gameState') || {};
+    const materialKnowledge = { ...(state.materialKnowledge || {}) };
+    materialKnowledge[sampleId] = {
+      tested: true,
+      learnedFrom: SCENE_KEY,
+      name: mat.name,
+      category: mat.category,
+      densityKgM3: mat.densityKgM3,
+      elasticModulusGPa: result.summary?.elasticModulusGPa,
+      yieldStrengthMPa: result.summary?.yieldStrengthMPa ?? null,
+      ultimateStrengthMPa: result.summary?.ultimateStrengthMPa,
+      fractureStrain: result.summary?.fractureStrain,
+      maxForceN: Math.round(result.summary?.maxForceN || 0),
+      strengthToWeightScore: result.scores?.strengthToWeightScore ?? null,
+      failureMode: mat.failureMode,
+      observedBehavior: this._materialBehaviorSummary(mat, result),
+      yieldPoint: yieldPoint ? {
+        strain: Number(yieldPoint.strain.toFixed(4)),
+        stressMPa: Math.round(yieldPoint.stress),
+      } : null,
+      ultimatePoint: ultimatePoint ? {
+        strain: Number(ultimatePoint.strain.toFixed(4)),
+        stressMPa: Math.round(ultimatePoint.stress),
+      } : null,
+      fracturePoint: fracturePoint ? {
+        strain: Number(fracturePoint.strain.toFixed(4)),
+        stressMPa: Math.round(fracturePoint.stress),
+      } : null,
+      testedAt: Date.now(),
+    };
+    const updated = { ...state, materialKnowledge };
+    this.registry.set('gameState', updated);
+    saveGame(updated);
+  }
+
+  _materialBehaviorSummary(mat, result) {
+    const strength = Math.round((result.scores?.strengthScore || 0) * 100);
+    const strengthToWeight = Math.round((result.scores?.strengthToWeightScore || 0) * 100);
+    if (mat.failureMode === 'splinter') {
+      return `Splinters suddenly; strength ${strength}%, strength-to-weight ${strengthToWeight}%.`;
+    }
+    if (mat.failureMode === 'ductile-necking') {
+      return `Necks before snapping; strength ${strength}%, strength-to-weight ${strengthToWeight}%.`;
+    }
+    if (mat.failureMode === 'ductile-stretch') {
+      return `Stretches dramatically before tearing; strength ${strength}%, strength-to-weight ${strengthToWeight}%.`;
+    }
+    return `Tested in the UTM; strength ${strength}%, strength-to-weight ${strengthToWeight}%.`;
   }
 
   /** Append a structured journal entry for this test session.
@@ -541,12 +705,36 @@ export default class MaterialLabScene extends LabRigBase {
 
   // ── Append the "take it to Mr. Chen" line to the canonical dialog. ──
   getCompletionDialog() {
-    const base = super.getCompletionDialog();
+    const base = this._getUtmCompletionDialog();
     return {
       ...base,
       text: base.text +
         "\n\n📓 Take the data back to Mr. Chen — he'll want to see the numbers.",
     };
+  }
+
+  _showComparisonPanel() {
+    const cfg = this.layout.comparison_panel;
+    if (!cfg) return;
+    if (this._comparisonPanel) this._comparisonPanel.destroy(true);
+
+    const lines = [
+      'Steel: strongest, but heavy.',
+      'Copper: stretches, but weak and heavy.',
+      'Mesquite: strong enough and light for the bridge.',
+    ];
+    const panel = this.add.container(0, 0).setDepth(8);
+    panel.add(this.add.rectangle(cfg.x, cfg.y, cfg.w, cfg.h, 0x111827, 0.92)
+      .setStrokeStyle(2, 0xfbbf24));
+    panel.add(this.add.text(cfg.x, cfg.y - 18, 'Engineering takeaway', {
+      fontSize: '11px', fontFamily: 'sans-serif', color: '#fbbf24',
+      fontStyle: 'bold',
+    }).setOrigin(0.5));
+    panel.add(this.add.text(cfg.x, cfg.y + 6, lines.join('\n'), {
+      fontSize: '10px', fontFamily: 'sans-serif', color: '#f8fafc',
+      align: 'center', lineSpacing: 2, wordWrap: { width: cfg.w - 18 },
+    }).setOrigin(0.5));
+    this._comparisonPanel = panel;
   }
 
   // ─── Alt chart mode: density bars ───────────────────────────────────

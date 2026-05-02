@@ -290,8 +290,8 @@ export default class ThermalRigScene extends LabRigBase {
       ];
     }
     const tempC = sample.x ?? 25;
-    const lenMm = sample.y ?? 100;
-    const dMm = sample.deltaMm ?? (lenMm - 100);
+    const lenMm = sample.lengthMm ?? 100;
+    const dMm = sample.deltaMm ?? sample.y ?? (lenMm - 100);
     const sign = dMm >= 0 ? '+' : '';
     return [
       { label: 'Temperature', value: `${tempC.toFixed(1)} °C` },
@@ -302,14 +302,16 @@ export default class ThermalRigScene extends LabRigBase {
 
   // ── Chart ─────────────────────────────────────────────────────────
   getChartConfig(result) {
-    const finalLen = result?.summary?.finalLengthMm
-      ?? (THERMAL_RODS[this._activeSampleId || THERMAL_ROD_IDS[0]]?.lengthMm || 100) * 1.05;
+    const finalDelta = Math.max(
+      result?.summary?.totalDeltaMm ?? 0,
+      this._getSharedExpansionMax(),
+    );
     return {
-      title: 'LENGTH vs TEMPERATURE',
+      title: 'EXPANSION vs TEMPERATURE',
       xLabel: 'Temperature',
-      yLabel: 'Length',
+      yLabel: 'Expansion',
       xMax: 200,
-      yMax: finalLen * 1.05,
+      yMax: Math.max(finalDelta * 1.15, 0.1),
       xUnit: '°C',
       yUnit: 'mm',
       regionColors: {
@@ -318,6 +320,12 @@ export default class ThermalRigScene extends LabRigBase {
         failure: 0xef4444,
       },
     };
+  }
+
+  _getSharedExpansionMax() {
+    return Math.max(
+      ...THERMAL_ROD_IDS.map((id) => runThermalTest(id)?.summary?.totalDeltaMm ?? 0),
+    );
   }
 
   // ── Quest hook ────────────────────────────────────────────────────

@@ -310,6 +310,35 @@ export function runTensileTest(materialId, options = {}) {
 }
 
 /**
+ * Compute shared chart axes for a material set so UTM curves are compared
+ * against one scale instead of each sample filling the whole plot.
+ *
+ * @param {string[]} materialIds
+ * @param {object} [options]
+ * @returns {{xMax:number, yMax:number}}
+ */
+export function computeSharedStressStrainAxes(materialIds, options = {}) {
+  let xMax = 0;
+  let yMax = 0;
+
+  for (const id of materialIds || []) {
+    const result = runTensileTest(id, options);
+    if (!result?.curve) continue;
+    xMax = Math.max(xMax, result.summary?.fractureStrain ?? 0);
+    yMax = Math.max(yMax, result.summary?.ultimateStrengthMPa ?? 0);
+    for (const point of result.curve) {
+      xMax = Math.max(xMax, point.x ?? point.strain ?? 0);
+      yMax = Math.max(yMax, point.y ?? point.stress ?? 0);
+    }
+  }
+
+  return {
+    xMax: xMax * 1.05,
+    yMax: yMax * 1.10,
+  };
+}
+
+/**
  * Run a compression test on a material.
  * Wood crushes (lower ultimate), copper deforms (extra strain budget),
  * steel behaves symmetrically to tension (no buckling modeled).

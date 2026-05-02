@@ -32,6 +32,26 @@
       "w": 460,
       "h": 220,
       "_note": "Open slate panel. Kept in the upper lab area so it does not cover Zuzu near the bottom exit."
+    },
+    "teaching_callout": {
+      "x": 320,
+      "y": 92,
+      "w": 260,
+      "_note": "Transient UTM physics callout anchored near the specimen/readout."
+    },
+    "slow_toggle": {
+      "x": 140,
+      "y": 462,
+      "w": 160,
+      "h": 24,
+      "_note": "Slow replay toggle below the START TEST button."
+    },
+    "comparison_panel": {
+      "x": 320,
+      "y": 548,
+      "w": 350,
+      "h": 58,
+      "_note": "Compact all-material comparison takeaway after all UTM tests."
     }
   }
 }

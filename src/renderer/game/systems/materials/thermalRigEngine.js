@@ -89,7 +89,7 @@ export function runThermalTest(rodId, opts = {}) {
 
     curve.push({
       x: tempC,
-      y: lengthMm,
+      y: deltaMm,
       tempC,
       lengthMm,
       deltaMm,
