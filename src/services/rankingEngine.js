@@ -7,6 +7,7 @@ const youtubeScraper = require('./youtubeScraper');
 const fastRules = require('./fastRules');
 const featureExtractor = require('./featureExtractor');
 const db = require('./db');
+const { scoreQualityFit } = require('../shared/videoQualitySources');
 
 // Initialize database
 db.init();
@@ -88,14 +89,15 @@ async function processSearch(query) {
       if (
         cached &&
         cached.features?.embedScore === video.embedScore &&
-        cached.features?.channelEmbedPenalty === video.channelEmbedPenalty
+        cached.features?.channelEmbedPenalty === video.channelEmbedPenalty &&
+        cached.features?.qualityQuery === query
       ) {
         score = cached.score;
         features = cached.features;
         console.log(`Using cached score for ${video.videoId}: ${score}`);
       } else {
         // Calculate new score
-        const result = scoreVideo(video);
+        const result = scoreVideo(video, query);
         score = result.score;
         features = result.features;
         explanation = result.explanation;
@@ -142,9 +144,9 @@ async function processSearch(query) {
 /**
  * Score an individual video
  */
-function scoreVideo(video) {
+function scoreVideo(video, query = '') {
   // Get channel trust level
-  const trustLevel = db.channels.getTrustLevel(video.channelId);
+  const trustLevel = db.channels.getTrustLevel(video.channelId, video.channelName);
   
   // Check for video-specific override
   const override = db.videoOverrides.get(video.videoId);
@@ -160,6 +162,14 @@ function scoreVideo(video) {
   features.trustLevel = trustLevel;
   features.embedScore = video.embedScore ?? 1;
   features.channelEmbedPenalty = video.channelEmbedPenalty ?? 0;
+  features.qualityQuery = query;
+
+  const quality = scoreQualityFit(video, query);
+  features.curatedChannel = quality.curatedChannel?.name || null;
+  features.technicalMatches = quality.technicalMatches;
+  features.qualitySourceBonus = Math.round(quality.sourceBonus * 100);
+  features.technicalDepthBonus = Math.round(quality.depthBonus * 100);
+  features.lowDepthPenalty = Math.round(quality.lowDepthPenalty * 100);
   
   // Calculate weighted score from features
   const featureScore = 
@@ -172,7 +182,7 @@ function scoreVideo(video) {
   const trustBonus = getTrustBonus(trustLevel);
   
   // Final score
-  let finalScore = fastScore + featureScore + trustBonus;
+  let finalScore = fastScore + featureScore + trustBonus + (quality.total * 100);
 
   finalScore += features.embedScore > 0 ? EMBED_BONUS : -EMBED_BLOCK_PENALTY;
   finalScore -= features.channelEmbedPenalty;

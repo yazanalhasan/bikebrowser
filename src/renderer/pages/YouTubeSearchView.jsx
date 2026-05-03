@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import VideoCard from '../components/VideoCard';
+import VideoResults from '../components/VideoResults';
 import VideoPlayerModal from '../components/VideoPlayerModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { apiClient } from '../../client/apiClient';
@@ -8,6 +9,7 @@ import { getVideoId, isPlayableYouTubeVideo, normalizePlayableVideo } from '../u
 import { matchVideoToTopics, getTopicDetails } from '../learning/videoTopicMatcher';
 import { useLearningStore } from '../learning/learningStore';
 import { useBackendReady } from '../hooks/useBackendReady';
+import { VIDEO_QUALITY_PRESETS } from '../data/videoQualityPresets';
 
 function createInitialVideoState(video, videoId) {
   return {
@@ -271,6 +273,30 @@ function YouTubeSearchView() {
             )}
           </div>
         </div>
+
+        <div className="mt-4 rounded-xl border border-blue-200 bg-white/80 p-3">
+          <div className="mb-2 text-sm font-semibold text-slate-700">
+            Quality source presets
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {VIDEO_QUALITY_PRESETS.map((preset) => (
+              <button
+                key={preset.id}
+                type="button"
+                title={preset.helper}
+                onClick={() => {
+                  setSearchMode('quick');
+                  setSearchInput(preset.query);
+                  navigate(`/youtube/search?q=${encodeURIComponent(preset.query)}&fast=1`);
+                }}
+                className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm font-semibold text-blue-800
+                         hover:border-blue-400 hover:bg-blue-100 transition-colors"
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Content */}
@@ -302,6 +328,10 @@ function YouTubeSearchView() {
           <div className="bg-amber-100 border-2 border-amber-300 rounded-xl p-4 text-center mb-4">
             <p className="text-amber-900 font-medium">{warning}</p>
           </div>
+        )}
+
+        {backendReady && !error && (
+          <VideoResults query={query} />
         )}
 
         {error && (
@@ -338,7 +368,8 @@ function YouTubeSearchView() {
                   <p className="text-blue-800 text-sm mt-1">
                     <span className="badge-green inline-block mr-2">✓ Trusted</span> = Great educational channels •
                     <span className="badge-blue inline-block mx-2">→ Relevant</span> = Good for learning •
-                    <span className="badge-yellow inline-block mx-2">⚠ Less Relevant</span> = Might be off-topic
+                    <span className="badge-yellow inline-block mx-2">⚠ Less Relevant</span> = Might be off-topic •
+                    Curated results favor Park Tool, RJ, Johnny Nerd Out, Grin, Rocky Mountain ATV MC, and diagnostics channels.
                   </p>
                 </div>
               </div>

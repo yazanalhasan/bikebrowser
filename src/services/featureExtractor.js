@@ -154,6 +154,10 @@ function generateExplanation(video, features, trustLevel, finalScore) {
   } else if (trustLevel === 'blocked') {
     explanations.push('✗ This channel has been blocked');
   }
+
+  if (features.curatedChannel) {
+    explanations.push(`✓ Curated source: ${features.curatedChannel}`);
+  }
   
   // Topical relevance
   if (features.topicalRelevance > 70) {
@@ -165,6 +169,10 @@ function generateExplanation(video, features, trustLevel, finalScore) {
   // Educational signals
   if (features.educationalSignals > 60) {
     explanations.push('✓ This appears to be a tutorial or guide');
+  }
+
+  if ((features.technicalMatches || 0) >= 3) {
+    explanations.push('✓ Good technical depth for mechanics or diagnostics');
   }
   
   // Entertainment signals

@@ -10,7 +10,9 @@ const POSITIVE_KEYWORDS = [
   'build', 'repair', 'fix', 'maintenance', 'assembly', 'setup',
   'engineering', 'mechanics', 'technical', 'review', 'explained',
   'welding', 'frame', 'suspension', 'brakes', 'gears', 'derailleur',
-  'motor', 'battery', 'wheel', 'tire', 'chain', 'drivetrain'
+  'motor', 'battery', 'wheel', 'tire', 'chain', 'drivetrain',
+  'controller', 'throttle', 'bms', 'hall sensor', 'phase wire', 'mosfet',
+  'multimeter', 'carburetor', 'fork seal', 'top end', 'rebuild', 'valve clearance'
 ];
 
 // Negative keywords (lower score)
@@ -24,7 +26,8 @@ const NEGATIVE_KEYWORDS = [
 const EDUCATIONAL_KEYWORDS = [
   'tutorial', 'how to', 'guide', 'learn', 'explained', 'step by step',
   'beginner', 'basics', 'fundamentals', 'lesson', 'course', 'teach',
-  'demonstration', 'instruction', 'tips', 'tricks', 'technique'
+  'demonstration', 'instruction', 'tips', 'tricks', 'technique',
+  'diagnosis', 'diagnostic', 'troubleshooting', 'service', 'overhaul', 'rebuild'
 ];
 
 /**

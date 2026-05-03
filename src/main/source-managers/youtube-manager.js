@@ -1,5 +1,6 @@
 const { BaseSourceManager } = require('./base-manager');
 const youtubeScraper = require('../../services/youtubeScraper');
+const { scoreQualityFit } = require('../../shared/videoQualitySources');
 
 class YouTubeManager extends BaseSourceManager {
   constructor(apiKey) {
@@ -14,7 +15,8 @@ class YouTubeManager extends BaseSourceManager {
     return Boolean(apiKey) && !this.invalidKeyPattern.test(apiKey);
   }
 
-  normalizeScrapedItem(rawItem) {
+  normalizeScrapedItem(rawItem, query = '') {
+    const quality = scoreQualityFit(rawItem, query);
     return {
       id: `youtube:${rawItem.videoId}`,
       title: rawItem.title || 'YouTube Video',
@@ -23,16 +25,22 @@ class YouTubeManager extends BaseSourceManager {
       url: rawItem.url || `https://www.youtube.com/watch?v=${rawItem.videoId}`,
       thumbnail: rawItem.thumbnail || '',
       description: rawItem.description || '',
+      channelId: rawItem.channelId || null,
+      channelName: rawItem.channelName || 'YouTube',
       safety_score: 0.6,
-      relevance_score: 0.6,
-      educational_score: 0.6,
+      relevance_score: Math.min(0.98, 0.6 + quality.depthBonus + (quality.curatedChannel ? 0.08 : 0)),
+      educational_score: Math.min(0.98, 0.6 + quality.sourceBonus + quality.depthBonus),
       category: 'watch',
       summary: String(rawItem.description || '').slice(0, 150),
       tags: [],
       requires_supervision: false,
       sourceMetadata: {
         author: rawItem.channelName || 'YouTube',
-        is_curated: false
+        channelId: rawItem.channelId || null,
+        is_curated: Boolean(quality.curatedChannel),
+        curatedChannel: quality.curatedChannel?.name || null,
+        technicalMatches: quality.technicalMatches,
+        querySystems: quality.querySystems
       }
     };
   }
@@ -44,7 +52,7 @@ class YouTubeManager extends BaseSourceManager {
     for (const query of queries.slice(0, 3)) {
       try {
         const items = await youtubeScraper.searchVideos(query, 5);
-        results.push(...items.map((item) => this.normalizeScrapedItem(item)));
+        results.push(...items.map((item) => this.normalizeScrapedItem(item, query)));
       } catch (error) {
         console.error(`[YouTubeManager] Scraper search fallback failed for "${query}":`, error.message);
       }
@@ -96,7 +104,7 @@ class YouTubeManager extends BaseSourceManager {
 
         const data = await response.json();
         for (const item of data.items || []) {
-          const normalized = this.normalize(item);
+          const normalized = this.normalize(item, query);
           const vid = String(normalized.id || '').split(':').pop();
           if (vid && !seenIds.has(vid)) {
             seenIds.add(vid);
@@ -148,8 +156,15 @@ class YouTubeManager extends BaseSourceManager {
     }
   }
 
-  normalize(rawItem) {
+  normalize(rawItem, query = '') {
     const videoId = rawItem?.id?.videoId || rawItem?.id;
+    const channelName = rawItem?.snippet?.channelTitle || 'YouTube';
+    const quality = scoreQualityFit({
+      title: rawItem?.snippet?.title,
+      description: rawItem?.snippet?.description,
+      channelName
+    }, query);
+
     return {
       id: `youtube:${videoId}`,
       title: rawItem?.snippet?.title || 'YouTube Video',
@@ -158,16 +173,22 @@ class YouTubeManager extends BaseSourceManager {
       url: `https://www.youtube.com/watch?v=${videoId}`,
       thumbnail: rawItem?.snippet?.thumbnails?.medium?.url || rawItem?.snippet?.thumbnails?.default?.url || '',
       description: rawItem?.snippet?.description || '',
+      channelId: rawItem?.snippet?.channelId || null,
+      channelName,
       safety_score: 0.6,
-      relevance_score: 0.6,
-      educational_score: 0.5,
+      relevance_score: Math.min(0.98, 0.6 + quality.depthBonus + (quality.curatedChannel ? 0.08 : 0)),
+      educational_score: Math.min(0.98, 0.5 + quality.sourceBonus + quality.depthBonus),
       category: 'watch',
       summary: (rawItem?.snippet?.description || '').slice(0, 150),
       tags: [],
       requires_supervision: false,
       sourceMetadata: {
-        author: rawItem?.snippet?.channelTitle || 'YouTube',
-        is_curated: false
+        author: channelName,
+        channelId: rawItem?.snippet?.channelId || null,
+        is_curated: Boolean(quality.curatedChannel),
+        curatedChannel: quality.curatedChannel?.name || null,
+        technicalMatches: quality.technicalMatches,
+        querySystems: quality.querySystems
       }
     };
   }

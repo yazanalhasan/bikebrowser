@@ -105,4 +105,10 @@ INSERT OR IGNORE INTO channels (channel_id, channel_name, trust_level, parent_no
   ('UCEyKfnq_A3dDYdR0rEODNLg', 'Berm Peak', 'trusted', 'Mountain bike building and trail projects'),
   ('UCqGGlEhqhGjZfJZqGzyzM4Q', 'BikemanforU', 'trusted', 'Bike building and repair'),
   ('UCcEJyzW3tSEUbSev3rRc2Sw', 'EMBN', 'trusted', 'Electric Mountain Bike Network'),
-  ('UC6Dt6OC3jfYFxkDpM0CcNbA', 'Just Riding Along', 'trusted', 'Bike repair and mechanics');
+  ('UC6Dt6OC3jfYFxkDpM0CcNbA', 'Just Riding Along', 'trusted', 'Bike repair and mechanics'),
+  ('name:johnny-nerd-out', 'Johnny Nerd Out', 'trusted', 'DIY e-bike conversions, controllers, throttles, wiring, and troubleshooting'),
+  ('name:grin-technologies', 'Grin Technologies', 'trusted', 'Advanced e-bike motors, battery systems, torque curves, and diagnostics'),
+  ('name:rocky-mountain-atv-mc', 'Rocky Mountain ATV MC', 'trusted', 'Structured dirt bike maintenance, rebuilds, tools, and upgrades'),
+  ('name:dirtbikechannel', 'DirtBikeChannel', 'trusted', 'Real-world dirt bike maintenance and upgrade decisions'),
+  ('name:learn-electronics-repair', 'Learn Electronics Repair', 'trusted', 'Electronics diagnostics for controllers, MOSFETs, capacitors, and boards'),
+  ('name:big-clive', 'Big Clive', 'trusted', 'Electrical reverse engineering and failure analysis');

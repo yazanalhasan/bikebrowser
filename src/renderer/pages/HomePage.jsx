@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import TopicTile from '../components/TopicTile';
 import { useLearningStore } from '../learning/learningStore';
 import { CATEGORIES } from '../learning/topics';
+import { VIDEO_QUALITY_PRESETS } from '../data/videoQualityPresets';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -65,23 +66,23 @@ function HomePage() {
       title: 'Bikes',
       subtitle: 'Learn about regular bikes',
       emoji: '🚴',
-      query: 'bike repair tutorial',
+      query: VIDEO_QUALITY_PRESETS.find((preset) => preset.id === 'bike-mechanics').query,
       color: 'from-blue-400 to-blue-600'
     },
     {
       id: 'ebikes',
       title: 'E-Bikes',
-      subtitle: 'Electric bike building',
+      subtitle: 'Motors, batteries & builds',
       emoji: '⚡',
-      query: 'electric bike tutorial',
+      query: VIDEO_QUALITY_PRESETS.find((preset) => preset.id === 'ebike-power').query,
       color: 'from-green-400 to-green-600'
     },
     {
       id: 'dirtbikes',
       title: 'Dirt Bikes',
-      subtitle: 'Off-road adventures',
+      subtitle: 'Shop maintenance & rebuilds',
       emoji: '🏍️',
-      query: 'dirt bike maintenance',
+      query: VIDEO_QUALITY_PRESETS.find((preset) => preset.id === 'dirt-bike-shop').query,
       color: 'from-orange-400 to-orange-600'
     },
     {
@@ -89,7 +90,7 @@ function HomePage() {
       title: 'Mountain Bikes',
       subtitle: 'Trail riding & builds',
       emoji: '⛰️',
-      query: 'mountain bike tutorial',
+      query: 'Berm Peak GMBN mountain bike suspension brakes drivetrain setup tutorial',
       color: 'from-purple-400 to-purple-600'
     },
     {
@@ -105,7 +106,7 @@ function HomePage() {
       title: 'Building & Parts',
       subtitle: 'Build your own bike',
       emoji: '🔧',
-      query: 'bike building tutorial',
+      query: VIDEO_QUALITY_PRESETS.find((preset) => preset.id === 'build-planning').query,
       color: 'from-yellow-400 to-yellow-600'
     }
   ];
@@ -149,7 +150,11 @@ function HomePage() {
         {/* Suggested searches */}
         <div className="mt-4 flex flex-wrap gap-3 justify-center">
           <span className="text-gray-600 font-semibold">Try:</span>
-          {['how to fix a flat tire', 'build an electric bike', 'BMX tricks'].map((suggestion) => (
+          {[
+            'Park Tool derailleur adjustment tutorial',
+            'Johnny Nerd Out ebike controller troubleshooting',
+            'Rocky Mountain ATV MC dirt bike maintenance'
+          ].map((suggestion) => (
             <button
               key={suggestion}
               onClick={() => {

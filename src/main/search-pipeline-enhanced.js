@@ -10,6 +10,7 @@ const { VoiceToQuery } = require('../pipeline/voice-to-query');
 const { SimilarityEngine } = require('../pipeline/similarity-engine');
 const { applyLearnedSuppression, applyCompatibilityHints } = require('../server/ranking-utils');
 const { perfProfile } = require('./config/perf-profile');
+const { QUALITY_PRESETS, scoreQualityFit } = require('../shared/videoQualitySources');
 
 class EnhancedSearchPipeline {
   constructor(config = {}) {
@@ -67,7 +68,7 @@ class EnhancedSearchPipeline {
         ]);
         if (rawResults.length > 0) {
           const preFiltered = this.safetyFilter.preFilter(rawResults, expandedQuery);
-          const ranked = this.rankResults(preFiltered);
+          const ranked = this.rankResults(preFiltered, userQuery);
           const finalResults = this.postProcessResults(ranked, expandedQuery);
           return {
             query: userQuery,
@@ -164,7 +165,7 @@ class EnhancedSearchPipeline {
 
       // ── Stage 5: Ranking ──────────────────────────────────────────────────
       const t3 = Date.now();
-      let rankedResults = this.rankResults(safeResults);
+      let rankedResults = this.rankResults(safeResults, userQuery);
       if (this.stages.ranking) {
         rankedResults = this.applyDeepRanking(rankedResults);
       }
@@ -332,27 +333,67 @@ class EnhancedSearchPipeline {
       .map((entry) => entry.query)
       .filter(Boolean);
 
-    return matched.length > 0 ? matched : [userQuery];
+    const baseQueries = matched.length > 0 ? matched : [userQuery];
+    if (!['youtube', 'youtubeKids'].includes(sourceName)) {
+      return baseQueries;
+    }
+
+    return this.addQualitySourceQueries(baseQueries, userQuery);
   }
 
-  rankResults(results) {
+  addQualitySourceQueries(baseQueries = [], userQuery = '') {
+    const normalizedQuery = String(userQuery || baseQueries[0] || '').toLowerCase();
+    const qualityQueries = [];
+
+    for (const preset of QUALITY_PRESETS) {
+      const idWords = preset.id.split('-');
+      const labelWords = preset.label.toLowerCase().split(/\s+/);
+      const matchesPreset =
+        idWords.some((word) => normalizedQuery.includes(word)) ||
+        labelWords.some((word) => normalizedQuery.includes(word));
+
+      if (matchesPreset) {
+        qualityQueries.push(preset.query);
+      }
+    }
+
+    if (/e-?bike|electric bike|controller|battery|motor|conversion/.test(normalizedQuery)) {
+      qualityQueries.push(QUALITY_PRESETS.find((preset) => preset.id === 'ebike-power')?.query);
+    }
+    if (/dirt bike|motorcycle|carburetor|fork seal|top end|engine/.test(normalizedQuery)) {
+      qualityQueries.push(QUALITY_PRESETS.find((preset) => preset.id === 'dirt-bike-shop')?.query);
+    }
+    if (/diagnostic|mosfet|capacitor|wiring|multimeter|electrical/.test(normalizedQuery)) {
+      qualityQueries.push(QUALITY_PRESETS.find((preset) => preset.id === 'electrical-diagnostics')?.query);
+    }
+    if (/repair|maintenance|derailleur|brake|torque|drivetrain/.test(normalizedQuery)) {
+      qualityQueries.push(QUALITY_PRESETS.find((preset) => preset.id === 'bike-mechanics')?.query);
+    }
+
+    return [...new Set([...baseQueries, ...qualityQueries.filter(Boolean)])].slice(0, 3);
+  }
+
+  rankResults(results, query = '') {
     return results
       .map((result) => ({
         ...result,
-        compositeScore: this.calculateCompositeScore(result)
+        compositeScore: this.calculateCompositeScore(result, query)
       }))
       .sort((a, b) => b.compositeScore - a.compositeScore);
   }
 
-  calculateCompositeScore(result) {
+  calculateCompositeScore(result, query = '') {
     const curatedBoost = result.sourceMetadata?.is_curated ? 0.1 : 0;
     const relevanceBoost = (result.relevance_score || 0) > 0.8 ? 0.05 : 0;
+    const quality = scoreQualityFit(result, query);
+
     return (
       (result.safety_score * 0.5) +
       (result.relevance_score * 0.3) +
       (result.educational_score * 0.2) +
       curatedBoost +
-      relevanceBoost
+      relevanceBoost +
+      quality.total
     );
   }
 

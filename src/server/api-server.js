@@ -7,6 +7,7 @@ const { getLocalIpAddress } = require('./network');
 const { ServerStorage } = require('./storage');
 const { JobQueue } = require('./job-queue');
 const { HistoryStore } = require('../storage/history-store');
+const { searchAllVideos } = require('./video/videoAggregator');
 const {
   dedupeResults,
   compatibilityScore,
@@ -273,6 +274,35 @@ function createApiServer({ searchPipeline, appDataPath, port = 3001, webPort = 5
 
   app.get('/api/health', (_req, res) => {
     res.json({ success: true, status: 'ok' });
+  });
+
+  app.get('/api/videos', async (req, res) => {
+    try {
+      const query = String(req.query.q || '').trim();
+      if (!query) {
+        res.json({
+          success: true,
+          query,
+          total: 0,
+          results: []
+        });
+        return;
+      }
+
+      const results = await searchAllVideos(query);
+      res.json({
+        success: true,
+        query,
+        total: results.length,
+        results
+      });
+    } catch (error) {
+      console.error('[API] /api/videos error:', error.message);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
   });
 
   app.get('/health', (_req, res) => {

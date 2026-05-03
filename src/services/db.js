@@ -1,6 +1,7 @@
 const Database = require('better-sqlite3');
 const path = require('path');
 const fs = require('fs');
+const { normalize } = require('../shared/videoQualitySources');
 
 let db = null;
 
@@ -48,9 +49,45 @@ const channels = {
     return getDb().prepare('SELECT * FROM channels ORDER BY channel_name').all();
   },
   
-  getTrustLevel(channelId) {
-    const result = getDb().prepare('SELECT trust_level FROM channels WHERE channel_id = ?').get(channelId);
-    return result ? result.trust_level : 'unknown';
+  getTrustLevel(channelId, channelName = '') {
+    const database = getDb();
+    const result = channelId
+      ? database.prepare('SELECT trust_level FROM channels WHERE channel_id = ?').get(channelId)
+      : null;
+    if (result) {
+      return result.trust_level;
+    }
+
+    const normalizedName = String(channelName || '').trim().toLowerCase();
+    if (!normalizedName) {
+      return 'unknown';
+    }
+
+    const nameResult = database.prepare(
+      'SELECT trust_level FROM channels WHERE lower(channel_name) = ? OR lower(channel_name) LIKE ? LIMIT 1'
+    ).get(normalizedName, `%${normalizedName}%`);
+    if (nameResult) {
+      return nameResult.trust_level;
+    }
+
+    const reverseNameResult = database.prepare(
+      'SELECT trust_level FROM channels WHERE ? LIKE lower(channel_name) || \'%\' LIMIT 1'
+    ).get(normalizedName);
+    if (reverseNameResult) {
+      return reverseNameResult.trust_level;
+    }
+
+    const normalizedComparable = normalize(channelName);
+    const allChannels = database.prepare('SELECT channel_name, trust_level FROM channels').all();
+    const fuzzyResult = allChannels.find((channel) => {
+      const trustedName = normalize(channel.channel_name);
+      return trustedName && (
+        normalizedComparable.includes(trustedName) ||
+        trustedName.includes(normalizedComparable)
+      );
+    });
+
+    return fuzzyResult ? fuzzyResult.trust_level : 'unknown';
   },
   
   add(channelId, channelName, trustLevel, notes = '') {
