@@ -1,64 +1,207 @@
 const CONCEPT_KEYWORDS = {
-  drivetrain: ['chain', 'cassette', 'derailleur', 'drivetrain', 'gear', 'crank'],
-  brakes: ['brake', 'brakes', 'rotor', 'caliper', 'brake pad', 'hydraulic'],
-  motor: ['motor', 'hub motor', 'mid drive', 'brushless', 'controller'],
-  battery: ['battery', 'bms', 'lithium', 'voltage', 'charger', 'cells'],
-  suspension: ['suspension', 'fork', 'shock', 'damper', 'stanchion', 'travel']
+  drivetrain: ['chain', 'cassette', 'derailleur', 'drivetrain', 'gear', 'shifter', 'crank'],
+  brakes: ['brake', 'brakes', 'rotor', 'caliper', 'brake pad', 'hydraulic', 'bleed'],
+  motor: ['motor', 'hub motor', 'mid drive', 'mid-drive', 'brushless', 'controller', 'throttle'],
+  battery: ['battery', 'bms', 'lithium', 'voltage', 'charger', 'cells', 'wiring'],
+  suspension: ['suspension', 'fork', 'shock', 'damper', 'stanchion', 'travel', 'rebuild']
 };
 
-const SOURCES = [
+const SOURCE_BONUS = {
+  vimeo: 3,
+  youtube: 2,
+  internet_archive: 1
+};
+
+const CURATED_RESULTS = [
   {
+    id: 'park-tool-drivetrain',
+    title: 'Park Tool: derailleur, chain, cassette, and drivetrain repair',
+    channelName: 'Park Tool',
     source: 'youtube',
-    title: 'Park Tool, RJ The Bike Guy, and GCN Tech results',
-    description: 'Structured bicycle repair videos for drivetrain, brakes, torque, and diagnosis.',
-    thumbnail: 'https://placehold.co/640x360/dbeafe/1e3a8a?text=YouTube+Videos',
-    baseUrl: 'https://www.youtube.com/results?search_query='
+    concepts: ['drivetrain'],
+    tags: ['park tool', 'derailleur', 'chain', 'cassette', 'drivetrain', 'adjustment', 'repair', 'tutorial'],
+    description: 'Professional shop-style bicycle drivetrain lessons with clear setup, diagnosis, and adjustment steps.',
+    thumbnail: 'https://placehold.co/640x360/dbeafe/1e3a8a?text=Park+Tool+Drivetrain',
+    urlQuery: 'Park Tool derailleur adjustment chain cassette drivetrain repair'
   },
   {
+    id: 'park-tool-brakes',
+    title: 'Park Tool: brake adjustment, pads, rotors, and hydraulic service',
+    channelName: 'Park Tool',
     source: 'youtube',
-    title: 'Johnny Nerd Out and Grin Technologies e-bike results',
-    description: 'E-bike battery, controller, wiring, motor, and conversion troubleshooting.',
-    thumbnail: 'https://placehold.co/640x360/dbeafe/1e3a8a?text=E-Bike+Videos',
-    baseUrl: 'https://www.youtube.com/results?search_query='
+    concepts: ['brakes'],
+    tags: ['park tool', 'brake', 'brakes', 'pads', 'rotor', 'caliper', 'hydraulic', 'bleed', 'torque'],
+    description: 'Structured brake repair searches for rim brakes, disc brakes, pad alignment, rotors, and hydraulic service.',
+    thumbnail: 'https://placehold.co/640x360/e0f2fe/075985?text=Park+Tool+Brakes',
+    urlQuery: 'Park Tool bicycle brake adjustment disc brake pads rotor hydraulic bleed'
   },
   {
+    id: 'rj-bike-guy-problem-solving',
+    title: 'RJ The Bike Guy: practical bicycle repair problem solving',
+    channelName: 'RJ The Bike Guy',
+    source: 'youtube',
+    concepts: ['drivetrain', 'brakes'],
+    tags: ['rj the bike guy', 'repair', 'problem solving', 'cheap fix', 'derailleur', 'brake', 'bearing', 'wheel'],
+    description: 'Hands-on repairs and diagnostics for real bikes, useful when the problem is messy or parts are older.',
+    thumbnail: 'https://placehold.co/640x360/ecfccb/365314?text=RJ+The+Bike+Guy',
+    urlQuery: 'RJ The Bike Guy bicycle repair derailleur brake troubleshooting'
+  },
+  {
+    id: 'gcn-tech-standards',
+    title: 'GCN Tech: bike standards, setup, torque, and component explainers',
+    channelName: 'GCN Tech',
+    source: 'youtube',
+    concepts: ['drivetrain', 'brakes'],
+    tags: ['gcn tech', 'torque', 'standards', 'setup', 'explain', 'drivetrain', 'brakes', 'maintenance'],
+    description: 'Polished explainers that help connect repair steps to bike standards, torque, compatibility, and setup.',
+    thumbnail: 'https://placehold.co/640x360/fef3c7/92400e?text=GCN+Tech',
+    urlQuery: 'GCN Tech bicycle torque drivetrain brakes maintenance setup'
+  },
+  {
+    id: 'berm-peak-builds',
+    title: 'Berm Peak: real-world mountain bike builds and failure testing',
+    channelName: 'Berm Peak',
+    source: 'youtube',
+    concepts: ['drivetrain', 'suspension'],
+    tags: ['berm peak', 'mountain bike', 'build', 'trail', 'suspension', 'drivetrain', 'test'],
+    description: 'Builds, trail testing, and practical MTB decisions that make repairs feel connected to real riding.',
+    thumbnail: 'https://placehold.co/640x360/dcfce7/166534?text=Berm+Peak+Builds',
+    urlQuery: 'Berm Peak mountain bike build suspension drivetrain repair'
+  },
+  {
+    id: 'johnny-nerd-out-controller',
+    title: 'Johnny Nerd Out: e-bike controller, throttle, wiring, and conversions',
+    channelName: 'Johnny Nerd Out',
+    source: 'youtube',
+    concepts: ['motor', 'battery'],
+    tags: ['johnny nerd out', 'ebike', 'e-bike', 'controller', 'throttle', 'wiring', 'conversion', 'motor'],
+    description: 'DIY e-bike conversion searches focused on controllers, throttles, wiring harnesses, kits, and troubleshooting.',
+    thumbnail: 'https://placehold.co/640x360/ede9fe/5b21b6?text=Johnny+Nerd+Out',
+    urlQuery: 'Johnny Nerd Out ebike controller throttle wiring conversion troubleshooting'
+  },
+  {
+    id: 'grin-technologies-motor-systems',
+    title: 'Grin Technologies: e-bike motors, batteries, and system physics',
+    channelName: 'Grin Technologies',
+    source: 'youtube',
+    concepts: ['motor', 'battery'],
+    tags: ['grin technologies', 'ebikes.ca', 'ebike', 'motor', 'battery', 'controller', 'torque', 'efficiency', 'voltage'],
+    description: 'Advanced e-bike system lessons for motor behavior, battery limits, controller choices, and efficiency tradeoffs.',
+    thumbnail: 'https://placehold.co/640x360/fae8ff/86198f?text=Grin+Technologies',
+    urlQuery: 'Grin Technologies ebike motor battery controller efficiency torque'
+  },
+  {
+    id: 'rocky-mountain-atv-shop',
+    title: 'Rocky Mountain ATV MC: dirt bike maintenance, engines, and suspension',
+    channelName: 'Rocky Mountain ATV MC',
+    source: 'youtube',
+    concepts: ['suspension'],
+    tags: ['rocky mountain atv mc', 'dirt bike', 'motorcycle', 'engine', 'suspension', 'fork', 'maintenance', 'rebuild'],
+    description: 'The closest dirt-bike equivalent to shop-class tutorials: tools, service intervals, rebuilds, and upgrades.',
+    thumbnail: 'https://placehold.co/640x360/fee2e2/991b1b?text=Rocky+Mountain+ATV+MC',
+    urlQuery: 'Rocky Mountain ATV MC dirt bike maintenance engine suspension rebuild tutorial'
+  },
+  {
+    id: 'dirt-bike-channel-decisions',
+    title: 'DirtBikeChannel: real-world dirt bike maintenance decisions',
+    channelName: 'DirtBikeChannel',
+    source: 'youtube',
+    concepts: ['suspension'],
+    tags: ['dirtbikechannel', 'dirt bike', 'maintenance', 'upgrade', 'trail', 'suspension', 'engine'],
+    description: 'Real-world riding and maintenance decisions that help connect shop work to what happens on the trail.',
+    thumbnail: 'https://placehold.co/640x360/ffedd5/9a3412?text=DirtBikeChannel',
+    urlQuery: 'DirtBikeChannel dirt bike maintenance suspension upgrade decisions'
+  },
+  {
+    id: 'learn-electronics-repair-diagnostics',
+    title: 'Learn Electronics Repair: MOSFETs, capacitors, boards, and diagnostics',
+    channelName: 'Learn Electronics Repair',
+    source: 'youtube',
+    concepts: ['motor', 'battery'],
+    tags: ['learn electronics repair', 'mosfet', 'capacitor', 'multimeter', 'circuit', 'controller', 'diagnostics', 'repair'],
+    description: 'Core electronics diagnostics for understanding why controllers, battery boards, and power circuits fail.',
+    thumbnail: 'https://placehold.co/640x360/ccfbf1/115e59?text=Electronics+Diagnostics',
+    urlQuery: 'Learn Electronics Repair MOSFET capacitor controller diagnostics multimeter'
+  },
+  {
+    id: 'big-clive-reverse-engineering',
+    title: 'Big Clive: reverse engineering and electrical failure analysis',
+    channelName: 'Big Clive',
+    source: 'youtube',
+    concepts: ['battery', 'motor'],
+    tags: ['big clive', 'reverse engineering', 'electronics', 'failure', 'circuit', 'power', 'battery', 'wiring'],
+    description: 'Clear electrical teardown searches that build intuition for circuits, power paths, and failure modes.',
+    thumbnail: 'https://placehold.co/640x360/cffafe/155e75?text=Big+Clive',
+    urlQuery: 'Big Clive reverse engineering electronics power failure battery wiring'
+  },
+  {
+    id: 'vimeo-bike-technique',
+    title: 'Vimeo: technical bike repair and maintenance lectures',
+    channelName: 'Vimeo',
     source: 'vimeo',
-    title: 'Vimeo technical bike and repair videos',
-    description: 'Alternate video source for bike mechanics, build planning, and repair.',
-    thumbnail: 'https://placehold.co/640x360/dbeafe/1e3a8a?text=Vimeo+Videos',
-    baseUrl: 'https://vimeo.com/search?q='
+    concepts: ['drivetrain', 'brakes'],
+    tags: ['vimeo', 'bike repair', 'maintenance', 'drivetrain', 'brakes', 'lecture', 'training'],
+    description: 'Alternate source for longer-form or course-like bike repair videos outside YouTube.',
+    thumbnail: 'https://placehold.co/640x360/dbeafe/1e40af?text=Vimeo+Bike+Repair',
+    urlQuery: 'bicycle repair maintenance drivetrain brakes training'
   },
   {
+    id: 'archive-shop-class',
+    title: 'Internet Archive: bicycle and motorcycle shop-class media',
+    channelName: 'Internet Archive',
     source: 'internet_archive',
-    title: 'Internet Archive bicycle and motorcycle repair media',
-    description: 'Archival shop, maintenance, and educational repair videos.',
-    thumbnail: 'https://placehold.co/640x360/e0f2fe/075985?text=Archive+Videos',
-    baseUrl: 'https://archive.org/search?query='
+    concepts: ['drivetrain', 'brakes'],
+    tags: ['archive', 'shop class', 'bicycle', 'motorcycle', 'maintenance', 'repair', 'training'],
+    description: 'Archival repair and shop-class media for slower, deeper background learning.',
+    thumbnail: 'https://placehold.co/640x360/e0f2fe/075985?text=Archive+Shop+Class',
+    urlQuery: 'bicycle motorcycle repair maintenance shop class'
   }
 ];
 
 function normalize(value) {
-  return String(value || '').toLowerCase();
+  return String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
 }
 
-function getConcepts(video) {
-  const text = normalize(`${video.title} ${video.description}`);
-  return Object.entries(CONCEPT_KEYWORDS)
-    .filter(([, keywords]) => keywords.some((keyword) => text.includes(keyword)))
+function tokenize(value) {
+  return normalize(value)
+    .split(/\s+/)
+    .filter((token) => token.length >= 3);
+}
+
+function sourceSearchUrl(entry, query) {
+  const searchQuery = `${entry.urlQuery} ${query}`.trim();
+  if (entry.source === 'vimeo') {
+    return `https://vimeo.com/search?q=${encodeURIComponent(searchQuery)}`;
+  }
+  if (entry.source === 'internet_archive') {
+    return `https://archive.org/search?query=${encodeURIComponent(searchQuery)}&and[]=mediatype%3A%22movies%22`;
+  }
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
+}
+
+function getConcepts(entry) {
+  const text = normalize(`${entry.title} ${entry.description} ${(entry.tags || []).join(' ')}`);
+  const concepts = Object.entries(CONCEPT_KEYWORDS)
+    .filter(([, keywords]) => keywords.some((keyword) => text.includes(normalize(keyword))))
     .map(([concept]) => concept);
+
+  return concepts.length > 0 ? concepts : entry.concepts || [];
 }
 
-function scoreVideo(video, query) {
-  const normalizedQuery = normalize(query);
-  let score = 0;
+function scoreEntry(entry, query) {
+  const queryTokens = tokenize(query);
+  const haystack = normalize(`${entry.title} ${entry.description} ${(entry.tags || []).join(' ')} ${entry.channelName}`);
 
-  if (normalizedQuery && normalize(video.title).includes(normalizedQuery)) score += 5;
-  if (video.concepts.length > 0) score += 3;
-  if (video.source === 'vimeo') score += 3;
-  if (video.source === 'youtube') score += 2;
-  if (video.source === 'internet_archive') score += 1;
+  const tokenScore = queryTokens.reduce((score, token) => (
+    haystack.includes(token) ? score + 2 : score
+  ), 0);
+  const conceptScore = (entry.concepts || []).some((concept) => haystack.includes(concept)) ? 3 : 0;
+  const channelScore = queryTokens.some((token) => normalize(entry.channelName).includes(token)) ? 4 : 0;
 
-  return score;
+  return tokenScore + conceptScore + channelScore + (SOURCE_BONUS[entry.source] || 0);
 }
 
 export function onRequestGet({ request }) {
@@ -69,26 +212,42 @@ export function onRequestGet({ request }) {
     return Response.json({ success: true, total: 0, results: [] });
   }
 
-  const results = SOURCES.map((source, index) => {
-    const sourceQuery = `${query} ${source.title}`;
-    const video = {
-      id: `${source.source}:${index}:${query.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 48)}`,
-      title: source.title,
-      description: source.description,
-      thumbnail: source.thumbnail,
-      url: `${source.baseUrl}${encodeURIComponent(sourceQuery)}`,
-      source: source.source,
-      concepts: []
-    };
+  const results = CURATED_RESULTS
+    .map((entry) => {
+      const concepts = getConcepts(entry);
+      return {
+        id: entry.id,
+        title: entry.title,
+        description: entry.description,
+        thumbnail: entry.thumbnail,
+        url: sourceSearchUrl(entry, query),
+        source: entry.source,
+        channelName: entry.channelName,
+        concepts,
+        score: scoreEntry({ ...entry, concepts }, query)
+      };
+    })
+    .filter((entry) => entry.score >= 5)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10);
 
-    video.concepts = getConcepts(video);
-    video.score = scoreVideo(video, query);
-    return video;
-  }).sort((a, b) => b.score - a.score);
+  const fallbackResults = results.length > 0
+    ? results
+    : CURATED_RESULTS.slice(0, 6).map((entry) => ({
+      id: entry.id,
+      title: entry.title,
+      description: entry.description,
+      thumbnail: entry.thumbnail,
+      url: sourceSearchUrl(entry, query),
+      source: entry.source,
+      channelName: entry.channelName,
+      concepts: getConcepts(entry),
+      score: scoreEntry(entry, query)
+    }));
 
   return Response.json({
     success: true,
-    total: results.length,
-    results
+    total: fallbackResults.length,
+    results: fallbackResults
   });
 }

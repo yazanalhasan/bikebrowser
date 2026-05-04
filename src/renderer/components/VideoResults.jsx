@@ -117,10 +117,16 @@ function VideoResults({ query }) {
                   />
                 </a>
                 <div style={styles.cardBody}>
-                  <div style={styles.source}>{video.source}</div>
+                  <div style={styles.source}>
+                    {video.channelName || video.source}
+                    <span style={styles.sourcePill}>{video.source}</span>
+                  </div>
                   <a href={video.url} target="_blank" rel="noreferrer" style={styles.title}>
                     {video.title}
                   </a>
+                  {video.description && (
+                    <p style={styles.description}>{video.description}</p>
+                  )}
                 </div>
               </article>
             ))}
@@ -205,18 +211,38 @@ const styles = {
     padding: 10
   },
   source: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
     marginBottom: 4,
     color: '#0369a1',
     fontSize: 12,
     fontWeight: 800,
     textTransform: 'uppercase'
   },
+  sourcePill: {
+    flex: '0 0 auto',
+    border: '1px solid #bae6fd',
+    borderRadius: 999,
+    padding: '2px 6px',
+    color: '#075985',
+    background: '#e0f2fe',
+    fontSize: 10
+  },
   title: {
+    display: 'block',
     color: '#0f172a',
     fontSize: 15,
     fontWeight: 800,
     lineHeight: 1.3,
     textDecoration: 'none'
+  },
+  description: {
+    margin: '8px 0 0',
+    color: '#475569',
+    fontSize: 13,
+    lineHeight: 1.35
   }
 };
 
