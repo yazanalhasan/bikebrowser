@@ -158,6 +158,7 @@ function getBreadcrumbText(pathname) {
     '/youtube/search': 'Search Videos',
     '/youtube/watch': 'Watch Video',
     '/project-builder': 'Project Builder',
+    '/current-projects': 'Current Projects',
     '/build-planner': 'Build Planner',
     '/saved-notes': 'Saved Parts / Notes',
     '/shop': 'Shop Materials',

@@ -139,6 +139,38 @@ export const videoQuizzes = {
       }
     ]
   },
+  tXfvW0L3iLM: {
+    title: "Derailleur hanger check",
+    questions: [
+      {
+        prompt: "Why should a hanger be straight before tuning shifting?",
+        choices: [
+          "It helps the derailleur line up with each cassette cog",
+          "It makes the seat taller",
+          "It replaces the need for a chain"
+        ],
+        correctIndex: 0
+      },
+      {
+        prompt: "What kind of problem can a bent hanger cause?",
+        choices: [
+          "The tires become too wide",
+          "The bike shifts badly even after normal adjustment",
+          "The pedals stop turning backward"
+        ],
+        correctIndex: 1
+      },
+      {
+        prompt: "Who should help with hanger alignment if a special tool is needed?",
+        choices: [
+          "Nobody, force it by hand",
+          "A random stranger",
+          "A grown-up or bike mechanic"
+        ],
+        correctIndex: 2
+      }
+    ]
+  },
   MuwS_nSevy4: {
     title: "Chain cleaning check",
     questions: [

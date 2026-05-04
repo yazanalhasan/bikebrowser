@@ -80,6 +80,17 @@ const CURATED_RESULTS = [
     thumbnail: 'https://i.ytimg.com/vi/MuwS_nSevy4/hqdefault.jpg'
   },
   {
+    id: 'park-tool-hanger-alignment',
+    title: 'Park Tool: derailleur hanger alignment for better shifting',
+    channelName: 'Park Tool',
+    source: 'youtube',
+    videoId: 'tXfvW0L3iLM',
+    concepts: ['drivetrain', 'shop_class'],
+    tags: ['park tool', 'derailleur hanger', 'hanger alignment', 'DAG', 'wide range cassette', 'large cassette', 'shifting', 'drivetrain', 'maintenance', 'installation'],
+    description: 'Check hanger alignment before tuning a wide-range cassette so the chain tracks cleanly through every gear.',
+    thumbnail: 'https://i.ytimg.com/vi/tXfvW0L3iLM/hqdefault.jpg'
+  },
+  {
     id: 'park-tool-brakes',
     title: 'Park Tool: brake adjustment, pads, rotors, and hydraulic service',
     channelName: 'Park Tool',

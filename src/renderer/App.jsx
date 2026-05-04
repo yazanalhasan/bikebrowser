@@ -13,6 +13,7 @@ import HomePage from './pages/HomePage';
 const YouTubeSearchView = lazy(() => import('./pages/YouTubeSearchView'));
 const VideoWatchPage = lazy(() => import('./pages/VideoWatchPage'));
 const ProjectBuilderPage = lazy(() => import('./pages/ProjectBuilderPage'));
+const CurrentProjectsPage = lazy(() => import('./pages/CurrentProjectsPage'));
 const SafeSearchPage = lazy(() => import('./pages/SafeSearchPage'));
 const ShoppingPage = lazy(() => import('./pages/ShoppingPage'));
 const BuildPlannerPage = lazy(() => import('./pages/BuildPlannerPage'));
@@ -70,6 +71,7 @@ function AppContent() {
           <Route path="/youtube/search" element={<YouTubeSearchView />} />
           <Route path="/youtube/watch/:videoId" element={<VideoWatchPage />} />
           <Route path="/project-builder" element={<ProjectBuilderPage />} />
+          <Route path="/current-projects" element={<CurrentProjectsPage />} />
           <Route path="/build-planner" element={<BuildPlannerPage />} />
           <Route path="/saved-notes" element={<AllProjectNotesPage />} />
           <Route path="/shop" element={<ShoppingPage />} />

@@ -22,6 +22,14 @@ function HomePage() {
 
   const utilityTiles = [
     {
+      id: 'current-projects',
+      title: 'Current Projects',
+      subtitle: 'Purchased parts, install plan & videos',
+      emoji: '🧰',
+      isCurrentProjects: true,
+      color: 'from-amber-400 to-blue-500'
+    },
+    {
       id: 'project-builder',
       title: 'Project Builder',
       subtitle: 'Guided tutorials & missions',
@@ -137,6 +145,8 @@ function HomePage() {
               onClick={() => {
                 if (topic.isSpecial) {
                   navigate('/project-builder');
+                } else if (topic.isCurrentProjects) {
+                  navigate('/current-projects');
                 } else if (topic.isBuildPlanner) {
                   navigate('/build-planner');
                 } else if (topic.isShop) {
