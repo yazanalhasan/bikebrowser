@@ -9,165 +9,152 @@ const CONCEPT_KEYWORDS = {
 };
 
 const SOURCE_BONUS = {
-  vimeo: 3,
-  youtube: 2,
-  internet_archive: 1
+  youtube: 2
 };
 
 const CURATED_RESULTS = [
   {
     id: 'build-planning-toolkit',
     title: 'Build Planning: parts, tools, torque, and compatibility checklist',
-    channelName: 'BikeBrowser Curated Build Plan',
+    channelName: 'Park Tool',
     source: 'youtube',
+    videoId: 'UkZxPIZ1ngY',
     concepts: ['build_planning'],
     tags: ['build planning', 'parts', 'compatibility', 'tools', 'torque', 'step by step', 'assembly', 'checklist'],
-    description: 'A curated search path for planning a bike or e-bike build before buying parts or turning wrenches.',
-    thumbnail: 'https://placehold.co/640x360/fef9c3/854d0e?text=Build+Planning',
-    urlQuery: 'Park Tool Johnny Nerd Out bike build parts compatibility tools torque step by step checklist'
+    description: 'Start build planning with the core repair skill: identify parts, understand adjustments, and plan the tools before turning bolts.',
+    thumbnail: 'https://i.ytimg.com/vi/UkZxPIZ1ngY/hqdefault.jpg'
   },
   {
     id: 'park-tool-drivetrain',
     title: 'Park Tool: derailleur, chain, cassette, and drivetrain repair',
     channelName: 'Park Tool',
     source: 'youtube',
+    videoId: 'UkZxPIZ1ngY',
     concepts: ['drivetrain'],
     tags: ['park tool', 'derailleur', 'chain', 'cassette', 'drivetrain', 'adjustment', 'repair', 'tutorial'],
     description: 'Professional shop-style bicycle drivetrain lessons with clear setup, diagnosis, and adjustment steps.',
-    thumbnail: 'https://placehold.co/640x360/dbeafe/1e3a8a?text=Park+Tool+Drivetrain',
-    urlQuery: 'Park Tool derailleur adjustment chain cassette drivetrain repair'
+    thumbnail: 'https://i.ytimg.com/vi/UkZxPIZ1ngY/hqdefault.jpg'
   },
   {
     id: 'park-tool-brakes',
     title: 'Park Tool: brake adjustment, pads, rotors, and hydraulic service',
     channelName: 'Park Tool',
     source: 'youtube',
+    videoId: 'mAEeAKmCLFU',
     concepts: ['brakes'],
     tags: ['park tool', 'brake', 'brakes', 'pads', 'rotor', 'caliper', 'hydraulic', 'bleed', 'torque'],
     description: 'Structured brake repair searches for rim brakes, disc brakes, pad alignment, rotors, and hydraulic service.',
-    thumbnail: 'https://placehold.co/640x360/e0f2fe/075985?text=Park+Tool+Brakes',
-    urlQuery: 'Park Tool bicycle brake adjustment disc brake pads rotor hydraulic bleed'
+    thumbnail: 'https://i.ytimg.com/vi/mAEeAKmCLFU/hqdefault.jpg'
   },
   {
     id: 'rj-bike-guy-problem-solving',
     title: 'RJ The Bike Guy: practical bicycle repair problem solving',
     channelName: 'RJ The Bike Guy',
     source: 'youtube',
+    videoId: 'gwBQxhZhKnE',
     concepts: ['drivetrain', 'brakes'],
     tags: ['rj the bike guy', 'repair', 'problem solving', 'cheap fix', 'derailleur', 'brake', 'bearing', 'wheel'],
     description: 'Hands-on repairs and diagnostics for real bikes, useful when the problem is messy or parts are older.',
-    thumbnail: 'https://placehold.co/640x360/ecfccb/365314?text=RJ+The+Bike+Guy',
-    urlQuery: 'RJ The Bike Guy bicycle repair derailleur brake troubleshooting'
+    thumbnail: 'https://i.ytimg.com/vi/gwBQxhZhKnE/hqdefault.jpg'
   },
   {
     id: 'gcn-tech-standards',
     title: 'GCN Tech: bike standards, setup, torque, and component explainers',
     channelName: 'GCN Tech',
     source: 'youtube',
+    videoId: 'wQFfPvmYCfY',
     concepts: ['drivetrain', 'brakes'],
     tags: ['gcn tech', 'torque', 'standards', 'setup', 'explain', 'drivetrain', 'brakes', 'maintenance'],
     description: 'Polished explainers that help connect repair steps to bike standards, torque, compatibility, and setup.',
-    thumbnail: 'https://placehold.co/640x360/fef3c7/92400e?text=GCN+Tech',
-    urlQuery: 'GCN Tech bicycle torque drivetrain brakes maintenance setup'
+    thumbnail: 'https://i.ytimg.com/vi/wQFfPvmYCfY/hqdefault.jpg'
   },
   {
     id: 'berm-peak-builds',
     title: 'Berm Peak: real-world mountain bike builds and failure testing',
     channelName: 'Berm Peak',
     source: 'youtube',
+    videoId: 'XCv0n0sPWJk',
     concepts: ['drivetrain', 'suspension'],
     tags: ['berm peak', 'mountain bike', 'build', 'trail', 'suspension', 'drivetrain', 'test'],
     description: 'Builds, trail testing, and practical MTB decisions that make repairs feel connected to real riding.',
-    thumbnail: 'https://placehold.co/640x360/dcfce7/166534?text=Berm+Peak+Builds',
-    urlQuery: 'Berm Peak mountain bike build suspension drivetrain repair'
+    thumbnail: 'https://i.ytimg.com/vi/XCv0n0sPWJk/hqdefault.jpg'
   },
   {
     id: 'johnny-nerd-out-controller',
     title: 'Johnny Nerd Out: e-bike controller, throttle, wiring, and conversions',
-    channelName: 'Johnny Nerd Out',
+    channelName: 'JohnnyNerdOut',
     source: 'youtube',
+    videoId: 'WJ95ZmqEsss',
     concepts: ['motor', 'battery'],
     tags: ['johnny nerd out', 'ebike', 'e-bike', 'controller', 'throttle', 'wiring', 'conversion', 'motor'],
     description: 'DIY e-bike conversion searches focused on controllers, throttles, wiring harnesses, kits, and troubleshooting.',
-    thumbnail: 'https://placehold.co/640x360/ede9fe/5b21b6?text=Johnny+Nerd+Out',
-    urlQuery: 'Johnny Nerd Out ebike controller throttle wiring conversion troubleshooting'
+    thumbnail: 'https://i.ytimg.com/vi/WJ95ZmqEsss/hqdefault.jpg'
   },
   {
     id: 'grin-technologies-motor-systems',
     title: 'Grin Technologies: e-bike motors, batteries, and system physics',
     channelName: 'Grin Technologies',
     source: 'youtube',
+    videoId: 'CGGcfw1BU-Q',
     concepts: ['motor', 'battery'],
     tags: ['grin technologies', 'ebikes.ca', 'ebike', 'motor', 'battery', 'controller', 'torque', 'efficiency', 'voltage'],
     description: 'Advanced e-bike system lessons for motor behavior, battery limits, controller choices, and efficiency tradeoffs.',
-    thumbnail: 'https://placehold.co/640x360/fae8ff/86198f?text=Grin+Technologies',
-    urlQuery: 'Grin Technologies ebike motor battery controller efficiency torque'
+    thumbnail: 'https://i.ytimg.com/vi/CGGcfw1BU-Q/hqdefault.jpg'
   },
   {
     id: 'rocky-mountain-atv-shop',
     title: 'Rocky Mountain ATV MC: dirt bike maintenance, engines, and suspension',
     channelName: 'Rocky Mountain ATV MC',
     source: 'youtube',
+    videoId: 'ZJFN9M_EoRM',
     concepts: ['suspension'],
     tags: ['rocky mountain atv mc', 'dirt bike', 'motorcycle', 'engine', 'suspension', 'fork', 'maintenance', 'rebuild'],
     description: 'The closest dirt-bike equivalent to shop-class tutorials: tools, service intervals, rebuilds, and upgrades.',
-    thumbnail: 'https://placehold.co/640x360/fee2e2/991b1b?text=Rocky+Mountain+ATV+MC',
-    urlQuery: 'Rocky Mountain ATV MC dirt bike maintenance engine suspension rebuild tutorial'
+    thumbnail: 'https://i.ytimg.com/vi/ZJFN9M_EoRM/hqdefault.jpg'
   },
   {
     id: 'dirt-bike-channel-decisions',
-    title: 'DirtBikeChannel: real-world dirt bike maintenance decisions',
-    channelName: 'DirtBikeChannel',
+    title: 'Dirt bike suspension tips and real-world maintenance decisions',
+    channelName: 'Dirt Bike TV',
     source: 'youtube',
+    videoId: 'db5oAAAUVm0',
     concepts: ['suspension'],
     tags: ['dirtbikechannel', 'dirt bike', 'maintenance', 'upgrade', 'trail', 'suspension', 'engine'],
     description: 'Real-world riding and maintenance decisions that help connect shop work to what happens on the trail.',
-    thumbnail: 'https://placehold.co/640x360/ffedd5/9a3412?text=DirtBikeChannel',
-    urlQuery: 'DirtBikeChannel dirt bike maintenance suspension upgrade decisions'
+    thumbnail: 'https://i.ytimg.com/vi/db5oAAAUVm0/hqdefault.jpg'
   },
   {
     id: 'learn-electronics-repair-diagnostics',
     title: 'Learn Electronics Repair: MOSFETs, capacitors, boards, and diagnostics',
     channelName: 'Learn Electronics Repair',
     source: 'youtube',
+    videoId: 'zIzEm-YDdyA',
     concepts: ['motor', 'battery'],
     tags: ['learn electronics repair', 'mosfet', 'capacitor', 'multimeter', 'circuit', 'controller', 'diagnostics', 'repair'],
     description: 'Core electronics diagnostics for understanding why controllers, battery boards, and power circuits fail.',
-    thumbnail: 'https://placehold.co/640x360/ccfbf1/115e59?text=Electronics+Diagnostics',
-    urlQuery: 'Learn Electronics Repair MOSFET capacitor controller diagnostics multimeter'
+    thumbnail: 'https://i.ytimg.com/vi/zIzEm-YDdyA/hqdefault.jpg'
   },
   {
     id: 'big-clive-reverse-engineering',
     title: 'Big Clive: reverse engineering and electrical failure analysis',
-    channelName: 'Big Clive',
+    channelName: 'bigclivedotcom',
     source: 'youtube',
+    videoId: 'JEczJP7UoRU',
     concepts: ['battery', 'motor'],
     tags: ['big clive', 'reverse engineering', 'electronics', 'failure', 'circuit', 'power', 'battery', 'wiring'],
     description: 'Clear electrical teardown searches that build intuition for circuits, power paths, and failure modes.',
-    thumbnail: 'https://placehold.co/640x360/cffafe/155e75?text=Big+Clive',
-    urlQuery: 'Big Clive reverse engineering electronics power failure battery wiring'
+    thumbnail: 'https://i.ytimg.com/vi/JEczJP7UoRU/hqdefault.jpg'
   },
   {
-    id: 'vimeo-bike-technique',
-    title: 'Vimeo: technical bike repair and maintenance lectures',
-    channelName: 'Vimeo',
-    source: 'vimeo',
-    concepts: ['drivetrain', 'brakes'],
-    tags: ['vimeo', 'bike repair', 'maintenance', 'drivetrain', 'brakes', 'lecture', 'training'],
-    description: 'Alternate source for longer-form or course-like bike repair videos outside YouTube.',
-    thumbnail: 'https://placehold.co/640x360/dbeafe/1e40af?text=Vimeo+Bike+Repair',
-    urlQuery: 'bicycle repair maintenance drivetrain brakes training'
-  },
-  {
-    id: 'archive-shop-class',
-    title: 'Internet Archive: bicycle and motorcycle shop-class media',
-    channelName: 'Internet Archive',
-    source: 'internet_archive',
+    id: 'shop-class-bike-repair',
+    title: 'Shop-class bike repair: repair training and maintenance practice',
+    channelName: 'RJ The Bike Guy',
+    source: 'youtube',
+    videoId: 'gwBQxhZhKnE',
     concepts: ['shop_class', 'drivetrain', 'brakes'],
-    tags: ['archive', 'shop class', 'bicycle', 'motorcycle', 'maintenance', 'repair', 'training'],
-    description: 'Archival repair and shop-class media for slower, deeper background learning.',
-    thumbnail: 'https://placehold.co/640x360/e0f2fe/075985?text=Archive+Shop+Class',
-    urlQuery: 'bicycle motorcycle repair maintenance shop class'
+    tags: ['shop class', 'bicycle', 'maintenance', 'repair', 'training', 'derailleur', 'brake'],
+    description: 'A shop-class style entry point for practicing diagnosis, maintenance steps, and clear repair thinking inside BikeBrowser.',
+    thumbnail: 'https://i.ytimg.com/vi/gwBQxhZhKnE/hqdefault.jpg'
   }
 ];
 
@@ -184,15 +171,8 @@ function tokenize(value) {
     .filter((token) => token.length >= 3);
 }
 
-function sourceSearchUrl(entry, query) {
-  const searchQuery = `${entry.urlQuery} ${query}`.trim();
-  if (entry.source === 'vimeo') {
-    return `https://vimeo.com/search?q=${encodeURIComponent(searchQuery)}`;
-  }
-  if (entry.source === 'internet_archive') {
-    return `https://archive.org/search?query=${encodeURIComponent(searchQuery)}&and[]=mediatype%3A%22movies%22`;
-  }
-  return `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
+function internalWatchUrl(entry) {
+  return `/youtube/watch/${encodeURIComponent(entry.videoId)}`;
 }
 
 function getConcepts(entry) {
@@ -233,7 +213,8 @@ export function onRequestGet({ request }) {
         title: entry.title,
         description: entry.description,
         thumbnail: entry.thumbnail,
-        url: sourceSearchUrl(entry, query),
+        url: internalWatchUrl(entry),
+        videoId: entry.videoId,
         source: entry.source,
         channelName: entry.channelName,
         concepts,
@@ -251,7 +232,8 @@ export function onRequestGet({ request }) {
       title: entry.title,
       description: entry.description,
       thumbnail: entry.thumbnail,
-      url: sourceSearchUrl(entry, query),
+      url: internalWatchUrl(entry),
+      videoId: entry.videoId,
       source: entry.source,
       channelName: entry.channelName,
       concepts: getConcepts(entry),

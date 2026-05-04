@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import YouTubePlayer from '../components/YouTubePlayer';
+import { isPublicPagesHost } from '../utils/runtimeMode';
 
 // Mobile embeds through the Cloudflare tunnel need more time to initialize
 const WATCH_PLAYER_TIMEOUT_MS = 10000;
@@ -13,6 +14,7 @@ function VideoWatchPage() {
   const initialVideo = location.state?.initialVideo?.videoId === videoId
     ? location.state.initialVideo
     : null;
+  const publicPagesHost = isPublicPagesHost();
   
   const [videoDetails, setVideoDetails] = useState(initialVideo);
   const [loading, setLoading] = useState(!initialVideo);
@@ -172,12 +174,21 @@ function VideoWatchPage() {
                 <p className="max-w-md text-sm text-gray-300">
                   {failureReason || 'This video appears to block in-app embeds. Open it on YouTube instead of showing a broken player screen.'}
                 </p>
-                <button
-                  onClick={handleOpenOnYouTube}
-                  className="rounded-lg bg-red-600 px-4 py-2 font-semibold hover:bg-red-500"
-                >
-                  Watch on YouTube
-                </button>
+                {publicPagesHost ? (
+                  <button
+                    onClick={handleBack}
+                    className="rounded-lg bg-blue-600 px-4 py-2 font-semibold hover:bg-blue-500"
+                  >
+                    Back to BikeBrowser results
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleOpenOnYouTube}
+                    className="rounded-lg bg-red-600 px-4 py-2 font-semibold hover:bg-red-500"
+                  >
+                    Watch on YouTube
+                  </button>
+                )}
               </div>
             ) : (
               <YouTubePlayer
@@ -193,16 +204,20 @@ function VideoWatchPage() {
 
         <div className="mt-4 flex items-center justify-between gap-4 rounded-xl bg-gray-800 px-4 py-3 text-white">
           <p className="text-sm text-gray-200">
-            Videos that block embedding will fall back to an external YouTube open instead of showing a broken player.
+            {publicPagesHost
+              ? 'BikeBrowser keeps curated videos inside the site. If an embed is blocked, choose another curated result.'
+              : 'Videos that block embedding can be opened externally during local desktop use.'}
           </p>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleOpenOnYouTube}
-              className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-500"
-            >
-              Open on YouTube
-            </button>
-          </div>
+          {!publicPagesHost && (
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleOpenOnYouTube}
+                className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-500"
+              >
+                Open on YouTube
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Video Info */}

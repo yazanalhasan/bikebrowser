@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const API_CANDIDATES = ['', 'http://localhost:3001'];
 
@@ -9,7 +10,7 @@ const CONCEPT_LABELS = {
   battery: 'Battery',
   suspension: 'Suspension',
   build_planning: 'Build Planning',
-  shop_class: 'Shop Class Archive',
+  shop_class: 'Shop Class Lessons',
   uncategorized: 'Other Videos'
 };
 
@@ -110,22 +111,50 @@ function VideoResults({ query }) {
           <div style={styles.grid}>
             {conceptVideos.map((video) => (
               <article key={`${video.source}:${video.id}`} style={styles.card}>
-                <a href={video.url} target="_blank" rel="noreferrer" style={styles.thumbnailLink}>
+                <Link
+                  to={video.videoId ? `/youtube/watch/${encodeURIComponent(video.videoId)}` : '#'}
+                  state={video.videoId ? {
+                    initialVideo: {
+                      videoId: video.videoId,
+                      title: video.title,
+                      channelName: video.channelName,
+                      description: video.description,
+                      thumbnail: video.thumbnail,
+                      embeddable: true,
+                      score: video.score
+                    }
+                  } : undefined}
+                  style={styles.thumbnailLink}
+                >
                   <img
                     src={video.thumbnail}
                     alt=""
                     style={styles.thumbnail}
                     loading="lazy"
                   />
-                </a>
+                </Link>
                 <div style={styles.cardBody}>
                   <div style={styles.source}>
                     {video.channelName || video.source}
                     <span style={styles.sourcePill}>{video.source}</span>
                   </div>
-                  <a href={video.url} target="_blank" rel="noreferrer" style={styles.title}>
+                  <Link
+                    to={video.videoId ? `/youtube/watch/${encodeURIComponent(video.videoId)}` : '#'}
+                    state={video.videoId ? {
+                      initialVideo: {
+                        videoId: video.videoId,
+                        title: video.title,
+                        channelName: video.channelName,
+                        description: video.description,
+                        thumbnail: video.thumbnail,
+                        embeddable: true,
+                        score: video.score
+                      }
+                    } : undefined}
+                    style={styles.title}
+                  >
                     {video.title}
-                  </a>
+                  </Link>
                   {video.description && (
                     <p style={styles.description}>{video.description}</p>
                   )}

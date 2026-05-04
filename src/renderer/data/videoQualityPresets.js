@@ -70,14 +70,14 @@ export const VIDEO_QUALITY_PRESETS = [
     helper: 'Tools, compatibility, and step-by-step builds'
   },
   {
-    id: 'shop-class-archive',
-    label: 'Shop Class Archive',
-    tileTitle: 'Shop Class Archive',
-    tileSubtitle: 'Longer lessons and reference media',
-    tileEmoji: '📼',
+    id: 'shop-class-lessons',
+    label: 'Shop Class Lessons',
+    tileTitle: 'Shop Class Lessons',
+    tileSubtitle: 'Repair training inside BikeBrowser',
+    tileEmoji: '🏫',
     tileColor: 'from-slate-400 to-slate-600',
-    query: 'Internet Archive Vimeo bicycle motorcycle repair maintenance shop class training',
-    helper: 'Archival and course-like maintenance videos'
+    query: 'RJ The Bike Guy Park Tool bicycle motorcycle repair maintenance shop class training',
+    helper: 'Shop-class style repair and maintenance practice'
   }
 ];
 
