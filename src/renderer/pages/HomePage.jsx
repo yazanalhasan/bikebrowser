@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import TopicTile from '../components/TopicTile';
 import { useLearningStore } from '../learning/learningStore';
 import { CATEGORIES } from '../learning/topics';
-import { VIDEO_QUALITY_PRESETS } from '../data/videoQualityPresets';
+import { VIDEO_TOPIC_TILES } from '../data/videoQualityPresets';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ function HomePage() {
     navigate(`/youtube/search?q=${encodeURIComponent(topic)}&fast=1`);
   };
 
-  const topics = [
+  const utilityTiles = [
     {
       id: 'project-builder',
       title: 'Project Builder',
@@ -57,59 +57,13 @@ function HomePage() {
       id: 'zaydan-spelling-trainer',
       title: "Zaydan's Spelling Trainer",
       subtitle: 'Practice spelling and worksheets',
-      emoji: 'ðŸ”¤',
+      emoji: '🔤',
       isSpellingTrainer: true,
       color: 'from-indigo-400 to-sky-500'
-    },
-    {
-      id: 'bikes',
-      title: 'Bikes',
-      subtitle: 'Learn about regular bikes',
-      emoji: '🚴',
-      query: VIDEO_QUALITY_PRESETS.find((preset) => preset.id === 'bike-mechanics').query,
-      color: 'from-blue-400 to-blue-600'
-    },
-    {
-      id: 'ebikes',
-      title: 'E-Bikes',
-      subtitle: 'Motors, batteries & builds',
-      emoji: '⚡',
-      query: VIDEO_QUALITY_PRESETS.find((preset) => preset.id === 'ebike-power').query,
-      color: 'from-green-400 to-green-600'
-    },
-    {
-      id: 'dirtbikes',
-      title: 'Dirt Bikes',
-      subtitle: 'Shop maintenance & rebuilds',
-      emoji: '🏍️',
-      query: VIDEO_QUALITY_PRESETS.find((preset) => preset.id === 'dirt-bike-shop').query,
-      color: 'from-orange-400 to-orange-600'
-    },
-    {
-      id: 'mountain',
-      title: 'Mountain Bikes',
-      subtitle: 'Trail riding & builds',
-      emoji: '⛰️',
-      query: 'Berm Peak GMBN mountain bike suspension brakes drivetrain setup tutorial',
-      color: 'from-purple-400 to-purple-600'
-    },
-    {
-      id: 'bmx',
-      title: 'BMX',
-      subtitle: 'Tricks and repairs',
-      emoji: '🛹',
-      query: 'BMX bike tutorial',
-      color: 'from-red-400 to-red-600'
-    },
-    {
-      id: 'building',
-      title: 'Building & Parts',
-      subtitle: 'Build your own bike',
-      emoji: '🔧',
-      query: VIDEO_QUALITY_PRESETS.find((preset) => preset.id === 'build-planning').query,
-      color: 'from-yellow-400 to-yellow-600'
     }
   ];
+
+  const topics = [...utilityTiles, ...VIDEO_TOPIC_TILES];
 
   return (
     <div data-testid="home-page" className="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">

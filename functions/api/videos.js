@@ -3,7 +3,9 @@ const CONCEPT_KEYWORDS = {
   brakes: ['brake', 'brakes', 'rotor', 'caliper', 'brake pad', 'hydraulic', 'bleed'],
   motor: ['motor', 'hub motor', 'mid drive', 'mid-drive', 'brushless', 'controller', 'throttle'],
   battery: ['battery', 'bms', 'lithium', 'voltage', 'charger', 'cells', 'wiring'],
-  suspension: ['suspension', 'fork', 'shock', 'damper', 'stanchion', 'travel', 'rebuild']
+  suspension: ['suspension', 'fork', 'shock', 'damper', 'stanchion', 'travel', 'rebuild'],
+  build_planning: ['build', 'parts', 'compatibility', 'tools', 'torque', 'step by step', 'assembly'],
+  shop_class: ['shop class', 'archive', 'training', 'course', 'lecture', 'reference']
 };
 
 const SOURCE_BONUS = {
@@ -13,6 +15,17 @@ const SOURCE_BONUS = {
 };
 
 const CURATED_RESULTS = [
+  {
+    id: 'build-planning-toolkit',
+    title: 'Build Planning: parts, tools, torque, and compatibility checklist',
+    channelName: 'BikeBrowser Curated Build Plan',
+    source: 'youtube',
+    concepts: ['build_planning'],
+    tags: ['build planning', 'parts', 'compatibility', 'tools', 'torque', 'step by step', 'assembly', 'checklist'],
+    description: 'A curated search path for planning a bike or e-bike build before buying parts or turning wrenches.',
+    thumbnail: 'https://placehold.co/640x360/fef9c3/854d0e?text=Build+Planning',
+    urlQuery: 'Park Tool Johnny Nerd Out bike build parts compatibility tools torque step by step checklist'
+  },
   {
     id: 'park-tool-drivetrain',
     title: 'Park Tool: derailleur, chain, cassette, and drivetrain repair',
@@ -150,7 +163,7 @@ const CURATED_RESULTS = [
     title: 'Internet Archive: bicycle and motorcycle shop-class media',
     channelName: 'Internet Archive',
     source: 'internet_archive',
-    concepts: ['drivetrain', 'brakes'],
+    concepts: ['shop_class', 'drivetrain', 'brakes'],
     tags: ['archive', 'shop class', 'bicycle', 'motorcycle', 'maintenance', 'repair', 'training'],
     description: 'Archival repair and shop-class media for slower, deeper background learning.',
     thumbnail: 'https://placehold.co/640x360/e0f2fe/075985?text=Archive+Shop+Class',
@@ -184,11 +197,11 @@ function sourceSearchUrl(entry, query) {
 
 function getConcepts(entry) {
   const text = normalize(`${entry.title} ${entry.description} ${(entry.tags || []).join(' ')}`);
-  const concepts = Object.entries(CONCEPT_KEYWORDS)
+  const detectedConcepts = Object.entries(CONCEPT_KEYWORDS)
     .filter(([, keywords]) => keywords.some((keyword) => text.includes(normalize(keyword))))
     .map(([concept]) => concept);
 
-  return concepts.length > 0 ? concepts : entry.concepts || [];
+  return [...new Set([...(entry.concepts || []), ...detectedConcepts])];
 }
 
 function scoreEntry(entry, query) {

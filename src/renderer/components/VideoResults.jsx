@@ -8,6 +8,8 @@ const CONCEPT_LABELS = {
   motor: 'Motor',
   battery: 'Battery',
   suspension: 'Suspension',
+  build_planning: 'Build Planning',
+  shop_class: 'Shop Class Archive',
   uncategorized: 'Other Videos'
 };
 
