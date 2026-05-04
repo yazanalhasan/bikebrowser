@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner';
 import YouTubePlayer from '../components/YouTubePlayer';
+import VideoQuiz from '../components/VideoQuiz';
 import { isPublicPagesHost } from '../utils/runtimeMode';
 
 // Mobile embeds through the Cloudflare tunnel need more time to initialize
@@ -282,6 +283,8 @@ function VideoWatchPage() {
             What would you try building or fixing?
           </p>
         </div>
+
+        <VideoQuiz videoId={videoId} videoTitle={videoDetails?.title} />
       </div>
     </div>
   );
