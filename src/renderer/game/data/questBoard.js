@@ -24,6 +24,8 @@
 
 import QUESTS from './quests.js';
 
+const CAPSTONE_QUEST_ID = 'bio_battery_integration';
+
 // ── Quest Progression Tree ───────────────────────────────────────────────────
 
 const QUEST_TREE = [
@@ -221,10 +223,10 @@ const QUEST_TREE = [
 const LOCKED_SLOTS = [
   {
     id: 'locked_ebike',
-    title: 'Build an E-Bike',
-    hint: 'Complete "Biology Meets Engineering" to unlock...',
+    title: 'Final Ride: Build an E-Bike',
+    hint: 'Finish Biology Meets Engineering to complete Zuzu\'s first big adventure.',
     icon: '⚡',
-    unlockQuest: 'bio_battery_integration',
+    unlockQuest: CAPSTONE_QUEST_ID,
   },
   {
     id: 'locked_factory',
@@ -244,6 +246,7 @@ const LOCKED_SLOTS = [
 export function getQuestBoard(state) {
   const completedIds = new Set(state?.completedQuests || []);
   const activeId = state?.activeQuest?.id || null;
+  const reputation = state?.reputation || 0;
 
   const completed = [];
   const available = [];
@@ -327,6 +330,17 @@ export function getQuestBoard(state) {
   // Smart prioritization: max 4 suggested, prefer track diversity + lower tiers first
   const MAX_SUGGESTED = 4;
   const suggested = prioritizeQuests(available.filter((q) => q.status === 'available'), completed);
+  const contentSlots = LOCKED_SLOTS.map((slot) => {
+    const unlocked = slot.unlockQuest
+      ? completedIds.has(slot.unlockQuest)
+      : slot.unlockCondition === 'reputation >= 40' && reputation >= 40;
+
+    return {
+      ...slot,
+      status: unlocked ? 'unlocked' : 'locked',
+    };
+  });
+  const capstoneComplete = completedIds.has(CAPSTONE_QUEST_ID);
 
   return {
     available,
@@ -334,7 +348,17 @@ export function getQuestBoard(state) {
     active,
     completed,
     upcoming: upcoming.slice(0, 8),
-    locked: LOCKED_SLOTS,
+    unlocked: contentSlots.filter((slot) => slot.status === 'unlocked'),
+    locked: contentSlots.filter((slot) => slot.status === 'locked'),
+    capstone: {
+      isComplete: capstoneComplete,
+      title: capstoneComplete
+        ? 'Adventure Complete: E-Bike Engineer'
+        : 'Final Goal: Biology Meets Engineering',
+      message: capstoneComplete
+        ? 'Zuzu connected biology, chemistry, materials, and repair skills into one big engineering win.'
+        : 'Complete the biology capstone to wrap up this adventure and reveal the finale badge.',
+    },
     stats: {
       total: QUEST_TREE.length,
       completed: completed.length,

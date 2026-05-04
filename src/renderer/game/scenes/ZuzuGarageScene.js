@@ -205,6 +205,7 @@ export default class ZuzuGarageScene extends LocalSceneBase {
       label: 'Workbench',
       icon: '🔧',
       radius: 70,
+      metadata: { questObservation: 'composite_created' },
       onInteract: () => {
         let state = this.registry.get('gameState');
 
@@ -307,6 +308,102 @@ export default class ZuzuGarageScene extends LocalSceneBase {
                 `Missing: ${missing.join(', ')}\n\n` +
                 "Forage from creosote bushes and jojoba shrubs outside.",
               choices: null, step: null,
+            });
+            return;
+          }
+        }
+
+        // Perfect Composite quest: combine agave_fiber + creosote_leaves
+        // into plant_composite at the same garage workbench where recipe
+        // notes are saved.
+        if (state?.activeQuest?.id === 'perfect_composite') {
+          const remembered = rememberWorkbenchRecipe(state, 'plant_composite');
+          if (remembered !== state) {
+            state = remembered;
+            saveStateToRegistry(this, state);
+          }
+
+          const compositeRecipe = getWorkbenchRecipe('plant_composite');
+          const inv = state.inventory || [];
+          const obs = state.observations || [];
+          const step = getCurrentStep(state);
+          const hasIngredients =
+            inv.includes('agave_fiber') && inv.includes('creosote_leaves');
+          const hasComposite = inv.includes('plant_composite');
+
+          if (step?.type === 'quiz') {
+            this.registry.set('dialogEvent', {
+              speaker: 'Zuzu (thinking)',
+              text: step.text,
+              choices: step.choices,
+              step,
+            });
+            return;
+          }
+
+          if (obs.includes('composite_created') || hasComposite) {
+            const updated = obs.includes('composite_created')
+              ? state
+              : { ...state, observations: [...obs, 'composite_created'] };
+            if (updated !== state) {
+              saveStateToRegistry(this, updated);
+            }
+            this.registry.set('dialogEvent', {
+              speaker: 'Zuzu',
+              text:
+                "The plant composite is ready.\n\n" +
+                "Agave fibers carry the load, and creosote resin holds the fibers together so stress spreads through the whole piece.",
+              choices: null,
+              step,
+            });
+            return;
+          }
+
+          if (hasIngredients && !obs.includes('composite_created')) {
+            const newInv = consumeIngredients(inv, compositeRecipe.ingredients)
+              .concat(compositeRecipe.result);
+            let updated = {
+              ...state,
+              inventory: newInv,
+              observations: obs.includes(compositeRecipe.outcomeObservationId)
+                ? obs
+                : [...obs, compositeRecipe.outcomeObservationId],
+            };
+            updated = appendJournalOnce(
+              updated,
+              `Made ${compositeRecipe.name} at the workbench.`,
+            );
+            const advanced = advanceQuest(updated);
+            if (advanced.ok) {
+              updated = advanced.state;
+            }
+            const nextStep = getCurrentStep(updated);
+            saveStateToRegistry(this, updated);
+            this.registry.get('audioManager')?.playSfx?.('item_pickup');
+            this.registry.set('dialogEvent', {
+              speaker: nextStep?.type === 'quiz' ? 'Zuzu (thinking)' : 'Zuzu',
+              text:
+                "Aligned agave fibers, infused them with creosote resin, and pressed the layers into a plant composite!\n\n" +
+                "Got: Plant Composite\n\n" +
+                "Agave carries tension; creosote resin binds the fibers and spreads the load." +
+                (nextStep?.type === 'quiz' ? `\n\n${nextStep.text}` : ''),
+              choices: nextStep?.type === 'quiz' ? nextStep.choices : null,
+              step: nextStep || null,
+            });
+            return;
+          }
+
+          if (!hasIngredients) {
+            const missing = formatMissingWorkbenchIngredients(compositeRecipe, inv);
+            this.registry.set('dialogEvent', {
+              speaker: 'Zuzu',
+              text:
+                "Workbench memory:\n" +
+                `${formatWorkbenchMemoryLine(compositeRecipe)}\n\n` +
+                `Missing: ${missing.join(', ')}\n\n` +
+                "Forage agave and creosote outside, then bring them back to this workbench.",
+              choices: null,
+              step: null,
             });
             return;
           }

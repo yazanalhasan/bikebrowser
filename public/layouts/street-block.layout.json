@@ -246,8 +246,8 @@
       {
         "species": "mesquite",
         "label": "Mesquite Tree",
-        "x": 260,
-        "y": 460,
+        "x": 205,
+        "y": 475,
         "radius": 65
       },
       {
@@ -349,12 +349,14 @@
       "interactionRadius": 95
     },
     "npc_mr_chen": {
-      "x": 250,
-      "y": 430
+      "x": 313,
+      "y": 402
     },
     "chen_bike_icon": {
-      "x": 290,
-      "y": 430
+      "x": 440,
+      "y": 420,
+      "fontSize": "44px",
+      "interactionRadius": 115
     },
     "exit_zone_west": {
       "x": 14,
@@ -399,26 +401,26 @@
       {
         "speciesId": "javelina",
         "label": "Javelina",
-        "x": 330,
-        "y": 500,
+        "x": 390,
+        "y": 515,
         "interactionRadius": 60,
-        "_note": "Near mesquite at x=260,y=460 — javelina feeds on mesquite pods"
+        "_note": "Near the west mesquite, but offset from Mr. Chen and his bike — javelina feeds on mesquite pods"
       },
       {
         "speciesId": "rabbit",
-        "label": "Desert Cottontail",
+        "label": "Desert Jackrabbit",
         "x": 120,
-        "y": 500,
+        "y": 545,
         "interactionRadius": 55,
-        "_note": "Near creosote at x=80,y=460 — rabbit forages near creosote and mesquite"
+        "_note": "Near creosote, lower on the lawn so the animal cluster reads clearly"
       },
       {
         "speciesId": "coyote",
         "label": "Coyote",
-        "x": 760,
+        "x": 830,
         "y": 520,
         "interactionRadius": 65,
-        "_note": "Predator roaming near mesquite at x=900,y=460 — follows javelina/rabbit prey"
+        "_note": "Predator roaming near the east mesquite, with space from the player path and other animals"
       }
     ]
   }

@@ -25,6 +25,7 @@
 
 import LocalSceneBase from './LocalSceneBase.js';
 import { saveGame } from '../systems/saveSystem.js';
+import { getCurrentStep } from '../systems/questSystem.js';
 import { ConstructionSystem } from '../systems/construction/constructionSystem.js';
 import { BRIDGE_MESQUITE_BLUEPRINT } from '../data/blueprints/bridgeBlueprint.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
@@ -48,6 +49,8 @@ const BUILD_STEP_INDEX = 14;
 // visually consistent.
 const WASH_Y = 400;
 const WASH_HALF_HEIGHT = 40;
+const LIVING_BASIN_MIN_SPEED = 220;
+const LIVING_BASIN_CROSS_MS = 650;
 
 export default class DryWashScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -60,6 +63,8 @@ export default class DryWashScene extends LocalSceneBase {
     /** @type {ConstructionSystem|null} */
     this._construction = null;
     this._buildPhaseActive = false;
+    this._livingBasinFastMs = 0;
+    this._livingBasinSlowAlertAt = 0;
   }
 
   getSceneKey() { return SCENE_KEY; }
@@ -124,6 +129,7 @@ export default class DryWashScene extends LocalSceneBase {
 
     // ── Wash channel (jagged tan-brown arroyo at y≈400) ──
     this._renderWashChannel(width);
+    this._renderLivingBasin();
 
     // ── Distant mesa silhouette ──
     const mesa = this.add.graphics();
@@ -178,6 +184,10 @@ export default class DryWashScene extends LocalSceneBase {
     this._initPhaseFromState(state);
   }
 
+  onUpdate(delta) {
+    this._updateLivingBasinQuest(delta);
+  }
+
   // ── Visual subroutines ─────────────────────────────────────────────
 
   /**
@@ -221,6 +231,161 @@ export default class DryWashScene extends LocalSceneBase {
       const px = 20 + Math.random() * (width - 40);
       const py = washY - 18 + Math.random() * 50;
       pebbles.fillCircle(px, py, 2 + Math.random() * 2);
+    }
+  }
+
+  _renderLivingBasin() {
+    const basin = this.layout.living_basin;
+    if (!basin) return;
+
+    const g = this.add.graphics().setDepth(2.5);
+    g.fillStyle(0x6d4c41, 0.78);
+    g.fillEllipse(basin.x, basin.y, basin.w, basin.h);
+    g.fillStyle(0x7c3aed, 0.18);
+    g.fillEllipse(basin.x - 18, basin.y - 4, basin.w * 0.72, basin.h * 0.52);
+    g.fillStyle(0x38bdf8, 0.22);
+    g.fillEllipse(basin.x + 32, basin.y + 8, basin.w * 0.42, basin.h * 0.32);
+
+    const shimmer = this.add.text(basin.x, basin.y - 52, 'shimmering oobleck mud', {
+      fontSize: '13px',
+      fontFamily: 'sans-serif',
+      fontStyle: 'bold',
+      color: '#3b0764',
+      stroke: '#fef3c7',
+      strokeThickness: 3,
+    }).setOrigin(0.5).setDepth(6);
+    this.tweens.add({
+      targets: [g, shimmer],
+      alpha: 0.68,
+      duration: 900,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+
+    this.addInteractable({
+      x: basin.x,
+      y: basin.y,
+      label: 'Living Basin',
+      icon: '💧',
+      radius: basin.interactionRadius || 140,
+      metadata: { questObservation: 'fluid_zone_found' },
+      onInteract: () => this._handleLivingBasinInteract(),
+    });
+  }
+
+  _isPlayerInLivingBasin() {
+    const basin = this.layout.living_basin;
+    const sprite = this.player?.sprite;
+    if (!basin || !sprite) return false;
+    const dx = Math.abs(sprite.x - basin.x);
+    const dy = Math.abs(sprite.y - basin.y);
+    return dx <= basin.w / 2 && dy <= basin.h / 2;
+  }
+
+  _markObservation(observation) {
+    const state = this.registry.get('gameState') || {};
+    if (state.observations?.includes(observation)) return state;
+    const updated = {
+      ...state,
+      observations: [...(state.observations || []), observation],
+    };
+    this.registry.set('gameState', updated);
+    saveGame(updated);
+    return updated;
+  }
+
+  _handleLivingBasinInteract() {
+    const state = this.registry.get('gameState') || {};
+    const step = getCurrentStep(state);
+    const audioMgr = this.registry.get('audioManager');
+    audioMgr?.playSfx?.('interaction_ping');
+
+    if (state.activeQuest?.id !== 'the_living_fluid') {
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu',
+        text: 'This mud shimmers strangely. It looks like clay mixed with plant slime, almost like natural oobleck.',
+        choices: null,
+        step: null,
+      });
+      return;
+    }
+
+    if (step?.id === 'find_basin') {
+      this._markObservation('fluid_zone_found');
+      audioMgr?.playSfx?.('ui_success');
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu',
+        text: 'Found it! The ground is shimmering because clay, water, and plant secretions are making an oobleck-like suspension.',
+        choices: null,
+        step,
+      });
+      return;
+    }
+
+    this.registry.set('dialogEvent', {
+      speaker: 'Zuzu',
+      text: 'This is the Living Basin. To cross it, I need to keep moving through the shimmering patch without stopping.',
+      choices: null,
+      step: step || null,
+    });
+  }
+
+  _updateLivingBasinQuest(delta) {
+    const state = this.registry.get('gameState') || {};
+    if (state.activeQuest?.id !== 'the_living_fluid') return;
+
+    const step = getCurrentStep(state);
+    if (
+      step?.id === 'find_basin'
+      && !state.observations?.includes('fluid_zone_found')
+      && this._isPlayerInLivingBasin()
+    ) {
+      this._markObservation('fluid_zone_found');
+      const audioMgr = this.registry.get('audioManager');
+      audioMgr?.playSfx?.('ui_success');
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu',
+        text: 'Found it! The ground is shimmering because clay, water, and plant secretions are making an oobleck-like suspension.',
+        choices: null,
+        step,
+      });
+      return;
+    }
+
+    if (step?.id !== 'cross_basin' || state.observations?.includes('basin_crossed')) return;
+
+    if (!this._isPlayerInLivingBasin()) {
+      this._livingBasinFastMs = 0;
+      return;
+    }
+
+    const body = this.player?.sprite?.body;
+    const speed = body ? Math.hypot(body.velocity.x, body.velocity.y) : 0;
+    if (speed >= LIVING_BASIN_MIN_SPEED) {
+      this._livingBasinFastMs += delta;
+      if (this._livingBasinFastMs >= LIVING_BASIN_CROSS_MS) {
+        this._markObservation('basin_crossed');
+        const audioMgr = this.registry.get('audioManager');
+        audioMgr?.playSfx?.('ui_success');
+        this.registry.set('dialogEvent', {
+          speaker: 'Zuzu',
+          text: 'I kept moving and stayed on top! The fast force made the oobleck-like mud resist, so it behaved more like a solid.',
+          choices: null,
+          step,
+        });
+      }
+      return;
+    }
+
+    this._livingBasinFastMs = Math.max(0, this._livingBasinFastMs - delta * 0.5);
+    if (this.time.now - this._livingBasinSlowAlertAt > 1800) {
+      this._livingBasinSlowAlertAt = this.time.now;
+      this.registry.set('mcpAlert', {
+        id: 'living_basin_move',
+        message: 'Keep moving through the shimmering basin. If you stop, the mud yields.',
+        severity: 'info',
+      });
     }
   }
 
@@ -531,6 +696,44 @@ export default class DryWashScene extends LocalSceneBase {
   /** @private */
   _onMrChenInteract() {
     const state = this.registry.get('gameState') || {};
+    const step = getCurrentStep(state);
+
+    if (state.activeQuest?.id === 'the_living_fluid') {
+      if (step?.id === 'find_basin') {
+        this.registry.set('dialogEvent', {
+          speaker: 'Mr. Chen',
+          text:
+            "The Living Basin is the shimmering purple-brown patch in the middle of this wash. " +
+            "The bridge and the basin share the same arroyo, but this experiment is about the mud, not the planks.",
+          choices: null,
+          step,
+        });
+        return;
+      }
+
+      if (step?.id === 'cross_basin') {
+        this.registry.set('dialogEvent', {
+          speaker: 'Mr. Chen',
+          text:
+            "Now cross the shimmering mud without stopping. Slow pressure lets it flow, " +
+            "but quick motion makes the particles jam together and act solid.",
+          choices: null,
+          step,
+        });
+        return;
+      }
+
+      this.registry.set('dialogEvent', {
+        speaker: 'Mr. Chen',
+        text:
+          "This wash has two lessons in it now: the mesquite bridge teaches structures, " +
+          "and the Living Basin teaches non-Newtonian fluids.",
+        choices: null,
+        step: step || null,
+      });
+      return;
+    }
+
     if (state.bridgeBuilt) {
       this.registry.set('dialogEvent', {
         speaker: 'Mr. Chen',

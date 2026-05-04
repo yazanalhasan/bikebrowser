@@ -93,6 +93,14 @@
       "half_height": 40,
       "_note": "Module-level constants WASH_Y and WASH_HALF_HEIGHT. Used by _renderWashChannel and _renderBrokenRemnants."
     },
+    "living_basin": {
+      "x": 450,
+      "y": 400,
+      "w": 240,
+      "h": 82,
+      "interactionRadius": 150,
+      "_note": "Oobleck-like non-Newtonian quest patch inside the dry wash channel."
+    },
     "broken_stub_near": {
       "x": 120,
       "y": 392,
