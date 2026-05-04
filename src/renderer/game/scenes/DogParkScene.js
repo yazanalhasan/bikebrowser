@@ -18,6 +18,8 @@ import { drawPlant } from '../utils/plantRenderer.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 
+const INTERACTIVE_PLANT_SCALE = 1.65;
+
 export default class DogParkScene extends LocalSceneBase {
   static layoutEditorConfig = {
     layoutAssetKey: 'dogParkLayout',
@@ -131,7 +133,9 @@ export default class DogParkScene extends LocalSceneBase {
     ];
 
     for (const p of parkPlants) {
-      const plantContainer = drawPlant(this, p.species, p.x, p.y);
+      const plantContainer = drawPlant(this, p.species, p.x, p.y, {
+        scale: p.visualScale || INTERACTIVE_PLANT_SCALE,
+      });
       plantContainer.setDepth(4); // background decoration, below player (depth 6)
       this.addInteractable({
         x: p.x, y: p.y, label: p.label, icon: '',

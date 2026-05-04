@@ -540,6 +540,15 @@ export default class LocalSceneBase extends Phaser.Scene {
   _getQuestPriorityInteractable() {
     const state = this.registry.get('gameState');
     const step = getCurrentStep(state);
+    if (step?.type === 'observe' && step.requiredObservation) {
+      return this._interactables
+        .filter((prop) =>
+          prop.metadata?.questObservation === step.requiredObservation
+          && prop._distanceToPlayer < prop.radius + 80,
+        )
+        .sort((a, b) => a._distanceToPlayer - b._distanceToPlayer)[0] || null;
+    }
+
     if (step?.type !== 'forage' || !step.requiredItem) return null;
 
     return this._interactables

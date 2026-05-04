@@ -164,12 +164,80 @@ export function getSpeechRate() {
   return _rate;
 }
 
-function normalizeSpeechText(text) {
+const UNIT_END = '(?=\\s|[).,;:!?]|$)';
+
+function speakSignedNumber(value) {
+  return String(value).startsWith('-')
+    ? `minus ${String(value).slice(1)}`
+    : String(value);
+}
+
+function normalizeNumberUnit(_, value, unit) {
+  const unitName = {
+    mAh: 'milliamp hours',
+    Ah: 'amp hours',
+    Wh: 'watt hours',
+    mV: 'millivolts',
+    V: 'volts',
+    mA: 'milliamps',
+    A: 'amps',
+    W: 'watts',
+    Hz: 'hertz',
+    mm: 'millimeters',
+    cm: 'centimeters',
+    kg: 'kilograms',
+    mg: 'milligrams',
+    g: 'grams',
+    ml: 'milliliters',
+    mL: 'milliliters',
+    L: 'liters',
+    N: 'newtons',
+    J: 'joules',
+  }[unit] || unit;
+  return `${speakSignedNumber(value)} ${unitName}`;
+}
+
+export function normalizeSpeechText(text) {
   return String(text)
-    .replace(/\bg\s*\/\s*cm(?:³|\^3|3)\b/gi, 'grams per cubic centimeter')
-    .replace(/\bper\s+cm(?:³|\^3|3)\b/gi, 'per cubic centimeter')
-    .replace(/\bcm(?:³|\^3|3)\b/gi, 'cubic centimeters')
-    .replace(/\bm(?:³|\^3|3)\b/gi, 'cubic meters');
+    // Ratios and powers first, before plain unit expansion touches either side.
+    .replace(new RegExp(`\\bkg\\s*\\/\\s*m(?:³|\\^3|3)${UNIT_END}`, 'gi'), 'kilograms per meter cubed')
+    .replace(new RegExp(`\\bg\\s*\\/\\s*cm(?:³|\\^3|3)${UNIT_END}`, 'gi'), 'grams per centimeter cubed')
+    .replace(new RegExp(`\\bm\\s*\\/\\s*s(?:²|\\^2|2)${UNIT_END}`, 'gi'), 'meters per second squared')
+    .replace(new RegExp(`\\bm\\s*\\/\\s*s${UNIT_END}`, 'gi'), 'meters per second')
+    .replace(new RegExp(`\\bN\\s*\\/\\s*m(?:²|\\^2|2)${UNIT_END}`, 'g'), 'newtons per meter squared')
+    .replace(new RegExp(`\\bper\\s+cm(?:³|\\^3|3)${UNIT_END}`, 'gi'), 'per centimeter cubed')
+    .replace(new RegExp(`\\bper\\s+m(?:³|\\^3|3)${UNIT_END}`, 'gi'), 'per meter cubed')
+    .replace(new RegExp(`\\bcm(?:³|\\^3|3)${UNIT_END}`, 'gi'), 'centimeters cubed')
+    .replace(new RegExp(`\\bm(?:³|\\^3|3)${UNIT_END}`, 'gi'), 'meters cubed')
+    .replace(new RegExp(`\\bmm(?:²|\\^2|2)${UNIT_END}`, 'gi'), 'millimeters squared')
+    .replace(new RegExp(`\\bcm(?:²|\\^2|2)${UNIT_END}`, 'gi'), 'centimeters squared')
+    .replace(new RegExp(`\\bm(?:²|\\^2|2)${UNIT_END}`, 'gi'), 'meters squared')
+    .replace(/\b10\s*⁻\s*⁶\s*\/\s*K\b/g, '10 to the minus 6 per kelvin')
+    .replace(/\b10\s*\^\s*-?\s*6\s*\/\s*K\b/gi, '10 to the minus 6 per kelvin')
+    // Common math symbols in quest captions, quizzes, and knowledge cards.
+    .replace(/→/g, ' to ')
+    .replace(/←/g, ' from ')
+    .replace(/×/g, ' times ')
+    .replace(/÷/g, ' divided by ')
+    .replace(/≈|~/g, ' approximately ')
+    .replace(/≥/g, ' greater than or equal to ')
+    .replace(/≤/g, ' less than or equal to ')
+    .replace(/±/g, ' plus or minus ')
+    .replace(/\bvs\.?\b/gi, 'versus')
+    .replace(/\bBMS\b/g, 'battery management system')
+    .replace(/\bPSI\b/g, 'pounds per square inch')
+    .replace(/\bUTM\b/g, 'universal testing machine')
+    .replace(/\bWh\b/g, 'watt hours')
+    .replace(/\bAh\b/g, 'amp hours')
+    .replace(/\bAmp-hours\b/gi, 'amp hours')
+    .replace(/\bpH\b/g, 'p H')
+    .replace(/(^|[^\w])(-?\d+(?:\.\d+)?)\s*°\s*C\b/g, (_, prefix, value) =>
+      `${prefix}${speakSignedNumber(value)} degrees Celsius`
+    )
+    .replace(/\b(-?\d+(?:\.\d+)?)\s*%/g, (_, value) => `${speakSignedNumber(value)} percent`)
+    .replace(/\b(-?\d+(?:\.\d+)?)\s*(mAh|Ah|Wh|mV|V|mA|A|W|Hz|mm|cm|kg|mg|g|mL|ml|L|N|J)\b/g, normalizeNumberUnit)
+    .replace(/\s{2,}/g, ' ')
+    .trim();
 }
 
 /**

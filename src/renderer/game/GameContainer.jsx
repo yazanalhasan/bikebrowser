@@ -43,6 +43,13 @@ import { interpolateStepText } from './systems/questTemplating.js';
 import { triggerQuestRevealsForState } from './systems/discoveryBridge.js';
 
 const GAMEPLAY_REPORTS_KEY = 'bikebrowser_gameplay_reports';
+const GAMEPLAY_REPORTS_ENABLED =
+  import.meta.env.DEV || import.meta.env.VITE_ENABLE_GAMEPLAY_REPORTS === 'true';
+const PHYSICS_HUD_ENABLED =
+  import.meta.env.DEV || import.meta.env.VITE_ENABLE_PHYSICS_HUD === 'true';
+const HUD_BUTTON_CLASS =
+  'bg-white/90 rounded-lg w-10 h-10 sm:w-11 sm:h-11 shadow text-lg flex items-center justify-center transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer';
+const HUD_PANEL_STYLE = { right: 'calc(max(0.5rem, env(safe-area-inset-right)) + 3rem)' };
 
 function readGameplayReports() {
   if (typeof window === 'undefined') return [];
@@ -269,6 +276,7 @@ export default function GameContainer() {
   // 'menu' = show start screen, 'playing' = Phaser running
   const [phase, setPhase] = useState('menu');
   const [saveExists] = useState(() => hasSave());
+  const [audioUnlockAttempted, setAudioUnlockAttempted] = useState(false);
   // Counter to force Phaser re-mount after a new-game reset from pause menu
   const [bootKey, setBootKey] = useState(0);
 
@@ -334,9 +342,20 @@ export default function GameContainer() {
   // ------------------------------------------------------------------
   // Start screen actions
   // ------------------------------------------------------------------
-  const handleContinue = useCallback(() => {
+  const beginPlaying = useCallback(() => {
+    setAudioUnlockAttempted(true);
+    try {
+      unlock();
+      audio?.playSfx?.('ui_tap');
+    } catch {
+      // The in-game audio button remains available if a browser blocks unlock.
+    }
     setPhase('playing');
-  }, []);
+  }, [audio, unlock]);
+
+  const handleContinue = useCallback(() => {
+    beginPlaying();
+  }, [beginPlaying]);
 
   const handleNewGameFromMenu = useCallback(() => {
     if (saveExists) {
@@ -344,14 +363,14 @@ export default function GameContainer() {
     } else {
       // No save — just start fresh
       resetGame();
-      setPhase('playing');
+      beginPlaying();
     }
-  }, [saveExists]);
+  }, [beginPlaying, saveExists]);
 
   const handleStartAdventure = useCallback(() => {
     // No save exists — start fresh
-    setPhase('playing');
-  }, []);
+    beginPlaying();
+  }, [beginPlaying]);
 
   const confirmAndStartNewGame = useCallback(() => {
     // Wipe game save (NOT learning progress)
@@ -378,13 +397,48 @@ export default function GameContainer() {
     setShowQuestBoard(false);
     setShowShop(false);
     setShowAudioSettings(false);
+    setShowCrafting(false);
+    setShowMilestones(false);
+    setShowAssistant(false);
+    setShowReportPanel(false);
+    setReportStatus(null);
+    setCraftResult(null);
     setDialog(null);
     prevCompletedRef.current = new Set();
 
     // Force Phaser re-mount via key bump
     setBootKey((k) => k + 1);
-    setPhase('playing');
+    beginPlaying();
+  }, [beginPlaying]);
+
+  const closeGamePanels = useCallback(() => {
+    setShowQuestBoard(false);
+    setShowShop(false);
+    setShowInventory(false);
+    setShowNotebook(false);
+    setShowCrafting(false);
+    setShowMilestones(false);
+    setShowAssistant(false);
+    setShowReportPanel(false);
+    setShowAudioSettings(false);
+    setReportStatus(null);
   }, []);
+
+  const toggleGamePanel = useCallback((panel, willOpen, sfx = 'ui_tap') => {
+    closeGamePanels();
+    if (willOpen) {
+      if (panel === 'quest') setShowQuestBoard(true);
+      if (panel === 'shop') setShowShop(true);
+      if (panel === 'inventory') setShowInventory(true);
+      if (panel === 'notebook') setShowNotebook(true);
+      if (panel === 'crafting') setShowCrafting(true);
+      if (panel === 'milestones') setShowMilestones(true);
+      if (panel === 'assistant') setShowAssistant(true);
+      if (panel === 'report') setShowReportPanel(true);
+      if (panel === 'audio') setShowAudioSettings(true);
+    }
+    audio?.playSfx(sfx);
+  }, [audio, closeGamePanels]);
 
   const cancelNewGame = useCallback(() => {
     setConfirmNewGame(false);
@@ -717,8 +771,8 @@ export default function GameContainer() {
   useEffect(() => { setBusy('inDialogue', !!dialog); }, [dialog]);
   useEffect(() => { setBusy('crafting', showCrafting); }, [showCrafting]);
   useEffect(() => { setBusy('paused', paused); }, [paused]);
-  useEffect(() => { setBusy('inMenu', showQuestBoard || showShop || showInventory || showNotebook || showMilestones || showAssistant || showReportPanel || showAudioSettings); },
-    [showQuestBoard, showShop, showInventory, showNotebook, showMilestones, showAssistant, showReportPanel, showAudioSettings]);
+  useEffect(() => { setBusy('inMenu', showQuestBoard || showShop || showInventory || showNotebook || showCrafting || showMilestones || showAssistant || showReportPanel || showAudioSettings); },
+    [showQuestBoard, showShop, showInventory, showNotebook, showCrafting, showMilestones, showAssistant, showReportPanel, showAudioSettings]);
   useEffect(() => {
     const state = gameRef.current?.registry?.get?.('gameState');
     setBusy('activeQuestStep', !!state?.activeQuest);
@@ -775,11 +829,15 @@ export default function GameContainer() {
     if (!game) return;
     const scenes = game.scene.scenes;
     if (paused) {
-      scenes.forEach((s) => s.scene?.resume());
+      scenes.forEach((s) => {
+        if (s.scene?.isPaused?.()) s.scene.resume();
+      });
       audio?.resume();
       setPaused(false);
     } else {
-      scenes.forEach((s) => s.scene?.pause());
+      scenes.forEach((s) => {
+        if (s.scene?.isActive?.()) s.scene.pause();
+      });
       audio?.suspend();
       setPaused(true);
     }
@@ -1065,7 +1123,7 @@ export default function GameContainer() {
       )}
 
       {/* ---- Audio unlock overlay (shown until first tap, only when playing) ---- */}
-      {phase === 'playing' && !isUnlocked && (
+      {phase === 'playing' && !isUnlocked && !audioUnlockAttempted && (
         <div
           className="absolute inset-0 z-50 bg-black/70 flex items-center justify-center cursor-pointer"
           onClick={() => {
@@ -1111,12 +1169,12 @@ export default function GameContainer() {
           <div className="flex gap-1.5 pointer-events-auto">
             <button
               onClick={() => navigate('/')}
-              className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
+              className={HUD_BUTTON_CLASS}
               title="Home"
             >🏠</button>
             <button
               onClick={() => navigate(-1)}
-              className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
+              className={HUD_BUTTON_CLASS}
               title="Back"
             >←</button>
           </div>
@@ -1145,88 +1203,63 @@ export default function GameContainer() {
             </div>
 
             {/* HUD buttons */}
-            <div className="flex flex-col gap-1.5 pointer-events-auto items-end">
+            <div className="flex flex-col gap-1 pointer-events-auto items-end">
               <button
-                onClick={() => {
-                  setShowQuestBoard(!showQuestBoard); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowShop(false); setShowMilestones(false); setShowReportPanel(false);
-                  audio?.playSfx('ui_tap');
-                }}
-                className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
+                onClick={() => toggleGamePanel('quest', !showQuestBoard)}
+                className={HUD_BUTTON_CLASS}
                 title="Quest Board"
               >📋</button>
               <button
-                onClick={() => {
-                  setShowShop(!showShop); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowMilestones(false); setShowReportPanel(false);
-                  audio?.playSfx('ui_tap');
-                }}
-                className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
+                onClick={() => toggleGamePanel('shop', !showShop)}
+                className={HUD_BUTTON_CLASS}
                 title="Shop"
               >🏪</button>
               <button
-                onClick={() => {
-                  setShowInventory(!showInventory); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowMilestones(false); setShowReportPanel(false);
-                  audio?.playSfx(!showInventory ? 'ui_panel_open' : 'ui_panel_close');
-                }}
-                className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
+                onClick={() => toggleGamePanel('inventory', !showInventory, !showInventory ? 'ui_panel_open' : 'ui_panel_close')}
+                className={HUD_BUTTON_CLASS}
                 title="Inventory"
               >🎒</button>
               <button
-                onClick={() => {
-                  setShowNotebook(!showNotebook); setShowInventory(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowMilestones(false); setShowReportPanel(false);
-                  audio?.playSfx(!showNotebook ? 'ui_notebook_open' : 'ui_panel_close');
-                }}
-                className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
+                onClick={() => toggleGamePanel('notebook', !showNotebook, !showNotebook ? 'ui_notebook_open' : 'ui_panel_close')}
+                className={HUD_BUTTON_CLASS}
                 title="Notebook"
               >📓</button>
               <button
-                onClick={() => {
-                  setShowCrafting(!showCrafting); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowAssistant(false); setShowReportPanel(false);
-                  audio?.playSfx('ui_tap');
-                }}
-                className={`rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 cursor-pointer ${showCrafting ? 'bg-amber-400 text-white' : 'bg-white/90 hover:bg-white'}`}
+                onClick={() => toggleGamePanel('crafting', !showCrafting)}
+                className={`${HUD_BUTTON_CLASS} ${showCrafting ? 'bg-amber-400 text-white hover:bg-amber-400' : ''}`}
                 title="Crafting (C)"
               >⚗️</button>
               <button
-                onClick={() => {
-                  setShowMilestones(!showMilestones); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowAssistant(false); setShowCrafting(false); setShowReportPanel(false);
-                  audio?.playSfx('ui_tap');
-                }}
-                className={`rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 cursor-pointer ${showMilestones ? 'bg-purple-400 text-white' : 'bg-white/90 hover:bg-white'}`}
+                onClick={() => toggleGamePanel('milestones', !showMilestones)}
+                className={`${HUD_BUTTON_CLASS} ${showMilestones ? 'bg-purple-400 text-white hover:bg-purple-400' : ''}`}
                 title="Milestones"
               >🏆</button>
               <button
-                onClick={() => {
-                  setShowAudioSettings(!showAudioSettings); setShowInventory(false); setShowNotebook(false); setShowReportPanel(false);
-                  audio?.playSfx('ui_tap');
-                }}
-                className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
+                onClick={() => toggleGamePanel('audio', !showAudioSettings)}
+                className={HUD_BUTTON_CLASS}
                 title="Audio Settings"
               >{audioSettings?.masterMute ? '🔇' : '🔊'}</button>
               <button
-                onClick={() => {
-                  setShowAssistant(!showAssistant); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowReportPanel(false);
-                  audio?.playSfx('ui_tap');
-                }}
-                className={`rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 cursor-pointer ${
+                onClick={() => toggleGamePanel('assistant', !showAssistant)}
+                className={`${HUD_BUTTON_CLASS} ${
                   showAssistant ? 'bg-purple-400 text-white' :
                   assistantStatus === 'warning' ? 'bg-red-400/90 text-white animate-pulse' :
                   assistantStatus === 'analyzing' ? 'bg-blue-400/90 text-white' :
                   assistantMessages.length > 0 ? 'bg-purple-100 hover:bg-purple-200' :
-                  'bg-white/90 hover:bg-white'
+                  ''
                 }`}
                 title="AI Assistant"
               >🧠</button>
+              {GAMEPLAY_REPORTS_ENABLED && (
               <button
-                onClick={() => {
-                  setShowReportPanel(!showReportPanel); setShowInventory(false); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowAssistant(false); setShowCrafting(false); setShowMilestones(false); setReportStatus(null);
-                  audio?.playSfx('ui_tap');
-                }}
-                className={`rounded-lg px-2 py-2 shadow text-xs font-bold transition-all duration-75 active:scale-90 cursor-pointer ${showReportPanel ? 'bg-red-500 text-white' : 'bg-white/90 hover:bg-white text-red-700'}`}
+                onClick={() => toggleGamePanel('report', !showReportPanel)}
+                className={`${HUD_BUTTON_CLASS} text-[10px] font-bold ${showReportPanel ? 'bg-red-500 text-white hover:bg-red-500' : 'text-red-700'}`}
                 title="Report gameplay problem"
               >BUG</button>
+              )}
               <button
                 onClick={togglePause}
-                className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
+                className={HUD_BUTTON_CLASS}
                 title={paused ? 'Resume' : 'Pause'}
               >{paused ? '▶️' : '⏸️'}</button>
             </div>
@@ -1236,7 +1269,7 @@ export default function GameContainer() {
 
       {/* ---- Inventory panel ---- */}
       {showInventory && (
-        <div className="absolute top-14 right-2 z-20 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-3 w-56 max-h-64 overflow-y-auto">
+        <div className="absolute top-14 z-20 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-3 w-[min(14rem,calc(100vw-4rem))] max-h-[calc(100vh-5rem)] overflow-y-auto" style={HUD_PANEL_STYLE}>
           <div className="flex items-center justify-between gap-2 mb-2">
             <div className="font-bold text-gray-700 text-sm">🎒 Inventory</div>
             <button
@@ -1265,7 +1298,7 @@ export default function GameContainer() {
 
       {/* ---- Notebook panel ---- */}
       {showNotebook && (
-        <div className="absolute top-14 right-2 z-20 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-3 w-64 max-h-72 overflow-y-auto">
+        <div className="absolute top-14 z-20 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-3 w-[min(16rem,calc(100vw-4rem))] max-h-[calc(100vh-5rem)] overflow-y-auto" style={HUD_PANEL_STYLE}>
           <div className="font-bold text-gray-700 mb-2 text-sm">📓 Zuzu's Notebook</div>
           {journal.map((entry, i) => {
             if (typeof entry === 'string') {
@@ -1333,8 +1366,8 @@ export default function GameContainer() {
       )}
 
       {/* ---- Gameplay report panel ---- */}
-      {showReportPanel && (
-        <div className="absolute top-14 right-2 z-30 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl p-4 w-[min(24rem,calc(100vw-1rem))] max-h-[80vh] overflow-y-auto">
+      {GAMEPLAY_REPORTS_ENABLED && showReportPanel && (
+        <div className="absolute top-14 z-30 bg-white/95 backdrop-blur-sm rounded-xl shadow-xl p-4 w-[min(24rem,calc(100vw-4rem))] max-h-[calc(100vh-5rem)] overflow-y-auto" style={HUD_PANEL_STYLE}>
           <div className="flex items-start justify-between gap-3 mb-3">
             <div>
               <div className="font-bold text-gray-800 text-sm">Report gameplay problem</div>
@@ -1671,7 +1704,7 @@ export default function GameContainer() {
       )}
 
       {/* ---- Physics HUD (bottom-left, above joystick) ---- */}
-      {phase === 'playing' && showPhysicsHUD && physicsHUD && (
+      {PHYSICS_HUD_ENABLED && phase === 'playing' && showPhysicsHUD && physicsHUD && (
         <div className="absolute bottom-24 left-2 z-15 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-2 text-white pointer-events-none"
           style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
           <div className="text-[10px] text-gray-300 mb-1">📊 Physics · T{physicsHUD.tier} {physicsHUD.tierLabel}</div>
@@ -1685,7 +1718,7 @@ export default function GameContainer() {
       )}
 
       {/* ---- Physics HUD toggle (tiny button, bottom-left corner) ---- */}
-      {phase === 'playing' && !paused && (
+      {PHYSICS_HUD_ENABLED && phase === 'playing' && !paused && (
         <button
           onClick={() => setShowPhysicsHUD((v) => !v)}
           className={`absolute bottom-2 left-[170px] z-20 rounded-lg px-2 py-1 text-xs shadow transition-all active:scale-90 cursor-pointer ${
@@ -1839,7 +1872,7 @@ function CraftingPanel({ state, craftResult, onCraft, onClose }) {
     .map(([id, count]) => ({ id, name: ITEMS[id]?.name || id, icon: ITEMS[id]?.icon || '📦', count }));
 
   return (
-    <div className="absolute top-14 right-2 z-20 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-80 max-h-[440px] flex flex-col">
+    <div className="absolute top-14 z-20 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-[min(20rem,calc(100vw-4rem))] max-h-[calc(100vh-5rem)] flex flex-col" style={HUD_PANEL_STYLE}>
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100">
         <div className="font-bold text-gray-700 text-sm">⚗️ Crafting Bench</div>
@@ -2012,7 +2045,7 @@ function AIAssistantPanel({ messages, status, onClose, onClear }) {
     .slice(-1)[0];
 
   return (
-    <div className="absolute top-14 right-2 z-20 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-72 max-h-[420px] flex flex-col">
+    <div className="absolute top-14 z-20 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-[min(18rem,calc(100vw-4rem))] max-h-[calc(100vh-5rem)] flex flex-col" style={HUD_PANEL_STYLE}>
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100">
         <div className="flex items-center gap-2">
@@ -2085,8 +2118,8 @@ function AIAssistantPanel({ messages, status, onClose, onClear }) {
 function VirtualJoystick({ onMove, onAction }) {
   const tapTimerRef = useRef(null);
   const btnClass =
-    'bg-white/60 backdrop-blur-sm rounded-xl shadow flex items-center justify-center text-xl ' +
-    'select-none w-12 h-12 sm:w-14 sm:h-14 cursor-pointer ' +
+    'bg-white/60 backdrop-blur-sm rounded-xl shadow flex items-center justify-center text-lg sm:text-xl ' +
+    'select-none w-10 h-10 sm:w-12 sm:h-12 cursor-pointer ' +
     'transition-all duration-75 active:scale-90 active:bg-blue-300/80 hover:bg-white/80';
 
   const press = (x, y) => {
@@ -2123,7 +2156,7 @@ function VirtualJoystick({ onMove, onAction }) {
   );
 
   return (
-    <div className="absolute bottom-4 left-4 z-20 grid grid-cols-3 gap-1" style={{ width: '156px', paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)' }}>
+    <div className="absolute bottom-3 left-3 z-20 grid grid-cols-3 gap-1" style={{ width: '132px', paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)' }}>
       <div />
       {controlButton('⬆', 0, -1)}
       <div />
@@ -2177,7 +2210,7 @@ function AudioSettingsPanel({ settings, onChangeSetting, onClose }) {
   );
 
   return (
-    <div className="absolute top-14 right-2 z-20 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-3 w-60">
+    <div className="absolute top-14 z-20 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-3 w-[min(15rem,calc(100vw-4rem))]" style={HUD_PANEL_STYLE}>
       <div className="flex items-center justify-between mb-1">
         <div className="font-bold text-gray-700 text-sm">🔊 Audio</div>
         <button
@@ -2218,7 +2251,7 @@ function GameSettingsPanel({ state, speechOn, onChangeSetting, onClose }) {
   };
 
   return (
-    <div className="absolute top-14 right-2 z-20 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-3 w-64">
+    <div className="absolute top-14 z-20 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-3 w-[min(16rem,calc(100vw-4rem))]" style={HUD_PANEL_STYLE}>
       <div className="flex items-center justify-between mb-2">
         <div className="font-bold text-gray-700 text-sm">🗣️ NPC & Dialogue</div>
         <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-sm px-1">✕</button>
@@ -2302,7 +2335,7 @@ function MilestonesPanel({ state, onClose }) {
   }
 
   return (
-    <div className="absolute top-14 right-2 z-20 bg-white/85 backdrop-blur-sm rounded-xl shadow-lg p-3 w-80 max-h-[440px] overflow-y-auto pointer-events-auto">
+    <div className="absolute top-14 z-20 bg-white/85 backdrop-blur-sm rounded-xl shadow-lg p-3 w-[min(20rem,calc(100vw-4rem))] max-h-[calc(100vh-5rem)] overflow-y-auto pointer-events-auto" style={HUD_PANEL_STYLE}>
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <div className="font-bold text-gray-700 text-sm">Milestones</div>
@@ -2415,7 +2448,7 @@ function QuestBoardPanel({ state, onClose }) {
   const tierLabels = { 1: 'Survival', 2: 'Understanding', 3: 'Application', 4: 'Engineering', 5: 'Mastery' };
 
   return (
-    <div className="absolute top-14 right-2 z-20 bg-white/85 backdrop-blur-sm rounded-xl shadow-lg p-3 w-80 max-h-[400px] overflow-y-auto">
+      <div className="absolute top-14 z-20 bg-white/85 backdrop-blur-sm rounded-xl shadow-lg p-3 w-[min(20rem,calc(100vw-4rem))] max-h-[calc(100vh-5rem)] overflow-y-auto" style={HUD_PANEL_STYLE}>
       {/* Header with progress */}
       <div className="flex items-center justify-between mb-2">
         <div className="font-bold text-gray-700 text-sm">📋 Quest Board</div>
@@ -2429,6 +2462,13 @@ function QuestBoardPanel({ state, onClose }) {
       <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
         <div className="bg-green-500 h-1.5 rounded-full transition-all" style={{ width: `${board.stats.percentage}%` }} />
       </div>
+
+      {board.capstone?.isComplete && (
+        <div className="rounded-lg bg-amber-50 border-2 border-amber-300 p-2 mb-2">
+          <div className="text-sm font-bold text-amber-800">{board.capstone.title}</div>
+          <div className="text-xs text-amber-700 mt-0.5">{board.capstone.message}</div>
+        </div>
+      )}
 
       {/* Active quest */}
       {board.active && (
@@ -2510,7 +2550,21 @@ function QuestBoardPanel({ state, onClose }) {
         </div>
       )}
 
+      {/* Unlocked capstone content */}
+      {board.unlocked?.length > 0 && (
+        <div className="mb-2">
+          <div className="font-semibold text-amber-600 text-xs mb-1">✨ Unlocked</div>
+          {board.unlocked.map((q) => (
+            <div key={q.id} className="rounded-lg bg-amber-50 border border-amber-200 p-1.5 mb-1">
+              <div className="text-xs font-semibold text-amber-800">{q.icon} {q.title}</div>
+              <div className="text-[10px] text-amber-600">{q.hint}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Locked */}
+      {board.locked.length > 0 && (
       <div>
         <div className="font-semibold text-gray-400 text-xs mb-1">🔒 Locked</div>
         {board.locked.map((q) => (
@@ -2520,6 +2574,7 @@ function QuestBoardPanel({ state, onClose }) {
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 }
@@ -2530,7 +2585,7 @@ function QuestBoardPanel({ state, onClose }) {
 function ShopPanel({ state, onBuy, onClose }) {
   const items = getShopItems(state);
   return (
-    <div className="absolute top-14 right-2 z-20 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-3 w-72 max-h-80 overflow-y-auto">
+    <div className="absolute top-14 z-20 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-3 w-[min(18rem,calc(100vw-4rem))] max-h-[calc(100vh-5rem)] overflow-y-auto" style={HUD_PANEL_STYLE}>
       <div className="flex items-center justify-between mb-2">
         <div className="font-bold text-gray-700 text-sm">🏪 Garage Shop</div>
         <div className="flex items-center gap-2">

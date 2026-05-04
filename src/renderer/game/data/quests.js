@@ -788,8 +788,8 @@ const QUESTS = {
     id: 'the_living_fluid',
     title: 'The Living Basin',
     description:
-      'Cross a strange patch of ground near the lake where organic plant secretions ' +
-      'create a non-Newtonian fluid surface. Sprint to survive!',
+      'Cross a strange patch of ground in the Dry Wash where organic plant secretions ' +
+      'create a non-Newtonian fluid surface. Keep moving to survive!',
     giver: 'mr_chen',
     category: 'science',
     steps: [
@@ -797,9 +797,9 @@ const QUESTS = {
         id: 'talk_fluid',
         type: 'dialogue',
         text:
-          'Zuzu, there\'s a strange patch near the lake edge where the ground ' +
-          'behaves differently. When you walk slowly, you sink. When you run, ' +
-          'it\'s solid! It\'s like oobleck — a non-Newtonian fluid!',
+          'Zuzu, near the bridge we built in the Dry Wash, there\'s a strange patch ' +
+          'where the ground behaves differently. When you walk slowly, you sink. ' +
+          'When you run, it\'s solid! It\'s like oobleck — a non-Newtonian fluid!',
       },
       {
         id: 'learn_fluid',
@@ -813,16 +813,16 @@ const QUESTS = {
       {
         id: 'find_basin',
         type: 'observe',
-        text: 'Find the non-Newtonian zone near the lake edge. Look for shimmering ground.',
+        text: 'Go back to the Dry Wash bridge area and find the shimmering non-Newtonian basin in the arroyo.',
         requiredObservation: 'fluid_zone_found',
-        hint: 'Check the area between the lake shore and dry land — where organic sediment meets clay.',
+        hint: 'From the neighborhood, travel east to Dry Wash. Look in the middle of the wash channel for shimmering purple-brown ground.',
       },
       {
         id: 'cross_basin',
         type: 'observe',
-        text: 'Sprint across the living basin! Slow down and you\'ll sink.',
+        text: 'Move quickly across the living basin! Slow down and you\'ll sink.',
         requiredObservation: 'basin_crossed',
-        hint: 'Hold sprint and run straight across. Don\'t stop!',
+        hint: 'Run straight through the shimmering patch without stopping.',
       },
       {
         id: 'quiz_fluid',
@@ -1048,8 +1048,8 @@ const QUESTS = {
     id: 'invisible_map',
     title: 'The Invisible Map',
     description:
-      'Navigate without UI — your map, markers, and HUD fade away. ' +
-      'Only your memory of the desert\'s ecology can guide you.',
+      'Turn off the Bike GPS, then navigate from memory to a water source. ' +
+      'Only your memory of the neighborhood and desert ecology can guide you.',
     giver: 'mr_chen',
     category: 'science',
     prerequisite: 'food_chain_tracker',
@@ -1059,9 +1059,8 @@ const QUESTS = {
         type: 'dialogue',
         text:
           'Zuzu, what if your phone died in the desert? ' +
-          'No map, no markers, no compass. Could you find water? ' +
-          'Could you find food? Let\'s find out — I\'m going to challenge ' +
-          'your ecological memory.',
+          'No GPS route, no quest arrow, no map shortcut. Could you still find water? ' +
+          'Let\'s find out — I\'m going to challenge your ecological memory.',
       },
       {
         id: 'learn_memory',
@@ -1075,16 +1074,16 @@ const QUESTS = {
       {
         id: 'enter_dead_zone',
         type: 'observe',
-        text: 'Enter the signal dead zone where your UI fades. Find water using only memory.',
+        text: 'Start the memory challenge at the Bike GPS on the east side of the street.',
         requiredObservation: 'memory_zone_entered',
-        hint: 'Head toward areas with high signal noise — near the road corridors or mountain. Your HUD will fade.',
+        hint: 'Go to the Bike GPS marker on the far right side of the street and interact with it to turn navigation off.',
       },
       {
         id: 'find_water_blind',
         type: 'observe',
-        text: 'Navigate to a water source without your map or markers.',
+        text: 'Now navigate to a water source from memory. The lake dock is a good target.',
         requiredObservation: 'water_found_blind',
-        hint: 'Remember where the lake and pool are. Use landmarks you\'ve memorized.',
+        hint: 'Use the north exit to the map, choose Lake Edge, then interact with the fishing spot at the end of the dock.',
       },
       {
         id: 'quiz_memory',
@@ -1414,9 +1413,11 @@ const QUESTS = {
       {
         id: 'combine_materials',
         type: 'observe',
-        text: 'Combine agave fiber + creosote resin to create a plant-based composite.',
+        text:
+          'Go to Zuzu\'s garage and use the left-side workbench to combine agave fiber + creosote resin into a plant-based composite.',
         requiredObservation: 'composite_created',
-        hint: 'Use the material workbench to combine them. Watch for the synergy bonus!',
+        hint:
+          'From the street, go west into Zuzu\'s garage. Stand by the workbench on the left wall and press interact.',
       },
       {
         id: 'quiz_composite',
@@ -1483,9 +1484,11 @@ const QUESTS = {
       {
         id: 'test_raft',
         type: 'observe',
-        text: 'Test your raft design in the simulation. Make sure it floats AND stays stable with cargo!',
+        text:
+          'Go to the Lake Edge dock and test your raft design at the end of the pier. Make sure it floats AND stays stable with cargo!',
         requiredObservation: 'buoyancy_test_passed',
-        hint: 'Use mesquite wood for the hull. Load cargo evenly — offset cargo causes tilt!',
+        hint:
+          'At Lake Edge, walk onto the wooden dock and press interact at the end of the pier. Use mesquite wood for the hull and load cargo evenly.',
       },
       {
         id: 'learn_stability',
@@ -1554,9 +1557,9 @@ const QUESTS = {
       {
         id: 'clean_motor',
         type: 'observe',
-        text: 'Apply the yucca surfactant to the motor to reduce contamination.',
+        text: 'Go to Mr. Chen\'s bike on the street and apply the yucca surfactant to the motor.',
         requiredObservation: 'motor_cleaned',
-        hint: 'Use the surfactant on the clogged motor. Watch the contamination drop.',
+        hint: 'Stand by the gear marker next to Mr. Chen\'s bike, then interact to clean the clogged motor with yucca root.',
       },
       {
         id: 'complete_clean',

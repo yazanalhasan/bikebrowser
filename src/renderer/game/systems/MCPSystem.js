@@ -438,7 +438,7 @@ export default class MCPSystem {
     }
     if (!player.nearPlant) this._hintedForage = false;
 
-    if (environment.temperature > 0.7 && !this._hintedHeat) {
+    if (environment.temperature > 0.7 && this.lastTick > 15000 && !this._hintedHeat) {
       this._pushAlert('heat_warning', 'Extreme heat! Seek shade or hydrate.', 'warning');
       this._hintedHeat = true;
     }

@@ -45,6 +45,7 @@ const PLANT_GRANTS = {
   ephedra: ['ephedra_stems'],
   yerba_mansa: ['yerba_mansa_root'],
 };
+const INTERACTIVE_PLANT_SCALE = 1.65;
 
 export default class StreetBlockScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -266,7 +267,9 @@ export default class StreetBlockScene extends LocalSceneBase {
 
     for (const p of this.layout.plants) {
       // Draw visual plant (graphics-based, not emoji)
-      const plantContainer = drawPlant(this, p.species, p.x, p.y);
+      const plantContainer = drawPlant(this, p.species, p.x, p.y, {
+        scale: p.visualScale || INTERACTIVE_PLANT_SCALE,
+      });
       plantContainer.setDepth(4); // background decoration, below player (depth 6)
 
       // Add invisible interaction zone (uses existing addInteractable for prompt/hitbox)
@@ -405,13 +408,30 @@ export default class StreetBlockScene extends LocalSceneBase {
 
     // Mr. Chen's bike
     const chenQuestDone = state.completedQuests?.includes('chain_repair');
+    const chenMotorCleaningActive =
+      state.activeQuest?.id === 'engine_cleaning'
+      && getCurrentStep(state)?.id === 'clean_motor';
+    const chenBikeIcon = chenMotorCleaningActive
+      ? '🚲⚙️'
+      : chenQuestDone
+        ? '🚲✅'
+        : '🚲⛓️';
     {
       const o = this.layout.chen_bike_icon;
       this._chenBike = this.add.text(
         o.x, o.y,
-        chenQuestDone ? '🚲✅' : '🚲⛓️',
-        { fontSize: '28px' },
+        chenBikeIcon,
+        { fontSize: o.fontSize || '44px' },
       ).setOrigin(0.5).setDepth(40);
+      this.addInteractable({
+        x: o.x,
+        y: o.y,
+        label: 'Mr. Chen Bike',
+        icon: '',
+        radius: o.interactionRadius || 85,
+        metadata: { questObservation: 'motor_cleaned' },
+        onInteract: () => this._handleChenBikeInteract(),
+      });
     }
 
     // === EXITS ===
@@ -445,8 +465,31 @@ export default class StreetBlockScene extends LocalSceneBase {
       icon: '📡',
       label: 'Bike GPS',
       radius: 70,
+      metadata: { questObservation: 'memory_zone_entered' },
       onInteract: () => {
+        let state = this.registry.get('gameState');
+        const step = getCurrentStep(state);
         const audioMgr = this.registry.get('audioManager');
+        if (state?.activeQuest?.id === 'invisible_map' && step?.id === 'enter_dead_zone') {
+          if (!state.observations?.includes('memory_zone_entered')) {
+            state = {
+              ...state,
+              observations: [...(state.observations || []), 'memory_zone_entered'],
+            };
+            this.registry.set('gameState', state);
+            saveGame(state);
+          }
+          audioMgr?.playSfx('ui_success');
+          this.registry.set('dialogEvent', {
+            speaker: 'Zuzu',
+            text:
+              'Bike GPS is off. No route arrow for this challenge — I need to remember where water is. The lake is north on the map, at Lake Edge.',
+            choices: null,
+            step,
+          });
+          return;
+        }
+
         audioMgr?.playSfx('ui_panel_open');
         this._transitioning = true;
         this.cameras.main.fadeOut(350, 0, 0, 0, (_cam, progress) => {
@@ -776,6 +819,67 @@ export default class StreetBlockScene extends LocalSceneBase {
       text: step?.text || "I've learned what happened to the tire. Now I should keep following the repair steps.",
       choices: step?.type === 'quiz' ? step.choices : null,
       step: step || null,
+    });
+  }
+
+  _handleChenBikeInteract() {
+    let state = this.registry.get('gameState');
+    const audioMgr = this.registry.get('audioManager');
+    audioMgr?.playSfx('interaction_ping');
+
+    const step = getCurrentStep(state);
+    const hasYucca = state?.inventory?.includes('yucca_root');
+
+    if (
+      state?.activeQuest?.id === 'engine_cleaning'
+      && step?.id === 'clean_motor'
+    ) {
+      if (!hasYucca) {
+        this.registry.set('dialogEvent', {
+          speaker: 'Zuzu',
+          text: 'This is the clogged motor, but I need yucca root first. The saponins in the root act like natural soap.',
+          choices: null,
+          step,
+        });
+        return;
+      }
+
+      if (!state.observations?.includes('motor_cleaned')) {
+        state = {
+          ...state,
+          observations: [...(state.observations || []), 'motor_cleaned'],
+        };
+        this.registry.set('gameState', state);
+        saveGame(state);
+      }
+
+      audioMgr?.playSfx('ui_success');
+      if (this._chenBike) this._chenBike.setText('🚲✨');
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu',
+        text:
+          'The yucca surfactant foams into the oily grime and lifts it off the motor. The contamination drops and the motor can spin smoothly again.',
+        choices: null,
+        step,
+      });
+      return;
+    }
+
+    if (state?.completedQuests?.includes('engine_cleaning')) {
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu',
+        text: "Mr. Chen's motor is clean now. The yucca surfactant did the job.",
+        choices: null,
+        step: null,
+      });
+      return;
+    }
+
+    this.registry.set('dialogEvent', {
+      speaker: 'Zuzu',
+      text: "This is Mr. Chen's bike. If his motor needs cleaning, this is where I should apply the yucca surfactant.",
+      choices: null,
+      step: null,
     });
   }
 

@@ -15,6 +15,14 @@
 import LocalSceneBase from './LocalSceneBase.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
+import { saveGame } from '../systems/saveSystem.js';
+
+function isBoatPuzzleDockMode(state, step) {
+  if (state?.activeQuest?.id !== 'boat_puzzle') return false;
+  if ((state.observations || []).includes('buoyancy_test_passed')) return false;
+  return ['learn_buoyancy', 'quiz_buoyancy', 'test_raft'].includes(step?.id);
+}
 
 export default class LakeEdgeScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -38,6 +46,9 @@ export default class LakeEdgeScene extends LocalSceneBase {
   createWorld() {
     const { width, height } = this.getWorldSize();
     this.layout = loadLayout(this, 'lakeEdgeLayout');
+    const state = this.registry.get('gameState');
+    const currentStep = getCurrentStep(state);
+    const isRaftDockMode = isBoatPuzzleDockMode(state, currentStep);
 
     // === GROUND ===
     // Grass (southern half)
@@ -88,6 +99,22 @@ export default class LakeEdgeScene extends LocalSceneBase {
     this.addWall(this.layout.dock_wall_left.x, this.layout.dock_wall_left.y, this.layout.dock_wall_left.w, this.layout.dock_wall_left.h);
     this.addWall(this.layout.dock_wall_right.x, this.layout.dock_wall_right.y, this.layout.dock_wall_right.w, this.layout.dock_wall_right.h);
 
+    if (isRaftDockMode) {
+      this.add.text(this.layout.interact_fishing_spot.x, this.layout.interact_fishing_spot.y - 34, '🚣', {
+        fontSize: '34px',
+        stroke: '#ffffff',
+        strokeThickness: 3,
+      }).setOrigin(0.5).setDepth(4);
+      this.add.text(this.layout.interact_fishing_spot.x, this.layout.interact_fishing_spot.y + 28, 'Raft Test Dock', {
+        fontSize: '15px',
+        fontFamily: 'sans-serif',
+        color: '#0d47a1',
+        fontStyle: 'bold',
+        stroke: '#ffffff',
+        strokeThickness: 4,
+      }).setOrigin(0.5).setDepth(5);
+    }
+
     // === ROCKS ===
     for (const { x: rx, y: ry } of this.layout.rocks) {
       this.add.text(rx, ry, '🪨', { fontSize: '24px' }).setOrigin(0.5).setDepth(3);
@@ -115,10 +142,96 @@ export default class LakeEdgeScene extends LocalSceneBase {
     // Fishing spot (end of dock)
     this.addInteractable({
       x: this.layout.interact_fishing_spot.x, y: this.layout.interact_fishing_spot.y,
-      label: 'Fishing Spot',
-      icon: '🎣',
-      radius: 55,
+      label: isRaftDockMode ? 'Raft Test Dock' : 'Fishing Spot',
+      icon: isRaftDockMode ? '🚣' : '🎣',
+      radius: isRaftDockMode ? 95 : 55,
+      metadata: { questObservation: 'buoyancy_test_passed' },
       onInteract: () => {
+        let state = this.registry.get('gameState');
+        const step = getCurrentStep(state);
+        if (state?.activeQuest?.id === 'boat_puzzle' && step?.id !== 'test_raft') {
+          this.registry.set('dialogEvent', {
+            speaker: step?.type === 'quiz' ? 'Mr. Chen' : 'Zuzu',
+            text:
+              "This dock is where we'll test the raft once the density lesson is done.\n\n" +
+              (step?.text || 'Talk with Mr. Chen to continue the boat challenge.'),
+            choices: step?.type === 'quiz' ? step.choices : null,
+            step: step || null,
+          });
+          return;
+        }
+
+        if (state?.activeQuest?.id === 'boat_puzzle' && step?.id === 'test_raft') {
+          const inventory = state.inventory || [];
+          const hasHullMaterial =
+            inventory.includes('mesquite_wood_sample') || inventory.includes('mesquite_pods');
+
+          if (!hasHullMaterial) {
+            this.registry.set('dialogEvent', {
+              speaker: 'Zuzu',
+              text:
+                "This is the right place to test the raft, but I still need a floating hull material.\n\n" +
+                "Mesquite wood is less dense than water, so it is the right choice for the hull.",
+              choices: null,
+              step,
+            });
+            return;
+          }
+
+          if (!state.observations?.includes('buoyancy_test_passed')) {
+            let updated = {
+              ...state,
+              observations: [...(state.observations || []), 'buoyancy_test_passed'],
+              journal: [
+                ...(state.journal || []),
+                'Tested the raft at Lake Edge: mesquite hull floated and even cargo loading stayed stable.',
+              ],
+            };
+            const advanced = advanceQuest(updated);
+            if (advanced.ok) {
+              updated = advanced.state;
+            }
+            state = updated;
+            this.registry.set('gameState', state);
+            saveGame(state);
+          }
+
+          const nextStep = getCurrentStep(state);
+          const audioMgr = this.registry.get('audioManager');
+          audioMgr?.playSfx?.('ui_success');
+          this.registry.set('dialogEvent', {
+            speaker: nextStep ? 'Mr. Chen' : 'Zuzu',
+            text:
+              "The raft test worked!\n\n" +
+              "Mesquite wood stayed below water's density, so the hull floated. When the cargo was centered, the raft stayed level instead of tipping." +
+              (nextStep?.text ? `\n\n${nextStep.text}` : ''),
+            choices: nextStep?.type === 'quiz' ? nextStep.choices : null,
+            step: nextStep || null,
+          });
+          return;
+        }
+
+        if (state?.activeQuest?.id === 'invisible_map' && step?.id === 'find_water_blind') {
+          if (!state.observations?.includes('water_found_blind')) {
+            state = {
+              ...state,
+              observations: [...(state.observations || []), 'water_found_blind'],
+            };
+            this.registry.set('gameState', state);
+            saveGame(state);
+          }
+          const audioMgr = this.registry.get('audioManager');
+          audioMgr?.playSfx?.('ui_success');
+          this.registry.set('dialogEvent', {
+            speaker: 'Zuzu',
+            text:
+              'Found water from memory! The lake dock was right where I remembered it. I did not need the GPS route to get here.',
+            choices: null,
+            step,
+          });
+          return;
+        }
+
         this.registry.set('dialogEvent', {
           speaker: 'Zuzu',
           text: "The water is calm here at the end of the dock. I can see fish swimming below!\n\n(Fishing mini-game coming soon!)",

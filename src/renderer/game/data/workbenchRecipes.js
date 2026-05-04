@@ -1,7 +1,7 @@
 import ITEMS from './items.js';
 import { RECIPES as BIOLOGY_RECIPES } from './recipes.js';
 
-const WORKBENCH_RECIPE_IDS = ['protective_coating'];
+const WORKBENCH_RECIPE_IDS = ['protective_coating', 'plant_composite'];
 
 function itemName(itemId) {
   return ITEMS[itemId]?.name || itemId.replace(/_/g, ' ');
@@ -30,6 +30,12 @@ export const WORKBENCH_RECIPES = {
       'Creosote resin makes a tough UV-resistant seal; jojoba wax helps the coating repel moisture.',
     useText: 'Use it as heat and sun protection for bike parts.',
   }),
+  plant_composite: fromBiologyRecipe('plant_composite', {
+    questId: 'perfect_composite',
+    description:
+      'Agave fibers carry tension while creosote resin binds the layers and spreads stress.',
+    useText: 'Use it as a lightweight plant-based composite sample.',
+  }),
 };
 
 export function getWorkbenchRecipe(id) {
@@ -47,6 +53,15 @@ export function getKnownWorkbenchRecipeIds(state) {
   }
   if ((state?.observations || []).includes('coating_applied')) {
     known.add('protective_coating');
+  }
+  if (state?.activeQuest?.id === 'perfect_composite') {
+    known.add('plant_composite');
+  }
+  if ((state?.inventory || []).includes('plant_composite')) {
+    known.add('plant_composite');
+  }
+  if ((state?.observations || []).includes('composite_created')) {
+    known.add('plant_composite');
   }
 
   return WORKBENCH_RECIPE_IDS.filter((id) => known.has(id));
