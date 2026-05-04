@@ -43,7 +43,7 @@ function layoutSaverPlugin() {
 
 export default defineConfig({
   plugins: [react(), layoutSaverPlugin()],
-  base: './',
+  base: '/',
   optimizeDeps: {
     include: ['react', 'react-dom', 'react/jsx-runtime']
   },
