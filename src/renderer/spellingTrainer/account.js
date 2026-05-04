@@ -3,6 +3,13 @@ import { starterWords } from "./wordTools.js";
 const storageKey = "zaydan-spelling-account-v1";
 const defaultWordSetVersion = "colonial-america-worksheet-v1";
 const startingBalance = 8;
+const accountAdjustments = [
+  {
+    id: "parent-debit-2026-05-03-64-79",
+    amount: -64.79,
+    reason: "Parent account adjustment"
+  }
+];
 const legacyStarterWords = [
   "planet",
   "garden",
@@ -33,7 +40,15 @@ export function buildInitialAccount() {
       account.words[word] = createWordRecord();
       return account;
     },
-    { ...emptyAccount, words: {} }
+    {
+      ...emptyAccount,
+      accountAdjustments: accountAdjustments.map((adjustment) => ({
+        ...adjustment,
+        appliedAt: null,
+        markedAppliedOnNewAccount: true
+      })),
+      words: {}
+    }
   );
 }
 
@@ -45,6 +60,51 @@ export function createWordRecord() {
     mastered: false,
     lastSeenAt: null
   };
+}
+
+function money(value) {
+  return Number(Number(value || 0).toFixed(2));
+}
+
+function normalizeAccount(saved, words) {
+  return {
+    ...emptyAccount,
+    ...saved,
+    balance: money(saved.balance),
+    words
+  };
+}
+
+function applyAccountAdjustments(account) {
+  const appliedAdjustments = Array.isArray(account.accountAdjustments)
+    ? account.accountAdjustments
+    : [];
+  const appliedIds = new Set(appliedAdjustments.map((adjustment) => adjustment.id));
+  const missingAdjustments = accountAdjustments.filter((adjustment) => !appliedIds.has(adjustment.id));
+
+  if (!missingAdjustments.length) return account;
+
+  const appliedAt = new Date().toISOString();
+  const balanceDelta = missingAdjustments.reduce((total, adjustment) => total + adjustment.amount, 0);
+
+  return {
+    ...account,
+    balance: money(account.balance + balanceDelta),
+    accountAdjustments: [
+      ...appliedAdjustments,
+      ...missingAdjustments.map((adjustment) => ({
+        ...adjustment,
+        appliedAt
+      }))
+    ]
+  };
+}
+
+function persistIfAdjusted(before, after) {
+  if (before !== after) {
+    saveAccount(after);
+  }
+  return after;
 }
 
 export function loadAccount() {
@@ -63,21 +123,16 @@ export function loadAccount() {
       || onlyHasLegacyStarterWords;
 
     if (needsCurrentDefaults) {
-      return {
-        ...emptyAccount,
-        ...saved,
-        balance: Math.max(Number(saved.balance || 0), startingBalance),
+      const account = {
+        ...normalizeAccount(saved, buildInitialAccount().words),
         defaultWordSetVersion,
-        words: buildInitialAccount().words
       };
+      return persistIfAdjusted(account, applyAccountAdjustments(account));
     }
 
-    const account = {
-      ...emptyAccount,
-      ...saved,
-      balance: Math.max(Number(saved.balance || 0), startingBalance),
-      words: savedWords
-    };
+    const normalizedAccount = normalizeAccount(saved, savedWords);
+    const account = applyAccountAdjustments(normalizedAccount);
+    persistIfAdjusted(normalizedAccount, account);
 
     return account;
   } catch {
