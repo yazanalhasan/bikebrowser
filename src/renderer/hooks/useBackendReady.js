@@ -16,6 +16,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { CONFIG } from '../../../config/env.js';
+import { isPublicPagesHost } from '../utils/runtimeMode';
 
 const HEALTH_PATHS = ['/api/health', '/health'];
 const MAX_WAIT_MS = 30_000;
@@ -64,13 +65,21 @@ async function checkHealth() {
 }
 
 export function useBackendReady() {
-  const [ready, setReady] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const publicPagesHost = isPublicPagesHost();
+  const [ready, setReady] = useState(publicPagesHost);
+  const [checking, setChecking] = useState(!publicPagesHost);
   const [error, setError] = useState(null);
   const mountedRef = useRef(true);
   const attemptRef = useRef(0);
 
   useEffect(() => {
+    if (publicPagesHost) {
+      setReady(true);
+      setChecking(false);
+      setError(null);
+      return undefined;
+    }
+
     mountedRef.current = true;
     let timer = null;
     const startTime = Date.now();
@@ -108,7 +117,7 @@ export function useBackendReady() {
       mountedRef.current = false;
       if (timer) clearTimeout(timer);
     };
-  }, []);
+  }, [publicPagesHost]);
 
   return { ready, checking, error };
 }

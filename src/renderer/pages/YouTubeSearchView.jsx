@@ -10,6 +10,7 @@ import { matchVideoToTopics, getTopicDetails } from '../learning/videoTopicMatch
 import { useLearningStore } from '../learning/learningStore';
 import { useBackendReady } from '../hooks/useBackendReady';
 import { VIDEO_QUALITY_PRESETS } from '../data/videoQualityPresets';
+import { isPublicPagesHost } from '../utils/runtimeMode';
 
 function createInitialVideoState(video, videoId) {
   return {
@@ -50,6 +51,7 @@ function YouTubeSearchView() {
   const { ready: backendReady, checking: backendChecking, error: backendError } = useBackendReady();
   const query = searchParams.get('q') || '';
   const fastMode = searchParams.get('fast') === '1';
+  const publicPagesHost = isPublicPagesHost();
 
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,6 +63,13 @@ function YouTubeSearchView() {
   const [aiSearchLoading, setAiSearchLoading] = useState(false);
 
   useEffect(() => {
+    if (publicPagesHost) {
+      setLoading(false);
+      setError(null);
+      setVideos([]);
+      return () => {};
+    }
+
     if (query && backendReady) {
       performSearch(query);
     }
@@ -71,7 +80,7 @@ function YouTubeSearchView() {
         clearInterval(rankPollRef.current);
       }
     };
-  }, [query, backendReady]);
+  }, [query, backendReady, publicPagesHost]);
 
   const performSearch = async (searchQuery, { useAI = false } = {}) => {
     if (rankPollRef.current) {
@@ -317,7 +326,7 @@ function YouTubeSearchView() {
           </div>
         )}
 
-        {backendReady && loading && (
+        {!publicPagesHost && backendReady && loading && (
           <div className="flex flex-col items-center justify-center py-20">
             <LoadingSpinner />
             <p className="mt-4 text-xl text-gray-600">Finding the best videos for you...</p>
@@ -346,7 +355,7 @@ function YouTubeSearchView() {
           </div>
         )}
 
-        {!loading && !error && videos.length === 0 && (
+        {!publicPagesHost && !loading && !error && videos.length === 0 && (
           <div className="bg-yellow-100 border-2 border-yellow-400 rounded-xl p-8 text-center">
             <p className="text-2xl text-yellow-800 font-semibold mb-4">
               🔍 No videos found
