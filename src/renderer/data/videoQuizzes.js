@@ -63,6 +63,102 @@ export const videoQuizzes = {
       }
     ]
   },
+  "9KAaP7pbFV0": {
+    title: "Cassette service check",
+    questions: [
+      {
+        prompt: "What tool helps hold the cassette still during removal?",
+        choices: ["Chain whip", "Water bottle", "Brake pad"],
+        correctIndex: 0
+      },
+      {
+        prompt: "Why should you keep cassette spacers in order?",
+        choices: [
+          "So the wheel turns into a scooter",
+          "So the cassette goes back together correctly",
+          "So the tire becomes larger"
+        ],
+        correctIndex: 1
+      },
+      {
+        prompt: "What should you do before using cassette tools?",
+        choices: [
+          "Guess which tool fits",
+          "Skip removing the wheel",
+          "Choose the correct lockring tool"
+        ],
+        correctIndex: 2
+      }
+    ]
+  },
+  VdUQKVMPF5I: {
+    title: "Chain replacement check",
+    questions: [
+      {
+        prompt: "Why does a new chain need to be the right length?",
+        choices: ["So shifting can work safely", "So the bike has no wheels", "So the brakes get louder"],
+        correctIndex: 0
+      },
+      {
+        prompt: "What should you check when routing a chain?",
+        choices: [
+          "That it goes through the drivetrain correctly",
+          "That it avoids every gear",
+          "That it is tied to the handlebar"
+        ],
+        correctIndex: 0
+      },
+      {
+        prompt: "What connects some bicycle chains?",
+        choices: ["A pencil", "A master link or connecting rivet", "A sticker"],
+        correctIndex: 1
+      }
+    ]
+  },
+  B37TW_YVC8E: {
+    title: "Derailleurs and shifting check",
+    questions: [
+      {
+        prompt: "What does a derailleur help move?",
+        choices: ["The seat", "The chain between gears", "The water bottle"],
+        correctIndex: 1
+      },
+      {
+        prompt: "Why is it useful to understand shifting before repair?",
+        choices: [
+          "It helps you know what each part is supposed to do",
+          "It makes all tools unnecessary",
+          "It changes the bike color"
+        ],
+        correctIndex: 0
+      },
+      {
+        prompt: "If shifting is rough, what should you check?",
+        choices: ["Only the bell", "Only the kickstand", "The drivetrain parts"],
+        correctIndex: 2
+      }
+    ]
+  },
+  MuwS_nSevy4: {
+    title: "Chain cleaning check",
+    questions: [
+      {
+        prompt: "Why clean and lube a bicycle chain?",
+        choices: ["To help it run smoothly", "To remove the frame", "To stop the wheels from spinning"],
+        correctIndex: 0
+      },
+      {
+        prompt: "What should happen after cleaning a chain?",
+        choices: ["Leave it dry forever", "Use the right chain lube", "Put sand on it"],
+        correctIndex: 1
+      },
+      {
+        prompt: "A cleaner drivetrain can help reduce...",
+        choices: ["Learning", "Sunlight", "Wear on parts"],
+        correctIndex: 2
+      }
+    ]
+  },
   mAEeAKmCLFU: {
     title: "Brake system check",
     questions: [

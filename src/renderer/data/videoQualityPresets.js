@@ -2,12 +2,12 @@ export const VIDEO_QUALITY_PRESETS = [
   {
     id: 'bike-mechanics',
     label: 'Bike Mechanics',
-    tileTitle: 'Bike Mechanics',
-    tileSubtitle: 'Park Tool, RJ, GCN-style repair',
+    tileTitle: 'Drivetrain Service',
+    tileSubtitle: 'Cassette, chain & shifting work',
     tileEmoji: '🚴',
     tileColor: 'from-blue-400 to-blue-600',
-    query: 'Park Tool RJ The Bike Guy GCN Tech bicycle derailleur brake torque drivetrain repair tutorial',
-    helper: 'Park Tool-style repair and diagnosis'
+    query: 'Park Tool cassette removal installation chain replacement derailleur adjustment drivetrain maintenance service',
+    helper: 'Park Tool-style cassette, chain, and shifting service'
   },
   {
     id: 'brake-systems',
