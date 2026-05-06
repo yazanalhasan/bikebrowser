@@ -32,6 +32,7 @@
 .spelling-trainer-scope .feedback-card,
 .spelling-trainer-scope .word-card,
 .spelling-trainer-scope .rules-card,
+.spelling-trainer-scope .sync-card,
 .spelling-trainer-scope .game-panel,
 .spelling-trainer-scope .side-panel {
   background: #ffffff;
@@ -145,7 +146,8 @@
   padding: 0;
 }.spelling-trainer-scope .feedback-card,
 .spelling-trainer-scope .word-card,
-.spelling-trainer-scope .rules-card {
+.spelling-trainer-scope .rules-card,
+.spelling-trainer-scope .sync-card {
   padding: 14px;
 }.spelling-trainer-scope .feedback-card {
   background: #f0fff7;
@@ -168,13 +170,34 @@
   margin: 5px 0;
   overflow-wrap: anywhere;
 }.spelling-trainer-scope .word-card p,
-.spelling-trainer-scope .rules-card p {
+.spelling-trainer-scope .rules-card p,
+.spelling-trainer-scope .sync-card p {
   color: #526579;
   line-height: 1.35;
   margin: 8px 0 0;
 }.spelling-trainer-scope .rules-card h2,
 .spelling-trainer-scope .dashboard-grid span {
   margin: 0;
+}.spelling-trainer-scope .sync-card {
+  display: grid;
+  gap: 10px;
+}.spelling-trainer-scope .sync-card span {
+  color: #5d6f83;
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}.spelling-trainer-scope .sync-card strong {
+  display: block;
+  font-size: 1.05rem;
+  margin-top: 3px;
+}.spelling-trainer-scope .sync-card input {
+  border: 1px solid #c8d4e1;
+  border-radius: 8px;
+  min-height: 42px;
+  padding: 9px 10px;
+  width: 100%;
 }.spelling-trainer-scope .mode-heading {
   align-items: center;
   display: flex;

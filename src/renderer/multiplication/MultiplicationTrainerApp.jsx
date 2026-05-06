@@ -20,6 +20,7 @@ import { createPatternSequence, createMultiplicationQuestion, MULTIPLICATION_PAT
 import { createScenarioForPattern } from '../services/education/MechanicalMultiplicationScenarios.ts';
 import { calculateFlowState } from '../services/education/FlowStateEngine.ts';
 import { analyzeMistakes } from '../services/education/MistakeAnalysisEngine.ts';
+import { buildSharedProfile, getProfileSyncKey, pullSharedProfile, pushSharedProfile } from '../services/profileSyncClient.js';
 
 function money(value) {
   return Number(value || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
@@ -36,6 +37,7 @@ function buildQuestionQueue(profile) {
 
 export default function MultiplicationTrainerApp() {
   const [profile, setProfile] = useState(() => loadLearningProfile?.() || createDefaultLearningProfile());
+  const [syncStatus, setSyncStatus] = useState(() => getProfileSyncKey() ? 'Cloud sync ready.' : 'Cloud sync off.');
   const [queue, setQueue] = useState(() => buildQuestionQueue(profile));
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answer, setAnswer] = useState('');
@@ -45,6 +47,9 @@ export default function MultiplicationTrainerApp() {
   const [visualMode, setVisualMode] = useState('mechanic');
   const [mistakes, setMistakes] = useState([]);
   const shownAtRef = useRef(performance.now());
+  const syncKeyRef = useRef(getProfileSyncKey());
+  const syncHydratedRef = useRef(false);
+  const syncPushTimerRef = useRef(null);
 
   const currentQuestion = queue[questionIndex] || queue[0];
   const subject = profile.subjects?.multiplication || {};
@@ -56,9 +61,58 @@ export default function MultiplicationTrainerApp() {
   const flowState = calculateFlowState({ recentResults: profile.recentResults || [], currentStreak: subject.streak || 0 });
   const mistakeAnalysis = analyzeMistakes(mistakes);
 
+  React.useEffect(() => {
+    let cancelled = false;
+
+    async function hydrateMathProfile() {
+      const syncKey = syncKeyRef.current;
+      if (!syncKey) return;
+
+      try {
+        const result = await pullSharedProfile({ syncKey });
+        if (cancelled) return;
+
+        if (result.ok && result.profile?.educationProfile) {
+          setProfile(result.profile.educationProfile);
+          saveLearningProfile(result.profile.educationProfile);
+          setQueue(buildQuestionQueue(result.profile.educationProfile));
+          setQuestionIndex(0);
+          setSyncStatus('Synced math ledger from cloud.');
+        } else if (result.status === 'missing') {
+          const saved = await pushSharedProfile(buildSharedProfile({ educationProfile: profile }), { syncKey });
+          if (!cancelled) setSyncStatus(saved.ok ? 'Created shared profile from this math ledger.' : saved.error);
+        } else {
+          setSyncStatus(result.error || 'Using this device math ledger.');
+        }
+      } catch (error) {
+        if (!cancelled) setSyncStatus(`Cloud sync unavailable. ${error.message || ''}`.trim());
+      } finally {
+        syncHydratedRef.current = true;
+      }
+    }
+
+    hydrateMathProfile();
+    return () => {
+      cancelled = true;
+      if (syncPushTimerRef.current) window.clearTimeout(syncPushTimerRef.current);
+    };
+  }, []);
+
   function persist(nextProfile) {
     setProfile(nextProfile);
     saveLearningProfile(nextProfile);
+    const syncKey = syncKeyRef.current;
+    if (syncKey) {
+      if (syncPushTimerRef.current) window.clearTimeout(syncPushTimerRef.current);
+      syncPushTimerRef.current = window.setTimeout(async () => {
+        try {
+          const result = await pushSharedProfile(buildSharedProfile({ educationProfile: nextProfile }), { syncKey });
+          setSyncStatus(result.ok ? 'Saved math ledger to cloud.' : result.error);
+        } catch (error) {
+          setSyncStatus(`Cloud save failed; math progress is safe locally. ${error.message || ''}`.trim());
+        }
+      }, syncHydratedRef.current ? 500 : 1000);
+    }
   }
 
   function advance(nextProfile = profile) {
@@ -144,6 +198,7 @@ export default function MultiplicationTrainerApp() {
         <div className="math-side-card">
           <span className="math-card-label">Flow</span>
           <strong>{flowState.level}</strong>
+          <small>{syncStatus}</small>
         </div>
       </header>
 

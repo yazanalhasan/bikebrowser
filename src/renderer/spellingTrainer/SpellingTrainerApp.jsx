@@ -24,6 +24,13 @@ import { chooseWorksheetOcrAction } from "./ocrActions.js";
 import { getUploadServerBase } from "./uploadServer.js";
 import { defaultWorksheetText, extractWorksheetData, formatMoney, scrambleWord, starterWords } from "./wordTools.js";
 import { loadLearningProfile, recordEducationEarning, saveLearningProfile } from "../services/education/PlayerLearningProfile.ts";
+import {
+  buildSharedProfile,
+  getProfileSyncKey,
+  pullSharedProfile,
+  pushSharedProfile,
+  setProfileSyncKey as saveProfileSyncKey
+} from "../services/profileSyncClient.js";
 import "./styles.css";
 
 const letterReward = 0.02;
@@ -77,8 +84,12 @@ export default function SpellingTrainerApp() {
   const [ocrProgress, setOcrProgress] = useState(0);
   const [wifiUpload, setWifiUpload] = useState({ status: "Checking Wi-Fi upload server..." });
   const [pendingWorksheet, setPendingWorksheet] = useState(null);
+  const [syncKey, setSyncKey] = useState(() => getProfileSyncKey());
+  const [syncStatus, setSyncStatus] = useState(() => syncKey ? "Cloud sync ready." : "Cloud sync is off on this device.");
   const processedUploadId = useRef(null);
   const balanceRef = useRef(null);
+  const syncHydratedRef = useRef(false);
+  const syncPushTimerRef = useRef(null);
   const uploadServerBase = useMemo(() => getUploadServerBase(), []);
 
   const currentWord = wordList[wordIndex] || "";
@@ -91,6 +102,75 @@ export default function SpellingTrainerApp() {
   useEffect(() => {
     saveAccount(account);
   }, [account]);
+
+  useEffect(() => {
+    return () => {
+      if (syncPushTimerRef.current) window.clearTimeout(syncPushTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function hydrateFromCloud() {
+      if (!syncKey) {
+        syncHydratedRef.current = false;
+        setSyncStatus("Cloud sync is off on this device.");
+        return;
+      }
+
+      setSyncStatus("Checking shared Zaydan profile...");
+      try {
+        const result = await pullSharedProfile({ syncKey });
+        if (cancelled) return;
+
+        if (result.ok && result.profile) {
+          applySharedProfile(result.profile);
+          syncHydratedRef.current = true;
+          setSyncStatus(`Synced from cloud ${formatSyncTime(result.profile.updatedAt)}.`);
+          return;
+        }
+
+        if (result.status === "missing") {
+          const profile = buildSharedProfile({ spellingAccount: account, educationProfile, wordList, rawInput });
+          const saved = await pushSharedProfile(profile, { syncKey });
+          if (!cancelled) {
+            syncHydratedRef.current = true;
+            setSyncStatus(saved.ok ? "Created shared Zaydan profile in cloud." : saved.error);
+          }
+          return;
+        }
+
+        syncHydratedRef.current = true;
+        setSyncStatus(result.error || "Cloud sync could not load; using this device cache.");
+      } catch (error) {
+        if (!cancelled) {
+          syncHydratedRef.current = true;
+          setSyncStatus(`Cloud sync unavailable; using this device. ${error.message || ""}`.trim());
+        }
+      }
+    }
+
+    hydrateFromCloud();
+    return () => {
+      cancelled = true;
+    };
+  }, [syncKey]);
+
+  useEffect(() => {
+    if (!syncKey || !syncHydratedRef.current) return;
+    if (syncPushTimerRef.current) window.clearTimeout(syncPushTimerRef.current);
+
+    syncPushTimerRef.current = window.setTimeout(async () => {
+      const profile = buildSharedProfile({ spellingAccount: account, educationProfile, wordList, rawInput });
+      try {
+        const result = await pushSharedProfile(profile, { syncKey });
+        setSyncStatus(result.ok ? `Saved to cloud ${formatSyncTime(result.profile.updatedAt)}.` : result.error);
+      } catch (error) {
+        setSyncStatus(`Cloud save failed; local progress is safe. ${error.message || ""}`.trim());
+      }
+    }, 700);
+  }, [account, educationProfile, wordList, rawInput, syncKey]);
 
   useEffect(() => {
     resetPuzzle(currentWord);
@@ -198,6 +278,62 @@ export default function SpellingTrainerApp() {
       saveLearningProfile(updated);
       return updated;
     });
+  }
+
+  function applySharedProfile(profile) {
+    if (profile.spellingAccount?.profileName) {
+      setAccount(profile.spellingAccount);
+      saveAccount(profile.spellingAccount);
+      const nextWords = Array.isArray(profile.wordList) && profile.wordList.length
+        ? profile.wordList
+        : Object.keys(profile.spellingAccount.words || {});
+      setWordList(nextWords);
+      setWordIndex(0);
+    }
+
+    if (profile.educationProfile?.profileName) {
+      setEducationProfile(profile.educationProfile);
+      saveLearningProfile(profile.educationProfile);
+    }
+
+    if (typeof profile.rawInput === "string" && profile.rawInput) {
+      setRawInput(profile.rawInput);
+    }
+  }
+
+  function formatSyncTime(value) {
+    if (!value) return "now";
+    try {
+      return new Date(value).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    } catch {
+      return "now";
+    }
+  }
+
+  async function handleSyncKeySave(nextKey) {
+    const normalized = saveProfileSyncKey(nextKey);
+    setSyncKey(normalized);
+    setSyncStatus(normalized ? "Connecting this device to shared profile..." : "Cloud sync is off on this device.");
+  }
+
+  async function handleManualSync() {
+    if (!syncKey) {
+      setSyncStatus("Enter the parent sync key first.");
+      return;
+    }
+
+    setSyncStatus("Refreshing shared profile...");
+    try {
+      const result = await pullSharedProfile({ syncKey });
+      if (result.ok && result.profile) {
+        applySharedProfile(result.profile);
+        setSyncStatus(`Synced from cloud ${formatSyncTime(result.profile.updatedAt)}.`);
+      } else {
+        setSyncStatus(result.error || "No cloud profile found yet.");
+      }
+    } catch (error) {
+      setSyncStatus(`Cloud sync failed. ${error.message || ""}`.trim());
+    }
   }
 
   function addWords(words) {
@@ -762,6 +898,12 @@ export default function SpellingTrainerApp() {
         </section>
 
         <aside className="side-panel">
+          <SyncPanel
+            syncKey={syncKey}
+            syncStatus={syncStatus}
+            onSaveKey={handleSyncKeySave}
+            onManualSync={handleManualSync}
+          />
           <div className="feedback-card">
             <PartyPopper size={22} />
             <p>{feedback}</p>
@@ -782,6 +924,38 @@ export default function SpellingTrainerApp() {
         </aside>
       </section>
     </main>
+    </div>
+  );
+}
+
+function SyncPanel({ syncKey, syncStatus, onSaveKey, onManualSync }) {
+  const [draftKey, setDraftKey] = useState(syncKey || "");
+
+  useEffect(() => {
+    setDraftKey(syncKey || "");
+  }, [syncKey]);
+
+  return (
+    <div className="sync-card">
+      <div>
+        <span>Shared profile</span>
+        <strong>{syncKey ? "Cloud sync on" : "Cloud sync off"}</strong>
+        <p>{syncStatus}</p>
+      </div>
+      <input
+        value={draftKey}
+        onChange={(event) => setDraftKey(event.target.value)}
+        placeholder="Parent sync key"
+        aria-label="Parent sync key"
+      />
+      <div className="control-row">
+        <button type="button" onClick={() => onSaveKey(draftKey)}>
+          <Wifi size={18} /> Save Key
+        </button>
+        <button type="button" className="quiet" onClick={onManualSync} disabled={!syncKey}>
+          Sync Now
+        </button>
+      </div>
     </div>
   );
 }
