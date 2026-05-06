@@ -1,13 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { shouldRenderBootstrapError } from './bootstrapErrorPolicy';
 import './index.css';
 
 const ERROR_OVERLAY_ID = 'bikebrowser-bootstrap-error-overlay';
+let appStarted = false;
 
 function renderBootstrapError(error, source = 'bootstrap') {
   const message = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
   console.error(`[renderer:${source}]`, error);
+
+  if (!shouldRenderBootstrapError({ appStarted, source, error })) {
+    return;
+  }
 
   if (!document?.body) {
     return;
@@ -110,6 +116,7 @@ try {
   ReactDOM.createRoot(rootElement).render(
     appTree
   );
+  appStarted = true;
 
   if ('serviceWorker' in navigator) {
     const isDev =
