@@ -19,13 +19,14 @@ import {
   Wifi
 } from "lucide-react";
 import { buildInitialAccount, createWordRecord, exportAccount, loadAccount, saveAccount } from "./account.js";
+import { chooseWorksheetOcrAction } from "./ocrActions.js";
+import { getUploadServerBase } from "./uploadServer.js";
 import { defaultWorksheetText, extractWorksheetData, formatMoney, scrambleWord, starterWords } from "./wordTools.js";
 import "./styles.css";
 
 const letterReward = 0.02;
 const wordReward = 0.5;
 const audioWordReward = 1;
-const uploadServerBase = "http://127.0.0.1:3000";
 
 function explainOcrError(error) {
   if (!error) return "OCR stopped without returning an error. Try rotating the photo or uploading a clearer image.";
@@ -63,6 +64,7 @@ export default function SpellingTrainerApp() {
   const [pendingWorksheet, setPendingWorksheet] = useState(null);
   const processedUploadId = useRef(null);
   const balanceRef = useRef(null);
+  const uploadServerBase = useMemo(() => getUploadServerBase(), []);
 
   const currentWord = wordList[wordIndex] || "";
   const currentRecord = account.words[currentWord] || createWordRecord();
@@ -89,6 +91,14 @@ export default function SpellingTrainerApp() {
     let stopped = false;
 
     async function loadUploadInfo() {
+      if (!uploadServerBase) {
+        setWifiUpload({
+          connected: false,
+          status: "Use OCR File on this device, or paste words below."
+        });
+        return;
+      }
+
       try {
         const response = await fetch(`${uploadServerBase}/api/info`);
         const info = await response.json();
@@ -115,7 +125,7 @@ export default function SpellingTrainerApp() {
       stopped = true;
       window.clearInterval(interval);
     };
-  }, []);
+  }, [uploadServerBase]);
 
   useEffect(() => {
     if (!wifiUpload.latestUpload?.id || processedUploadId.current === wifiUpload.latestUpload.id) return;
@@ -260,6 +270,10 @@ export default function SpellingTrainerApp() {
     setOcrProgress(8);
 
     try {
+      if (!uploadServerBase) {
+        throw new Error("Advanced OCR is available only from the local BikeBrowser upload server.");
+      }
+
       const fileForUpload = await prepareFileForAdvancedOcr(worksheet);
       const body = new FormData();
       body.append("file", fileForUpload, fileForUpload.name || worksheet.name);
@@ -291,6 +305,16 @@ export default function SpellingTrainerApp() {
       setOcrProgress(0);
       setOcrStatus(`Advanced OCR is not ready. ${explainOcrError(error)}`);
     }
+  }
+
+  async function runBestAvailableWorksheetOcr() {
+    const action = chooseWorksheetOcrAction({ advancedConnected: Boolean(wifiUpload.connected) });
+    if (action === "advanced") {
+      await processPendingWorksheetWithChandra();
+      return;
+    }
+
+    await processPendingWorksheet();
   }
 
   async function prepareFileForAdvancedOcr(worksheet) {
@@ -641,6 +665,7 @@ export default function SpellingTrainerApp() {
               pendingWorksheet={pendingWorksheet}
               rotatePendingWorksheet={rotatePendingWorksheet}
               processPendingWorksheet={processPendingWorksheet}
+              runBestAvailableWorksheetOcr={runBestAvailableWorksheetOcr}
               processPendingWorksheetWithChandra={processPendingWorksheetWithChandra}
               extractionInfo={extractionInfo}
               removeWord={removeWord}
@@ -820,6 +845,7 @@ function WordsMode({
   pendingWorksheet,
   rotatePendingWorksheet,
   processPendingWorksheet,
+  runBestAvailableWorksheetOcr,
   processPendingWorksheetWithChandra,
   extractionInfo,
   removeWord,
@@ -883,7 +909,7 @@ function WordsMode({
               <button type="button" className="quiet" onClick={() => rotatePendingWorksheet(90)}>
                 <RefreshCw size={18} /> Right
               </button>
-              <button type="button" onClick={processPendingWorksheetWithChandra}>
+              <button type="button" onClick={runBestAvailableWorksheetOcr}>
                 <Sparkles size={18} /> Run OCR
               </button>
               <button type="button" className="quiet" onClick={processPendingWorksheet}>
