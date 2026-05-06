@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import CompatibilityBadge from '../../services/compatibility/ui/CompatibilityBadge';
+import ThinkLikeMechanicPanel from '../../services/compatibility/ui/ThinkLikeMechanicPanel';
 
 function priorityStyle(priority) {
   return priority === 'optional'
@@ -285,6 +287,12 @@ export default function RecommendedPartsPanel({
                           Discussed by builders
                         </span>
                       )}
+                      {product.compatibility && (
+                        <CompatibilityBadge
+                          status={product.compatibility.status}
+                          confidence={product.compatibility.confidence}
+                        />
+                      )}
                     </div>
 
                     <p className="line-clamp-2 text-sm font-semibold text-slate-800">{product.title}</p>
@@ -307,6 +315,26 @@ export default function RecommendedPartsPanel({
                           <li key={reason}>{reason}</li>
                         ))}
                       </ul>
+                    )}
+                    {product.compatibilitySummary && (
+                      <p className="mt-1 rounded-md bg-cyan-50 px-2 py-1 text-[11px] font-medium text-cyan-900">
+                        {product.compatibilitySummary}
+                      </p>
+                    )}
+                    {product.compatibility?.educationalConcepts?.length > 0 && (
+                      <p className="mt-1 text-[11px] text-slate-500">
+                        Learn why: {product.compatibility.educationalConcepts.slice(0, 3).join(', ')}
+                      </p>
+                    )}
+                    {product.compatibilitySpecs && (
+                      <details className="mt-2 rounded-lg border border-slate-200 bg-slate-50 p-2">
+                        <summary className="cursor-pointer text-[11px] font-bold text-slate-700">
+                          Think Like a Mechanic
+                        </summary>
+                        <div className="mt-2">
+                          <ThinkLikeMechanicPanel productSpecs={product.compatibilitySpecs} />
+                        </div>
+                      </details>
                     )}
                     {displayVideoReferences.length > 0 && (
                       <div className="mt-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] text-emerald-900">

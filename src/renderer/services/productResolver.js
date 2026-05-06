@@ -11,11 +11,17 @@ import { rankProducts } from './productRanking';
 import { getBuildSignals } from './buildSignalEngine';
 import { getKnownGoodProducts } from './curatedBuildLibrary';
 import { generateFallbackLink } from './buildPlanner/curatedBuildMatcher';
+import { getDefaultBikeProfile } from './compatibility/bikeProfiles/profileLoader';
+import { extractProductSpecs } from './compatibility/extraction/productSpecExtractor';
+import { evaluateProductCompatibility } from './compatibility/reasoning/compatibilityEngine';
+import { explainCompatibility } from './compatibility/reasoning/explanationEngine';
+import { buildCompatibilityAwareQuery } from './shopping/CompatibilityAwareSearchService';
 
 const DEFAULT_SIGNALS = { youtube: [], bilibili: [], reddit: [] };
 
 export function buildSearchQuery(part) {
-  return buildSmartQuery(part?.name || '', part);
+  const profile = getDefaultBikeProfile();
+  return buildCompatibilityAwareQuery(part?.name || '', profile) || buildSmartQuery(part?.name || '', part);
 }
 
 export function mergeAndRankResults(online, local) {
@@ -89,6 +95,30 @@ function boostKnownGoodProducts(products, part) {
       ].slice(0, 4),
     }))
     .sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
+}
+
+function annotateCompatibility(products) {
+  const bikeProfile = getDefaultBikeProfile();
+
+  return (Array.isArray(products) ? products : []).map((product) => {
+    const specs = extractProductSpecs({
+      title: product?.title || '',
+      description: product?.description || product?.compatibilityHint || '',
+      category: product?.category || '',
+    });
+    const compatibility = evaluateProductCompatibility(bikeProfile, specs);
+
+    return {
+      ...product,
+      compatibility,
+      compatibilitySpecs: specs,
+      compatibilitySummary: explainCompatibility(bikeProfile, specs, compatibility),
+    };
+  });
+}
+
+function hideKnownIncompatible(products) {
+  return (Array.isArray(products) ? products : []).filter((product) => product?.compatibility?.status !== 'incompatible');
 }
 
 function toCuratedProduct(entry, part, signals, index) {
@@ -173,7 +203,7 @@ async function resolveWithFallback(part, project, location) {
     .filter((product) => isRealisticPrice(product, part?.category));
 
   if (strictProducts.length > 0) {
-    const boosted = boostKnownGoodProducts(strictProducts, part);
+    const boosted = hideKnownIncompatible(annotateCompatibility(boostKnownGoodProducts(strictProducts, part)));
     return {
       products: boosted.slice(0, 3),
       signals: strict?.signals || DEFAULT_SIGNALS,
@@ -187,7 +217,7 @@ async function resolveWithFallback(part, project, location) {
   const relaxedProducts = Array.isArray(relaxed.products) ? relaxed.products : [];
 
   if (relaxedProducts.length > 0) {
-    const boosted = boostKnownGoodProducts(relaxedProducts, part);
+    const boosted = hideKnownIncompatible(annotateCompatibility(boostKnownGoodProducts(relaxedProducts, part)));
     return {
       products: boosted,
       signals: relaxed.signals || strict?.signals || DEFAULT_SIGNALS,
@@ -203,11 +233,12 @@ async function resolveWithFallback(part, project, location) {
     .map((entry, index) => toCuratedProduct(entry, part, signals, index))
     .filter(isValidListing)
     .slice(0, 3);
+  const compatibleCuratedProducts = hideKnownIncompatible(annotateCompatibility(curatedProducts));
 
   // Proof-of-use shortcut: when validation signals are strong, prefer curated known-good links.
-  if ((signals?.youtube?.length || 0) > 2 && curatedProducts.length > 0) {
+  if ((signals?.youtube?.length || 0) > 2 && compatibleCuratedProducts.length > 0) {
     return {
-      products: curatedProducts,
+      products: compatibleCuratedProducts,
       signals,
       noResultsReason: null,
       noResultsCode: null,
@@ -215,9 +246,9 @@ async function resolveWithFallback(part, project, location) {
     };
   }
 
-  if (curatedProducts.length > 0) {
+  if (compatibleCuratedProducts.length > 0) {
     return {
-      products: curatedProducts,
+      products: compatibleCuratedProducts,
       signals,
       noResultsReason: null,
       noResultsCode: null,

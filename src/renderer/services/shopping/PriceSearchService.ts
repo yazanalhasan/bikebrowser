@@ -1,4 +1,7 @@
 import type { Product } from './types';
+import type { BikeProfile } from '../compatibility/bikeProfiles/schema';
+import { getDefaultBikeProfile } from '../compatibility/bikeProfiles/profileLoader';
+import { buildCompatibilityAwareQuery } from './CompatibilityAwareSearchService';
 
 const BLOCKED_TERMS = ['weapon', 'gun', 'adult', 'nsfw', 'violent'];
 const MOTORCYCLE_TERMS = [
@@ -55,13 +58,14 @@ function extractList(value: any, key: string): any[] {
 class PriceSearchService {
   private cache = new Map<string, Product[]>();
 
-  expandQuery(query: string) {
+  expandQuery(query: string, bikeProfile: BikeProfile = getDefaultBikeProfile()) {
     const normalized = query.trim().toLowerCase();
-    return QUERY_EXPANSIONS[normalized] || `bicycle ${normalized}`;
+    const compatibilityAware = buildCompatibilityAwareQuery(normalized, bikeProfile);
+    return compatibilityAware || QUERY_EXPANSIONS[normalized] || `bicycle ${normalized}`;
   }
 
-  async search(query: string, zipcode: string) {
-    const expandedQuery = this.expandQuery(query);
+  async search(query: string, zipcode: string, bikeProfile: BikeProfile = getDefaultBikeProfile()) {
+    const expandedQuery = this.expandQuery(query, bikeProfile);
     const cacheKey = `${expandedQuery}::${zipcode}`;
 
     if (this.cache.has(cacheKey)) {
@@ -92,9 +96,9 @@ class PriceSearchService {
     return allProducts;
   }
 
-  async searchMany(queries: string[], zipcode: string) {
+  async searchMany(queries: string[], zipcode: string, bikeProfile: BikeProfile = getDefaultBikeProfile()) {
     const entries = await Promise.all(
-      queries.map(async (q) => [q, await this.search(q, zipcode)] as const),
+      queries.map(async (q) => [q, await this.search(q, zipcode, bikeProfile)] as const),
     );
     return Object.fromEntries(entries);
   }
