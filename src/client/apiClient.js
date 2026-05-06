@@ -52,15 +52,33 @@ function getTimeoutForPath(path) {
   return REQUEST_TIMEOUT_MS;
 }
 
-async function request(path, method = 'GET', body) {
-  const baseCandidates = [
-    apiBaseUrl,
-    CONFIG.API_BASE_URL,
-    LOCAL_API_FALLBACK,
-  ]
+export function isPublicBikeBrowserHost(hostname = '') {
+  return String(hostname || '').includes('bike-browser.com');
+}
+
+export function getRequestBaseCandidates({
+  currentBaseUrl = apiBaseUrl,
+  configuredBaseUrl = CONFIG.API_BASE_URL,
+  localFallback = LOCAL_API_FALLBACK,
+  hostname = typeof window !== 'undefined' ? window.location.hostname : '',
+} = {}) {
+  const candidates = [
+    currentBaseUrl,
+    configuredBaseUrl,
+  ];
+
+  if (!isPublicBikeBrowserHost(hostname)) {
+    candidates.push(localFallback);
+  }
+
+  return candidates
     .map((value) => String(value || '').trim().replace(/\/$/, ''))
     .filter(Boolean)
     .filter((value, index, list) => list.indexOf(value) === index);
+}
+
+async function request(path, method = 'GET', body) {
+  const baseCandidates = getRequestBaseCandidates();
 
   let lastError = null;
 

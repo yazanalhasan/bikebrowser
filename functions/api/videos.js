@@ -252,12 +252,9 @@ function scoreEntry(entry, query) {
   return tokenScore + conceptScore + channelScore + (SOURCE_BONUS[entry.source] || 0);
 }
 
-export function onRequestGet({ request }) {
-  const url = new URL(request.url);
-  const query = String(url.searchParams.get('q') || '').trim();
-
+export function searchVideoResults(query, limit = 10) {
   if (!query) {
-    return Response.json({ success: true, total: 0, results: [] });
+    return [];
   }
 
   const results = CURATED_RESULTS
@@ -278,9 +275,9 @@ export function onRequestGet({ request }) {
     })
     .filter((entry) => entry.score >= 5)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
+    .slice(0, limit);
 
-  const fallbackResults = results.length > 0
+  return results.length > 0
     ? results
     : CURATED_RESULTS.slice(0, 6).map((entry) => ({
       id: entry.id,
@@ -294,6 +291,17 @@ export function onRequestGet({ request }) {
       concepts: getConcepts(entry),
       score: scoreEntry(entry, query)
     }));
+}
+
+export function onRequestGet({ request }) {
+  const url = new URL(request.url);
+  const query = String(url.searchParams.get('q') || '').trim();
+
+  if (!query) {
+    return Response.json({ success: true, total: 0, results: [] });
+  }
+
+  const fallbackResults = searchVideoResults(query);
 
   return Response.json({
     success: true,
