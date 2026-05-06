@@ -19,6 +19,7 @@ import {
   Wifi
 } from "lucide-react";
 import { buildInitialAccount, createWordRecord, exportAccount, loadAccount, saveAccount } from "./account.js";
+import { requestAiWorksheetOcr } from "./aiOcrClient.js";
 import { chooseWorksheetOcrAction } from "./ocrActions.js";
 import { getUploadServerBase } from "./uploadServer.js";
 import { defaultWorksheetText, extractWorksheetData, formatMoney, scrambleWord, starterWords } from "./wordTools.js";
@@ -244,7 +245,7 @@ export default function SpellingTrainerApp() {
   }
 
   async function processPendingWorksheet() {
-    if (!pendingWorksheet?.file) return;
+    if (!pendingWorksheet?.file) return false;
     setOcrStatus(`Reading ${pendingWorksheet.name}...`);
     setOcrProgress(0);
     try {
@@ -259,13 +260,15 @@ export default function SpellingTrainerApp() {
       } else {
         setOcrStatus(`Found ${result.words.length} spelling words using ${result.extraction.strategy} (${result.ocrMode} mode).`);
       }
+      return result.words.length > 0;
     } catch (error) {
       setOcrStatus(`OCR needs a clearer file or text paste. ${explainOcrError(error)}`);
+      return false;
     }
   }
 
   async function processPendingWorksheetWithChandra(worksheet = pendingWorksheet) {
-    if (!worksheet?.file) return;
+    if (!worksheet?.file) return false;
     setOcrStatus(`Running local Chandra OCR on ${worksheet.name}...`);
     setOcrProgress(8);
 
@@ -301,17 +304,65 @@ export default function SpellingTrainerApp() {
       } else {
         setOcrStatus("Chandra OCR returned text, but no spelling words matched yet. Check the extracted text below.");
       }
+      return extraction.words.length > 0;
     } catch (error) {
       setOcrProgress(0);
       setOcrStatus(`Advanced OCR is not ready. ${explainOcrError(error)}`);
+      return false;
+    }
+  }
+
+  async function processPendingWorksheetWithAi(worksheet = pendingWorksheet) {
+    if (!worksheet?.file) return false;
+    if (!worksheet.file.type.startsWith("image/")) return false;
+
+    setOcrStatus(`Trying AI OCR on ${worksheet.name}...`);
+    setOcrProgress(12);
+
+    try {
+      const payload = await requestAiWorksheetOcr({ worksheet });
+      if (!payload.success || !payload.words.length) {
+        setOcrStatus("AI OCR is not available yet. Falling back to local OCR on this device...");
+        setOcrProgress(0);
+        return false;
+      }
+
+      const rawText = payload.rawText || payload.words.join("\n");
+      const extraction = extractWorksheetData(rawText);
+      const words = extraction.words.length ? extraction.words : payload.words;
+      const displayExtraction = extraction.words.length ? extraction : { ...extraction, words, chosenLines: words };
+      const provider = payload.provider === "openai"
+        ? "OpenAI"
+        : payload.provider === "deepseek"
+          ? "DeepSeek"
+          : payload.provider === "thaura"
+            ? "Thaura"
+            : "AI OCR";
+
+      setRawInput(rawText);
+      setExtractionInfo(displayExtraction);
+      addWords(words);
+      setOcrProgress(100);
+      setOcrStatus(`${provider} found ${words.length} spelling words. Review the extracted text below before starting.`);
+      return true;
+    } catch (error) {
+      setOcrProgress(0);
+      setOcrStatus(`AI OCR is not available yet. ${explainOcrError(error)} Falling back to local OCR...`);
+      return false;
     }
   }
 
   async function runBestAvailableWorksheetOcr() {
+    if (await processPendingWorksheetWithAi()) {
+      return;
+    }
+
     const action = chooseWorksheetOcrAction({ advancedConnected: Boolean(wifiUpload.connected) });
     if (action === "advanced") {
-      await processPendingWorksheetWithChandra();
-      return;
+      if (await processPendingWorksheetWithChandra()) {
+        return;
+      }
+      setOcrStatus("Advanced OCR did not find enough words. Falling back to basic OCR on this device...");
     }
 
     await processPendingWorksheet();
