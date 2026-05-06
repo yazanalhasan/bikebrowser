@@ -71,6 +71,15 @@ function HomePage() {
     }
   ];
 
+  utilityTiles.push({
+    id: 'multiplication-intelligence',
+    title: 'Multiplication Garage',
+    subtitle: 'Earn dollars with gears, patterns, and fast facts',
+    emoji: 'x',
+    isMultiplicationTrainer: true,
+    color: 'from-lime-400 to-cyan-500'
+  });
+
   const topics = [...utilityTiles, ...VIDEO_TOPIC_TILES];
 
   return (
@@ -155,6 +164,8 @@ function HomePage() {
                   navigate('/play');
                 } else if (topic.isSpellingTrainer) {
                   navigate('/spelling-trainer');
+                } else if (topic.isMultiplicationTrainer) {
+                  navigate('/multiplication-trainer');
                 } else {
                   handleTopicClick(topic.query);
                 }

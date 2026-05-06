@@ -23,6 +23,7 @@ import { requestAiWorksheetOcr } from "./aiOcrClient.js";
 import { chooseWorksheetOcrAction } from "./ocrActions.js";
 import { getUploadServerBase } from "./uploadServer.js";
 import { defaultWorksheetText, extractWorksheetData, formatMoney, scrambleWord, starterWords } from "./wordTools.js";
+import { loadLearningProfile, recordEducationEarning, saveLearningProfile } from "../services/education/PlayerLearningProfile.ts";
 import "./styles.css";
 
 const letterReward = 0.02;
@@ -47,7 +48,20 @@ function explainOcrError(error) {
 
 export default function SpellingTrainerApp() {
   const initialAccount = useMemo(() => loadAccount(), []);
+  const initialEducationProfile = useMemo(() => {
+    const profile = loadLearningProfile();
+    const spellingDollars = Math.max(profile.earnings?.spellingDollars || 0, Number(initialAccount.balance || 0));
+    const earnings = {
+      ...profile.earnings,
+      spellingDollars,
+      totalDollars: Number((spellingDollars + (profile.earnings?.multiplicationDollars || 0)).toFixed(2))
+    };
+    const nextProfile = { ...profile, earnings };
+    saveLearningProfile(nextProfile);
+    return nextProfile;
+  }, [initialAccount.balance]);
   const [account, setAccount] = useState(initialAccount);
+  const [educationProfile, setEducationProfile] = useState(initialEducationProfile);
   const [wordList, setWordList] = useState(() => Object.keys(initialAccount.words));
   const [mode, setMode] = useState("scramble");
   const [wordIndex, setWordIndex] = useState(0);
@@ -150,6 +164,7 @@ export default function SpellingTrainerApp() {
   }
 
   function updateAccountForResult(word, isCorrect, reward, letterRewarded = 0) {
+    recordSharedSpellingReward(reward);
     setAccount((current) => {
       const record = current.words[word] || createWordRecord();
       const nextCorrect = record.correct + (isCorrect ? 1 : 0);
@@ -173,6 +188,15 @@ export default function SpellingTrainerApp() {
           }
         }
       };
+    });
+  }
+
+  function recordSharedSpellingReward(reward) {
+    if (!reward) return;
+    setEducationProfile((current) => {
+      const updated = recordEducationEarning(current, "spelling", reward);
+      saveLearningProfile(updated);
+      return updated;
     });
   }
 
@@ -496,6 +520,7 @@ export default function SpellingTrainerApp() {
   }
 
   function updateAccountForLetter(word) {
+    recordSharedSpellingReward(letterReward);
     setAccount((current) => ({
       ...current,
       balance: Number((current.balance + letterReward).toFixed(2)),
@@ -640,6 +665,7 @@ export default function SpellingTrainerApp() {
           <StatusCard icon={<BadgeDollarSign />} label="Balance" value={formatMoney(account.balance)} />
           <StatusCard icon={<Flame />} label="Streak" value={`${account.currentStreak} correct`} />
           <StatusCard icon={<Star />} label="Mastered" value={`${masteredCount} words`} />
+          <StatusCard icon={<BadgeDollarSign />} label="All earned" value={formatMoney(educationProfile.earnings?.totalDollars || account.balance)} />
         </div>
       </header>
 
