@@ -165,6 +165,9 @@ function getBreadcrumbText(pathname) {
     '/safe-search': 'Safe Search',
     '/play': 'Play Game',
     '/spelling-trainer': "Zaydan's Spelling Trainer",
+    '/learn/letter-detective': 'Letter Detective',
+    '/game/letter-detective': 'Letter Detective',
+    '/multiplication-trainer': 'Multiplication Garage',
   };
 
   // Try exact match first

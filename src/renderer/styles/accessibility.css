@@ -1,0 +1,437 @@
+@font-face {
+  font-family: 'BB Lexend';
+  src: url('/fonts/lexend/Lexend.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BB Atkinson';
+  src: url('/fonts/atkinson/AtkinsonHyperlegible-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BB Atkinson';
+  src: url('/fonts/atkinson/AtkinsonHyperlegible-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BB OpenDyslexic';
+  src: url('/fonts/opendyslexic/OpenDyslexic-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'BB OpenDyslexic';
+  src: url('/fonts/opendyslexic/OpenDyslexic-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bb-letter-spacing: 0.08em;
+  --bb-word-spacing: 0.14em;
+  --bb-line-height: 1.6;
+  --bb-reading-padding: 12px;
+  --bb-reading-radius: 14px;
+  --bb-tile-min-size: 64px;
+  --bb-tile-padding: 14px;
+}
+
+.bb-font-lexend {
+  font-family: 'BB Lexend', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.bb-font-atkinson {
+  font-family: 'BB Atkinson', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.bb-font-opendyslexic {
+  font-family: 'BB OpenDyslexic', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.bb-font-system {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.bb-dyslexia-mode {
+  letter-spacing: var(--bb-letter-spacing);
+  word-spacing: var(--bb-word-spacing);
+  line-height: var(--bb-line-height);
+}
+
+.bb-spacing-enhanced .letter-tile {
+  margin: 10px;
+  min-width: var(--bb-tile-min-size);
+  min-height: var(--bb-tile-min-size);
+  padding: var(--bb-tile-padding);
+}
+
+.bb-reduced-motion * {
+  animation-duration: 0.001ms !important;
+  transition-duration: 120ms !important;
+  scroll-behavior: auto !important;
+}
+
+.bb-confusable-letter {
+  font-weight: 800;
+  transform: scale(1.08);
+  display: inline-block;
+}
+
+.bb-letter-tile {
+  align-items: center;
+  border-radius: 8px;
+  display: inline-flex;
+  justify-content: center;
+  min-height: 72px;
+  min-width: 72px;
+  touch-action: manipulation;
+}
+
+.bb-letter-tile-sm {
+  font-size: 1.7rem;
+}
+
+.bb-letter-tile-md {
+  font-size: 2.25rem;
+}
+
+.bb-letter-tile-lg {
+  font-size: 3rem;
+}
+
+.bb-letter-tile.is-selected {
+  transform: translateY(2px);
+}
+
+.bb-letter-tile.is-correct {
+  border-color: #059669;
+  background: #ecfdf5;
+}
+
+.bb-letter-tile.is-incorrect {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.bb-reading-focus-overlay {
+  inset: 0;
+  pointer-events: none;
+  position: fixed;
+  z-index: 90;
+}
+
+.bb-reading-focus-overlay::before,
+.bb-reading-focus-overlay::after {
+  background: rgba(15, 23, 42, 0.1);
+  content: '';
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+
+.bb-reading-focus-overlay::before {
+  bottom: calc(50% + 48px);
+  top: 0;
+}
+
+.bb-reading-focus-overlay::after {
+  bottom: 0;
+  top: calc(50% + 48px);
+}
+
+.bb-reading-focus-strip {
+  border: 2px solid rgba(14, 165, 233, 0.35);
+  border-radius: var(--bb-reading-radius);
+  height: 96px;
+  left: 50%;
+  max-width: 900px;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 900px);
+}
+
+.bb-dyslexia-settings {
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+}
+
+.bb-dyslexia-settings p,
+.bb-dyslexia-settings h2 {
+  margin: 0;
+}
+
+.bb-dyslexia-settings p {
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.bb-dyslexia-settings h2 {
+  color: #0f172a;
+  font-size: 1.25rem;
+}
+
+.bb-settings-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.bb-settings-toggle,
+.bb-font-selector {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.bb-settings-toggle input {
+  height: 20px;
+  width: 20px;
+}
+
+.bb-font-selector select {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  min-height: 40px;
+  padding: 8px;
+}
+
+.letter-detective-page {
+  background: #f8fafc;
+  color: #0f172a;
+  min-height: 100vh;
+}
+
+.letter-detective-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0 auto;
+  max-width: 1120px;
+  padding: 32px 20px;
+}
+
+.letter-detective-hero,
+.letter-detective-question,
+.letter-detective-results {
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  padding: 24px;
+}
+
+.letter-detective-hero p,
+.letter-detective-hero h1,
+.letter-detective-prompt p,
+.letter-detective-prompt h2,
+.letter-detective-results h2 {
+  margin: 0;
+}
+
+.letter-detective-hero p,
+.letter-detective-prompt p {
+  color: #0369a1;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.letter-detective-hero h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: 0;
+}
+
+.letter-detective-modes {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.letter-detective-modes button {
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+  color: #0f172a;
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  text-align: left;
+}
+
+.letter-detective-modes button.is-active {
+  background: #eff6ff;
+  border-color: #0ea5e9;
+}
+
+.letter-detective-modes span {
+  align-items: center;
+  background: #0f172a;
+  border-radius: 999px;
+  color: #ffffff;
+  display: inline-flex;
+  height: 36px;
+  justify-content: center;
+  width: 36px;
+}
+
+.letter-detective-modes strong {
+  font-size: 1.1rem;
+}
+
+.letter-detective-modes small {
+  color: #475569;
+  font-size: 0.86rem;
+}
+
+.letter-detective-workspace {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) 320px;
+}
+
+.letter-detective-prompt {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.letter-detective-prompt h2 {
+  font-size: clamp(1.45rem, 3vw, 2.2rem);
+  letter-spacing: 0;
+}
+
+.letter-detective-audio-button,
+.letter-detective-sound-button {
+  align-items: center;
+  background: #0f172a;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  display: inline-flex;
+  font-weight: 700;
+  gap: 8px;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 16px;
+}
+
+.letter-detective-options {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.letter-detective-options.is-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.letter-detective-options .letter-tile {
+  background: #fffbeb;
+  border: 2px solid #fde68a;
+  color: #0f172a;
+  font-weight: 800;
+  min-height: 88px;
+  width: 100%;
+}
+
+.letter-detective-results {
+  align-self: start;
+  display: grid;
+  gap: 14px;
+}
+
+.letter-detective-results h2 {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.letter-detective-results p {
+  margin: 0;
+}
+
+.letter-detective-stats {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.letter-detective-stats div {
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+
+.letter-detective-stats span {
+  color: #64748b;
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.letter-detective-stats strong {
+  color: #0369a1;
+  display: block;
+  font-size: 1.6rem;
+}
+
+.letter-detective-feedback,
+.letter-detective-note {
+  background: #eff6ff;
+  border-radius: 8px;
+  color: #075985;
+  font-weight: 700;
+  padding: 12px;
+}
+
+.letter-detective-contrast {
+  align-items: center;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+}
+
+.letter-detective-contrast strong {
+  font-size: 2.5rem;
+}
+
+@media (max-width: 860px) {
+  .letter-detective-modes,
+  .letter-detective-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .letter-detective-options,
+  .letter-detective-options.is-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .letter-detective-prompt {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

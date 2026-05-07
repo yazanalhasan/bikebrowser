@@ -246,7 +246,6 @@
   font-weight: 900;
   justify-content: center;
   min-height: 74px;
-  text-transform: uppercase;
 }.spelling-trainer-scope .slot {
   background: #edf3fa;
   border: 2px dashed #9eb0c4;
@@ -262,7 +261,7 @@
 }.spelling-trainer-scope .letter-bank {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 14px;
   justify-content: center;
   margin: 0 0 22px;
 }.spelling-trainer-scope .letter-tile {
@@ -280,6 +279,19 @@
 }.spelling-trainer-scope .letter-tile:disabled {
   cursor: default;
   opacity: 0.22;
+}.spelling-trainer-scope .reading-toggle {
+  align-items: center;
+  background: #f3f8ff;
+  border: 1px solid #c8d4e1;
+  border-radius: 8px;
+  color: #1e3144;
+  display: flex;
+  gap: 10px;
+  font-weight: 800;
+  padding: 12px;
+}.spelling-trainer-scope .reading-toggle input {
+  height: 20px;
+  width: 20px;
 }.spelling-trainer-scope .control-row {
   display: flex;
   flex-wrap: wrap;
