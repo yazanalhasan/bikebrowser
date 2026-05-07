@@ -60,7 +60,7 @@
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.17.0",
     "@react-three/rapier": "^1.5.0",
-    "axios": "^1.6.5",
+    "axios": "^1.16.0",
     "better-sqlite3": "^11.10.0",
     "canvas-confetti": "^1.9.4",
     "cors": "^2.8.5",
@@ -76,7 +76,7 @@
     "react-youtube": "^10.1.0",
     "tesseract.js": "^6.0.1",
     "three": "^0.184.0",
-    "uuid": "^13.0.0",
+    "uuid": "^13.0.2",
     "zustand": "^5.0.12"
   },
   "overrides": {
