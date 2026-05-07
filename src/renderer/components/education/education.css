@@ -234,6 +234,32 @@
   width: 100%;
 }
 
+.gear-simulator {
+  position: relative;
+}
+
+.gear-pause-button {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #0f172a;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 900;
+  min-height: 30px;
+  padding: 4px 10px;
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  z-index: 2;
+}
+
+.gear-pause-button:focus-visible {
+  outline: 3px solid #2459ff;
+  outline-offset: 2px;
+}
+
 .edu-group {
   transition: opacity 180ms ease, transform 180ms ease;
 }
