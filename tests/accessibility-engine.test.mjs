@@ -10,6 +10,7 @@ import {
   createDefaultLetterDetectiveProgress,
   getLetterDetectiveDifficulty,
   recordLetterDetectiveAttempt,
+  resetLetterDetectiveProgress,
 } from '../src/renderer/learning/letter-detective/LetterDetectiveEngine.js';
 
 test('readable text preserves lowercase paragraphs and capitalizes isolated b/d tiles only', () => {
@@ -75,4 +76,32 @@ test('adaptive difficulty disables speed pressure while b/d accuracy is low', ()
   const difficulty = getLetterDetectiveDifficulty(progress);
   assert.equal(difficulty.largeTiles, true);
   assert.equal(difficulty.speedBonusEnabled, false);
+});
+
+test('letter detective reset clears stored progression', () => {
+  const store = new Map();
+  global.window = {
+    localStorage: {
+      getItem: (key) => store.get(key) || null,
+      setItem: (key, value) => store.set(key, value),
+    },
+  };
+
+  const progressed = recordLetterDetectiveAttempt(createDefaultLetterDetectiveProgress(), {
+    target: 'b',
+    choice: 'b',
+    correct: true,
+    elapsedMs: 900,
+    confusablePair: 'B->b',
+  }).progress;
+  store.set('bikebrowser.letterDetectiveProgress', JSON.stringify(progressed));
+
+  const reset = resetLetterDetectiveProgress();
+
+  assert.equal(reset.score, 0);
+  assert.equal(reset.totalAttempts, 0);
+  assert.equal(reset.streak, 0);
+  assert.deepEqual(reset.confusionMatrix['b->d'], 0);
+
+  delete global.window;
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Headphones, Sparkles } from 'lucide-react';
+import { Headphones, RotateCcw, Sparkles } from 'lucide-react';
 import AccessibleText from '../../components/accessibility/AccessibleText';
 import { speakLetter } from '../../accessibility/speechEngine';
 
@@ -10,6 +10,7 @@ export default function LetterDetectiveResults({
   feedback,
   lastChoice,
   answer,
+  onReset,
 }) {
   return (
     <aside className="letter-detective-results">
@@ -54,6 +55,13 @@ export default function LetterDetectiveResults({
         className="letter-detective-sound-button"
       >
         <Headphones size={18} /> Letter sound
+      </button>
+      <button
+        type="button"
+        onClick={onReset}
+        className="letter-detective-reset-button"
+      >
+        <RotateCcw size={18} /> Reset progress
       </button>
     </aside>
   );

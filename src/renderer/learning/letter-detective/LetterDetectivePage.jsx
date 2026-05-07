@@ -7,6 +7,7 @@ import {
   getLetterDetectiveDifficulty,
   loadLetterDetectiveProgress,
   recordLetterDetectiveAttempt,
+  resetLetterDetectiveProgress,
   saveLetterDetectiveProgress,
 } from './LetterDetectiveEngine';
 import LetterDetectiveQuestion from './LetterDetectiveQuestion';
@@ -75,6 +76,15 @@ export default function LetterDetectivePage() {
     }
   }
 
+  function handleResetProgress() {
+    clearAdvanceTimer();
+    setProgress(resetLetterDetectiveProgress());
+    setModeIndex(0);
+    setRoundStartedAt(Date.now());
+    setLastChoice(null);
+    setFeedback('Letter Detective progress reset.');
+  }
+
   const accuracy = progress.totalAttempts
     ? Math.round((progress.totalCorrect / progress.totalAttempts) * 100)
     : 100;
@@ -118,6 +128,7 @@ export default function LetterDetectivePage() {
             feedback={feedback}
             lastChoice={lastChoice}
             answer={mode.answer}
+            onReset={handleResetProgress}
           />
         </section>
       </main>

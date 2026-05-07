@@ -61,6 +61,11 @@ export function saveLetterDetectiveProgress(progress) {
   return progress;
 }
 
+export function resetLetterDetectiveProgress() {
+  const progress = createDefaultLetterDetectiveProgress();
+  return saveLetterDetectiveProgress(progress);
+}
+
 function getAccuracy(progress, letters) {
   const totals = letters.reduce((acc, letter) => {
     const stat = progress.perLetter?.[letter] || { attempts: 0, correct: 0 };

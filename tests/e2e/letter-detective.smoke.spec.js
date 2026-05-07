@@ -31,6 +31,17 @@ test('Letter Detective renders and a correct answer updates score', async ({ pag
   await expect(page.getByText('Nice')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Find the uppercase match for d' })).toBeVisible({ timeout: 3000 });
 
+  await page.getByRole('button', { name: 'Reset progress' }).click();
+
+  await expect(page.getByTestId('letter-detective-score')).toHaveText('0');
+  await expect(page.getByText('Letter Detective progress reset.')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Find the lowercase match for B' })).toBeVisible();
+  const storedAttempts = await page.evaluate(() => JSON.parse(
+    window.localStorage.getItem('bikebrowser.letterDetectiveProgress'),
+  ).totalAttempts);
+  expect(storedAttempts).toBe(0);
+
   await page.reload();
   await expect(page.locator('.app-root')).toHaveClass(/bb-font-atkinson/);
+  await expect(page.getByTestId('letter-detective-score')).toHaveText('0');
 });
