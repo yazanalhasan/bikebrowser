@@ -15,11 +15,21 @@ module.exports = {
       jsx: true
     }
   },
-  plugins: ['react'],
+  plugins: ['react', 'react-hooks'],
   rules: {
     'react/react-in-jsx-scope': 'off',
-    'react/prop-types': 'off'
+    'react/prop-types': 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn'
   },
+  overrides: [
+    {
+      files: ['src/renderer/game3d/**/*.{js,jsx}'],
+      rules: {
+        'react/no-unknown-property': 'off'
+      }
+    }
+  ],
   settings: {
     react: {
       version: 'detect'

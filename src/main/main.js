@@ -1095,13 +1095,8 @@ ipcMain.handle('local-search', async (_event, payload = {}) => {
     return [];
   }
 
-  try {
-    // Legacy compatibility endpoint; returns empty list safely.
-    return [];
-  } catch (err) {
-    console.error('Local search error:', err);
-    return [];
-  }
+  // Legacy compatibility endpoint; returns empty list safely.
+  return [];
 });
 
 // ai:* handlers + resource orchestration live in ./ipc/ai.js

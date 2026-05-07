@@ -37,10 +37,6 @@ class EnhancedSearchPipeline {
     };
   }
 
-  setHistoryStore(historyStore) {
-    this.historyStore = historyStore;
-  }
-
   async search(userQuery, options = {}) {
     const traceId = this.monitor.startTrace('search');
     const SEARCH_TIMEOUT = 15000; // 15s hard cap on entire search
