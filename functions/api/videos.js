@@ -26,14 +26,69 @@ const CURATED_RESULTS = [
   },
   {
     id: 'park-tool-drivetrain',
-    title: 'Park Tool: derailleur, chain, cassette, and drivetrain repair',
+    title: 'Park Tool: rear derailleur adjustment, indexing, and drivetrain repair',
     channelName: 'Park Tool',
     source: 'youtube',
     videoId: 'UkZxPIZ1ngY',
     concepts: ['drivetrain'],
-    tags: ['park tool', 'derailleur', 'chain', 'cassette', 'drivetrain', 'adjustment', 'repair', 'tutorial'],
-    description: 'Professional shop-style bicycle drivetrain lessons with clear setup, diagnosis, and adjustment steps.',
+    tags: ['park tool', 'derailleur', 'indexing', 'limit screws', 'chain', 'drivetrain', 'adjustment', 'repair', 'tutorial'],
+    description: 'Professional shop-style rear derailleur setup with limit screws, indexing, diagnosis, and adjustment steps.',
     thumbnail: 'https://i.ytimg.com/vi/UkZxPIZ1ngY/hqdefault.jpg'
+  },
+  {
+    id: 'park-tool-cassette-removal-installation',
+    title: 'Park Tool: cassette removal and installation step-by-step',
+    channelName: 'Park Tool',
+    source: 'youtube',
+    videoId: '9KAaP7pbFV0',
+    concepts: ['drivetrain', 'shop_class'],
+    tags: ['park tool', 'cassette', 'cassette removal', 'cassette installation', 'lockring', 'chain whip', 'sprocket', 'freehub', 'drivetrain', 'maintenance', 'step by step'],
+    description: 'Calvin demonstrates how to remove and install cassette cogs, choose the correct lockring tool, and keep track of spacers and orientation.',
+    thumbnail: 'https://i.ytimg.com/vi/9KAaP7pbFV0/hqdefault.jpg'
+  },
+  {
+    id: 'park-tool-chain-replacement',
+    title: 'Park Tool: chain replacement, sizing, routing, and installation',
+    channelName: 'Park Tool',
+    source: 'youtube',
+    videoId: 'VdUQKVMPF5I',
+    concepts: ['drivetrain', 'shop_class'],
+    tags: ['park tool', 'chain', 'chain replacement', 'chain sizing', 'master link', 'connecting rivet', 'routing', 'installation', 'drivetrain', 'maintenance'],
+    description: 'Step-by-step chain replacement, including checking the old chain, sizing the new chain, routing it correctly, and connecting it safely.',
+    thumbnail: 'https://i.ytimg.com/vi/VdUQKVMPF5I/hqdefault.jpg'
+  },
+  {
+    id: 'park-tool-derailleurs-shifting-guide',
+    title: 'Park Tool: guide to derailleurs and shifting',
+    channelName: 'Park Tool',
+    source: 'youtube',
+    videoId: 'B37TW_YVC8E',
+    concepts: ['drivetrain', 'shop_class'],
+    tags: ['park tool', 'derailleur', 'shifting', 'shifter', 'drivetrain', 'gears', 'indexing', 'cable tension', 'maintenance', 'diagnosis'],
+    description: 'A structured drivetrain foundation lesson that explains derailleurs, shifting parts, and how the system works before repair adjustments.',
+    thumbnail: 'https://i.ytimg.com/vi/B37TW_YVC8E/hqdefault.jpg'
+  },
+  {
+    id: 'park-tool-chain-cleaner',
+    title: 'Park Tool: clean and lube a bicycle chain with a chain cleaner',
+    channelName: 'Park Tool',
+    source: 'youtube',
+    videoId: 'MuwS_nSevy4',
+    concepts: ['drivetrain'],
+    tags: ['park tool', 'chain cleaner', 'clean chain', 'lube chain', 'degreaser', 'drivetrain', 'maintenance', 'chain wear'],
+    description: 'A clear maintenance lesson on cleaning and lubricating the chain so the drivetrain runs smoother and wears more slowly.',
+    thumbnail: 'https://i.ytimg.com/vi/MuwS_nSevy4/hqdefault.jpg'
+  },
+  {
+    id: 'park-tool-hanger-alignment',
+    title: 'Park Tool: derailleur hanger alignment for better shifting',
+    channelName: 'Park Tool',
+    source: 'youtube',
+    videoId: 'tXfvW0L3iLM',
+    concepts: ['drivetrain', 'shop_class'],
+    tags: ['park tool', 'derailleur hanger', 'hanger alignment', 'DAG', 'wide range cassette', 'large cassette', 'shifting', 'drivetrain', 'maintenance', 'installation'],
+    description: 'Check hanger alignment before tuning a wide-range cassette so the chain tracks cleanly through every gear.',
+    thumbnail: 'https://i.ytimg.com/vi/tXfvW0L3iLM/hqdefault.jpg'
   },
   {
     id: 'park-tool-brakes',
@@ -197,12 +252,9 @@ function scoreEntry(entry, query) {
   return tokenScore + conceptScore + channelScore + (SOURCE_BONUS[entry.source] || 0);
 }
 
-export function onRequestGet({ request }) {
-  const url = new URL(request.url);
-  const query = String(url.searchParams.get('q') || '').trim();
-
+export function searchVideoResults(query, limit = 10) {
   if (!query) {
-    return Response.json({ success: true, total: 0, results: [] });
+    return [];
   }
 
   const results = CURATED_RESULTS
@@ -223,9 +275,9 @@ export function onRequestGet({ request }) {
     })
     .filter((entry) => entry.score >= 5)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
+    .slice(0, limit);
 
-  const fallbackResults = results.length > 0
+  return results.length > 0
     ? results
     : CURATED_RESULTS.slice(0, 6).map((entry) => ({
       id: entry.id,
@@ -239,6 +291,17 @@ export function onRequestGet({ request }) {
       concepts: getConcepts(entry),
       score: scoreEntry(entry, query)
     }));
+}
+
+export function onRequestGet({ request }) {
+  const url = new URL(request.url);
+  const query = String(url.searchParams.get('q') || '').trim();
+
+  if (!query) {
+    return Response.json({ success: true, total: 0, results: [] });
+  }
+
+  const fallbackResults = searchVideoResults(query);
 
   return Response.json({
     success: true,

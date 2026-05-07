@@ -27,13 +27,23 @@ import {
   loadAccount,
   saveAccount
 } from "./account.js";
+import { requestAiWorksheetOcr } from "./aiOcrClient.js";
+import { chooseWorksheetOcrAction } from "./ocrActions.js";
+import { getUploadServerBase } from "./uploadServer.js";
 import { defaultWorksheetText, extractWorksheetData, formatMoney, scrambleWord, starterWords } from "./wordTools.js";
+import { loadLearningProfile, recordEducationEarning, saveLearningProfile } from "../services/education/PlayerLearningProfile.ts";
+import {
+  buildSharedProfile,
+  getProfileSyncKey,
+  pullSharedProfile,
+  pushSharedProfile,
+  setProfileSyncKey as saveProfileSyncKey
+} from "../services/profileSyncClient.js";
 import "./styles.css";
 
 const letterReward = 0.02;
 const wordReward = 0.5;
 const audioWordReward = 1;
-const uploadServerBase = "http://127.0.0.1:3000";
 
 function explainOcrError(error) {
   if (!error) return "OCR stopped without returning an error. Try rotating the photo or uploading a clearer image.";
@@ -53,7 +63,20 @@ function explainOcrError(error) {
 
 export default function SpellingTrainerApp() {
   const initialAccount = useMemo(() => loadAccount(), []);
+  const initialEducationProfile = useMemo(() => {
+    const profile = loadLearningProfile();
+    const spellingDollars = Math.max(profile.earnings?.spellingDollars || 0, Number(initialAccount.balance || 0));
+    const earnings = {
+      ...profile.earnings,
+      spellingDollars,
+      totalDollars: Number((spellingDollars + (profile.earnings?.multiplicationDollars || 0)).toFixed(2))
+    };
+    const nextProfile = { ...profile, earnings };
+    saveLearningProfile(nextProfile);
+    return nextProfile;
+  }, [initialAccount.balance]);
   const [account, setAccount] = useState(initialAccount);
+  const [educationProfile, setEducationProfile] = useState(initialEducationProfile);
   const [wordList, setWordList] = useState(() => Object.keys(initialAccount.words));
   const [mode, setMode] = useState("scramble");
   const [wordIndex, setWordIndex] = useState(0);
@@ -69,7 +92,12 @@ export default function SpellingTrainerApp() {
   const [ocrProgress, setOcrProgress] = useState(0);
   const [wifiUpload, setWifiUpload] = useState({ status: "Checking Wi-Fi upload server..." });
   const [pendingWorksheet, setPendingWorksheet] = useState(null);
+  const [syncKey, setSyncKey] = useState(() => getProfileSyncKey());
+  const [syncStatus, setSyncStatus] = useState(() => syncKey ? "Cloud sync ready." : "Cloud sync is off on this device.");
   const processedUploadId = useRef(null);
+  const syncHydratedRef = useRef(false);
+  const syncPushTimerRef = useRef(null);
+  const uploadServerBase = useMemo(() => getUploadServerBase(), []);
 
   const currentWord = wordList[wordIndex] || "";
   const currentRecord = account.words[currentWord] || createWordRecord();
@@ -86,6 +114,75 @@ export default function SpellingTrainerApp() {
   }, [account]);
 
   useEffect(() => {
+    return () => {
+      if (syncPushTimerRef.current) window.clearTimeout(syncPushTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function hydrateFromCloud() {
+      if (!syncKey) {
+        syncHydratedRef.current = false;
+        setSyncStatus("Cloud sync is off on this device.");
+        return;
+      }
+
+      setSyncStatus("Checking shared Zaydan profile...");
+      try {
+        const result = await pullSharedProfile({ syncKey });
+        if (cancelled) return;
+
+        if (result.ok && result.profile) {
+          applySharedProfile(result.profile);
+          syncHydratedRef.current = true;
+          setSyncStatus(`Synced from cloud ${formatSyncTime(result.profile.updatedAt)}.`);
+          return;
+        }
+
+        if (result.status === "missing") {
+          const profile = buildSharedProfile({ spellingAccount: account, educationProfile, wordList, rawInput });
+          const saved = await pushSharedProfile(profile, { syncKey });
+          if (!cancelled) {
+            syncHydratedRef.current = true;
+            setSyncStatus(saved.ok ? "Created shared Zaydan profile in cloud." : saved.error);
+          }
+          return;
+        }
+
+        syncHydratedRef.current = true;
+        setSyncStatus(result.error || "Cloud sync could not load; using this device cache.");
+      } catch (error) {
+        if (!cancelled) {
+          syncHydratedRef.current = true;
+          setSyncStatus(`Cloud sync unavailable; using this device. ${error.message || ""}`.trim());
+        }
+      }
+    }
+
+    hydrateFromCloud();
+    return () => {
+      cancelled = true;
+    };
+  }, [syncKey]);
+
+  useEffect(() => {
+    if (!syncKey || !syncHydratedRef.current) return;
+    if (syncPushTimerRef.current) window.clearTimeout(syncPushTimerRef.current);
+
+    syncPushTimerRef.current = window.setTimeout(async () => {
+      const profile = buildSharedProfile({ spellingAccount: account, educationProfile, wordList, rawInput });
+      try {
+        const result = await pushSharedProfile(profile, { syncKey });
+        setSyncStatus(result.ok ? `Saved to cloud ${formatSyncTime(result.profile.updatedAt)}.` : result.error);
+      } catch (error) {
+        setSyncStatus(`Cloud save failed; local progress is safe. ${error.message || ""}`.trim());
+      }
+    }, 700);
+  }, [account, educationProfile, wordList, rawInput, syncKey]);
+
+  useEffect(() => {
     resetPuzzle(currentWord);
   }, [currentWord]);
 
@@ -99,6 +196,14 @@ export default function SpellingTrainerApp() {
     let stopped = false;
 
     async function loadUploadInfo() {
+      if (!uploadServerBase) {
+        setWifiUpload({
+          connected: false,
+          status: "Use OCR File on this device, or paste words below."
+        });
+        return;
+      }
+
       try {
         const response = await fetch(`${uploadServerBase}/api/info`);
         const info = await response.json();
@@ -125,7 +230,7 @@ export default function SpellingTrainerApp() {
       stopped = true;
       window.clearInterval(interval);
     };
-  }, []);
+  }, [uploadServerBase]);
 
   useEffect(() => {
     if (!wifiUpload.latestUpload?.id || processedUploadId.current === wifiUpload.latestUpload.id) return;
@@ -149,6 +254,7 @@ export default function SpellingTrainerApp() {
   }
 
   function updateAccountForResult(word, isCorrect, reward, letterRewarded = 0) {
+    recordSharedSpellingReward(reward);
     setAccount((current) => {
       const record = current.words[word] || createWordRecord();
       const nextCorrect = record.correct + (isCorrect ? 1 : 0);
@@ -186,6 +292,71 @@ export default function SpellingTrainerApp() {
         }
       };
     });
+  }
+
+  function recordSharedSpellingReward(reward) {
+    if (!reward) return;
+    setEducationProfile((current) => {
+      const updated = recordEducationEarning(current, "spelling", reward);
+      saveLearningProfile(updated);
+      return updated;
+    });
+  }
+
+  function applySharedProfile(profile) {
+    if (profile.spellingAccount?.profileName) {
+      setAccount(profile.spellingAccount);
+      saveAccount(profile.spellingAccount);
+      const nextWords = Array.isArray(profile.wordList) && profile.wordList.length
+        ? profile.wordList
+        : Object.keys(profile.spellingAccount.words || {});
+      setWordList(nextWords);
+      setWordIndex(0);
+    }
+
+    if (profile.educationProfile?.profileName) {
+      setEducationProfile(profile.educationProfile);
+      saveLearningProfile(profile.educationProfile);
+    }
+
+    if (typeof profile.rawInput === "string" && profile.rawInput) {
+      setRawInput(profile.rawInput);
+    }
+  }
+
+  function formatSyncTime(value) {
+    if (!value) return "now";
+    try {
+      return new Date(value).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    } catch {
+      return "now";
+    }
+  }
+
+  async function handleSyncKeySave(nextKey) {
+    const normalized = saveProfileSyncKey(nextKey);
+    setSyncKey(normalized);
+    setSyncStatus(normalized ? "Connecting this device to shared profile..." : "Cloud sync is off on this device.");
+  }
+
+  async function handleManualSync() {
+    if (!syncKey) {
+      setSyncStatus("Enter the parent sync key first.");
+      return;
+    }
+
+    setSyncStatus("Refreshing shared profile...");
+    try {
+      const result = await pullSharedProfile({ syncKey });
+      if (result.ok && result.profile) {
+        applySharedProfile(result.profile);
+        setSyncStatus(`Synced from cloud ${formatSyncTime(result.profile.updatedAt)}.`);
+      } else {
+        setSyncStatus(result.error || "No cloud profile found yet.");
+      }
+    } catch (error) {
+      setSyncStatus(`Cloud sync failed. ${error.message || ""}`.trim());
+    }
   }
 
   function addWords(words) {
@@ -257,7 +428,7 @@ export default function SpellingTrainerApp() {
   }
 
   async function processPendingWorksheet() {
-    if (!pendingWorksheet?.file) return;
+    if (!pendingWorksheet?.file) return false;
     setOcrStatus(`Reading ${pendingWorksheet.name}...`);
     setOcrProgress(0);
     try {
@@ -272,17 +443,23 @@ export default function SpellingTrainerApp() {
       } else {
         setOcrStatus(`Found ${result.words.length} spelling words using ${result.extraction.strategy} (${result.ocrMode} mode).`);
       }
+      return result.words.length > 0;
     } catch (error) {
       setOcrStatus(`OCR needs a clearer file or text paste. ${explainOcrError(error)}`);
+      return false;
     }
   }
 
   async function processPendingWorksheetWithChandra(worksheet = pendingWorksheet) {
-    if (!worksheet?.file) return;
+    if (!worksheet?.file) return false;
     setOcrStatus(`Running local Chandra OCR on ${worksheet.name}...`);
     setOcrProgress(8);
 
     try {
+      if (!uploadServerBase) {
+        throw new Error("Advanced OCR is available only from the local BikeBrowser upload server.");
+      }
+
       const fileForUpload = await prepareFileForAdvancedOcr(worksheet);
       const body = new FormData();
       body.append("file", fileForUpload, fileForUpload.name || worksheet.name);
@@ -310,10 +487,68 @@ export default function SpellingTrainerApp() {
       } else {
         setOcrStatus("Chandra OCR returned text, but no spelling words matched yet. Check the extracted text below.");
       }
+      return extraction.words.length > 0;
     } catch (error) {
       setOcrProgress(0);
       setOcrStatus(`Advanced OCR is not ready. ${explainOcrError(error)}`);
+      return false;
     }
+  }
+
+  async function processPendingWorksheetWithAi(worksheet = pendingWorksheet) {
+    if (!worksheet?.file) return false;
+    if (!worksheet.file.type.startsWith("image/")) return false;
+
+    setOcrStatus(`Trying AI OCR on ${worksheet.name}...`);
+    setOcrProgress(12);
+
+    try {
+      const payload = await requestAiWorksheetOcr({ worksheet });
+      if (!payload.success || !payload.words.length) {
+        setOcrStatus("AI OCR is not available yet. Falling back to local OCR on this device...");
+        setOcrProgress(0);
+        return false;
+      }
+
+      const rawText = payload.rawText || payload.words.join("\n");
+      const extraction = extractWorksheetData(rawText);
+      const words = extraction.words.length ? extraction.words : payload.words;
+      const displayExtraction = extraction.words.length ? extraction : { ...extraction, words, chosenLines: words };
+      const provider = payload.provider === "openai"
+        ? "OpenAI"
+        : payload.provider === "deepseek"
+          ? "DeepSeek"
+          : payload.provider === "thaura"
+            ? "Thaura"
+            : "AI OCR";
+
+      setRawInput(rawText);
+      setExtractionInfo(displayExtraction);
+      addWords(words);
+      setOcrProgress(100);
+      setOcrStatus(`${provider} found ${words.length} spelling words. Review the extracted text below before starting.`);
+      return true;
+    } catch (error) {
+      setOcrProgress(0);
+      setOcrStatus(`AI OCR is not available yet. ${explainOcrError(error)} Falling back to local OCR...`);
+      return false;
+    }
+  }
+
+  async function runBestAvailableWorksheetOcr() {
+    if (await processPendingWorksheetWithAi()) {
+      return;
+    }
+
+    const action = chooseWorksheetOcrAction({ advancedConnected: Boolean(wifiUpload.connected) });
+    if (action === "advanced") {
+      if (await processPendingWorksheetWithChandra()) {
+        return;
+      }
+      setOcrStatus("Advanced OCR did not find enough words. Falling back to basic OCR on this device...");
+    }
+
+    await processPendingWorksheet();
   }
 
   async function prepareFileForAdvancedOcr(worksheet) {
@@ -444,6 +679,7 @@ export default function SpellingTrainerApp() {
   }
 
   function updateAccountForLetter(word) {
+    recordSharedSpellingReward(letterReward);
     setAccount((current) => ({
       ...current,
       balance: Number((current.balance + letterReward).toFixed(2)),
@@ -602,6 +838,7 @@ export default function SpellingTrainerApp() {
           <StatusCard icon={<BadgeDollarSign />} label="Balance" value={formatMoney(account.balance)} />
           <StatusCard icon={<Flame />} label="Streak" value={`${account.currentStreak} correct`} />
           <StatusCard icon={<Star />} label="Mastered" value={`${masteredCount} words`} />
+          <StatusCard icon={<BadgeDollarSign />} label="All earned" value={formatMoney(educationProfile.earnings?.totalDollars || account.balance)} />
           <StatusCard icon={<Keyboard />} label="Dictionary" value={`${practicedDictionaryCount} words`} />
         </div>
       </header>
@@ -682,7 +919,7 @@ export default function SpellingTrainerApp() {
               pendingWorksheet={pendingWorksheet}
               rotatePendingWorksheet={rotatePendingWorksheet}
               processPendingWorksheet={processPendingWorksheet}
-              processPendingWorksheetWithChandra={processPendingWorksheetWithChandra}
+              runBestAvailableWorksheetOcr={runBestAvailableWorksheetOcr}
               extractionInfo={extractionInfo}
               removeWord={removeWord}
               clearPracticeWords={clearPracticeWords}
@@ -704,6 +941,12 @@ export default function SpellingTrainerApp() {
         </section>
 
         <aside className="side-panel">
+          <SyncPanel
+            syncKey={syncKey}
+            syncStatus={syncStatus}
+            onSaveKey={handleSyncKeySave}
+            onManualSync={handleManualSync}
+          />
           <div className="feedback-card">
             <PartyPopper size={22} />
             <p>{feedback}</p>
@@ -724,6 +967,38 @@ export default function SpellingTrainerApp() {
         </aside>
       </section>
     </main>
+    </div>
+  );
+}
+
+function SyncPanel({ syncKey, syncStatus, onSaveKey, onManualSync }) {
+  const [draftKey, setDraftKey] = useState(syncKey || "");
+
+  useEffect(() => {
+    setDraftKey(syncKey || "");
+  }, [syncKey]);
+
+  return (
+    <div className="sync-card">
+      <div>
+        <span>Shared profile</span>
+        <strong>{syncKey ? "Cloud sync on" : "Cloud sync off"}</strong>
+        <p>{syncStatus}</p>
+      </div>
+      <input
+        value={draftKey}
+        onChange={(event) => setDraftKey(event.target.value)}
+        placeholder="Parent sync key"
+        aria-label="Parent sync key"
+      />
+      <div className="control-row">
+        <button type="button" onClick={() => onSaveKey(draftKey)}>
+          <Wifi size={18} /> Save Key
+        </button>
+        <button type="button" className="quiet" onClick={onManualSync} disabled={!syncKey}>
+          Sync Now
+        </button>
+      </div>
     </div>
   );
 }
@@ -864,7 +1139,7 @@ function WordsMode({
   pendingWorksheet,
   rotatePendingWorksheet,
   processPendingWorksheet,
-  processPendingWorksheetWithChandra,
+  runBestAvailableWorksheetOcr,
   extractionInfo,
   removeWord,
   clearPracticeWords,
@@ -928,7 +1203,7 @@ function WordsMode({
               <button type="button" className="quiet" onClick={() => rotatePendingWorksheet(90)}>
                 <RefreshCw size={18} /> Right
               </button>
-              <button type="button" onClick={processPendingWorksheetWithChandra}>
+              <button type="button" onClick={runBestAvailableWorksheetOcr}>
                 <Sparkles size={18} /> Run OCR
               </button>
               <button type="button" className="quiet" onClick={processPendingWorksheet}>

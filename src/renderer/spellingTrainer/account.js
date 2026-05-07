@@ -86,6 +86,21 @@ export function createWordRecord() {
   };
 }
 
+function money(value) {
+  return Number(Number(value || 0).toFixed(2));
+}
+
+function normalizeAccount(saved, words) {
+  const balance = Math.max(money(saved.balance), startingBalance);
+  return {
+    ...emptyAccount,
+    ...saved,
+    balance,
+    words,
+    practicedWords: buildPracticedWordsFromAccount({ ...saved, words })
+  };
+}
+
 export function loadAccount() {
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey));
@@ -102,25 +117,18 @@ export function loadAccount() {
       || onlyHasLegacyStarterWords;
 
     if (needsCurrentDefaults) {
-      const practicedWords = buildPracticedWordsFromAccount({ ...saved, words: savedWords });
-      return {
-        ...emptyAccount,
-        ...saved,
-        balance: Math.max(Number(saved.balance || 0), startingBalance),
-        defaultWordSetVersion,
-        words: buildInitialAccount().words,
-        practicedWords
+      const account = {
+        ...normalizeAccount(saved, buildInitialAccount().words),
+        defaultWordSetVersion
       };
+      saveAccount(account);
+      return account;
     }
 
-    const account = {
-      ...emptyAccount,
-      ...saved,
-      balance: Math.max(Number(saved.balance || 0), startingBalance),
-      words: savedWords,
-      practicedWords: buildPracticedWordsFromAccount({ ...saved, words: savedWords })
-    };
-
+    const account = normalizeAccount(saved, savedWords);
+    if (account.balance !== saved.balance || !saved.practicedWords) {
+      saveAccount(account);
+    }
     return account;
   } catch {
     return buildInitialAccount();

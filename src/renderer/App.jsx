@@ -13,6 +13,7 @@ import HomePage from './pages/HomePage';
 const YouTubeSearchView = lazy(() => import('./pages/YouTubeSearchView'));
 const VideoWatchPage = lazy(() => import('./pages/VideoWatchPage'));
 const ProjectBuilderPage = lazy(() => import('./pages/ProjectBuilderPage'));
+const CurrentProjectsPage = lazy(() => import('./pages/CurrentProjectsPage'));
 const SafeSearchPage = lazy(() => import('./pages/SafeSearchPage'));
 const ShoppingPage = lazy(() => import('./pages/ShoppingPage'));
 const BuildPlannerPage = lazy(() => import('./pages/BuildPlannerPage'));
@@ -20,6 +21,7 @@ const AllProjectNotesPage = lazy(() => import('./pages/AllProjectNotesPage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
 const Game3DPage = lazy(() => import('./pages/Game3DPage'));
 const SpellingTrainerApp = lazy(() => import('./spellingTrainer/SpellingTrainerApp'));
+const MultiplicationTrainerApp = lazy(() => import('./multiplication/MultiplicationTrainerApp'));
 
 const VERSION_STORAGE_KEY = 'bikebrowser_cached_version';
 
@@ -28,7 +30,7 @@ function DeprecatedMobileRouteRedirect() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!location.pathname.startsWith('/m')) {
+    if (location.pathname !== '/m' && !location.pathname.startsWith('/m/')) {
       return;
     }
 
@@ -70,6 +72,7 @@ function AppContent() {
           <Route path="/youtube/search" element={<YouTubeSearchView />} />
           <Route path="/youtube/watch/:videoId" element={<VideoWatchPage />} />
           <Route path="/project-builder" element={<ProjectBuilderPage />} />
+          <Route path="/current-projects" element={<CurrentProjectsPage />} />
           <Route path="/build-planner" element={<BuildPlannerPage />} />
           <Route path="/saved-notes" element={<AllProjectNotesPage />} />
           <Route path="/shop" element={<ShoppingPage />} />
@@ -77,6 +80,7 @@ function AppContent() {
           <Route path="/play" element={<GamePage />} />
           <Route path="/play3d" element={<Game3DPage />} />
           <Route path="/spelling-trainer" element={<SpellingTrainerApp />} />
+          <Route path="/multiplication-trainer" element={<MultiplicationTrainerApp />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

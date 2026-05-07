@@ -1,0 +1,307 @@
+.education-shell {
+  background: #f5f7fb;
+  color: #17212b;
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.education-topbar,
+.learning-hud,
+.multiplication-layout,
+.math-mode-tabs {
+  margin: 0 auto;
+  max-width: 1260px;
+}
+
+.education-topbar {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.education-title p,
+.learning-hud span,
+.reward-popup span,
+.math-card-label {
+  color: #5d6f83;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.education-title h1 {
+  font-size: clamp(2rem, 5vw, 4.4rem);
+  letter-spacing: 0;
+  line-height: 0.92;
+  margin: 0;
+}
+
+.learning-hud {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-bottom: 12px;
+}
+
+.learning-hud-card,
+.math-panel,
+.math-side-card,
+.reward-popup {
+  background: #ffffff;
+  border: 1px solid #d7e0eb;
+  border-radius: 8px;
+}
+
+.learning-hud-card {
+  min-height: 82px;
+  padding: 12px;
+}
+
+.learning-hud-card strong {
+  display: block;
+  font-size: 1.35rem;
+  line-height: 1.1;
+  margin-top: 4px;
+}
+
+.multiplication-layout {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) 340px;
+}
+
+.math-panel {
+  min-height: 620px;
+  overflow: hidden;
+  padding: 18px;
+}
+
+.math-side {
+  display: grid;
+  gap: 12px;
+}
+
+.math-side-card {
+  padding: 14px;
+}
+
+.math-question-row {
+  align-items: center;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin-bottom: 12px;
+}
+
+.math-expression {
+  font-size: clamp(3rem, 12vw, 7rem);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 0.9;
+  margin: 0;
+}
+
+.math-answer-form {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.math-answer-form input {
+  border: 2px solid #9fb0c4;
+  border-radius: 8px;
+  flex: 1;
+  font-size: 2rem;
+  font-weight: 900;
+  min-height: 58px;
+  padding: 8px 12px;
+}
+
+.math-answer-form button,
+.math-action-button,
+.math-mode-tabs button {
+  align-items: center;
+  background: #2459ff;
+  border: 1px solid #2459ff;
+  border-radius: 8px;
+  color: #ffffff;
+  display: inline-flex;
+  font-weight: 900;
+  justify-content: center;
+  min-height: 46px;
+  padding: 10px 14px;
+}
+
+.math-action-button.secondary,
+.math-mode-tabs button {
+  background: #ffffff;
+  border-color: #c8d4e1;
+  color: #1e3144;
+}
+
+.math-mode-tabs {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-bottom: 14px;
+}
+
+.math-mode-tabs button.active {
+  background: #17212b;
+  border-color: #17212b;
+  color: #ffffff;
+}
+
+.reward-popup {
+  border-color: #bfe8d2;
+  box-shadow: 0 14px 36px rgba(22, 74, 55, 0.12);
+  display: grid;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 14px;
+}
+
+.reward-popup strong {
+  color: #164a37;
+  font-size: 1.6rem;
+}
+
+.reward-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.reward-labels i {
+  background: #dbf8e8;
+  border-radius: 999px;
+  color: #164a37;
+  font-style: normal;
+  font-weight: 800;
+  padding: 6px 9px;
+}
+
+.combo-meter,
+.speed-gauge,
+.mastery-ring {
+  display: grid;
+  gap: 8px;
+}
+
+.meter-track,
+.speed-track {
+  background: #dce5ef;
+  border-radius: 999px;
+  height: 12px;
+  overflow: hidden;
+}
+
+.meter-track div,
+.speed-track div {
+  background: #ffb330;
+  height: 100%;
+  transition: width 220ms ease;
+}
+
+.speed-track div.lightning { background: #14b8a6; }
+.speed-track div.fast { background: #22c55e; }
+.speed-track div.steady { background: #ffb330; }
+.speed-track div.slow { background: #ef4444; }
+
+.math-visual-stage {
+  background: #f8fbff;
+  border: 1px solid #dbe7f5;
+  border-radius: 8px;
+  min-height: 320px;
+  overflow: hidden;
+  padding: 14px;
+}
+
+.edu-illustration {
+  height: 100%;
+  min-height: 280px;
+  width: 100%;
+}
+
+.edu-illustration svg {
+  display: block;
+  height: 100%;
+  max-height: 360px;
+  width: 100%;
+}
+
+.edu-group {
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.edu-pulse {
+  animation: eduPulse 1.2s ease-in-out infinite;
+}
+
+.edu-spin {
+  animation: eduSpin 4s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.edu-chain {
+  animation: eduDash 1.2s linear infinite;
+  stroke-dasharray: 10 8;
+}
+
+.mastery-graph-grid {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.mastery-cell {
+  aspect-ratio: 1;
+  border-radius: 5px;
+  display: grid;
+  font-size: 0.8rem;
+  font-weight: 900;
+  place-items: center;
+}
+
+@keyframes eduPulse {
+  0%, 100% { opacity: 0.65; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+
+@keyframes eduSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes eduDash {
+  to { stroke-dashoffset: -36; }
+}
+
+@media (max-width: 860px) {
+  .education-topbar,
+  .multiplication-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .education-topbar {
+    align-items: stretch;
+    display: grid;
+  }
+
+  .learning-hud {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .math-mode-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .math-question-row,
+  .math-answer-form {
+    grid-template-columns: 1fr;
+  }
+}

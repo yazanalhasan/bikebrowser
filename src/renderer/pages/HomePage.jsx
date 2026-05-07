@@ -22,6 +22,14 @@ function HomePage() {
 
   const utilityTiles = [
     {
+      id: 'current-projects',
+      title: 'Current Projects',
+      subtitle: 'Purchased parts, install plan & videos',
+      emoji: '🧰',
+      isCurrentProjects: true,
+      color: 'from-amber-400 to-blue-500'
+    },
+    {
       id: 'project-builder',
       title: 'Project Builder',
       subtitle: 'Guided tutorials & missions',
@@ -62,6 +70,15 @@ function HomePage() {
       color: 'from-indigo-400 to-sky-500'
     }
   ];
+
+  utilityTiles.push({
+    id: 'multiplication-intelligence',
+    title: 'Multiplication Garage',
+    subtitle: 'Earn dollars with gears, patterns, and fast facts',
+    emoji: 'x',
+    isMultiplicationTrainer: true,
+    color: 'from-lime-400 to-cyan-500'
+  });
 
   const topics = [...utilityTiles, ...VIDEO_TOPIC_TILES];
 
@@ -137,6 +154,8 @@ function HomePage() {
               onClick={() => {
                 if (topic.isSpecial) {
                   navigate('/project-builder');
+                } else if (topic.isCurrentProjects) {
+                  navigate('/current-projects');
                 } else if (topic.isBuildPlanner) {
                   navigate('/build-planner');
                 } else if (topic.isShop) {
@@ -145,6 +164,8 @@ function HomePage() {
                   navigate('/play');
                 } else if (topic.isSpellingTrainer) {
                   navigate('/spelling-trainer');
+                } else if (topic.isMultiplicationTrainer) {
+                  navigate('/multiplication-trainer');
                 } else {
                   handleTopicClick(topic.query);
                 }
