@@ -2,3 +2,6 @@ name = "bikebrowser"
 pages_build_output_dir = "build"
 compatibility_date = "2026-05-02"
 
+[[kv_namespaces]]
+binding = "PROFILE_STORE"
+id = "177bdf317d66403ea89d534b0028f97b"
