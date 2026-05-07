@@ -160,7 +160,10 @@ function isCandidateWord(word) {
 
 function lineHasSignal(line, signals) {
   const lower = line.toLowerCase();
-  return signals.some((signal) => lower.includes(signal));
+  return signals.some((signal) => {
+    const escapedSignal = signal.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return new RegExp(`(^|[^a-z])${escapedSignal}([^a-z]|$)`, "i").test(lower);
+  });
 }
 
 function isInstructionLine(line) {
@@ -210,6 +213,15 @@ function parseLabeledWords(line) {
 
 function candidateWordsFromLine(line) {
   return tokensFromLine(line).filter(isCandidateWord);
+}
+
+function plainWordFromLine(line) {
+  const tokens = tokensFromLine(line);
+  if (tokens.length !== 1) return null;
+  if (lineHasSignal(line, instructionSignals) || lineHasSignal(line, wordSectionSignals)) return null;
+  if (/[.!?,;:]/.test(line)) return null;
+  const [word] = tokens;
+  return isCandidateWord(word) ? word : null;
 }
 
 function removeSectionSignalText(line) {
@@ -308,6 +320,7 @@ export function extractWorksheetData(rawText) {
   const candidates = [];
   const numberedEntries = [];
   const labeledEntries = [];
+  const plainWordEntries = [];
 
   for (const line of lines) {
     const hasWordSectionHeading = lineHasSignal(line, wordSectionSignals);
@@ -323,6 +336,11 @@ export function extractWorksheetData(rawText) {
       !/[.!?]/.test(line) &&
       !lineHasSignal(line, instructionSignals);
     const scored = scoreLine(line, { inWordSection, tableLike });
+    const plainWord = plainWordFromLine(line);
+
+    if (plainWord) {
+      plainWordEntries.push({ line, word: plainWord });
+    }
 
     if (instructionLine || lineHasSignal(line, instructionSignals)) {
       instructions.push(line);
@@ -361,6 +379,14 @@ export function extractWorksheetData(rawText) {
 
     if (lower.length > 0) {
       rejectedLines.push(line);
+    }
+  }
+
+  if (plainWordEntries.length >= 3) {
+    candidates.push(...plainWordEntries.map((entry) => entry.word));
+    chosenLines.push(...plainWordEntries.map((entry) => entry.line));
+    if (usedStrategy === "general word detection" || usedStrategy === "labeled challenge/content words") {
+      usedStrategy = "plain pasted word list";
     }
   }
 
