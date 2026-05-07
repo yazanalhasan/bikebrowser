@@ -34,6 +34,8 @@ import { defaultWorksheetText, extractWorksheetData, formatMoney, scrambleWord, 
 import { loadLearningProfile, recordEducationEarning, saveLearningProfile } from "../services/education/PlayerLearningProfile.ts";
 import {
   buildSharedProfile,
+  buildSpellingContentFromList,
+  getActiveSpellingList,
   getProfileSyncKey,
   pullSharedProfile,
   pushSharedProfile,
@@ -304,13 +306,18 @@ export default function SpellingTrainerApp() {
   }
 
   function applySharedProfile(profile) {
+    const activeSpellingList = getActiveSpellingList(profile);
+
     if (profile.spellingAccount?.profileName) {
       setAccount(profile.spellingAccount);
       saveAccount(profile.spellingAccount);
-      const nextWords = Array.isArray(profile.wordList) && profile.wordList.length
-        ? profile.wordList
+      const nextWords = activeSpellingList?.words?.length
+        ? activeSpellingList.words
         : Object.keys(profile.spellingAccount.words || {});
       setWordList(nextWords);
+      setWordIndex(0);
+    } else if (activeSpellingList?.words?.length) {
+      setWordList(activeSpellingList.words);
       setWordIndex(0);
     }
 
@@ -319,7 +326,9 @@ export default function SpellingTrainerApp() {
       saveLearningProfile(profile.educationProfile);
     }
 
-    if (typeof profile.rawInput === "string" && profile.rawInput) {
+    if (activeSpellingList?.rawInput) {
+      setRawInput(activeSpellingList.rawInput);
+    } else if (typeof profile.rawInput === "string" && profile.rawInput) {
       setRawInput(profile.rawInput);
     }
   }
@@ -356,6 +365,48 @@ export default function SpellingTrainerApp() {
       }
     } catch (error) {
       setSyncStatus(`Cloud sync failed. ${error.message || ""}`.trim());
+    }
+  }
+
+  async function sendCurrentListToCloud() {
+    if (!wordList.length) {
+      setOcrStatus("Load words first, then send them to the tablet.");
+      return;
+    }
+
+    if (!syncKey) {
+      setSyncStatus("Enter the parent sync key first.");
+      setOcrStatus("Cloud sync is off. Save the parent sync key before sending words to the tablet.");
+      return;
+    }
+
+    const spellingContent = buildSpellingContentFromList({
+      words: wordList,
+      rawInput,
+      title: `${account.profileName || "Zaydan"} spelling list`,
+    });
+    const profile = buildSharedProfile({
+      spellingAccount: account,
+      educationProfile,
+      wordList,
+      rawInput,
+      spellingContent,
+      updatedBy: "parent-spelling-control",
+    });
+
+    setSyncStatus(`Sending ${wordList.length} words to shared profile...`);
+    try {
+      const result = await pushSharedProfile(profile, { syncKey });
+      if (result.ok) {
+        setSyncStatus(`Sent ${wordList.length} words to cloud ${formatSyncTime(result.profile.updatedAt)}.`);
+        setOcrStatus(`Sent ${wordList.length} spelling words to Zaydan's tablet. Tap Sync Now on the tablet if it is already open.`);
+      } else {
+        setSyncStatus(result.error);
+        setOcrStatus(result.error || "Could not send this spelling list yet.");
+      }
+    } catch (error) {
+      setSyncStatus(`Cloud send failed. ${error.message || ""}`.trim());
+      setOcrStatus(`Cloud send failed. ${error.message || ""}`.trim());
     }
   }
 
@@ -924,6 +975,8 @@ export default function SpellingTrainerApp() {
               removeWord={removeWord}
               clearPracticeWords={clearPracticeWords}
               resetSessionProgress={resetSessionProgress}
+              sendCurrentListToCloud={sendCurrentListToCloud}
+              canSendToCloud={Boolean(syncKey && wordList.length)}
             />
           )}
 
@@ -1143,7 +1196,9 @@ function WordsMode({
   extractionInfo,
   removeWord,
   clearPracticeWords,
-  resetSessionProgress
+  resetSessionProgress,
+  sendCurrentListToCloud,
+  canSendToCloud
 }) {
   return (
     <>
@@ -1174,6 +1229,9 @@ function WordsMode({
       <textarea value={rawInput} onChange={(event) => setRawInput(event.target.value)} />
       <div className="control-row">
         <button type="button" onClick={loadTextWords}><Upload size={18} /> Use Text</button>
+        <button type="button" className="quiet" onClick={sendCurrentListToCloud} disabled={!canSendToCloud}>
+          <Wifi size={18} /> Send to Tablet
+        </button>
         <label className="file-button">
           <FileScan size={18} /> OCR File
           <input type="file" accept="image/*,.pdf,application/pdf" onChange={(event) => handleFile(event.target.files?.[0])} />
@@ -1245,6 +1303,9 @@ function WordsMode({
       )}
       <div className="word-list-toolbar">
         <strong>{wordList.length} loaded words</strong>
+        <button type="button" className="quiet" onClick={sendCurrentListToCloud} disabled={!canSendToCloud}>
+          <Wifi size={18} /> Send to Tablet
+        </button>
         <button type="button" className="quiet" onClick={resetSessionProgress} disabled={!wordList.length}>
           <RotateCcw size={18} /> Reset Progress
         </button>

@@ -37,15 +37,51 @@ function normalizeProfile(payload) {
   const profile = payload?.profile || payload;
   if (!profile || typeof profile !== 'object') return null;
 
+  const spellingContent = normalizeSpellingContent(profile.spellingContent);
+
   return {
     profileId: PROFILE_ID,
     version: 1,
     spellingAccount: profile.spellingAccount || null,
     educationProfile: profile.educationProfile || null,
+    spellingContent,
     wordList: Array.isArray(profile.wordList) ? profile.wordList : [],
     rawInput: typeof profile.rawInput === 'string' ? profile.rawInput : '',
     updatedAt: new Date().toISOString(),
     updatedBy: typeof profile.updatedBy === 'string' ? profile.updatedBy.slice(0, 120) : 'bikebrowser',
+  };
+}
+
+function normalizeSpellingContent(content) {
+  if (!content || typeof content !== 'object') return null;
+
+  const lists = Array.isArray(content.lists)
+    ? content.lists.map(normalizeSpellingList).filter(Boolean).slice(0, 12)
+    : [];
+  if (!lists.length) return null;
+
+  const activeListId = lists.some((list) => list.id === content.activeListId)
+    ? content.activeListId
+    : lists[0].id;
+
+  return { activeListId, lists };
+}
+
+function normalizeSpellingList(list) {
+  if (!list || typeof list !== 'object') return null;
+
+  const words = Array.isArray(list.words)
+    ? [...new Set(list.words.map((word) => String(word || '').trim().toLowerCase()).filter(Boolean))].slice(0, 100)
+    : [];
+  if (!words.length) return null;
+
+  return {
+    id: String(list.id || `spelling-${Date.now()}`).slice(0, 80),
+    title: String(list.title || 'Current spelling list').trim().slice(0, 80) || 'Current spelling list',
+    words,
+    rawInput: typeof list.rawInput === 'string' ? list.rawInput.slice(0, 20000) : '',
+    createdAt: typeof list.createdAt === 'string' ? list.createdAt : new Date().toISOString(),
+    updatedAt: typeof list.updatedAt === 'string' ? list.updatedAt : new Date().toISOString(),
   };
 }
 
@@ -79,8 +115,8 @@ export async function onRequestPut({ request, env }) {
   }
 
   const profile = normalizeProfile(payload);
-  if (!profile?.spellingAccount && !profile?.educationProfile) {
-    return json({ success: false, error: 'Profile payload must include spellingAccount or educationProfile.' }, { status: 400 });
+  if (!profile?.spellingAccount && !profile?.educationProfile && !profile?.spellingContent) {
+    return json({ success: false, error: 'Profile payload must include spellingAccount, educationProfile, or spellingContent.' }, { status: 400 });
   }
 
   await env.PROFILE_STORE.put(PROFILE_KEY, JSON.stringify(profile));
