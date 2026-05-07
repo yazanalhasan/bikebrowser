@@ -6,5 +6,7 @@
 /play / 200
 /play3d / 200
 /spelling-trainer / 200
+/learn / 200
+/learn/* / 200
 /youtube/* / 200
 /* /index.html 200
