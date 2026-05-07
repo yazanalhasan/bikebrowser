@@ -24,7 +24,8 @@ export const emptyAccount = {
   currentStreak: 0,
   bestStreak: 0,
   defaultWordSetVersion,
-  words: {}
+  words: {},
+  practicedWords: {}
 };
 
 export function buildInitialAccount() {
@@ -37,15 +38,42 @@ export function buildInitialAccount() {
   );
 }
 
-export function buildAccountForWords(words, profileName = emptyAccount.profileName) {
+export function buildAccountForWords(words, profileName = emptyAccount.profileName, practicedWords = {}) {
   const cleanWords = [...new Set(words.map((word) => word.toLowerCase()).filter(Boolean))];
   return cleanWords.reduce(
     (account, word) => {
       account.words[word] = createWordRecord();
       return account;
     },
-    { ...emptyAccount, profileName, balance: startingBalance, words: {} }
+    { ...emptyAccount, profileName, balance: startingBalance, words: {}, practicedWords }
   );
+}
+
+export function createPracticedWordRecord(word) {
+  return {
+    word,
+    attempts: 0,
+    correct: 0,
+    firstPracticedAt: null,
+    lastPracticedAt: null
+  };
+}
+
+export function buildPracticedWordsFromAccount(account) {
+  const practicedWords = { ...(account.practicedWords || {}) };
+  Object.entries(account.words || {}).forEach(([word, record]) => {
+    if (!record.attempts && !record.correct && !record.lastSeenAt) return;
+    practicedWords[word] = {
+      ...createPracticedWordRecord(word),
+      ...practicedWords[word],
+      word,
+      attempts: Math.max(practicedWords[word]?.attempts || 0, record.attempts || 0),
+      correct: Math.max(practicedWords[word]?.correct || 0, record.correct || 0),
+      firstPracticedAt: practicedWords[word]?.firstPracticedAt || record.lastSeenAt || null,
+      lastPracticedAt: practicedWords[word]?.lastPracticedAt || record.lastSeenAt || null
+    };
+  });
+  return practicedWords;
 }
 
 export function createWordRecord() {
@@ -74,12 +102,14 @@ export function loadAccount() {
       || onlyHasLegacyStarterWords;
 
     if (needsCurrentDefaults) {
+      const practicedWords = buildPracticedWordsFromAccount({ ...saved, words: savedWords });
       return {
         ...emptyAccount,
         ...saved,
         balance: Math.max(Number(saved.balance || 0), startingBalance),
         defaultWordSetVersion,
-        words: buildInitialAccount().words
+        words: buildInitialAccount().words,
+        practicedWords
       };
     }
 
@@ -87,7 +117,8 @@ export function loadAccount() {
       ...emptyAccount,
       ...saved,
       balance: Math.max(Number(saved.balance || 0), startingBalance),
-      words: savedWords
+      words: savedWords,
+      practicedWords: buildPracticedWordsFromAccount({ ...saved, words: savedWords })
     };
 
     return account;

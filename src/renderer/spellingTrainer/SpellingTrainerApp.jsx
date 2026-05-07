@@ -18,7 +18,15 @@ import {
   Volume2,
   Wifi
 } from "lucide-react";
-import { buildAccountForWords, buildInitialAccount, createWordRecord, exportAccount, loadAccount, saveAccount } from "./account.js";
+import {
+  buildAccountForWords,
+  buildInitialAccount,
+  createPracticedWordRecord,
+  createWordRecord,
+  exportAccount,
+  loadAccount,
+  saveAccount
+} from "./account.js";
 import { defaultWorksheetText, extractWorksheetData, formatMoney, scrambleWord, starterWords } from "./wordTools.js";
 import "./styles.css";
 
@@ -67,6 +75,9 @@ export default function SpellingTrainerApp() {
   const currentRecord = account.words[currentWord] || createWordRecord();
   const isMastered = currentRecord.correct >= 3 || currentRecord.mastered;
   const masteredCount = Object.values(account.words).filter((record) => record.mastered || record.correct >= 3).length;
+  const practicedDictionary = Object.values(account.practicedWords || {})
+    .sort((a, b) => (b.lastPracticedAt || "").localeCompare(a.lastPracticedAt || ""));
+  const practicedDictionaryCount = practicedDictionary.length;
   const accuracy = account.wordsAttempted ? Math.round((account.correctAnswers / account.wordsAttempted) * 100) : 100;
   const sessionProgress = Math.round(((wordIndex + 1) / Math.max(wordList.length, 1)) * 100);
 
@@ -142,6 +153,8 @@ export default function SpellingTrainerApp() {
       const record = current.words[word] || createWordRecord();
       const nextCorrect = record.correct + (isCorrect ? 1 : 0);
       const nextStreak = isCorrect ? current.currentStreak + 1 : 0;
+      const practicedRecord = current.practicedWords?.[word] || createPracticedWordRecord(word);
+      const practicedAt = new Date().toISOString();
       return {
         ...current,
         balance: Number((current.balance + reward).toFixed(2)),
@@ -158,6 +171,17 @@ export default function SpellingTrainerApp() {
             letterRewards: record.letterRewards + letterRewarded,
             mastered: nextCorrect >= 3,
             lastSeenAt: new Date().toISOString()
+          }
+        },
+        practicedWords: {
+          ...(current.practicedWords || {}),
+          [word]: {
+            ...practicedRecord,
+            word,
+            attempts: practicedRecord.attempts + 1,
+            correct: practicedRecord.correct + (isCorrect ? 1 : 0),
+            firstPracticedAt: practicedRecord.firstPracticedAt || practicedAt,
+            lastPracticedAt: practicedAt
           }
         }
       };
@@ -533,7 +557,7 @@ export default function SpellingTrainerApp() {
 
   function resetAccount() {
     const next = buildInitialAccount();
-    setAccount(next);
+    setAccount((current) => ({ ...next, practicedWords: current.practicedWords || {} }));
     setWordList(starterWords);
     setWordIndex(0);
     setRawInput(defaultWorksheetText);
@@ -542,7 +566,7 @@ export default function SpellingTrainerApp() {
 
   function resetSessionProgress() {
     const resetWords = wordList.length ? wordList : starterWords;
-    const next = buildAccountForWords(resetWords, account.profileName);
+    const next = buildAccountForWords(resetWords, account.profileName, account.practicedWords || {});
     setAccount(next);
     setWordList(resetWords);
     setWordIndex(0);
@@ -578,6 +602,7 @@ export default function SpellingTrainerApp() {
           <StatusCard icon={<BadgeDollarSign />} label="Balance" value={formatMoney(account.balance)} />
           <StatusCard icon={<Flame />} label="Streak" value={`${account.currentStreak} correct`} />
           <StatusCard icon={<Star />} label="Mastered" value={`${masteredCount} words`} />
+          <StatusCard icon={<Keyboard />} label="Dictionary" value={`${practicedDictionaryCount} words`} />
         </div>
       </header>
 
@@ -670,6 +695,7 @@ export default function SpellingTrainerApp() {
               account={account}
               accuracy={accuracy}
               weakWords={weakWords}
+              practicedDictionary={practicedDictionary}
               downloadAccount={downloadAccount}
               resetAccount={resetAccount}
               resetSessionProgress={resetSessionProgress}
@@ -973,7 +999,7 @@ function WordsMode({
   );
 }
 
-function Dashboard({ account, accuracy, weakWords, downloadAccount, resetAccount, resetSessionProgress }) {
+function Dashboard({ account, accuracy, weakWords, practicedDictionary, downloadAccount, resetAccount, resetSessionProgress }) {
   return (
     <>
       <div className="mode-heading">
@@ -993,6 +1019,18 @@ function Dashboard({ account, accuracy, weakWords, downloadAccount, resetAccount
         {(weakWords.length ? weakWords : Object.entries(account.words).slice(0, 8)).map(([word, record]) => (
           <span key={word}>{word}: {record.correct}/3</span>
         ))}
+      </div>
+      <h2>Practice dictionary</h2>
+      <div className="loaded-words dictionary-list">
+        {practicedDictionary.length ? (
+          practicedDictionary.slice(0, 40).map((record) => (
+            <span key={record.word}>
+              {record.word}: {record.correct}/{record.attempts}
+            </span>
+          ))
+        ) : (
+          <span>No practiced words yet.</span>
+        )}
       </div>
       <div className="control-row">
         <button type="button" onClick={downloadAccount}><Download size={18} /> Export JSON</button>

@@ -70,7 +70,7 @@
   display: grid;
   flex: 1;
   gap: 10px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }.spelling-trainer-scope .status-card {
   min-height: 78px;
   padding: 12px;
@@ -486,6 +486,8 @@
   color: #203448;
   font-weight: 800;
   padding: 7px 10px;
+}.spelling-trainer-scope .dictionary-list {
+  margin-bottom: 16px;
 }.spelling-trainer-scope .word-chip {
   align-items: center;
   background: #edf3fa;
