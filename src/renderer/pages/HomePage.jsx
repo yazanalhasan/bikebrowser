@@ -68,6 +68,14 @@ function HomePage() {
       emoji: '🔤',
       isSpellingTrainer: true,
       color: 'from-indigo-400 to-sky-500'
+    },
+    {
+      id: 'letter-detective',
+      title: 'Letter Detective',
+      subtitle: 'Match b/d/p/q and uppercase pairs',
+      emoji: 'bd',
+      isLetterDetective: true,
+      color: 'from-sky-400 to-emerald-500'
     }
   ];
 
@@ -164,6 +172,8 @@ function HomePage() {
                   navigate('/play');
                 } else if (topic.isSpellingTrainer) {
                   navigate('/spelling-trainer');
+                } else if (topic.isLetterDetective) {
+                  navigate('/learn/letter-detective');
                 } else if (topic.isMultiplicationTrainer) {
                   navigate('/multiplication-trainer');
                 } else {

@@ -5,6 +5,8 @@ import LoadingSpinner from './components/LoadingSpinner';
 import { setupAudioNormalization } from './utils/audioManager';
 import AppLayout from './components/AppLayout';
 import useUXAudit from './hooks/useUXAudit';
+import AccessibilityProvider from './accessibility/AccessibilityProvider';
+import ReadingFocusOverlay from './components/accessibility/ReadingFocusOverlay';
 
 // Eager load home page for instant startup
 import HomePage from './pages/HomePage';
@@ -21,6 +23,7 @@ const AllProjectNotesPage = lazy(() => import('./pages/AllProjectNotesPage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
 const Game3DPage = lazy(() => import('./pages/Game3DPage'));
 const SpellingTrainerApp = lazy(() => import('./spellingTrainer/SpellingTrainerApp'));
+const LetterDetectivePage = lazy(() => import('./learning/letter-detective/LetterDetectivePage'));
 const MultiplicationTrainerApp = lazy(() => import('./multiplication/MultiplicationTrainerApp'));
 
 const VERSION_STORAGE_KEY = 'bikebrowser_cached_version';
@@ -80,6 +83,8 @@ function AppContent() {
           <Route path="/play" element={<GamePage />} />
           <Route path="/play3d" element={<Game3DPage />} />
           <Route path="/spelling-trainer" element={<SpellingTrainerApp />} />
+          <Route path="/learn/letter-detective" element={<LetterDetectivePage />} />
+          <Route path="/game/letter-detective" element={<Navigate to="/learn/letter-detective" replace />} />
           <Route path="/multiplication-trainer" element={<MultiplicationTrainerApp />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -154,7 +159,10 @@ function App() {
         </div>
       )}
       <RouterComponent>
-        <AppContent />
+        <AccessibilityProvider>
+          <ReadingFocusOverlay />
+          <AppContent />
+        </AccessibilityProvider>
       </RouterComponent>
     </ErrorBoundary>
   );

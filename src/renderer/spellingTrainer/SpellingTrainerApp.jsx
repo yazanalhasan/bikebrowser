@@ -32,6 +32,10 @@ import { chooseWorksheetOcrAction } from "./ocrActions.js";
 import { getUploadServerBase } from "./uploadServer.js";
 import { defaultWorksheetText, extractWorksheetData, formatMoney, scrambleWord, starterWords } from "./wordTools.js";
 import { loadLearningProfile, recordEducationEarning, saveLearningProfile } from "../services/education/PlayerLearningProfile.ts";
+import AccessibleText from "../components/accessibility/AccessibleText.jsx";
+import DyslexiaSettingsPanel from "../components/accessibility/DyslexiaSettingsPanel.jsx";
+import LetterTile from "../components/accessibility/LetterTile.jsx";
+import { useAccessibility } from "../accessibility/accessibilityHooks.js";
 import {
   buildSharedProfile,
   buildSpellingContentFromList,
@@ -47,6 +51,35 @@ const letterReward = 0.02;
 const wordReward = 0.5;
 const audioWordReward = 1;
 const strictTypingMode = false;
+const spellingStatsStorageKey = "bikebrowser.spellingReadingStats";
+
+function loadSpellingReadingStats() {
+  const defaults = {
+    accuracy: { attempts: 0, correct: 0 },
+    speed: { correctUnderThreshold: 0, avgMs: 0 },
+    streak: 0,
+    bestStreak: 0,
+    confusableLetterSuccess: { b: 0, d: 0, p: 0, q: 0 }
+  };
+
+  try {
+    const stored = JSON.parse(localStorage.getItem(spellingStatsStorageKey) || "{}");
+    return {
+      ...defaults,
+      ...stored,
+      accuracy: { ...defaults.accuracy, ...(stored.accuracy || {}) },
+      speed: { ...defaults.speed, ...(stored.speed || {}) },
+      confusableLetterSuccess: { ...defaults.confusableLetterSuccess, ...(stored.confusableLetterSuccess || {}) }
+    };
+  } catch {
+    return defaults;
+  }
+}
+
+function saveSpellingReadingStats(stats) {
+  localStorage.setItem(spellingStatsStorageKey, JSON.stringify(stats));
+  return stats;
+}
 
 function explainOcrError(error) {
   if (!error) return "OCR stopped without returning an error. Try rotating the photo or uploading a clearer image.";
@@ -88,6 +121,8 @@ export default function SpellingTrainerApp() {
   const [selectedBankIndex, setSelectedBankIndex] = useState(null);
   const [feedback, setFeedback] = useState("Choose a tile, then place it into the matching slot.");
   const [lastEarned, setLastEarned] = useState(null);
+  const { profile: accessibilityProfile, updateProfile: updateAccessibilityProfile } = useAccessibility();
+  const [readingStats, setReadingStats] = useState(() => loadSpellingReadingStats());
   const [typedWord, setTypedWord] = useState("");
   const [rawInput, setRawInput] = useState(defaultWorksheetText);
   const [extractionInfo, setExtractionInfo] = useState(null);
@@ -103,6 +138,7 @@ export default function SpellingTrainerApp() {
   const dictationInputRef = useRef({
     previousValue: "",
     lastInputAt: 0,
+    firstInputAt: 0,
     suspiciousCount: 0,
     assistSuspected: false
   });
@@ -116,11 +152,16 @@ export default function SpellingTrainerApp() {
     .sort((a, b) => (b.lastPracticedAt || "").localeCompare(a.lastPracticedAt || ""));
   const practicedDictionaryCount = practicedDictionary.length;
   const accuracy = account.wordsAttempted ? Math.round((account.correctAnswers / account.wordsAttempted) * 100) : 100;
+  const confusableSuccessCount = Object.values(readingStats.confusableLetterSuccess || {}).reduce((sum, value) => sum + value, 0);
   const sessionProgress = Math.round(((wordIndex + 1) / Math.max(wordList.length, 1)) * 100);
 
   useEffect(() => {
     saveAccount(account);
   }, [account]);
+
+  useEffect(() => {
+    saveSpellingReadingStats(readingStats);
+  }, [readingStats]);
 
   useEffect(() => {
     return () => {
@@ -311,6 +352,39 @@ export default function SpellingTrainerApp() {
       saveLearningProfile(updated);
       return updated;
     });
+  }
+
+  function updateReadingStats({ correct, letter = "", elapsedMs = 0 }) {
+    const normalizedLetter = letter.toLowerCase();
+    setReadingStats((current) => {
+      const nextAttempts = current.accuracy.attempts + 1;
+      const nextCorrect = current.accuracy.correct + (correct ? 1 : 0);
+      const nextStreak = correct ? current.streak + 1 : 0;
+      const nextSpeedCount = correct && elapsedMs > 0 && elapsedMs < 2500
+        ? current.speed.correctUnderThreshold + 1
+        : current.speed.correctUnderThreshold;
+      const nextSpeedAvg = elapsedMs > 0
+        ? Math.round(((current.speed.avgMs || 0) * current.accuracy.attempts + elapsedMs) / nextAttempts)
+        : current.speed.avgMs;
+      const nextConfusable = { ...current.confusableLetterSuccess };
+
+      if (correct && Object.prototype.hasOwnProperty.call(nextConfusable, normalizedLetter)) {
+        nextConfusable[normalizedLetter] += 1;
+      }
+
+      return {
+        ...current,
+        accuracy: { attempts: nextAttempts, correct: nextCorrect },
+        speed: { correctUnderThreshold: nextSpeedCount, avgMs: nextSpeedAvg },
+        streak: nextStreak,
+        bestStreak: Math.max(current.bestStreak, nextStreak),
+        confusableLetterSuccess: nextConfusable
+      };
+    });
+  }
+
+  function handlePreserveCapitalBDChange(event) {
+    updateAccessibilityProfile({ preserveCapitalBD: event.target.checked });
   }
 
   function applySharedProfile(profile) {
@@ -724,10 +798,13 @@ export default function SpellingTrainerApp() {
       setLastEarned("+2 cents");
       setFeedback("Correct letter. Nice placement.");
       updateAccountForLetter(currentWord);
+      updateReadingStats({ correct: true, letter: tile.letter });
     } else if (wasCorrect) {
       setFeedback("Correct letter. Finish the whole word for the reward.");
+      updateReadingStats({ correct: true, letter: tile.letter });
     } else {
       setFeedback("Close. That letter belongs somewhere else.");
+      updateReadingStats({ correct: false, letter: currentWord[slotIndex] });
     }
 
     const completed = nextSlots.every(Boolean);
@@ -833,10 +910,12 @@ export default function SpellingTrainerApp() {
       confetti({ particleCount: 90, spread: 70, origin: { y: 0.65 } });
       setLastEarned(`+$${scoring.reward.toFixed(2)}`);
       setFeedback(scoring.feedback || `Correct. ${currentWord} is spelled perfectly.`);
+      updateReadingStats({ correct: true, elapsedMs: scoring.elapsedMs });
       updateAccountForResult(currentWord, true, scoring.reward, 0, { disableStreak: scoring.disableStreak });
       window.setTimeout(nextWord, 900);
     } else {
       setFeedback("Not quite. Replay the word and try again.");
+      updateReadingStats({ correct: false });
       updateAccountForResult(currentWord, false, 0, 0);
     }
   }
@@ -874,6 +953,9 @@ export default function SpellingTrainerApp() {
     }
 
     dictationInputRef.current.previousValue = after;
+    if (!dictationInputRef.current.firstInputAt && after) {
+      dictationInputRef.current.firstInputAt = now;
+    }
     dictationInputRef.current.lastInputAt = now;
     setTypedWord(after);
   }
@@ -898,6 +980,7 @@ export default function SpellingTrainerApp() {
     dictationInputRef.current = {
       previousValue: "",
       lastInputAt: 0,
+      firstInputAt: 0,
       suspiciousCount: 0,
       assistSuspected: false
     };
@@ -908,21 +991,23 @@ export default function SpellingTrainerApp() {
       return { reward: 0, accuracyScore: 0, speedScore: 0, integrityBonus: 0 };
     }
 
-    const { assistSuspected, suspiciousCount } = dictationInputRef.current;
+    const { assistSuspected, suspiciousCount, firstInputAt } = dictationInputRef.current;
+    const elapsedMs = firstInputAt ? Date.now() - firstInputAt : 0;
     const accuracyScore = 1;
-    const speedScore = 1;
+    const speedScore = elapsedMs > 0 && elapsedMs < 2500 ? 1 : 0;
     const integrityBonus = assistSuspected ? 0 : 1;
     const rewardMultiplier = strictTypingMode && assistSuspected
       ? 0
       : assistSuspected
         ? Math.max(0.25, 0.65 - Math.max(0, suspiciousCount - 1) * 0.15)
         : 1;
-    const reward = Number((audioWordReward * accuracyScore * speedScore * rewardMultiplier).toFixed(2));
+    const reward = Number((audioWordReward * accuracyScore * rewardMultiplier).toFixed(2));
 
     return {
       reward,
       accuracyScore,
       speedScore,
+      elapsedMs,
       integrityBonus,
       disableStreak: strictTypingMode ? assistSuspected : suspiciousCount > 1,
       feedback: assistSuspected
@@ -991,6 +1076,7 @@ export default function SpellingTrainerApp() {
           <StatusCard icon={<BadgeDollarSign />} label="Balance" value={formatMoney(account.balance)} />
           <StatusCard icon={<Flame />} label="Streak" value={`${account.currentStreak} correct`} />
           <StatusCard icon={<Star />} label="Mastered" value={`${masteredCount} words`} />
+          <StatusCard icon={<Sparkles />} label="b/d/p/q wins" value={`${confusableSuccessCount}`} />
           <StatusCard icon={<BadgeDollarSign />} label="All earned" value={formatMoney(educationProfile.earnings?.totalDollars || account.balance)} />
           <StatusCard icon={<Keyboard />} label="Dictionary" value={`${practicedDictionaryCount} words`} />
         </div>
@@ -1038,6 +1124,7 @@ export default function SpellingTrainerApp() {
                 removeSlot={removeSlot}
                 resetPuzzle={() => resetPuzzle()}
                 nextWord={nextWord}
+                preserveCapitalBD={accessibilityProfile.preserveCapitalBD}
               />
             ) : (
               <EmptyWordsNotice setMode={setMode} />
@@ -1112,11 +1199,22 @@ export default function SpellingTrainerApp() {
             <strong>{mode === "audio" ? "Listen first" : currentWord}</strong>
             <p>{isMastered ? "Mastered: word rewards only" : "Learning: letter rewards active"}</p>
           </div>
+          <label className="reading-toggle">
+            <input
+              type="checkbox"
+              checked={accessibilityProfile.preserveCapitalBD}
+              onChange={handlePreserveCapitalBDChange}
+            />
+            <span>Use capital B/D for easier distinction</span>
+          </label>
+          <DyslexiaSettingsPanel compact />
           <div className="rules-card">
             <h2>Rewards</h2>
             <p>Correct letter: $0.02 before mastery.</p>
             <p>Scramble word: $0.50.</p>
             <p>Typed audio word: $1.00.</p>
+            <p>Speed bonuses only count after a correct answer.</p>
+            <p>b/d/p/q success is tracked separately.</p>
             <p>Mastered: 3 correct completions.</p>
           </div>
         </aside>
@@ -1181,7 +1279,7 @@ function EmptyWordsNotice({ setMode }) {
   );
 }
 
-function ScrambleMode({ word, record, isMastered, slots, letterBank, selectedBankIndex, setSelectedBankIndex, placeLetter, removeSlot, resetPuzzle, nextWord }) {
+function ScrambleMode({ word, record, isMastered, slots, letterBank, selectedBankIndex, setSelectedBankIndex, placeLetter, removeSlot, resetPuzzle, nextWord, preserveCapitalBD }) {
   return (
     <>
       <div className="mode-heading">
@@ -1209,27 +1307,25 @@ function ScrambleMode({ word, record, isMastered, slots, letterBank, selectedBan
               placeLetter(index, bankIndex);
             }}
           >
-            {slot?.letter || ""}
+            {slot?.letter ? <AccessibleText text={slot.letter} isolatedTile preserveCapitalBD={preserveCapitalBD} /> : ""}
           </button>
         ))}
       </div>
 
       <div className="letter-bank">
         {letterBank.map((tile, index) => (
-          <button
-            type="button"
+          <LetterTile
             key={tile.id}
             draggable={!tile.used}
-            className={`letter-tile ${selectedBankIndex === index ? "selected" : ""}`}
+            letter={tile.letter}
+            selected={selectedBankIndex === index}
             disabled={tile.used}
             onClick={() => setSelectedBankIndex(index)}
             onDragStart={(event) => {
               setSelectedBankIndex(index);
               event.dataTransfer.setData("text/plain", String(index));
             }}
-          >
-            {tile.letter}
-          </button>
+          />
         ))}
       </div>
 
