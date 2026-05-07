@@ -36,6 +36,10 @@ import AccessibleText from "../components/accessibility/AccessibleText.jsx";
 import DyslexiaSettingsPanel from "../components/accessibility/DyslexiaSettingsPanel.jsx";
 import LetterTile from "../components/accessibility/LetterTile.jsx";
 import { useAccessibility } from "../accessibility/accessibilityHooks.js";
+import HandwritingCanvas from "../handwriting/components/HandwritingCanvas.jsx";
+import WritingRewardCard from "../handwriting/components/WritingRewardCard.jsx";
+import { resetHandwritingProgress } from "../handwriting/engine/adaptiveHandwritingEngine.js";
+import { evaluateHandwritingAttempt } from "../handwriting/engine/handwritingEngine.js";
 import {
   buildSharedProfile,
   buildSpellingContentFromList,
@@ -121,6 +125,8 @@ export default function SpellingTrainerApp() {
   const [selectedBankIndex, setSelectedBankIndex] = useState(null);
   const [feedback, setFeedback] = useState("Choose a tile, then place it into the matching slot.");
   const [lastEarned, setLastEarned] = useState(null);
+  const [handwritingResult, setHandwritingResult] = useState(null);
+  const [handwritingMode, setHandwritingMode] = useState("trace-word");
   const { profile: accessibilityProfile, updateProfile: updateAccessibilityProfile } = useAccessibility();
   const [readingStats, setReadingStats] = useState(() => loadSpellingReadingStats());
   const [typedWord, setTypedWord] = useState("");
@@ -352,6 +358,32 @@ export default function SpellingTrainerApp() {
       saveLearningProfile(updated);
       return updated;
     });
+  }
+
+  function awardSpellingHandwriting(result) {
+    const reward = Number((result.scoring.finalRewardScore * 0.05).toFixed(2));
+    recordSharedSpellingReward(reward);
+    setAccount((current) => ({
+      ...current,
+      balance: Number((current.balance + reward).toFixed(2))
+    }));
+    setHandwritingResult(result);
+    setLastEarned(`${formatMoney(reward)} handwriting reward`);
+    setFeedback(`${result.feedback} Handwriting practice strengthens spelling memory.`);
+  }
+
+  function handleSpellingHandwritingSubmit(strokes) {
+    awardSpellingHandwriting(evaluateHandwritingAttempt({
+      strokes,
+      target: currentWord[0] || "b",
+      mode: handwritingMode,
+    }));
+  }
+
+  function handleResetHandwritingProgress() {
+    resetHandwritingProgress();
+    setHandwritingResult(null);
+    setFeedback("Handwriting progress reset.");
   }
 
   function updateReadingStats({ correct, letter = "", elapsedMs = 0 }) {
@@ -1100,6 +1132,9 @@ export default function SpellingTrainerApp() {
         <button type="button" className={mode === "audio" ? "active" : ""} onClick={() => { setMode("audio"); speakWord(); }}>
           <Headphones size={18} /> Audio
         </button>
+        <button type="button" className={mode === "write" ? "active" : ""} onClick={() => setMode("write")}>
+          <Keyboard size={18} /> Write
+        </button>
         <button type="button" className={mode === "words" ? "active" : ""} onClick={() => setMode("words")}>
           <FileScan size={18} /> Words
         </button>
@@ -1139,6 +1174,23 @@ export default function SpellingTrainerApp() {
                 speakWord={speakWord}
                 speakSpelling={speakSpelling}
                 checkDictation={checkDictation}
+                nextWord={nextWord}
+              />
+            ) : (
+              <EmptyWordsNotice setMode={setMode} />
+            )
+          )}
+
+          {mode === "write" && (
+            wordList.length ? (
+              <WritingMode
+                word={currentWord}
+                handwritingMode={handwritingMode}
+                setHandwritingMode={setHandwritingMode}
+                handwritingResult={handwritingResult}
+                onSubmit={handleSpellingHandwritingSubmit}
+                onResetProgress={handleResetHandwritingProgress}
+                speakWord={speakWord}
                 nextWord={nextWord}
               />
             ) : (
@@ -1379,6 +1431,59 @@ function AudioMode({ typedWord, onTypedWordChange, speakWord, speakSpelling, che
         <button type="button" onClick={() => speakWord()}><Headphones size={18} /> Repeat</button>
         <button type="button" onClick={() => speakSpelling()}><Sparkles size={18} /> Spell</button>
         <button type="button" onClick={nextWord}>Skip</button>
+      </div>
+    </>
+  );
+}
+
+function WritingMode({
+  word,
+  handwritingMode,
+  setHandwritingMode,
+  handwritingResult,
+  onSubmit,
+  onResetProgress,
+  speakWord,
+  nextWord,
+}) {
+  return (
+    <>
+      <div className="mode-heading">
+        <div>
+          <p>Write it</p>
+          <h1>Handwriting practice</h1>
+        </div>
+        <button type="button" className="speak-button" onClick={() => speakWord()}>
+          <Headphones size={22} /> Hear word
+        </button>
+      </div>
+      <div className="handwriting-mode-tabs">
+        {[
+          ["trace-word", "Trace word"],
+          ["copy-word", "Copy word"],
+          ["memory-word", "Write from memory"],
+          ["hear-word", "Hear word"],
+        ].map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            className={handwritingMode === id ? "active" : ""}
+            onClick={() => setHandwritingMode(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <HandwritingCanvas
+        target={word}
+        mode={handwritingMode}
+        title="Spelling handwriting"
+        onSubmit={onSubmit}
+      />
+      <WritingRewardCard result={handwritingResult} onResetProgress={onResetProgress} />
+      <div className="control-row">
+        <button type="button" onClick={() => speakWord()}><Headphones size={18} /> Repeat word</button>
+        <button type="button" className="quiet" onClick={nextWord}>Next word</button>
       </div>
     </>
   );

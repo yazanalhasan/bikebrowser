@@ -2,6 +2,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
 import { useAccessibility } from '../../accessibility/accessibilityHooks';
 import { speak } from '../../accessibility/speechEngine';
+import HandwritingCanvas from '../../handwriting/components/HandwritingCanvas.jsx';
+import WritingRewardCard from '../../handwriting/components/WritingRewardCard.jsx';
+import { resetHandwritingProgress } from '../../handwriting/engine/adaptiveHandwritingEngine.js';
+import { evaluateHandwritingAttempt } from '../../handwriting/engine/handwritingEngine.js';
 import { LETTER_DETECTIVE_MODES } from './letterDetectiveData';
 import {
   getLetterDetectiveDifficulty,
@@ -24,7 +28,10 @@ export default function LetterDetectivePage() {
   const [roundStartedAt, setRoundStartedAt] = useState(() => Date.now());
   const [feedback, setFeedback] = useState('Find the matching letter.');
   const [lastChoice, setLastChoice] = useState(null);
+  const [handwritingMode, setHandwritingMode] = useState('trace-letter');
+  const [handwritingResult, setHandwritingResult] = useState(null);
   const mode = LETTER_DETECTIVE_MODES[modeIndex];
+  const handwritingTarget = mode.handwritingTarget || mode.answer;
   const difficulty = useMemo(() => getLetterDetectiveDifficulty(progress), [progress]);
 
   function clearAdvanceTimer() {
@@ -41,6 +48,7 @@ export default function LetterDetectivePage() {
     setModeIndex(index);
     setRoundStartedAt(Date.now());
     setLastChoice(null);
+    setHandwritingResult(null);
     setFeedback(LETTER_DETECTIVE_MODES[index].prompt);
     if (profile.phonemeAudio) {
       speak(LETTER_DETECTIVE_MODES[index].soundPrompt);
@@ -82,7 +90,33 @@ export default function LetterDetectivePage() {
     setModeIndex(0);
     setRoundStartedAt(Date.now());
     setLastChoice(null);
+    setHandwritingResult(null);
     setFeedback('Letter Detective progress reset.');
+  }
+
+  function handleHandwritingEvaluated(result) {
+    setHandwritingResult(result);
+    setProgress((current) => saveLetterDetectiveProgress({
+      ...current,
+      score: (current.score || 0) + result.scoring.finalRewardScore,
+      streak: current.streak + 1,
+      bestStreak: Math.max(current.bestStreak, current.streak + 1),
+    }));
+    setFeedback(`${result.feedback} +${result.scoring.finalRewardScore} handwriting stars.`);
+  }
+
+  function handleResetHandwritingProgress() {
+    resetHandwritingProgress();
+    setHandwritingResult(null);
+    setFeedback('Handwriting progress reset.');
+  }
+
+  function handleHandwritingSubmit(strokes) {
+    handleHandwritingEvaluated(evaluateHandwritingAttempt({
+      strokes,
+      target: handwritingTarget,
+      mode: handwritingMode,
+    }));
   }
 
   const accuracy = progress.totalAttempts
@@ -115,12 +149,39 @@ export default function LetterDetectivePage() {
         </section>
 
         <section className="letter-detective-workspace">
-          <LetterDetectiveQuestion
-            mode={mode}
-            difficulty={difficulty}
-            lastChoice={lastChoice}
-            onAnswer={handleAnswer}
-          />
+          <div className="letter-detective-practice-stack">
+            <LetterDetectiveQuestion
+              mode={mode}
+              difficulty={difficulty}
+              lastChoice={lastChoice}
+              onAnswer={handleAnswer}
+            />
+            <section className="letter-detective-handwriting">
+              <div className="letter-detective-handwriting-tabs">
+                {[
+                  ['trace-letter', 'Trace letter'],
+                  ['write-lowercase-match', 'Write lowercase match'],
+                  ['write-capital-match', 'Write capital match'],
+                  ['mirror-orientation', 'Mirror orientation'],
+                ].map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    className={handwritingMode === id ? 'is-active' : ''}
+                    onClick={() => setHandwritingMode(id)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <HandwritingCanvas
+                target={handwritingTarget}
+                mode={handwritingMode}
+                title="Letter handwriting"
+                onSubmit={handleHandwritingSubmit}
+              />
+            </section>
+          </div>
           <LetterDetectiveResults
             progress={progress}
             accuracy={accuracy}
@@ -129,6 +190,10 @@ export default function LetterDetectivePage() {
             lastChoice={lastChoice}
             answer={mode.answer}
             onReset={handleResetProgress}
+          />
+          <WritingRewardCard
+            result={handwritingResult}
+            onResetProgress={handleResetHandwritingProgress}
           />
         </section>
       </main>
