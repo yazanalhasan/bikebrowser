@@ -1,0 +1,24 @@
+/*
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.youtube.com https://www.youtube-nocookie.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; media-src 'self' blob: data: https:; connect-src 'self' https: http://localhost:3001 http://localhost:5173; worker-src 'self' blob:; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; manifest-src 'self'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(self), microphone=(self), geolocation=(self), interest-cohort=()
+
+/
+  Cache-Control: public, must-revalidate, max-age=0
+
+/index.html
+  Cache-Control: public, must-revalidate, max-age=0
+
+/build-info.json
+  Cache-Control: no-store
+
+/api/*
+  Cache-Control: no-store
+
+/sw.js
+  Cache-Control: public, must-revalidate, max-age=0
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+

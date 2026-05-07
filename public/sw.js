@@ -1,39 +1,85 @@
-const CACHE_NAME = 'bikebuilder-mobile-v2';
-const STATIC_ASSETS = ['/', '/m', '/manifest.json', '/offline.html', '/icons/icon-192.png', '/icons/icon-512.png'];
+const APP_VERSION = '1.0.4';
+const SHELL_CACHE = `bikebrowser-shell-${APP_VERSION}`;
+const ASSET_CACHE = `bikebrowser-assets-${APP_VERSION}`;
+const PRECACHE_URLS = [
+  '/',
+  '/manifest.json',
+  '/offline.html',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+];
+
+function isApiRequest(url) {
+  return url.pathname.startsWith('/api/');
+}
+
+function isHashedAsset(url) {
+  return /^\/assets\/.+-[A-Za-z0-9_-]+\.(?:js|mjs|css|wasm|png|jpg|jpeg|webp|svg)$/.test(url.pathname);
+}
+
+async function putIfOk(cacheName, request, response) {
+  if (!response || !response.ok) {
+    return;
+  }
+  const cache = await caches.open(cacheName);
+  await cache.put(request, response.clone());
+}
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+    caches.open(SHELL_CACHE)
+      .then((cache) => cache.addAll(PRECACHE_URLS))
+      .then(() => self.skipWaiting())
   );
 });
 
 self.addEventListener('activate', (event) => {
+  const keep = new Set([SHELL_CACHE, ASSET_CACHE]);
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(
-      keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-    ))
+    caches.keys()
+      .then((keys) => Promise.all(keys.map((key) => (keep.has(key) ? null : caches.delete(key)))))
+      .then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') {
+  const { request } = event;
+  if (request.method !== 'GET') {
     return;
   }
 
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-        return response;
-      })
-      .catch(async () => {
-        const cached = await caches.match(event.request);
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin || isApiRequest(url)) {
+    return;
+  }
+
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then(async (response) => {
+          await putIfOk(SHELL_CACHE, request, response);
+          return response;
+        })
+        .catch(async () => (
+          caches.match(request)
+          || caches.match('/')
+          || caches.match('/offline.html')
+        ))
+    );
+    return;
+  }
+
+  if (isHashedAsset(url)) {
+    event.respondWith(
+      caches.match(request).then((cached) => {
         if (cached) {
           return cached;
         }
-
-        return caches.match('/offline.html');
+        return fetch(request).then(async (response) => {
+          await putIfOk(ASSET_CACHE, request, response);
+          return response;
+        });
       })
-  );
+    );
+  }
 });
