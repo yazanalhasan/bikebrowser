@@ -35,6 +35,7 @@ export default function LetterDetectiveQuestion({
             size={tileSize}
             correct={lastChoice?.choice === choice && lastChoice.correct}
             incorrect={lastChoice?.choice === choice && !lastChoice.correct}
+            preserveCapitalBD={mode.preserveCapitalBD}
             playAudio={false}
             onClick={() => onAnswer(choice)}
           />

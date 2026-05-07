@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
 import { useAccessibility } from '../../accessibility/accessibilityHooks';
 import { speak } from '../../accessibility/speechEngine';
@@ -13,9 +13,11 @@ import LetterDetectiveQuestion from './LetterDetectiveQuestion';
 import LetterDetectiveResults from './LetterDetectiveResults';
 
 const SPEED_THRESHOLD_MS = 2500;
+const CORRECT_ADVANCE_DELAY_MS = 850;
 
 export default function LetterDetectivePage() {
   const { profile } = useAccessibility();
+  const advanceTimerRef = useRef(null);
   const [progress, setProgress] = useState(() => loadLetterDetectiveProgress());
   const [modeIndex, setModeIndex] = useState(0);
   const [roundStartedAt, setRoundStartedAt] = useState(() => Date.now());
@@ -24,7 +26,17 @@ export default function LetterDetectivePage() {
   const mode = LETTER_DETECTIVE_MODES[modeIndex];
   const difficulty = useMemo(() => getLetterDetectiveDifficulty(progress), [progress]);
 
+  function clearAdvanceTimer() {
+    if (advanceTimerRef.current) {
+      window.clearTimeout(advanceTimerRef.current);
+      advanceTimerRef.current = null;
+    }
+  }
+
+  useEffect(() => clearAdvanceTimer, []);
+
   function startMode(index) {
+    clearAdvanceTimer();
     setModeIndex(index);
     setRoundStartedAt(Date.now());
     setLastChoice(null);
@@ -54,6 +66,13 @@ export default function LetterDetectivePage() {
     setLastChoice({ choice, correct });
     setFeedback(message);
     if (profile.phonemeAudio) speak(message);
+
+    if (correct) {
+      clearAdvanceTimer();
+      advanceTimerRef.current = window.setTimeout(() => {
+        startMode((modeIndex + 1) % LETTER_DETECTIVE_MODES.length);
+      }, CORRECT_ADVANCE_DELAY_MS);
+    }
   }
 
   const accuracy = progress.totalAttempts
