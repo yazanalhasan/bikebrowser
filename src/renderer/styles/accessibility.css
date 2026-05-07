@@ -307,6 +307,41 @@
   grid-template-columns: minmax(0, 1fr) 320px;
 }
 
+.letter-detective-workspace > .bb-writing-reward-card {
+  grid-column: 2;
+}
+
+.letter-detective-practice-stack {
+  display: grid;
+  gap: 20px;
+}
+
+.letter-detective-handwriting {
+  display: grid;
+  gap: 12px;
+}
+
+.letter-detective-handwriting-tabs {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.letter-detective-handwriting-tabs button {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #0f172a;
+  font-weight: 800;
+  min-height: 42px;
+  padding: 8px 10px;
+}
+
+.letter-detective-handwriting-tabs button.is-active {
+  background: #e0f2fe;
+  border-color: #38bdf8;
+}
+
 .letter-detective-prompt {
   align-items: center;
   display: flex;
@@ -426,14 +461,208 @@
   font-size: 2.5rem;
 }
 
+.bb-handwriting-panel,
+.bb-writing-reward-card {
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.bb-handwriting-heading {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.8fr);
+}
+
+.bb-handwriting-heading p,
+.bb-handwriting-heading h2,
+.bb-writing-reward-card h3 {
+  margin: 0;
+}
+
+.bb-handwriting-heading h2 {
+  font-size: clamp(1.6rem, 4vw, 2.7rem);
+  letter-spacing: 0;
+}
+
+.bb-stroke-guide {
+  background: #f8fafc;
+  border-radius: 8px;
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+}
+
+.bb-stroke-guide strong {
+  font-size: 2rem;
+}
+
+.bb-stroke-guide small,
+.bb-stroke-guide em {
+  color: #475569;
+  font-style: normal;
+}
+
+.bb-handwriting-surface {
+  aspect-ratio: 5 / 3;
+  background: #fffdf7;
+  border: 2px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  touch-action: none;
+}
+
+.bb-handwriting-canvas,
+.bb-tracing-overlay,
+.bb-ghost-replay {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.bb-handwriting-canvas {
+  z-index: 2;
+}
+
+.bb-tracing-overlay,
+.bb-ghost-replay {
+  pointer-events: none;
+}
+
+.bb-tracing-overlay {
+  z-index: 1;
+}
+
+.bb-ghost-replay {
+  opacity: 0;
+  transition: opacity 180ms ease;
+  z-index: 3;
+}
+
+.bb-ghost-replay.is-active {
+  opacity: 1;
+}
+
+.bb-tracing-guide,
+.bb-ghost-ideal {
+  fill: none;
+  stroke: #94a3b8;
+  stroke-dasharray: 8 8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 5;
+}
+
+.bb-tracing-direction {
+  animation: bb-trace-flow 1600ms linear infinite;
+  fill: none;
+  stroke: #38bdf8;
+  stroke-dasharray: 10 150;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.bb-tracing-start {
+  fill: #16a34a;
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.bb-ghost-child {
+  fill: none;
+  stroke: #0f172a;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 5;
+}
+
+.bb-handwriting-actions,
+.bb-writing-reward-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bb-handwriting-actions button,
+.bb-writing-reset-progress {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #0f172a;
+  display: inline-flex;
+  font-weight: 800;
+  gap: 8px;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 12px;
+}
+
+.bb-handwriting-actions button.is-primary {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+}
+
+.bb-writing-stars {
+  display: flex;
+  gap: 4px;
+}
+
+.bb-writing-stars svg {
+  color: #cbd5e1;
+  fill: transparent;
+}
+
+.bb-writing-stars svg.is-filled {
+  color: #f59e0b;
+  fill: #f59e0b;
+}
+
+.bb-writing-reward-tags span {
+  background: #ecfeff;
+  border-radius: 999px;
+  color: #075985;
+  font-weight: 800;
+  padding: 6px 9px;
+}
+
+@keyframes bb-trace-flow {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -160;
+  }
+}
+
 @media (max-width: 860px) {
   .letter-detective-modes,
   .letter-detective-workspace {
     grid-template-columns: 1fr;
   }
 
+  .letter-detective-workspace > .bb-writing-reward-card {
+    grid-column: auto;
+  }
+
+  .bb-handwriting-heading {
+    grid-template-columns: 1fr;
+  }
+
   .letter-detective-options,
   .letter-detective-options.is-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .letter-detective-handwriting-tabs {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
