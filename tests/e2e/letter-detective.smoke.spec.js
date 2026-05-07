@@ -23,12 +23,13 @@ test('Letter Detective renders and a correct answer updates score', async ({ pag
   await expect(page.getByRole('button', { name: /Case Match/ })).toBeVisible();
   await expect(page.getByTestId('letter-detective-score')).toHaveText('0');
   await expect(page.getByRole('heading', { name: 'Find the lowercase match for B' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'b', exact: true })).toHaveText('B');
+  await expect(page.getByRole('button', { name: 'b', exact: true })).toHaveText('b');
 
   await page.getByRole('button', { name: 'b', exact: true }).click();
 
   await expect(page.getByTestId('letter-detective-score')).toHaveText('1');
   await expect(page.getByText('Nice')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Find the uppercase match for d' })).toBeVisible({ timeout: 3000 });
 
   await page.reload();
   await expect(page.locator('.app-root')).toHaveClass(/bb-font-atkinson/);

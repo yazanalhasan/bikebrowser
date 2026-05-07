@@ -14,6 +14,7 @@ export default function LetterTile({
   correct = false,
   incorrect = false,
   isolatedTile = true,
+  preserveCapitalBD = true,
   playAudio = false,
   size = 'md',
   disabled = false,
@@ -49,7 +50,11 @@ export default function LetterTile({
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
-      <AccessibleText text={letter} isolatedTile={isolatedTile} />
+      <AccessibleText
+        text={letter}
+        isolatedTile={isolatedTile}
+        preserveCapitalBD={preserveCapitalBD}
+      />
     </button>
   );
 }
