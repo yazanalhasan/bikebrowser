@@ -18,7 +18,7 @@ import {
   Volume2,
   Wifi
 } from "lucide-react";
-import { buildInitialAccount, createWordRecord, exportAccount, loadAccount, saveAccount } from "./account.js";
+import { buildAccountForWords, buildInitialAccount, createWordRecord, exportAccount, loadAccount, saveAccount } from "./account.js";
 import { defaultWorksheetText, extractWorksheetData, formatMoney, scrambleWord, starterWords } from "./wordTools.js";
 import "./styles.css";
 
@@ -62,7 +62,6 @@ export default function SpellingTrainerApp() {
   const [wifiUpload, setWifiUpload] = useState({ status: "Checking Wi-Fi upload server..." });
   const [pendingWorksheet, setPendingWorksheet] = useState(null);
   const processedUploadId = useRef(null);
-  const balanceRef = useRef(null);
 
   const currentWord = wordList[wordIndex] || "";
   const currentRecord = account.words[currentWord] || createWordRecord();
@@ -541,6 +540,20 @@ export default function SpellingTrainerApp() {
     setFeedback("Account reset. Default worksheet words are ready.");
   }
 
+  function resetSessionProgress() {
+    const resetWords = wordList.length ? wordList : starterWords;
+    const next = buildAccountForWords(resetWords, account.profileName);
+    setAccount(next);
+    setWordList(resetWords);
+    setWordIndex(0);
+    setSlots([]);
+    setLetterBank([]);
+    setSelectedBankIndex(null);
+    setTypedWord("");
+    setLastEarned(null);
+    setFeedback(`Reset progress and balance for ${resetWords.length} loaded words.`);
+  }
+
   const weakWords = useMemo(
     () =>
       Object.entries(account.words)
@@ -574,6 +587,9 @@ export default function SpellingTrainerApp() {
           <div style={{ width: `${sessionProgress}%` }} />
         </div>
         <strong>{sessionProgress}%</strong>
+        <button type="button" onClick={resetSessionProgress} disabled={!wordList.length}>
+          <RotateCcw size={16} /> Reset Session
+        </button>
       </section>
 
       <nav className="mode-tabs">
@@ -645,6 +661,7 @@ export default function SpellingTrainerApp() {
               extractionInfo={extractionInfo}
               removeWord={removeWord}
               clearPracticeWords={clearPracticeWords}
+              resetSessionProgress={resetSessionProgress}
             />
           )}
 
@@ -655,6 +672,7 @@ export default function SpellingTrainerApp() {
               weakWords={weakWords}
               downloadAccount={downloadAccount}
               resetAccount={resetAccount}
+              resetSessionProgress={resetSessionProgress}
             />
           )}
         </section>
@@ -823,7 +841,8 @@ function WordsMode({
   processPendingWorksheetWithChandra,
   extractionInfo,
   removeWord,
-  clearPracticeWords
+  clearPracticeWords,
+  resetSessionProgress
 }) {
   return (
     <>
@@ -929,6 +948,9 @@ function WordsMode({
       )}
       <div className="word-list-toolbar">
         <strong>{wordList.length} loaded words</strong>
+        <button type="button" className="quiet" onClick={resetSessionProgress} disabled={!wordList.length}>
+          <RotateCcw size={18} /> Reset Progress
+        </button>
         <button type="button" className="quiet danger" onClick={clearPracticeWords} disabled={!wordList.length}>
           Delete All
         </button>
@@ -951,13 +973,13 @@ function WordsMode({
   );
 }
 
-function Dashboard({ account, accuracy, weakWords, downloadAccount, resetAccount }) {
+function Dashboard({ account, accuracy, weakWords, downloadAccount, resetAccount, resetSessionProgress }) {
   return (
     <>
       <div className="mode-heading">
         <div>
           <p>Progress dashboard</p>
-          <h1>{account.profileName}'s account</h1>
+          <h1>{account.profileName}&apos;s account</h1>
         </div>
       </div>
       <div className="dashboard-grid">
@@ -974,7 +996,8 @@ function Dashboard({ account, accuracy, weakWords, downloadAccount, resetAccount
       </div>
       <div className="control-row">
         <button type="button" onClick={downloadAccount}><Download size={18} /> Export JSON</button>
-        <button type="button" className="quiet" onClick={resetAccount}>Reset</button>
+        <button type="button" className="quiet" onClick={resetSessionProgress}>Reset Current List</button>
+        <button type="button" className="quiet" onClick={resetAccount}>Reset Default Words</button>
       </div>
     </>
   );

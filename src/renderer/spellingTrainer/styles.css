@@ -87,7 +87,7 @@
   color: #40546a;
   display: grid;
   gap: 10px;
-  grid-template-columns: auto minmax(120px, 1fr) auto;
+  grid-template-columns: auto minmax(120px, 1fr) auto auto;
   margin: 0 auto 12px;
   max-width: 1260px;
 }.spelling-trainer-scope .progress-track {
@@ -99,6 +99,21 @@
   background: #ffb330;
   height: 100%;
   transition: width 220ms ease;
+}.spelling-trainer-scope .progress-wrap button {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #c8d4e1;
+  border-radius: 8px;
+  color: #1e3144;
+  display: inline-flex;
+  font-weight: 900;
+  gap: 6px;
+  justify-content: center;
+  min-height: 36px;
+  padding: 7px 10px;
+}.spelling-trainer-scope .progress-wrap button:disabled {
+  cursor: default;
+  opacity: 0.5;
 }.spelling-trainer-scope .mode-tabs {
   display: grid;
   gap: 8px;
@@ -574,6 +589,10 @@
 .spelling-trainer-scope .mode-tabs,
 .spelling-trainer-scope .dashboard-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }.spelling-trainer-scope .progress-wrap {
+    grid-template-columns: auto 1fr auto;
+  }.spelling-trainer-scope .progress-wrap button {
+    grid-column: 1 / -1;
   }.spelling-trainer-scope .mode-heading {
     align-items: flex-start;
     flex-direction: column;

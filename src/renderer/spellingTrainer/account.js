@@ -2,7 +2,7 @@ import { starterWords } from "./wordTools.js";
 
 const storageKey = "zaydan-spelling-account-v1";
 const defaultWordSetVersion = "colonial-america-worksheet-v1";
-const startingBalance = 8;
+export const startingBalance = 8;
 const legacyStarterWords = [
   "planet",
   "garden",
@@ -34,6 +34,17 @@ export function buildInitialAccount() {
       return account;
     },
     { ...emptyAccount, words: {} }
+  );
+}
+
+export function buildAccountForWords(words, profileName = emptyAccount.profileName) {
+  const cleanWords = [...new Set(words.map((word) => word.toLowerCase()).filter(Boolean))];
+  return cleanWords.reduce(
+    (account, word) => {
+      account.words[word] = createWordRecord();
+      return account;
+    },
+    { ...emptyAccount, profileName, balance: startingBalance, words: {} }
   );
 }
 
