@@ -31,7 +31,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify clean checkout
+        run: |
+          git diff --exit-code
+          git diff --cached --exit-code
+
       - name: Build
+        env:
+          BUILD_TIMESTAMP: ${{ github.run_started_at }}
+          GIT_BRANCH: ${{ github.ref_name }}
+          GIT_SHA: ${{ github.sha }}
+          GIT_COMMIT_MESSAGE: ${{ github.event.head_commit.message || github.event.pull_request.title || github.workflow }}
         run: npm run build
 
       - name: Deploy to Cloudflare Pages
@@ -39,5 +49,11 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ee1487bd55e182796a8d7868fc979792
-          command: pages deploy build --project-name=bikebrowser --branch=main
+          command: >-
+            pages deploy build
+            --project-name=bikebrowser
+            --branch=${{ github.ref_name }}
+            --commit-hash=${{ github.sha }}
+            --commit-message="GitHub Actions deploy ${{ github.sha }}"
+            --commit-dirty=false
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

@@ -26,3 +26,4 @@ push-to-github.ps1
 playwright-report/
 test-results/
 playwright/.cache/
+public/build-info.json
