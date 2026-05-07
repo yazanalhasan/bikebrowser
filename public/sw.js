@@ -1,4 +1,4 @@
-const APP_VERSION = '1.0.4';
+const APP_VERSION = '1.0.5';
 const SHELL_CACHE = `bikebrowser-shell-${APP_VERSION}`;
 const ASSET_CACHE = `bikebrowser-assets-${APP_VERSION}`;
 const PRECACHE_URLS = [

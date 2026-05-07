@@ -960,15 +960,11 @@ function WordsMode({
             {extractionInfo.chosenLines.slice(0, 5).map((line) => <span key={line}>{line}</span>)}
           </div>
           <div>
-            <p>Confidence picks</p>
-            {extractionInfo.scoredLines
-              ?.filter((line) => line.score >= 3 && line.words.length)
-              .slice(0, 5)
-              .map((line) => (
-                <span key={`${line.line}-${line.score}`}>
-                  +{line.score}: {line.words.join(", ")}
-                </span>
-              ))}
+            <p>Detected words</p>
+            <strong>{extractionInfo.words.length} words</strong>
+            {extractionInfo.words.slice(0, 12).map((word) => (
+              <span key={word}>{word}</span>
+            ))}
           </div>
         </section>
       )}
