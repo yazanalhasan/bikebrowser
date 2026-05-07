@@ -46,6 +46,7 @@ import "./styles.css";
 const letterReward = 0.02;
 const wordReward = 0.5;
 const audioWordReward = 1;
+const strictTypingMode = false;
 
 function explainOcrError(error) {
   if (!error) return "OCR stopped without returning an error. Try rotating the photo or uploading a clearer image.";
@@ -99,6 +100,12 @@ export default function SpellingTrainerApp() {
   const processedUploadId = useRef(null);
   const syncHydratedRef = useRef(false);
   const syncPushTimerRef = useRef(null);
+  const dictationInputRef = useRef({
+    previousValue: "",
+    lastInputAt: 0,
+    suspiciousCount: 0,
+    assistSuspected: false
+  });
   const uploadServerBase = useMemo(() => getUploadServerBase(), []);
 
   const currentWord = wordList[wordIndex] || "";
@@ -252,15 +259,16 @@ export default function SpellingTrainerApp() {
     setLetterBank(scrambled.split("").map((letter, index) => ({ id: `${letter}-${index}-${Date.now()}`, letter, used: false })));
     setSelectedBankIndex(null);
     setTypedWord("");
+    resetDictationIntegrity();
     setFeedback(isMastered ? "Mastery mode: finish the word for the big reward." : "Early learning: correct letters earn 2 cents.");
   }
 
-  function updateAccountForResult(word, isCorrect, reward, letterRewarded = 0) {
+  function updateAccountForResult(word, isCorrect, reward, letterRewarded = 0, options = {}) {
     recordSharedSpellingReward(reward);
     setAccount((current) => {
       const record = current.words[word] || createWordRecord();
       const nextCorrect = record.correct + (isCorrect ? 1 : 0);
-      const nextStreak = isCorrect ? current.currentStreak + 1 : 0;
+      const nextStreak = isCorrect && !options.disableStreak ? current.currentStreak + 1 : 0;
       const practicedRecord = current.practicedWords?.[word] || createPracticedWordRecord(word);
       const practicedAt = new Date().toISOString();
       return {
@@ -818,18 +826,111 @@ export default function SpellingTrainerApp() {
   }
 
   function checkDictation() {
-    const guess = typedWord.trim().toLowerCase();
+    const guess = normalizeDictationAnswer(typedWord);
     const isCorrect = guess === currentWord;
+    const scoring = scoreDictationAttempt(isCorrect);
     if (isCorrect) {
       confetti({ particleCount: 90, spread: 70, origin: { y: 0.65 } });
-      setLastEarned("+$1.00");
-      setFeedback(`Correct. ${currentWord} is spelled perfectly.`);
-      updateAccountForResult(currentWord, true, audioWordReward, 0);
+      setLastEarned(`+$${scoring.reward.toFixed(2)}`);
+      setFeedback(scoring.feedback || `Correct. ${currentWord} is spelled perfectly.`);
+      updateAccountForResult(currentWord, true, scoring.reward, 0, { disableStreak: scoring.disableStreak });
       window.setTimeout(nextWord, 900);
     } else {
       setFeedback("Not quite. Replay the word and try again.");
       updateAccountForResult(currentWord, false, 0, 0);
     }
+  }
+
+  function normalizeDictationAnswer(value) {
+    return String(value || "").trim().toLowerCase().replace(/[^a-z-]/g, "");
+  }
+
+  function handleDictationChange(event) {
+    const after = event.target.value;
+    const before = dictationInputRef.current.previousValue;
+    const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+    const elapsed = dictationInputRef.current.lastInputAt ? now - dictationInputRef.current.lastInputAt : Infinity;
+    const insertedLength = Math.max(0, after.length - before.length);
+    const insertedText = getInsertedText(before, after);
+    const normalizedAfter = normalizeDictationAnswer(after);
+    const fullWordInstantly = !before && normalizedAfter === currentWord && currentWord.length > 2;
+    const hasUnexpectedCharacters = /[\s.,!?;:"()[\]{}]/.test(insertedText);
+    const suspicious = insertedLength > 2 || fullWordInstantly || hasUnexpectedCharacters;
+
+    if (suspicious) {
+      dictationInputRef.current.assistSuspected = true;
+      dictationInputRef.current.suspiciousCount += 1;
+      setFeedback(strictTypingMode ? "Try typing it one letter at a time." : "Please type the word yourself.");
+
+      if (typeof process !== "undefined" && process.env?.NODE_ENV !== "production") {
+        console.debug("Suspicious dictation insertion", {
+          insertedLength,
+          elapsed,
+          before,
+          after,
+          insertedText
+        });
+      }
+    }
+
+    dictationInputRef.current.previousValue = after;
+    dictationInputRef.current.lastInputAt = now;
+    setTypedWord(after);
+  }
+
+  function getInsertedText(before, after) {
+    let prefix = 0;
+    while (prefix < before.length && prefix < after.length && before[prefix] === after[prefix]) prefix += 1;
+
+    let suffix = 0;
+    while (
+      suffix < before.length - prefix
+      && suffix < after.length - prefix
+      && before[before.length - 1 - suffix] === after[after.length - 1 - suffix]
+    ) {
+      suffix += 1;
+    }
+
+    return after.slice(prefix, after.length - suffix);
+  }
+
+  function resetDictationIntegrity() {
+    dictationInputRef.current = {
+      previousValue: "",
+      lastInputAt: 0,
+      suspiciousCount: 0,
+      assistSuspected: false
+    };
+  }
+
+  function scoreDictationAttempt(isCorrect) {
+    if (!isCorrect) {
+      return { reward: 0, accuracyScore: 0, speedScore: 0, integrityBonus: 0 };
+    }
+
+    const { assistSuspected, suspiciousCount } = dictationInputRef.current;
+    const accuracyScore = 1;
+    const speedScore = 1;
+    const integrityBonus = assistSuspected ? 0 : 1;
+    const rewardMultiplier = strictTypingMode && assistSuspected
+      ? 0
+      : assistSuspected
+        ? Math.max(0.25, 0.65 - Math.max(0, suspiciousCount - 1) * 0.15)
+        : 1;
+    const reward = Number((audioWordReward * accuracyScore * speedScore * rewardMultiplier).toFixed(2));
+
+    return {
+      reward,
+      accuracyScore,
+      speedScore,
+      integrityBonus,
+      disableStreak: strictTypingMode ? assistSuspected : suspiciousCount > 1,
+      feedback: assistSuspected
+        ? strictTypingMode
+          ? "Correct word, but rewards need one-letter-at-a-time typing."
+          : `Correct word. Reduced reward this time; type ${currentWord} one letter at a time for full credit.`
+        : ""
+    };
   }
 
   function downloadAccount() {
@@ -861,6 +962,7 @@ export default function SpellingTrainerApp() {
     setLetterBank([]);
     setSelectedBankIndex(null);
     setTypedWord("");
+    resetDictationIntegrity();
     setLastEarned(null);
     setFeedback(`Reset progress and balance for ${resetWords.length} loaded words.`);
   }
@@ -946,7 +1048,7 @@ export default function SpellingTrainerApp() {
             wordList.length ? (
               <AudioMode
                 typedWord={typedWord}
-                setTypedWord={setTypedWord}
+                onTypedWordChange={handleDictationChange}
                 speakWord={speakWord}
                 speakSpelling={speakSpelling}
                 checkDictation={checkDictation}
@@ -1139,7 +1241,7 @@ function ScrambleMode({ word, record, isMastered, slots, letterBank, selectedBan
   );
 }
 
-function AudioMode({ typedWord, setTypedWord, speakWord, speakSpelling, checkDictation, nextWord }) {
+function AudioMode({ typedWord, onTypedWordChange, speakWord, speakSpelling, checkDictation, nextWord }) {
   return (
     <>
       <div className="mode-heading">
@@ -1162,14 +1264,20 @@ function AudioMode({ typedWord, setTypedWord, speakWord, speakSpelling, checkDic
       <input
         className="dictation-input"
         value={typedWord}
-        onChange={(event) => setTypedWord(event.target.value)}
+        onChange={onTypedWordChange}
         onKeyDown={(event) => {
           if (event.key === "Enter") checkDictation();
         }}
+        onPaste={(event) => event.preventDefault()}
+        onDrop={(event) => event.preventDefault()}
         autoComplete="off"
-        spellCheck="false"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
+        inputMode="text"
         placeholder="Type the word you hear"
       />
+      <p className="dictation-helper"><Keyboard size={16} /> Hear it {"->"} think it {"->"} type it</p>
       <div className="control-row">
         <button type="button" onClick={checkDictation}><Keyboard size={18} /> Check</button>
         <button type="button" onClick={() => speakWord()}><Headphones size={18} /> Repeat</button>

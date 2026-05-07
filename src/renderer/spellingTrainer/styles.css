@@ -364,9 +364,19 @@
   font-size: clamp(1.6rem, 5vw, 3rem);
   font-weight: 900;
   letter-spacing: 0;
-  margin: 18px 0;
+  margin: 18px 0 8px;
   min-height: 92px;
   padding: 18px;
+}.spelling-trainer-scope .dictation-helper {
+  align-items: center;
+  color: #40546a;
+  display: inline-flex;
+  font-size: 0.95rem;
+  font-weight: 800;
+  gap: 8px;
+  margin: 0 0 18px;
+}.spelling-trainer-scope .dictation-helper svg {
+  color: #2459ff;
 }.spelling-trainer-scope .dictation-input:focus,
 .spelling-trainer-scope textarea:focus {
   border-color: #2459ff;
