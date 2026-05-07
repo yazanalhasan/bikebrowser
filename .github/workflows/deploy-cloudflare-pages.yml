@@ -29,6 +29,8 @@ jobs:
           cache: npm
 
       - name: Install dependencies
+        env:
+          npm_config_ignore_scripts: true
         run: npm ci
 
       - name: Verify clean checkout
