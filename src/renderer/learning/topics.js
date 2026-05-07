@@ -63,13 +63,24 @@ const TOPICS = [
   {
     id: 'chains',
     title: 'Chains & Drivetrain',
-    description: 'How the chain, pedals, and gears work together to make a bike move.',
+    description: 'How the chain, pedals, gears, cassette, and rear derailleur work together to make a bike move.',
     category: 'repair',
     difficulty: 'intermediate',
     icon: '⛓️',
-    goalText: 'Clean and lubricate a chain',
+    goalText: 'Explain how chain movement changes gears',
     relatedQuests: [],
-    suggestedSearches: ['bike chain repair', 'how bike gears work'],
+    suggestedSearches: ['bike chain repair', 'how bike gears work', 'rear derailleur adjustment'],
+  },
+  {
+    id: 'rear_derailleurs',
+    title: 'Rear Derailleurs',
+    description: 'Learn how the rear derailleur moves the chain across the cassette, and why indexing, limit screws, B-gap, and hanger alignment matter.',
+    category: 'repair',
+    difficulty: 'intermediate',
+    icon: '⚙️',
+    goalText: 'Identify indexing, limit screws, B-gap, and hanger alignment',
+    relatedQuests: ['chain_repair'],
+    suggestedSearches: ['Park Tool rear derailleur adjustment', 'rear derailleur indexing limit screws', 'derailleur hanger alignment'],
   },
   {
     id: 'tools',
@@ -116,6 +127,17 @@ const TOPICS = [
     goalText: 'Name the 3 main e-bike components',
     relatedQuests: [],
     suggestedSearches: ['how e-bikes work', 'electric bike conversion basics'],
+  },
+  {
+    id: 'electronic_derailleurs',
+    title: 'Electronic Derailleurs',
+    description: 'Explore Shimano Di2 and SRAM AXS electronic shifting, including how batteries, buttons, pairing, and micro-adjustments replace shift cables. On e-bikes, these systems may appear on higher-end e-road and e-MTB builds; otherwise analog-bike examples still show the same electronic derailleur operation.',
+    category: 'building',
+    difficulty: 'advanced',
+    icon: '🔋',
+    goalText: 'Compare cable shifting with electronic Di2/AXS shifting',
+    relatedQuests: [],
+    suggestedSearches: ['Shimano Di2 electronic rear derailleur operation', 'SRAM AXS rear derailleur setup', 'electronic shifting e-bike derailleur'],
   },
 
   // ── Science & Engineering ────────────────────────────────────
@@ -186,7 +208,7 @@ export const TOPIC_MAP = Object.fromEntries(TOPICS.map((t) => [t.id, t]));
 /** Map: questId → topicIds that completing the quest advances */
 export const QUEST_TOPIC_MAP = {
   flat_tire_repair: ['flat_tires', 'tools', 'reading_instructions'],
-  chain_repair: ['chains', 'tools', 'reading_instructions'],
+  chain_repair: ['chains', 'rear_derailleurs', 'tools', 'reading_instructions'],
   desert_healer: ['bike_safety', 'reading_instructions'],
   food_chain_tracker: ['forces_friction', 'simple_machines'],
   desert_survival: ['bike_safety', 'reading_instructions'],

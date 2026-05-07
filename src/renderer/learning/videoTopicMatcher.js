@@ -29,6 +29,11 @@ const TOPIC_PATTERNS = [
     'chain', 'drivetrain', 'derailleur', 'gear shift', 'cassette',
     'chainring', 'chain lube', 'chain clean', 'gear adjustment',
   ]],
+  ['rear_derailleurs', [
+    'rear derailleur', 'derailleur adjustment', 'indexing', 'limit screw',
+    'limit screws', 'b screw', 'b-gap', 'b gap', 'hanger alignment',
+    'derailleur hanger', 'barrel adjuster', 'shift cable tension',
+  ]],
   ['tools', [
     'bike tool', 'repair tool', 'wrench', 'hex key', 'allen key',
     'tire lever', 'pump', 'tool kit', 'multi-tool', 'torque wrench',
@@ -44,6 +49,11 @@ const TOPIC_PATTERNS = [
   ['ebike_basics', [
     'e-bike', 'ebike', 'electric bike', 'motor kit', 'battery pack',
     'controller', 'conversion kit', 'mid-drive', 'hub motor', 'bafang',
+  ]],
+  ['electronic_derailleurs', [
+    'electronic shifting', 'electronic derailleur', 'di2', 'shimano di2',
+    'sram axs', 'etap axs', 'eagle axs', 'microadjust', 'micro adjust',
+    'wireless shifting', 'shift battery', 'pairing axs',
   ]],
   ['forces_friction', [
     'friction', 'force', 'physics', 'grip', 'traction', 'rolling resistance',

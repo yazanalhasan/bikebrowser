@@ -1,5 +1,6 @@
 const CONCEPT_KEYWORDS = {
-  drivetrain: ['chain', 'cassette', 'derailleur', 'drivetrain', 'gear', 'shifter', 'crank'],
+  drivetrain: ['chain', 'cassette', 'derailleur', 'drivetrain', 'gear', 'shifter', 'crank', 'indexing', 'limit screw', 'b-gap', 'hanger alignment'],
+  electronic_drivetrain: ['electronic shifting', 'electronic derailleur', 'di2', 'sram axs', 'etap axs', 'eagle axs', 'wireless shifting', 'microadjust', 'pairing'],
   brakes: ['brake', 'brakes', 'rotor', 'caliper', 'brake pad', 'hydraulic', 'bleed'],
   motor: ['motor', 'hub motor', 'mid drive', 'mid-drive', 'brushless', 'controller', 'throttle'],
   battery: ['battery', 'bms', 'lithium', 'voltage', 'charger', 'cells', 'wiring'],
@@ -69,6 +70,17 @@ const CURATED_RESULTS = [
     thumbnail: 'https://i.ytimg.com/vi/B37TW_YVC8E/hqdefault.jpg'
   },
   {
+    id: 'park-tool-rear-derailleur-adjustment',
+    title: 'Park Tool: rear derailleur adjustment, limit screws, and indexing',
+    channelName: 'Park Tool',
+    source: 'youtube',
+    videoId: 'UkZxPIZ1ngY',
+    concepts: ['drivetrain', 'shop_class'],
+    tags: ['park tool', 'rear derailleur', 'derailleur adjustment', 'indexing', 'limit screws', 'b screw', 'b-gap', 'cassette', 'shifting', 'drivetrain'],
+    description: 'A direct rear derailleur lesson showing how the derailleur moves the chain across the cassette and how indexing, limit screws, and B-screw setup affect shifting.',
+    thumbnail: 'https://i.ytimg.com/vi/UkZxPIZ1ngY/hqdefault.jpg'
+  },
+  {
     id: 'park-tool-chain-cleaner',
     title: 'Park Tool: clean and lube a bicycle chain with a chain cleaner',
     channelName: 'Park Tool',
@@ -89,6 +101,17 @@ const CURATED_RESULTS = [
     tags: ['park tool', 'derailleur hanger', 'hanger alignment', 'DAG', 'wide range cassette', 'large cassette', 'shifting', 'drivetrain', 'maintenance', 'installation'],
     description: 'Check hanger alignment before tuning a wide-range cassette so the chain tracks cleanly through every gear.',
     thumbnail: 'https://i.ytimg.com/vi/tXfvW0L3iLM/hqdefault.jpg'
+  },
+  {
+    id: 'sram-etap-axs-electronic-derailleur',
+    title: 'SRAM Tech: eTap AXS electronic derailleur installation and operation',
+    channelName: 'SRAM TECH',
+    source: 'youtube',
+    videoId: 'Bx-kB7rNFJQ',
+    concepts: ['electronic_drivetrain', 'drivetrain'],
+    tags: ['sram', 'etap axs', 'sram axs', 'electronic shifting', 'electronic derailleur', 'wireless shifting', 'rear derailleur', 'pairing', 'microadjust', 'battery'],
+    description: 'Electronic shifting fallback video for Di2/AXS searches. It shows how a battery-powered rear derailleur pairs with controls and moves the chain without a shift cable; useful for e-bike/eMTB builds when e-bike-specific examples are sparse.',
+    thumbnail: 'https://i.ytimg.com/vi/Bx-kB7rNFJQ/hqdefault.jpg'
   },
   {
     id: 'park-tool-brakes',

@@ -14,6 +14,14 @@ test('curated video search returns project builder compatible results', () => {
   assert.equal(results[0].source, 'youtube');
 });
 
+test('curated video search includes rear and electronic derailleur lessons', () => {
+  const rearResults = searchVideoResults('rear derailleur indexing limit screws');
+  const electronicResults = searchVideoResults('electronic derailleur Di2 SRAM AXS e-bike shifting');
+
+  assert.ok(rearResults.some((result) => /rear derailleur/i.test(result.title)));
+  assert.ok(electronicResults.some((result) => /AXS|electronic/i.test(result.title)));
+});
+
 test('/api/search returns grouped watch results for Cloudflare Pages', async () => {
   const request = new Request('https://bike-browser.com/api/search', {
     method: 'POST',

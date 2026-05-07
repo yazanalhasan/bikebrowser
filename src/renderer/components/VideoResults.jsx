@@ -5,6 +5,7 @@ const API_CANDIDATES = ['', 'http://localhost:3001'];
 
 const CONCEPT_LABELS = {
   drivetrain: 'Drivetrain',
+  electronic_drivetrain: 'Electronic Drivetrain',
   brakes: 'Brakes',
   motor: 'Motor',
   battery: 'Battery',

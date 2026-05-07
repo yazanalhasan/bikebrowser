@@ -10,6 +10,26 @@ export const VIDEO_QUALITY_PRESETS = [
     helper: 'Park Tool-style cassette, chain, and shifting service'
   },
   {
+    id: 'rear-derailleurs',
+    label: 'Rear Derailleurs',
+    tileTitle: 'Rear Derailleurs',
+    tileSubtitle: 'Indexing, limit screws & hanger alignment',
+    tileEmoji: '⚙️',
+    tileColor: 'from-indigo-400 to-blue-600',
+    query: 'Park Tool rear derailleur adjustment indexing limit screws B screw hanger alignment drivetrain shifting',
+    helper: 'Rear derailleur setup, indexing, limit screws, B-gap, and hanger alignment'
+  },
+  {
+    id: 'electronic-derailleurs',
+    label: 'Electronic Derailleurs',
+    tileTitle: 'Electronic Derailleurs',
+    tileSubtitle: 'Di2, AXS & e-bike shifting systems',
+    tileEmoji: '🔋',
+    tileColor: 'from-violet-400 to-cyan-600',
+    query: 'Shimano Di2 SRAM AXS electronic rear derailleur setup operation e-bike eMTB shifting',
+    helper: 'Electronic shifting on Di2 and AXS bikes, with e-bike/eMTB context when available'
+  },
+  {
     id: 'brake-systems',
     label: 'Brake Systems',
     tileTitle: 'Brake Systems',

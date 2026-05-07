@@ -70,6 +70,20 @@ const QUALITY_PRESETS = [
     systems: ['bike_mechanics']
   },
   {
+    id: 'rear-derailleurs',
+    label: 'Rear Derailleurs',
+    description: 'Rear derailleur indexing, limit screws, B-gap, hanger alignment, and diagnosis.',
+    query: 'Park Tool rear derailleur adjustment indexing limit screws B screw hanger alignment drivetrain shifting',
+    systems: ['bike_mechanics', 'rear_derailleurs']
+  },
+  {
+    id: 'electronic-derailleurs',
+    label: 'Electronic Derailleurs',
+    description: 'Shimano Di2, SRAM AXS, pairing, micro-adjustment, and e-bike/eMTB shifting examples.',
+    query: 'Shimano Di2 SRAM AXS electronic rear derailleur setup operation e-bike eMTB shifting',
+    systems: ['bike_mechanics', 'rear_derailleurs', 'electronic_derailleurs', 'ebike_power']
+  },
+  {
     id: 'ebike-power',
     label: 'E-Bike Power',
     description: 'Motors, controllers, batteries, wiring, conversions, and troubleshooting.',
@@ -103,6 +117,16 @@ const SYSTEM_KEYWORDS = {
   bike_mechanics: [
     'derailleur', 'brake', 'brakes', 'hydraulic', 'cable', 'torque', 'bottom bracket',
     'cassette', 'chain', 'drivetrain', 'headset', 'wheel truing', 'hub', 'caliper'
+  ],
+  rear_derailleurs: [
+    'rear derailleur', 'derailleur adjustment', 'indexing', 'limit screw', 'limit screws',
+    'b screw', 'b gap', 'b-gap', 'hanger alignment', 'derailleur hanger',
+    'barrel adjuster', 'cable tension', 'shifting'
+  ],
+  electronic_derailleurs: [
+    'electronic shifting', 'electronic derailleur', 'di2', 'shimano di2',
+    'sram axs', 'etap axs', 'eagle axs', 'transmission', 'microadjust',
+    'micro adjust', 'wireless shifting', 'pairing', 'shift battery'
   ],
   ebike_power: [
     'ebike', 'e-bike', 'controller', 'throttle', 'bms', 'battery', 'lithium',

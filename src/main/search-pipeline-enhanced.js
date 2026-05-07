@@ -356,6 +356,12 @@ class EnhancedSearchPipeline {
     if (/e-?bike|electric bike|controller|battery|motor|conversion/.test(normalizedQuery)) {
       qualityQueries.push(QUALITY_PRESETS.find((preset) => preset.id === 'ebike-power')?.query);
     }
+    if (/rear derailleur|indexing|limit screw|b-?gap|hanger alignment/.test(normalizedQuery)) {
+      qualityQueries.push(QUALITY_PRESETS.find((preset) => preset.id === 'rear-derailleurs')?.query);
+    }
+    if (/electronic derailleur|electronic shifting|di2|sram axs|etap axs|eagle axs|wireless shifting/.test(normalizedQuery)) {
+      qualityQueries.push(QUALITY_PRESETS.find((preset) => preset.id === 'electronic-derailleurs')?.query);
+    }
     if (/dirt bike|motorcycle|carburetor|fork seal|top end|engine/.test(normalizedQuery)) {
       qualityQueries.push(QUALITY_PRESETS.find((preset) => preset.id === 'dirt-bike-shop')?.query);
     }

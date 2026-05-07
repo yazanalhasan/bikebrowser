@@ -188,7 +188,7 @@ function HomePage() {
             <div>
               <div className="text-3xl mb-2">✓</div>
               <h4 className="font-semibold text-lg mb-2">Watch Tutorials</h4>
-              <p className="text-gray-600">Look for "how to" videos to learn new skills</p>
+              <p className="text-gray-600">Look for &quot;how to&quot; videos to learn new skills</p>
             </div>
             <div>
               <div className="text-3xl mb-2">🔧</div>
@@ -198,7 +198,7 @@ function HomePage() {
             <div>
               <div className="text-3xl mb-2">📚</div>
               <h4 className="font-semibold text-lg mb-2">Ask Questions</h4>
-              <p className="text-gray-600">Don't understand? Search for explanations</p>
+              <p className="text-gray-600">Don&apos;t understand? Search for explanations</p>
             </div>
           </div>
         </div>
