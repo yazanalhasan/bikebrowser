@@ -10,6 +10,7 @@ import {
 import { createMechanicalScenario } from '../src/renderer/services/education/MechanicalMultiplicationScenarios.ts';
 import { analyzeMistakes } from '../src/renderer/services/education/MistakeAnalysisEngine.ts';
 import { calculateFlowState } from '../src/renderer/services/education/FlowStateEngine.ts';
+import { computeGearTrain } from '../src/renderer/spellingTrainer/math/gearPhysics.js';
 
 test('multiplication pattern order follows the requested teaching sequence', () => {
   assert.deepEqual(MULTIPLICATION_PATTERN_ORDER, [1, 2, 10, 5, 9, 11, 3, 4, 6, 7, 8, 12]);
@@ -42,6 +43,33 @@ test('mechanical scenarios translate facts into bike and engineering systems', (
   assert.equal(scenario.theme, 'drivetrain');
   assert.equal(scenario.visualModel, 'gear-transfer');
   assert.match(scenario.story, /pedal rotations/);
+});
+
+test('gear physics keeps radius, teeth, velocity, and direction proportional', () => {
+  const equal = computeGearTrain({ factorA: 1, factorB: 1 });
+  const half = computeGearTrain({ factorA: 1, factorB: 2 });
+  const quarter = computeGearTrain({ factorA: 1, factorB: 4 });
+  const twoToThree = computeGearTrain({ factorA: 2, factorB: 3 });
+  const idler = computeGearTrain({ factorA: 1, factorB: 1, includeIdler: true, idlerRadius: 30 });
+
+  assert.equal(equal.gears[1].radius, 60);
+  assert.equal(equal.gears[1].teeth, 40);
+  assert.equal(equal.gears[1].angularVelocity, 1);
+
+  assert.equal(half.gears[1].radius, 30);
+  assert.equal(half.gears[1].teeth, 20);
+  assert.equal(half.gears[1].angularVelocity, 2);
+
+  assert.equal(quarter.gears[1].radius, 15);
+  assert.equal(quarter.gears[1].teeth, 10);
+  assert.equal(quarter.gears[1].angularVelocity, 4);
+
+  assert.equal(twoToThree.gears[1].radius, 40);
+  assert.equal(twoToThree.gears[1].teeth, 27);
+  assert.equal(twoToThree.gears[0].radius * twoToThree.gears[0].angularVelocity, twoToThree.gears[1].radius * twoToThree.gears[1].angularVelocity);
+
+  assert.deepEqual(idler.gears.map((gear) => gear.rotationDirection), [1, -1, 1]);
+  assert.equal(idler.ratio.speedMultiplier, 1);
 });
 
 test('mistake analysis infers high-table and decomposition weaknesses', () => {
