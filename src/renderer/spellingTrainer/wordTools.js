@@ -396,7 +396,13 @@ export function extractWorksheetData(rawText) {
       ...labeledEntries,
       ...candidates
     ])
-    : unique(candidates);
+    : plainWordEntries.length >= 3
+      ? unique([
+        ...plainWordEntries.map((entry) => entry.word),
+        ...labeledEntries,
+        ...candidates
+      ])
+      : unique(candidates);
 
   return {
     words: orderedWords,
