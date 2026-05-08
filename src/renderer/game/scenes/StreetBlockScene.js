@@ -814,6 +814,54 @@ export default class StreetBlockScene extends LocalSceneBase {
       return;
     }
 
+    if (step?.type === 'use_item' && ['use_lever', 'use_patch'].includes(step.id)) {
+      const advanced = advanceQuest(state);
+      if (!advanced.ok) {
+        audioMgr?.playSfx('ui_error');
+        this.registry.set('dialogEvent', {
+          speaker: 'Zuzu',
+          text: advanced.message,
+          choices: null,
+          step,
+        });
+        return;
+      }
+
+      state = advanced.state;
+      this.registry.set('gameState', state);
+      saveGame(state);
+
+      if (step.id === 'use_lever') {
+        audioMgr?.playSfx('wrench_turn', { vary: true });
+      } else {
+        audioMgr?.playSfx('patch_apply', { vary: true });
+      }
+
+      const nextStep = getCurrentStep(state);
+      this.registry.set('dialogEvent', {
+        speaker: nextStep?.type === 'quiz' ? 'Zuzu (thinking)' : 'Mrs. Ramirez',
+        text: step.id === 'use_lever'
+          ? 'The tire lever slips under the bead and pops the tire loose from the rim.'
+          : 'The patch seals the puncture. The tube can hold air again.',
+        choices: null,
+        step: null,
+      });
+
+      this.time.delayedCall(650, () => {
+        if (!nextStep) {
+          this.registry.set('dialogEvent', null);
+          return;
+        }
+        this.registry.set('dialogEvent', {
+          speaker: nextStep.type === 'quiz' ? 'Zuzu (thinking)' : 'Mrs. Ramirez',
+          text: nextStep.text,
+          choices: nextStep.type === 'quiz' ? nextStep.choices : null,
+          step: nextStep,
+        });
+      });
+      return;
+    }
+
     this.registry.set('dialogEvent', {
       speaker: 'Zuzu',
       text: step?.text || "I've learned what happened to the tire. Now I should keep following the repair steps.",

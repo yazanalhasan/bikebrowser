@@ -112,4 +112,60 @@ test.describe('flat tire repair flow', () => {
     );
     expect(relevantErrors).toEqual([]);
   });
+
+  test('street bike applies tire tools after explainer', async ({ page }) => {
+    const runtimeErrors = [];
+    page.on('pageerror', (err) => runtimeErrors.push(err.message));
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') runtimeErrors.push(msg.text());
+    });
+
+    const state = baseState();
+    state.activeQuest = { id: 'flat_tire_repair', stepIndex: 3 };
+
+    await page.addInitScript((saveState) => {
+      localStorage.setItem('bikebrowser_game_save', JSON.stringify(saveState));
+    }, state);
+
+    await waitForGameBoot(page);
+
+    await page.evaluate(() => {
+      const game = window.__phaserGame;
+      game.scene.start('StreetBlockScene');
+    });
+
+    await page.waitForFunction(() => {
+      const game = window.__phaserGame;
+      return game?.scene?.getScene('StreetBlockScene')?.scene?.isActive();
+    });
+
+    await page.evaluate(() => {
+      window.__phaserGame.scene.getScene('StreetBlockScene')._handleRamirezBikeInteract();
+    });
+
+    await expect.poll(async () => page.evaluate(() => {
+      return window.__phaserGame.registry.get('gameState').activeQuest?.stepIndex;
+    })).toBe(4);
+
+    await page.evaluate(() => {
+      window.__phaserGame.scene.getScene('StreetBlockScene').advanceFromDialog(0);
+    });
+
+    await expect.poll(async () => page.evaluate(() => {
+      return window.__phaserGame.registry.get('gameState').activeQuest?.stepIndex;
+    })).toBe(5);
+
+    await page.evaluate(() => {
+      window.__phaserGame.scene.getScene('StreetBlockScene')._handleRamirezBikeInteract();
+    });
+
+    await expect.poll(async () => page.evaluate(() => {
+      return window.__phaserGame.registry.get('gameState').activeQuest?.stepIndex;
+    })).toBe(6);
+
+    const relevantErrors = runtimeErrors.filter((message) =>
+      !message.includes('UX audit service error'),
+    );
+    expect(relevantErrors).toEqual([]);
+  });
 });
