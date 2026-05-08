@@ -1,4 +1,5 @@
 /project-builder / 200
+/current-projects / 200
 /build-planner / 200
 /shop / 200
 /saved-notes / 200
@@ -6,7 +7,9 @@
 /play / 200
 /play3d / 200
 /spelling-trainer / 200
+/multiplication-trainer / 200
 /learn / 200
 /learn/* / 200
+/game/letter-detective /learn/letter-detective 302
 /youtube/* / 200
 /* /index.html 200

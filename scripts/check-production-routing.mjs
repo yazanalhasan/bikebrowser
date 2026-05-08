@@ -22,6 +22,18 @@ async function readJson(url) {
   };
 }
 
+async function readHtml(url) {
+  const response = await fetch(url, { cache: 'no-store', redirect: 'manual' });
+  const text = await response.text();
+  return {
+    url,
+    ok: response.ok,
+    status: response.status,
+    contentType: response.headers.get('content-type') || '',
+    text: text.slice(0, 2400),
+  };
+}
+
 async function main() {
   const health = await readJson(`${PROD_ORIGIN}/api/health`);
   const buildInfo = await readJson(`${PROD_ORIGIN}/build-info.json`);
@@ -39,6 +51,30 @@ async function main() {
   }
   if (buildInfo.json?.dirty === true) {
     failures.push('Production build-info reports dirty=true; deploy should come from clean GitHub state.');
+  }
+
+  const appRoutes = [
+    '/',
+    '/current-projects',
+    '/project-builder',
+    '/build-planner',
+    '/shop',
+    '/saved-notes',
+    '/safe-search',
+    '/play',
+    '/play3d',
+    '/spelling-trainer',
+    '/learn/letter-detective',
+    '/multiplication-trainer',
+  ];
+
+  for (const route of appRoutes) {
+    const result = await readHtml(`${PROD_ORIGIN}${route}`);
+    const servesAppShell = result.status === 200 && result.text.includes('BikeBrowser') && result.text.includes('id="root"');
+    console.log(`Route ${route}: HTTP ${result.status}`);
+    if (!servesAppShell) {
+      failures.push(`Production route ${route} does not serve the BikeBrowser app shell.`);
+    }
   }
 
   try {
@@ -62,4 +98,3 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
-
