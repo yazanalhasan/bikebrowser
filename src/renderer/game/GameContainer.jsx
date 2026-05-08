@@ -44,7 +44,9 @@ import { triggerQuestRevealsForState } from './systems/discoveryBridge.js';
 
 const GAMEPLAY_REPORTS_KEY = 'bikebrowser_gameplay_reports';
 const GAMEPLAY_REPORTS_ENABLED =
-  import.meta.env.DEV || import.meta.env.VITE_ENABLE_GAMEPLAY_REPORTS === 'true';
+  import.meta.env.VITE_ENABLE_GAMEPLAY_REPORTS !== 'false';
+const CONSOLE_BUFFER_ENABLED =
+  GAMEPLAY_REPORTS_ENABLED || import.meta.env.DEV || import.meta.env.VITE_ENABLE_CONSOLE_BUFFER === 'true';
 const PHYSICS_HUD_ENABLED =
   import.meta.env.DEV || import.meta.env.VITE_ENABLE_PHYSICS_HUD === 'true';
 const HUD_BUTTON_CLASS =
@@ -68,11 +70,14 @@ function saveGameplayReports(reports) {
 }
 
 function getActiveGameSnapshot(game) {
-  if (!game) return { activeScene: null, gameState: null, player: null, runtimeAudit: null };
+  if (!game) return { activeScene: null, gameState: null, player: null, runtimeAudit: null, consoleText: '' };
 
   const activeScene = game.scene?.scenes?.find((s) => s.scene?.isActive?.());
   const state = game.registry?.get('gameState') || null;
   const playerSprite = activeScene?.player?.sprite;
+  const consoleText = typeof window !== 'undefined' && window.__exportConsole
+    ? window.__exportConsole({ sinceLast: 300, format: 'text' })
+    : '';
 
   return {
     activeScene: activeScene?.scene?.key || null,
@@ -90,6 +95,7 @@ function getActiveGameSnapshot(game) {
       y: Math.round(playerSprite.y),
     } : null,
     runtimeAudit: typeof window !== 'undefined' ? window.__runtimeAuditResult || null : null,
+    consoleText,
   };
 }
 
@@ -115,6 +121,9 @@ function formatGameplayReport(report) {
     '',
     '## Runtime audit',
     JSON.stringify(report.snapshot?.runtimeAudit || null, null, 2),
+    '',
+    '## Console (last 300 entries)',
+    report.snapshot?.consoleText || 'Console buffer unavailable.',
   ].join('\n');
 }
 
@@ -517,10 +526,9 @@ export default function GameContainer() {
     const game = new Phaser.Game(config);
     gameRef.current = game;
 
-    // Dev-only: console buffer for AI-agent runtime visibility. Dynamic
-    // import keeps the module out of production bundles via Vite tree-
-    // shaking. See src/renderer/devtools/README.md for usage.
-    if (import.meta.env.DEV) {
+    // Console buffer for gameplay reports. It stays local to the browser
+    // and only exports when the player copies a diagnostic report.
+    if (CONSOLE_BUFFER_ENABLED) {
       import('../devtools/consoleBuffer.js').then(({ initConsoleBuffer }) => {
         initConsoleBuffer();
       });
@@ -536,6 +544,8 @@ export default function GameContainer() {
     // your console doesn't already have it in scope).
     if (import.meta.env.DEV) {
       window.__phaserGame = game;
+    }
+    if (import.meta.env.DEV || GAMEPLAY_REPORTS_ENABLED) {
       runRuntimeAudit();
     }
 
@@ -1036,6 +1046,24 @@ export default function GameContainer() {
     }
   }, [audio]);
 
+  const handleCopyRuntimeDiagnostics = useCallback(async () => {
+    const report = {
+      id: `gameplay_diagnostics_${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      message: 'Runtime diagnostics snapshot.',
+      snapshot: getActiveGameSnapshot(gameRef.current),
+    };
+    const formatted = formatGameplayReport(report);
+    setReportCopyText(formatted);
+    const copied = await copyTextWithFallback(formatted);
+    setReportStatus(
+      copied
+        ? 'Copied diagnostics with console output.'
+        : 'Browser copy is blocked. The diagnostics text is selected below.'
+    );
+    audio?.playSfx?.(copied ? 'ui_tap' : 'ui_error');
+  }, [audio]);
+
   // ------------------------------------------------------------------
   // Render
   // ------------------------------------------------------------------
@@ -1372,7 +1400,7 @@ export default function GameContainer() {
             <div>
               <div className="font-bold text-gray-800 text-sm">Report gameplay problem</div>
               <div className="text-xs text-gray-500">
-                This saves your note with scene, quest, inventory, observations, and audit context.
+                This saves your note with scene, quest, inventory, observations, audit context, and recent console output.
               </div>
             </div>
             <button
@@ -1395,12 +1423,20 @@ export default function GameContainer() {
           />
 
           <div className="flex items-center justify-between gap-2 mt-3">
-            <button
-              onClick={handleSaveGameplayReport}
-              className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-600 active:scale-95"
-            >
-              Save report
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={handleSaveGameplayReport}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-600 active:scale-95"
+              >
+                Save report
+              </button>
+              <button
+                onClick={handleCopyRuntimeDiagnostics}
+                className="bg-gray-900 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-black active:scale-95"
+              >
+                Copy diagnostics
+              </button>
+            </div>
             <div className="text-[11px] text-gray-500 text-right">
               {gameplayReports.length} saved
             </div>

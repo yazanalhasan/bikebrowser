@@ -1,10 +1,10 @@
-// Dev-only console buffer. Captures console output to a bounded
+// Local console buffer. Captures console output to a bounded
 // ring buffer accessible via window.__consoleBuffer and
 // window.__exportConsole(). Used for sharing runtime console
 // history with AI agents without screenshot fidelity loss.
 //
-// Gated behind import.meta.env.DEV by the caller. This module
-// assumes it is only imported in dev builds.
+// Gated by the caller. It is enabled for dev builds and for the
+// in-game gameplay report tool.
 
 const MAX_ENTRIES = 5000;
 const buffer = [];

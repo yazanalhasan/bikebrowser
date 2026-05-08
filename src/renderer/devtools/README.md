@@ -1,8 +1,8 @@
 # renderer/devtools
 
-Dev-only browser-side tooling. Modules here are gated behind
-`import.meta.env.DEV` at every call site and excluded from production
-bundles by Vite tree-shaking.
+Browser-side diagnostics tooling. Modules here are gated at call sites
+and stay local to the browser unless a player explicitly copies an
+export.
 
 ## consoleBuffer.js
 
@@ -21,7 +21,7 @@ into the agent input, and the agent reads perfect text.
 ### Window globals
 
 Once `initConsoleBuffer()` has been called (automatic in dev builds
-via `GameContainer.jsx`):
+and when gameplay reports are enabled via `GameContainer.jsx`):
 
 | Global | Type | Purpose |
 | --- | --- | --- |
@@ -62,7 +62,9 @@ reason about than terminal-formatted logs.
 
 - 5000-entry cap. The oldest entries are dropped when full. Adjust
   `MAX_ENTRIES` in `consoleBuffer.js` only if you have a reason.
-- DEV-only. Production builds will not have these globals.
+- Production builds have these globals only when gameplay reports are
+  enabled. Set `VITE_ENABLE_GAMEPLAY_REPORTS=false` to hide the report
+  tool and skip the buffer.
 - `console.table`, `console.group`, `console.dir`, `console.trace`
   are NOT captured. Add a separate dispatch if you need them.
 - Args are kept by reference until export. If you mutate an object
