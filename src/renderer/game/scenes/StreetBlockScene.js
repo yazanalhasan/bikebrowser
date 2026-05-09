@@ -79,28 +79,22 @@ export default class StreetBlockScene extends LocalSceneBase {
     // Grass
     {
       const o = this.layout.grass;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x7cb342);
+      this._drawGrassField(o);
     }
 
     // Road (horizontal, center)
     {
       const o = this.layout.road;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x616161);
-    }
-    // Road lines
-    const roadGfx = this.add.graphics();
-    roadGfx.lineStyle(2, 0xfdd835, 0.6);
-    for (let x = 0; x < width; x += 50) {
-      roadGfx.lineBetween(x, 350, x + 25, 350);
+      this._drawRoadway(o, width);
     }
     // Sidewalks
     {
       const o = this.layout.sidewalk_top;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0xbdbdbd);
+      this._drawSidewalk(o);
     }
     {
       const o = this.layout.sidewalk_bottom;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0xbdbdbd);
+      this._drawSidewalk(o);
     }
 
     // === ZUZU'S HOUSE (left side, north of road) ===
@@ -138,10 +132,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     // Label
     {
       const o = this.layout.zuzu_house_label;
-      this.add.text(o.x, o.y, "🏠 Zuzu's House", {
-        fontSize: '11px', fontFamily: 'sans-serif', color: '#4e342e',
-        fontStyle: 'bold', stroke: '#fff', strokeThickness: 2,
-      }).setOrigin(0.5).setDepth(3);
+      this._drawMapLabel(o.x, o.y, "Zuzu's House", { icon: '🏠', depth: 9 });
     }
     // House collision
     {
@@ -185,10 +176,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     }
     {
       const o = this.layout.ramirez_house_label;
-      this.add.text(o.x, o.y, "🏡 Ramirez House", {
-        fontSize: '11px', fontFamily: 'sans-serif', color: '#b71c1c',
-        fontStyle: 'bold', stroke: '#fff', strokeThickness: 2,
-      }).setOrigin(0.5).setDepth(3);
+      this._drawMapLabel(o.x, o.y, 'Ramirez House', { icon: '🏠', depth: 9 });
     }
     {
       const o = this.layout.ramirez_house_collision;
@@ -257,9 +245,11 @@ export default class StreetBlockScene extends LocalSceneBase {
       this.addWall(o.x, o.y, o.w, o.h);
     }
 
+    this._skinNeighborhoodHouses();
+
     // === TREES / DECORATIONS ===
     for (const t of this.layout.trees) {
-      this.add.text(t.x, t.y, '🌳', { fontSize: '28px' }).setOrigin(0.5).setDepth(3);
+      this._drawTree(t.x, t.y, t.scale || 1);
     }
 
     // === ECOLOGY PLANTS (drawn with graphics + interactable) ===
@@ -281,6 +271,11 @@ export default class StreetBlockScene extends LocalSceneBase {
         onInteract: () => this._handlePlantInteract(p.species, p.label, p.x, p.y),
       });
       this._ecologyPlants.push({ species: p.species, x: p.x, y: p.y });
+      this._drawMapLabel(p.x, p.y + (p.labelOffsetY || 31), p.label, {
+        depth: 14,
+        fontSize: 10,
+        maxWidth: 142,
+      });
     }
 
     // === ECOLOGY SUBSTRATE WIRING (additive — Phase 4) ===========================
@@ -317,6 +312,11 @@ export default class StreetBlockScene extends LocalSceneBase {
       const key = ECOLOGY_ASSET_KEYS.animals[a.speciesId];
       if (!key) continue;
       this.add.image(a.x, a.y, key).setOrigin(0.5).setDepth(4).setDisplaySize(48, 48);
+      this._drawMapLabel(a.x, a.y + 34, a.label || a.speciesId, {
+        depth: 14,
+        fontSize: 10,
+        maxWidth: 118,
+      });
     }
 
     const animalConfigs = this.layout.animals.map((a, i) => ({
@@ -340,27 +340,23 @@ export default class StreetBlockScene extends LocalSceneBase {
     // Fire hydrant
     {
       const o = this.layout.fire_hydrant;
-      this.add.text(o.x, o.y, '🧯', { fontSize: '18px' }).setOrigin(0.5).setDepth(3);
+      this._drawFireHydrant(o.x, o.y);
     }
 
     // Mailboxes
     {
       const o = this.layout.mailbox_left;
-      this.add.text(o.x, o.y, '📫', { fontSize: '16px' }).setOrigin(0.5).setDepth(3);
+      this._drawMailbox(o.x, o.y);
     }
     {
       const o = this.layout.mailbox_right;
-      this.add.text(o.x, o.y, '📫', { fontSize: '16px' }).setOrigin(0.5).setDepth(3);
+      this._drawMailbox(o.x, o.y);
     }
 
     // Street sign
     {
       const o = this.layout.street_sign;
-      this.add.text(o.x, o.y, '🛣️ E Trailside View', {
-        fontSize: '12px', fontFamily: 'sans-serif', color: '#fff',
-        backgroundColor: '#2e7d32', padding: { x: 6, y: 2 },
-        fontStyle: 'bold',
-      }).setOrigin(0.5).setDepth(5);
+      this._drawStreetSign(o.x, o.y, 'E Trailside');
     }
 
     // === MRS. RAMIREZ NPC ===
@@ -378,11 +374,8 @@ export default class StreetBlockScene extends LocalSceneBase {
     const questDone = state.completedQuests?.includes('flat_tire_repair');
     {
       const o = this.layout.ramirez_bike_icon;
-      this._ramirezBike = this.add.text(
-        o.x, o.y,
-        questDone ? '🚲✅' : '🚲❌',
-        { fontSize: o.fontSize || '36px' },
-      ).setOrigin(0.5).setDepth(40);
+      this._drawBike(o.x, o.y, { color: 0x2563eb, accent: 0xef4444, flat: !questDone, depth: 38 });
+      this._ramirezBike = this._drawBikeBadge(o.x + 48, o.y - 8, questDone ? '✓' : '', questDone);
     }
 
     const ramirezBikeInteract = this.layout.ramirez_bike_icon;
@@ -412,17 +405,14 @@ export default class StreetBlockScene extends LocalSceneBase {
       state.activeQuest?.id === 'engine_cleaning'
       && getCurrentStep(state)?.id === 'clean_motor';
     const chenBikeIcon = chenMotorCleaningActive
-      ? '🚲⚙️'
+      ? '⚙'
       : chenQuestDone
-        ? '🚲✅'
-        : '🚲⛓️';
+        ? '✓'
+        : '⛓';
     {
       const o = this.layout.chen_bike_icon;
-      this._chenBike = this.add.text(
-        o.x, o.y,
-        chenBikeIcon,
-        { fontSize: o.fontSize || '44px' },
-      ).setOrigin(0.5).setDepth(40);
+      this._drawBike(o.x, o.y, { color: 0xef4444, accent: 0x111827, depth: 38 });
+      this._chenBike = this._drawBikeBadge(o.x + 44, o.y - 7, chenBikeIcon, chenQuestDone);
       this.addInteractable({
         x: o.x,
         y: o.y,
@@ -450,6 +440,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     // North exit → Overworld
     {
       const o = this.layout.exit_zone_north;
+      this._drawTopNeighborhoodSign(o.x, 24);
       this.addExit({
         x: o.x, y: o.y,
         width: o.w, height: o.h,
@@ -505,11 +496,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     // GPS post (visual)
     {
       const o = this.layout.gps_post;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x475569);
-    }
-    {
-      const o = this.layout.gps_top;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x475569);
+      this._drawGpsPost(o.x, o.y);
     }
 
     // === WORLD BOUNDS ===
@@ -517,6 +504,364 @@ export default class StreetBlockScene extends LocalSceneBase {
       const o = this.layout.wall_south;
       this.addWall(o.x, o.y, o.w, o.h); // south
     }
+  }
+
+  _drawGrassField(o) {
+    this.add.rectangle(o.x, o.y, o.w, o.h, 0x7fb13d).setDepth(-10);
+
+    const gfx = this.add.graphics().setDepth(-9);
+    for (let i = 0; i < 210; i++) {
+      const x = (i * 67) % o.w;
+      const y = (i * 43) % o.h;
+      const color = i % 3 === 0 ? 0x96c65a : i % 3 === 1 ? 0x6c9c31 : 0xb4d36a;
+      const alpha = i % 5 === 0 ? 0.5 : 0.28;
+      gfx.fillStyle(color, alpha);
+      gfx.fillEllipse(x, y, 10 + (i % 4) * 2, 4 + (i % 3));
+    }
+
+    gfx.lineStyle(1, 0x5f8f28, 0.14);
+    for (let y = 12; y < o.h; y += 28) {
+      gfx.lineBetween(0, y, o.w, y + ((y / 28) % 2 ? 3 : -3));
+    }
+  }
+
+  _drawRoadway(o, width) {
+    this.add.rectangle(o.x, o.y, o.w, o.h, 0x3f4548).setDepth(-5);
+    const gfx = this.add.graphics().setDepth(-4);
+
+    gfx.fillStyle(0x2f3437, 0.22);
+    for (let i = 0; i < 180; i++) {
+      const x = (i * 53) % width;
+      const y = o.y - o.h / 2 + ((i * 29) % o.h);
+      gfx.fillCircle(x, y, i % 4 === 0 ? 1.4 : 0.8);
+    }
+
+    gfx.lineStyle(3, 0xe8e2d6, 0.65);
+    gfx.lineBetween(0, o.y - o.h / 2, width, o.y - o.h / 2);
+    gfx.lineBetween(0, o.y + o.h / 2, width, o.y + o.h / 2);
+
+    gfx.lineStyle(3, 0xf7c948, 0.85);
+    for (let x = 24; x < width; x += 60) {
+      gfx.lineBetween(x, o.y, x + 28, o.y);
+    }
+  }
+
+  _drawSidewalk(o) {
+    this.add.rectangle(o.x, o.y, o.w, o.h, 0xd7d3ca).setDepth(-2);
+    const gfx = this.add.graphics().setDepth(-1);
+    gfx.lineStyle(1, 0xa9a39a, 0.45);
+    gfx.strokeRect(o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    for (let x = o.x - o.w / 2; x <= o.x + o.w / 2; x += 42) {
+      gfx.lineBetween(x, o.y - o.h / 2, x + 7, o.y + o.h / 2);
+    }
+  }
+
+  _skinNeighborhoodHouses() {
+    this._drawHouseSkin({
+      body: this.layout.zuzu_house_body,
+      roof: this.layout.zuzu_house_roof,
+      door: this.layout.zuzu_house_door,
+      knob: this.layout.zuzu_house_doorknob,
+      windows: [this.layout.zuzu_house_window_left, this.layout.zuzu_house_window_right],
+      bodyColor: 0xe7c98d,
+      trimColor: 0xfff4d6,
+      roofColor: 0x6d4c41,
+      shutterColor: 0x8b5e34,
+    });
+    this._drawHouseSkin({
+      body: this.layout.ramirez_house_body,
+      roof: this.layout.ramirez_house_roof,
+      door: this.layout.ramirez_house_door,
+      knob: this.layout.ramirez_house_doorknob,
+      windows: [this.layout.ramirez_house_window_left, this.layout.ramirez_house_window_right],
+      bodyColor: 0xf79c8f,
+      trimColor: 0xfff5f0,
+      roofColor: 0xc93a2b,
+      shutterColor: 0xc2412f,
+    });
+    this._drawHouseSkin({
+      body: this.layout.blue_house_body,
+      roof: this.layout.blue_house_roof,
+      door: this.layout.blue_house_door,
+      windows: [],
+      bodyColor: 0x9dccf1,
+      trimColor: 0xf0f7ff,
+      roofColor: 0x1557a8,
+      shutterColor: 0x1d4f91,
+      garage: true,
+      label: { text: 'Workshop', x: this.layout.blue_house_body.x - 34, y: this.layout.blue_house_body.y + 76, icon: '🔒' },
+    });
+    this._drawHouseSkin({
+      body: this.layout.green_house_body,
+      roof: this.layout.green_house_roof,
+      door: this.layout.green_house_door,
+      windows: [],
+      bodyColor: 0xbed8aa,
+      trimColor: 0xf3ffe9,
+      roofColor: 0x2d7533,
+      shutterColor: 0x2e6b34,
+    });
+    this._drawHouseSkin({
+      body: this.layout.yellow_house_body,
+      roof: this.layout.yellow_house_roof,
+      door: this.layout.yellow_house_door,
+      windows: [],
+      bodyColor: 0xffd878,
+      trimColor: 0xfff7d1,
+      roofColor: 0xe77d1b,
+      shutterColor: 0xc96b14,
+    });
+  }
+
+  _drawHouseSkin({
+    body,
+    roof,
+    door,
+    knob,
+    windows = [],
+    bodyColor,
+    trimColor,
+    roofColor,
+    shutterColor,
+    garage = false,
+    label = null,
+  }) {
+    this.add.ellipse(body.x + 8, body.y + body.h / 2 + 10, body.w * 0.9, 24, 0x1f2937, 0.18).setDepth(1.4);
+
+    const house = this.add.graphics().setDepth(2.6);
+    house.fillStyle(bodyColor, 1);
+    house.fillRoundedRect(body.x - body.w / 2, body.y - body.h / 2, body.w, body.h, 3);
+    house.lineStyle(2, trimColor, 1);
+    house.strokeRoundedRect(body.x - body.w / 2, body.y - body.h / 2, body.w, body.h, 3);
+    house.lineStyle(1, 0xffffff, 0.26);
+    for (let y = body.y - body.h / 2 + 14; y < body.y + body.h / 2 - 8; y += 10) {
+      house.lineBetween(body.x - body.w / 2 + 8, y, body.x + body.w / 2 - 8, y);
+    }
+
+    const roofGfx = this.add.graphics().setDepth(3.2);
+    roofGfx.fillStyle(roofColor, 1);
+    roofGfx.lineStyle(5, trimColor, 1);
+    roofGfx.fillTriangle(roof.x1, roof.y1, roof.x2, roof.y2, roof.x3, roof.y3);
+    roofGfx.strokeTriangle(roof.x1, roof.y1, roof.x2, roof.y2, roof.x3, roof.y3);
+    roofGfx.lineStyle(1, 0x2f201a, 0.25);
+    const baseY = Math.max(roof.y1, roof.y3);
+    const peakX = roof.x2;
+    const peakY = roof.y2;
+    const halfBase = Math.abs(roof.x3 - roof.x1) / 2;
+    for (let i = 1; i <= 6; i++) {
+      const y = peakY + ((baseY - peakY) * i) / 7;
+      const half = (halfBase * (y - peakY)) / (baseY - peakY);
+      roofGfx.lineBetween(peakX - half, y, peakX + half, y);
+    }
+    for (let i = 1; i <= 8; i++) {
+      const x = roof.x1 + ((roof.x3 - roof.x1) * i) / 9;
+      roofGfx.lineBetween(x, baseY, peakX, peakY + 7);
+    }
+
+    if (garage) {
+      const g = this.add.graphics().setDepth(3.5);
+      const garageW = body.w * 0.55;
+      g.fillStyle(0xe9edf0, 1);
+      g.fillRoundedRect(body.x - garageW / 2, body.y - 4, garageW, body.h * 0.55, 3);
+      g.lineStyle(2, 0x94a3b8, 0.9);
+      g.strokeRoundedRect(body.x - garageW / 2, body.y - 4, garageW, body.h * 0.55, 3);
+      for (let y = body.y + 8; y < body.y + body.h / 2 - 6; y += 8) {
+        g.lineBetween(body.x - garageW / 2 + 4, y, body.x + garageW / 2 - 4, y);
+      }
+    }
+
+    this._drawDoor(door, knob);
+    for (const win of windows) this._drawWindow(win, shutterColor);
+    this._drawFoundationShrubs(body);
+    if (label) this._drawMapLabel(label.x, label.y, label.text, { icon: label.icon, depth: 10 });
+  }
+
+  _drawDoor(door, knob) {
+    const gfx = this.add.graphics().setDepth(4);
+    gfx.fillStyle(0x5b321f, 1);
+    gfx.fillRoundedRect(door.x - door.w / 2, door.y - door.h / 2, door.w, door.h, 2);
+    gfx.lineStyle(2, 0x32180f, 0.85);
+    gfx.strokeRoundedRect(door.x - door.w / 2, door.y - door.h / 2, door.w, door.h, 2);
+    gfx.lineStyle(1, 0x8b5e34, 0.65);
+    gfx.strokeRect(door.x - door.w / 2 + 6, door.y - door.h / 2 + 8, door.w - 12, door.h - 16);
+    if (knob) this.add.circle(knob.x, knob.y, knob.r + 1, 0xfacc15).setDepth(5);
+  }
+
+  _drawWindow(win, shutterColor) {
+    const gfx = this.add.graphics().setDepth(4);
+    gfx.fillStyle(shutterColor, 1);
+    gfx.fillRect(win.x - win.w / 2 - 7, win.y - win.h / 2, 5, win.h);
+    gfx.fillRect(win.x + win.w / 2 + 2, win.y - win.h / 2, 5, win.h);
+    gfx.fillStyle(0xbbe5ff, 0.95);
+    gfx.fillRoundedRect(win.x - win.w / 2, win.y - win.h / 2, win.w, win.h, 2);
+    gfx.lineStyle(2, 0xf8fafc, 0.95);
+    gfx.strokeRoundedRect(win.x - win.w / 2, win.y - win.h / 2, win.w, win.h, 2);
+    gfx.lineStyle(1, 0x5087a6, 0.75);
+    gfx.lineBetween(win.x, win.y - win.h / 2 + 2, win.x, win.y + win.h / 2 - 2);
+    gfx.lineBetween(win.x - win.w / 2 + 2, win.y, win.x + win.w / 2 - 2, win.y);
+    gfx.fillStyle(0x7aa33a, 1);
+    gfx.fillRoundedRect(win.x - win.w / 2 - 4, win.y + win.h / 2 + 2, win.w + 8, 7, 3);
+    gfx.fillStyle(0xf97316, 1);
+    gfx.fillCircle(win.x - 8, win.y + win.h / 2 + 4, 2.3);
+    gfx.fillCircle(win.x + 6, win.y + win.h / 2 + 4, 2.3);
+  }
+
+  _drawFoundationShrubs(body) {
+    const gfx = this.add.graphics().setDepth(4.5);
+    const y = body.y + body.h / 2 - 7;
+    for (let i = 0; i < 8; i++) {
+      const x = body.x - body.w / 2 + 18 + i * (body.w - 36) / 7;
+      gfx.fillStyle(i % 2 ? 0x4f8f32 : 0x6aa33b, 1);
+      gfx.fillCircle(x, y + (i % 2) * 3, 8 + (i % 3));
+      gfx.fillStyle(0xf472b6, 0.75);
+      if (i % 3 === 0) gfx.fillCircle(x + 3, y - 3, 2);
+    }
+  }
+
+  _drawTree(x, y, scale = 1) {
+    this.add.ellipse(x + 4, y + 20 * scale, 58 * scale, 18 * scale, 0x1f2937, 0.18).setDepth(2);
+    const gfx = this.add.graphics().setDepth(4);
+    gfx.fillStyle(0x6b3d1f, 1);
+    gfx.fillRoundedRect(x - 5 * scale, y + 4 * scale, 10 * scale, 31 * scale, 4 * scale);
+    gfx.lineStyle(2 * scale, 0x442412, 0.6);
+    gfx.lineBetween(x, y + 10 * scale, x - 16 * scale, y + 24 * scale);
+    gfx.lineBetween(x + 2 * scale, y + 13 * scale, x + 18 * scale, y + 25 * scale);
+    const blobs = [
+      [-19, -3, 16, 0x4f8d2e], [0, -12, 20, 0x6dac39], [18, -3, 17, 0x4f8d2e],
+      [-9, 9, 19, 0x79b84a], [12, 10, 19, 0x5f9d35], [0, 1, 23, 0x72b343],
+    ];
+    for (const [dx, dy, r, color] of blobs) {
+      gfx.fillStyle(color, 1);
+      gfx.fillCircle(x + dx * scale, y + dy * scale, r * scale);
+    }
+    gfx.fillStyle(0xc7df72, 0.75);
+    for (let i = 0; i < 9; i++) {
+      gfx.fillCircle(x - 20 * scale + i * 5 * scale, y - 10 * scale + ((i * 7) % 24) * scale, 2 * scale);
+    }
+  }
+
+  _drawMapLabel(x, y, text, { icon = '', depth = 12, fontSize = 11, maxWidth = 150 } = {}) {
+    const display = icon ? `${icon}  ${text}` : text;
+    const width = Math.min(maxWidth, Math.max(48, display.length * (fontSize * 0.58) + 18));
+    const height = fontSize + 12;
+    const gfx = this.add.graphics().setDepth(depth);
+    gfx.fillStyle(0xffffff, 0.94);
+    gfx.fillRoundedRect(x - width / 2, y - height / 2, width, height, 6);
+    gfx.lineStyle(1, 0xd7dce3, 0.9);
+    gfx.strokeRoundedRect(x - width / 2, y - height / 2, width, height, 6);
+    this.add.text(x, y, display, {
+      fontFamily: 'sans-serif',
+      fontSize: `${fontSize}px`,
+      fontStyle: 'bold',
+      color: '#1f2937',
+      align: 'center',
+      fixedWidth: width - 10,
+    }).setOrigin(0.5).setDepth(depth + 0.1);
+  }
+
+  _drawStreetSign(x, y, text) {
+    const gfx = this.add.graphics().setDepth(8);
+    gfx.lineStyle(4, 0xe5e7eb, 0.9);
+    gfx.lineBetween(x, y + 12, x, y + 70);
+    gfx.fillStyle(0x1f7a42, 1);
+    gfx.fillRoundedRect(x - 48, y - 15, 96, 30, 5);
+    gfx.lineStyle(2, 0xf5f1c8, 0.9);
+    gfx.strokeRoundedRect(x - 48, y - 15, 96, 30, 5);
+    this.add.text(x, y, text, {
+      fontFamily: 'sans-serif',
+      fontSize: '14px',
+      fontStyle: 'bold',
+      color: '#ffffff',
+    }).setOrigin(0.5).setDepth(9);
+  }
+
+  _drawTopNeighborhoodSign(x, y) {
+    const gfx = this.add.graphics().setScrollFactor(1).setDepth(20);
+    gfx.fillStyle(0x406b1b, 0.95);
+    gfx.fillRoundedRect(x - 112, y - 21, 224, 42, 10);
+    gfx.lineStyle(3, 0x9fb64c, 0.95);
+    gfx.strokeRoundedRect(x - 112, y - 21, 224, 42, 10);
+    this.add.text(x, y, '🏘 Neighborhood ↑', {
+      fontFamily: 'sans-serif',
+      fontSize: '18px',
+      fontStyle: 'bold',
+      color: '#ffffff',
+    }).setOrigin(0.5).setDepth(21);
+  }
+
+  _drawBike(x, y, { color = 0x2563eb, accent = 0xef4444, flat = false, depth = 38 } = {}) {
+    const gfx = this.add.graphics().setDepth(depth);
+    gfx.lineStyle(4, 0x111827, 0.9);
+    gfx.strokeCircle(x - 22, y + 12, 18);
+    gfx.strokeCircle(x + 24, y + 12, 18);
+    gfx.lineStyle(4, color, 1);
+    gfx.lineBetween(x - 22, y + 12, x - 1, y - 11);
+    gfx.lineBetween(x - 1, y - 11, x + 24, y + 12);
+    gfx.lineBetween(x - 22, y + 12, x + 4, y + 12);
+    gfx.lineBetween(x + 4, y + 12, x - 1, y - 11);
+    gfx.lineBetween(x + 4, y + 12, x + 24, y + 12);
+    gfx.lineStyle(3, accent, 1);
+    gfx.lineBetween(x - 4, y - 17, x + 9, y - 17);
+    gfx.lineStyle(3, 0x111827, 1);
+    gfx.lineBetween(x + 22, y - 5, x + 35, y - 14);
+    gfx.lineBetween(x + 35, y - 14, x + 43, y - 11);
+    gfx.lineBetween(x - 6, y - 10, x - 11, y - 24);
+    gfx.fillStyle(0x111827, 1);
+    gfx.fillRoundedRect(x - 21, y - 28, 22, 6, 3);
+    if (flat) {
+      gfx.lineStyle(7, 0xef4444, 0.96);
+      gfx.lineBetween(x + 55, y - 20, x + 82, y + 7);
+      gfx.lineBetween(x + 82, y - 20, x + 55, y + 7);
+      gfx.lineStyle(2, 0xffffff, 0.8);
+      gfx.strokeCircle(x + 69, y - 7, 19);
+    }
+  }
+
+  _drawBikeBadge(x, y, text, complete = false) {
+    const color = complete ? '#16a34a' : '#dc2626';
+    return this.add.text(x, y, text, {
+      fontFamily: 'sans-serif',
+      fontSize: '31px',
+      fontStyle: 'bold',
+      color,
+      stroke: '#ffffff',
+      strokeThickness: 5,
+    }).setOrigin(0.5).setDepth(45);
+  }
+
+  _drawFireHydrant(x, y) {
+    const gfx = this.add.graphics().setDepth(6);
+    gfx.fillStyle(0xdc2626, 1);
+    gfx.fillRoundedRect(x - 7, y - 14, 14, 24, 4);
+    gfx.fillCircle(x, y - 17, 8);
+    gfx.fillRoundedRect(x - 14, y - 5, 28, 8, 4);
+    gfx.fillStyle(0xfacc15, 1);
+    gfx.fillCircle(x + 14, y - 1, 3);
+    gfx.fillCircle(x - 14, y - 1, 3);
+  }
+
+  _drawMailbox(x, y) {
+    const gfx = this.add.graphics().setDepth(6);
+    gfx.lineStyle(3, 0x6b7280, 1);
+    gfx.lineBetween(x, y + 8, x, y + 27);
+    gfx.fillStyle(0x64748b, 1);
+    gfx.fillRoundedRect(x - 13, y - 8, 26, 16, 8);
+    gfx.fillStyle(0xef4444, 1);
+    gfx.fillRect(x + 10, y - 13, 3, 10);
+  }
+
+  _drawGpsPost(x, y) {
+    const gfx = this.add.graphics().setDepth(7);
+    gfx.lineStyle(5, 0x64748b, 1);
+    gfx.lineBetween(x, y + 10, x, y + 60);
+    gfx.fillStyle(0x172033, 1);
+    gfx.fillRoundedRect(x - 13, y - 24, 26, 44, 6);
+    gfx.fillStyle(0x8ec5ff, 1);
+    gfx.fillRoundedRect(x - 9, y - 19, 18, 31, 3);
+    gfx.lineStyle(2, 0xfacc15, 1);
+    gfx.lineBetween(x - 5, y + 4, x + 5, y - 6);
+    gfx.lineStyle(2, 0x2563eb, 1);
+    gfx.lineBetween(x - 4, y - 12, x + 4, y - 16);
   }
 
   // ── Plant Interaction ────────────────────────────────────────────────────────
@@ -902,7 +1247,7 @@ export default class StreetBlockScene extends LocalSceneBase {
       }
 
       audioMgr?.playSfx('ui_success');
-      if (this._chenBike) this._chenBike.setText('🚲✨');
+      if (this._chenBike) this._chenBike.setText('✨').setColor('#16a34a');
       this.registry.set('dialogEvent', {
         speaker: 'Zuzu',
         text:
@@ -965,10 +1310,10 @@ export default class StreetBlockScene extends LocalSceneBase {
 
     // Update bike icons
     if (state.completedQuests?.includes('flat_tire_repair') && this._ramirezBike) {
-      this._ramirezBike.setText('🚲✅');
+      this._ramirezBike.setText('✓').setColor('#16a34a');
     }
     if (state.completedQuests?.includes('chain_repair') && this._chenBike) {
-      this._chenBike.setText('🚲✅');
+      this._chenBike.setText('✓').setColor('#16a34a');
     }
 
     const nextStep = getCurrentStep(state);
