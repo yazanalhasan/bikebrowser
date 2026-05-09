@@ -22,6 +22,8 @@ import { drawPlant } from '../utils/plantRenderer.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { startInteractiveExplainer } from '../systems/interactiveExplainerSystem.js';
+import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
+import { registerZuzuAnimations } from '../../../game/characters/registerCharacterAnimations.js';
 import { createWorldLabel } from '../../../game/ui/WorldLabel.js';
 import { createInteractionMarker } from '../../../game/ui/InteractionMarker.js';
 import { createGarageLeftSignPlaceholder } from '../../../game/art/placeholderFactories.js';
@@ -66,6 +68,7 @@ export default class StreetBlockScene extends LocalSceneBase {
 
   preload() {
     super.preload?.();
+    preloadGameAssets(this);
     this.load.json('streetBlockLayout', 'layouts/street-block.layout.json');
     // ECOLOGY (additive — Phase 4 animals): preload animal sprite textures.
     // Plant textures are unused visually (plants use drawPlant graphics), but
@@ -77,6 +80,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     this.layout = loadLayout(this, 'streetBlockLayout');
     const { width } = this.getWorldSize();
     const state = this.registry.get('gameState');
+    registerZuzuAnimations(this);
 
     // === GROUND ===
     // Grass
@@ -379,7 +383,7 @@ export default class StreetBlockScene extends LocalSceneBase {
       const o = this.layout.ramirez_bike_icon;
       this._drawBike(o.x, o.y, { color: 0x2563eb, accent: 0xef4444, flat: !questDone, depth: 38 });
       if (!questDone) createInteractionMarker(this, o.x + 58, o.y - 10, 'blocked', { pulse: true });
-      this._ramirezBike = this._drawBikeBadge(o.x + 48, o.y - 8, questDone ? '✓' : '', questDone);
+      this._ramirezBike = this._drawBikeBadge(o.x + 48, o.y - 8, questDone ? 'OK' : '', questDone);
     }
 
     const ramirezBikeInteract = this.layout.ramirez_bike_icon;
@@ -409,10 +413,10 @@ export default class StreetBlockScene extends LocalSceneBase {
       state.activeQuest?.id === 'engine_cleaning'
       && getCurrentStep(state)?.id === 'clean_motor';
     const chenBikeIcon = chenMotorCleaningActive
-      ? '⚙'
+      ? 'OIL'
       : chenQuestDone
-        ? '✓'
-        : '⛓';
+        ? 'OK'
+        : 'FIX';
     {
       const o = this.layout.chen_bike_icon;
       this._drawBike(o.x, o.y, { color: 0xef4444, accent: 0x111827, depth: 38 });
@@ -451,7 +455,7 @@ export default class StreetBlockScene extends LocalSceneBase {
         width: o.w, height: o.h,
         targetScene: 'OverworldScene',
         targetSpawn: 'fromStreet',
-        label: '🗺️ Neighborhood ⬆',
+        label: 'Neighborhood north',
       });
     }
 
@@ -1251,7 +1255,7 @@ export default class StreetBlockScene extends LocalSceneBase {
       }
 
       audioMgr?.playSfx('ui_success');
-      if (this._chenBike) this._chenBike.setText('✨').setColor('#16a34a');
+      if (this._chenBike) this._chenBike.setText('OK').setColor('#16a34a');
       this.registry.set('dialogEvent', {
         speaker: 'Zuzu',
         text:
@@ -1314,10 +1318,10 @@ export default class StreetBlockScene extends LocalSceneBase {
 
     // Update bike icons
     if (state.completedQuests?.includes('flat_tire_repair') && this._ramirezBike) {
-      this._ramirezBike.setText('✓').setColor('#16a34a');
+      this._ramirezBike.setText('OK').setColor('#16a34a');
     }
     if (state.completedQuests?.includes('chain_repair') && this._chenBike) {
-      this._chenBike.setText('✓').setColor('#16a34a');
+      this._chenBike.setText('OK').setColor('#16a34a');
     }
 
     const nextStep = getCurrentStep(state);
@@ -1358,13 +1362,13 @@ export default class StreetBlockScene extends LocalSceneBase {
     const cx = cam.scrollX + cam.width / 2;
     const cy = cam.scrollY + cam.height / 2 - 40;
 
-    const rewardText = this.add.text(cx, cy, '🎉 Quest Complete! 🎉', {
+    const rewardText = this.add.text(cx, cy, 'Quest Complete!', {
       fontSize: '28px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#ffffff', stroke: '#1e40af', strokeThickness: 4,
     }).setOrigin(0.5).setDepth(100);
 
     const bucks = state.zuzubucks || 0;
-    const bucksText = this.add.text(cx, cy + 40, `💰 +25 Zuzubucks! (Total: ${bucks})`, {
+    const bucksText = this.add.text(cx, cy + 40, `+25 Zuzubucks! (Total: ${bucks})`, {
       fontSize: '18px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#fbbf24', stroke: '#78350f', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(100);

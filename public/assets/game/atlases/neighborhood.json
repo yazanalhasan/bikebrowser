@@ -1,0 +1,543 @@
+{
+  "frames": {
+    "npc_mr_chen_idle": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "npc_mrs_ramirez_idle": {
+      "frame": {
+        "x": 160,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "plant_mesquite_tree_01": {
+      "frame": {
+        "x": 320,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "plant_creosote_bush_01": {
+      "frame": {
+        "x": 480,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "plant_ephedra_mormon_tea_01": {
+      "frame": {
+        "x": 640,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "plant_barrel_cactus_01": {
+      "frame": {
+        "x": 800,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "plant_yucca_01": {
+      "frame": {
+        "x": 0,
+        "y": 120,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "plant_agave_01": {
+      "frame": {
+        "x": 160,
+        "y": 120,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "plant_desert_lavender_01": {
+      "frame": {
+        "x": 320,
+        "y": 120,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "plant_prickly_pear_01": {
+      "frame": {
+        "x": 480,
+        "y": 120,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "plant_jojoba_shrub_01": {
+      "frame": {
+        "x": 640,
+        "y": 120,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "animal_jackrabbit_01": {
+      "frame": {
+        "x": 800,
+        "y": 120,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "animal_javelina_01": {
+      "frame": {
+        "x": 0,
+        "y": 240,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "animal_coyote_01": {
+      "frame": {
+        "x": 160,
+        "y": 240,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_flat_tire_bike": {
+      "frame": {
+        "x": 320,
+        "y": 240,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_mr_chen_bike": {
+      "frame": {
+        "x": 480,
+        "y": 240,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_bike_gps": {
+      "frame": {
+        "x": 640,
+        "y": 240,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_scorching_pavement": {
+      "frame": {
+        "x": 800,
+        "y": 240,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "sign_garage_left": {
+      "frame": {
+        "x": 0,
+        "y": 360,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "house_zuzu": {
+      "frame": {
+        "x": 160,
+        "y": 360,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "house_ramirez": {
+      "frame": {
+        "x": 320,
+        "y": 360,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "building_workshop": {
+      "frame": {
+        "x": 480,
+        "y": 360,
+        "w": 160,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 160,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 160,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    }
+  },
+  "meta": {
+    "app": "bikebrowser-placeholder-game-assets",
+    "version": "1.0",
+    "image": "neighborhood.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 960,
+      "h": 480
+    },
+    "scale": "1"
+  }
+}

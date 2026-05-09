@@ -61,12 +61,15 @@ function scanAtlasFrames() {
 
   for (const atlas of atlasFiles) {
     try {
+      const atlasName = path.basename(atlas, '.json');
       const data = JSON.parse(fs.readFileSync(atlas, 'utf8'));
       const frames = new Set(Array.isArray(data.frames)
         ? data.frames.map((frame) => frame.filename)
         : Object.keys(data.frames || {}));
       for (const frame of expectedFrames) {
         if (frame.startsWith('zuzu_') || frame.startsWith('npc_') || frame.startsWith('plant_') || frame.startsWith('animal_') || frame.startsWith('prop_') || frame.startsWith('house_') || frame.startsWith('building_') || frame.startsWith('sign_')) {
+          if (atlasName === 'zuzu' && !frame.startsWith('zuzu_')) continue;
+          if (atlasName === 'neighborhood' && frame.startsWith('zuzu_')) continue;
           if (!frames.has(frame)) warn(atlas, null, `atlas does not contain expected frame: ${frame}`);
         }
       }
