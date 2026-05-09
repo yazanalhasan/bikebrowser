@@ -44,7 +44,7 @@ export default class Player {
     // Container holds all body parts
     this.container = scene.add.container(x, y);
     this._buildCharacter();
-    this.container.setScale(1.8);
+    this.container.setScale(1.65);
     this.container.setDepth(6);
 
     // Shadow under character for grounding
@@ -106,15 +106,13 @@ export default class Player {
 
   _createLeftLeg() {
     const g = this.scene.add.graphics();
-    // Patterned bike shorts
-    g.fillStyle(0x0f4f93);
-    g.fillRoundedRect(-9, 7, 8, 13, 2);
-    g.fillStyle(0x19c7d3);
-    g.fillTriangle(-8, 9, -2, 12, -8, 15);
-    g.fillStyle(0xf97316);
-    g.fillCircle(-4, 16, 1.7);
-    g.fillStyle(0xb7f34d);
-    g.fillRect(-8, 11, 4, 2);
+    // Patterned blue shorts, simplified so they read at map scale.
+    g.fillStyle(0x0b4f8f);
+    g.fillRoundedRect(-8, 7, 7, 13, 2);
+    g.fillStyle(0x22d3ee, 0.9);
+    g.fillTriangle(-7, 10, -2, 12, -7, 15);
+    g.fillStyle(0xf97316, 0.85);
+    g.fillRect(-7, 16, 4, 2);
     // Bright sneaker
     g.fillStyle(0x1e3a5f);
     g.fillRoundedRect(-10, 19, 11, 6, 3);
@@ -128,14 +126,12 @@ export default class Player {
 
   _createRightLeg() {
     const g = this.scene.add.graphics();
-    g.fillStyle(0x0f4f93);
-    g.fillRoundedRect(1, 7, 8, 13, 2);
-    g.fillStyle(0x25d0ff);
-    g.fillTriangle(2, 10, 8, 8, 6, 15);
-    g.fillStyle(0xf59e0b);
-    g.fillCircle(6, 16, 1.7);
-    g.fillStyle(0xa3e635);
-    g.fillRect(3, 12, 5, 2);
+    g.fillStyle(0x0b4f8f);
+    g.fillRoundedRect(1, 7, 7, 13, 2);
+    g.fillStyle(0x22d3ee, 0.9);
+    g.fillTriangle(2, 10, 7, 9, 5, 15);
+    g.fillStyle(0xf97316, 0.85);
+    g.fillRect(3, 16, 4, 2);
     g.fillStyle(0x1e3a5f);
     g.fillRoundedRect(0, 19, 11, 6, 3);
     g.fillStyle(0x22d3ee);
@@ -148,30 +144,20 @@ export default class Player {
 
   _createTorso() {
     const g = this.scene.add.graphics();
-    // Tiny pack strap, kept subtle so the shirt reads clearly.
-    g.fillStyle(0x315f46);
-    g.fillRoundedRect(-14, -8, 5, 16, 2);
-    g.fillStyle(0x1f2937);
-    g.fillRect(-12, -6, 2, 9);
-    // Yellow tie-dye shirt
-    g.fillStyle(0xfff2b8);
-    g.fillRoundedRect(-12, -11, 24, 21, 4);
-    g.fillStyle(0xf59e0b, 0.88);
-    g.fillEllipse(-5, -5, 13, 6);
-    g.fillEllipse(5, 1, 15, 7);
-    g.fillCircle(-1, 7, 4);
-    g.fillStyle(0xffcf4a, 0.72);
-    g.fillCircle(7, -7, 4);
-    g.fillCircle(-9, 3, 3);
-    // Collar and shirt hem
-    g.lineStyle(1.5, 0xd97706, 0.8);
-    g.strokeRoundedRect(-12, -11, 24, 21, 4);
-    g.fillStyle(0xffe08a);
-    g.fillRoundedRect(-5, -12, 10, 3, 1);
-    g.fillStyle(0x0f4f93);
-    g.fillRoundedRect(-10, 10, 20, 5, 2);
-    g.lineStyle(1, 0x22d3ee, 0.9);
-    g.lineBetween(0, 10, 0, 15);
+    // Yellow tie-dye shirt. Broad shapes beat noisy detail at this scale.
+    g.fillStyle(0xfff2bd);
+    g.fillRoundedRect(-10, -10, 20, 20, 4);
+    g.fillStyle(0xf6b425, 0.82);
+    g.fillEllipse(-4, -4, 10, 5);
+    g.fillEllipse(5, 2, 11, 5);
+    g.fillStyle(0xf59e0b, 0.55);
+    g.fillCircle(-1, 6, 3);
+    g.lineStyle(1.4, 0xd97706, 0.75);
+    g.strokeRoundedRect(-10, -10, 20, 20, 4);
+    g.fillStyle(0xffdf7a);
+    g.fillRoundedRect(-4, -11, 8, 3, 1);
+    g.fillStyle(0x0b4f8f);
+    g.fillRoundedRect(-9, 10, 18, 5, 2);
     this.container.add(g);
     return g;
   }
@@ -180,14 +166,14 @@ export default class Player {
     const g = this.scene.add.graphics();
     // Skin
     g.fillStyle(0xf0a77b);
-    g.fillRoundedRect(-16, -6, 6, 14, 3);
+    g.fillRoundedRect(-15, -5, 5, 13, 3);
     // Wristbands from the reference, without the sci-fi prop.
     g.fillStyle(0xfacc15);
-    g.fillRoundedRect(-16, 3, 6, 3, 1);
+    g.fillRoundedRect(-15, 3, 5, 3, 1);
     g.fillStyle(0xf0abfc);
-    g.fillRoundedRect(-16, 6, 6, 2, 1);
+    g.fillRoundedRect(-15, 6, 5, 2, 1);
     g.fillStyle(0xf0a77b);
-    g.fillCircle(-13, 10, 3);
+    g.fillCircle(-12.5, 9, 2.5);
     this.container.add(g);
     return g;
   }
@@ -196,13 +182,13 @@ export default class Player {
     const g = this.scene.add.graphics();
     // Skin
     g.fillStyle(0xf0a77b);
-    g.fillRoundedRect(10, -6, 6, 14, 3);
+    g.fillRoundedRect(10, -5, 5, 13, 3);
     g.fillStyle(0x22d3ee);
-    g.fillRoundedRect(10, 3, 6, 3, 1);
+    g.fillRoundedRect(10, 3, 5, 3, 1);
     g.fillStyle(0xf0abfc);
-    g.fillRoundedRect(10, 6, 6, 2, 1);
+    g.fillRoundedRect(10, 6, 5, 2, 1);
     g.fillStyle(0xf0a77b);
-    g.fillCircle(13, 10, 3);
+    g.fillCircle(12.5, 9, 2.5);
     this.container.add(g);
     return g;
   }
@@ -212,57 +198,49 @@ export default class Player {
 
     // Face
     g.fillStyle(0xf0a77b);
-    g.fillCircle(0, -18, 10);
-    g.fillStyle(0xe58f6a);
-    g.fillCircle(-9, -17, 2.2);
-    g.fillCircle(9, -17, 2.2);
+    g.fillCircle(0, -18, 9.2);
 
     // Hair peeking under the helmet.
     g.fillStyle(0x5b2c18);
-    g.fillRoundedRect(-9, -23, 18, 8, 4);
-    g.fillTriangle(-7, -22, -10, -15, -3, -18);
-    g.fillTriangle(-1, -23, -4, -15, 3, -18);
-    g.fillTriangle(6, -22, 2, -16, 9, -17);
+    g.fillRoundedRect(-8, -23, 16, 7, 4);
+    g.fillTriangle(-6, -22, -9, -16, -2, -18);
+    g.fillTriangle(0, -23, -3, -16, 4, -18);
+    g.fillTriangle(6, -22, 2, -17, 8, -17);
 
     // Red bike helmet with dark vents.
     g.fillStyle(0x111827);
-    g.fillRoundedRect(-13, -24, 26, 5, 3);
+    g.fillRoundedRect(-12, -24, 24, 5, 3);
     g.fillStyle(0xef2f2f);
     g.beginPath();
-    g.arc(0, -23, 13, Math.PI, 0, false);
+    g.arc(0, -23, 12, Math.PI, 0, false);
     g.closePath();
     g.fillPath();
     g.fillStyle(0xff5252);
     g.beginPath();
-    g.arc(-2, -25, 10, Math.PI, Math.PI * 1.92, false);
+    g.arc(-2, -25, 9, Math.PI, Math.PI * 1.92, false);
     g.lineTo(-2, -23);
     g.closePath();
     g.fillPath();
     g.fillStyle(0x1f2937);
-    g.fillRoundedRect(-9, -30, 4, 8, 2);
-    g.fillRoundedRect(-2, -32, 4, 9, 2);
-    g.fillRoundedRect(6, -30, 4, 8, 2);
+    g.fillRoundedRect(-8, -29, 3, 7, 2);
+    g.fillRoundedRect(-1.5, -31, 3, 8, 2);
+    g.fillRoundedRect(5, -29, 3, 7, 2);
     g.fillStyle(0xb91c1c);
-    g.fillRoundedRect(-13, -23, 26, 4, 2);
+    g.fillRoundedRect(-12, -23, 24, 4, 2);
 
     // Eyes
+    g.fillStyle(0x2b160c);
+    g.fillCircle(-3.6, -18, 2.3);
+    g.fillCircle(3.6, -18, 2.3);
     g.fillStyle(0xffffff);
-    g.fillCircle(-4, -18, 3.2);
-    g.fillCircle(4, -18, 3.2);
-    g.fillStyle(0x4b250f);
-    g.fillCircle(-4, -18, 1.7);
-    g.fillCircle(4, -18, 1.7);
-    g.fillStyle(0xffffff);
-    g.fillCircle(-3, -19, 0.7);
-    g.fillCircle(5, -19, 0.7);
+    g.fillCircle(-2.8, -18.7, 0.65);
+    g.fillCircle(4.4, -18.7, 0.65);
 
     // Smile
     g.lineStyle(1.6, 0x7c2d12);
     g.beginPath();
     g.arc(0, -15, 4, 0.2, Math.PI - 0.2, false);
     g.strokePath();
-    g.fillStyle(0xffffff, 0.85);
-    g.fillRoundedRect(-2, -14, 4, 1.3, 1);
 
     // Chin strap
     g.lineStyle(1.4, 0x111827);
