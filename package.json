@@ -24,6 +24,7 @@
     "tunnel": "cloudflared tunnel run bikebrowser",
     "check:health": "node scripts/check-health.js",
     "check:production-routing": "node scripts/check-production-routing.mjs",
+    "audit:game-assets": "node scripts/audit-game-assets.js",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test runtime-audit.smoke",
     "test:e2e:playthrough": "playwright test full-game-playthrough.smoke flat-tire-flow.smoke gameplay-report-panel.smoke runtime-audit.smoke",

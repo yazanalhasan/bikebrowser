@@ -9,6 +9,7 @@
  */
 
 import Phaser from 'phaser';
+import { createZuzu } from '../../../game/characters/createZuzu.js';
 
 const SPEED = 300;
 
@@ -83,15 +84,26 @@ export default class Player {
   // ── Build character from separate limb Graphics ───────────────────────────
 
   _buildCharacter() {
-    // Each limb is its own Graphics so it can be offset independently.
-    // Draw order (bottom to top): shadow, legs, torso+backpack, arms, head
-
-    this._leftLeg = this._createLeftLeg();
-    this._rightLeg = this._createRightLeg();
-    this._torso = this._createTorso();
-    this._leftArm = this._createLeftArm();
-    this._rightArm = this._createRightArm();
-    this._head = this._createHead();
+    const avatar = createZuzu(this.scene, 0, 0, {
+      outfit: 'default_adventure',
+      helmet: true,
+      scale: 1,
+      useAtlas: true,
+      shadow: false,
+    });
+    this._avatar = avatar;
+    this.container.add(avatar.container);
+    this._usesAtlasAvatar = !avatar.parts;
+    if (avatar.parts) {
+      this._leftLeg = avatar.parts.leftLeg;
+      this._rightLeg = avatar.parts.rightLeg;
+      this._torso = avatar.parts.torso;
+      this._leftArm = avatar.parts.leftArm;
+      this._rightArm = avatar.parts.rightArm;
+      this._head = avatar.parts.head;
+    } else {
+      this._leftLeg = this._rightLeg = this._torso = this._leftArm = this._rightArm = this._head = avatar.container;
+    }
 
     // Store rest positions so animation offsets are relative
     this._restY = {
@@ -314,6 +326,12 @@ export default class Player {
     }
 
     // Apply offsets to each limb Graphics
+    if (this._usesAtlasAvatar) {
+      if (this._state === 'walk') this._avatar.playWalk?.(this.facing);
+      else this._avatar.setFacing?.(this.facing);
+      return;
+    }
+
     this._leftLeg.y = this._restY.leftLeg + this._limbOffsets.leftLeg;
     this._rightLeg.y = this._restY.rightLeg + this._limbOffsets.rightLeg;
     this._leftArm.y = this._restY.leftArm + this._limbOffsets.leftArm;

@@ -21,6 +21,9 @@
 
 import { getSceneObstacles, checkObstacleCondition } from '../data/obstacles.js';
 import { saveGame } from './saveSystem.js';
+import { createWorldLabel } from '../../../game/ui/WorldLabel.js';
+import { createInteractionMarker } from '../../../game/ui/InteractionMarker.js';
+import { createScorchingPavementPlaceholder } from '../../../game/art/placeholderFactories.js';
 
 // ── Per-session failure tracking (resets on app restart) ─────────────────────
 const _failureCounts = new Map();
@@ -63,10 +66,15 @@ export function spawnObstacles(scene) {
     }
 
     if (obs.type === 'hazard') {
-      // Damage zone — hurts player on contact, passable with protection
-      const zone = scene.add.rectangle(obs.x, obs.y, obs.width, obs.height, 0xff4444, 0.15);
+      // Damage zone — hurts player on contact, passable with protection.
+      // Visuals are subtle; the gameplay hit area remains explicit.
+      const zone = scene.add.rectangle(obs.x, obs.y, obs.width, obs.height, 0xff8a3d, 0.08);
       zone.setDepth(1);
       scene.physics.add.existing(zone, true);
+
+      if (obs.id === 'heat_zone') {
+        createScorchingPavementPlaceholder(scene, obs.x, obs.y);
+      }
 
       // Pulsing effect
       scene.tweens.add({
@@ -77,15 +85,16 @@ export function spawnObstacles(scene) {
         repeat: -1,
       });
 
-      // Label
-      scene.add.text(obs.x, obs.y - obs.height / 2 - 14, `${obs.icon} ${obs.label}`, {
-        fontSize: '10px', fontFamily: 'sans-serif', color: '#dc2626',
-        fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 2,
-      }).setOrigin(0.5).setDepth(5);
+      createWorldLabel(scene, obs.x, obs.y - obs.height / 2 - 14, obs.label, {
+        fontSize: 10,
+        maxWidth: 140,
+        depth: 700,
+        minZoom: 0.4,
+      });
 
       // Overlap detection
       scene.physics.add.overlap(scene.player.sprite, zone, () => {
-        _handleHazardContact(scene, obs, state);
+        _handleHazardContact(scene, obs);
       });
 
       spawned.obstacles.push({ def: obs, zone, solved: check.passed });
@@ -101,6 +110,7 @@ export function spawnObstacles(scene) {
         radius: 70,
         onInteract: () => _handleGateInteract(scene, obs),
       });
+      createInteractionMarker(scene, obs.x, obs.y - 30, 'inspect', { pulse: true });
       spawned.obstacles.push({ def: obs, interactable, solved: check.passed });
     }
   }
@@ -128,7 +138,7 @@ export function spawnObstacles(scene) {
 
 let _lastHazardDamage = 0;
 
-function _handleHazardContact(scene, obstacle, state) {
+function _handleHazardContact(scene, obstacle) {
   const now = Date.now();
   if (now - _lastHazardDamage < (obstacle.damage?.interval || 500)) return;
   _lastHazardDamage = now;

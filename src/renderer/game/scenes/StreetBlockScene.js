@@ -16,12 +16,15 @@ import LocalSceneBase from './LocalSceneBase.js';
 import { startQuest, getCurrentStep, advanceQuest } from '../systems/questSystem.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { NPC_PLACEMENTS } from '../data/neighborhoodLayout.js';
-import { getQuestBoard, getNextQuestForNPC } from '../data/questBoard.js';
+import { getNextQuestForNPC } from '../data/questBoard.js';
 import QUESTS from '../data/quests.js';
 import { drawPlant } from '../utils/plantRenderer.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { startInteractiveExplainer } from '../systems/interactiveExplainerSystem.js';
+import { createWorldLabel } from '../../../game/ui/WorldLabel.js';
+import { createInteractionMarker } from '../../../game/ui/InteractionMarker.js';
+import { createGarageLeftSignPlaceholder } from '../../../game/art/placeholderFactories.js';
 import {
   registerEntities,
   attachEcologyTicker,
@@ -132,7 +135,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     // Label
     {
       const o = this.layout.zuzu_house_label;
-      this._drawMapLabel(o.x, o.y, "Zuzu's House", { icon: '🏠', depth: 9 });
+      this._drawMapLabel(o.x, o.y, "Zuzu's House", { depth: 9 });
     }
     // House collision
     {
@@ -176,7 +179,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     }
     {
       const o = this.layout.ramirez_house_label;
-      this._drawMapLabel(o.x, o.y, 'Ramirez House', { icon: '🏠', depth: 9 });
+      this._drawMapLabel(o.x, o.y, 'Ramirez House', { depth: 9 });
     }
     {
       const o = this.layout.ramirez_house_collision;
@@ -312,7 +315,7 @@ export default class StreetBlockScene extends LocalSceneBase {
       const key = ECOLOGY_ASSET_KEYS.animals[a.speciesId];
       if (!key) continue;
       this.add.image(a.x, a.y, key).setOrigin(0.5).setDepth(4).setDisplaySize(48, 48);
-      this._drawMapLabel(a.x, a.y + 34, a.label || a.speciesId, {
+      this._drawMapLabel(a.x, a.y + 34, this._formatAnimalLabel(a), {
         depth: 14,
         fontSize: 10,
         maxWidth: 118,
@@ -375,6 +378,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     {
       const o = this.layout.ramirez_bike_icon;
       this._drawBike(o.x, o.y, { color: 0x2563eb, accent: 0xef4444, flat: !questDone, depth: 38 });
+      if (!questDone) createInteractionMarker(this, o.x + 58, o.y - 10, 'blocked', { pulse: true });
       this._ramirezBike = this._drawBikeBadge(o.x + 48, o.y - 8, questDone ? '✓' : '', questDone);
     }
 
@@ -428,12 +432,13 @@ export default class StreetBlockScene extends LocalSceneBase {
     // West exit → Garage
     {
       const o = this.layout.exit_zone_west;
+      createGarageLeftSignPlaceholder(this, o.x + 35, o.y);
       this.addExit({
         x: o.x, y: o.y,
         width: o.w, height: o.h,
         targetScene: 'ZuzuGarageScene',
         targetSpawn: 'fromStreet',
-        label: '🏠 Garage ⬅',
+        label: null,
       });
     }
 
@@ -453,7 +458,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     // === WORLD MAP ACCESS: Bike GPS ===
     this.addInteractable({
       x: this.layout.interact_gps.x, y: this.layout.interact_gps.y,
-      icon: '📡',
+      icon: '',
       label: 'Bike GPS',
       radius: 70,
       metadata: { questObservation: 'memory_zone_entered' },
@@ -589,7 +594,7 @@ export default class StreetBlockScene extends LocalSceneBase {
       roofColor: 0x1557a8,
       shutterColor: 0x1d4f91,
       garage: true,
-      label: { text: 'Workshop', x: this.layout.blue_house_body.x - 34, y: this.layout.blue_house_body.y + 76, icon: '🔒' },
+      label: { text: 'Workshop', x: this.layout.blue_house_body.x - 34, y: this.layout.blue_house_body.y + 76 },
     });
     this._drawHouseSkin({
       body: this.layout.green_house_body,
@@ -741,22 +746,24 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawMapLabel(x, y, text, { icon = '', depth = 12, fontSize = 11, maxWidth = 150 } = {}) {
-    const display = icon ? `${icon}  ${text}` : text;
-    const width = Math.min(maxWidth, Math.max(48, display.length * (fontSize * 0.58) + 18));
-    const height = fontSize + 12;
-    const gfx = this.add.graphics().setDepth(depth);
-    gfx.fillStyle(0xffffff, 0.94);
-    gfx.fillRoundedRect(x - width / 2, y - height / 2, width, height, 6);
-    gfx.lineStyle(1, 0xd7dce3, 0.9);
-    gfx.strokeRoundedRect(x - width / 2, y - height / 2, width, height, 6);
-    this.add.text(x, y, display, {
-      fontFamily: 'sans-serif',
-      fontSize: `${fontSize}px`,
-      fontStyle: 'bold',
-      color: '#1f2937',
-      align: 'center',
-      fixedWidth: width - 10,
-    }).setOrigin(0.5).setDepth(depth + 0.1);
+    return createWorldLabel(this, x, y, text, {
+      icon,
+      depth,
+      fontSize,
+      maxWidth,
+      minZoom: 0.2,
+    });
+  }
+
+  _formatAnimalLabel(animal) {
+    const bySpecies = {
+      rabbit: 'Jackrabbit',
+      jackrabbit: 'Jackrabbit',
+      javelina: 'Javelina',
+      coyote: 'Coyote',
+    };
+    const labelKey = animal.label?.toLowerCase?.().replace(/^desert\s+/, '');
+    return bySpecies[animal.speciesId] || bySpecies[labelKey] || animal.label || animal.speciesId;
   }
 
   _drawStreetSign(x, y, text) {
@@ -781,7 +788,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     gfx.fillRoundedRect(x - 112, y - 21, 224, 42, 10);
     gfx.lineStyle(3, 0x9fb64c, 0.95);
     gfx.strokeRoundedRect(x - 112, y - 21, 224, 42, 10);
-    this.add.text(x, y, '🏘 Neighborhood ↑', {
+    this.add.text(x, y, 'Neighborhood ↑', {
       fontFamily: 'sans-serif',
       fontSize: '18px',
       fontStyle: 'bold',
@@ -809,11 +816,8 @@ export default class StreetBlockScene extends LocalSceneBase {
     gfx.fillStyle(0x111827, 1);
     gfx.fillRoundedRect(x - 21, y - 28, 22, 6, 3);
     if (flat) {
-      gfx.lineStyle(7, 0xef4444, 0.96);
-      gfx.lineBetween(x + 55, y - 20, x + 82, y + 7);
-      gfx.lineBetween(x + 82, y - 20, x + 55, y + 7);
-      gfx.lineStyle(2, 0xffffff, 0.8);
-      gfx.strokeCircle(x + 69, y - 7, 19);
+      gfx.lineStyle(4, 0xef4444, 0.96);
+      gfx.strokeCircle(x + 24, y + 12, 12);
     }
   }
 
