@@ -1,0 +1,83 @@
+{
+  "project": "BikeBrowserWorld",
+  "phase": "convergence",
+  "purpose": "Coordinate parallel Codex lanes toward one cohesive authored experience.",
+  "integration_lane": "lane9-integration",
+  "principles": [
+    "Prefer emotional cohesion over feature volume.",
+    "Protect readability, softness, calmness, and focal hierarchy.",
+    "Treat duplicate cleverness as risk until integrated intentionally.",
+    "Keep runtime systems stable unless explicitly approved."
+  ],
+  "protected_systems": [
+    "Core/EventBus",
+    "Core/DialogueManager",
+    "Core/QuestRegistry",
+    "Core/SaveService",
+    "Core/RegionRegistry",
+    "Core/RewardBridge",
+    "RuntimeValidator"
+  ],
+  "lanes": [
+    {
+      "id": "lane1-bike",
+      "name": "Bike readability + repair visuals",
+      "focus": "BMX identity, bike silhouette, repair clarity, mechanic feedback",
+      "risk_watch": ["visual noise", "over-animation", "repair effects competing with world staging"]
+    },
+    {
+      "id": "lane2-foundation",
+      "name": "Foundation environment + composition",
+      "focus": "baseline environment composition, calm neighborhood readability, spatial hierarchy",
+      "risk_watch": ["overbuilt scenes", "loss of calmness", "composition conflicts with interactive focus"]
+    },
+    {
+      "id": "lane3-garage",
+      "name": "Garage emotional staging",
+      "focus": "garage mood, workshop hierarchy, emotionally grounded staging",
+      "risk_watch": ["garage clutter", "focal hierarchy loss", "contradictory art direction"]
+    },
+    {
+      "id": "lane4-storytelling",
+      "name": "Environmental storytelling",
+      "focus": "small world details, authored hints, emotional context",
+      "risk_watch": ["too many details", "duplicate story beats", "prompts replacing observation"]
+    },
+    {
+      "id": "lane5-ui",
+      "name": "UI / HUD polish",
+      "focus": "HUD readability, overlays, prompts, player-facing feedback",
+      "risk_watch": ["UI dominating world", "too many overlays", "excessive prompts"]
+    },
+    {
+      "id": "lane6-gamefeel",
+      "name": "Camera + game feel",
+      "focus": "camera comfort, motion feel, responsiveness, readable pacing",
+      "risk_watch": ["motion fighting composition", "camera hiding key art", "feel effects adding clutter"]
+    },
+    {
+      "id": "lane7-audio",
+      "name": "Audio immersion",
+      "focus": "music, ambience, stingers, mix restraint",
+      "risk_watch": ["audio overcrowding", "excessive stingers", "mood contradiction"]
+    },
+    {
+      "id": "lane8-npcs",
+      "name": "NPC humanization",
+      "focus": "NPC presence, small human beats, social warmth",
+      "risk_watch": ["NPCs stealing focus", "dialogue density", "emotional tone drift"]
+    },
+    {
+      "id": "lane9-integration",
+      "name": "Swarm orchestration + integration",
+      "focus": "cross-lane convergence, merge readiness, cohesion, conflict prevention",
+      "risk_watch": ["unnoticed overlap", "runtime ownership drift", "too many good ideas landing together"]
+    }
+  ],
+  "required_lane_files": [
+    "status.md",
+    "journal.md",
+    "report_latest.md",
+    "validation.md"
+  ]
+}

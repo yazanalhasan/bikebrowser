@@ -1,0 +1,33 @@
+{
+  "desert": {
+    "base_tile": "sand",
+    "rock_threshold": 0.7,
+    "cactus_chance": 0.05,
+    "palette": ["#E8D5B5", "#C4A77D", "#9B7B5C"],
+    "color": [0.9, 0.8, 0.6]
+  },
+  "dry_wash": {
+    "base_tile": "dry_sand",
+    "erosion_intensity": 0.8,
+    "channel_width": 3,
+    "palette": ["#C4A77D", "#A89870", "#8B7D6B"]
+  },
+  "river": {
+    "base_tile": "water",
+    "bank_tile": "wet_sand",
+    "bank_width": 2,
+    "palette": ["#4A8BA8", "#6BA8C4", "#2E5A70"]
+  },
+  "mine": {
+    "base_tile": "rock_dark",
+    "track_chance": 0.1,
+    "ore_chance": 0.03,
+    "palette": ["#6B5E50", "#4A3F35", "#8A7D6C"]
+  },
+  "neighborhood": {
+    "base_tile": "pavement",
+    "sidewalk_chance": 0.5,
+    "road_width": 4,
+    "palette": ["#6B6B6B", "#D4D4D4", "#8B5E3C"]
+  }
+}

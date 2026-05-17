@@ -1,0 +1,37 @@
+{
+  "id": "cole_intro",
+  "npc_id": "cole",
+  "speaker": "Cole",
+  "greeting": {
+    "text": "I'm Cole, battery chemist. Clean energy is basically stored teamwork between materials.",
+    "voice": "cole_greeting"
+  },
+  "dialogue_tree": [
+    {
+      "id": "materials",
+      "text": "Bring lithium cells, nickel strips, copper wire, casing material, and electrolyte samples. I can craft tested cells, holders, BMS modules, and battery pack kits.",
+      "voice": "cole_materials",
+      "next": "quirk"
+    },
+    {
+      "id": "quirk",
+      "text": "I get excited when voltage numbers behave. That is not weird; that is the sound of a circuit being polite.",
+      "voice": "cole_quirk",
+      "next": null
+    }
+  ],
+  "lines": [
+    {
+      "speaker": "Cole",
+      "text": "I'm Cole, battery chemist. Clean energy is basically stored teamwork between materials."
+    },
+    {
+      "speaker": "Cole",
+      "text": "Bring lithium cells, nickel strips, copper wire, casing material, and electrolyte samples. I can craft tested cells, holders, BMS modules, and battery pack kits."
+    },
+    {
+      "speaker": "Cole",
+      "text": "I get excited when voltage numbers behave. That is not weird; that is the sound of a circuit being polite."
+    }
+  ]
+}

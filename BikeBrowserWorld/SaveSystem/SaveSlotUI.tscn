@@ -1,0 +1,52 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://SaveSystem/SaveSlotUI.gd" id="1_save_slot_ui"]
+
+[node name="SaveSlotUI" type="PanelContainer"]
+custom_minimum_size = Vector2(520, 148)
+script = ExtResource("1_save_slot_ui")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+theme_override_constants/separation = 12
+
+[node name="Thumbnail" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 90)
+stretch_mode = 5
+
+[node name="Info" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+size_flags_horizontal = 3
+
+[node name="PlayerLabel" type="Label" parent="MarginContainer/HBoxContainer/Info"]
+unique_name_in_owner = true
+text = "Empty Slot"
+
+[node name="PlaytimeLabel" type="Label" parent="MarginContainer/HBoxContainer/Info"]
+unique_name_in_owner = true
+text = "Playtime: --"
+
+[node name="TimestampLabel" type="Label" parent="MarginContainer/HBoxContainer/Info"]
+unique_name_in_owner = true
+text = "Last saved: --"
+
+[node name="Buttons" type="HBoxContainer" parent="MarginContainer/HBoxContainer/Info"]
+
+[node name="LoadButton" type="Button" parent="MarginContainer/HBoxContainer/Info/Buttons"]
+unique_name_in_owner = true
+text = "Load"
+disabled = true
+
+[node name="DeleteButton" type="Button" parent="MarginContainer/HBoxContainer/Info/Buttons"]
+unique_name_in_owner = true
+text = "Delete"
+disabled = true
+
+[node name="NewGameButton" type="Button" parent="MarginContainer/HBoxContainer/Info/Buttons"]
+unique_name_in_owner = true
+text = "New Game"

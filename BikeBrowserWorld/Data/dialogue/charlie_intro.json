@@ -1,0 +1,37 @@
+{
+  "id": "charlie_intro",
+  "npc_id": "charlie",
+  "speaker": "Charlie",
+  "greeting": {
+    "text": "Hi, I'm Charlie. I build electronics, which means I get very excited about tiny parts doing exact jobs.",
+    "voice": "charlie_greeting"
+  },
+  "dialogue_tree": [
+    {
+      "id": "materials",
+      "text": "Bring copper wire, components, and circuit boards. I can craft wiring harnesses, sensors, and controller kits.",
+      "voice": "charlie_materials",
+      "next": "quirk"
+    },
+    {
+      "id": "quirk",
+      "text": "I may stare at a circuit for five minutes without blinking. That means I'm thinking, not broken.",
+      "voice": "charlie_quirk",
+      "next": null
+    }
+  ],
+  "lines": [
+    {
+      "speaker": "Charlie",
+      "text": "Hi, I'm Charlie. I build electronics, which means I get very excited about tiny parts doing exact jobs."
+    },
+    {
+      "speaker": "Charlie",
+      "text": "Bring copper wire, components, and circuit boards. I can craft wiring harnesses, sensors, and controller kits."
+    },
+    {
+      "speaker": "Charlie",
+      "text": "I may stare at a circuit for five minutes without blinking. That means I'm thinking, not broken."
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "id": "mr_chen_bridge",
+  "npc_id": "mr_chen",
+  "speaker": "Mr. Chen",
+  "lines": [
+    {
+      "id": "assess_start",
+      "text": "The monsoon was rough on the little bridge. Let's not rush it. Walk it first and tell me what looks tired."
+    },
+    {
+      "id": "assess_complete",
+      "text": "Good eyes. The top gave out, the beams bent, and the supports lost their footing."
+    },
+    {
+      "id": "gather_start",
+      "text": "Let's see what can be reused. Good repair starts by respecting what is already here."
+    },
+    {
+      "id": "gather_complete",
+      "text": "That'll do for a start. Old materials can be honest, if we test them."
+    },
+    {
+      "id": "test_start",
+      "text": "Now the quiet part. Add weight slowly and let each piece tell on itself."
+    },
+    {
+      "id": "test_complete",
+      "text": "Your notebook caught the story. Steel held, composite stayed light, and wood liked a shorter reach."
+    },
+    {
+      "id": "build_start",
+      "text": "Simple beam or triangle truss, either can work. Supports first. Always give the weight somewhere to go."
+    },
+    {
+      "id": "build_complete",
+      "text": "Step lightly... there. Feel that? The weight found its way home."
+    },
+    {
+      "id": "celebrate_start",
+      "text": "The neighbors can cross again. Take a minute with them. Repairs belong to people, not just wood."
+    },
+    {
+      "id": "triangle_lesson",
+      "text": "A rectangle likes to lean. A triangle holds its ground. That's why builders trust them."
+    }
+  ],
+  "other_npc_lines": [
+    {
+      "npc_id": "shopkeeper",
+      "text": "Look for cracks and rust first. A bargain that fails is not a bargain."
+    },
+    {
+      "npc_id": "neighbor_kid",
+      "text": "Hey, I can cross again. It feels less wobbly than the old one."
+    },
+    {
+      "npc_id": "mrs_ramirez",
+      "text": "That little bridge matters more than it looks. Folks use it every day."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "mr_chen_greeting",
+  "npc": "Mr. Chen",
+  "portrait": "mr_chen.png",
+  "nodes": {
+    "start": {
+      "text": "Hello there, Zuzu! I'm glad you came by the garage.",
+      "choices": [
+        { "text": "What are you working on?", "next": "explain_work", "id": "ask_work" },
+        { "text": "I need to fix my chain", "next": "chain_quest", "id": "need_repair" },
+        { "text": "Goodbye", "next": "end", "id": "goodbye" }
+      ]
+    },
+    "explain_work": {
+      "text": "I'm repairing this old bicycle. The chain is loose and needs tightening.",
+      "choices": [
+        { "text": "Can you teach me?", "next": "chain_quest", "id": "teach_me" },
+        { "text": "Maybe later", "next": "end", "id": "later" }
+      ]
+    },
+    "chain_quest": {
+      "text": "Great! I'll teach you how to fix a chain. First, find the loose chain over there.",
+      "choices": [],
+      "action": "start_quest chain_repair",
+      "next": "end"
+    }
+  }
+}

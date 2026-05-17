@@ -1,0 +1,39 @@
+{
+  "id": "test_water_quality",
+  "name": "Test the Water Quality",
+  "description": "Work with Dr. Maya to collect a river sample, run a pH test, identify macroinvertebrates, and report what the evidence suggests.",
+  "steps": [
+    {
+      "id": "talk_to_dr_maya",
+      "description": "Talk to Dr. Maya about how water quality is measured.",
+      "completed": false
+    },
+    {
+      "id": "collect_water_sample",
+      "description": "Collect a labeled water sample from the river.",
+      "completed": false
+    },
+    {
+      "id": "run_ph_test",
+      "description": "Run the pH test by matching the test strip to the color chart.",
+      "completed": false
+    },
+    {
+      "id": "identify_macroinvertebrates",
+      "description": "Inspect the tray and identify which macroinvertebrates are present.",
+      "completed": false
+    },
+    {
+      "id": "report_results",
+      "description": "Report the water-quality results to Dr. Maya.",
+      "completed": false
+    }
+  ],
+  "success_dialogue": "Good evidence chain, Zuzu. You collected, measured, compared, and reported instead of just guessing.",
+  "reward_text": "You earned 35 ZuzuBucks, 8 reputation, and the Water Scientist badge.",
+  "reward": {
+    "allowance": 35,
+    "badge": "Water Scientist",
+    "reputation": 8
+  }
+}

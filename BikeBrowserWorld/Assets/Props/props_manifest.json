@@ -1,0 +1,318 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-13",
+  "assets": [
+    {
+      "id": "saguaro_cactus",
+      "category": "Neighborhood",
+      "description": "Sonoran Desert saguaro cactus",
+      "size": {
+        "w": 96,
+        "h": 96
+      },
+      "file": "Assets/Props/Neighborhood/saguaro_cactus.png",
+      "rawSource": "Assets/Props/Neighborhood/Raw/saguaro_cactus_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "prickly_pear_cactus",
+      "category": "Neighborhood",
+      "description": "Prickly pear cactus with purple fruit",
+      "size": {
+        "w": 64,
+        "h": 64
+      },
+      "file": "Assets/Props/Neighborhood/prickly_pear_cactus.png",
+      "rawSource": "Assets/Props/Neighborhood/Raw/prickly_pear_cactus_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "creosote_bush",
+      "category": "Neighborhood",
+      "description": "Creosote bush with yellow flowers",
+      "size": {
+        "w": 64,
+        "h": 64
+      },
+      "file": "Assets/Props/Neighborhood/creosote_bush.png",
+      "rawSource": "Assets/Props/Neighborhood/Raw/creosote_bush_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "desert_rock_cluster",
+      "category": "Neighborhood",
+      "description": "Cluster of weathered desert rocks",
+      "size": {
+        "w": 64,
+        "h": 64
+      },
+      "file": "Assets/Props/Neighborhood/desert_rock_cluster.png",
+      "rawSource": "Assets/Props/Neighborhood/Raw/desert_rock_cluster_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "wooden_fence_segment",
+      "category": "Neighborhood",
+      "description": "Tileable wooden picket fence segment",
+      "size": {
+        "w": 96,
+        "h": 48
+      },
+      "file": "Assets/Props/Neighborhood/wooden_fence_segment.png",
+      "rawSource": "Assets/Props/Neighborhood/Raw/wooden_fence_segment_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "street_sign_desert_way",
+      "category": "Neighborhood",
+      "description": "Green Desert Way street sign",
+      "size": {
+        "w": 48,
+        "h": 64
+      },
+      "file": "Assets/Props/Neighborhood/street_sign_desert_way.png",
+      "rawSource": "Assets/Props/Neighborhood/Raw/street_sign_desert_way_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "suburban_mailbox",
+      "category": "Neighborhood",
+      "description": "Weathered suburban mailbox with red flag",
+      "size": {
+        "w": 48,
+        "h": 48
+      },
+      "file": "Assets/Props/Neighborhood/suburban_mailbox.png",
+      "rawSource": "Assets/Props/Neighborhood/Raw/suburban_mailbox_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "fire_hydrant",
+      "category": "Neighborhood",
+      "description": "Yellow fire hydrant",
+      "size": {
+        "w": 48,
+        "h": 48
+      },
+      "file": "Assets/Props/Neighborhood/fire_hydrant.png",
+      "rawSource": "Assets/Props/Neighborhood/Raw/fire_hydrant_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "porch_light_glow",
+      "category": "Neighborhood",
+      "description": "Warm glowing porch light",
+      "size": {
+        "w": 48,
+        "h": 48
+      },
+      "file": "Assets/Props/Neighborhood/porch_light_glow.png",
+      "rawSource": "Assets/Props/Neighborhood/Raw/porch_light_glow_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "chalk_hopscotch",
+      "category": "Neighborhood",
+      "description": "Sidewalk chalk hopscotch drawing",
+      "size": {
+        "w": 64,
+        "h": 64
+      },
+      "file": "Assets/Props/Neighborhood/chalk_hopscotch.png",
+      "rawSource": "Assets/Props/Neighborhood/Raw/chalk_hopscotch_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "chalk_smiling_sun",
+      "category": "Neighborhood",
+      "description": "Sidewalk chalk smiling sun drawing",
+      "size": {
+        "w": 64,
+        "h": 64
+      },
+      "file": "Assets/Props/Neighborhood/chalk_smiling_sun.png",
+      "rawSource": "Assets/Props/Neighborhood/Raw/chalk_smiling_sun_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "wooden_workbench_tools",
+      "category": "Garage",
+      "description": "Wooden workbench with scattered tools",
+      "size": {
+        "w": 96,
+        "h": 96
+      },
+      "file": "Assets/Props/Garage/wooden_workbench_tools.png",
+      "rawSource": "Assets/Props/Garage/Raw/wooden_workbench_tools_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "pegboard_tool_rack",
+      "category": "Garage",
+      "description": "Pegboard tool rack with hand tools",
+      "size": {
+        "w": 96,
+        "h": 96
+      },
+      "file": "Assets/Props/Garage/pegboard_tool_rack.png",
+      "rawSource": "Assets/Props/Garage/Raw/pegboard_tool_rack_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "stacked_tires",
+      "category": "Garage",
+      "description": "Stack of three tires",
+      "size": {
+        "w": 64,
+        "h": 64
+      },
+      "file": "Assets/Props/Garage/stacked_tires.png",
+      "rawSource": "Assets/Props/Garage/Raw/stacked_tires_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "metal_oil_can",
+      "category": "Garage",
+      "description": "Classic metal oil can with spout",
+      "size": {
+        "w": 48,
+        "h": 48
+      },
+      "file": "Assets/Props/Garage/metal_oil_can.png",
+      "rawSource": "Assets/Props/Garage/Raw/metal_oil_can_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "bike_repair_stand",
+      "category": "Garage",
+      "description": "Bike repair stand with clamp",
+      "size": {
+        "w": 96,
+        "h": 96
+      },
+      "file": "Assets/Props/Garage/bike_repair_stand.png",
+      "rawSource": "Assets/Props/Garage/Raw/bike_repair_stand_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "z_emblem_floor_rug",
+      "category": "Garage",
+      "description": "Warm garage floor rug with Z emblem",
+      "size": {
+        "w": 128,
+        "h": 96
+      },
+      "file": "Assets/Props/Garage/z_emblem_floor_rug.png",
+      "rawSource": "Assets/Props/Garage/Raw/z_emblem_floor_rug_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "metal_toolbox",
+      "category": "Garage",
+      "description": "Red metal toolbox",
+      "size": {
+        "w": 64,
+        "h": 48
+      },
+      "file": "Assets/Props/Garage/metal_toolbox.png",
+      "rawSource": "Assets/Props/Garage/Raw/metal_toolbox_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "paint_can_wall_shelf",
+      "category": "Garage",
+      "description": "Wall shelf with paint cans",
+      "size": {
+        "w": 96,
+        "h": 64
+      },
+      "file": "Assets/Props/Garage/paint_can_wall_shelf.png",
+      "rawSource": "Assets/Props/Garage/Raw/paint_can_wall_shelf_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "hanging_string_lights",
+      "category": "Garage",
+      "description": "Tileable hanging string lights",
+      "size": {
+        "w": 128,
+        "h": 32
+      },
+      "file": "Assets/Props/Garage/hanging_string_lights.png",
+      "rawSource": "Assets/Props/Garage/Raw/hanging_string_lights_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "keep_pedaling_poster",
+      "category": "Garage",
+      "description": "Keep Pedaling wall poster",
+      "size": {
+        "w": 96,
+        "h": 64
+      },
+      "file": "Assets/Props/Garage/keep_pedaling_poster.png",
+      "rawSource": "Assets/Props/Garage/Raw/keep_pedaling_poster_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "loose_bike_chain",
+      "category": "Repair",
+      "description": "Loose S-shaped bike chain",
+      "size": {
+        "w": 64,
+        "h": 32
+      },
+      "file": "Assets/Props/Repair/loose_bike_chain.png",
+      "rawSource": "Assets/Props/Repair/Raw/loose_bike_chain_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "bike_wheel",
+      "category": "Repair",
+      "description": "Bicycle wheel with tire and spokes",
+      "size": {
+        "w": 96,
+        "h": 96
+      },
+      "file": "Assets/Props/Repair/bike_wheel.png",
+      "rawSource": "Assets/Props/Repair/Raw/bike_wheel_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "inner_tube",
+      "category": "Repair",
+      "description": "Bicycle inner tube with valve",
+      "size": {
+        "w": 96,
+        "h": 64
+      },
+      "file": "Assets/Props/Repair/inner_tube.png",
+      "rawSource": "Assets/Props/Repair/Raw/inner_tube_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "floor_air_pump",
+      "category": "Repair",
+      "description": "Bicycle floor pump with gauge",
+      "size": {
+        "w": 64,
+        "h": 96
+      },
+      "file": "Assets/Props/Repair/floor_air_pump.png",
+      "rawSource": "Assets/Props/Repair/Raw/floor_air_pump_raw.png",
+      "status": "generated-needs-art-review"
+    },
+    {
+      "id": "tire_patch_kit",
+      "category": "Repair",
+      "description": "Tire patch kit with glue tube",
+      "size": {
+        "w": 48,
+        "h": 48
+      },
+      "file": "Assets/Props/Repair/tire_patch_kit.png",
+      "rawSource": "Assets/Props/Repair/Raw/tire_patch_kit_raw.png",
+      "status": "generated-needs-art-review"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+[gd_scene load_steps=12 format=3 uid="uid://bikebrowser_salt_river"]
+
+[ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
+[ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
+[ext_resource type="Script" path="res://Systems/World/TransitionZone.gd" id="3_transition"]
+[ext_resource type="PackedScene" path="res://Regions/NPCs/DrMayaNpc.tscn" id="4_maya"]
+[ext_resource type="SpriteFrames" path="res://Assets/Characters/Zuzu/Zuzu.spriteframes.tres" id="5_zuzu_frames"]
+[ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/river_water_tile.png" id="6_water"]
+[ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/small_dock_boardwalk.png" id="7_dock"]
+[ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/water_sampling_kit.png" id="8_sampling"]
+[ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/cattail_plant.png" id="9_cattail"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 18.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
+size = Vector2(200, 72)
+
+[node name="SaltRiver" type="Node2D"]
+script = ExtResource("1_region")
+region_id = "salt_river"
+layout_path = "res://Data/layouts/salt_river.json"
+
+[node name="Background" type="Polygon2D" parent="."]
+
+[node name="RiverBand" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("6_water")
+
+[node name="SandyBank" type="Polygon2D" parent="."]
+
+[node name="Dock" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("7_dock")
+
+[node name="SamplingKit" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("8_sampling")
+
+[node name="CattailA" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("9_cattail")
+
+[node name="CattailB" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("9_cattail")
+
+[node name="DrMayaNpc" parent="." instance=ExtResource("4_maya")]
+
+[node name="BackToNeighborhood" type="Area2D" parent="."]
+script = ExtResource("3_transition")
+target_region = "neighborhood_street"
+target_spawn = "from_river"
+require_accept = false
+feedback_message = "Zuzu rides back from the Salt River."
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BackToNeighborhood"]
+shape = SubResource("RectangleShape2D_exit")
+
+[node name="Prompt" type="Label" parent="BackToNeighborhood"]
+text = "Neighborhood"
+horizontal_alignment = 1
+
+[node name="Player" type="CharacterBody2D" parent="."]
+script = ExtResource("2_zuzu")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Player"]
+texture_filter = 1
+position = Vector2(0, -32)
+scale = Vector2(1.15, 1.15)
+sprite_frames = ExtResource("5_zuzu_frames")
+animation = &"idle_down"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+enabled = true
+process_callback = 0
+position_smoothing_enabled = true

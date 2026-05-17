@@ -1,0 +1,44 @@
+{
+  "sonoran": {
+    "male": ["Mateo", "Santiago", "Luis", "Carlos", "Diego", "Hugo", "Rafael", "Joaquin", "Emiliano", "Andres"],
+    "female": ["Sofia", "Isabella", "Valentina", "Camila", "Elena", "Lucia", "Maria", "Rosa", "Paloma", "Esperanza"],
+    "neutral": ["Rio", "Sage", "Dakota", "Arizona", "Sonora", "Tucson", "Phoenix", "Sedona"],
+    "last": ["Garcia", "Martinez", "Lopez", "Hernandez", "Gonzalez", "Ramirez", "Torres", "Flores", "Reyes", "Morales"]
+  },
+  "quechua": {
+    "male": ["Inti", "Pachacuti", "Huascar", "Tupac", "Manco", "Atahualpa", "Yupanqui", "Sinchi", "Illapa", "Wayna"],
+    "female": ["Mama", "Ocllo", "Coya", "Quilla", "Pachamama", "Chaska", "Sumac", "Illariy", "Mayta", "Killa"],
+    "last": ["Quispe", "Mamani", "Condori", "Flores", "Choque", "Apaza", "Yucra", "Calla", "Huaman", "Vilca"]
+  },
+  "arabic": {
+    "male": ["Karim", "Jamal", "Hakim", "Rashid", "Samir", "Tariq", "Zayn", "Omar", "Khalid", "Nadir"],
+    "female": ["Layla", "Amina", "Fatima", "Nadia", "Samira", "Zara", "Hana", "Mariam", "Sahar", "Dalal"],
+    "last": ["Al-Rashid", "Hassan", "Hussein", "Khalil", "Malik", "Nasser", "Rahman", "Saeed", "Taleb", "Zaman"]
+  },
+  "turkish": {
+    "male": ["Demir", "Boran", "Alp", "Efe", "Kaya", "Aslan", "Emir", "Aras", "Deniz", "Burak"],
+    "female": ["Ayla", "Defne", "Ela", "Gunes", "Leyla", "Maya", "Naz", "Sibel", "Zeynep", "Ceyda"],
+    "last": ["Yilmaz", "Kaya", "Demir", "Celik", "Aydin", "Ozturk", "Kilic", "Cinar", "Polat", "Yildiz"]
+  },
+  "persian": {
+    "male": ["Dariush", "Cyrus", "Reza", "Arman", "Kaveh", "Omid", "Sohrab", "Farhad", "Behruz", "Rostam"],
+    "female": ["Parvin", "Anahita", "Shirin", "Laleh", "Nazanin", "Mahsa", "Yasmin", "Golnar", "Soraya", "Ziba"],
+    "last": ["Karimi", "Ahmadi", "Hosseini", "Mohammadi", "Ebrahimi", "Moradi", "Rezaei", "Hashemi", "Najafi", "Sadeghi"]
+  },
+  "swahili": {
+    "male": ["Jabari", "Kofi", "Simba", "Tendaji", "Zuberi", "Omari", "Chiumbo", "Azizi", "Hasani", "Jengo"],
+    "female": ["Zuri", "Aisha", "Fatima", "Kamaria", "Nia", "Safiya", "Tahira", "Uzuri", "Barika", "Eshe"],
+    "last": ["Mwangi", "Okonkwo", "Omondi", "Nkosi", "Kenyatta", "Juma", "Mbeki", "Tumbo", "Nyerere", "Mukhtar"]
+  },
+  "mandarin": {
+    "male": ["Wei", "Jun", "Ming", "Bo", "Hao", "Lei", "Peng", "Qiang", "Tao", "Yong"],
+    "female": ["Mei", "Li", "Hua", "Fang", "Jing", "Ning", "Ping", "Xiu", "Yan", "Zhen"],
+    "last": ["Wang", "Li", "Zhang", "Liu", "Chen", "Yang", "Zhao", "Huang", "Zhou", "Wu"]
+  },
+  "fantasy": {
+    "male": ["Aldric", "Borin", "Cedric", "Draven", "Eldrin", "Finnian", "Grom", "Haleth", "Ivar", "Kaelen"],
+    "female": ["Aelwen", "Briar", "Cyra", "Elara", "Fiora", "Gwen", "Isolde", "Lyra", "Nyx", "Seren"],
+    "neutral": ["Ash", "Ember", "Moss", "Pebble", "Rune", "Stone", "Thistle", "Vale", "Wren", "Zephyr"],
+    "last": ["Ironwood", "Moonshadow", "Stargazer", "Windwalker", "Stoneheart", "Fireforge", "Oakenshield", "Dawnweaver"]
+  }
+}

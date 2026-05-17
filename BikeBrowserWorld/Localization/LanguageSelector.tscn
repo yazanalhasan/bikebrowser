@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Localization/LanguageSelector.gd" id="1_language_selector"]
+
+[node name="LanguageSelector" type="PanelContainer"]
+custom_minimum_size = Vector2(320, 72)
+script = ExtResource("1_language_selector")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
+text = "Language"
+
+[node name="LanguageOptions" type="OptionButton" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true

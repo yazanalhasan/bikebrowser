@@ -1,0 +1,75 @@
+[gd_scene load_steps=11 format=3 uid="uid://bikebrowser_copper_mine"]
+
+[ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
+[ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
+[ext_resource type="Script" path="res://Systems/World/TransitionZone.gd" id="3_transition"]
+[ext_resource type="PackedScene" path="res://Regions/NPCs/OldMinerPeteNpc.tscn" id="4_miner"]
+[ext_resource type="SpriteFrames" path="res://Assets/Characters/Zuzu/Zuzu.spriteframes.tres" id="5_zuzu_frames"]
+[ext_resource type="Texture2D" path="res://Assets/Props/CopperMine/mine_entrance_arch.png" id="6_mine_entrance"]
+[ext_resource type="Texture2D" path="res://Assets/Props/CopperMine/copper_ore_chunk.png" id="7_ore"]
+[ext_resource type="Texture2D" path="res://Assets/Props/CopperMine/mine_cart.png" id="8_cart"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 18.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
+size = Vector2(160, 72)
+
+[node name="CopperMine" type="Node2D"]
+script = ExtResource("1_region")
+region_id = "copper_mine"
+layout_path = "res://Data/layouts/copper_mine.json"
+
+[node name="Background" type="Polygon2D" parent="."]
+
+[node name="Ground" type="Polygon2D" parent="."]
+
+[node name="MineEntrance" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("6_mine_entrance")
+
+[node name="OreA" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("7_ore")
+
+[node name="OreB" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("7_ore")
+
+[node name="MineCart" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("8_cart")
+
+[node name="OldMinerPeteNpc" parent="." instance=ExtResource("4_miner")]
+
+[node name="BackToNeighborhood" type="Area2D" parent="."]
+script = ExtResource("3_transition")
+target_region = "neighborhood_street"
+target_spawn = "from_mine"
+require_accept = false
+feedback_message = "Zuzu rides back from the copper mine."
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BackToNeighborhood"]
+shape = SubResource("RectangleShape2D_exit")
+
+[node name="Prompt" type="Label" parent="BackToNeighborhood"]
+text = "Neighborhood"
+horizontal_alignment = 1
+
+[node name="Player" type="CharacterBody2D" parent="."]
+script = ExtResource("2_zuzu")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Player"]
+texture_filter = 1
+position = Vector2(0, -32)
+scale = Vector2(1.15, 1.15)
+sprite_frames = ExtResource("5_zuzu_frames")
+animation = &"idle_down"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+enabled = true
+process_callback = 0
+position_smoothing_enabled = true

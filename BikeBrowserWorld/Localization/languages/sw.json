@@ -1,0 +1,12 @@
+{
+  "greeting": "Hujambo, %s!",
+  "quest_complete": "Jukumu limekamilika!",
+  "item_copper_ore": "Madini ya shaba",
+  "item_copper_ore_desc": "Jiwe la rangi ya machungwa lenye shaba.",
+  "badge_earned": "Beji imepatikana!",
+  "plants_found": {
+    "zero": "Hakuna mimea iliyopatikana.",
+    "one": "%d mmea umepatikana.",
+    "other": "%d mimea imepatikana."
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "boot": {
+    "id": "boot",
+    "title": "Boot",
+    "scenePath": "res://Regions/Boot/Boot.tscn",
+    "domainTags": [],
+    "spawns": {
+      "default": { "layoutAnchor": "default" }
+    }
+  },
+  "neighborhood_street": {
+    "id": "neighborhood_street",
+    "title": "Dusk Neighborhood",
+    "scenePath": "res://Regions/Neighborhood/NeighborhoodStreet.tscn",
+    "domainTags": ["mechanics"],
+    "streamingGroup": "home_cluster",
+    "saveSegment": "regions.neighborhood_street",
+    "spawns": {
+      "default": { "layoutAnchor": "default" },
+      "from_garage": { "layoutAnchor": "from_garage" }
+    }
+  },
+  "garage": {
+    "id": "garage",
+    "title": "Zuzu's Garage",
+    "scenePath": "res://Regions/Garage/ZuzuGarage.tscn",
+    "domainTags": ["mechanics"],
+    "streamingGroup": "home_cluster",
+    "saveSegment": "regions.garage",
+    "spawns": {
+      "default": { "layoutAnchor": "default" },
+      "from_neighborhood": { "layoutAnchor": "from_neighborhood" }
+    }
+  },
+  "copper_mine": {
+    "id": "copper_mine",
+    "title": "Copper Mine",
+    "scenePath": "res://Regions/Mine/CopperMine.tscn",
+    "domainTags": ["materials", "mining"],
+    "streamingGroup": "desert_cluster",
+    "saveSegment": "regions.copper_mine",
+    "spawns": {
+      "default": { "layoutAnchor": "default" },
+      "from_neighborhood": { "layoutAnchor": "from_neighborhood" }
+    }
+  },
+  "desert_trail": {
+    "id": "desert_trail",
+    "title": "Desert Trail",
+    "scenePath": "res://Regions/Desert/DesertTrail.tscn",
+    "domainTags": ["ecology", "navigation"],
+    "streamingGroup": "desert_cluster",
+    "saveSegment": "regions.desert_trail",
+    "spawns": {
+      "default": { "layoutAnchor": "default" },
+      "from_neighborhood": { "layoutAnchor": "from_neighborhood" }
+    }
+  },
+  "salt_river": {
+    "id": "salt_river",
+    "title": "Salt River",
+    "scenePath": "res://Regions/River/SaltRiver.tscn",
+    "domainTags": ["biology", "water"],
+    "streamingGroup": "river_cluster",
+    "saveSegment": "regions.salt_river",
+    "spawns": {
+      "default": { "layoutAnchor": "default" },
+      "from_neighborhood": { "layoutAnchor": "from_neighborhood" }
+    }
+  },
+  "system_showcase": {
+    "id": "system_showcase",
+    "title": "Projects 1-20 Showcase",
+    "scenePath": "res://Regions/SystemShowcase/SystemShowcase.tscn",
+    "domainTags": ["tools", "systems"],
+    "streamingGroup": "demo_cluster",
+    "saveSegment": "regions.system_showcase",
+    "spawns": {
+      "default": { "layoutAnchor": "default" }
+    }
+  }
+}

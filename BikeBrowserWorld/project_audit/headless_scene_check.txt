@@ -1,0 +1,38 @@
+# Headless Scene Load Check
+Generated: 2026-05-15T08:36:40.2029077-07:00
+
+## res://Regions/Neighborhood/NeighborhoodStreet.tscn
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/Garage/ZuzuGarage.tscn
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/Mine/CopperMine.tscn
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/Desert/DesertTrail.tscn
+OK: no SCRIPT ERROR / Parse Error / Failed loading resource / ERROR / WARNING lines detected.
+
+## res://Regions/River/SaltRiver.tscn
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/SystemShowcase/SystemShowcase.tscn
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/SystemShowcase/RuntimeSystemsDemo.tscn
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/UI/Hud.tscn
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/UI/DialogBox.tscn
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+

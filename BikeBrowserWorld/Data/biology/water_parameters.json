@@ -1,0 +1,69 @@
+{
+  "id": "water_parameters",
+  "parameters": [
+    {
+      "id": "ph",
+      "name": "pH",
+      "safe_range": "6.5-8.5",
+      "description": "pH measures how acidic or basic the water is.",
+      "visual_test": "Match the test strip color to the pH chart."
+    },
+    {
+      "id": "clarity",
+      "name": "Clarity",
+      "safe_range": "clear to lightly cloudy",
+      "description": "Clarity shows how much sediment, algae, or suspended material is in the sample.",
+      "visual_test": "Look through the sample jar at a marked card."
+    },
+    {
+      "id": "temperature",
+      "name": "Temperature",
+      "safe_range": "cooler water generally holds more oxygen",
+      "description": "Water temperature affects oxygen levels and which organisms can live there.",
+      "visual_test": "Compare the thermometer reading against the habitat chart."
+    },
+    {
+      "id": "dissolved_oxygen",
+      "name": "Dissolved Oxygen",
+      "safe_range": "higher is usually better for fish and insects",
+      "description": "Dissolved oxygen is the oxygen available for aquatic animals to breathe.",
+      "visual_test": "Use indicator drops and compare the color to the oxygen scale."
+    },
+    {
+      "id": "nitrates",
+      "name": "Nitrates",
+      "safe_range": "low",
+      "description": "High nitrate levels can feed algae blooms, often after fertilizer runoff.",
+      "visual_test": "Use a nitrate strip and compare it to the nutrient chart."
+    },
+    {
+      "id": "macroinvertebrates",
+      "name": "Macroinvertebrate Indicators",
+      "safe_range": "diverse tray with sensitive species",
+      "description": "Small aquatic animals can indicate long-term water quality.",
+      "visual_test": "Sort tray organisms into sensitive, tolerant, and very tolerant groups."
+    }
+  ],
+  "indicator_species": [
+    {
+      "name": "Stonefly Nymph",
+      "sensitivity": "high",
+      "meaning": "Often indicates clean, oxygen-rich water."
+    },
+    {
+      "name": "Mayfly Nymph",
+      "sensitivity": "high",
+      "meaning": "Usually prefers healthier water with good oxygen."
+    },
+    {
+      "name": "Dragonfly Nymph",
+      "sensitivity": "medium",
+      "meaning": "Can live in a range of habitats but still needs a functioning food web."
+    },
+    {
+      "name": "Midge Larva",
+      "sensitivity": "low",
+      "meaning": "Can tolerate poorer water, especially when oxygen is lower."
+    }
+  ]
+}

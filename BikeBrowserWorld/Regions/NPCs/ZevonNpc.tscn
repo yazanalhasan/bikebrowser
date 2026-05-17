@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://bikebrowser_zevon_npc_scene"]
+
+[ext_resource type="Script" path="res://Systems/Interactions/AnimatedNpcInteraction.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://Assets/Characters/Zevon/zevon_spriteframes.tres" id="2_frames"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interaction"]
+radius = 64.0
+
+[node name="ZevonNpc" type="Area2D"]
+script = ExtResource("1_script")
+npc_id = "zevon"
+dialogue_id = "zevon_intro"
+feedback_message = "Zevon turns around with a new material sample in hand."
+feedback_tone = "excited"
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -48)
+sprite_frames = ExtResource("2_frames")
+animation = &"zevon_idle_down"
+
+[node name="InteractionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CircleShape2D_interaction")

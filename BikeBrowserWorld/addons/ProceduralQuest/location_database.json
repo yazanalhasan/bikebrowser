@@ -1,0 +1,11 @@
+{
+  "Garage": {"region": "neighborhood", "level_min": 1},
+  "Neighborhood Street": {"region": "neighborhood", "level_min": 1},
+  "Copper Mine": {"region": "mine", "level_min": 2},
+  "Salt River": {"region": "river", "level_min": 2},
+  "Dry Wash": {"region": "desert", "level_min": 1},
+  "Foraging Grounds": {"region": "desert", "level_min": 1},
+  "Workshop": {"region": "garage", "level_min": 1},
+  "Mine Shaft": {"region": "mine", "level_min": 3},
+  "River Bank": {"region": "river", "level_min": 2}
+}

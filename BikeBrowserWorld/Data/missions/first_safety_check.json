@@ -1,0 +1,27 @@
+{
+  "id": "first_safety_check",
+  "name": "First Safety Check",
+  "description": "Mrs. Ramirez teaches Zuzu how to inspect a bike before riding or repairing it.",
+  "steps": [
+    {
+      "id": "talk_to_mrs_ramirez",
+      "description": "Talk to Mrs. Ramirez near the neighborhood bike.",
+      "completed": false
+    },
+    {
+      "id": "inspect_bike",
+      "description": "Check the tires, brakes, chain, and handlebars.",
+      "completed": false
+    },
+    {
+      "id": "report_findings",
+      "description": "Tell Mrs. Ramirez what looks safe and what needs attention.",
+      "completed": false
+    }
+  ],
+  "reward": {
+    "allowance": 25,
+    "badge": "Safety Scout",
+    "reputation": 5
+  }
+}

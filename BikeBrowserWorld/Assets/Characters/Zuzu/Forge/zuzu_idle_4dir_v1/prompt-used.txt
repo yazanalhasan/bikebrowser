@@ -1,0 +1,1 @@
+﻿Zuzu idle 4-direction 4-frame 48x48 modern SNES/GBA pixel-art sheet. Rows: idle_down, idle_left, idle_right, idle_up. Solid #FF00FF background.

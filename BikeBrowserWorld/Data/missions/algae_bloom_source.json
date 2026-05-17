@@ -1,0 +1,39 @@
+{
+  "id": "algae_bloom_source",
+  "name": "Find the Source of Algae Bloom",
+  "description": "Investigate green water with Dr. Maya, trace the irrigation channel upstream, and identify a possible runoff source.",
+  "steps": [
+    {
+      "id": "notice_green_water",
+      "description": "Notice the green water that suggests an algae bloom.",
+      "completed": false
+    },
+    {
+      "id": "talk_to_dr_maya",
+      "description": "Ask Dr. Maya why too much algae can be a problem.",
+      "completed": false
+    },
+    {
+      "id": "follow_channel",
+      "description": "Follow the irrigation channel upstream.",
+      "completed": false
+    },
+    {
+      "id": "find_runoff_source",
+      "description": "Find a fertilizer runoff source such as a farm edge or overwatered yard.",
+      "completed": false
+    },
+    {
+      "id": "report_solution",
+      "description": "Report the source and suggest a solution that reduces runoff.",
+      "completed": false
+    }
+  ],
+  "success_dialogue": "That is ecosystem thinking. You followed the green water upstream and found a cause we can actually change.",
+  "reward_text": "You earned 40 ZuzuBucks, 10 reputation, and the Ecosystem Protector badge.",
+  "reward": {
+    "allowance": 40,
+    "badge": "Ecosystem Protector",
+    "reputation": 10
+  }
+}

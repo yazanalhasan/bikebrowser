@@ -1,0 +1,18 @@
+{
+  "spawns": {
+    "default": { "x": 0, "y": 170 },
+    "from_neighborhood": { "x": 0, "y": 180 }
+  },
+  "nodes": {
+    "Background": { "x": -960, "y": -540, "w": 1920, "h": 1080, "color": "#9fc495" },
+    "RiverBand": { "x": 0, "y": -155, "scaleX": 6.0, "scaleY": 2.2, "z": 0 },
+    "SandyBank": { "x": -620, "y": 18, "w": 1240, "h": 140, "color": "#d5bd86", "shape": "soft" },
+    "Dock": { "x": -150, "y": -10, "scale": 0.95, "z": 3 },
+    "SamplingKit": { "x": 170, "y": 92, "scale": 0.85, "z": 4 },
+    "CattailA": { "x": -330, "y": -20, "scale": 0.9, "z": 2 },
+    "CattailB": { "x": 330, "y": -35, "scale": 0.9, "z": 2 },
+    "DrMayaNpc": { "x": 80, "y": 40, "scale": 1.0 },
+    "BackToNeighborhood": { "x": 0, "y": 390, "w": 240, "h": 96 },
+    "BackToNeighborhood/Prompt": { "x": -70, "y": -80, "w": 140, "h": 28 }
+  }
+}

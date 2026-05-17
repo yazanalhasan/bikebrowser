@@ -1,0 +1,12 @@
+{
+  "greeting": "Rimaykullayki, %s!",
+  "quest_complete": "Ruway tukusqa!",
+  "item_copper_ore": "Anta rumi",
+  "item_copper_ore_desc": "Antayuq qillpu naranja rumi.",
+  "badge_earned": "Unanchata tarirqanki!",
+  "plants_found": {
+    "zero": "Mana mallkikuna tarisqachu.",
+    "one": "%d mallki tarisqa.",
+    "other": "%d mallkikuna tarisqa."
+  }
+}

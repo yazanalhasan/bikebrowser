@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="190" viewBox="0 0 360 190">
+  <path d="M20 24 L330 8 L348 138 L42 174 Z" fill="#9b643a"/>
+  <path d="M38 42 L315 28 L328 124 L56 154 Z" fill="#b57745"/>
+  <g fill="#5a321f" opacity=".42">
+    <circle cx="72" cy="58" r="3"/><circle cx="112" cy="54" r="3"/><circle cx="152" cy="50" r="3"/><circle cx="192" cy="47" r="3"/><circle cx="232" cy="43" r="3"/><circle cx="272" cy="39" r="3"/>
+    <circle cx="78" cy="92" r="3"/><circle cx="118" cy="88" r="3"/><circle cx="158" cy="84" r="3"/><circle cx="198" cy="80" r="3"/><circle cx="238" cy="76" r="3"/><circle cx="278" cy="72" r="3"/>
+    <circle cx="84" cy="126" r="3"/><circle cx="124" cy="122" r="3"/><circle cx="164" cy="118" r="3"/><circle cx="204" cy="114" r="3"/><circle cx="244" cy="110" r="3"/><circle cx="284" cy="106" r="3"/>
+  </g>
+  <g stroke="#e0d3b3" stroke-width="7" stroke-linecap="round">
+    <path d="M96 63 l-22 48"/>
+    <path d="M146 58 l6 62"/>
+    <path d="M205 51 c-18 22-10 52 14 60"/>
+    <path d="M268 46 l-24 48"/>
+  </g>
+  <path d="M50 160 L330 128" stroke="#3a2117" stroke-width="10" opacity=".25"/>
+</svg>

@@ -1,0 +1,7 @@
+{
+  "id": "mechanics",
+  "title": "Bike Mechanics",
+  "active": true,
+  "questIds": ["chain_repair"],
+  "simulationTypes": ["chain_hotspot_inspection"]
+}

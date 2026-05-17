@@ -1,0 +1,588 @@
+[gd_scene load_steps=63 format=3 uid="uid://bikebrowser_zuzu_garage"]
+
+[ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
+[ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
+[ext_resource type="Script" path="res://Systems/World/TransitionZone.gd" id="3_transition"]
+[ext_resource type="Script" path="res://Systems/Interactions/ChainHotspot.gd" id="4_chain"]
+[ext_resource type="PackedScene" path="res://Prototypes/EmbodiedMechanics/ChainRigEmbedded.tscn" id="4b_chainrig"]
+[ext_resource type="PackedScene" path="res://Regions/UI/DialogBox.tscn" id="5_dialog"]
+[ext_resource type="PackedScene" path="res://Regions/UI/Hud.tscn" id="6_hud"]
+[ext_resource type="PackedScene" path="res://Regions/Garage/TireRepairStation.tscn" id="7_tire"]
+[ext_resource type="Texture2D" path="res://Assets/Environment/GarageKit/garage_floor.svg" id="8_floor"]
+[ext_resource type="Texture2D" path="res://Assets/Environment/GarageKit/garage_walls.svg" id="9_walls"]
+[ext_resource type="Texture2D" path="res://Assets/Environment/GarageKit/workbench.svg" id="10_workbench"]
+[ext_resource type="Texture2D" path="res://Assets/Environment/GarageKit/pegboard.svg" id="11_pegboard"]
+[ext_resource type="Texture2D" path="res://Assets/Environment/GarageKit/rug.svg" id="12_rug"]
+[ext_resource type="Texture2D" path="res://Assets/Environment/GarageKit/bike_stand.svg" id="13_bike"]
+[ext_resource type="Texture2D" path="res://Assets/Environment/GarageKit/lamp_glow.svg" id="14_glow"]
+[ext_resource type="SpriteFrames" path="res://Assets/Characters/Zuzu/Zuzu.spriteframes.tres" id="15_zuzu_frames"]
+[ext_resource type="PackedScene" path="res://Regions/NPCs/ZevonNpc.tscn" id="16_zevon"]
+[ext_resource type="PackedScene" path="res://Regions/NPCs/JacobNpc.tscn" id="17_jacob"]
+[ext_resource type="PackedScene" path="res://Regions/NPCs/CharlieNpc.tscn" id="18_charlie"]
+[ext_resource type="PackedScene" path="res://Regions/NPCs/ColeNpc.tscn" id="19_cole"]
+[ext_resource type="PackedScene" path="res://Regions/NPCs/JamesNpc.tscn" id="20_james"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/wooden_workbench_tools.png" id="21_workbench_png"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/pegboard_tool_rack.png" id="22_pegboard_png"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/stacked_tires.png" id="23_tires_png"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/metal_oil_can.png" id="24_oil_can"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/bike_repair_stand.png" id="25_repair_stand"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/z_emblem_floor_rug.png" id="26_rug_png"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/metal_toolbox.png" id="27_toolbox"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/paint_can_wall_shelf.png" id="28_paint_shelf"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/hanging_string_lights.png" id="29_string_lights"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/keep_pedaling_poster.png" id="30_poster"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/loose_bike_chain.png" id="31_chain_png"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/bike_wheel.png" id="32_wheel_png"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/inner_tube.png" id="33_tube_png"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/floor_air_pump.png" id="34_pump_png"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/tire_patch_kit.png" id="35_patch_kit"]
+[ext_resource type="Script" path="res://Regions/Garage/GarageAmbience.gd" id="36_ambience"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Bike/garage_repair_stand_bmx_slipped_chain.png" id="37_repair_slipped"]
+[ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/garage_floor_panel.png" id="38_floor_panel"]
+[ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/garage_wall_panel.png" id="39_wall_panel"]
+[ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/soft_shadow_large.png" id="40_shadow_large"]
+[ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/soft_shadow_small.png" id="41_shadow_small"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Bike/warm_repair_glint.png" id="42_glint"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Bike/garage_repair_stand_bmx_aligning_chain.png" id="43_repair_aligned"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Bike/garage_repair_stand_bmx_seated_chain.png" id="44_repair_seated"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/rear_derailleur_closeup.png" id="45_derailleur"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/cassette_gear_cluster.png" id="46_cassette"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/chain_lube_bottle.png" id="47_chain_lube"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/multi_tool.png" id="48_multi_tool"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/parts_bin.png" id="49_parts_bin"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/oil_stain_floor.png" id="50_oil_stain"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/hex_key_set.png" id="51_hex_keys"]
+[ext_resource type="Texture2D" path="res://Assets/Props/BikeRepair/chain_breaker_tool.png" id="52_chain_breaker"]
+[ext_resource type="Texture2D" path="res://Assets/Props/BikeRepair/tire_lever_set.png" id="53_tire_levers"]
+[ext_resource type="Texture2D" path="res://Assets/Props/BikeRepair/patch_with_glue_tube.png" id="54_patch_glue"]
+[ext_resource type="Script" path="res://Regions/Shared/SubtleAmbientLife.gd" id="55_ambient_life"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Bike/repair_chain_focus_glow.png" id="56_chain_focus"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Bike/repair_grease_scuff_detail.png" id="57_grease_scuff"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 18.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_zone"]
+size = Vector2(120, 80)
+
+[sub_resource type="Gradient" id="Gradient_warm_light"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 0.82, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_warm_light"]
+gradient = SubResource("Gradient_warm_light")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="ZuzuGarage" type="Node2D"]
+script = ExtResource("1_region")
+region_id = "garage"
+layout_path = "res://Data/layouts/garage.json"
+
+[node name="GarageAmbience" type="Node" parent="."]
+script = ExtResource("36_ambience")
+
+[node name="FloorLayer" type="Node2D" parent="."]
+
+[node name="FloorTiles" type="TileMapLayer" parent="FloorLayer"]
+
+[node name="GarageFloorArt" type="Sprite2D" parent="FloorLayer"]
+texture_filter = 1
+texture = ExtResource("38_floor_panel")
+
+[node name="WallLayer" type="Node2D" parent="."]
+
+[node name="GarageWallsArt" type="Sprite2D" parent="WallLayer"]
+texture_filter = 1
+texture = ExtResource("39_wall_panel")
+
+[node name="ShadowLayer" type="Node2D" parent="."]
+
+[node name="StoryFloorDetails" type="Node2D" parent="ShadowLayer"]
+
+[node name="WorkbenchGroundShadow" type="Polygon2D" parent="ShadowLayer/StoryFloorDetails"]
+
+[node name="RepairStandGroundShadow" type="Polygon2D" parent="ShadowLayer/StoryFloorDetails"]
+
+[node name="GreaseSmudgeA" type="Polygon2D" parent="ShadowLayer/StoryFloorDetails"]
+
+[node name="GreaseSmudgeB" type="Polygon2D" parent="ShadowLayer/StoryFloorDetails"]
+
+[node name="ChainLinkTrailA" type="Polygon2D" parent="ShadowLayer/StoryFloorDetails"]
+
+[node name="ChainLinkTrailB" type="Polygon2D" parent="ShadowLayer/StoryFloorDetails"]
+
+[node name="WornPathToBench" type="Polygon2D" parent="ShadowLayer/StoryFloorDetails"]
+
+[node name="ThresholdWearSoft" type="Polygon2D" parent="ShadowLayer/StoryFloorDetails"]
+
+[node name="CoffeeMugRing" type="Polygon2D" parent="ShadowLayer/StoryFloorDetails"]
+
+[node name="OldTapeResidueA" type="Polygon2D" parent="ShadowLayer/StoryFloorDetails"]
+
+[node name="BenchScratchA" type="Polygon2D" parent="ShadowLayer/StoryFloorDetails"]
+
+[node name="HandprintGreaseSmear" type="Polygon2D" parent="ShadowLayer/StoryFloorDetails"]
+
+[node name="HomeMemoryLayer" type="Node2D" parent="ShadowLayer"]
+
+[node name="RepairHomeWarmPool" type="Polygon2D" parent="ShadowLayer/HomeMemoryLayer"]
+
+[node name="BenchMemoryPool" type="Polygon2D" parent="ShadowLayer/HomeMemoryLayer"]
+
+[node name="QuietFloorRestBand" type="Polygon2D" parent="ShadowLayer/HomeMemoryLayer"]
+
+[node name="PropLayer" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="WorkbenchArt" type="Sprite2D" parent="PropLayer"]
+visible = false
+texture = ExtResource("10_workbench")
+
+[node name="PegboardArt" type="Sprite2D" parent="PropLayer"]
+visible = false
+texture = ExtResource("11_pegboard")
+
+[node name="RugArt" type="Sprite2D" parent="PropLayer"]
+visible = false
+texture = ExtResource("12_rug")
+
+[node name="BikeStandArt" type="Sprite2D" parent="PropLayer"]
+visible = false
+texture = ExtResource("13_bike")
+
+[node name="RugProp" type="Sprite2D" parent="PropLayer"]
+texture_filter = 1
+texture = ExtResource("26_rug_png")
+
+[node name="WorkbenchProp" type="Sprite2D" parent="PropLayer"]
+texture_filter = 1
+texture = ExtResource("21_workbench_png")
+
+[node name="PegboardProp" type="Sprite2D" parent="PropLayer"]
+texture_filter = 1
+texture = ExtResource("22_pegboard_png")
+
+[node name="TireStackProp" type="Sprite2D" parent="PropLayer"]
+texture_filter = 1
+texture = ExtResource("23_tires_png")
+
+[node name="OilCanProp" type="Sprite2D" parent="PropLayer"]
+texture_filter = 1
+texture = ExtResource("24_oil_can")
+
+[node name="BikeRepairStandProp" type="Sprite2D" parent="PropLayer"]
+visible = false
+texture_filter = 1
+texture = ExtResource("25_repair_stand")
+
+[node name="ToolboxProp" type="Sprite2D" parent="PropLayer"]
+texture_filter = 1
+texture = ExtResource("27_toolbox")
+
+[node name="PaintShelfProp" type="Sprite2D" parent="PropLayer"]
+texture_filter = 1
+texture = ExtResource("28_paint_shelf")
+
+[node name="KeepPedalingPosterProp" type="Sprite2D" parent="PropLayer"]
+texture_filter = 1
+texture = ExtResource("30_poster")
+
+[node name="BikeWheelWallProp" type="Sprite2D" parent="PropLayer"]
+texture_filter = 1
+texture = ExtResource("32_wheel_png")
+
+[node name="StoryWorkbenchDetails" type="Node2D" parent="PropLayer"]
+y_sort_enabled = true
+
+[node name="CoffeeMug" type="Polygon2D" parent="PropLayer/StoryWorkbenchDetails"]
+
+[node name="TapeRoll" type="Polygon2D" parent="PropLayer/StoryWorkbenchDetails"]
+
+[node name="SpareTubeBox" type="Label" parent="PropLayer/StoryWorkbenchDetails"]
+modulate = Color(0.19, 0.12, 0.09, 0.86)
+text = "TUBE"
+theme_override_font_sizes/font_size = 8
+horizontal_alignment = 1
+
+[node name="OpenNotebook" type="Label" parent="PropLayer/StoryWorkbenchDetails"]
+modulate = Color(0.16, 0.13, 0.1, 0.82)
+text = "chain\\nnotes"
+theme_override_font_sizes/font_size = 7
+horizontal_alignment = 1
+
+[node name="KidBikeSketch" type="Label" parent="PropLayer/StoryWorkbenchDetails"]
+modulate = Color(0.18, 0.16, 0.14, 0.78)
+text = "jump idea"
+theme_override_font_sizes/font_size = 7
+horizontal_alignment = 1
+
+[node name="OldRaceNumber" type="Label" parent="PropLayer/StoryWorkbenchDetails"]
+modulate = Color(0.12, 0.1, 0.09, 0.88)
+text = "#27"
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+
+[node name="BmxStickerLightning" type="Polygon2D" parent="PropLayer/StoryWorkbenchDetails"]
+
+[node name="TapedChecklist" type="Label" parent="PropLayer/StoryWorkbenchDetails"]
+modulate = Color(0.18, 0.14, 0.1, 0.86)
+text = "brakes\\ntires\\nchain"
+theme_override_font_sizes/font_size = 7
+
+[node name="HangingHexKeys" type="Polygon2D" parent="PropLayer/StoryWorkbenchDetails"]
+
+[node name="ToolboxWearPatch" type="Polygon2D" parent="PropLayer/StoryWorkbenchDetails"]
+
+[node name="SecondStickerLayer" type="Polygon2D" parent="PropLayer/StoryWorkbenchDetails"]
+
+[node name="RaceNumberTapeResidue" type="Polygon2D" parent="PropLayer/StoryWorkbenchDetails"]
+
+[node name="TinyFoldedRepairNote" type="Label" parent="PropLayer/StoryWorkbenchDetails"]
+modulate = Color(0.18, 0.14, 0.1, 0.78)
+text = "try again"
+theme_override_font_sizes/font_size = 7
+horizontal_alignment = 1
+
+[node name="WorkbenchCohesionDetails" type="Node2D" parent="PropLayer"]
+y_sort_enabled = true
+
+[node name="RearDerailleurCloseup" type="Sprite2D" parent="PropLayer/WorkbenchCohesionDetails"]
+texture_filter = 1
+texture = ExtResource("45_derailleur")
+
+[node name="CassetteGearCluster" type="Sprite2D" parent="PropLayer/WorkbenchCohesionDetails"]
+texture_filter = 1
+texture = ExtResource("46_cassette")
+
+[node name="ChainLubeBottle" type="Sprite2D" parent="PropLayer/WorkbenchCohesionDetails"]
+texture_filter = 1
+texture = ExtResource("47_chain_lube")
+
+[node name="MultiTool" type="Sprite2D" parent="PropLayer/WorkbenchCohesionDetails"]
+texture_filter = 1
+texture = ExtResource("48_multi_tool")
+
+[node name="PartsBin" type="Sprite2D" parent="PropLayer/WorkbenchCohesionDetails"]
+texture_filter = 1
+texture = ExtResource("49_parts_bin")
+
+[node name="HexKeySet" type="Sprite2D" parent="PropLayer/WorkbenchCohesionDetails"]
+texture_filter = 1
+texture = ExtResource("51_hex_keys")
+
+[node name="ChainBreakerTool" type="Sprite2D" parent="PropLayer/WorkbenchCohesionDetails"]
+texture_filter = 1
+texture = ExtResource("52_chain_breaker")
+
+[node name="TireLeverSet" type="Sprite2D" parent="PropLayer/WorkbenchCohesionDetails"]
+texture_filter = 1
+texture = ExtResource("53_tire_levers")
+
+[node name="PatchWithGlueTube" type="Sprite2D" parent="PropLayer/WorkbenchCohesionDetails"]
+texture_filter = 1
+texture = ExtResource("54_patch_glue")
+
+[node name="FloorCohesionDetails" type="Node2D" parent="PropLayer"]
+y_sort_enabled = true
+
+[node name="OilStainNearStand" type="Sprite2D" parent="PropLayer/FloorCohesionDetails"]
+texture_filter = 1
+texture = ExtResource("50_oil_stain")
+
+[node name="RepairGreaseScuff" type="Sprite2D" parent="PropLayer/FloorCohesionDetails"]
+texture_filter = 1
+texture = ExtResource("57_grease_scuff")
+
+[node name="InteractableLayer" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="LooseChainProp" type="Sprite2D" parent="InteractableLayer"]
+visible = false
+texture_filter = 1
+texture = ExtResource("31_chain_png")
+
+[node name="BikeWheelRepairProp" type="Sprite2D" parent="InteractableLayer"]
+visible = false
+texture_filter = 1
+texture = ExtResource("32_wheel_png")
+
+[node name="RepairBikeShadow" type="Sprite2D" parent="InteractableLayer"]
+texture_filter = 1
+texture = ExtResource("40_shadow_large")
+
+[node name="RepairBike" type="Sprite2D" parent="InteractableLayer"]
+texture_filter = 1
+texture = ExtResource("37_repair_slipped")
+
+[node name="RepairBikeAligning" type="Sprite2D" parent="InteractableLayer"]
+visible = false
+texture_filter = 1
+texture = ExtResource("43_repair_aligned")
+
+[node name="RepairBikeSeated" type="Sprite2D" parent="InteractableLayer"]
+visible = false
+texture_filter = 1
+texture = ExtResource("44_repair_seated")
+
+[node name="RepairGlint" type="Sprite2D" parent="InteractableLayer"]
+modulate = Color(1, 1, 1, 0.72)
+texture_filter = 1
+texture = ExtResource("42_glint")
+
+[node name="DrivetrainFocusGlow" type="Sprite2D" parent="InteractableLayer"]
+modulate = Color(1, 1, 1, 0.64)
+texture_filter = 1
+texture = ExtResource("56_chain_focus")
+
+[node name="RepairSuccessGlint" type="Sprite2D" parent="InteractableLayer"]
+visible = false
+modulate = Color(1, 1, 1, 0.78)
+texture_filter = 1
+texture = ExtResource("42_glint")
+
+[node name="InnerTubeProp" type="Sprite2D" parent="InteractableLayer"]
+texture_filter = 1
+texture = ExtResource("33_tube_png")
+
+[node name="AirPumpProp" type="Sprite2D" parent="InteractableLayer"]
+texture_filter = 1
+texture = ExtResource("34_pump_png")
+
+[node name="PatchKitProp" type="Sprite2D" parent="InteractableLayer"]
+texture_filter = 1
+texture = ExtResource("35_patch_kit")
+
+[node name="StoryRepairDetails" type="Node2D" parent="InteractableLayer"]
+y_sort_enabled = true
+
+[node name="ChainSparkleGuide" type="Polygon2D" parent="InteractableLayer/StoryRepairDetails"]
+
+[node name="LooseMasterLink" type="Polygon2D" parent="InteractableLayer/StoryRepairDetails"]
+
+[node name="WheelLeaningGuideShadow" type="Polygon2D" parent="InteractableLayer/StoryRepairDetails"]
+
+[node name="HalfUsedTape" type="Polygon2D" parent="InteractableLayer/StoryRepairDetails"]
+
+[node name="WornGripMark" type="Polygon2D" parent="InteractableLayer/StoryRepairDetails"]
+
+[node name="TinyChainGreaseDot" type="Polygon2D" parent="InteractableLayer/StoryRepairDetails"]
+
+[node name="BentValveCap" type="Polygon2D" parent="InteractableLayer/StoryRepairDetails"]
+
+[node name="LightingLayer" type="Node2D" parent="."]
+
+[node name="LampGlowArt" type="Sprite2D" parent="LightingLayer"]
+visible = false
+texture = ExtResource("14_glow")
+
+[node name="StringLightsProp" type="Sprite2D" parent="LightingLayer"]
+texture_filter = 1
+texture = ExtResource("29_string_lights")
+
+[node name="StoryLightSpill" type="Node2D" parent="LightingLayer"]
+
+[node name="GarageDoorWarmSpill" type="Polygon2D" parent="LightingLayer/StoryLightSpill"]
+
+[node name="WorkbenchAmberSpill" type="Polygon2D" parent="LightingLayer/StoryLightSpill"]
+
+[node name="DustMoteA" type="Polygon2D" parent="LightingLayer/StoryLightSpill"]
+
+[node name="DustMoteB" type="Polygon2D" parent="LightingLayer/StoryLightSpill"]
+
+[node name="DustMoteC" type="Polygon2D" parent="LightingLayer/StoryLightSpill"]
+
+[node name="WorkbenchLight" type="PointLight2D" parent="LightingLayer"]
+texture = SubResource("GradientTexture2D_warm_light")
+color = Color(1, 0.701961, 0.278431, 1)
+energy = 0.48
+texture_scale = 1.6
+
+[node name="CeilingLight" type="PointLight2D" parent="LightingLayer"]
+texture = SubResource("GradientTexture2D_warm_light")
+color = Color(1, 0.878431, 0.509804, 1)
+energy = 0.3
+texture_scale = 2.2
+
+[node name="RepairStandLight" type="PointLight2D" parent="LightingLayer"]
+texture = SubResource("GradientTexture2D_warm_light")
+color = Color(1, 0.647059, 0, 1)
+energy = 0.56
+texture_scale = 1.85
+
+[node name="GarageAmbientLife" type="Node" parent="."]
+script = ExtResource("55_ambient_life")
+flicker_targets = [NodePath("../LightingLayer/StoryLightSpill/GarageDoorWarmSpill"), NodePath("../LightingLayer/StoryLightSpill/WorkbenchAmberSpill"), NodePath("../InteractableLayer/DrivetrainFocusGlow")]
+sway_targets = [NodePath("../PropLayer/StoryWorkbenchDetails/TinyFoldedRepairNote"), NodePath("../LightingLayer/StringLightsProp")]
+flutter_targets = [NodePath("../LightingLayer/StoryLightSpill/DustMoteA"), NodePath("../LightingLayer/StoryLightSpill/DustMoteB"), NodePath("../LightingLayer/StoryLightSpill/DustMoteC")]
+flicker_strength = 0.4
+sway_strength = 0.3
+flutter_strength = 0.32
+speed_scale = 0.65
+
+[node name="FXLayer" type="Node2D" parent="."]
+
+[node name="NPCLayer" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="ZevonNpc" parent="NPCLayer" instance=ExtResource("16_zevon")]
+
+[node name="SoftShadow" type="Sprite2D" parent="NPCLayer/ZevonNpc"]
+texture_filter = 1
+texture = ExtResource("41_shadow_small")
+
+[node name="JacobNpc" parent="NPCLayer" instance=ExtResource("17_jacob")]
+
+[node name="SoftShadow" type="Sprite2D" parent="NPCLayer/JacobNpc"]
+texture_filter = 1
+texture = ExtResource("41_shadow_small")
+
+[node name="CharlieNpc" parent="NPCLayer" instance=ExtResource("18_charlie")]
+
+[node name="SoftShadow" type="Sprite2D" parent="NPCLayer/CharlieNpc"]
+texture_filter = 1
+texture = ExtResource("41_shadow_small")
+
+[node name="ColeNpc" parent="NPCLayer" instance=ExtResource("19_cole")]
+
+[node name="SoftShadow" type="Sprite2D" parent="NPCLayer/ColeNpc"]
+texture_filter = 1
+texture = ExtResource("41_shadow_small")
+
+[node name="JamesNpc" parent="NPCLayer" instance=ExtResource("20_james")]
+
+[node name="SoftShadow" type="Sprite2D" parent="NPCLayer/JamesNpc"]
+texture_filter = 1
+texture = ExtResource("41_shadow_small")
+
+[node name="PlayerLayer" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Background" type="Polygon2D" parent="."]
+
+[node name="Floor" type="Polygon2D" parent="."]
+visible = false
+
+[node name="Workbench" type="Polygon2D" parent="."]
+visible = false
+
+[node name="BikeStand" type="Polygon2D" parent="."]
+visible = false
+
+[node name="WarmLight" type="Polygon2D" parent="."]
+visible = false
+
+[node name="ToolShadow" type="Polygon2D" parent="."]
+visible = false
+
+[node name="ToolWall" type="Node2D" parent="."]
+
+[node name="Pegboard" type="Polygon2D" parent="ToolWall"]
+visible = false
+
+[node name="Wrench" type="Polygon2D" parent="ToolWall"]
+visible = false
+
+[node name="Pump" type="Polygon2D" parent="ToolWall"]
+visible = false
+
+[node name="Sticker" type="Polygon2D" parent="ToolWall"]
+visible = false
+
+[node name="CozyRug" type="Polygon2D" parent="."]
+visible = false
+
+[node name="BikeNotes" type="Node2D" parent="."]
+
+[node name="NoteA" type="Polygon2D" parent="BikeNotes"]
+visible = false
+
+[node name="NoteB" type="Polygon2D" parent="BikeNotes"]
+visible = false
+
+[node name="ExitZone" type="Area2D" parent="."]
+script = ExtResource("3_transition")
+target_region = "neighborhood_street"
+target_spawn = "from_garage"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitZone"]
+shape = SubResource("RectangleShape2D_zone")
+
+[node name="Prompt" type="Label" parent="ExitZone"]
+text = "Go Outside"
+horizontal_alignment = 1
+
+[node name="ChainHotspot" type="Area2D" parent="."]
+script = ExtResource("4_chain")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ChainHotspot"]
+shape = SubResource("RectangleShape2D_zone")
+
+[node name="Prompt" type="Label" parent="ChainHotspot"]
+text = "[Hold E] Pedal"
+horizontal_alignment = 1
+
+[node name="BikeVisual" type="Node2D" parent="ChainHotspot"]
+visible = false
+z_index = 12
+
+[node name="ChainRig" parent="ChainHotspot/BikeVisual" instance=ExtResource("4b_chainrig")]
+
+[node name="TireRepairStation" parent="." instance=ExtResource("7_tire")]
+
+[node name="Player" type="CharacterBody2D" parent="."]
+script = ExtResource("2_zuzu")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Player"]
+texture_filter = 1
+position = Vector2(0, -32)
+scale = Vector2(1.15, 1.15)
+sprite_frames = ExtResource("15_zuzu_frames")
+animation = &"idle_down"
+
+[node name="Shadow" type="Polygon2D" parent="Player"]
+visible = false
+polygon = PackedVector2Array(-30, 10, 30, 10, 24, 22, -24, 22)
+color = Color(0, 0, 0, 0.22)
+
+[node name="SoftShadow" type="Sprite2D" parent="Player"]
+texture_filter = 1
+texture = ExtResource("41_shadow_small")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Body" type="Polygon2D" parent="Player"]
+visible = false
+polygon = PackedVector2Array(-13, -16, 13, -16, 16, 18, -16, 18)
+color = Color(0.0862745, 0.560784, 0.792157, 1)
+
+[node name="Head" type="Polygon2D" parent="Player"]
+visible = false
+position = Vector2(0, -30)
+polygon = PackedVector2Array(-13, -11, 13, -11, 15, 9, 0, 16, -15, 9)
+color = Color(0.854902, 0.564706, 0.364706, 1)
+
+[node name="Cap" type="Polygon2D" parent="Player"]
+visible = false
+position = Vector2(0, -43)
+polygon = PackedVector2Array(-16, 4, -8, -8, 10, -8, 18, 3, 6, 9, -8, 8)
+color = Color(0.956863, 0.376471, 0.235294, 1)
+
+[node name="Backpack" type="Polygon2D" parent="Player"]
+visible = false
+position = Vector2(-15, 0)
+polygon = PackedVector2Array(-5, -12, 5, -10, 5, 13, -7, 12)
+color = Color(0.192157, 0.215686, 0.337255, 1)
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+enabled = true
+process_callback = 0
+position_smoothing_enabled = true
+
+[node name="DialogBox" parent="." instance=ExtResource("5_dialog")]
+
+[node name="Hud" parent="." instance=ExtResource("6_hud")]

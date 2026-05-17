@@ -1,0 +1,99 @@
+{
+  "id": "mrs_ramirez_questline",
+  "npc_id": "mrs_ramirez",
+  "speaker": "Mrs. Ramirez",
+  "lines": [
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Hey, Zuzu. Even for a short ride, I like to know the bike is with me."
+    },
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "First, the brakes. Give each lever a squeeze. They should answer right away."
+    },
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Then the tires. A thumb press tells you more than you'd think."
+    },
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Last, the chain. Turn the pedal slow and watch whether it rolls clean."
+    },
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "That's the habit. Notice first, ride second. You're getting the eye for it."
+    },
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Hm. My tire went soft again. Happens to everybody sooner or later."
+    },
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Let's find the tiny troublemaker. Flats love hiding in plain sight."
+    },
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Easy with the tire lever. No wrestling match needed."
+    },
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Patch, press, wait, then air. Rushing a patch is how you meet the same flat twice."
+    }
+  ],
+  "dialogue_tree": [
+    {
+      "id": "safety_greeting",
+      "text": "Hey, Zuzu. Even for a short ride, I like to know the bike is with me.",
+      "voice": "mrs_ramirez_safety_greeting",
+      "next": "brake_intro"
+    },
+    {
+      "id": "brake_intro",
+      "text": "First, the brakes. Give each lever a squeeze. They should answer right away.",
+      "voice": "mrs_ramirez_brake_intro",
+      "next": "tire_intro"
+    },
+    {
+      "id": "tire_intro",
+      "text": "Then the tires. A thumb press tells you more than you'd think.",
+      "voice": "mrs_ramirez_tire_intro",
+      "next": "chain_intro"
+    },
+    {
+      "id": "chain_intro",
+      "text": "Last, the chain. Turn the pedal slow and watch whether it rolls clean.",
+      "voice": "mrs_ramirez_chain_intro",
+      "next": "safety_encouragement"
+    },
+    {
+      "id": "safety_encouragement",
+      "text": "That's the habit. Notice first, ride second. You're getting the eye for it.",
+      "voice": "mrs_ramirez_safety_encouragement",
+      "next": null
+    },
+    {
+      "id": "flat_intro",
+      "text": "Hm. My tire went soft again. Happens to everybody sooner or later.",
+      "voice": "mrs_ramirez_flat_intro",
+      "next": "puncture_intro"
+    },
+    {
+      "id": "puncture_intro",
+      "text": "Let's find the tiny troublemaker. Flats love hiding in plain sight.",
+      "voice": "mrs_ramirez_puncture_intro",
+      "next": "remove_tire_intro"
+    },
+    {
+      "id": "remove_tire_intro",
+      "text": "Easy with the tire lever. No wrestling match needed.",
+      "voice": "mrs_ramirez_remove_tire_intro",
+      "next": "patch_intro"
+    },
+    {
+      "id": "patch_intro",
+      "text": "Patch, press, wait, then air. Rushing a patch is how you meet the same flat twice.",
+      "voice": "mrs_ramirez_patch_intro",
+      "next": null
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "id": "copper_rock_id",
+  "name": "Identify the Copper Ore",
+  "description": "Learn from Old Miner Pete how to identify copper-bearing rock by observation and a simple conductivity test.",
+  "start_dialogue": [
+    "See those colors, Zuzu? Copper likes to leave green and blue clues when it weathers.",
+    "Pick with your eyes first. Is the rock glassy like quartz, waxy like turquoise, or stained like copper ore?",
+    "Bring your best sample to the test station and we will let the evidence speak."
+  ],
+  "steps": [
+    {
+      "id": "find_copper_rock",
+      "description": "Find the rock sample most likely to contain copper ore.",
+      "completed": false
+    },
+    {
+      "id": "test_conductivity",
+      "description": "Use the conductivity station to compare the sample against non-metal rocks.",
+      "completed": false
+    },
+    {
+      "id": "report_to_pete",
+      "description": "Report the evidence to Old Miner Pete.",
+      "completed": false
+    }
+  ],
+  "success_dialogue": "That is copper-bearing rock, sure enough. You did not just guess; you observed, tested, and reported.",
+  "reward_text": "You earned 30 ZuzuBucks, 7 reputation, and the Rock Hound badge.",
+  "reward": {
+    "allowance": 30,
+    "badge": "Rock Hound",
+    "reputation": 7
+  }
+}

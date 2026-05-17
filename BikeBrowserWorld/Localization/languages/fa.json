@@ -1,0 +1,12 @@
+{
+  "greeting": "سلام، %s!",
+  "quest_complete": "ماموریت کامل شد!",
+  "item_copper_ore": "سنگ معدن مس",
+  "item_copper_ore_desc": "سنگی نارنجی و فلزی که مس دارد.",
+  "badge_earned": "نشان به دست آمد!",
+  "plants_found": {
+    "zero": "هیچ گیاهی پیدا نشد.",
+    "one": "%d گیاه پیدا شد.",
+    "other": "%d گیاه پیدا شد."
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "id": "desert_species",
+  "region": "sonoran_desert",
+  "discoveries": [
+    {
+      "id": "saguaro_cactus",
+      "type": "plant",
+      "name": "Saguaro Cactus",
+      "description": "A tall branching cactus that can store large amounts of water.",
+      "educational_fact": "Saguaros grow slowly and provide nesting spaces, flowers, and fruit for desert animals.",
+      "location_hint": "Look for tall silhouettes on open, sunny desert slopes."
+    },
+    {
+      "id": "prickly_pear_cactus",
+      "type": "plant",
+      "name": "Prickly Pear Cactus",
+      "description": "A flat-padded cactus with fruits and protective spines.",
+      "educational_fact": "The pads store water and the fruit feeds animals and people when harvested carefully.",
+      "location_hint": "Search low sunny areas near rocks and trail edges."
+    },
+    {
+      "id": "creosote_bush",
+      "type": "plant",
+      "name": "Creosote Bush",
+      "description": "A hardy shrub with small waxy leaves and a strong desert-rain smell.",
+      "educational_fact": "Waxy leaves reduce water loss, helping creosote survive long dry periods.",
+      "location_hint": "Look across dry flats where shrubs are widely spaced."
+    },
+    {
+      "id": "mesquite_tree",
+      "type": "plant",
+      "name": "Mesquite Tree",
+      "description": "A drought-tolerant tree with pods, shade, and deep roots.",
+      "educational_fact": "Deep roots help mesquite reach underground water and create habitat for other species.",
+      "location_hint": "Check washes, yards, and slightly lower areas where water collects."
+    },
+    {
+      "id": "palo_verde_tree",
+      "type": "plant",
+      "name": "Palo Verde Tree",
+      "description": "A green-barked tree that can photosynthesize through its trunk and branches.",
+      "educational_fact": "Green bark lets the tree keep making food even when it drops leaves to save water.",
+      "location_hint": "Look for bright green trunks near washes and desert roadsides."
+    },
+    {
+      "id": "agave",
+      "type": "plant",
+      "name": "Agave",
+      "description": "A rosette plant with thick pointed leaves and strong fibers.",
+      "educational_fact": "Agave fibers can be used for cordage, showing how plant structure can inspire materials.",
+      "location_hint": "Search rocky sunny patches and dry slopes."
+    },
+    {
+      "id": "yucca",
+      "type": "plant",
+      "name": "Yucca",
+      "description": "A spiky desert plant with tough leaves and useful fibers.",
+      "educational_fact": "Yucca fibers and natural compounds can be used in tools, baskets, and soap-like mixtures.",
+      "location_hint": "Look for clusters of sword-like leaves in open desert."
+    },
+    {
+      "id": "ocotillo",
+      "type": "plant",
+      "name": "Ocotillo",
+      "description": "A tall plant with many thin canes that leaf out after rain.",
+      "educational_fact": "Ocotillo responds quickly to rain by growing leaves when water is available.",
+      "location_hint": "Look for fountain-shaped canes on rocky slopes."
+    },
+    {
+      "id": "barrel_cactus",
+      "type": "plant",
+      "name": "Barrel Cactus",
+      "description": "A round ribbed cactus with strong spines and water-storing tissue.",
+      "educational_fact": "Its ribs let the cactus expand after rain and shrink during drought.",
+      "location_hint": "Search sunny rocky places and dry hillsides."
+    },
+    {
+      "id": "jojoba",
+      "type": "plant",
+      "name": "Jojoba",
+      "description": "A shrub with seeds that contain a stable liquid wax.",
+      "educational_fact": "Jojoba wax is useful because it resists drying and can protect surfaces.",
+      "location_hint": "Look for rounded shrubs in dry scrub habitat."
+    },
+    {
+      "id": "coyote",
+      "type": "animal",
+      "name": "Coyote",
+      "description": "A clever desert predator and scavenger.",
+      "educational_fact": "Coyotes help balance food webs by eating small mammals, fruit, insects, and carrion.",
+      "location_hint": "Look for tracks near washes, edges, and early morning paths."
+    },
+    {
+      "id": "javelina",
+      "type": "animal",
+      "name": "Javelina",
+      "description": "A social desert mammal often seen in small groups.",
+      "educational_fact": "Javelinas eat cactus pads, roots, and fruits, linking plants to larger desert animals.",
+      "location_hint": "Search near prickly pear, mesquite, and shaded washes."
+    },
+    {
+      "id": "roadrunner",
+      "type": "animal",
+      "name": "Roadrunner",
+      "description": "A fast-running bird that hunts insects, lizards, and small animals.",
+      "educational_fact": "Roadrunners conserve energy by moving on foot and using shade in hot conditions.",
+      "location_hint": "Watch open ground near brushy cover."
+    },
+    {
+      "id": "gila_monster",
+      "type": "animal",
+      "name": "Gila Monster",
+      "description": "A slow-moving venomous lizard with bright patterned scales.",
+      "educational_fact": "Gila monsters spend much time underground and store energy in their tails.",
+      "location_hint": "Look for signs near rocky shelters; observe from a safe distance."
+    },
+    {
+      "id": "desert_tortoise",
+      "type": "animal",
+      "name": "Desert Tortoise",
+      "description": "A burrowing reptile adapted to dry desert life.",
+      "educational_fact": "Burrows help tortoises escape heat and create shelter used by other animals too.",
+      "location_hint": "Look for burrow entrances near firm sandy soil and low shrubs."
+    }
+  ]
+}

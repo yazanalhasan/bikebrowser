@@ -1,0 +1,27 @@
+{
+  "id": "bridge_material_test",
+  "name": "Bridge Material Test",
+  "description": "Test different materials to learn which ones can make a safer dry-wash bridge.",
+  "steps": [
+    {
+      "id": "collect_materials",
+      "description": "Collect wood, fiber, rubber, and metal samples.",
+      "completed": false
+    },
+    {
+      "id": "test_strength",
+      "description": "Use the material testing bench to compare strength and flex.",
+      "completed": false
+    },
+    {
+      "id": "choose_bridge_part",
+      "description": "Pick the best material for a small test bridge segment.",
+      "completed": false
+    }
+  ],
+  "reward": {
+    "allowance": 35,
+    "badge": "Bridge Builder",
+    "reputation": 8
+  }
+}

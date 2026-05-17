@@ -1,0 +1,800 @@
+[
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/mine_entrance_arch.png",
+    "width": 128,
+    "height": 128
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/mine_cart.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/rail_tracks.png",
+    "width": 96,
+    "height": 32
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/copper_ore_chunk.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/deep_copper_ore.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/surface_copper_rocks.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/wire_spool.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/pickaxe.png",
+    "width": 48,
+    "height": 64
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/hard_hat.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/lantern.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/timber_support_beam.png",
+    "width": 96,
+    "height": 32
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/mine_shaft_sign.png",
+    "width": 48,
+    "height": 64
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/conductivity_test_station.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/rock_sample_table.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/dust_pile_rubble.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/dynamite_crate.png",
+    "width": 64,
+    "height": 48
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/helmet_with_lamp.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/ore_cart_track_switch.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/ventilation_fan.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "CopperMine",
+    "file": "Assets/Props/CopperMine/mine_depth_marker.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/river_water_tile.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/sandy_riverbank.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/reed_fiber_plant.png",
+    "width": 48,
+    "height": 96
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/algae_sample.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/microbial_sample_jar.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/mineral_deposit.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/water_sampling_kit.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/clipboard.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/heron.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/frog.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/flow_rate_marker.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/irrigation_channel_sign.png",
+    "width": 48,
+    "height": 64
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/small_dock_boardwalk.png",
+    "width": 96,
+    "height": 64
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/sample_bucket.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/waterproof_boots.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/macroinvertebrate_tray.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/ph_test_strip.png",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/thermometer.png",
+    "width": 32,
+    "height": 48
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/cattail_plant.png",
+    "width": 48,
+    "height": 96
+  },
+  {
+    "category": "SaltRiver",
+    "file": "Assets/Props/SaltRiver/dragonfly.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/rubber_workshop_station.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/fiber_processing_table.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/kiln_furnace.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/charcoal_carbonized_wood.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/electronics_bench.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/circuit_board.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/wire_bundle.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/soldering_station.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/battery_lab_bench.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/battery_cell.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/cell_holder.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/bms_module.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/charger.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/fuse.png",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/refinement_table.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/flask.png",
+    "width": 32,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/filter_funnel.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/beaker_green_liquid.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/beaker_blue_liquid.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/beaker_purple_liquid.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/drying_tray.png",
+    "width": 64,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/safety_goggles.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/fire_safe_storage_box.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "Labs",
+    "file": "Assets/Props/Labs/microscope.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/desert_sky_day.png",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/desert_sky_dusk.png",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/desert_sky_night.png",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/mountain_silhouette_back.png",
+    "width": 1920,
+    "height": 256
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/mountain_silhouette_mid.png",
+    "width": 1920,
+    "height": 256
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/desert_ground_tile.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/pavement_sidewalk_tile.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/road_asphalt_tile.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/garage_interior_wall.png",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/garage_floor_tile.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/garage_ceiling.png",
+    "width": 1920,
+    "height": 256
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/mine_interior_wall.png",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/mine_floor_tile.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/river_backdrop.png",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/lab_interior_wall.png",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "category": "Backgrounds",
+    "file": "Assets/Backgrounds/lab_floor_tile.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "UI",
+    "file": "Assets/UI/dialogue_box_bg.png",
+    "width": 800,
+    "height": 200
+  },
+  {
+    "category": "UI",
+    "file": "Assets/UI/npc_name_plate.png",
+    "width": 200,
+    "height": 40
+  },
+  {
+    "category": "UI",
+    "file": "Assets/UI/quest_tracker_panel.png",
+    "width": 300,
+    "height": 400
+  },
+  {
+    "category": "UI",
+    "file": "Assets/UI/inventory_slot.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "UI",
+    "file": "Assets/UI/reward_popup.png",
+    "width": 300,
+    "height": 150
+  },
+  {
+    "category": "UI",
+    "file": "Assets/UI/interaction_prompt_e.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "UI",
+    "file": "Assets/UI/health_stamina_bar.png",
+    "width": 200,
+    "height": 20
+  },
+  {
+    "category": "UI",
+    "file": "Assets/UI/minimap_frame.png",
+    "width": 200,
+    "height": 200
+  },
+  {
+    "category": "UI",
+    "file": "Assets/UI/button_normal.png",
+    "width": 200,
+    "height": 50
+  },
+  {
+    "category": "UI",
+    "file": "Assets/UI/button_hover.png",
+    "width": 200,
+    "height": 50
+  },
+  {
+    "category": "UI",
+    "file": "Assets/UI/loading_screen.png",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "category": "UI",
+    "file": "Assets/UI/title_screen_bg.png",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "category": "Neighborhood",
+    "file": "Assets/Props/Neighborhood/sidewalk_curb_segment.png",
+    "width": 96,
+    "height": 32
+  },
+  {
+    "category": "Neighborhood",
+    "file": "Assets/Props/Neighborhood/driveway_slab.png",
+    "width": 96,
+    "height": 64
+  },
+  {
+    "category": "Neighborhood",
+    "file": "Assets/Props/Neighborhood/street_lamp.png",
+    "width": 48,
+    "height": 96
+  },
+  {
+    "category": "Neighborhood",
+    "file": "Assets/Props/Neighborhood/trash_can.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Neighborhood",
+    "file": "Assets/Props/Neighborhood/welcome_mat.png",
+    "width": 64,
+    "height": 32
+  },
+  {
+    "category": "Neighborhood",
+    "file": "Assets/Props/Neighborhood/hose_coil.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Neighborhood",
+    "file": "Assets/Props/Neighborhood/garden_gnome.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Neighborhood",
+    "file": "Assets/Props/Neighborhood/bird_bath.png",
+    "width": 48,
+    "height": 64
+  },
+  {
+    "category": "Neighborhood",
+    "file": "Assets/Props/Neighborhood/bicycle_leaned_on_fence.png",
+    "width": 96,
+    "height": 64
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/bike_on_stand.png",
+    "width": 128,
+    "height": 96
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/rear_derailleur_closeup.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/cassette_gear_cluster.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/valve_stem.png",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/small_nail_thorn.png",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/chain_lube_bottle.png",
+    "width": 32,
+    "height": 48
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/multi_tool.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/grease_gun.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/air_pressure_gauge.png",
+    "width": 32,
+    "height": 48
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/spoke_wrench.png",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/bike_pump_hand.png",
+    "width": 48,
+    "height": 96
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/cable_cutter.png",
+    "width": 48,
+    "height": 32
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/hex_key_set.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/parts_bin.png",
+    "width": 64,
+    "height": 48
+  },
+  {
+    "category": "Garage",
+    "file": "Assets/Props/Garage/oil_stain_floor.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "BikeRepair",
+    "file": "Assets/Props/BikeRepair/tire_lever_set.png",
+    "width": 48,
+    "height": 32
+  },
+  {
+    "category": "BikeRepair",
+    "file": "Assets/Props/BikeRepair/chain_breaker_tool.png",
+    "width": 48,
+    "height": 32
+  },
+  {
+    "category": "BikeRepair",
+    "file": "Assets/Props/BikeRepair/master_link.png",
+    "width": 24,
+    "height": 24
+  },
+  {
+    "category": "BikeRepair",
+    "file": "Assets/Props/BikeRepair/patch_with_glue_tube.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "BikeRepair",
+    "file": "Assets/Props/BikeRepair/sandpaper_piece.png",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "category": "DryWash",
+    "file": "Assets/Props/DryWash/bridge_support_pier.png",
+    "width": 96,
+    "height": 96
+  },
+  {
+    "category": "DryWash",
+    "file": "Assets/Props/DryWash/cable_anchor_point.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "DryWash",
+    "file": "Assets/Props/DryWash/sandbag_stack.png",
+    "width": 96,
+    "height": 48
+  },
+  {
+    "category": "DryWash",
+    "file": "Assets/Props/DryWash/measuring_tape.png",
+    "width": 48,
+    "height": 32
+  },
+  {
+    "category": "DryWash",
+    "file": "Assets/Props/DryWash/clipboard_bridge_plan.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "Desert",
+    "file": "Assets/Props/Desert/ocotillo_plant.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "Desert",
+    "file": "Assets/Props/Desert/cholla_cactus.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "Desert",
+    "file": "Assets/Props/Desert/prickly_pear_with_fruit.png",
+    "width": 64,
+    "height": 64
+  },
+  {
+    "category": "Desert",
+    "file": "Assets/Props/Desert/desert_marigold_flower.png",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "category": "Desert",
+    "file": "Assets/Props/Desert/ant_mound.png",
+    "width": 48,
+    "height": 48
+  },
+  {
+    "category": "Desert",
+    "file": "Assets/Props/Desert/feather_on_ground.png",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "category": "Desert",
+    "file": "Assets/Props/Desert/tracks_in_sand.png",
+    "width": 96,
+    "height": 96
+  }
+]

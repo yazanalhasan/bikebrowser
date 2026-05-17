@@ -1,0 +1,39 @@
+{
+  "id": "bridge_quest_1",
+  "name": "Assess the Damage",
+  "description": "Help Mr. Chen understand how the monsoon flood damaged the neighborhood bridge.",
+  "quest_giver": "mr_chen",
+  "steps": [
+    {
+      "id": "talk_to_mr_chen",
+      "description": "Talk to Mr. Chen about the collapsed bridge.",
+      "completion_condition": "mr_chen_bridge_intro_dialogue_complete"
+    },
+    {
+      "id": "visit_broken_bridge",
+      "description": "Walk to the broken bridge location in the dry wash.",
+      "completion_condition": "player_enters_broken_bridge_area"
+    },
+    {
+      "id": "inspect_planks",
+      "description": "Inspect the broken planks.",
+      "completion_condition": "inspect_hotspot_bridge_planks"
+    },
+    {
+      "id": "inspect_beams_supports",
+      "description": "Inspect the cracked beams and shifted supports.",
+      "completion_condition": "inspect_hotspot_bridge_beams_and_supports"
+    },
+    {
+      "id": "return_report",
+      "description": "Return to Mr. Chen with notes and pictures.",
+      "completion_condition": "bridge_damage_report_delivered"
+    }
+  ],
+  "dialogue_refs": ["mr_chen_bridge.assess_start", "mr_chen_bridge.assess_complete"],
+  "reward": {
+    "allowance": 15,
+    "badge": null,
+    "reputation": 3
+  }
+}

@@ -1,0 +1,56 @@
+[gd_scene load_steps=3 format=3 uid="uid://bikebrowser_mr_chen"]
+
+[ext_resource type="Script" path="res://Systems/Interactions/NpcInteraction.gd" id="1_npc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mrchen"]
+size = Vector2(64, 80)
+
+[node name="MrChen" type="Area2D"]
+script = ExtResource("1_npc")
+npc_id = "mr_chen"
+dialogue_id = "mr_chen_chain"
+feedback_message = "Mr. Chen glances at the bike first, then back to Zuzu."
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_mrchen")
+
+[node name="Body" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-24, -48, 24, -48, 24, 24, -24, 24)
+color = Color(0.776471, 0.552941, 0.333333, 1)
+
+[node name="Head" type="Polygon2D" parent="."]
+position = Vector2(0, -64)
+polygon = PackedVector2Array(-16, -14, 16, -14, 18, 10, 0, 20, -18, 10)
+color = Color(0.752941, 0.498039, 0.345098, 1)
+
+[node name="Cap" type="Polygon2D" parent="."]
+position = Vector2(0, -82)
+polygon = PackedVector2Array(-20, 8, -8, -8, 12, -7, 22, 7, 6, 12, -10, 12)
+color = Color(0.239216, 0.282353, 0.352941, 1)
+
+[node name="ToolBelt" type="Polygon2D" parent="."]
+position = Vector2(0, -9)
+polygon = PackedVector2Array(-25, -4, 25, -4, 25, 6, -25, 6)
+color = Color(0.211765, 0.156863, 0.117647, 1)
+
+[node name="RepairHand" type="Polygon2D" parent="."]
+position = Vector2(30, -20)
+polygon = PackedVector2Array(-4, -20, 8, -20, 12, 22, -2, 22)
+rotation = 0.34
+color = Color(0.752941, 0.498039, 0.345098, 1)
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -42.0
+offset_top = 28.0
+offset_right = 42.0
+offset_bottom = 52.0
+text = "Mr. Chen"
+horizontal_alignment = 1
+
+[node name="Prompt" type="Label" parent="."]
+offset_left = -70.0
+offset_top = -88.0
+offset_right = 70.0
+offset_bottom = -60.0
+text = "[E] Talk"
+horizontal_alignment = 1

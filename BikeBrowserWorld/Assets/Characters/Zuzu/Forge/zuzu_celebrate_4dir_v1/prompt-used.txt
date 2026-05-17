@@ -1,0 +1,1 @@
+﻿Zuzu celebrate 4-direction 4-frame 48x48 modern SNES/GBA pixel-art sheet. Rows: celebrate_down, celebrate_left, celebrate_right, celebrate_up. Solid #FF00FF background.

@@ -1,0 +1,103 @@
+{
+  "id": "mr_chen_expanded",
+  "npc_id": "mr_chen",
+  "speaker": "Mr. Chen",
+  "greeting": {
+    "text": "Ah, Zuzu. Good timing. The bike has been whispering at me all afternoon.",
+    "voice": "mr_chen_greeting"
+  },
+  "lines": [
+    {
+      "speaker": "Mr. Chen",
+      "text": "Ah, Zuzu. Good timing. The bike has been whispering at me all afternoon."
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "Before we touch anything, just look. Most repairs start there."
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "See how the chain wants to climb sideways? That's its little complaint."
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "Pick the tool that fits the problem. A good tool feels almost quiet in your hand."
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "Bikes are full of simple tricks: levers, wheels, cables, tension. Nothing fancy until it all works together."
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "Bridges are like bikes that hold still. Weight still needs a clean path."
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "Materials have moods. Wood springs, steel holds, rubber forgives."
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "Even plants know structure. Agave fibers don't brag. They just hold."
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "You noticed the important part before I pointed at it. That's a mechanic's eye."
+    }
+  ],
+  "dialogue_tree": [
+    {
+      "id": "greeting",
+      "text": "Ah, Zuzu. Good timing. The bike has been whispering at me all afternoon.",
+      "voice": "mr_chen_greeting",
+      "next": "chain_observe"
+    },
+    {
+      "id": "chain_observe",
+      "text": "Before we touch anything, just look. Most repairs start there.",
+      "voice": "mr_chen_chain_observe",
+      "next": "chain_teach"
+    },
+    {
+      "id": "chain_teach",
+      "text": "See how the chain wants to climb sideways? That's its little complaint.",
+      "voice": "mr_chen_chain_teach",
+      "next": "tools_intro"
+    },
+    {
+      "id": "tools_intro",
+      "text": "Pick the tool that fits the problem. A good tool feels almost quiet in your hand.",
+      "voice": "mr_chen_tools_intro",
+      "next": "simple_machines"
+    },
+    {
+      "id": "simple_machines",
+      "text": "Bikes are full of simple tricks: levers, wheels, cables, tension. Nothing fancy until it all works together.",
+      "voice": "mr_chen_simple_machines",
+      "next": "bridge_intro"
+    },
+    {
+      "id": "bridge_intro",
+      "text": "Bridges are like bikes that hold still. Weight still needs a clean path.",
+      "voice": "mr_chen_bridge_intro",
+      "next": "materials_intro"
+    },
+    {
+      "id": "materials_intro",
+      "text": "Materials have moods. Wood springs, steel holds, rubber forgives.",
+      "voice": "mr_chen_materials_intro",
+      "next": "biology_bridge"
+    },
+    {
+      "id": "biology_bridge",
+      "text": "Even plants know structure. Agave fibers don't brag. They just hold.",
+      "voice": "mr_chen_biology_bridge",
+      "next": "encouragement"
+    },
+    {
+      "id": "encouragement",
+      "text": "You noticed the important part before I pointed at it. That's a mechanic's eye.",
+      "voice": "mr_chen_encouragement",
+      "next": null
+    }
+  ]
+}

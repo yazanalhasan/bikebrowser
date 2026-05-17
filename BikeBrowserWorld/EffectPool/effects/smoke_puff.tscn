@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://EffectPool/EffectOneShot.gd" id="1_effect"]
+
+[node name="SmokePuff" type="Node2D"]
+script = ExtResource("1_effect")
+lifetime = 0.9
+start_modulate = Color(0.45, 0.45, 0.45, 0.65)
+end_modulate = Color(0.45, 0.45, 0.45, 0)
+end_scale = Vector2(2.2, 2.2)
+
+[node name="Particles" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 10
+lifetime = 0.9
+one_shot = true
+explosiveness = 0.8
+direction = Vector2(0, -1)
+spread = 65.0
+gravity = Vector2(0, -20)
+initial_velocity_min = 10.0
+initial_velocity_max = 45.0
+scale_amount_min = 8.0
+scale_amount_max = 18.0
+color = Color(0.42, 0.42, 0.42, 0.7)
+

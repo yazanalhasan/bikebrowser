@@ -1,0 +1,79 @@
+{
+  "id": "dr_maya_expanded",
+  "npc_id": "river_biologist",
+  "speaker": "Dr. Maya",
+  "lines": [
+    {
+      "speaker": "Dr. Maya",
+      "text": "Hi, Zuzu. The river's chatty today. You just have to know where to listen."
+    },
+    {
+      "speaker": "Dr. Maya",
+      "text": "Start with simple clues: clear or cloudy, warm or cool, sharp smell or clean air."
+    },
+    {
+      "speaker": "Dr. Maya",
+      "text": "The tiny creek critters help too. Some only stay where the water is kind to them."
+    },
+    {
+      "speaker": "Dr. Maya",
+      "text": "Stoneflies are picky in the best way. If they vanish, I start asking upstream questions."
+    },
+    {
+      "speaker": "Dr. Maya",
+      "text": "People change rivers. The work is to notice, clean up what we can, and choose better next time."
+    },
+    {
+      "speaker": "Dr. Maya",
+      "text": "If you like outdoor questions, keep going. Biology starts with caring enough to look twice."
+    },
+    {
+      "speaker": "Dr. Maya",
+      "text": "Want to test with me? Careful scoop, pH strip, tray check. Then you tell me what the river said."
+    }
+  ],
+  "dialogue_tree": [
+    {
+      "id": "greeting",
+      "text": "Hi, Zuzu. The river's chatty today. You just have to know where to listen.",
+      "voice": "dr_maya_greeting",
+      "next": "water_quality"
+    },
+    {
+      "id": "water_quality",
+      "text": "Start with simple clues: clear or cloudy, warm or cool, sharp smell or clean air.",
+      "voice": "dr_maya_water_quality",
+      "next": "macroinvertebrates"
+    },
+    {
+      "id": "macroinvertebrates",
+      "text": "The tiny creek critters help too. Some only stay where the water is kind to them.",
+      "voice": "dr_maya_macroinvertebrates",
+      "next": "stoneflies"
+    },
+    {
+      "id": "stoneflies",
+      "text": "Stoneflies are picky in the best way. If they vanish, I start asking upstream questions.",
+      "voice": "dr_maya_stoneflies",
+      "next": "human_impact"
+    },
+    {
+      "id": "human_impact",
+      "text": "People change rivers. The work is to notice, clean up what we can, and choose better next time.",
+      "voice": "dr_maya_human_impact",
+      "next": "career_path"
+    },
+    {
+      "id": "career_path",
+      "text": "If you like outdoor questions, keep going. Biology starts with caring enough to look twice.",
+      "voice": "dr_maya_career_path",
+      "next": "test_intro"
+    },
+    {
+      "id": "test_intro",
+      "text": "Want to test with me? Careful scoop, pH strip, tray check. Then you tell me what the river said.",
+      "voice": "dr_maya_test_intro",
+      "next": null
+    }
+  ]
+}

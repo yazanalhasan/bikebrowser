@@ -1,0 +1,14 @@
+{
+  "id": "abuela_rosa_intro",
+  "npc_id": "abuela_rosa",
+  "greeting": {
+    "text": "Mijo, I am Abuela Rosa. I know which desert plants help, which ones hurt, and which ones need respect.",
+    "voice": "abuela_rosa_greeting"
+  },
+  "dialogue_tree": [
+    {
+      "text": "The desert is not empty. It is a pantry, a pharmacy, and a classroom if you slow down enough to notice. Bring me a plant sample and we will learn what it can safely teach us.",
+      "next": null
+    }
+  ]
+}

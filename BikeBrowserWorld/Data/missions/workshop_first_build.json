@@ -1,0 +1,27 @@
+{
+  "id": "workshop_first_build",
+  "name": "Workshop First Build",
+  "description": "The factory friends help Zuzu turn raw materials into one useful workshop part.",
+  "steps": [
+    {
+      "id": "collect_raw_material",
+      "description": "Collect one raw material that can be processed.",
+      "completed": false
+    },
+    {
+      "id": "choose_workshop_friend",
+      "description": "Bring the material to the correct factory friend.",
+      "completed": false
+    },
+    {
+      "id": "craft_first_part",
+      "description": "Craft one useful item for a bike or science project.",
+      "completed": false
+    }
+  ],
+  "reward": {
+    "allowance": 40,
+    "badge": "Workshop Helper",
+    "reputation": 10
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "mrs_ramirez_intro",
+  "speaker": "Mrs. Ramirez",
+  "lines": [
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Hey, Zuzu. Before I ride, I give the bike a quick hello."
+    },
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Brakes, tires, chain. Three little checks, and the whole ride feels calmer."
+    },
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Come try it with me. Your bike tells you when something's off."
+    }
+  ],
+  "onComplete": {
+    "type": "start_quest",
+    "questId": "bike_safety_check"
+  }
+}

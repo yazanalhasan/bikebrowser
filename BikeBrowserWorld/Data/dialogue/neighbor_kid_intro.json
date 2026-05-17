@@ -1,0 +1,14 @@
+{
+  "id": "neighbor_kid_intro",
+  "npc_id": "neighbor_kid",
+  "greeting": {
+    "text": "Zuzu! Your garage light was on forever. That usually means something interesting happened.",
+    "voice": "neighbor_kid_greeting"
+  },
+  "dialogue_tree": [
+    {
+      "text": "My bike does this tiny clunk when I pedal hard. It might be the chain. It might be me being dramatic. Want to investigate?",
+      "next": null
+    }
+  ]
+}

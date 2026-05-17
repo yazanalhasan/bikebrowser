@@ -1,0 +1,40 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://AchievementSystem/BadgeNotification.gd" id="1_badge_notification"]
+
+[node name="BadgeNotification" type="PanelContainer"]
+custom_minimum_size = Vector2(320, 92)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -344.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 116.0
+script = ExtResource("1_badge_notification")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+theme_override_constants/separation = 10
+
+[node name="BadgeIcon" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(56, 56)
+stretch_mode = 5
+
+[node name="Labels" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+size_flags_horizontal = 3
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/HBoxContainer/Labels"]
+unique_name_in_owner = true
+text = "Badge Earned!"
+
+[node name="NameLabel" type="Label" parent="MarginContainer/HBoxContainer/Labels"]
+unique_name_in_owner = true
+text = "Chain Hero"
+

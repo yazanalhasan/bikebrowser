@@ -1,0 +1,44 @@
+{
+  "sparkle": {
+    "preload_count": 10,
+    "max_simultaneous": 5,
+    "lifetime": 0.8,
+    "sound": "sparkle.wav"
+  },
+  "impact_dust": {
+    "preload_count": 8,
+    "max_simultaneous": 4,
+    "lifetime": 0.5,
+    "sound": "impact.wav"
+  },
+  "spark": {
+    "preload_count": 8,
+    "max_simultaneous": 4,
+    "lifetime": 0.4,
+    "sound": "spark.wav"
+  },
+  "smoke_puff": {
+    "preload_count": 6,
+    "max_simultaneous": 4,
+    "lifetime": 0.9,
+    "sound": "smoke.wav"
+  },
+  "bubble_pop": {
+    "preload_count": 8,
+    "max_simultaneous": 5,
+    "lifetime": 0.6,
+    "sound": "bubble.wav"
+  },
+  "celebration_star": {
+    "preload_count": 6,
+    "max_simultaneous": 3,
+    "lifetime": 1.1,
+    "sound": "celebration.wav"
+  },
+  "error_x": {
+    "preload_count": 4,
+    "max_simultaneous": 2,
+    "lifetime": 0.7,
+    "sound": "error.wav"
+  }
+}

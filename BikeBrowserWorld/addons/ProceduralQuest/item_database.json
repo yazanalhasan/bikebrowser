@@ -1,0 +1,10 @@
+{
+  "copper_ore": {"category": "material", "value": 5},
+  "wood_plank": {"category": "material", "value": 2},
+  "rubber_strip": {"category": "material", "value": 3},
+  "chain_link": {"category": "crafted", "value": 10},
+  "patch_kit": {"category": "tool", "value": 15},
+  "inner_tube": {"category": "mechanics", "value": 20},
+  "agave_fiber": {"category": "plant", "value": 5},
+  "water_sample": {"category": "biology", "value": 8}
+}

@@ -1,0 +1,1 @@
+﻿Zuzu interact 4-direction 4-frame 48x48 modern SNES/GBA pixel-art sheet. Rows: interact_down, interact_left, interact_right, interact_up. Solid #FF00FF background.

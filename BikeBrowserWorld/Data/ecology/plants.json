@@ -1,0 +1,169 @@
+{
+  "plants": [
+    {
+      "id": "saguaro",
+      "name": "Saguaro Cactus",
+      "description": "Tall ribbed cactus with arms, white flowers, and red fruit in summer.",
+      "edible": "yes: fruit",
+      "medicinal_use": "Traditional food and hydration support from fruit pulp.",
+      "dangerous": false,
+      "where_to_find": ["open_desert", "rocky_slopes"],
+      "harvestable_items": ["saguaro_fruit"],
+      "educational_fact": "Saguaros can live for more than 150 years and provide homes for desert birds."
+    },
+    {
+      "id": "prickly_pear",
+      "name": "Prickly Pear",
+      "description": "Flat green pads with clusters of spines and bright pink or red fruit.",
+      "edible": "yes: fruit and pads when prepared safely",
+      "medicinal_use": "Pads are traditionally used for soothing skin and as food.",
+      "dangerous": true,
+      "where_to_find": ["open_desert", "neighborhood_edges"],
+      "harvestable_items": ["prickly_pear_fruit", "nopales_pad"],
+      "educational_fact": "Tiny glochid spines can irritate skin even when the big spines are avoided."
+    },
+    {
+      "id": "creosote",
+      "name": "Creosote Bush",
+      "description": "Rounded shrub with small waxy green leaves and a rain-like smell.",
+      "edible": "no",
+      "medicinal_use": "Used traditionally in very careful preparations, but not for casual use.",
+      "dangerous": true,
+      "where_to_find": ["open_desert", "dry_washes"],
+      "harvestable_items": ["creosote_leaf_sample"],
+      "educational_fact": "Creosote bushes use resinous leaves to reduce water loss in desert heat."
+    },
+    {
+      "id": "mesquite",
+      "name": "Mesquite Tree",
+      "description": "Thorny tree with feathery leaves and long tan seed pods.",
+      "edible": "yes: pods ground into flour",
+      "medicinal_use": "Sap and pods have traditional food and craft uses.",
+      "dangerous": true,
+      "where_to_find": ["washes", "neighborhood_yards"],
+      "harvestable_items": ["mesquite_pods", "mesquite_wood"],
+      "educational_fact": "Mesquite roots can reach deep groundwater, helping the tree survive drought."
+    },
+    {
+      "id": "palo_verde",
+      "name": "Palo Verde",
+      "description": "Green-barked tree with small leaves and yellow spring flowers.",
+      "edible": "yes: young seeds in small amounts",
+      "medicinal_use": "Primarily educational and habitat value in this game.",
+      "dangerous": false,
+      "where_to_find": ["washes", "open_desert"],
+      "harvestable_items": ["palo_verde_seed", "fallen_branch"],
+      "educational_fact": "Palo verde bark can photosynthesize, helping the tree make food even after leaves drop."
+    },
+    {
+      "id": "agave",
+      "name": "Agave",
+      "description": "Rosette of thick spear-like leaves with sharp tips.",
+      "edible": "yes: hearts only with expert preparation",
+      "medicinal_use": "Leaf fibers can be used for wound wraps in game crafting.",
+      "dangerous": true,
+      "where_to_find": ["hills", "rocky_slopes"],
+      "harvestable_items": ["agave_fiber", "agave_leaf"],
+      "educational_fact": "Agave stores water and sugars in thick leaves to survive dry seasons."
+    },
+    {
+      "id": "yucca",
+      "name": "Yucca",
+      "description": "Spiky rosette plant with narrow leaves and tall flower stalks.",
+      "edible": "yes: flowers and fruit for some species",
+      "medicinal_use": "Fibers are useful for rope and brush-making.",
+      "dangerous": true,
+      "where_to_find": ["hills", "open_desert"],
+      "harvestable_items": ["yucca_fiber", "yucca_flower"],
+      "educational_fact": "Yucca plants and yucca moths depend on each other for pollination."
+    },
+    {
+      "id": "ocotillo",
+      "name": "Ocotillo",
+      "description": "Tall thorny stems that leaf out after rain and bloom red at the tips.",
+      "edible": "limited: flowers as trail nibble",
+      "medicinal_use": "Used here as a material source for walking sticks from fallen stems.",
+      "dangerous": true,
+      "where_to_find": ["hills", "dry_washes"],
+      "harvestable_items": ["fallen_ocotillo_stem", "ocotillo_flower"],
+      "educational_fact": "Ocotillo can grow leaves quickly after rain, then drop them during drought."
+    },
+    {
+      "id": "cholla",
+      "name": "Cholla",
+      "description": "Segmented cactus with dense spines and jointed branches.",
+      "edible": "yes: buds when prepared safely",
+      "medicinal_use": "No safe medicinal use taught in game.",
+      "dangerous": true,
+      "where_to_find": ["open_desert", "rocky_slopes"],
+      "harvestable_items": ["cholla_bud", "fallen_cholla_wood"],
+      "educational_fact": "Cholla joints break off easily, helping the cactus spread."
+    },
+    {
+      "id": "barrel_cactus",
+      "name": "Barrel Cactus",
+      "description": "Round ribbed cactus with heavy spines and yellow or orange flowers.",
+      "edible": "limited: fruit, not the cactus body",
+      "medicinal_use": "No medicinal use taught in game.",
+      "dangerous": true,
+      "where_to_find": ["open_desert", "rocky_slopes"],
+      "harvestable_items": ["barrel_cactus_fruit"],
+      "educational_fact": "Barrel cactus fruit can stay on the plant long after flowers fade."
+    },
+    {
+      "id": "jojoba",
+      "name": "Jojoba",
+      "description": "Gray-green shrub with leathery leaves and small acorn-like seeds.",
+      "edible": "no",
+      "medicinal_use": "Seeds produce waxy oil used for skin and hair products.",
+      "dangerous": false,
+      "where_to_find": ["hills", "open_desert"],
+      "harvestable_items": ["jojoba_seed"],
+      "educational_fact": "Jojoba oil is technically a liquid wax, not a typical plant oil."
+    },
+    {
+      "id": "desert_lavender",
+      "name": "Desert Lavender",
+      "description": "Fragrant shrub with pale purple flowers and gray-green leaves.",
+      "edible": "no",
+      "medicinal_use": "Aromatic leaves can be used for calming sachets in game.",
+      "dangerous": false,
+      "where_to_find": ["washes", "rocky_slopes"],
+      "harvestable_items": ["desert_lavender_sprig"],
+      "educational_fact": "Strong scents can help desert plants discourage hungry animals."
+    },
+    {
+      "id": "ephedra",
+      "name": "Ephedra",
+      "description": "Green jointed shrub with almost leafless stems.",
+      "edible": "no",
+      "medicinal_use": "Known historically as Mormon tea, but treated cautiously in game.",
+      "dangerous": true,
+      "where_to_find": ["hills", "open_desert"],
+      "harvestable_items": ["ephedra_stem_sample"],
+      "educational_fact": "Ephedra reduces water loss by doing most photosynthesis through green stems."
+    },
+    {
+      "id": "ironwood",
+      "name": "Ironwood",
+      "description": "Dense desert tree with gray bark, small leaves, and purple flowers.",
+      "edible": "limited: seeds for wildlife focus",
+      "medicinal_use": "No medicinal use taught in game.",
+      "dangerous": false,
+      "where_to_find": ["washes", "open_desert"],
+      "harvestable_items": ["fallen_ironwood_seed", "fallen_ironwood_branch"],
+      "educational_fact": "Ironwood trees create shade islands where many young desert plants can survive."
+    },
+    {
+      "id": "wolfberry",
+      "name": "Wolfberry",
+      "description": "Thorny shrub with small leaves and red-orange berries.",
+      "edible": "yes: ripe berries",
+      "medicinal_use": "Used as a trail food ingredient in game.",
+      "dangerous": true,
+      "where_to_find": ["washes", "neighborhood_edges"],
+      "harvestable_items": ["wolfberry_fruit"],
+      "educational_fact": "Wolfberry fruit feeds birds, mammals, and insects during dry times."
+    }
+  ]
+}

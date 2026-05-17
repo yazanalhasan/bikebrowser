@@ -1,0 +1,36 @@
+{
+  "recipes": [
+    {
+      "id": "patch_kit_repair",
+      "name": "Repair Inner Tube",
+      "result": "inner_tube",
+      "result_amount": 1,
+      "requirements": [
+        {"id": "patch_kit", "amount": 1},
+        {"id": "inner_tube_damaged", "amount": 1}
+      ],
+      "station": "workbench"
+    },
+    {
+      "id": "copper_wire",
+      "name": "Copper Wire",
+      "result": "copper_wire",
+      "result_amount": 3,
+      "requirements": [
+        {"id": "copper_ore", "amount": 2}
+      ],
+      "station": "refinement_table"
+    },
+    {
+      "id": "rubber_tire",
+      "name": "Rubber Tire",
+      "result": "tire",
+      "result_amount": 1,
+      "requirements": [
+        {"id": "rubber_strip", "amount": 3},
+        {"id": "wire_spoke", "amount": 8}
+      ],
+      "station": "rubber_workshop"
+    }
+  ]
+}

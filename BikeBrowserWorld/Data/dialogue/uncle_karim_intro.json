@@ -1,0 +1,14 @@
+{
+  "id": "uncle_karim_intro",
+  "npc_id": "uncle_karim",
+  "greeting": {
+    "text": "Hey Zuzu, Uncle Karim here. I turn broken parts and wild ideas into machines that almost behave.",
+    "voice": "uncle_karim_greeting"
+  },
+  "dialogue_tree": [
+    {
+      "text": "Every build starts with a question: what problem are we solving? Show me the part, the load, and the risk, and we will make a plan before we touch the tools.",
+      "next": null
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "bike_safety_check",
+  "name": "Bike Safety Check",
+  "description": "Help Mrs. Ramirez give the bike a calm pre-ride check.",
+  "steps": [
+    {
+      "id": "talk_to_mrs_ramirez",
+      "description": "Talk with Mrs. Ramirez by the little bike.",
+      "completed": false
+    },
+    {
+      "id": "check_brakes",
+      "description": "Squeeze the brake levers and feel them catch.",
+      "completed": false
+    },
+    {
+      "id": "check_tires",
+      "description": "Press the tire and notice whether it feels ready.",
+      "completed": false
+    },
+    {
+      "id": "check_chain",
+      "description": "Turn the pedal slowly and watch the chain.",
+      "completed": false
+    },
+    {
+      "id": "report_safety_check",
+      "description": "Tell Mrs. Ramirez how the bike feels.",
+      "completed": false
+    }
+  ],
+  "success_dialogue": "That was careful work, Zuzu. Your bike will trust you for it.",
+  "reward_text": "You earned a small allowance boost, 5 reputation, and the Safety Star badge.",
+  "reward": {
+    "allowanceAmount": 0.25,
+    "badge": "Safety Star",
+    "reputation": 5
+  }
+}

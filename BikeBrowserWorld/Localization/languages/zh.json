@@ -1,0 +1,12 @@
+{
+  "greeting": "你好，%s！",
+  "quest_complete": "任务完成！",
+  "item_copper_ore": "铜矿石",
+  "item_copper_ore_desc": "一种含有铜的金属橙色岩石。",
+  "badge_earned": "获得徽章！",
+  "plants_found": {
+    "zero": "还没有发现植物。",
+    "one": "发现了 %d 种植物。",
+    "other": "发现了 %d 种植物。"
+  }
+}

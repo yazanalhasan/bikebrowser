@@ -1,0 +1,14 @@
+{
+  "id": "mom_intro",
+  "npc_id": "mom",
+  "greeting": {
+    "text": "Hi, love. Snacks are on the counter, helmet's by the door.",
+    "voice": "mom_greeting"
+  },
+  "dialogue_tree": [
+    {
+      "text": "You can be brave and careful at the same time. Tell me your plan first, then we'll see what needs grown-up hands.",
+      "next": null
+    }
+  ]
+}

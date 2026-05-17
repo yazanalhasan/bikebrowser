@@ -1,0 +1,70 @@
+{
+  "default": {
+    "pitch": 1.0,
+    "rate": 0.95,
+    "voiceHint": "neutral grounded",
+    "tone": "calm"
+  },
+  "speakers": {
+    "Mr. Chen": {
+      "pitch": 0.86,
+      "rate": 0.88,
+      "voiceHint": "older thoughtful",
+      "tone": "thoughtful"
+    },
+    "Mrs. Ramirez": {
+      "pitch": 1.08,
+      "rate": 0.98,
+      "voiceHint": "warm feminine",
+      "tone": "warm_practical"
+    },
+    "Ranger Nita": {
+      "pitch": 1.03,
+      "rate": 0.94,
+      "voiceHint": "calm outdoors",
+      "tone": "calm_outdoors"
+    },
+    "Dr. Maya": {
+      "pitch": 1.02,
+      "rate": 0.91,
+      "voiceHint": "measured thoughtful",
+      "tone": "measured"
+    },
+    "Old Miner Pete": {
+      "pitch": 0.9,
+      "rate": 0.86,
+      "voiceHint": "older grounded",
+      "tone": "unhurried"
+    },
+    "Zevon": {
+      "pitch": 1.0,
+      "rate": 0.96,
+      "voiceHint": "warm curious",
+      "tone": "curious"
+    },
+    "Jacob": {
+      "pitch": 0.96,
+      "rate": 0.94,
+      "voiceHint": "steady practical",
+      "tone": "steady"
+    },
+    "Charlie": {
+      "pitch": 1.06,
+      "rate": 1.0,
+      "voiceHint": "bright calm",
+      "tone": "bright"
+    },
+    "Cole": {
+      "pitch": 0.98,
+      "rate": 0.93,
+      "voiceHint": "calm direct",
+      "tone": "direct"
+    },
+    "James": {
+      "pitch": 0.95,
+      "rate": 0.92,
+      "voiceHint": "measured workshop",
+      "tone": "measured"
+    }
+  }
+}

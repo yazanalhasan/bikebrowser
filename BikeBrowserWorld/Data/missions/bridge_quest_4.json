@@ -1,0 +1,39 @@
+{
+  "id": "bridge_quest_4",
+  "name": "Build the Bridge",
+  "description": "Design and assemble a safer bridge so neighbors can cross the dry wash again.",
+  "quest_giver": "mr_chen",
+  "steps": [
+    {
+      "id": "choose_design",
+      "description": "Choose a bridge design: beam or truss.",
+      "completion_condition": "bridge_design_selected"
+    },
+    {
+      "id": "place_supports",
+      "description": "Place supports on stable ground.",
+      "completion_condition": "bridge_supports_placed"
+    },
+    {
+      "id": "lay_planks",
+      "description": "Lay the bridge planks across the supports.",
+      "completion_condition": "bridge_planks_placed"
+    },
+    {
+      "id": "secure_connections",
+      "description": "Secure the planks with brackets and rope.",
+      "completion_condition": "bridge_connections_secured"
+    },
+    {
+      "id": "walk_test",
+      "description": "Test the bridge by walking across carefully.",
+      "completion_condition": "player_crosses_rebuilt_bridge"
+    }
+  ],
+  "dialogue_refs": ["mr_chen_bridge.build_start", "mr_chen_bridge.build_complete"],
+  "reward": {
+    "allowance": 50,
+    "badge": "Bridge Engineer",
+    "reputation": 10
+  }
+}

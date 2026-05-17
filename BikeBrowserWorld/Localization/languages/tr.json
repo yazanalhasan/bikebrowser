@@ -1,0 +1,12 @@
+{
+  "greeting": "Merhaba, %s!",
+  "quest_complete": "Görev tamamlandı!",
+  "item_copper_ore": "Bakır cevheri",
+  "item_copper_ore_desc": "Bakır içeren metalik turuncu bir kaya.",
+  "badge_earned": "Rozet kazanıldı!",
+  "plants_found": {
+    "zero": "Hiç bitki bulunmadı.",
+    "one": "%d bitki bulundu.",
+    "other": "%d bitki bulundu."
+  }
+}

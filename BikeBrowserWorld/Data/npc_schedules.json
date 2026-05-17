@@ -1,0 +1,103 @@
+{
+  "schedules": [
+    {
+      "npc_id": "mr_chen",
+      "name": "Mr. Chen",
+      "location": "garage",
+      "time_blocks": {
+        "morning": { "time": "08:00-12:00", "animation": "welding", "pose": "working at workbench", "movement_path": [] },
+        "afternoon": { "time": "12:00-16:00", "animation": "blueprint_read", "pose": "talking to implied customer, then reading blueprint", "movement_path": [] },
+        "evening": { "time": "16:00-20:00", "animation": "clean_tools", "pose": "cleaning garage and putting tools away", "movement_path": [] },
+        "night": { "time": "20:00-08:00", "animation": "closed", "pose": "garage closed, light off", "movement_path": [] }
+      }
+    },
+    {
+      "npc_id": "mrs_ramirez",
+      "name": "Mrs. Ramirez",
+      "location": "neighborhood_street",
+      "time_blocks": {
+        "morning": { "time": "08:00-12:00", "animation": "watering_plants", "pose": "watering plants in garden", "movement_path": [] },
+        "afternoon": { "time": "12:00-16:00", "animation": "porch_reading", "pose": "sitting on porch reading or talking on phone", "movement_path": [] },
+        "evening": { "time": "16:00-20:00", "animation": "walk_return", "pose": "returning from invisible dog walk", "movement_path": [] },
+        "night": { "time": "20:00-08:00", "animation": "indoors", "pose": "inside home, porch light on", "movement_path": [] }
+      }
+    },
+    {
+      "npc_id": "miner_pete",
+      "name": "Miner Pete",
+      "location": "copper_mine",
+      "time_blocks": {
+        "morning": { "time": "08:00-12:00", "animation": "walk_to_mine", "pose": "entering mine", "movement_path": ["mine_yard", "mine_entrance"] },
+        "afternoon": { "time": "12:00-16:00", "animation": "sort_rocks", "pose": "sorting rocks and examining copper", "movement_path": [] },
+        "evening": { "time": "16:00-20:00", "animation": "tell_story", "pose": "sitting on crate telling stories", "movement_path": [] },
+        "night": { "time": "20:00-08:00", "animation": "off_shift", "pose": "mine yard quiet, lantern dim", "movement_path": [] }
+      }
+    },
+    {
+      "npc_id": "ranger_nita",
+      "name": "Ranger Nita",
+      "location": "desert_foraging",
+      "time_blocks": {
+        "morning": { "time": "08:00-12:00", "animation": "binoculars", "pose": "standing with binoculars looking at birds", "movement_path": [] },
+        "afternoon": { "time": "12:00-16:00", "animation": "inspect_plant", "pose": "kneeling near plant with magnifying glass", "movement_path": [] },
+        "evening": { "time": "16:00-20:00", "animation": "write_notebook", "pose": "writing in field notebook", "movement_path": [] },
+        "night": { "time": "20:00-08:00", "animation": "station_closed", "pose": "field station closed", "movement_path": [] }
+      }
+    },
+    {
+      "npc_id": "zevon",
+      "name": "Zevon",
+      "location": "garage_workshop",
+      "time_blocks": {
+        "morning": { "time": "08:00-12:00", "animation": "knead_rubber", "pose": "kneading rubber compound", "movement_path": [] },
+        "afternoon": { "time": "12:00-16:00", "animation": "test_tire_material", "pose": "stretch-testing tire material", "movement_path": [] },
+        "evening": { "time": "16:00-20:00", "animation": "label_samples", "pose": "labeling rubber samples", "movement_path": [] },
+        "night": { "time": "20:00-08:00", "animation": "idle_offscreen", "pose": "offscreen", "movement_path": [] }
+      }
+    },
+    {
+      "npc_id": "jacob",
+      "name": "Jacob",
+      "location": "garage_workshop",
+      "time_blocks": {
+        "morning": { "time": "08:00-12:00", "animation": "stoke_kiln", "pose": "stoking kiln", "movement_path": [] },
+        "afternoon": { "time": "12:00-16:00", "animation": "wipe_sweat", "pose": "checking kiln heat and wiping sweat", "movement_path": [] },
+        "evening": { "time": "16:00-20:00", "animation": "cool_charcoal", "pose": "sorting cooled charcoal", "movement_path": [] },
+        "night": { "time": "20:00-08:00", "animation": "idle_offscreen", "pose": "offscreen", "movement_path": [] }
+      }
+    },
+    {
+      "npc_id": "charlie",
+      "name": "Charlie",
+      "location": "garage_workshop",
+      "time_blocks": {
+        "morning": { "time": "08:00-12:00", "animation": "solder_board", "pose": "soldering circuit board", "movement_path": [] },
+        "afternoon": { "time": "12:00-16:00", "animation": "adjust_wires", "pose": "adjusting wires and checking continuity", "movement_path": [] },
+        "evening": { "time": "16:00-20:00", "animation": "debug_circuit", "pose": "testing blinking LED circuit", "movement_path": [] },
+        "night": { "time": "20:00-08:00", "animation": "idle_offscreen", "pose": "offscreen", "movement_path": [] }
+      }
+    },
+    {
+      "npc_id": "cole",
+      "name": "Cole",
+      "location": "garage_workshop",
+      "time_blocks": {
+        "morning": { "time": "08:00-12:00", "animation": "pour_beaker", "pose": "pouring liquid into beaker", "movement_path": [] },
+        "afternoon": { "time": "12:00-16:00", "animation": "check_meter", "pose": "checking voltage meter", "movement_path": [] },
+        "evening": { "time": "16:00-20:00", "animation": "label_cells", "pose": "labeling safe battery cells", "movement_path": [] },
+        "night": { "time": "20:00-08:00", "animation": "idle_offscreen", "pose": "offscreen", "movement_path": [] }
+      }
+    },
+    {
+      "npc_id": "james",
+      "name": "James",
+      "location": "garage_workshop",
+      "time_blocks": {
+        "morning": { "time": "08:00-12:00", "animation": "shake_flask", "pose": "shaking flask", "movement_path": [] },
+        "afternoon": { "time": "12:00-16:00", "animation": "inspect_powder", "pose": "inspecting powder color", "movement_path": [] },
+        "evening": { "time": "16:00-20:00", "animation": "record_formula", "pose": "writing refinement notes", "movement_path": [] },
+        "night": { "time": "20:00-08:00", "animation": "idle_offscreen", "pose": "offscreen", "movement_path": [] }
+      }
+    }
+  ]
+}

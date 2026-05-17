@@ -1,0 +1,46 @@
+[gd_scene load_steps=2 format=3 uid="uid://bikebrowser_boot"]
+
+[ext_resource type="Script" path="res://Regions/Boot/Boot.gd" id="1_boot"]
+
+[node name="Boot" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_boot")
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="Panel" parent="Center"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Center/Panel/VBox"]
+layout_mode = 2
+text = "BikeBrowserWorld"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Center/Panel/VBox"]
+layout_mode = 2
+text = "A warm garage adventure at dusk"
+horizontal_alignment = 1
+
+[node name="AudioUnlockHint" type="Label" parent="Center/Panel/VBox"]
+layout_mode = 2
+text = "Press any key or click Start to wake the world"
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="Center/Panel/VBox"]
+layout_mode = 2
+text = "Press Any Key To Start"
+
+[node name="ContinueButton" type="Button" parent="Center/Panel/VBox"]
+layout_mode = 2
+text = "Continue"

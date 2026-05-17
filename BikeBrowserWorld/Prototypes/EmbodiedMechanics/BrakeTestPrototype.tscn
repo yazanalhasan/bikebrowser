@@ -1,0 +1,267 @@
+[gd_scene load_steps=3 format=3 uid="uid://brake_test_micro_prototype"]
+
+[ext_resource type="Script" path="res://Prototypes/EmbodiedMechanics/BrakeTestPrototype.gd" id="1_scene"]
+[ext_resource type="Script" path="res://Prototypes/EmbodiedMechanics/BrakeRig.gd" id="2_rig"]
+
+[node name="BrakeTestPrototype" type="Node2D"]
+script = ExtResource("1_scene")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+offset_left = -320.0
+offset_top = -180.0
+offset_right = 320.0
+offset_bottom = 180.0
+color = Color(0.09, 0.105, 0.12, 1)
+
+[node name="InstructionHint" type="Label" parent="."]
+offset_left = -72.0
+offset_top = -150.0
+offset_right = 108.0
+offset_bottom = -126.0
+text = "Hold E or Enter"
+
+[node name="BrakeRig" type="Node2D" parent="."]
+script = ExtResource("2_rig")
+wheel_path = NodePath("Wheel")
+lever_path = NodePath("BrakeLever")
+cable_path = NodePath("BrakeCable")
+cable_slack_path = NodePath("CableSlack")
+cable_pull_arrow_path = NodePath("CablePullArrow")
+caliper_left_path = NodePath("CaliperLeft")
+caliper_right_path = NodePath("CaliperRight")
+pad_left_path = NodePath("CaliperLeft/PadLeft")
+pad_right_path = NodePath("CaliperRight/PadRight")
+contact_path = NodePath("ContactPoint")
+contact_pinch_path = NodePath("ContactPinch")
+compression_glow_path = NodePath("CompressionGlow")
+friction_band_path = NodePath("FrictionBand")
+force_path_path = NodePath("ForcePath")
+lever_resistance_arc_path = NodePath("LeverResistanceArc")
+cable_load_mark_path = NodePath("CableLoadMark")
+spin_ghost_path = NodePath("Wheel/SpinGhost")
+verification_label_path = NodePath("Labels/VerificationLabel")
+brake_lever_label_path = NodePath("Labels/BrakeLeverLabel")
+cable_label_path = NodePath("Labels/CableLabel")
+caliper_label_path = NodePath("Labels/CaliperLabel")
+wheel_label_path = NodePath("Labels/WheelLabel")
+
+[node name="ForcePath" type="Line2D" parent="BrakeRig"]
+visible = false
+points = PackedVector2Array(-176, -78, -112, -54, -24, -18, 92, 12, 116, 52)
+width = 9.0
+default_color = Color(1, 0.72, 0.36, 0.24)
+
+[node name="BikeFrame" type="Line2D" parent="BrakeRig"]
+points = PackedVector2Array(-210, 58, -72, -18, 62, 58, -210, 58, -72, -18, 18, -72, 62, 58)
+width = 9.0
+default_color = Color(0.92, 0.58, 0.30, 1)
+
+[node name="FrameJointA" type="ColorRect" parent="BrakeRig"]
+offset_left = -78.0
+offset_top = -24.0
+offset_right = -66.0
+offset_bottom = -12.0
+color = Color(1, 0.78, 0.45, 1)
+
+[node name="FrameJointB" type="ColorRect" parent="BrakeRig"]
+offset_left = 56.0
+offset_top = 52.0
+offset_right = 68.0
+offset_bottom = 64.0
+color = Color(1, 0.78, 0.45, 1)
+
+[node name="Wheel" type="Node2D" parent="BrakeRig"]
+position = Vector2(160, 58)
+
+[node name="SpinGhost" type="Line2D" parent="BrakeRig/Wheel"]
+points = PackedVector2Array(62, 0, 53.69, 31, 31, 53.69, 0, 62, -31, 53.69, -53.69, 31, -62, 0, -53.69, -31, -31, -53.69, 0, -62, 31, -53.69, 53.69, -31, 62, 0)
+width = 10.0
+default_color = Color(0.52, 0.76, 0.90, 0.20)
+
+[node name="Rim" type="Line2D" parent="BrakeRig/Wheel"]
+points = PackedVector2Array(60, 0, 51.96, 30, 30, 51.96, 0, 60, -30, 51.96, -51.96, 30, -60, 0, -51.96, -30, -30, -51.96, 0, -60, 30, -51.96, 51.96, -30, 60, 0)
+width = 7.0
+default_color = Color(0.76, 0.82, 0.84, 1)
+
+[node name="SpokeA" type="Line2D" parent="BrakeRig/Wheel"]
+points = PackedVector2Array(-54, 0, 54, 0)
+width = 3.0
+default_color = Color(0.48, 0.56, 0.60, 1)
+
+[node name="SpokeB" type="Line2D" parent="BrakeRig/Wheel"]
+rotation = 1.5708
+points = PackedVector2Array(-54, 0, 54, 0)
+width = 3.0
+default_color = Color(0.48, 0.56, 0.60, 1)
+
+[node name="SpokeC" type="Line2D" parent="BrakeRig/Wheel"]
+rotation = 0.785398
+points = PackedVector2Array(-54, 0, 54, 0)
+width = 3.0
+default_color = Color(0.48, 0.56, 0.60, 1)
+
+[node name="SpokeD" type="Line2D" parent="BrakeRig/Wheel"]
+rotation = -0.785398
+points = PackedVector2Array(-54, 0, 54, 0)
+width = 3.0
+default_color = Color(0.48, 0.56, 0.60, 1)
+
+[node name="Rotor" type="Line2D" parent="BrakeRig/Wheel"]
+points = PackedVector2Array(28, 0, 24.25, 14, 14, 24.25, 0, 28, -14, 24.25, -24.25, 14, -28, 0, -24.25, -14, -14, -24.25, 0, -28, 14, -24.25, 24.25, -14, 28, 0)
+width = 4.0
+default_color = Color(0.93, 0.86, 0.72, 1)
+
+[node name="BrakeLever" type="Line2D" parent="BrakeRig"]
+position = Vector2(-212, -92)
+points = PackedVector2Array(0, 0, 56, 24)
+width = 10.0
+default_color = Color(0.88, 0.94, 0.92, 1)
+
+[node name="Handlebar" type="Line2D" parent="BrakeRig"]
+points = PackedVector2Array(-238, -96, -164, -96)
+width = 10.0
+default_color = Color(0.44, 0.56, 0.58, 1)
+
+[node name="Grip" type="ColorRect" parent="BrakeRig"]
+offset_left = -250.0
+offset_top = -104.0
+offset_right = -214.0
+offset_bottom = -88.0
+color = Color(0.16, 0.21, 0.21, 1)
+
+[node name="LeverResistanceArc" type="Line2D" parent="BrakeRig"]
+visible = false
+points = PackedVector2Array(-212, -92, -198, -78, -180, -69, -160, -68)
+width = 5.0
+default_color = Color(0.86, 0.95, 0.86, 0.22)
+
+[node name="LeverPivot" type="ColorRect" parent="BrakeRig"]
+offset_left = -218.0
+offset_top = -98.0
+offset_right = -206.0
+offset_bottom = -86.0
+color = Color(0.92, 0.86, 0.70, 1)
+
+[node name="BrakeCable" type="Line2D" parent="BrakeRig"]
+points = PackedVector2Array(-156, -70, -74, -42, 104, 8)
+width = 6.0
+default_color = Color(0.62, 0.72, 0.86, 0.58)
+
+[node name="CableSlack" type="Line2D" parent="BrakeRig"]
+points = PackedVector2Array(-156, -70, -86, -24, 104, 8)
+width = 4.0
+default_color = Color(0.42, 0.50, 0.58, 0.44)
+
+[node name="CablePullArrow" type="Line2D" parent="BrakeRig"]
+visible = false
+position = Vector2(-92, -42)
+points = PackedVector2Array(0, 0, 24, 7, 17, -4, 24, 7, 10, 12)
+width = 4.0
+default_color = Color(1, 0.79, 0.42, 0.65)
+
+[node name="CableLoadMark" type="Line2D" parent="BrakeRig"]
+visible = false
+position = Vector2(-18, -24)
+points = PackedVector2Array(-18, -5, 18, 5)
+width = 7.0
+default_color = Color(0.84, 0.94, 1, 0.35)
+
+[node name="CaliperBridge" type="Line2D" parent="BrakeRig"]
+points = PackedVector2Array(124, 2, 160, -10, 196, 2)
+width = 6.0
+default_color = Color(0.58, 0.66, 0.68, 1)
+
+[node name="CaliperLeft" type="Line2D" parent="BrakeRig"]
+position = Vector2(124, 2)
+points = PackedVector2Array(0, 0, 28, 50)
+width = 8.0
+default_color = Color(0.70, 0.76, 0.78, 1)
+
+[node name="PadLeft" type="ColorRect" parent="BrakeRig/CaliperLeft"]
+offset_left = 22.0
+offset_top = 42.0
+offset_right = 42.0
+offset_bottom = 54.0
+color = Color(0.13, 0.14, 0.13, 1)
+
+[node name="CaliperRight" type="Line2D" parent="BrakeRig"]
+position = Vector2(196, 2)
+points = PackedVector2Array(0, 0, -28, 50)
+width = 8.0
+default_color = Color(0.70, 0.76, 0.78, 1)
+
+[node name="PadRight" type="ColorRect" parent="BrakeRig/CaliperRight"]
+offset_left = -42.0
+offset_top = 42.0
+offset_right = -22.0
+offset_bottom = 54.0
+color = Color(0.13, 0.14, 0.13, 1)
+
+[node name="ContactPoint" type="ColorRect" parent="BrakeRig"]
+visible = false
+offset_left = 148.0
+offset_top = 50.0
+offset_right = 172.0
+offset_bottom = 58.0
+color = Color(1, 0.78, 0.42, 0.4)
+
+[node name="ContactPinch" type="Line2D" parent="BrakeRig"]
+visible = false
+points = PackedVector2Array(132, 43, 150, 57, 170, 57, 188, 43)
+width = 7.0
+default_color = Color(0.96, 0.84, 0.58, 0.38)
+
+[node name="CompressionGlow" type="ColorRect" parent="BrakeRig"]
+visible = false
+offset_left = 134.0
+offset_top = 38.0
+offset_right = 186.0
+offset_bottom = 72.0
+color = Color(1, 0.72, 0.34, 0.18)
+
+[node name="FrictionBand" type="Line2D" parent="BrakeRig"]
+visible = false
+position = Vector2(160, 58)
+points = PackedVector2Array(44, 0, 38.1, 22, 22, 38.1, 0, 44, -22, 38.1, -38.1, 22, -44, 0, -38.1, -22, -22, -38.1, 0, -44, 22, -38.1, 38.1, -22, 44, 0)
+width = 8.0
+default_color = Color(0.92, 0.70, 0.42, 0.18)
+
+[node name="Labels" type="Node2D" parent="BrakeRig"]
+
+[node name="BrakeLeverLabel" type="Label" parent="BrakeRig/Labels"]
+offset_left = -260.0
+offset_top = -142.0
+offset_right = -150.0
+offset_bottom = -118.0
+text = "Brake lever"
+
+[node name="CableLabel" type="Label" parent="BrakeRig/Labels"]
+visible = false
+offset_left = -84.0
+offset_top = -72.0
+offset_right = -28.0
+offset_bottom = -48.0
+text = "Cable"
+
+[node name="CaliperLabel" type="Label" parent="BrakeRig/Labels"]
+visible = false
+offset_left = 114.0
+offset_top = -52.0
+offset_right = 184.0
+offset_bottom = -28.0
+text = "Caliper"
+
+[node name="WheelLabel" type="Label" parent="BrakeRig/Labels"]
+offset_left = 190.0
+offset_top = 112.0
+offset_right = 244.0
+offset_bottom = 136.0
+text = "Wheel"
+
+[node name="VerificationLabel" type="Label" parent="BrakeRig/Labels"]
+visible = false
+offset_left = 110.0
+offset_top = -148.0
+offset_right = 228.0
+offset_bottom = -124.0
+text = "Brake works"

@@ -1,0 +1,46 @@
+{
+  "id": "garage-kit-v1",
+  "style": "warm 2.5D Sonoran garage adventure",
+  "tileSize": 32,
+  "perspective": "angled top-down / isometric-inspired",
+  "layers": [
+    "FloorLayer",
+    "WallLayer",
+    "ShadowLayer",
+    "PropLayer",
+    "InteractableLayer",
+    "LightingLayer",
+    "FXLayer",
+    "NPCLayer",
+    "PlayerLayer"
+  ],
+  "assets": {
+    "garageFloor": "res://Assets/Environment/GarageKit/garage_floor.svg",
+    "garageWalls": "res://Assets/Environment/GarageKit/garage_walls.svg",
+    "workbench": "res://Assets/Environment/GarageKit/workbench.svg",
+    "pegboard": "res://Assets/Environment/GarageKit/pegboard.svg",
+    "rug": "res://Assets/Environment/GarageKit/rug.svg",
+    "bikeStand": "res://Assets/Environment/GarageKit/bike_stand.svg",
+    "lampGlow": "res://Assets/Environment/GarageKit/lamp_glow.svg"
+  },
+  "asepriteSources": {
+    "garageFloorTiles": "res://Assets/Environment/GarageKit/garage_floor_tiles.aseprite",
+    "garageWallTiles": "res://Assets/Environment/GarageKit/garage_wall_tiles.aseprite",
+    "garageProps": "res://Assets/Environment/GarageKit/garage_props.aseprite",
+    "toolWall": "res://Assets/Environment/GarageKit/tool_wall.aseprite",
+    "bikeStand": "res://Assets/Environment/GarageKit/bike_stand.aseprite",
+    "workbench": "res://Assets/Environment/GarageKit/workbench.aseprite",
+    "garageLighting": "res://Assets/Environment/GarageKit/garage_lighting.aseprite"
+  },
+  "exports": {
+    "spritesheets": "res://Assets/Exports/Spritesheets",
+    "tilesets": "res://Assets/Exports/Tilesets"
+  },
+  "rules": [
+    "Use warm light against cool dusk edges.",
+    "Keep interactables readable from silhouette alone.",
+    "Cluster tools and notes near work zones.",
+    "Keep Zuzu and NPCs on y-sorted character layers.",
+    "Prefer Aseprite-authored sheets and modular kit props over raw debug polygons."
+  ]
+}

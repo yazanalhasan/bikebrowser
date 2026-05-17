@@ -1,0 +1,7 @@
+{
+  "Mr. Chen": {"role": "mentor", "region": "garage"},
+  "Mrs. Ramirez": {"role": "mentor", "region": "neighborhood"},
+  "Miner Pete": {"role": "mentor", "region": "mine"},
+  "Ranger Nita": {"role": "guide", "region": "desert"},
+  "Dr. Maya": {"role": "scientist", "region": "river"}
+}

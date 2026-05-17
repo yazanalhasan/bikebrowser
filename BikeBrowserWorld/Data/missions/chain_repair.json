@@ -1,0 +1,46 @@
+{
+  "id": "chain_repair",
+  "title": "Mr. Chen's Slipped Chain",
+  "domain": "mechanics",
+  "giver": "mr_chen",
+  "regionId": "neighborhood_street",
+  "steps": [
+    {
+      "id": "talk_to_mr_chen",
+      "type": "dialogue",
+      "text": "Mr. Chen hears a chain clunk worth checking."
+    },
+    {
+      "id": "inspect_chain",
+      "type": "inspect",
+      "text": "Look closely at the chain path."
+    },
+    {
+      "id": "rotate_pedals",
+      "type": "repair",
+      "text": "Turn the pedals and listen for the slip."
+    },
+    {
+      "id": "align_chain",
+      "type": "repair",
+      "text": "Guide the chain back toward the teeth."
+    },
+    {
+      "id": "seat_chain",
+      "type": "repair",
+      "text": "Settle the links onto the sprocket."
+    },
+    {
+      "id": "test_rotation",
+      "type": "repair",
+      "text": "Spin once more and listen for quiet."
+    }
+  ],
+  "reward": {
+    "domain": "mechanics",
+    "label": "Quiet chain repair",
+    "allowanceAmount": 1.0,
+    "currency": "allowance_usd",
+    "badge": "Chain Detective"
+  }
+}

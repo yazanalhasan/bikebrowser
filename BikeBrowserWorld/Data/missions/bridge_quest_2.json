@@ -1,0 +1,39 @@
+{
+  "id": "bridge_quest_2",
+  "name": "Gather Materials",
+  "description": "Collect usable repair supplies from around the neighborhood and bring them to the garage.",
+  "quest_giver": "mr_chen",
+  "steps": [
+    {
+      "id": "talk_to_shopkeeper",
+      "description": "Ask the Shopkeeper which materials are safe to reuse.",
+      "completion_condition": "shopkeeper_material_advice_complete"
+    },
+    {
+      "id": "collect_wood_planks",
+      "description": "Collect 3 wood planks from old pallets.",
+      "completion_condition": "inventory_has:wood_plank:3"
+    },
+    {
+      "id": "collect_metal_brackets",
+      "description": "Collect 2 metal brackets from the garage parts bin.",
+      "completion_condition": "inventory_has:metal_bracket:2"
+    },
+    {
+      "id": "collect_rope_coil",
+      "description": "Collect a rope coil from the dry wash.",
+      "completion_condition": "inventory_has:rope_coil:1"
+    },
+    {
+      "id": "return_materials",
+      "description": "Return the materials to the garage work table.",
+      "completion_condition": "materials_deposited_at_garage"
+    }
+  ],
+  "dialogue_refs": ["mr_chen_bridge.gather_start", "mr_chen_bridge.gather_complete"],
+  "reward": {
+    "allowance": 20,
+    "badge": null,
+    "reputation": 4
+  }
+}

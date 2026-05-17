@@ -1,0 +1,34 @@
+{
+  "id": "bridge_quest_5",
+  "name": "Celebrate and Learn",
+  "description": "Celebrate the rebuilt bridge, learn why triangles make structures stronger, and unlock the neighborhood across the wash.",
+  "quest_giver": "mr_chen",
+  "steps": [
+    {
+      "id": "talk_to_neighbors",
+      "description": "Talk to three grateful neighbors near the new bridge.",
+      "completion_condition": "bridge_neighbors_thanked:3"
+    },
+    {
+      "id": "receive_badge",
+      "description": "Receive the Bridge Builder badge.",
+      "completion_condition": "badge_awarded:Bridge Builder"
+    },
+    {
+      "id": "unlock_new_area",
+      "description": "Cross the bridge to unlock the new area.",
+      "completion_condition": "region_unlocked:across_bridge"
+    },
+    {
+      "id": "learn_triangles",
+      "description": "Listen to Mr. Chen explain how triangles distribute force.",
+      "completion_condition": "mr_chen_triangle_lesson_complete"
+    }
+  ],
+  "dialogue_refs": ["mr_chen_bridge.celebrate_start", "mr_chen_bridge.triangle_lesson"],
+  "reward": {
+    "allowance": 25,
+    "badge": "Bridge Builder",
+    "reputation": 12
+  }
+}

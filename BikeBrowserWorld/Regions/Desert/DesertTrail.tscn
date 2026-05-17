@@ -1,0 +1,80 @@
+[gd_scene load_steps=12 format=3 uid="uid://bikebrowser_desert_trail"]
+
+[ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
+[ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
+[ext_resource type="Script" path="res://Systems/World/TransitionZone.gd" id="3_transition"]
+[ext_resource type="PackedScene" path="res://Regions/NPCs/RangerNitaNpc.tscn" id="4_ranger"]
+[ext_resource type="SpriteFrames" path="res://Assets/Characters/Zuzu/Zuzu.spriteframes.tres" id="5_zuzu_frames"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Desert/trail_marker_sign.png" id="6_trail_sign"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Desert/barrel_cactus.png" id="7_barrel"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Desert/agave.png" id="8_agave"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Desert/mesquite_tree.png" id="9_mesquite"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 18.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
+size = Vector2(160, 72)
+
+[node name="DesertTrail" type="Node2D"]
+script = ExtResource("1_region")
+region_id = "desert_trail"
+layout_path = "res://Data/layouts/desert_trail.json"
+
+[node name="Background" type="Polygon2D" parent="."]
+
+[node name="Trail" type="Polygon2D" parent="."]
+
+[node name="TrailMarker" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("6_trail_sign")
+
+[node name="BarrelCactusA" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("7_barrel")
+
+[node name="BarrelCactusB" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("7_barrel")
+
+[node name="AgaveA" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("8_agave")
+
+[node name="MesquiteTree" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("9_mesquite")
+
+[node name="RangerNitaNpc" parent="." instance=ExtResource("4_ranger")]
+
+[node name="BackToNeighborhood" type="Area2D" parent="."]
+script = ExtResource("3_transition")
+target_region = "neighborhood_street"
+target_spawn = "from_desert"
+require_accept = false
+feedback_message = "Zuzu rides back from the desert trail."
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BackToNeighborhood"]
+shape = SubResource("RectangleShape2D_exit")
+
+[node name="Prompt" type="Label" parent="BackToNeighborhood"]
+text = "Neighborhood"
+horizontal_alignment = 1
+
+[node name="Player" type="CharacterBody2D" parent="."]
+script = ExtResource("2_zuzu")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Player"]
+texture_filter = 1
+position = Vector2(0, -32)
+scale = Vector2(1.15, 1.15)
+sprite_frames = ExtResource("5_zuzu_frames")
+animation = &"idle_down"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+enabled = true
+process_callback = 0
+position_smoothing_enabled = true

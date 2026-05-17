@@ -1,0 +1,34 @@
+{
+  "id": "mine_cart_repair",
+  "name": "Fix the Mine Cart",
+  "description": "Help Old Miner Pete repair an old mine cart by inspecting the broken wheel, finding a replacement, installing it, and testing the cart safely.",
+  "steps": [
+    {
+      "id": "inspect_broken_wheel",
+      "description": "Inspect the cart wheel and identify the cracked rim or stuck axle.",
+      "completed": false
+    },
+    {
+      "id": "find_replacement_wheel",
+      "description": "Find a replacement wheel or usable wheel parts near the mine storage area.",
+      "completed": false
+    },
+    {
+      "id": "install_wheel",
+      "description": "Install the replacement wheel and tighten the axle hardware.",
+      "completed": false
+    },
+    {
+      "id": "test_cart",
+      "description": "Push the cart a short distance on the tracks and check for wobble.",
+      "completed": false
+    }
+  ],
+  "completion_dialogue": "There she rolls. A cart is simple, but simple things still deserve careful work.",
+  "reward_text": "You earned 35 ZuzuBucks, 8 reputation, and the Cart Mechanic badge.",
+  "reward": {
+    "allowance": 35,
+    "badge": "Cart Mechanic",
+    "reputation": 8
+  }
+}

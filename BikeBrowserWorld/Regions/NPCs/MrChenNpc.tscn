@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://bikebrowser_mr_chen_npc_scene"]
+
+[ext_resource type="Script" path="res://Systems/Interactions/AnimatedNpcInteraction.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://Assets/Characters/NPCs/MrChen/mr_chen_spriteframes.tres" id="2_frames"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interaction"]
+radius = 64.0
+
+[node name="MrChenNpc" type="Area2D"]
+script = ExtResource("1_script")
+npc_id = "mr_chen"
+dialogue_id = "mr_chen_chain"
+feedback_message = "Mr. Chen glances at the bike first, then back to Zuzu."
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -48)
+sprite_frames = ExtResource("2_frames")
+animation = &"mr_chen_idle_down"
+
+[node name="InteractionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CircleShape2D_interaction")

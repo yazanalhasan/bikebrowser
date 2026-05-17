@@ -1,0 +1,17 @@
+{
+  "spawns": {
+    "default": { "x": 0, "y": 120 },
+    "from_neighborhood": { "x": 0, "y": 160 }
+  },
+  "nodes": {
+    "Background": { "x": -960, "y": -540, "w": 1920, "h": 1080, "color": "#3d332d" },
+    "Ground": { "x": -620, "y": -360, "w": 1240, "h": 720, "color": "#6f5c4a" },
+    "MineEntrance": { "x": 0, "y": -190, "scale": 1.2, "z": 0 },
+    "OreA": { "x": -220, "y": 80, "scale": 0.9, "z": 2 },
+    "OreB": { "x": 220, "y": 120, "scale": 0.85, "z": 2 },
+    "MineCart": { "x": 250, "y": -20, "scale": 0.9, "z": 3 },
+    "OldMinerPeteNpc": { "x": 0, "y": -40, "scale": 1.0 },
+    "BackToNeighborhood": { "x": 0, "y": 390, "w": 220, "h": 96 },
+    "BackToNeighborhood/Prompt": { "x": -70, "y": -80, "w": 140, "h": 28 }
+  }
+}

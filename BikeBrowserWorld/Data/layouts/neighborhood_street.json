@@ -1,0 +1,1100 @@
+{
+  "spawns": {
+    "default": {
+      "x": 0,
+      "y": 0
+    },
+    "from_garage": {
+      "x": 35,
+      "y": 0
+    },
+    "from_mine": {
+      "x": -480,
+      "y": 120
+    },
+    "from_desert": {
+      "x": 480,
+      "y": 120
+    },
+    "from_river": {
+      "x": 0,
+      "y": 300
+    }
+  },
+  "nodes": {
+    "Background": {
+      "x": -960,
+      "y": -540,
+      "w": 1920,
+      "h": 1080,
+      "color": "#71546f"
+    },
+    "MapFrame": {
+      "x": -600,
+      "y": -360,
+      "w": 1200,
+      "h": 720,
+      "color": "#b78958"
+    },
+    "TopGrass": {
+      "x": -584,
+      "y": -344,
+      "w": 1168,
+      "h": 300,
+      "color": "#6f9f45"
+    },
+    "BottomGrass": {
+      "x": -584,
+      "y": 144,
+      "w": 1168,
+      "h": 200,
+      "color": "#638f3d"
+    },
+    "SkyBand": {
+      "x": -584,
+      "y": -360,
+      "w": 1168,
+      "h": 18,
+      "color": "#e7a765"
+    },
+    "Road": {
+      "x": -584,
+      "y": -28,
+      "w": 1168,
+      "h": 172,
+      "color": "#25313b"
+    },
+    "TopSidewalk": {
+      "x": -584,
+      "y": -52,
+      "w": 1168,
+      "h": 24,
+      "color": "#c9b995"
+    },
+    "Sidewalk": {
+      "x": -584,
+      "y": -52,
+      "w": 1168,
+      "h": 24,
+      "color": "#c9b995"
+    },
+    "BottomSidewalk": {
+      "x": -584,
+      "y": 144,
+      "w": 1168,
+      "h": 24,
+      "color": "#d3c1a1"
+    },
+    "RoadLineA": {
+      "x": -360,
+      "y": 58,
+      "w": 34,
+      "h": 5,
+      "color": "#eac85a",
+      "shape": "soft"
+    },
+    "RoadLineB": {
+      "x": -180,
+      "y": 58,
+      "w": 34,
+      "h": 5,
+      "color": "#eac85a",
+      "shape": "soft"
+    },
+    "RoadLineC": {
+      "x": 0,
+      "y": 58,
+      "w": 34,
+      "h": 5,
+      "color": "#eac85a",
+      "shape": "soft"
+    },
+    "RoadLineD": {
+      "x": 180,
+      "y": 58,
+      "w": 34,
+      "h": 5,
+      "color": "#eac85a",
+      "shape": "soft"
+    },
+    "GarageMarker": {
+      "x": 210,
+      "y": -260,
+      "w": 220,
+      "h": 170,
+      "color": "#9bcfe7"
+    },
+    "RamirezHouse": {
+      "x": -420,
+      "y": -260,
+      "w": 220,
+      "h": 170,
+      "color": "#eb927f"
+    },
+    "WorkshopHouse": {
+      "x": 210,
+      "y": -260,
+      "w": 220,
+      "h": 170,
+      "color": "#9bcfe7"
+    },
+    "ZuzuHouseRoof": {
+      "x": -70,
+      "y": -330,
+      "w": 210,
+      "h": 76,
+      "color": "#785743",
+      "shape": "triangle"
+    },
+    "RamirezHouseRoof": {
+      "x": -426,
+      "y": -330,
+      "w": 232,
+      "h": 84,
+      "color": "#d6302f",
+      "shape": "triangle"
+    },
+    "WorkshopHouseRoof": {
+      "x": 204,
+      "y": -330,
+      "w": 232,
+      "h": 84,
+      "color": "#2765bf",
+      "shape": "triangle"
+    },
+    "PorchGlow": {
+      "x": -382,
+      "y": -204,
+      "w": 160,
+      "h": 96,
+      "color": "#ffd27788"
+    },
+    "Driveway": {
+      "x": 240,
+      "y": -90,
+      "w": 150,
+      "h": 40,
+      "color": "#b8b0a1",
+      "shape": "soft"
+    },
+    "Fence": {
+      "x": -150,
+      "y": -238
+    },
+    "Fence/FenceRail": {
+      "x": 0,
+      "y": 22,
+      "w": 260,
+      "h": 10,
+      "color": "#e0a06c"
+    },
+    "Fence/FencePostA": {
+      "x": 20,
+      "y": 0,
+      "w": 18,
+      "h": 56,
+      "color": "#f0ad74"
+    },
+    "Fence/FencePostB": {
+      "x": 124,
+      "y": 0,
+      "w": 18,
+      "h": 56,
+      "color": "#f0ad74"
+    },
+    "Fence/FencePostC": {
+      "x": 232,
+      "y": 0,
+      "w": 18,
+      "h": 56,
+      "color": "#f0ad74"
+    },
+    "DesertPlants": {
+      "x": 0,
+      "y": 0
+    },
+    "DesertPlants/CactusA": {
+      "x": 430,
+      "y": -190,
+      "w": 28,
+      "h": 76,
+      "color": "#4e9f68",
+      "shape": "soft"
+    },
+    "DesertPlants/CactusArmA": {
+      "x": 456,
+      "y": -162,
+      "w": 30,
+      "h": 14,
+      "color": "#4e9f68",
+      "shape": "soft"
+    },
+    "DesertPlants/CactusB": {
+      "x": -520,
+      "y": 16,
+      "w": 20,
+      "h": 50,
+      "color": "#5fb77e",
+      "shape": "soft"
+    },
+    "DesertPlants/DesertRockA": {
+      "x": 405,
+      "y": 258,
+      "w": 52,
+      "h": 22,
+      "color": "#b09377",
+      "shape": "soft"
+    },
+    "DesertPlants/DesertRockB": {
+      "x": 445,
+      "y": 246,
+      "w": 32,
+      "h": 18,
+      "color": "#7f7369",
+      "shape": "soft"
+    },
+    "BikeRamp": {
+      "x": 88,
+      "y": 150
+    },
+    "BikeRamp/RampDeck": {
+      "x": 0,
+      "y": 0,
+      "w": 100,
+      "h": 28,
+      "color": "#a76d44",
+      "shape": "triangle"
+    },
+    "BikeRamp/RampSide": {
+      "x": 12,
+      "y": 20,
+      "w": 78,
+      "h": 12,
+      "color": "#68432e"
+    },
+    "TireTracks": {
+      "x": 0,
+      "y": 0
+    },
+    "TireTracks/TrackA": {
+      "x": -70,
+      "y": 134,
+      "w": 170,
+      "h": 7,
+      "color": "#151b22aa",
+      "shape": "soft"
+    },
+    "TireTracks/TrackB": {
+      "x": -80,
+      "y": 158,
+      "w": 190,
+      "h": 7,
+      "color": "#151b22aa",
+      "shape": "soft"
+    },
+    "GroundPropLayer/ChalkHopscotch": {
+      "x": 20,
+      "y": 190,
+      "z": 0
+    },
+    "GroundPropLayer/ChalkSun": {
+      "x": 120,
+      "y": 238,
+      "z": 0
+    },
+    "BehindPropLayer/SaguaroCactusA": {
+      "x": -500,
+      "y": -150,
+      "scale": 0.78,
+      "z": -2
+    },
+    "BehindPropLayer/SaguaroCactusB": {
+      "x": 500,
+      "y": 172,
+      "scale": 0.88,
+      "z": -2
+    },
+    "BehindPropLayer/PorchLight": {
+      "x": -320,
+      "y": -210,
+      "z": 2
+    },
+    "MidPropLayer/PricklyPearA": {
+      "x": -380,
+      "y": 198,
+      "z": 2
+    },
+    "MidPropLayer/PricklyPearB": {
+      "x": 370,
+      "y": 196,
+      "z": 2
+    },
+    "MidPropLayer/PricklyPearC": {
+      "x": -300,
+      "y": -210,
+      "scale": 0.82,
+      "z": 1
+    },
+    "MidPropLayer/CreosoteBushA": {
+      "x": -170,
+      "y": 178,
+      "z": 1
+    },
+    "MidPropLayer/CreosoteBushB": {
+      "x": 260,
+      "y": 176,
+      "z": 1
+    },
+    "MidPropLayer/DesertRockClusterA": {
+      "x": 420,
+      "y": 260,
+      "z": 2
+    },
+    "MidPropLayer/DesertRockClusterB": {
+      "x": -430,
+      "y": 260,
+      "z": 2
+    },
+    "ForegroundPropLayer/FenceSegmentA": {
+      "x": -220,
+      "y": -260,
+      "scale": 0.9,
+      "z": 3
+    },
+    "ForegroundPropLayer/FenceSegmentB": {
+      "x": -120,
+      "y": -260,
+      "scale": 0.9,
+      "z": 3
+    },
+    "ForegroundPropLayer/FenceSegmentC": {
+      "x": -20,
+      "y": -260,
+      "scale": 0.9,
+      "z": 3
+    },
+    "ForegroundPropLayer/FenceSegmentD": {
+      "x": 80,
+      "y": -260,
+      "scale": 0.9,
+      "z": 3
+    },
+    "ForegroundPropLayer/FenceSegmentE": {
+      "x": 180,
+      "y": -260,
+      "scale": 0.9,
+      "z": 3
+    },
+    "ForegroundPropLayer/StreetSign": {
+      "x": -50,
+      "y": -326,
+      "scale": 0.8,
+      "z": 4
+    },
+    "ForegroundPropLayer/Mailbox": {
+      "x": -250,
+      "y": -56,
+      "z": 4
+    },
+    "ForegroundPropLayer/FireHydrant": {
+      "x": 130,
+      "y": 90,
+      "z": 4
+    },
+    "ForegroundPropLayer/StreetLampA": {
+      "x": -380,
+      "y": -44,
+      "scale": 0.82,
+      "z": 4
+    },
+    "ForegroundPropLayer/StreetLampB": {
+      "x": 390,
+      "y": -44,
+      "scale": 0.82,
+      "z": 4
+    },
+    "ForegroundPropLayer/BikeByFence": {
+      "x": 16,
+      "y": 16,
+      "scale": 0.82,
+      "z": 5
+    },
+    "ForegroundPropLayer/WorkbenchTools": {
+      "x": 300,
+      "y": -44,
+      "scale": 0.72,
+      "z": 5
+    },
+    "ZuzuHouseLabel": {
+      "x": -48,
+      "y": -90,
+      "w": 140,
+      "h": 28
+    },
+    "RamirezHouseLabel": {
+      "x": -396,
+      "y": -90,
+      "w": 160,
+      "h": 28
+    },
+    "WorkshopLabel": {
+      "x": 252,
+      "y": -90,
+      "w": 140,
+      "h": 28
+    },
+    "NeighborhoodLabel": {
+      "x": -120,
+      "y": -352,
+      "w": 240,
+      "h": 30
+    },
+    "MrChenLabel": {
+      "x": 240,
+      "y": -28,
+      "w": 120,
+      "h": 26
+    },
+    "MrsRamirezLabel": {
+      "x": -370,
+      "y": -28,
+      "w": 140,
+      "h": 26
+    },
+    "GarageEntrance": {
+      "x": 35,
+      "y": -76,
+      "w": 156,
+      "h": 70
+    },
+    "GarageEntrance/Prompt": {
+      "x": -50,
+      "y": -42,
+      "w": 120,
+      "h": 28
+    },
+    "MrChen": {
+      "x": 308,
+      "y": -82,
+      "scale": 0.98
+    },
+    "MrsRamirezNpc": {
+      "x": -330,
+      "y": -82,
+      "scale": 0.98
+    },
+    "SafetyCheckStation": {
+      "x": -240,
+      "y": 14,
+      "w": 150,
+      "h": 92
+    },
+    "SafetyCheckStation/Prompt": {
+      "x": -92,
+      "y": -82,
+      "w": 190,
+      "h": 28
+    },
+    "MineExit": {
+      "x": -620,
+      "y": 40,
+      "w": 96,
+      "h": 360
+    },
+    "MineExit/Prompt": {
+      "x": 4,
+      "y": -110,
+      "w": 120,
+      "h": 28
+    },
+    "DesertExit": {
+      "x": 620,
+      "y": 40,
+      "w": 96,
+      "h": 360
+    },
+    "DesertExit/Prompt": {
+      "x": -120,
+      "y": -110,
+      "w": 120,
+      "h": 28
+    },
+    "RiverExit": {
+      "x": 0,
+      "y": 392,
+      "w": 560,
+      "h": 96
+    },
+    "RiverExit/Prompt": {
+      "x": -60,
+      "y": -90,
+      "w": 120,
+      "h": 28
+    },
+    "ChainHotspotMarker": {
+      "x": 112,
+      "y": 148,
+      "w": 90,
+      "h": 34,
+      "color": "#d7a14c66"
+    },
+    "GroundArtLayer/RoadPanel": {
+      "x": 0,
+      "y": 58,
+      "z": -4
+    },
+    "GroundArtLayer/DuskMountainsPanel": {
+      "x": 0,
+      "y": -250,
+      "z": -8
+    },
+    "GroundArtLayer/YardGroundPanel": {
+      "x": 0,
+      "y": 0,
+      "z": -7
+    },
+    "GroundArtLayer/TopSidewalkPanel": {
+      "x": 0,
+      "y": -36,
+      "z": -3
+    },
+    "GroundArtLayer/BottomSidewalkPanel": {
+      "x": 0,
+      "y": 160,
+      "z": -3
+    },
+    "GroundArtLayer/DrivewayPanel": {
+      "x": 315,
+      "y": -70,
+      "scale": 0.92,
+      "z": -2
+    },
+    "GroundArtLayer/RoadShadowOverlay": {
+      "x": 0,
+      "y": 58,
+      "z": -1
+    },
+    "GroundArtLayer/CurbDepthOverlay": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "GroundArtLayer/HouseGroundingOverlay": {
+      "x": 0,
+      "y": 0,
+      "z": 1
+    },
+    "GroundArtLayer/PropGroundingOverlay": {
+      "x": 0,
+      "y": 0,
+      "z": 2
+    },
+    "GroundArtLayer/WarmLightFlowOverlay": {
+      "x": 0,
+      "y": 0,
+      "z": 3
+    },
+    "GroundArtLayer/StreetRhythmOverlay": {
+      "x": 0,
+      "y": 0,
+      "z": 4
+    },
+    "GroundArtLayer/CinematicFocusFlowOverlay": {
+      "x": 0,
+      "y": 0,
+      "z": 5
+    },
+    "GroundArtLayer/SilhouetteReadabilityOverlay": {
+      "x": 0,
+      "y": 0,
+      "z": 6
+    },
+    "HouseLayer/ZuzuHouseFacade": {
+      "x": 38,
+      "y": -218,
+      "z": -1,
+      "scale": 0.36
+    },
+    "HouseLayer/RamirezHouseFacade": {
+      "x": -310,
+      "y": -218,
+      "z": -1,
+      "scale": 0.32
+    },
+    "HouseLayer/WorkshopHouseFacade": {
+      "x": 320,
+      "y": -216,
+      "z": -1,
+      "scale": 0.36
+    },
+    "SafetyCheckStation/SoftShadow": {
+      "x": 0,
+      "y": 38,
+      "scale": 0.74,
+      "z": -1
+    },
+    "SafetyCheckStation/BikeVisual/SafetyBike": {
+      "x": 0,
+      "y": 0,
+      "scale": 0.13,
+      "z": 2
+    },
+    "SafetyCheckStation/BikeVisual/BrakeHighlight": {
+      "x": 0,
+      "y": 0,
+      "scale": 0.13,
+      "z": 3
+    },
+    "SafetyCheckStation/BikeVisual/TireHighlight": {
+      "x": 0,
+      "y": 0,
+      "scale": 0.13,
+      "z": 3
+    },
+    "SafetyCheckStation/BikeVisual/ChainHighlight": {
+      "x": 0,
+      "y": 0,
+      "scale": 0.13,
+      "z": 3
+    },
+    "MrChen/SoftShadow": {
+      "x": 0,
+      "y": 14,
+      "scale": 0.62,
+      "z": -1
+    },
+    "MrsRamirezNpc/SoftShadow": {
+      "x": 0,
+      "y": 14,
+      "scale": 0.62,
+      "z": -1
+    },
+    "Player/SoftShadow": {
+      "x": 0,
+      "y": 6,
+      "scale": 0.58,
+      "z": -1
+    },
+    "GarageGlint": {
+      "x": 35,
+      "y": -74,
+      "scale": 0.55,
+      "z": 8
+    },
+    "GroundPropLayer/StoryGroundDetails/ChalkBestJump": {
+      "x": 72,
+      "y": 166,
+      "w": 80,
+      "h": 18,
+      "z": 2
+    },
+    "GroundPropLayer/StoryGroundDetails/ChalkArrowToRamp": {
+      "x": 82,
+      "y": 190,
+      "w": 42,
+      "h": 18,
+      "color": "#dce8e899",
+      "shape": "triangle",
+      "z": 2
+    },
+    "GroundPropLayer/StoryGroundDetails/ChalkSmudgeA": {
+      "x": -24,
+      "y": 218,
+      "w": 28,
+      "h": 5,
+      "color": "#e6f0e855",
+      "shape": "soft",
+      "z": 1
+    },
+    "GroundPropLayer/StoryGroundDetails/ChalkSmudgeB": {
+      "x": 154,
+      "y": 230,
+      "w": 34,
+      "h": 5,
+      "color": "#e6f0e84a",
+      "shape": "soft",
+      "z": 1
+    },
+    "GroundPropLayer/StoryGroundDetails/TireScuffA": {
+      "x": -104,
+      "y": 114,
+      "w": 172,
+      "h": 6,
+      "color": "#1b243088",
+      "shape": "soft",
+      "z": 2
+    },
+    "GroundPropLayer/StoryGroundDetails/TireScuffB": {
+      "x": -92,
+      "y": 138,
+      "w": 210,
+      "h": 6,
+      "color": "#1b243077",
+      "shape": "soft",
+      "z": 2
+    },
+    "GroundPropLayer/StoryGroundDetails/CurbWearA": {
+      "x": -260,
+      "y": -31,
+      "w": 74,
+      "h": 5,
+      "color": "#efe0bf66",
+      "shape": "soft",
+      "z": 3
+    },
+    "GroundPropLayer/StoryGroundDetails/CurbWearB": {
+      "x": 250,
+      "y": 145,
+      "w": 86,
+      "h": 5,
+      "color": "#f2ddb866",
+      "shape": "soft",
+      "z": 3
+    },
+    "GroundPropLayer/StoryGroundDetails/WornPathToGarage": {
+      "x": -45,
+      "y": -42,
+      "w": 160,
+      "h": 22,
+      "color": "#6b523a55",
+      "shape": "soft",
+      "z": 1
+    },
+    "BehindPropLayer/StoryWarmWindows/ZuzuWindowGlow": {
+      "x": 4,
+      "y": -236,
+      "w": 34,
+      "h": 22,
+      "color": "#ffd27a66",
+      "shape": "soft",
+      "z": 2
+    },
+    "BehindPropLayer/StoryWarmWindows/RamirezWindowGlow": {
+      "x": -350,
+      "y": -232,
+      "w": 36,
+      "h": 22,
+      "color": "#ffd27a5f",
+      "shape": "soft",
+      "z": 2
+    },
+    "BehindPropLayer/StoryWarmWindows/WorkshopWindowGlow": {
+      "x": 354,
+      "y": -232,
+      "w": 38,
+      "h": 22,
+      "color": "#ffd27a70",
+      "shape": "soft",
+      "z": 2
+    },
+    "BehindPropLayer/StoryWarmWindows/PorchLightPool": {
+      "x": -356,
+      "y": -124,
+      "w": 116,
+      "h": 34,
+      "color": "#f3a75a44",
+      "shape": "soft",
+      "z": 1
+    },
+    "MidPropLayer/StoryYardDetails/AgavePlanterA": {
+      "x": 428,
+      "y": -150,
+      "w": 34,
+      "h": 24,
+      "color": "#8fbd6990",
+      "shape": "diamond",
+      "z": 2
+    },
+    "MidPropLayer/StoryYardDetails/AgavePlanterB": {
+      "x": -482,
+      "y": 214,
+      "w": 34,
+      "h": 24,
+      "color": "#6fa66a88",
+      "shape": "diamond",
+      "z": 2
+    },
+    "MidPropLayer/StoryYardDetails/OcotilloCanes": {
+      "x": 474,
+      "y": -196,
+      "w": 18,
+      "h": 72,
+      "color": "#7a5238aa",
+      "shape": "soft",
+      "z": 2
+    },
+    "MidPropLayer/StoryYardDetails/ChollaPot": {
+      "x": -214,
+      "y": -214,
+      "w": 26,
+      "h": 22,
+      "color": "#5e825099",
+      "shape": "soft",
+      "z": 2
+    },
+    "MidPropLayer/StoryYardDetails/DesertStoneBorderA": {
+      "x": -448,
+      "y": -76,
+      "w": 138,
+      "h": 10,
+      "color": "#8b7d6b77",
+      "shape": "soft",
+      "z": 1
+    },
+    "MidPropLayer/StoryYardDetails/DustPatchByMailbox": {
+      "x": -288,
+      "y": -42,
+      "w": 74,
+      "h": 18,
+      "color": "#9b7b5c55",
+      "shape": "soft",
+      "z": 1
+    },
+    "ForegroundPropLayer/StoryForegroundDetails/MailboxNameTape": {
+      "x": -286,
+      "y": -83,
+      "w": 64,
+      "h": 12,
+      "z": 6
+    },
+    "ForegroundPropLayer/StoryForegroundDetails/BentYardSign": {
+      "x": -404,
+      "y": -104,
+      "w": 70,
+      "h": 18,
+      "z": 5
+    },
+    "ForegroundPropLayer/StoryForegroundDetails/FenceMissingSlat": {
+      "x": -78,
+      "y": -276,
+      "w": 12,
+      "h": 42,
+      "color": "#2d3a4666",
+      "shape": "soft",
+      "z": 5
+    },
+    "ForegroundPropLayer/StoryForegroundDetails/FencePatchBoard": {
+      "x": 130,
+      "y": -252,
+      "w": 46,
+      "h": 8,
+      "color": "#c58b5faa",
+      "shape": "soft",
+      "z": 6
+    },
+    "ForegroundPropLayer/StoryForegroundDetails/BikePumpByFence": {
+      "x": 218,
+      "y": -206,
+      "w": 10,
+      "h": 48,
+      "color": "#233044cc",
+      "shape": "soft",
+      "z": 6
+    },
+    "ForegroundPropLayer/StoryForegroundDetails/TinyBmxSticker": {
+      "x": 34,
+      "y": -282,
+      "w": 18,
+      "h": 12,
+      "color": "#e85d58cc",
+      "shape": "diamond",
+      "z": 7
+    },
+    "ForegroundPropLayer/StoryForegroundDetails/GarageThresholdMat": {
+      "x": 270,
+      "y": -99,
+      "w": 78,
+      "h": 16,
+      "z": 6
+    },
+    "GroundPropLayer/StoryGroundDetails/HopscotchWornCorner": {
+      "x": 44,
+      "y": 214,
+      "w": 36,
+      "h": 6,
+      "color": "#dce8e840",
+      "shape": "soft",
+      "z": 2
+    },
+    "GroundPropLayer/StoryGroundDetails/JumpDistanceMarkA": {
+      "x": 84,
+      "y": 136,
+      "w": 26,
+      "h": 4,
+      "color": "#dce8e86a",
+      "shape": "soft",
+      "z": 2
+    },
+    "GroundPropLayer/StoryGroundDetails/JumpDistanceMarkB": {
+      "x": 122,
+      "y": 132,
+      "w": 22,
+      "h": 4,
+      "color": "#dce8e852",
+      "shape": "soft",
+      "z": 2
+    },
+    "GroundPropLayer/StoryGroundDetails/JumpDistanceMarkC": {
+      "x": 156,
+      "y": 127,
+      "w": 18,
+      "h": 4,
+      "color": "#dce8e83d",
+      "shape": "soft",
+      "z": 2
+    },
+    "GroundPropLayer/StoryGroundDetails/FadedPracticeArrow": {
+      "x": 18,
+      "y": 148,
+      "w": 30,
+      "h": 12,
+      "color": "#dce8e84c",
+      "shape": "triangle",
+      "z": 2
+    },
+    "GroundPropLayer/StoryGroundDetails/DustCurbBuildup": {
+      "x": 184,
+      "y": 151,
+      "w": 176,
+      "h": 12,
+      "color": "#9b7b5c4f",
+      "shape": "soft",
+      "z": 2
+    },
+    "GroundPropLayer/StoryGroundDetails/OldSkidFeather": {
+      "x": 32,
+      "y": 107,
+      "w": 96,
+      "h": 4,
+      "color": "#1b243052",
+      "shape": "soft",
+      "z": 2
+    },
+    "BehindPropLayer/StoryWarmWindows/PorchGlowMemoryRing": {
+      "x": -374,
+      "y": -128,
+      "w": 146,
+      "h": 22,
+      "color": "#ffd27a24",
+      "shape": "soft",
+      "z": 0
+    },
+    "MidPropLayer/StoryYardDetails/DrySoilVariationA": {
+      "x": 338,
+      "y": 210,
+      "w": 118,
+      "h": 28,
+      "color": "#9b7b5c45",
+      "shape": "soft",
+      "z": 1
+    },
+    "MidPropLayer/StoryYardDetails/WarmRockEdgingA": {
+      "x": 392,
+      "y": -96,
+      "w": 92,
+      "h": 10,
+      "color": "#b8916e6a",
+      "shape": "soft",
+      "z": 2
+    },
+    "MidPropLayer/StoryYardDetails/SunFadedPlanterEdge": {
+      "x": 416,
+      "y": -138,
+      "w": 54,
+      "h": 6,
+      "color": "#f5e6c857",
+      "shape": "soft",
+      "z": 3
+    },
+    "ForegroundPropLayer/StoryForegroundDetails/BentReflector": {
+      "x": 62,
+      "y": -6,
+      "w": 12,
+      "h": 18,
+      "color": "#e85d58bb",
+      "shape": "diamond",
+      "z": 7
+    },
+    "ForegroundPropLayer/StoryForegroundDetails/StickerResidue": {
+      "x": 54,
+      "y": -278,
+      "w": 20,
+      "h": 8,
+      "color": "#f5e6c84d",
+      "shape": "soft",
+      "z": 7
+    },
+    "ForegroundPropLayer/StoryForegroundDetails/TireLeanDustSpot": {
+      "x": -6,
+      "y": 42,
+      "w": 86,
+      "h": 16,
+      "color": "#6b523a50",
+      "shape": "soft",
+      "z": 4
+    },
+    "ForegroundPropLayer/StoryForegroundDetails/SunFadedSignPatch": {
+      "x": -392,
+      "y": -99,
+      "w": 42,
+      "h": 7,
+      "color": "#f5e6c85c",
+      "shape": "soft",
+      "z": 6
+    },
+    "GroundPropLayer/LandmarkMemoryLayer/GarageHomeAnchorGlow": {
+      "x": -41,
+      "y": -114,
+      "w": 188,
+      "h": 54,
+      "color": "#ffd27a2c",
+      "shape": "soft",
+      "z": 2
+    },
+    "GroundPropLayer/LandmarkMemoryLayer/RampMemoryArc": {
+      "x": 42,
+      "y": 132,
+      "w": 154,
+      "h": 30,
+      "color": "#dce8e82e",
+      "shape": "soft",
+      "z": 2
+    },
+    "GroundPropLayer/LandmarkMemoryLayer/MailboxQuietAnchor": {
+      "x": -310,
+      "y": -68,
+      "w": 126,
+      "h": 24,
+      "color": "#2032472f",
+      "shape": "soft",
+      "z": 1
+    },
+    "GroundPropLayer/LandmarkMemoryLayer/ChenWorkshopWarmPool": {
+      "x": 260,
+      "y": -40,
+      "w": 142,
+      "h": 30,
+      "color": "#f3a75a2c",
+      "shape": "soft",
+      "z": 1
+    },
+    "GroundPropLayer/LandmarkMemoryLayer/RamirezPorchCalmPool": {
+      "x": -394,
+      "y": -42,
+      "w": 148,
+      "h": 28,
+      "color": "#ffd27a24",
+      "shape": "soft",
+      "z": 1
+    },
+    "GroundPropLayer/LandmarkMemoryLayer/QuietRoadBreathingBand": {
+      "x": -520,
+      "y": 52,
+      "w": 1040,
+      "h": 34,
+      "color": "#20324720",
+      "shape": "soft",
+      "z": 0
+    }
+  }
+}

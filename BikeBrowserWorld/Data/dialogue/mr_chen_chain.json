@@ -1,0 +1,22 @@
+{
+  "id": "mr_chen_chain",
+  "speaker": "Mr. Chen",
+  "lines": [
+    {
+      "speaker": "Mr. Chen",
+      "text": "Ah, Zuzu. Hear that little clunk?"
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "Chains usually complain before they fail. This one keeps stepping off its path."
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "Come to the garage with me. We'll go slow and let the bike show us what it needs."
+    }
+  ],
+  "onComplete": {
+    "type": "start_quest",
+    "questId": "chain_repair"
+  }
+}

@@ -1,0 +1,168 @@
+[gd_scene load_steps=2 format=3 uid="uid://bikebrowser_chainrig_embedded"]
+
+[ext_resource type="Script" path="res://Prototypes/EmbodiedMechanics/ChainRig.gd" id="1_script"]
+
+[node name="ChainRig" type="Node2D"]
+script = ExtResource("1_script")
+crank_path = NodePath("Crank")
+chainring_path = NodePath("Chainring")
+chain_path = NodePath("Chain")
+chain_slack_path = NodePath("ChainSlack")
+chain_tension_mark_path = NodePath("ChainTensionMark")
+sprocket_path = NodePath("Sprocket")
+seated_glow_path = NodePath("SeatedGlow")
+rear_wheel_path = NodePath("RearWheel")
+spin_ghost_path = NodePath("SpinGhost")
+verification_label_path = NodePath("VerificationLabel")
+pedal_label_path = NodePath("PedalLabel")
+chain_label_path = NodePath("ChainLabel")
+sprocket_label_path = NodePath("SprocketLabel")
+wheel_label_path = NodePath("WheelLabel")
+
+[node name="SeatedGlow" type="Polygon2D" parent="."]
+visible = false
+position = Vector2(100, 0)
+color = Color(1, 0.86, 0.45, 0.36)
+polygon = PackedVector2Array(-78, -22, 78, -22, 100, 0, 78, 22, -78, 22, -100, 0)
+
+[node name="SpinGhost" type="Polygon2D" parent="."]
+visible = false
+position = Vector2(100, 0)
+color = Color(0.85, 0.93, 1, 0.22)
+polygon = PackedVector2Array(64, 0, 45.3, 45.3, 0, 64, -45.3, 45.3, -64, 0, -45.3, -45.3, 0, -64, 45.3, -45.3)
+
+[node name="RearWheel" type="Node2D" parent="."]
+position = Vector2(100, 0)
+
+[node name="WheelRim" type="Polygon2D" parent="RearWheel"]
+color = Color(0.16, 0.18, 0.22, 1)
+polygon = PackedVector2Array(60, 0, 42.4, 42.4, 0, 60, -42.4, 42.4, -60, 0, -42.4, -42.4, 0, -60, 42.4, -42.4)
+
+[node name="WheelInner" type="Polygon2D" parent="RearWheel"]
+color = Color(0.78, 0.74, 0.65, 1)
+polygon = PackedVector2Array(52, 0, 36.8, 36.8, 0, 52, -36.8, 36.8, -52, 0, -36.8, -36.8, 0, -52, 36.8, -36.8)
+
+[node name="WheelSpoke1" type="Polygon2D" parent="RearWheel"]
+color = Color(0.30, 0.32, 0.36, 1)
+polygon = PackedVector2Array(-52, -2, 52, -2, 52, 2, -52, 2)
+
+[node name="WheelSpoke2" type="Polygon2D" parent="RearWheel"]
+color = Color(0.30, 0.32, 0.36, 1)
+polygon = PackedVector2Array(-2, -52, 2, -52, 2, 52, -2, 52)
+
+[node name="WheelHub" type="Polygon2D" parent="RearWheel"]
+color = Color(0.20, 0.22, 0.26, 1)
+polygon = PackedVector2Array(8, 0, 5.7, 5.7, 0, 8, -5.7, 5.7, -8, 0, -5.7, -5.7, 0, -8, 5.7, -5.7)
+
+[node name="Sprocket" type="Node2D" parent="."]
+position = Vector2(100, 0)
+
+[node name="SprocketDisc" type="Polygon2D" parent="Sprocket"]
+color = Color(0.62, 0.55, 0.42, 1)
+polygon = PackedVector2Array(18, 0, 12.7, 12.7, 0, 18, -12.7, 12.7, -18, 0, -12.7, -12.7, 0, -18, 12.7, -12.7)
+
+[node name="SprocketTeeth" type="Polygon2D" parent="Sprocket"]
+color = Color(0.42, 0.36, 0.28, 1)
+polygon = PackedVector2Array(20, -2, 22, 0, 20, 2, 14, 14, 16, 16, 14, 18, 2, 20, 0, 22, -2, 20, -14, 14, -16, 16, -18, 14, -20, 2, -22, 0, -20, -2, -14, -14, -16, -16, -14, -18, -2, -20, 0, -22, 2, -20, 14, -14, 16, -16, 18, -14)
+
+[node name="Chainring" type="Node2D" parent="."]
+position = Vector2(-100, 0)
+
+[node name="ChainringDisc" type="Polygon2D" parent="Chainring"]
+color = Color(0.56, 0.50, 0.40, 1)
+polygon = PackedVector2Array(36, 0, 25.5, 25.5, 0, 36, -25.5, 25.5, -36, 0, -25.5, -25.5, 0, -36, 25.5, -25.5)
+
+[node name="ChainringTeeth" type="Polygon2D" parent="Chainring"]
+color = Color(0.36, 0.32, 0.24, 1)
+polygon = PackedVector2Array(40, -3, 42, 0, 40, 3, 28, 28, 30, 30, 28, 32, 3, 40, 0, 42, -3, 40, -28, 28, -30, 30, -32, 28, -40, 3, -42, 0, -40, -3, -28, -28, -30, -30, -28, -32, -3, -40, 0, -42, 3, -40, 28, -28, 30, -30, 32, -28)
+
+[node name="ChainringHub" type="Polygon2D" parent="Chainring"]
+color = Color(0.18, 0.20, 0.24, 1)
+polygon = PackedVector2Array(8, 0, 5.7, 5.7, 0, 8, -5.7, 5.7, -8, 0, -5.7, -5.7, 0, -8, 5.7, -5.7)
+
+[node name="Crank" type="Node2D" parent="."]
+position = Vector2(-100, 0)
+
+[node name="CrankArm" type="Polygon2D" parent="Crank"]
+color = Color(0.20, 0.22, 0.28, 1)
+polygon = PackedVector2Array(-6, -2, 6, -2, 56, 46, 56, 54, 46, 56, 38, 56, -6, 4)
+
+[node name="Pedal" type="Polygon2D" parent="Crank"]
+position = Vector2(50, 50)
+color = Color(0.10, 0.12, 0.16, 1)
+polygon = PackedVector2Array(-10, -6, 10, -6, 14, -2, 14, 2, 10, 6, -10, 6, -14, 2, -14, -2)
+
+[node name="Chain" type="Node2D" parent="."]
+
+[node name="ChainTop" type="Polygon2D" parent="Chain"]
+color = Color(0.68, 0.72, 0.78, 1)
+polygon = PackedVector2Array(-100, -38, 100, -20, 100, -16, -100, -34)
+
+[node name="ChainBottom" type="Polygon2D" parent="Chain"]
+color = Color(0.68, 0.72, 0.78, 1)
+polygon = PackedVector2Array(-100, 34, 100, 16, 100, 20, -100, 38)
+
+[node name="ChainSlack" type="Polygon2D" parent="."]
+visible = false
+color = Color(0.62, 0.66, 0.72, 0.62)
+polygon = PackedVector2Array(-130, 36, -100, 38, -70, 56, -40, 68, -30, 72, -34, 68, -70, 60, -100, 44, -130, 40)
+
+[node name="ChainTensionMark" type="Polygon2D" parent="."]
+visible = false
+position = Vector2(0, -28)
+color = Color(1, 0.85, 0.42, 0.72)
+polygon = PackedVector2Array(-24, -1, 24, -1, 24, 1, -24, 1)
+
+[node name="PedalLabel" type="Label" parent="."]
+offset_left = -136.0
+offset_top = 76.0
+offset_right = -56.0
+offset_bottom = 96.0
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.92, 0.88, 0.76, 0.82)
+text = "Pedal · Crank"
+horizontal_alignment = 1
+
+[node name="ChainLabel" type="Label" parent="."]
+visible = false
+offset_left = -40.0
+offset_top = -64.0
+offset_right = 40.0
+offset_bottom = -44.0
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.92, 0.88, 0.76, 0.82)
+text = "Chain · Tension"
+horizontal_alignment = 1
+
+[node name="SprocketLabel" type="Label" parent="."]
+visible = false
+offset_left = 80.0
+offset_top = -60.0
+offset_right = 168.0
+offset_bottom = -40.0
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.92, 0.88, 0.76, 0.82)
+text = "Sprocket"
+horizontal_alignment = 1
+
+[node name="WheelLabel" type="Label" parent="."]
+visible = false
+offset_left = 60.0
+offset_top = 76.0
+offset_right = 148.0
+offset_bottom = 96.0
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.92, 0.88, 0.76, 0.82)
+text = "Rear Wheel"
+horizontal_alignment = 1
+
+[node name="VerificationLabel" type="Label" parent="."]
+visible = false
+offset_left = -110.0
+offset_top = 104.0
+offset_right = 110.0
+offset_bottom = 124.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 0.92, 0.72, 1)
+text = "Drivetrain clean."
+horizontal_alignment = 1

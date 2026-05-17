@@ -1,0 +1,39 @@
+{
+  "id": "bridge_quest_3",
+  "name": "Test Material Strength",
+  "description": "Use the testing rig to compare wood, metal, and composite samples before choosing bridge materials.",
+  "quest_giver": "mr_chen",
+  "steps": [
+    {
+      "id": "go_to_testing_rig",
+      "description": "Go to the material testing rig in the garage.",
+      "completion_condition": "player_enters_material_testing_rig"
+    },
+    {
+      "id": "test_wood",
+      "description": "Test the wood plank sample.",
+      "completion_condition": "material_test_recorded:wood_plank"
+    },
+    {
+      "id": "test_metal",
+      "description": "Test the steel or aluminum sample.",
+      "completion_condition": "material_test_recorded:any_metal"
+    },
+    {
+      "id": "test_composite",
+      "description": "Test the composite fiber sample.",
+      "completion_condition": "material_test_recorded:composite_fiber"
+    },
+    {
+      "id": "choose_best_material",
+      "description": "Choose the best material for the bridge design.",
+      "completion_condition": "bridge_material_choice_recorded"
+    }
+  ],
+  "dialogue_refs": ["mr_chen_bridge.test_start", "mr_chen_bridge.test_complete"],
+  "reward": {
+    "allowance": 35,
+    "badge": "Material Tester",
+    "reputation": 6
+  }
+}

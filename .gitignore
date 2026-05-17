@@ -26,3 +26,23 @@ push-to-github.ps1
 playwright-report/
 test-results/
 playwright/.cache/
+
+# --- Godot HTML5 export binaries (rebuildable: tools/export-godot-web.ps1) ---
+# 216 MB total. Re-export to regenerate.
+public/godot/BikeBrowserWorld/index.pck
+public/godot/BikeBrowserWorld/index.wasm
+# Older in-project export dir (predates tools/export-godot-web.ps1). 37 MB.
+BikeBrowserWorld/exports/
+
+# --- Playtest runtime captures (regenerated each session) ---
+# Scripts and README are tracked; per-session output is not.
+playtest/active_session/
+playtest/logs/
+playtest/screenshots/
+playtest/telemetry/
+playtest/issue_reports/
+playtest/emotional_notes/
+
+# --- Reports: runtime logs (authored png/svg reports are tracked) ---
+reports/network/
+reports/*.log

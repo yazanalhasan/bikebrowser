@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/ReusableUI/scripts/confirmation_dialog.gd" id="1"]
+
+[node name="ConfirmationDialog" type="CanvasLayer"]
+script = ExtResource("1")
+
+[node name="Blocker" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.55)
+
+[node name="Center" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 170)
+layout_mode = 2
+
+[node name="Root" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Center/Panel/Root"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Confirm"
+horizontal_alignment = 1
+
+[node name="Message" type="Label" parent="Center/Panel/Root"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Are you sure?"
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="Center/Panel/Root"]
+layout_mode = 2
+alignment = 2
+
+[node name="NoButton" type="Button" parent="Center/Panel/Root/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "No"
+
+[node name="YesButton" type="Button" parent="Center/Panel/Root/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Yes"

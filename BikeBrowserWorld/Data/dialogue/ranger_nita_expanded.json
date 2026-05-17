@@ -1,0 +1,59 @@
+{
+  "id": "ranger_nita_expanded",
+  "npc_id": "desert_guide",
+  "speaker": "Ranger Nita",
+  "lines": [
+    {
+      "speaker": "Ranger Nita",
+      "text": "Welcome to the Sonoran trail, Zuzu. The desert looks still until you slow down."
+    },
+    {
+      "speaker": "Ranger Nita",
+      "text": "Pick three plants and notice their little tricks: shade, spines, wax, flowers."
+    },
+    {
+      "speaker": "Ranger Nita",
+      "text": "In your journal, write what you saw before what you think. That keeps us honest."
+    },
+    {
+      "speaker": "Ranger Nita",
+      "text": "Tracks are a sentence in dust. Toes, size, direction. Read gently."
+    },
+    {
+      "speaker": "Ranger Nita",
+      "text": "Good tracking leaves the animal alone. We learn from signs, then give the place back."
+    }
+  ],
+  "dialogue_tree": [
+    {
+      "id": "greeting",
+      "text": "Welcome to the Sonoran trail, Zuzu. The desert looks still until you slow down.",
+      "voice": "ranger_nita_greeting",
+      "next": "plant_observation"
+    },
+    {
+      "id": "plant_observation",
+      "text": "Pick three plants and notice their little tricks: shade, spines, wax, flowers.",
+      "voice": "ranger_nita_plant_observation",
+      "next": "journal"
+    },
+    {
+      "id": "journal",
+      "text": "In your journal, write what you saw before what you think. That keeps us honest.",
+      "voice": "ranger_nita_journal",
+      "next": "tracks"
+    },
+    {
+      "id": "tracks",
+      "text": "Tracks are a sentence in dust. Toes, size, direction. Read gently.",
+      "voice": "ranger_nita_tracks",
+      "next": "respect"
+    },
+    {
+      "id": "respect",
+      "text": "Good tracking leaves the animal alone. We learn from signs, then give the place back.",
+      "voice": "ranger_nita_respect",
+      "next": null
+    }
+  ]
+}

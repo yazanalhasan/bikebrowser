@@ -1,0 +1,808 @@
+{
+  "spawns": {
+    "default": {
+      "x": 620,
+      "y": 440
+    },
+    "from_neighborhood": {
+      "x": 620,
+      "y": 560
+    }
+  },
+  "nodes": {
+    "Background": {
+      "x": -900,
+      "y": -600,
+      "w": 1800,
+      "h": 1200,
+      "color": "#3d2a2f"
+    },
+    "FloorLayer/GarageFloorArt": {
+      "x": 640,
+      "y": 380,
+      "scale": 1.0,
+      "z": -20
+    },
+    "WallLayer/GarageWallsArt": {
+      "x": 640,
+      "y": 190,
+      "scale": 1.0,
+      "z": -18
+    },
+    "PropLayer/WorkbenchArt": {
+      "x": 410,
+      "y": 280,
+      "scale": 0.72,
+      "z": 4
+    },
+    "PropLayer/PegboardArt": {
+      "x": 410,
+      "y": 190,
+      "scale": 0.68,
+      "z": 3
+    },
+    "PropLayer/RugArt": {
+      "x": 590,
+      "y": 500,
+      "scale": 0.82,
+      "z": -2
+    },
+    "PropLayer/BikeStandArt": {
+      "x": 650,
+      "y": 350,
+      "scale": 0.68,
+      "z": 5
+    },
+    "PropLayer/RugProp": {
+      "x": 590,
+      "y": 500,
+      "z": -2
+    },
+    "PropLayer/WorkbenchProp": {
+      "x": 410,
+      "y": 280,
+      "z": 6
+    },
+    "PropLayer/PegboardProp": {
+      "x": 410,
+      "y": 190,
+      "z": 4
+    },
+    "PropLayer/TireStackProp": {
+      "x": 790,
+      "y": 380,
+      "z": 7
+    },
+    "PropLayer/OilCanProp": {
+      "x": 410,
+      "y": 260,
+      "z": 8
+    },
+    "PropLayer/BikeRepairStandProp": {
+      "x": 650,
+      "y": 350,
+      "z": 7
+    },
+    "PropLayer/ToolboxProp": {
+      "x": 315,
+      "y": 342,
+      "z": 7
+    },
+    "PropLayer/PaintShelfProp": {
+      "x": 850,
+      "y": 210,
+      "z": 4
+    },
+    "PropLayer/KeepPedalingPosterProp": {
+      "x": 295,
+      "y": 185,
+      "z": 4
+    },
+    "PropLayer/BikeWheelWallProp": {
+      "x": 935,
+      "y": 320,
+      "scale": 0.72,
+      "z": 4
+    },
+    "PropLayer/WorkbenchCohesionDetails/RearDerailleurCloseup": {
+      "x": 362,
+      "y": 246,
+      "scale": 0.48,
+      "z": 10
+    },
+    "PropLayer/WorkbenchCohesionDetails/CassetteGearCluster": {
+      "x": 438,
+      "y": 250,
+      "scale": 0.42,
+      "z": 10
+    },
+    "PropLayer/WorkbenchCohesionDetails/ChainLubeBottle": {
+      "x": 506,
+      "y": 245,
+      "scale": 0.62,
+      "z": 10
+    },
+    "PropLayer/WorkbenchCohesionDetails/MultiTool": {
+      "x": 315,
+      "y": 280,
+      "scale": 0.58,
+      "z": 10
+    },
+    "PropLayer/WorkbenchCohesionDetails/PartsBin": {
+      "x": 890,
+      "y": 390,
+      "scale": 0.72,
+      "z": 8
+    },
+    "PropLayer/WorkbenchCohesionDetails/HexKeySet": {
+      "x": 455,
+      "y": 206,
+      "scale": 0.42,
+      "z": 8
+    },
+    "PropLayer/WorkbenchCohesionDetails/ChainBreakerTool": {
+      "x": 398,
+      "y": 278,
+      "scale": 0.58,
+      "z": 10
+    },
+    "PropLayer/WorkbenchCohesionDetails/TireLeverSet": {
+      "x": 474,
+      "y": 278,
+      "scale": 0.58,
+      "z": 10
+    },
+    "PropLayer/WorkbenchCohesionDetails/PatchWithGlueTube": {
+      "x": 334,
+      "y": 390,
+      "scale": 0.72,
+      "z": 10
+    },
+    "PropLayer/FloorCohesionDetails/OilStainNearStand": {
+      "x": 662,
+      "y": 402,
+      "scale": 0.95,
+      "z": 2
+    },
+    "LightingLayer/LampGlowArt": {
+      "x": 450,
+      "y": 210,
+      "scale": 1.25,
+      "z": 20
+    },
+    "LightingLayer/StringLightsProp": {
+      "x": 590,
+      "y": 150,
+      "z": 21
+    },
+    "LightingLayer/WorkbenchLight": {
+      "x": 410,
+      "y": 235,
+      "z": 22
+    },
+    "LightingLayer/CeilingLight": {
+      "x": 590,
+      "y": 170,
+      "z": 22
+    },
+    "LightingLayer/RepairStandLight": {
+      "x": 676,
+      "y": 320,
+      "z": 22
+    },
+    "Floor": {
+      "x": 120,
+      "y": 100,
+      "w": 1040,
+      "h": 560,
+      "color": "#c3a875"
+    },
+    "Workbench": {
+      "x": 190,
+      "y": 170,
+      "w": 260,
+      "h": 90,
+      "color": "#80512e"
+    },
+    "BikeStand": {
+      "x": 560,
+      "y": 230,
+      "w": 180,
+      "h": 120,
+      "color": "#4f6678"
+    },
+    "WarmLight": {
+      "x": 460,
+      "y": 110,
+      "w": 390,
+      "h": 230,
+      "color": "#ffc16677"
+    },
+    "ToolShadow": {
+      "x": 215,
+      "y": 185,
+      "w": 210,
+      "h": 18,
+      "color": "#3a2117"
+    },
+    "ToolWall": {
+      "x": 188,
+      "y": 138
+    },
+    "ToolWall/Pegboard": {
+      "x": 0,
+      "y": 0,
+      "w": 296,
+      "h": 150,
+      "color": "#9b643a",
+      "shape": "soft"
+    },
+    "ToolWall/Wrench": {
+      "x": 42,
+      "y": 38,
+      "w": 20,
+      "h": 78,
+      "color": "#d8dde1",
+      "shape": "soft"
+    },
+    "ToolWall/Pump": {
+      "x": 96,
+      "y": 28,
+      "w": 22,
+      "h": 94,
+      "color": "#233044",
+      "shape": "soft"
+    },
+    "ToolWall/Sticker": {
+      "x": 204,
+      "y": 34,
+      "w": 52,
+      "h": 36,
+      "color": "#f0c34e",
+      "shape": "diamond"
+    },
+    "CozyRug": {
+      "x": 355,
+      "y": 486,
+      "w": 330,
+      "h": 86,
+      "color": "#8b4a4a",
+      "shape": "soft"
+    },
+    "BikeNotes": {
+      "x": 820,
+      "y": 170
+    },
+    "BikeNotes/NoteA": {
+      "x": 0,
+      "y": 0,
+      "w": 70,
+      "h": 54,
+      "color": "#f1df9d",
+      "shape": "soft"
+    },
+    "BikeNotes/NoteB": {
+      "x": 82,
+      "y": 12,
+      "w": 56,
+      "h": 46,
+      "color": "#dce8f2",
+      "shape": "soft"
+    },
+    "ExitZone": {
+      "x": 620,
+      "y": 635,
+      "w": 190,
+      "h": 80
+    },
+    "ExitZone/Prompt": {
+      "x": -55,
+      "y": -58,
+      "w": 130,
+      "h": 28
+    },
+    "ChainHotspot": {
+      "x": 650,
+      "y": 310,
+      "w": 170,
+      "h": 110
+    },
+    "ChainHotspot/Prompt": {
+      "x": -88,
+      "y": -82,
+      "w": 210,
+      "h": 28
+    },
+    "TireRepairStation": {
+      "x": 390,
+      "y": 410,
+      "w": 190,
+      "h": 130
+    },
+    "InteractableLayer/LooseChainProp": {
+      "x": 650,
+      "y": 320,
+      "z": 9
+    },
+    "InteractableLayer/BikeWheelRepairProp": {
+      "x": 390,
+      "y": 410,
+      "scale": 0.8,
+      "z": 9
+    },
+    "InteractableLayer/InnerTubeProp": {
+      "x": 470,
+      "y": 442,
+      "scale": 0.8,
+      "z": 10
+    },
+    "InteractableLayer/AirPumpProp": {
+      "x": 520,
+      "y": 430,
+      "scale": 0.85,
+      "z": 10
+    },
+    "InteractableLayer/PatchKitProp": {
+      "x": 330,
+      "y": 388,
+      "z": 10
+    },
+    "NPCLayer/ZevonNpc": {
+      "x": 300,
+      "y": 430,
+      "scale": 0.9
+    },
+    "NPCLayer/JacobNpc": {
+      "x": 880,
+      "y": 360,
+      "scale": 0.9
+    },
+    "NPCLayer/CharlieNpc": {
+      "x": 760,
+      "y": 300,
+      "scale": 0.9
+    },
+    "NPCLayer/ColeNpc": {
+      "x": 840,
+      "y": 500,
+      "scale": 0.9
+    },
+    "NPCLayer/JamesNpc": {
+      "x": 965,
+      "y": 500,
+      "scale": 0.9
+    },
+    "InteractableLayer/RepairBikeShadow": {
+      "x": 654,
+      "y": 408,
+      "scale": 0.9,
+      "z": 8
+    },
+    "InteractableLayer/RepairBike": {
+      "x": 654,
+      "y": 320,
+      "scale": 0.36,
+      "z": 11
+    },
+    "InteractableLayer/RepairBikeAligning": {
+      "x": 654,
+      "y": 320,
+      "scale": 0.36,
+      "z": 11
+    },
+    "InteractableLayer/RepairBikeSeated": {
+      "x": 654,
+      "y": 320,
+      "scale": 0.36,
+      "z": 11
+    },
+    "InteractableLayer/RepairGlint": {
+      "x": 732,
+      "y": 306,
+      "scale": 0.44,
+      "z": 12
+    },
+    "InteractableLayer/DrivetrainFocusGlow": {
+      "x": 714,
+      "y": 326,
+      "scale": 0.54,
+      "z": 10
+    },
+    "InteractableLayer/RepairSuccessGlint": {
+      "x": 748,
+      "y": 304,
+      "scale": 0.5,
+      "z": 13
+    },
+    "PropLayer/FloorCohesionDetails/RepairGreaseScuff": {
+      "x": 616,
+      "y": 386,
+      "scale": 1.25,
+      "z": 3
+    },
+    "NPCLayer/ZevonNpc/SoftShadow": {
+      "x": 0,
+      "y": 14,
+      "scale": 0.58,
+      "z": -1
+    },
+    "NPCLayer/JacobNpc/SoftShadow": {
+      "x": 0,
+      "y": 14,
+      "scale": 0.58,
+      "z": -1
+    },
+    "NPCLayer/CharlieNpc/SoftShadow": {
+      "x": 0,
+      "y": 14,
+      "scale": 0.58,
+      "z": -1
+    },
+    "NPCLayer/ColeNpc/SoftShadow": {
+      "x": 0,
+      "y": 14,
+      "scale": 0.58,
+      "z": -1
+    },
+    "NPCLayer/JamesNpc/SoftShadow": {
+      "x": 0,
+      "y": 14,
+      "scale": 0.58,
+      "z": -1
+    },
+    "Player/SoftShadow": {
+      "x": 0,
+      "y": 6,
+      "scale": 0.58,
+      "z": -1
+    },
+    "ShadowLayer/StoryFloorDetails/WorkbenchGroundShadow": {
+      "x": 274,
+      "y": 322,
+      "w": 270,
+      "h": 42,
+      "color": "#20324755",
+      "shape": "soft",
+      "z": -2
+    },
+    "ShadowLayer/StoryFloorDetails/RepairStandGroundShadow": {
+      "x": 548,
+      "y": 382,
+      "w": 218,
+      "h": 50,
+      "color": "#20324766",
+      "shape": "soft",
+      "z": -1
+    },
+    "ShadowLayer/StoryFloorDetails/GreaseSmudgeA": {
+      "x": 618,
+      "y": 390,
+      "w": 62,
+      "h": 14,
+      "color": "#1f232688",
+      "shape": "soft",
+      "z": 1
+    },
+    "ShadowLayer/StoryFloorDetails/GreaseSmudgeB": {
+      "x": 690,
+      "y": 366,
+      "w": 34,
+      "h": 10,
+      "color": "#1f232666",
+      "shape": "soft",
+      "z": 1
+    },
+    "ShadowLayer/StoryFloorDetails/ChainLinkTrailA": {
+      "x": 596,
+      "y": 344,
+      "w": 18,
+      "h": 6,
+      "color": "#9aa4a8aa",
+      "shape": "soft",
+      "z": 2
+    },
+    "ShadowLayer/StoryFloorDetails/ChainLinkTrailB": {
+      "x": 620,
+      "y": 354,
+      "w": 18,
+      "h": 6,
+      "color": "#9aa4a899",
+      "shape": "soft",
+      "z": 2
+    },
+    "ShadowLayer/StoryFloorDetails/WornPathToBench": {
+      "x": 388,
+      "y": 360,
+      "w": 244,
+      "h": 28,
+      "color": "#706a6144",
+      "shape": "soft",
+      "z": 0
+    },
+    "PropLayer/StoryWorkbenchDetails/CoffeeMug": {
+      "x": 334,
+      "y": 244,
+      "w": 18,
+      "h": 20,
+      "color": "#d1c4adcc",
+      "shape": "soft",
+      "z": 9
+    },
+    "PropLayer/StoryWorkbenchDetails/TapeRoll": {
+      "x": 506,
+      "y": 260,
+      "w": 24,
+      "h": 16,
+      "color": "#f1df9dcc",
+      "shape": "soft",
+      "z": 9
+    },
+    "PropLayer/StoryWorkbenchDetails/SpareTubeBox": {
+      "x": 452,
+      "y": 250,
+      "w": 46,
+      "h": 18,
+      "z": 10
+    },
+    "PropLayer/StoryWorkbenchDetails/OpenNotebook": {
+      "x": 372,
+      "y": 252,
+      "w": 48,
+      "h": 30,
+      "z": 10
+    },
+    "PropLayer/StoryWorkbenchDetails/KidBikeSketch": {
+      "x": 812,
+      "y": 178,
+      "w": 64,
+      "h": 18,
+      "z": 6
+    },
+    "PropLayer/StoryWorkbenchDetails/OldRaceNumber": {
+      "x": 878,
+      "y": 176,
+      "w": 44,
+      "h": 28,
+      "z": 6
+    },
+    "PropLayer/StoryWorkbenchDetails/BmxStickerLightning": {
+      "x": 292,
+      "y": 326,
+      "w": 28,
+      "h": 14,
+      "color": "#e85d58cc",
+      "shape": "diamond",
+      "z": 9
+    },
+    "PropLayer/StoryWorkbenchDetails/TapedChecklist": {
+      "x": 470,
+      "y": 178,
+      "w": 54,
+      "h": 42,
+      "z": 7
+    },
+    "PropLayer/StoryWorkbenchDetails/HangingHexKeys": {
+      "x": 442,
+      "y": 196,
+      "w": 12,
+      "h": 58,
+      "color": "#d1d6d4aa",
+      "shape": "soft",
+      "z": 7
+    },
+    "PropLayer/StoryWorkbenchDetails/ToolboxWearPatch": {
+      "x": 300,
+      "y": 332,
+      "w": 42,
+      "h": 8,
+      "color": "#ffd98a55",
+      "shape": "soft",
+      "z": 9
+    },
+    "InteractableLayer/StoryRepairDetails/ChainSparkleGuide": {
+      "x": 728,
+      "y": 292,
+      "w": 16,
+      "h": 16,
+      "color": "#ffd98acc",
+      "shape": "diamond",
+      "z": 13
+    },
+    "InteractableLayer/StoryRepairDetails/LooseMasterLink": {
+      "x": 676,
+      "y": 356,
+      "w": 20,
+      "h": 8,
+      "color": "#d1d6d4aa",
+      "shape": "soft",
+      "z": 12
+    },
+    "InteractableLayer/StoryRepairDetails/WheelLeaningGuideShadow": {
+      "x": 372,
+      "y": 456,
+      "w": 92,
+      "h": 18,
+      "color": "#20324755",
+      "shape": "soft",
+      "z": 8
+    },
+    "InteractableLayer/StoryRepairDetails/HalfUsedTape": {
+      "x": 536,
+      "y": 416,
+      "w": 24,
+      "h": 14,
+      "color": "#d1c4adbb",
+      "shape": "soft",
+      "z": 11
+    },
+    "LightingLayer/StoryLightSpill/GarageDoorWarmSpill": {
+      "x": 520,
+      "y": 564,
+      "w": 220,
+      "h": 72,
+      "color": "#ffd98a38",
+      "shape": "soft",
+      "z": 19
+    },
+    "LightingLayer/StoryLightSpill/WorkbenchAmberSpill": {
+      "x": 304,
+      "y": 254,
+      "w": 240,
+      "h": 118,
+      "color": "#ffd98a25",
+      "shape": "soft",
+      "z": 19
+    },
+    "ShadowLayer/StoryFloorDetails/ThresholdWearSoft": {
+      "x": 528,
+      "y": 600,
+      "w": 204,
+      "h": 18,
+      "color": "#706a6158",
+      "shape": "soft",
+      "z": 1
+    },
+    "ShadowLayer/StoryFloorDetails/CoffeeMugRing": {
+      "x": 334,
+      "y": 286,
+      "w": 24,
+      "h": 10,
+      "color": "#3d2a2f66",
+      "shape": "soft",
+      "z": 3
+    },
+    "ShadowLayer/StoryFloorDetails/OldTapeResidueA": {
+      "x": 474,
+      "y": 224,
+      "w": 50,
+      "h": 6,
+      "color": "#f1df9d45",
+      "shape": "soft",
+      "z": 3
+    },
+    "ShadowLayer/StoryFloorDetails/BenchScratchA": {
+      "x": 388,
+      "y": 268,
+      "w": 82,
+      "h": 4,
+      "color": "#d1c4ad44",
+      "shape": "soft",
+      "z": 3
+    },
+    "ShadowLayer/StoryFloorDetails/HandprintGreaseSmear": {
+      "x": 552,
+      "y": 344,
+      "w": 34,
+      "h": 14,
+      "color": "#1f23265f",
+      "shape": "soft",
+      "z": 3
+    },
+    "PropLayer/StoryWorkbenchDetails/SecondStickerLayer": {
+      "x": 314,
+      "y": 322,
+      "w": 18,
+      "h": 10,
+      "color": "#5B83A6cc",
+      "shape": "diamond",
+      "z": 10
+    },
+    "PropLayer/StoryWorkbenchDetails/RaceNumberTapeResidue": {
+      "x": 870,
+      "y": 204,
+      "w": 60,
+      "h": 8,
+      "color": "#f1df9d55",
+      "shape": "soft",
+      "z": 6
+    },
+    "PropLayer/StoryWorkbenchDetails/TinyFoldedRepairNote": {
+      "x": 530,
+      "y": 250,
+      "w": 56,
+      "h": 18,
+      "z": 10
+    },
+    "InteractableLayer/StoryRepairDetails/WornGripMark": {
+      "x": 704,
+      "y": 282,
+      "w": 28,
+      "h": 6,
+      "color": "#1f232676",
+      "shape": "soft",
+      "z": 12
+    },
+    "InteractableLayer/StoryRepairDetails/TinyChainGreaseDot": {
+      "x": 704,
+      "y": 350,
+      "w": 10,
+      "h": 7,
+      "color": "#1f232696",
+      "shape": "soft",
+      "z": 12
+    },
+    "InteractableLayer/StoryRepairDetails/BentValveCap": {
+      "x": 428,
+      "y": 432,
+      "w": 10,
+      "h": 8,
+      "color": "#9aa4a8aa",
+      "shape": "diamond",
+      "z": 12
+    },
+    "LightingLayer/StoryLightSpill/DustMoteA": {
+      "x": 400,
+      "y": 212,
+      "w": 5,
+      "h": 5,
+      "color": "#ffd98a55",
+      "shape": "diamond",
+      "z": 23
+    },
+    "LightingLayer/StoryLightSpill/DustMoteB": {
+      "x": 452,
+      "y": 248,
+      "w": 4,
+      "h": 4,
+      "color": "#ffd98a42",
+      "shape": "diamond",
+      "z": 23
+    },
+    "LightingLayer/StoryLightSpill/DustMoteC": {
+      "x": 612,
+      "y": 182,
+      "w": 4,
+      "h": 4,
+      "color": "#ffd98a38",
+      "shape": "diamond",
+      "z": 23
+    },
+    "ShadowLayer/HomeMemoryLayer/RepairHomeWarmPool": {
+      "x": 548,
+      "y": 334,
+      "w": 230,
+      "h": 72,
+      "color": "#ffd98a22",
+      "shape": "soft",
+      "z": 0
+    },
+    "ShadowLayer/HomeMemoryLayer/BenchMemoryPool": {
+      "x": 292,
+      "y": 238,
+      "w": 248,
+      "h": 62,
+      "color": "#ffd98a1c",
+      "shape": "soft",
+      "z": 0
+    },
+    "ShadowLayer/HomeMemoryLayer/QuietFloorRestBand": {
+      "x": 440,
+      "y": 474,
+      "w": 330,
+      "h": 54,
+      "color": "#20324726",
+      "shape": "soft",
+      "z": -1
+    }
+  }
+}

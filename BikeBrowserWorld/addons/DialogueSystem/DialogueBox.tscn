@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/DialogueSystem/DialogueBox.gd" id="1"]
+
+[node name="DialogueBox" type="Panel"]
+anchor_right = 1.0
+anchor_bottom = 0.3
+offset_top = -100
+script = ExtResource("1")
+
+[node name="TextLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20
+offset_top = 20
+offset_right = -20
+offset_bottom = -60
+
+[node name="ChoiceContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20
+offset_bottom = -20
+alignment = 1
+
+[node name="ContinueButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -100
+offset_top = -40
+offset_right = -20
+offset_bottom = -20
+text = "Continue"

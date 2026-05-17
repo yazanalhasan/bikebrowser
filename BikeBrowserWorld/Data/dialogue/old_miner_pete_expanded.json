@@ -1,0 +1,79 @@
+{
+  "id": "old_miner_pete_expanded",
+  "npc_id": "old_miner",
+  "speaker": "Old Miner Pete",
+  "lines": [
+    {
+      "speaker": "Old Miner Pete",
+      "text": "Well now, this old mine still creaks out a few stories. Step careful and let your eyes adjust."
+    },
+    {
+      "speaker": "Old Miner Pete",
+      "text": "Copper often leaves green-blue stains where the weather got to it. Quartz is glassier. Turquoise has a softer look."
+    },
+    {
+      "speaker": "Old Miner Pete",
+      "text": "A mine is a team: cart, track, timber, air, light. If one member acts wrong, everybody pauses."
+    },
+    {
+      "speaker": "Old Miner Pete",
+      "text": "Copper is friendly to electricity. That's why bike lights and motors are happy to see it."
+    },
+    {
+      "speaker": "Old Miner Pete",
+      "text": "When a mine quiets down, the land starts talking again. A good miner listens to both."
+    },
+    {
+      "speaker": "Old Miner Pete",
+      "text": "Bring me the rock that looks most like copper. Guess if you want, but test before you trust it."
+    },
+    {
+      "speaker": "Old Miner Pete",
+      "text": "That cart wheel's wobbling like a tired boot. Look first. Then fix."
+    }
+  ],
+  "dialogue_tree": [
+    {
+      "id": "greeting",
+      "text": "Well now, this old mine still creaks out a few stories. Step careful and let your eyes adjust.",
+      "voice": "old_miner_greeting",
+      "next": "rock_id"
+    },
+    {
+      "id": "rock_id",
+      "text": "Copper often leaves green-blue stains where the weather got to it. Quartz is glassier. Turquoise has a softer look.",
+      "voice": "old_miner_rock_id",
+      "next": "mine_system"
+    },
+    {
+      "id": "mine_system",
+      "text": "A mine is a team: cart, track, timber, air, light. If one member acts wrong, everybody pauses.",
+      "voice": "old_miner_mine_system",
+      "next": "copper_uses"
+    },
+    {
+      "id": "copper_uses",
+      "text": "Copper is friendly to electricity. That's why bike lights and motors are happy to see it.",
+      "voice": "old_miner_copper_uses",
+      "next": "environment_note"
+    },
+    {
+      "id": "environment_note",
+      "text": "When a mine quiets down, the land starts talking again. A good miner listens to both.",
+      "voice": "old_miner_environment_note",
+      "next": "copper_quest_start"
+    },
+    {
+      "id": "copper_quest_start",
+      "text": "Bring me the rock that looks most like copper. Guess if you want, but test before you trust it.",
+      "voice": "old_miner_copper_quest",
+      "next": "cart_quest_start"
+    },
+    {
+      "id": "cart_quest_start",
+      "text": "That cart wheel's wobbling like a tired boot. Look first. Then fix.",
+      "voice": "old_miner_cart_quest",
+      "next": null
+    }
+  ]
+}

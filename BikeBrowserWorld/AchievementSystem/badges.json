@@ -1,0 +1,45 @@
+{
+  "chain_hero": {
+    "name": "Chain Hero",
+    "description": "Repaired your first bike chain.",
+    "icon": "chain_hero.png",
+    "unlock_condition": "complete_quest('chain_repair')"
+  },
+  "water_scientist": {
+    "name": "Water Scientist",
+    "description": "Completed a full water quality test.",
+    "icon": "water_scientist.png",
+    "unlock_condition": "complete_quest('water_quality_test')"
+  },
+  "bridge_engineer": {
+    "name": "Bridge Engineer",
+    "description": "Built the neighborhood bridge.",
+    "icon": "bridge_engineer.png",
+    "unlock_condition": "complete_quest('bridge_quest_4')"
+  },
+  "naturalist_bronze": {
+    "name": "Naturalist (Bronze)",
+    "description": "Discovered 5 desert plants.",
+    "icon": "naturalist_bronze.png",
+    "progressive": true,
+    "target": 5,
+    "next": "naturalist_silver"
+  },
+  "naturalist_silver": {
+    "name": "Naturalist (Silver)",
+    "description": "Discovered 10 desert plants.",
+    "icon": "naturalist_silver.png",
+    "progressive": true,
+    "target": 10,
+    "prev": "naturalist_bronze",
+    "next": "naturalist_gold"
+  },
+  "naturalist_gold": {
+    "name": "Naturalist (Gold)",
+    "description": "Discovered 15 desert plants.",
+    "icon": "naturalist_gold.png",
+    "progressive": true,
+    "target": 15,
+    "prev": "naturalist_silver"
+  }
+}

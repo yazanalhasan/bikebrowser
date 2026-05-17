@@ -1,0 +1,37 @@
+{
+  "id": "jacob_intro",
+  "npc_id": "jacob",
+  "speaker": "Jacob",
+  "greeting": {
+    "text": "Name's Jacob. I run the kiln, and I like work you can measure: hot enough, strong enough, done right.",
+    "voice": "jacob_greeting"
+  },
+  "dialogue_tree": [
+    {
+      "id": "materials",
+      "text": "Bring wood, scrap metal, and mineral-rich ash. I can make carbon, brackets, tubing, and sturdy parts for bigger builds.",
+      "voice": "jacob_materials",
+      "next": "quirk"
+    },
+    {
+      "id": "quirk",
+      "text": "I do not use three words when one will do. Hot kiln, good tongs, steady hands.",
+      "voice": "jacob_quirk",
+      "next": null
+    }
+  ],
+  "lines": [
+    {
+      "speaker": "Jacob",
+      "text": "Name's Jacob. I run the kiln, and I like work you can measure: hot enough, strong enough, done right."
+    },
+    {
+      "speaker": "Jacob",
+      "text": "Bring wood, scrap metal, and mineral-rich ash. I can make carbon, brackets, tubing, and sturdy parts for bigger builds."
+    },
+    {
+      "speaker": "Jacob",
+      "text": "I do not use three words when one will do. Hot kiln, good tongs, steady hands."
+    }
+  ]
+}

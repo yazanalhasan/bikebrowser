@@ -1,0 +1,22 @@
+{
+  "id": "mr_chen_after_safety",
+  "speaker": "Mr. Chen",
+  "lines": [
+    {
+      "speaker": "Mr. Chen",
+      "text": "Mrs. Ramirez got you looking first, hm?"
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "That's good. Most repairs start by slowing down."
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "This chain has been making a small complaint. Let's listen a little."
+    }
+  ],
+  "onComplete": {
+    "type": "start_quest",
+    "questId": "chain_repair"
+  }
+}

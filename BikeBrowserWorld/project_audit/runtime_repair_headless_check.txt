@@ -1,0 +1,84 @@
+# Runtime Repair Headless Check
+Generated: 2026-05-15T09:13:10.6906380-07:00
+
+## res://Regions/Neighborhood/NeighborhoodStreet.tscn
+QuestRegistry loaded 18 missions from res://Data/missions
+Runtime validation complete:
+- errors: 0
+- warnings: 1
+- audio mappings: 7/7
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/Garage/ZuzuGarage.tscn
+QuestRegistry loaded 18 missions from res://Data/missions
+Runtime validation complete:
+- errors: 0
+- warnings: 1
+- audio mappings: 7/7
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/Mine/CopperMine.tscn
+QuestRegistry loaded 18 missions from res://Data/missions
+Runtime validation complete:
+- errors: 0
+- warnings: 1
+- audio mappings: 7/7
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/Desert/DesertTrail.tscn
+QuestRegistry loaded 18 missions from res://Data/missions
+Runtime validation complete:
+- errors: 0
+- warnings: 1
+- audio mappings: 7/7
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/River/SaltRiver.tscn
+QuestRegistry loaded 18 missions from res://Data/missions
+Runtime validation complete:
+- errors: 0
+- warnings: 1
+- audio mappings: 7/7
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/SystemShowcase/SystemShowcase.tscn
+QuestRegistry loaded 18 missions from res://Data/missions
+Runtime validation complete:
+- errors: 0
+- warnings: 1
+- audio mappings: 7/7
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/SystemShowcase/RuntimeSystemsDemo.tscn
+QuestRegistry loaded 18 missions from res://Data/missions
+Runtime validation complete:
+- errors: 0
+- warnings: 1
+- audio mappings: 7/7
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/UI/Hud.tscn
+QuestRegistry loaded 18 missions from res://Data/missions
+Runtime validation complete:
+- errors: 0
+- warnings: 1
+- audio mappings: 7/7
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+
+## res://Regions/UI/DialogBox.tscn
+QuestRegistry loaded 18 missions from res://Data/missions
+Runtime validation complete:
+- errors: 0
+- warnings: 1
+- audio mappings: 7/7
+WARNING: ObjectDB instances leaked at exit (run with --verbose for details).
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+

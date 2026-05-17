@@ -1,0 +1,12 @@
+{
+  "greeting": "Hello, %s!",
+  "quest_complete": "Quest Complete!",
+  "item_copper_ore": "Copper Ore",
+  "item_copper_ore_desc": "A metallic orange rock containing copper.",
+  "badge_earned": "Badge Earned!",
+  "plants_found": {
+    "zero": "No plants found.",
+    "one": "%d plant found.",
+    "other": "%d plants found."
+  }
+}

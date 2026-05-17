@@ -1,0 +1,34 @@
+{
+  "id": "desert_plant_observation",
+  "name": "Desert Plant Observation",
+  "description": "Talk to Ranger Nita, observe three different desert plants, record each observation in the journal, and report back.",
+  "steps": [
+    {
+      "id": "talk_to_ranger_nita",
+      "description": "Talk to Ranger Nita at the trail edge and learn how to observe without disturbing plants.",
+      "completed": false
+    },
+    {
+      "id": "observe_three_plants",
+      "description": "Observe any three different Sonoran Desert plants.",
+      "completed": false
+    },
+    {
+      "id": "journal_observations",
+      "description": "Describe each plant observation in the journal before explaining it.",
+      "completed": false
+    },
+    {
+      "id": "return_to_nita",
+      "description": "Return to Ranger Nita and share the observations.",
+      "completed": false
+    }
+  ],
+  "success_dialogue": "Those are careful notes, Zuzu. You noticed structure before jumping to answers, and that is how field science begins.",
+  "reward_text": "You earned 25 ZuzuBucks, 6 reputation, and the Naturalist badge.",
+  "reward": {
+    "allowance": 25,
+    "badge": "Naturalist",
+    "reputation": 6
+  }
+}

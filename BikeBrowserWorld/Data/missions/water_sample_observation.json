@@ -1,0 +1,27 @@
+{
+  "id": "water_sample_observation",
+  "name": "Water Sample Observation",
+  "description": "Dr. Maya teaches Zuzu how to collect and compare safe water observations.",
+  "steps": [
+    {
+      "id": "talk_to_dr_maya",
+      "description": "Talk to Dr. Maya near the wash or riverbank.",
+      "completed": false
+    },
+    {
+      "id": "collect_sample",
+      "description": "Collect a labeled water sample using the field kit.",
+      "completed": false
+    },
+    {
+      "id": "compare_evidence",
+      "description": "Compare clarity, flow, and visible living material.",
+      "completed": false
+    }
+  ],
+  "reward": {
+    "allowance": 30,
+    "badge": "River Scientist",
+    "reputation": 7
+  }
+}

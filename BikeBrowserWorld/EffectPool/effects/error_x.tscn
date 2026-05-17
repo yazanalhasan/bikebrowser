@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://EffectPool/EffectOneShot.gd" id="1_effect"]
+
+[node name="ErrorX" type="Node2D"]
+script = ExtResource("1_effect")
+lifetime = 0.7
+start_modulate = Color(1, 0.15, 0.12, 1)
+end_modulate = Color(1, 0.15, 0.12, 0)
+end_scale = Vector2(1.25, 1.25)
+
+[node name="LineA" type="ColorRect" parent="."]
+offset_left = -18.0
+offset_top = -3.0
+offset_right = 18.0
+offset_bottom = 3.0
+rotation = 0.785398
+color = Color(1, 0.15, 0.12, 1)
+
+[node name="LineB" type="ColorRect" parent="."]
+offset_left = -18.0
+offset_top = -3.0
+offset_right = 18.0
+offset_bottom = 3.0
+rotation = -0.785398
+color = Color(1, 0.15, 0.12, 1)

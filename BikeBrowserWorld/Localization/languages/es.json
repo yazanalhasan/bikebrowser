@@ -1,0 +1,12 @@
+{
+  "greeting": "¡Hola, %s!",
+  "quest_complete": "¡Misión completada!",
+  "item_copper_ore": "Mineral de cobre",
+  "item_copper_ore_desc": "Una roca naranja metálica que contiene cobre.",
+  "badge_earned": "¡Insignia ganada!",
+  "plants_found": {
+    "zero": "No encontraste plantas.",
+    "one": "%d planta encontrada.",
+    "other": "%d plantas encontradas."
+  }
+}

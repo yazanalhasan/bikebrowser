@@ -1,0 +1,34 @@
+{
+  "id": "flat_tire_repair",
+  "name": "Fix Mrs. Ramirez's Flat Tire",
+  "description": "Help Mrs. Ramirez find the puncture, remove the tire, patch the tube, and inflate it safely.",
+  "steps": [
+    {
+      "id": "inspect_wheel",
+      "description": "Inspect the tire and tube to find the tiny puncture letting air escape.",
+      "completed": false
+    },
+    {
+      "id": "remove_tube",
+      "description": "Use a tire lever to gently remove the tire and reach the inner tube.",
+      "completed": false
+    },
+    {
+      "id": "apply_patch",
+      "description": "Clean the tube, place the patch, and press until it seals.",
+      "completed": false
+    },
+    {
+      "id": "inflate_tire",
+      "description": "Pump the tire back to safe pressure and check that it holds air.",
+      "completed": false
+    }
+  ],
+  "completion_dialogue": "There we go. You found the cause, took your time, and gave that tire a real repair.",
+  "reward_text": "You earned 30 ZuzuBucks, 7 reputation, and the Patch Hero badge.",
+  "reward": {
+    "allowance": 30,
+    "badge": "Patch Hero",
+    "reputation": 7
+  }
+}

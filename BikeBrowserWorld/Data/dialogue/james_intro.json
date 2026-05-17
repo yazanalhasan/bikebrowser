@@ -1,0 +1,37 @@
+{
+  "id": "james_intro",
+  "npc_id": "james",
+  "speaker": "James",
+  "greeting": {
+    "text": "Hello, I'm James. I refine materials slowly because clean inputs make reliable machines.",
+    "voice": "james_greeting"
+  },
+  "dialogue_tree": [
+    {
+      "id": "materials",
+      "text": "Bring extracts, resins, wet samples, and rough materials. I can filter, dry, purify, and turn them into refined copper, insulators, and stable components.",
+      "voice": "james_materials",
+      "next": "quirk"
+    },
+    {
+      "id": "quirk",
+      "text": "I label everything twice. Once for the shelf, once for future me, who is very grateful.",
+      "voice": "james_quirk",
+      "next": null
+    }
+  ],
+  "lines": [
+    {
+      "speaker": "James",
+      "text": "Hello, I'm James. I refine materials slowly because clean inputs make reliable machines."
+    },
+    {
+      "speaker": "James",
+      "text": "Bring extracts, resins, wet samples, and rough materials. I can filter, dry, purify, and turn them into refined copper, insulators, and stable components."
+    },
+    {
+      "speaker": "James",
+      "text": "I label everything twice. Once for the shelf, once for future me, who is very grateful."
+    }
+  ]
+}

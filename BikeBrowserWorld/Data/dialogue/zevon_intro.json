@@ -1,0 +1,37 @@
+{
+  "id": "zevon_intro",
+  "npc_id": "zevon",
+  "speaker": "Zevon",
+  "greeting": {
+    "text": "Hey, I'm Zevon. I run the rubber workshop, which means useful stuff, weird scraps, and a workbench that is almost organized.",
+    "voice": "zevon_greeting"
+  },
+  "dialogue_tree": [
+    {
+      "id": "materials",
+      "text": "Bring me raw rubber, fiber, and plant scraps. I can turn them into tire material, inner tube material, brake pads, and rubber sheet.",
+      "voice": "zevon_materials",
+      "next": "quirk"
+    },
+    {
+      "id": "quirk",
+      "text": "If something looks messy, it might still be an experiment. If it looks really messy, okay, that one is probably my fault.",
+      "voice": "zevon_quirk",
+      "next": null
+    }
+  ],
+  "lines": [
+    {
+      "speaker": "Zevon",
+      "text": "Hey, I'm Zevon. I run the rubber workshop, which means useful stuff, weird scraps, and a workbench that is almost organized."
+    },
+    {
+      "speaker": "Zevon",
+      "text": "Bring me raw rubber, fiber, and plant scraps. I can turn them into tire material, inner tube material, brake pads, and rubber sheet."
+    },
+    {
+      "speaker": "Zevon",
+      "text": "If something looks messy, it might still be an experiment. If it looks really messy, okay, that one is probably my fault."
+    }
+  ]
+}

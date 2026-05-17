@@ -1,0 +1,14 @@
+{
+  "id": "shopkeeper_intro",
+  "npc_id": "shopkeeper",
+  "greeting": {
+    "text": "Welcome in. I am the shopkeeper, and I help builders choose parts that fit before money leaves anyone's pocket.",
+    "voice": "shopkeeper_greeting"
+  },
+  "dialogue_tree": [
+    {
+      "text": "Good shopping is not grabbing shiny parts. It is matching size, safety, purpose, and budget. Bring me your mission plan and we will make a research list.",
+      "next": null
+    }
+  ]
+}

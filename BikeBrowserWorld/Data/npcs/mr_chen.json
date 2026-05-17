@@ -1,0 +1,7 @@
+{
+  "id": "mr_chen",
+  "displayName": "Mr. Chen",
+  "defaultRegion": "neighborhood_street",
+  "dialogueIds": ["mr_chen_chain"],
+  "questIds": ["chain_repair"]
+}

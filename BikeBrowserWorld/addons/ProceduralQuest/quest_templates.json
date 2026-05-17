@@ -1,0 +1,9 @@
+{
+  "0": {"name": "Fetch Quest"},
+  "1": {"name": "Delivery Quest"},
+  "2": {"name": "Exploration Quest"},
+  "3": {"name": "Collection Quest"},
+  "4": {"name": "Talking Quest"},
+  "5": {"name": "Crafting Quest"},
+  "6": {"name": "Repair Quest"}
+}
