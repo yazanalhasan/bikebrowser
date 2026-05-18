@@ -50,8 +50,7 @@ const URL = 'http://localhost:5173/';
     // Check /play route
     await page.goto(URL + 'play', { waitUntil: 'domcontentloaded', timeout: 10000 });
     await page.waitForTimeout(2000);
-    const playText = await page.textContent('body');
-    const hasGame = playText.includes('Tap to Start') || playText.includes('Zuzu');
+    const hasGame = await page.getByTestId('godot-iframe').isVisible().catch(() => false);
     console.log('/play loaded:', hasGame ? 'YES' : 'NO');
     await page.screenshot({ path: 'screenshots/play.png' });
     console.log('Screenshot saved: screenshots/play.png');

@@ -29,8 +29,9 @@ if (-not (Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir | Out
 
 # Preset name "Web Single Threaded" comes from BikeBrowserWorld/export_presets.cfg.
 & $godot --headless --path "$projectPath" --export-release "Web Single Threaded" "$outIndex"
-$exitCode = $LASTEXITCODE
-if ($exitCode -ne 0) {
+$commandSucceeded = $?
+$exitCode = if ($null -ne $LASTEXITCODE) { [int]$LASTEXITCODE } elseif ($commandSucceeded) { 0 } else { 1 }
+if ((-not $commandSucceeded) -or $exitCode -ne 0 -or -not (Test-Path $outIndex)) {
     Write-Error "Godot export failed (exit $exitCode)"
     exit $exitCode
 }

@@ -10,7 +10,8 @@ const ROUTES = [
   { path: '/shop', name: 'Shopping', expect: ['Shop Materials'], screenshot: 'shopping' },
   { path: '/saved-notes', name: 'Saved Notes', expect: ['Notes'], screenshot: 'saved_notes' },
   { path: '/safe-search', name: 'Safe Search', expect: ['Search'], screenshot: 'safe_search' },
-  { path: '/play', name: 'Game (/play)', expect: ['Zuzu'], screenshot: 'game', wait: 3000 },
+  { path: '/play', name: 'Godot Play (/play)', expect: [], screenshot: 'game', wait: 3000 },
+  { path: '/legacy-play', name: 'Legacy Phaser (/legacy-play)', expect: ['Zuzu'], screenshot: 'legacy_game', wait: 3000 },
 ];
 
 (async () => {

@@ -19,6 +19,7 @@ const BuildPlannerPage = lazy(() => import('./pages/BuildPlannerPage'));
 const AllProjectNotesPage = lazy(() => import('./pages/AllProjectNotesPage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
 const Game3DPage = lazy(() => import('./pages/Game3DPage'));
+const GodotPrototypePage = lazy(() => import('./pages/GodotPrototypePage'));
 const SpellingTrainerApp = lazy(() => import('./spellingTrainer/SpellingTrainerApp'));
 
 const VERSION_STORAGE_KEY = 'bikebrowser_cached_version';
@@ -74,7 +75,9 @@ function AppContent() {
           <Route path="/saved-notes" element={<AllProjectNotesPage />} />
           <Route path="/shop" element={<ShoppingPage />} />
           <Route path="/safe-search" element={<SafeSearchPage />} />
-          <Route path="/play" element={<GamePage />} />
+          <Route path="/play" element={<GodotPrototypePage />} />
+          <Route path="/legacy-play" element={<GamePage />} />
+          <Route path="/godot-prototype" element={<GodotPrototypePage />} />
           <Route path="/play3d" element={<Game3DPage />} />
           <Route path="/spelling-trainer" element={<SpellingTrainerApp />} />
           <Route path="*" element={<Navigate to="/" replace />} />

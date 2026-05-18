@@ -3,15 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ufbp66eykwt7"
-path="res://.godot/imported/Zuzu_walk.aseprite-31291678915ec08205eab53f7e780c49.ctex"
-metadata={
-"vram_texture": false
-}
+valid=false
 
 [deps]
 
 source_file="res://Assets/Characters/Zuzu/Zuzu_walk.aseprite"
-dest_files=["res://.godot/imported/Zuzu_walk.aseprite-31291678915ec08205eab53f7e780c49.ctex"]
 
 [params]
 

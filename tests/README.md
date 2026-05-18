@@ -43,7 +43,7 @@ After the run, `npx playwright show-report` opens the HTML report.
 
 ## What `runtime-audit.smoke.spec.js` asserts
 
-The smoke test boots `/play` in chromium, waits for `window.__phaserGame`
+The legacy Phaser smoke test boots `/legacy-play` in chromium, waits for `window.__phaserGame`
 and at least one active Phaser scene, then reads
 `window.__runtimeAuditResult` (set by `runRuntimeAudit()` in
 `src/renderer/game/systems/runtimeAudit.js`).
@@ -59,7 +59,7 @@ covers: quest givers, quest items, quest scene refs, region biomes,
 
 ## What `full-game-playthrough.smoke.spec.js` asserts
 
-The playthrough test boots `/play`, imports the real quest data and quest
+The playthrough test boots `/legacy-play`, imports the real quest data and quest
 system inside the browser runtime, then completes every quest in
 `src/renderer/game/data/quests.js`. For gated steps it records the same
 state facts that player interactions are expected to create: inventory
@@ -87,7 +87,7 @@ test('your test name', async ({ page }) => {
 Reach into Phaser via `page.evaluate(() => window.__phaserGame....)`.
 
 To set up game state before boot, use `page.addInitScript` to seed
-`localStorage.bikebrowser_game_save` before `page.goto('/play')`. The
+`localStorage.bikebrowser_game_save` before `page.goto('/legacy-play')`. The
 save schema lives in `src/renderer/game/systems/saveSystem.js`.
 
 ## DEV-only handles relied on

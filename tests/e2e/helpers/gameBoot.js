@@ -11,20 +11,20 @@
 // against the Vite dev server (not a production build).
 
 /**
- * Navigate to /play and wait for Phaser to be initialized + at least one
+ * Navigate to /legacy-play and wait for Phaser to be initialized + at least one
  * scene to be active.
  *
  * @param {import('playwright/test').Page} page
  * @param {{ timeout?: number, route?: string }} [options]
  *   timeout — ms to wait for game boot + active scene (default 20000).
- *   route   — path to navigate to (default '/play').
+ *   route   — path to navigate to (default '/legacy-play').
  */
 export async function waitForGameBoot(page, options = {}) {
-  const { timeout = 20_000, route = '/play' } = options;
+  const { timeout = 20_000, route = '/legacy-play' } = options;
 
   await page.goto(route, { waitUntil: 'domcontentloaded' });
 
-  // The /play route renders a "Start Adventure!" splash screen
+  // The legacy Phaser route renders a "Start Adventure!" splash screen
   // (GameContainer.jsx:716-723). Phaser is only constructed after the
   // user clicks. Click it if present; otherwise assume the game is
   // already running (e.g., autosave-resumed).

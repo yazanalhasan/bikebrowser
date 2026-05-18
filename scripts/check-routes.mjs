@@ -12,7 +12,8 @@ const ROUTES = [
   { path: '/shop', name: 'Shopping', expect: 'Shop' },
   { path: '/saved-notes', name: 'Saved Notes', expect: 'Notes' },
   { path: '/safe-search', name: 'Safe Search', expect: 'Search' },
-  { path: '/play', name: 'Game', expect: 'Zuzu' },
+  { path: '/play', name: 'Godot Play', expect: '' },
+  { path: '/legacy-play', name: 'Legacy Phaser', expect: 'Zuzu' },
 ];
 
 (async () => {

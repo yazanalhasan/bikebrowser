@@ -3,15 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cfd1q0cavx6mg"
-path="res://.godot/imported/Zuzu_idle.aseprite-f6e08009a71a5c35a5d3150670e180c0.ctex"
-metadata={
-"vram_texture": false
-}
+valid=false
 
 [deps]
 
 source_file="res://Assets/Characters/Zuzu/Zuzu_idle.aseprite"
-dest_files=["res://.godot/imported/Zuzu_idle.aseprite-f6e08009a71a5c35a5d3150670e180c0.ctex"]
 
 [params]
 

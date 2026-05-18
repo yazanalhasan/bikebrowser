@@ -1,12 +1,20 @@
 import { test, expect } from 'playwright/test';
 
-test.describe('Godot prototype route', () => {
-  test('renders prototype shell and records bridge events without replacing Phaser', async ({ page }) => {
-    await page.goto('/godot-prototype');
+test.describe('Godot canonical route', () => {
+  test('renders the canonical Godot world at /play without diagnostics by default', async ({ page }) => {
+    await page.goto('/play');
 
     await expect(page.getByTestId('godot-prototype-page')).toBeVisible();
     await expect(page.getByTestId('godot-iframe')).toBeVisible();
-    await expect(page.getByText('Phaser fallback remains at /play')).toBeVisible();
+    await expect(page.getByTestId('godot-diagnostics')).toHaveCount(0);
+  });
+
+  test('keeps diagnostics opt-in and preserves bridge event handling', async ({ page }) => {
+    await page.goto('/godot-prototype?diagnostics=1');
+
+    await expect(page.getByTestId('godot-prototype-page')).toBeVisible();
+    await expect(page.getByTestId('godot-iframe')).toBeVisible();
+    await expect(page.getByText('Legacy Phaser remains available at /legacy-play')).toBeVisible();
 
     await page.evaluate(() => {
       window.postMessage({

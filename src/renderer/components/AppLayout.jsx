@@ -24,7 +24,11 @@ function AppLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === '/';
-  const isGameRoute = location.pathname.startsWith('/play');
+  const isGameRoute = [
+    '/play',
+    '/legacy-play',
+    '/godot-prototype',
+  ].includes(location.pathname);
   const [cartOpen, setCartOpen] = useState(false);
   const globalCart = useGlobalCart();
 
@@ -163,6 +167,8 @@ function getBreadcrumbText(pathname) {
     '/shop': 'Shop Materials',
     '/safe-search': 'Safe Search',
     '/play': 'Play Game',
+    '/legacy-play': 'Legacy Play',
+    '/godot-prototype': 'Godot Prototype',
     '/spelling-trainer': "Zaydan's Spelling Trainer",
   };
 
