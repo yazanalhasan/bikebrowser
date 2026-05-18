@@ -1,0 +1,59 @@
+[gd_scene load_steps=3 format=3 uid="uid://bikebrowser_tire_rig"]
+
+[ext_resource type="Script" path="res://Prototypes/EmbodiedMechanics/TireRig.gd" id="1_tire_rig"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hub"]
+radius = 11.0
+
+[node name="TireRig" type="Node2D"]
+script = ExtResource("1_tire_rig")
+wheel_path = NodePath("Wheel")
+tire_shape_path = NodePath("Wheel/TireShape")
+sidewall_path = NodePath("Wheel/TireShape/Sidewall")
+leak_marker_path = NodePath("Wheel/TireShape/LeakMarker")
+patch_path = NodePath("Wheel/TireShape/Patch")
+pressure_bar_path = NodePath("PressureBar")
+pressure_fill_path = NodePath("PressureBar/Fill")
+readiness_label_path = NodePath("ReadinessLabel")
+
+[node name="Wheel" type="Node2D" parent="."]
+
+[node name="TireShape" type="Node2D" parent="Wheel"]
+
+[node name="Sidewall" type="Polygon2D" parent="Wheel/TireShape"]
+polygon = PackedVector2Array(-64, -38, 64, -38, 76, -20, 76, 22, 64, 40, -64, 40, -76, 22, -76, -20)
+color = Color(0.11, 0.14, 0.16, 0.92)
+
+[node name="Rim" type="Polygon2D" parent="Wheel/TireShape"]
+polygon = PackedVector2Array(-43, -22, 43, -22, 52, -9, 52, 11, 43, 24, -43, 24, -52, 11, -52, -9)
+color = Color(0.62, 0.66, 0.68, 0.72)
+
+[node name="HubCollisionGuide" type="CollisionShape2D" parent="Wheel"]
+shape = SubResource("CircleShape2D_hub")
+disabled = true
+
+[node name="LeakMarker" type="Polygon2D" parent="Wheel/TireShape"]
+position = Vector2(48, 23)
+polygon = PackedVector2Array(-7, -5, 8, -3, 5, 5, -6, 6)
+color = Color(0.72, 0.82, 1, 0.72)
+
+[node name="Patch" type="Polygon2D" parent="Wheel/TireShape"]
+position = Vector2(48, 22)
+polygon = PackedVector2Array(-16, -11, 16, -11, 16, 11, -16, 11)
+color = Color(0.96, 0.72, 0.20, 1)
+
+[node name="PressureBar" type="ColorRect" parent="."]
+position = Vector2(-75, 72)
+size = Vector2(150, 18)
+color = Color(0.11, 0.12, 0.16, 0.86)
+
+[node name="Fill" type="ColorRect" parent="PressureBar"]
+position = Vector2(6, 5)
+size = Vector2(0, 8)
+color = Color(0.34, 0.75, 0.48, 1)
+
+[node name="ReadinessLabel" type="Label" parent="."]
+position = Vector2(-68, 96)
+size = Vector2(140, 24)
+text = "wheel ready"
+horizontal_alignment = 1

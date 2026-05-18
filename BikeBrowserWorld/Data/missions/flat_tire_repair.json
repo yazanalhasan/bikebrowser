@@ -22,13 +22,18 @@
       "id": "inflate_tire",
       "description": "Pump the tire back to safe pressure and check that it holds air.",
       "completed": false
+    },
+    {
+      "id": "verify_wheel_ready",
+      "description": "Spin the wheel and confirm the patched tire holds pressure cleanly.",
+      "completed": false
     }
   ],
-  "completion_dialogue": "There we go. You found the cause, took your time, and gave that tire a real repair.",
-  "reward_text": "You earned 30 ZuzuBucks, 7 reputation, and the Patch Hero badge.",
+  "completion_dialogue": "There we go. You found the cause, sealed it, and checked the wheel before calling it done.",
+  "reward_text": "You earned a Patch Hero badge and a small allowance boost.",
   "reward": {
-    "allowance": 30,
+    "allowance": 0.25,
     "badge": "Patch Hero",
-    "reputation": 7
+    "reputation": 5
   }
 }

@@ -73,7 +73,7 @@ func _consider_node(node: Node) -> void:
 	# *_verified_changed signal is an embodied rig we care about.
 	if "mechanical_state" not in node:
 		return
-	if not (node.has_signal("brake_verified_changed") or node.has_signal("chain_verified_changed")):
+	if not (node.has_signal("brake_verified_changed") or node.has_signal("chain_verified_changed") or node.has_signal("tire_verified_changed")):
 		return
 	tracked[node] = {
 		"rig_name": node.name,
@@ -94,6 +94,8 @@ func _consider_node(node: Node) -> void:
 		node.chain_verified_changed.connect(func(v: bool) -> void: _on_signal_verified(node, v))
 	if node.has_signal("brake_verified_changed"):
 		node.brake_verified_changed.connect(func(v: bool) -> void: _on_signal_verified(node, v))
+	if node.has_signal("tire_verified_changed"):
+		node.tire_verified_changed.connect(func(v: bool) -> void: _on_signal_verified(node, v))
 
 func _on_signal_verified(rig: Node, verified: bool) -> void:
 	if not verified or not tracked.has(rig):
