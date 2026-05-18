@@ -44,6 +44,8 @@ function InputDebugHUDBridge() {
 function Game3DInner() {
   const [camMode, setCamMode] = useState('angled');
   const physicsDebug = usePhysicsDebug();
+  const showControlsHint = typeof window !== 'undefined'
+    && new URLSearchParams(window.location.search).get('controls') === '1';
 
   // Live input state in a ref — written by InputRefBridge, read by Player.
   const inputRef = useRef({
@@ -80,22 +82,24 @@ function Game3DInner() {
           <ProofOfLife inputRef={inputRef} playerPosRef={playerPosRef} />
         </PhysicsWorld>
       </Canvas>
-      <div
-        style={{
-          position: 'absolute',
-          top: 12,
-          left: 12,
-          padding: '6px 10px',
-          background: 'rgba(0,0,0,0.55)',
-          color: '#fff',
-          fontFamily: 'monospace',
-          fontSize: 12,
-          borderRadius: 4,
-          pointerEvents: 'none',
-        }}
-      >
-        WASD / arrows to move &middot; camera: <strong>{camMode}</strong> &middot; 1 side / 2 angled / 3 top &middot; P physics debug{physicsDebug ? ' (on)' : ''} &middot; F1 input debug
-      </div>
+      {showControlsHint && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 12,
+            left: 12,
+            padding: '6px 10px',
+            background: 'rgba(0,0,0,0.55)',
+            color: '#fff',
+            fontFamily: 'monospace',
+            fontSize: 12,
+            borderRadius: 4,
+            pointerEvents: 'none',
+          }}
+        >
+          WASD / arrows to move &middot; camera: <strong>{camMode}</strong> &middot; 1 side / 2 angled / 3 top &middot; P physics debug{physicsDebug ? ' (on)' : ''} &middot; F1 input debug
+        </div>
+      )}
       <InputDebugHUDBridge />
     </div>
   );

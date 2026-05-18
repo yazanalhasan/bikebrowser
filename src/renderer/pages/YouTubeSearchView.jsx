@@ -50,7 +50,7 @@ function YouTubeSearchView() {
   const fastMode = searchParams.get('fast') === '1';
 
   const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(query));
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState(null);
   const [searchInput, setSearchInput] = useState(query);
@@ -61,6 +61,11 @@ function YouTubeSearchView() {
   useEffect(() => {
     if (query && backendReady) {
       performSearch(query);
+    } else if (!query) {
+      setLoading(false);
+      setError(null);
+      setWarning(null);
+      setVideos([]);
     }
 
     return () => {
@@ -316,7 +321,18 @@ function YouTubeSearchView() {
           </div>
         )}
 
-        {!loading && !error && videos.length === 0 && (
+        {!loading && !error && !query && videos.length === 0 && (
+          <div className="bg-white border-2 border-blue-100 rounded-xl p-8 text-center shadow-sm">
+            <p className="text-2xl text-blue-900 font-semibold mb-3">
+              Search for bike videos
+            </p>
+            <p className="text-lg text-gray-700">
+              Try a calm repair question like &quot;how to fix a flat tire&quot; or &quot;how bike brakes work&quot;.
+            </p>
+          </div>
+        )}
+
+        {!loading && !error && query && videos.length === 0 && (
           <div className="bg-yellow-100 border-2 border-yellow-400 rounded-xl p-8 text-center">
             <p className="text-2xl text-yellow-800 font-semibold mb-4">
               🔍 No videos found
