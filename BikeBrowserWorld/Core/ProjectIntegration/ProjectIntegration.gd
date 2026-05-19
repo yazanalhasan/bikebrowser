@@ -92,10 +92,12 @@ func _on_quest_completed(quest_id: String) -> void:
 	match quest_id:
 		"chain_repair":
 			achievements.unlock("chain_hero")
-		"water_quality_test":
+		"test_water_quality":
 			achievements.unlock("water_scientist")
-		"bridge_quest_4":
-			achievements.unlock("bridge_engineer")
+		"bridge_quest_5":
+			achievements.unlock("bridge_builder")
+		"act1_regional_readiness":
+			achievements.unlock("act_one_champion")
 
 func _on_reward_feedback(_reward: Dictionary) -> void:
 	var effects := get_node_or_null("/root/EffectManagerRuntime")
