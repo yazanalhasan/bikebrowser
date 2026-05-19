@@ -13,9 +13,11 @@ config_version=5
 config/name="BikeBrowserWorld"
 run/main_scene="res://Regions/Neighborhood/NeighborhoodStreet.tscn"
 config/features=PackedStringArray("4.6")
+config/dev_mode=false
 
 [autoload]
 
+DevMode="*res://Core/DevMode/DevMode.gd"
 EventBus="*res://Core/EventBus/EventBus.gd"
 SaveService="*res://Core/SaveService/SaveService.gd"
 RegionRegistry="*res://Core/RegionRegistry/RegionRegistry.gd"
@@ -30,6 +32,7 @@ AudioService="*res://Core/AudioService/AudioService.gd"
 RuntimeValidator="*res://Core/RuntimeValidator/RuntimeValidator.gd"
 ProjectIntegration="*res://Core/ProjectIntegration/ProjectIntegration.gd"
 PlaytestRigTelemetry="*res://Systems/Playtest/PlaytestRigTelemetry.gd"
+LevelEditor="*res://Core/LevelEditor/LevelEditor.gd"
 
 [display]
 

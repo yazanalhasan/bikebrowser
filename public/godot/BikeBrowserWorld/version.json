@@ -1,6 +1,7 @@
 {
-  "git_sha": "9ca435f0dc83e7f7ea3047092d796b4c85ffc7be",
-  "exported_at": "2026-05-19T09:22:21Z",
+  "git_sha": "2f098952026698d239d0b1766da84fea479f9287",
+  "exported_at": "2026-05-19T16:20:52Z",
   "godot_exe": "C:\\Users\\admin\\AppData\\Local\\Microsoft\\WinGet\\Links\\godot.exe",
-  "project_path": "BikeBrowserWorld"
+  "project_path": "BikeBrowserWorld",
+  "preset": "Web Dev Editor"
 }

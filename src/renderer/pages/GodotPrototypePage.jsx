@@ -32,6 +32,7 @@ export default function GodotPrototypePage() {
   const [events, setEvents] = useState([]);
   const [invalidEvents, setInvalidEvents] = useState([]);
   const [iframeStatus, setIframeStatus] = useState('loading');
+  const [editModeActive, setEditModeActive] = useState(false);
   const [showDiagnostics, setShowDiagnostics] = useState(diagnosticsRequested);
   const godotExportUrl = useMemo(() => {
     if (typeof window === 'undefined') return GODOT_EXPORT_URL;
@@ -41,6 +42,9 @@ export default function GodotPrototypePage() {
       const value = source.get(key);
       if (value) target.set(key, value);
     });
+    if (import.meta.env.DEV) {
+      target.set('devEditor', '1');
+    }
     const suffix = target.toString();
     return suffix ? `${GODOT_EXPORT_URL}?${suffix}` : GODOT_EXPORT_URL;
   }, []);
@@ -76,6 +80,12 @@ export default function GodotPrototypePage() {
       }
 
       setEvents((current) => [result.event, ...current].slice(0, 12));
+
+      if (result.event.type === 'EDIT_MODE_ON') {
+        setEditModeActive(true);
+      } else if (result.event.type === 'EDIT_MODE_OFF') {
+        setEditModeActive(false);
+      }
 
       if (result.event.type === 'save_requested') {
         postToGodot(buildGodotMessage('hydrate_save', {
@@ -120,7 +130,7 @@ export default function GodotPrototypePage() {
         aria-label="Home"
         title="Home"
         onClick={() => navigate('/')}
-        className="absolute right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-20 flex h-11 w-11 items-center justify-center rounded-md border border-stone-200/25 bg-stone-950/45 text-stone-50 shadow-lg backdrop-blur-sm transition hover:bg-stone-900/70 focus:outline-none focus:ring-2 focus:ring-amber-200"
+        className={`absolute right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-20 flex h-11 w-11 items-center justify-center rounded-md border border-stone-200/25 bg-stone-950/45 text-stone-50 shadow-lg backdrop-blur-sm transition hover:bg-stone-900/70 focus:outline-none focus:ring-2 focus:ring-amber-200 ${editModeActive ? 'hidden' : ''}`}
       >
         <Home aria-hidden="true" size={22} strokeWidth={2.4} />
       </button>

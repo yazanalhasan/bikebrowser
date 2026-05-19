@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const QRCode = require('qrcode');
 const path = require('path');
+const fs = require('fs');
+const crypto = require('crypto');
 const dgram = require('dgram');
 const { getLocalIpAddress } = require('./network');
 const { ServerStorage } = require('./storage');
@@ -34,7 +36,7 @@ function createApiServer({ searchPipeline, appDataPath, port = 3001, webPort = 5
     return runHeavyRank(payload);
   });
 
-  app.use(express.json({ limit: '2mb' }));
+  app.use(express.json({ limit: '5mb' }));
   app.use(cors({
     origin: true,
     credentials: true,
@@ -124,6 +126,218 @@ function createApiServer({ searchPipeline, appDataPath, port = 3001, webPort = 5
 
     next();
   });
+
+  const devEditorEnabled = process.env.NODE_ENV !== 'production' && process.env.BIKEBROWSER_DEV_EDITOR === '1';
+  const devEditorToken = devEditorEnabled ? crypto.randomBytes(32).toString('hex') : null;
+  const projectRoot = path.resolve(process.cwd(), 'BikeBrowserWorld');
+  const auditRoot = path.resolve(process.cwd(), 'project_audit');
+  const editorWriteLog = path.join(auditRoot, 'editor_writes.log');
+
+  function isLoopbackRequest(req) {
+    const candidates = [
+      req.ip,
+      req.socket && req.socket.remoteAddress,
+      req.headers['x-forwarded-for'],
+    ].filter(Boolean).flatMap((value) => String(value).split(',').map((part) => part.trim()));
+    return candidates.some((value) => (
+      value === '127.0.0.1' ||
+      value === '::1' ||
+      value === '::ffff:127.0.0.1' ||
+      value === 'localhost'
+    ));
+  }
+
+  function requireDevEditorLocal(req, res, next) {
+    if (!isLoopbackRequest(req)) {
+      return res.status(403).json({ success: false, error: 'Dev editor endpoint is localhost-only' });
+    }
+    return next();
+  }
+
+  function requireDevEditorToken(req, res, next) {
+    const token = String(req.headers['x-dev-editor-token'] || '');
+    if (!devEditorToken || token !== devEditorToken) {
+      return res.status(401).json({ success: false, error: 'Invalid dev editor token' });
+    }
+    return next();
+  }
+
+  function resolveEditorPath(relativePath) {
+    const raw = String(relativePath || '').replace(/\\\\/g, '/');
+    if (!raw || raw.includes('..') || path.isAbsolute(raw)) {
+      throw new Error('Invalid scene path');
+    }
+    const ext = path.extname(raw).toLowerCase();
+    if (ext !== '.tscn' && ext !== '.tres') {
+      throw new Error('Only .tscn and .tres files can be edited');
+    }
+    const absolute = path.resolve(projectRoot, raw);
+    const relative = path.relative(projectRoot, absolute);
+    if (relative.startsWith('..') || path.isAbsolute(relative)) {
+      throw new Error('Scene path is outside the Godot project');
+    }
+    return { absolute, relative: relative.replace(/\\\\/g, '/') };
+  }
+
+  function sha256(contents) {
+    return crypto.createHash('sha256').update(contents).digest('hex');
+  }
+
+  function pruneBackups(backupDir, baseName) {
+    const prefix = baseName + '.bak.';
+    const backups = fs.readdirSync(backupDir)
+      .filter((name) => name.startsWith(prefix))
+      .map((name) => ({ name, fullPath: path.join(backupDir, name), stat: fs.statSync(path.join(backupDir, name)) }))
+      .sort((a, b) => b.stat.mtimeMs - a.stat.mtimeMs);
+    backups.slice(20).forEach((entry) => fs.rmSync(entry.fullPath, { force: true }));
+  }
+
+  function backupFile(filePath) {
+    const backupDir = path.join(path.dirname(filePath), '.editor_backups');
+    fs.mkdirSync(backupDir, { recursive: true });
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const backupPath = path.join(backupDir, path.basename(filePath) + '.bak.' + timestamp);
+    fs.copyFileSync(filePath, backupPath);
+    pruneBackups(backupDir, path.basename(filePath));
+    return backupPath;
+  }
+
+  function appendEditorWriteLog(relativePath, contents) {
+    fs.mkdirSync(auditRoot, { recursive: true });
+    const bytes = Buffer.byteLength(contents, 'utf8');
+    const digest = sha256(contents);
+    fs.appendFileSync(editorWriteLog, new Date().toISOString() + ' ' + relativePath + ' ' + bytes + ' ' + digest + '\n', 'utf8');
+    return { bytes, sha256: digest };
+  }
+
+  function vectorToTscn(value) {
+    if (!value || typeof value !== 'object') return null;
+    const x = Number(value.x);
+    const y = Number(value.y);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+    return 'Vector2(' + Number(x.toFixed(3)) + ', ' + Number(y.toFixed(3)) + ')';
+  }
+
+  function scalarToTscn(value) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return null;
+    return String(Number(n.toFixed(6)));
+  }
+
+  function valueToTscn(property, value) {
+    if (property === 'position' || property === 'scale') return vectorToTscn(value);
+    if (property === 'rotation' || property === 'z_index') return scalarToTscn(value);
+    if (property === 'visible') return value ? 'true' : 'false';
+    return null;
+  }
+
+  function findNodeBlock(lines, nodePath) {
+    const normalized = String(nodePath || '').replace(/^\/+/, '');
+    const parts = normalized.split('/').filter(Boolean);
+    if (parts.length === 0) return null;
+    const name = parts[parts.length - 1];
+    const parent = parts.length === 1 ? '.' : parts.slice(0, -1).join('/');
+    let start = -1;
+    for (let i = 0; i < lines.length; i += 1) {
+      const line = lines[i];
+      if (!line.startsWith('[node ') || !line.includes('name="' + name + '"')) {
+        continue;
+      }
+      const hasParent = line.includes('parent="' + parent + '"');
+      const isRoot = parent === '.' && !line.includes('parent=');
+      if (hasParent || isRoot) {
+        start = i;
+        break;
+      }
+    }
+    if (start < 0) {
+      for (let i = 0; i < lines.length; i += 1) {
+        const line = lines[i];
+        if (line.startsWith('[node ') && line.includes('name="' + name + '"')) {
+          start = i;
+          break;
+        }
+      }
+    }
+    if (start < 0) return null;
+    let end = lines.length;
+    for (let i = start + 1; i < lines.length; i += 1) {
+      if (lines[i].startsWith('[node ')) {
+        end = i;
+        break;
+      }
+    }
+    return { start, end };
+  }
+
+  function applyScenePatches(original, patches) {
+    const lines = original.split(/\r\n|\n|\r/);
+    for (const patch of patches || []) {
+      const nodePath = String(patch.nodePath || '');
+      const properties = patch.properties || {};
+      const block = findNodeBlock(lines, nodePath);
+      if (!block) {
+        const wanted = String(nodePath || '').split('/').filter(Boolean).pop() || '';
+        const matches = lines.filter((line) => line.startsWith('[node ') && line.includes('name="' + wanted + '"')).slice(0, 3);
+        throw new Error('Node not found in scene text: ' + nodePath + ' matches=' + JSON.stringify(matches));
+      }
+      for (const [property, value] of Object.entries(properties)) {
+        const rendered = valueToTscn(property, value);
+        if (rendered == null) throw new Error('Unsupported property patch: ' + property);
+        const prefix = property + ' =';
+        let replaced = false;
+        for (let i = block.start + 1; i < block.end; i += 1) {
+          if (lines[i].startsWith(prefix)) {
+            lines[i] = property + ' = ' + rendered;
+            replaced = true;
+            break;
+          }
+        }
+        if (!replaced) {
+          lines.splice(block.end, 0, property + ' = ' + rendered);
+          block.end += 1;
+        }
+      }
+    }
+    return lines.join('\n');
+  }
+
+  if (devEditorEnabled) {
+    app.get('/api/dev-token', requireDevEditorLocal, (_req, res) => {
+      res.json({ success: true, token: devEditorToken, projectRoot });
+    });
+
+    app.post('/api/dev-editor/save-scene', requireDevEditorLocal, requireDevEditorToken, (req, res) => {
+      try {
+        const body = req.body || {};
+        const { absolute, relative } = resolveEditorPath(body.relativePath);
+        if (!fs.existsSync(absolute)) {
+          return res.status(404).json({ success: false, error: 'Scene file not found' });
+        }
+        const current = fs.readFileSync(absolute, 'utf8');
+        const stat = fs.statSync(absolute);
+        const currentHash = sha256(current);
+        if (body.expectedHash && body.expectedHash !== currentHash) {
+          return res.status(409).json({ success: false, error: 'Scene file changed externally', currentHash, mtimeMs: stat.mtimeMs });
+        }
+        if (body.expectedMtimeMs && Math.abs(Number(body.expectedMtimeMs) - stat.mtimeMs) > 2) {
+          return res.status(409).json({ success: false, error: 'Scene file changed externally', currentHash, mtimeMs: stat.mtimeMs });
+        }
+        const nextContents = typeof body.contents === 'string' ? body.contents : applyScenePatches(current, body.patches || []);
+        if (Buffer.byteLength(nextContents, 'utf8') > 5 * 1024 * 1024) {
+          return res.status(413).json({ success: false, error: 'Scene save exceeds 5 MB limit' });
+        }
+        const backupPath = backupFile(absolute);
+        const tmpPath = absolute + '.tmp';
+        fs.writeFileSync(tmpPath, nextContents, 'utf8');
+        fs.renameSync(tmpPath, absolute);
+        const meta = appendEditorWriteLog(relative, nextContents);
+        res.json({ success: true, relativePath: relative, backupPath, ...meta });
+      } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+      }
+    });
+  }
 
   function getCacheKey(prefix, payload) {
     return `${prefix}:${JSON.stringify(payload || {})}`;
@@ -470,7 +684,8 @@ function createApiServer({ searchPipeline, appDataPath, port = 3001, webPort = 5
     }
 
     server = await new Promise((resolve, reject) => {
-      const listener = app.listen(port, '0.0.0.0', () => resolve(listener));
+      const host = devEditorEnabled ? '127.0.0.1' : '0.0.0.0';
+      const listener = app.listen(port, host, () => resolve(listener));
       listener.on('error', reject);
     });
 

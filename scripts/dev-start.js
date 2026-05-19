@@ -6,6 +6,7 @@ const rootDir = path.resolve(__dirname, '..');
 const isWindows = process.platform === 'win32';
 
 // Electron will start the API server itself; no need to block it.
+process.env.BIKEBROWSER_DEV_EDITOR = process.env.BIKEBROWSER_DEV_EDITOR || '1';
 
 function readWindowsProcesses() {
   const command = [

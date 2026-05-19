@@ -6,6 +6,8 @@ export const GODOT_TO_REACT_EVENTS = new Set([
   'reward_intent',
   'save_requested',
   'debug_log',
+  'EDIT_MODE_ON',
+  'EDIT_MODE_OFF',
 ]);
 
 export const REACT_TO_GODOT_EVENTS = new Set([
