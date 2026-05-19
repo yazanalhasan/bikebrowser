@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=3 uid="uid://bikebrowser_neighborhood_street"]
+[gd_scene load_steps=61 format=3 uid="uid://bikebrowser_neighborhood_street"]
 
 [ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
 [ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
@@ -53,6 +53,7 @@
 [ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/NeighborhoodFoundation/cinematic_focus_flow_overlay.png" id="50_cinematic_flow"]
 [ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/NeighborhoodFoundation/street_rhythm_composition_overlay.png" id="51_street_rhythm"]
 [ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/NeighborhoodFoundation/silhouette_readability_ground_overlay.png" id="52_silhouette_read"]
+[ext_resource type="Script" path="res://Systems/Interactions/QuestObjectiveStation.gd" id="53_act1_station"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 18.0
@@ -65,6 +66,9 @@ size = Vector2(96, 360)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_safety"]
 size = Vector2(150, 92)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_act1_station"]
+size = Vector2(170, 92)
 
 [node name="NeighborhoodStreet" type="Node2D"]
 script = ExtResource("1_region")
@@ -543,6 +547,12 @@ shape = SubResource("RectangleShape2D_garage")
 text = "[E] Garage"
 horizontal_alignment = 1
 
+[node name="Guide" type="Label" parent="GarageEntrance"]
+modulate = Color(1, 0.94, 0.78, 0.86)
+text = "Workshop"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
 [node name="MrChen" parent="." instance=ExtResource("4_mrchen")]
 
 [node name="SoftShadow" type="Sprite2D" parent="MrChen"]
@@ -786,6 +796,7 @@ target_region = "copper_mine"
 target_spawn = "from_neighborhood"
 require_accept = false
 feedback_message = "Zuzu rides toward the copper mine."
+locked_feedback = "Maybe after the bike is road-ready."
 required_quest_id = "chain_repair"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MineExit"]
@@ -795,12 +806,19 @@ shape = SubResource("RectangleShape2D_edge")
 text = "Copper Mine"
 horizontal_alignment = 1
 
+[node name="Guide" type="Label" parent="MineExit"]
+modulate = Color(1, 0.94, 0.78, 0.86)
+text = "Ride to Copper Mine"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
 [node name="DesertExit" type="Area2D" parent="."]
 script = ExtResource("3_transition")
 target_region = "desert_trail"
 target_spawn = "from_neighborhood"
 require_accept = false
 feedback_message = "Zuzu follows the desert trail."
+locked_feedback = "The desert can wait until the chain runs smooth."
 required_quest_id = "chain_repair"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DesertExit"]
@@ -810,12 +828,19 @@ shape = SubResource("RectangleShape2D_edge")
 text = "Desert Trail"
 horizontal_alignment = 1
 
+[node name="Guide" type="Label" parent="DesertExit"]
+modulate = Color(1, 0.94, 0.78, 0.86)
+text = "Ride to Desert Trail"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
 [node name="RiverExit" type="Area2D" parent="."]
 script = ExtResource("3_transition")
 target_region = "salt_river"
 target_spawn = "from_neighborhood"
 require_accept = false
 feedback_message = "Zuzu coasts toward the Salt River."
+locked_feedback = "Check the bike first, then the river path opens."
 required_quest_id = "chain_repair"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RiverExit"]
@@ -825,12 +850,73 @@ shape = SubResource("RectangleShape2D_edge")
 text = "Salt River"
 horizontal_alignment = 1
 
+[node name="Guide" type="Label" parent="RiverExit"]
+modulate = Color(1, 0.94, 0.78, 0.86)
+text = "Ride to Salt River"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
 [node name="ChainHotspotMarker" type="Polygon2D" parent="."]
 visible = false
 
 [node name="GarageGlint" type="Sprite2D" parent="."]
 texture_filter = 1
 texture = ExtResource("36_glint")
+
+[node name="BridgeReviewStation" type="Area2D" parent="."]
+script = ExtResource("53_act1_station")
+quest_id = "bridge_quest_5"
+objective_ids = Array[String](["talk_to_neighbors", "receive_badge", "unlock_new_area", "learn_triangles"])
+prompt_text = "Bridge Review"
+locked_prompt_text = "Road-ready first"
+locked_sign_text = "Bridge Later"
+completion_message = "Neighbors trace the triangle braces with Zuzu before the bridge opens wider paths."
+completion_tone = "warm"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BridgeReviewStation"]
+shape = SubResource("RectangleShape2D_act1_station")
+
+[node name="StationMat" type="Polygon2D" parent="BridgeReviewStation"]
+
+[node name="Beacon" type="Polygon2D" parent="BridgeReviewStation"]
+
+[node name="Sign" type="Label" parent="BridgeReviewStation"]
+modulate = Color(1, 0.94, 0.78, 0.92)
+text = "Bridge Review"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Prompt" type="Label" parent="BridgeReviewStation"]
+text = "Bridge Review"
+horizontal_alignment = 1
+
+[node name="Act1CapstoneStation" type="Area2D" parent="."]
+script = ExtResource("53_act1_station")
+quest_id = "act1_regional_readiness"
+objective_ids = Array[String](["review_bike_systems", "review_bridge_systems", "review_ecology_water", "review_materials_workshop", "sketch_regional_questions", "receive_spacecraft_clue"])
+prompt_text = "Act 1 Review"
+locked_prompt_text = "Finish field notes"
+locked_sign_text = "Review Later"
+completion_message = "Mr. Chen helps Zuzu connect the local repairs, field notes, water evidence, and workshop parts into a wider travel plan."
+completion_tone = "celebrate"
+audio_cue = "soft_reward"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Act1CapstoneStation"]
+shape = SubResource("RectangleShape2D_act1_station")
+
+[node name="StationMat" type="Polygon2D" parent="Act1CapstoneStation"]
+
+[node name="Beacon" type="Polygon2D" parent="Act1CapstoneStation"]
+
+[node name="Sign" type="Label" parent="Act1CapstoneStation"]
+modulate = Color(1, 0.94, 0.78, 0.92)
+text = "Act 1 Review"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Prompt" type="Label" parent="Act1CapstoneStation"]
+text = "Act 1 Review"
+horizontal_alignment = 1
 
 [node name="Player" type="CharacterBody2D" parent="."]
 script = ExtResource("2_zuzu")

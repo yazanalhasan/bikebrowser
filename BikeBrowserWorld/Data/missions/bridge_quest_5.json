@@ -3,6 +3,7 @@
   "name": "Celebrate and Learn",
   "description": "Celebrate the rebuilt bridge, learn why triangles make structures stronger, and unlock the neighborhood across the wash.",
   "quest_giver": "mr_chen",
+  "prerequisites": ["chain_repair"],
   "steps": [
     {
       "id": "talk_to_neighbors",

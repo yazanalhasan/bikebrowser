@@ -4,6 +4,8 @@ extends Area2D
 @export var objective_ids: Array[String] = []
 @export var require_accept := true
 @export var prompt_text := "Review"
+@export var locked_prompt_text := "Not ready"
+@export var locked_sign_text := "Later"
 @export var completion_message := "Zuzu records the evidence."
 @export var completion_tone := "warm"
 @export var audio_cue := "soft_click"
@@ -11,6 +13,7 @@ extends Area2D
 var player_in_range := false
 var interaction_locked := false
 var pulse_time := 0.0
+var _base_sign_text := ""
 
 @onready var prompt: Label = get_node_or_null("Prompt")
 @onready var station_mat: Polygon2D = get_node_or_null("StationMat")
@@ -77,11 +80,15 @@ const STATION_VISUALS := {
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	if EventBus != null and not EventBus.quest_completed.is_connected(_on_quest_completed):
+		EventBus.quest_completed.connect(_on_quest_completed)
+	if sign:
+		_base_sign_text = sign.text
 	_style_station_visuals()
 	if prompt:
-		prompt.text = "[E] " + prompt_text
 		_style_prompt(prompt)
 		prompt.visible = false
+	_refresh_station_state()
 
 func _process(delta: float) -> void:
 	pulse_time += delta
@@ -105,7 +112,7 @@ func complete_station(_actor: Node = null) -> bool:
 		interaction_locked = false
 		return true
 	if not QuestRegistry.is_active(quest_id) and not QuestRegistry.start_quest(quest_id):
-		EventBus.interaction_feedback.emit("This review is not ready yet.", "quiet")
+		EventBus.interaction_feedback.emit(_locked_feedback_text(), "quiet")
 		interaction_locked = false
 		return false
 	for objective_id in objective_ids:
@@ -120,6 +127,7 @@ func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = true
 		if prompt:
+			_refresh_station_state()
 			prompt.visible = true
 		if not require_accept:
 			complete_station(body)
@@ -194,6 +202,37 @@ func _style_station_visuals() -> void:
 		sign.add_theme_stylebox_override("normal", plate)
 	if visual.has("sprites"):
 		_add_domain_sprites(visual.get("sprites", []))
+
+func _refresh_station_state() -> void:
+	var locked := _is_locked()
+	if prompt:
+		prompt.text = "[E] " + (locked_prompt_text if locked else prompt_text)
+	if sign:
+		sign.text = locked_sign_text if locked else _base_sign_text
+		var alpha := 0.62 if locked else 0.92
+		sign.modulate = Color(sign.modulate.r, sign.modulate.g, sign.modulate.b, alpha)
+	if station_mat:
+		station_mat.modulate = Color(1.0, 1.0, 1.0, 0.58 if locked else 1.0)
+	if beacon:
+		beacon.modulate = Color(1.0, 1.0, 1.0, 0.35 if locked else 1.0)
+
+func _is_locked() -> bool:
+	return quest_id.strip_edges() != "" and QuestRegistry != null and QuestRegistry.has_method("get_locked_reasons") and not QuestRegistry.get_locked_reasons(quest_id).is_empty()
+
+func _locked_feedback_text() -> String:
+	if QuestRegistry != null and QuestRegistry.has_method("get_locked_reasons"):
+		var missing: Array = QuestRegistry.get_locked_reasons(quest_id)
+		var missing_names: Array[String] = []
+		for reason in missing:
+			var text_reason := String(reason)
+			if text_reason.begins_with("quest:"):
+				missing_names.append(QuestRegistry.get_quest_title(text_reason.trim_prefix("quest:")))
+		if not missing_names.is_empty():
+			return "Finish %s first." % ", ".join(missing_names)
+	return "This review is for later."
+
+func _on_quest_completed(_quest_id: String) -> void:
+	_refresh_station_state()
 
 func _add_domain_sprites(sprite_specs: Array) -> void:
 	for child in get_children():
