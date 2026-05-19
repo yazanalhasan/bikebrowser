@@ -5,18 +5,23 @@ extends Node
 # stingers, and TTS fallbacks.
 
 const MUSIC_BY_REGION := {
-	"boot": "res://Assets/Audio/Music/title_screen.mp3",
-	"neighborhood_street": "res://Assets/Audio/Music/neighborhood_street.mp3",
-	"garage": "res://Assets/Audio/Music/garage_workshop.mp3",
-	"copper_mine": "res://Assets/Audio/Music/copper_mine.mp3",
-	"desert_trail": "res://Assets/Audio/Music/dry_wash_bridge.mp3",
-	"salt_river": "res://Assets/Audio/Music/salt_river.mp3",
-	"system_showcase": "res://Assets/Audio/Music/title_screen.mp3",
+	"boot": "res://Assets/Audio/Music/title_screen.ogg",
+	"neighborhood_street": "res://Assets/Audio/Music/neighborhood_street.ogg",
+	"garage": "res://Assets/Audio/Music/garage_workshop.ogg",
+	"copper_mine": "res://Assets/Audio/Music/copper_mine.ogg",
+	"desert_trail": "res://Assets/Audio/Music/dry_wash_bridge.ogg",
+	"salt_river": "res://Assets/Audio/Music/salt_river.ogg",
+	"system_showcase": "res://Assets/Audio/Music/title_screen.ogg",
 }
 
-const DEFAULT_MUSIC := "res://Assets/Audio/Music/neighborhood_street.mp3"
+const DEFAULT_MUSIC := "res://Assets/Audio/Music/neighborhood_street.ogg"
 const REWARD_STINGER := "res://Assets/Audio/Stingers/quest_fanfare.mp3"
 const SOFT_CLICK_STINGER := "res://Assets/Audio/Stingers/chain_repair_success.mp3"
+const WEB_RESOURCE_BASE := "/godot/BikeBrowserWorld/"
+const REWARD_TINY := "res://Assets/Audio/Cues/reward_tiny.ogg"
+const REWARD_SMALL := "res://Assets/Audio/Cues/reward_small.ogg"
+const REWARD_MEDIUM := "res://Assets/Audio/Cues/reward_medium.ogg"
+const REWARD_LARGE := "res://Assets/Audio/Cues/reward_large.ogg"
 const AMBIENCE_SAMPLE_RATE := 12000
 const VOICE_PROFILE_PATH := "res://Data/audio/voice_profiles.json"
 const VOICE_VOLUME := 0.92
@@ -54,6 +59,10 @@ const CUE_PROFILES := {
 	"pump_air": { "path": SOFT_CLICK_STINGER, "volume_db": -25.5, "pitch": 0.74, "duration": 0.22, "min_gap": 360 },
 	"soft_reward": { "path": REWARD_STINGER, "volume_db": -25.5, "pitch": 1.0, "duration": 0.8, "min_gap": 900, "post_silence": 650 },
 	"reward_chime": { "path": REWARD_STINGER, "volume_db": -22.5, "pitch": 0.94, "duration": 1.1, "min_gap": 1300, "post_silence": 900 },
+	"reward_tiny": { "path": REWARD_TINY, "volume_db": -6.0, "pitch": 1.0, "duration": 0.15, "min_gap": 240, "post_silence": 120 },
+	"reward_small": { "path": REWARD_SMALL, "volume_db": -5.5, "pitch": 1.0, "duration": 0.3, "min_gap": 360, "post_silence": 180 },
+	"reward_medium": { "path": REWARD_MEDIUM, "volume_db": -4.5, "pitch": 1.0, "duration": 0.6, "min_gap": 700, "post_silence": 420 },
+	"reward_large": { "path": REWARD_LARGE, "volume_db": -4.0, "pitch": 1.0, "duration": 1.2, "min_gap": 1400, "post_silence": 900 },
 }
 
 const AMBIENCE_BY_REGION := {
@@ -89,6 +98,7 @@ func _ready() -> void:
 	EventBus.region_entered.connect(_on_region_entered)
 	EventBus.interaction_feedback.connect(_on_interaction_feedback)
 	EventBus.reward_feedback.connect(_on_reward_feedback)
+	EventBus.accomplishment_feedback.connect(_on_accomplishment_feedback)
 	if OS.has_feature("web"):
 		_install_web_audio_runtime()
 	else:
@@ -118,14 +128,14 @@ func play_region_bed(region_id: String) -> void:
 	current_region = region_id
 	if muted or not audio_unlocked:
 		return
-	var layer := _web_layer_for_region(region_id)
 	var music_path := _music_path_for_region(region_id)
 	if OS.has_feature("web"):
-		JavaScriptBridge.eval("window.BikeBrowserAudio && window.BikeBrowserAudio.playRegion('%s');" % layer, true)
+		var mix := _music_mix_for_region(region_id)
+		JavaScriptBridge.eval("window.BikeBrowserAudio && window.BikeBrowserAudio.playRegion('%s','%s',%.3f,%.3f,%.3f);" % [region_id, _web_url_for_resource(music_path), float(mix.get("volume_db", -11.0)), float(mix.get("fade_out", 0.75)), float(mix.get("fade_in", 1.85))], true)
 	else:
 		_play_native_music(music_path, region_id)
 		_play_native_ambience(region_id)
-	EventBus.log_debug("Audio region bed requested", { "regionId": region_id, "layer": layer, "musicPath": music_path })
+	EventBus.log_debug("Audio region bed requested", { "regionId": region_id, "musicPath": music_path })
 
 func play_sfx(cue: String, tone: String = "soft") -> void:
 	if muted or not audio_unlocked:
@@ -145,7 +155,7 @@ func play_sfx(cue: String, tone: String = "soft") -> void:
 	if post_silence > 0:
 		quiet_until_msec = max(quiet_until_msec, now + post_silence)
 	if OS.has_feature("web"):
-		JavaScriptBridge.eval("window.BikeBrowserAudio && window.BikeBrowserAudio.cue('%s','%s');" % [cue, tone], true)
+		JavaScriptBridge.eval("window.BikeBrowserAudio && window.BikeBrowserAudio.cue('%s','%s','%s',%.3f,%.3f);" % [cue, tone, _web_url_for_resource(String(profile.get("path", SOFT_CLICK_STINGER))), float(profile.get("volume_db", -25.0)), float(profile.get("duration", 0.0))], true)
 	else:
 		if cue == "transition_soft":
 			_shape_transition_space()
@@ -250,10 +260,21 @@ func _on_interaction_feedback(_message: String, tone: String) -> void:
 	play_sfx("soft_click", tone)
 
 func _on_reward_feedback(reward: Dictionary) -> void:
-	play_sfx("reward_chime", "celebrate")
-	EventBus.emit_game_event("audio_cue", {
-		"cue": "reward_chime",
+	EventBus.log_debug("Reward feedback received; tiered accomplishment cues handle audio", {
 		"label": reward.get("label", "reward"),
+	})
+
+func _on_accomplishment_feedback(accomplishment: Dictionary) -> void:
+	var tier := String(accomplishment.get("tier", "small"))
+	var cue := "reward_%s" % tier
+	if not CUE_PROFILES.has(cue):
+		cue = "reward_small"
+	play_sfx(cue, tier)
+	EventBus.emit_game_event("audio_cue", {
+		"cue": cue,
+		"tier": tier,
+		"label": accomplishment.get("label", "accomplishment"),
+		"key": accomplishment.get("key", ""),
 	})
 
 func _setup_native_audio_players() -> void:
@@ -284,6 +305,11 @@ func _music_path_for_region(region_id: String) -> String:
 	EventBus.log_debug(warning)
 	return DEFAULT_MUSIC
 
+func _web_url_for_resource(path: String) -> String:
+	if path.begins_with("res://"):
+		return WEB_RESOURCE_BASE + path.replace("res://", "")
+	return path
+
 func validate_audio_mappings(region_ids: Array) -> Array:
 	var errors: Array = []
 	for region_id_value in region_ids:
@@ -298,6 +324,9 @@ func validate_audio_mappings(region_ids: Array) -> Array:
 		errors.append("Missing reward stinger: %s" % REWARD_STINGER)
 	if not ResourceLoader.exists(SOFT_CLICK_STINGER):
 		errors.append("Missing soft click stinger: %s" % SOFT_CLICK_STINGER)
+	for cue_path in [REWARD_TINY, REWARD_SMALL, REWARD_MEDIUM, REWARD_LARGE]:
+		if not ResourceLoader.exists(cue_path):
+			errors.append("Missing reward cue: %s" % cue_path)
 	return errors
 
 func play_test_music(region_id: String) -> void:
@@ -306,7 +335,7 @@ func play_test_music(region_id: String) -> void:
 
 func play_test_stinger(stinger_id: String) -> void:
 	audio_unlocked = true
-	play_sfx("reward_chime" if stinger_id == "quest_fanfare" else "soft_click")
+	play_sfx("reward_medium" if stinger_id == "quest_fanfare" else "soft_click")
 
 func test_tts() -> void:
 	audio_unlocked = true
@@ -330,7 +359,7 @@ func _play_native_music(path: String, region_id: String = "") -> void:
 	if stream == null:
 		EventBus.log_debug("Failed to load native music file", { "path": path })
 		return
-	if stream is AudioStreamMP3:
+	if stream is AudioStreamMP3 or stream is AudioStreamOggVorbis:
 		stream.loop = true
 	current_music_path = path
 	var mix := _music_mix_for_region(region_id)
@@ -480,18 +509,6 @@ func _music_mix_for_region(region_id: String) -> Dictionary:
 func _ambience_mix_for_region(region_id: String) -> Dictionary:
 	return AMBIENCE_BY_REGION.get(region_id, AMBIENCE_BY_REGION["neighborhood_street"])
 
-func _web_layer_for_region(region_id: String) -> String:
-	match region_id:
-		"garage":
-			return "garage"
-		"copper_mine":
-			return "mine"
-		"desert_trail":
-			return "desert"
-		"salt_river":
-			return "river"
-	return "neighborhood"
-
 func _speak_native(text: String, speaker: String, voice_profile: Dictionary) -> void:
 	if not DisplayServer.has_feature(DisplayServer.FEATURE_TEXT_TO_SPEECH):
 		var warning := "Native TTS unavailable; showing text only"
@@ -558,6 +575,8 @@ func _install_web_audio_runtime() -> void:
   const state = {
     ctx: null,
     master: null,
+    musicBus: null,
+    sfxBus: null,
     music: [],
     ambience: [],
     unlocked: false,
@@ -566,31 +585,52 @@ func _install_web_audio_runtime() -> void:
     cueTimes: {},
     lastCue: "",
     lastRegion: "",
+    currentTrackUrl: "",
+    currentTrackRegion: "",
+    musicPlaying: false,
+    oscillatorFallbackDisabled: true,
     lastSpeechStatus: "idle"
   };
   const regionMix = {
-    neighborhood: { freq: 146.83, musicGain: 0.012, ambFreq: 73, ambGain: 0.006, noiseGain: 0.004, fade: 2.1, pan: 0.24 },
-    garage: { freq: 174.61, musicGain: 0.015, ambFreq: 58, ambGain: 0.008, noiseGain: 0.003, fade: 2.35, pan: -0.12 },
-    mine: { freq: 130.81, musicGain: 0.013, ambFreq: 46, ambGain: 0.006, noiseGain: 0.004, fade: 2.0, pan: -0.18 },
-    desert: { freq: 155.56, musicGain: 0.013, ambFreq: 64, ambGain: 0.005, noiseGain: 0.006, fade: 2.15, pan: 0.2 },
-    river: { freq: 164.81, musicGain: 0.013, ambFreq: 82, ambGain: 0.005, noiseGain: 0.006, fade: 2.15, pan: 0.18 }
+    neighborhood_street: { ambFreq: 73, ambGain: 0.006, noiseGain: 0.004, fade: 2.1, pan: 0.24 },
+    garage: { ambFreq: 58, ambGain: 0.008, noiseGain: 0.003, fade: 2.35, pan: -0.12 },
+    copper_mine: { ambFreq: 46, ambGain: 0.006, noiseGain: 0.004, fade: 2.0, pan: -0.18 },
+    desert_trail: { ambFreq: 64, ambGain: 0.005, noiseGain: 0.006, fade: 2.15, pan: 0.2 },
+    salt_river: { ambFreq: 82, ambGain: 0.005, noiseGain: 0.006, fade: 2.15, pan: 0.18 },
+    boot: { ambFreq: 64, ambGain: 0.004, noiseGain: 0.002, fade: 1.45, pan: 0 },
+    system_showcase: { ambFreq: 64, ambGain: 0.004, noiseGain: 0.002, fade: 1.35, pan: 0 }
   };
   const cueProfiles = {
     reward_chime: { gap: 1300, post: 900 },
     soft_reward: { gap: 900, post: 650 },
+    reward_tiny: { gap: 240, post: 120 },
+    reward_small: { gap: 360, post: 180 },
+    reward_medium: { gap: 700, post: 420 },
+    reward_large: { gap: 1400, post: 900 },
     transition_soft: { gap: 650, post: 360 },
     dialogue_open: { gap: 500, post: 0 },
     dialogue_next: { gap: 650, post: 0 },
     dialogue_close: { gap: 500, post: 260 },
     soft_click: { gap: 180, post: 0 }
   };
+  function gainFromDb(db) {
+    const value = Number(db);
+    if (!Number.isFinite(value)) return 0.25;
+    return Math.pow(10, value / 20);
+  }
   function ctx() {
     if (!state.ctx) {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (!AudioContext) return null;
       state.ctx = new AudioContext();
       state.master = state.ctx.createGain();
-      state.master.gain.value = 0.16;
+      state.musicBus = state.ctx.createGain();
+      state.sfxBus = state.ctx.createGain();
+      state.master.gain.value = 0.34;
+      state.musicBus.gain.value = 1.0;
+      state.sfxBus.gain.value = 1.0;
+      state.musicBus.connect(state.master);
+      state.sfxBus.connect(state.master);
       state.master.connect(state.ctx.destination);
     }
     return state.ctx;
@@ -605,30 +645,33 @@ func _install_web_audio_runtime() -> void:
       handle.gain.gain.exponentialRampToValueAtTime(0.0001, endAt);
     } catch (_) {}
     window.setTimeout(() => {
-      try { handle.node.stop(); } catch (_) {}
-      try { handle.node.disconnect(); } catch (_) {}
+      try {
+        if (handle.el) {
+          handle.el.pause();
+          handle.el.src = "";
+          handle.el.load();
+        } else if (handle.node && handle.node.stop) {
+          handle.node.stop();
+        }
+      } catch (_) {}
+      try { if (handle.node) handle.node.disconnect(); } catch (_) {}
+      try { if (handle.source) handle.source.disconnect(); } catch (_) {}
       try { handle.gain.disconnect(); } catch (_) {}
     }, (dur + 0.08) * 1000);
   }
-  function tone(freq, dur, gain, type, panValue) {
+  function makeMediaHandle(url, volumeDb, loop) {
     const c = ctx();
-    if (!c || state.muted || !state.unlocked) return;
-    const osc = c.createOscillator();
-    const g = c.createGain();
-    const pan = c.createStereoPanner ? c.createStereoPanner() : null;
-    osc.type = type || "sine";
-    osc.frequency.value = freq;
-    g.gain.setValueAtTime(0.0001, c.currentTime);
-    g.gain.exponentialRampToValueAtTime(gain, c.currentTime + 0.025);
-    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
-    if (pan) {
-      pan.pan.value = panValue || 0;
-      osc.connect(g).connect(pan).connect(state.master);
-    } else {
-      osc.connect(g).connect(state.master);
-    }
-    osc.start();
-    osc.stop(c.currentTime + dur + 0.04);
+    if (!c || !url) return null;
+    const el = new Audio(url);
+    el.loop = !!loop;
+    el.preload = "auto";
+    el.crossOrigin = "anonymous";
+    el.volume = 1.0;
+    const source = c.createMediaElementSource(el);
+    const gain = c.createGain();
+    gain.gain.value = 0.0001;
+    source.connect(gain).connect(loop ? state.musicBus : state.sfxBus);
+    return { el, source, gain, url };
   }
   function noiseBed(gainValue, dur, panValue) {
     const c = ctx();
@@ -708,7 +751,9 @@ func _install_web_audio_runtime() -> void:
         window.BikeBrowserAudioState = state;
         if (window.BikeBrowserAudioUnlockUI && window.BikeBrowserAudioUnlockUI.hide) window.BikeBrowserAudioUnlockUI.hide();
         console.info("[BikeBrowserAudio] unlocked");
-        this.playRegion("neighborhood");
+        if (state.currentTrackRegion && state.currentTrackUrl) {
+          this.playRegion(state.currentTrackRegion, state.currentTrackUrl);
+        }
         return true;
       };
       if (c.state === "suspended") {
@@ -718,23 +763,48 @@ func _install_web_audio_runtime() -> void:
       }
       return true;
     },
-    playRegion(region) {
+    playRegion(region, trackUrl, volumeDb, fadeOutSec, fadeInSec) {
       const c = ctx();
-      if (!c || state.muted || !state.unlocked) return;
-      const mix = regionMix[region] || regionMix.neighborhood;
+      if (!c || state.muted) return;
+      if (!trackUrl) {
+        console.warn("[BikeBrowserAudio] no authored music track for region", region);
+        return;
+      }
+      if (!state.unlocked) {
+        state.currentTrackRegion = region;
+        state.currentTrackUrl = trackUrl;
+        window.BikeBrowserAudioState = state;
+        return;
+      }
+      if (state.currentTrackUrl === trackUrl && state.music.length && state.music[0].el && !state.music[0].el.paused) {
+        state.lastRegion = region;
+        state.musicPlaying = true;
+        window.BikeBrowserAudioState = state;
+        return;
+      }
+      state.currentTrackRegion = region;
+      state.currentTrackUrl = trackUrl;
+      const mix = regionMix[region] || regionMix.neighborhood_street;
+      const fadeOut = Number.isFinite(fadeOutSec) ? fadeOutSec : mix.fade;
+      const fadeIn = Number.isFinite(fadeInSec) ? fadeInSec : mix.fade;
+      const targetGain = gainFromDb(Number.isFinite(volumeDb) ? volumeDb : -12);
       state.lastRegion = region;
       window.BikeBrowserAudioState = state;
-      state.music.forEach((handle) => fadeOutHandle(handle, mix.fade));
-      state.ambience.forEach((handle) => fadeOutHandle(handle, mix.fade + 0.35));
-      const music = c.createOscillator();
-      const musicGain = c.createGain();
-      music.type = "sine";
-      music.frequency.value = mix.freq;
-      musicGain.gain.setValueAtTime(0.0001, c.currentTime);
-      musicGain.gain.exponentialRampToValueAtTime(mix.musicGain, c.currentTime + mix.fade);
-      music.connect(musicGain).connect(state.master);
-      music.start();
-      state.music = [{ node: music, gain: musicGain }];
+      state.music.forEach((handle) => fadeOutHandle(handle, fadeOut));
+      state.ambience.forEach((handle) => fadeOutHandle(handle, fadeOut + 0.35));
+      const music = makeMediaHandle(trackUrl, volumeDb, true);
+      if (!music) return;
+      music.gain.gain.setValueAtTime(0.0001, c.currentTime);
+      music.gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, targetGain), c.currentTime + fadeIn);
+      music.el.play().then(() => {
+        state.musicPlaying = true;
+        window.BikeBrowserAudioState = state;
+      }).catch((error) => {
+        state.musicPlaying = false;
+        window.BikeBrowserAudioState = state;
+        console.warn("[BikeBrowserAudio] authored music playback failed", { region, trackUrl, error: error && error.message ? error.message : String(error) });
+      });
+      state.music = [music];
       const ambience = c.createOscillator();
       const ambGain = c.createGain();
       const ambPan = c.createStereoPanner ? c.createStereoPanner() : null;
@@ -752,48 +822,32 @@ func _install_web_audio_runtime() -> void:
       const bed = noiseBed(mix.noiseGain, 2.0, (mix.pan || 0) * -0.65);
       state.ambience = bed ? [{ node: ambience, gain: ambGain }, bed] : [{ node: ambience, gain: ambGain }];
     },
-    cue(name, toneName) {
+    cue(name, toneName, cueUrl, volumeDb, durationSec) {
+      const c = ctx();
+      if (!c || state.muted || !state.unlocked) return;
       if (!canCue(name)) return;
       state.lastCue = name;
       window.BikeBrowserAudioState = state;
       console.info("[BikeBrowserAudio] cue", name, toneName || "");
-      if (name === "reward_chime") {
-        duckSpace(0.72, 1.2);
-        tone(523.25, 0.16, 0.025, "sine", -0.04);
-        window.setTimeout(() => tone(659.25, 0.18, 0.022, "sine", 0.03), 105);
-        window.setTimeout(() => tone(783.99, 0.24, 0.017, "sine", 0.0), 225);
+      if (!cueUrl) {
+        console.warn("[BikeBrowserAudio] cue has no authored asset; procedural fallback is disabled", name);
         return;
       }
-      if (name === "soft_reward") {
-        duckSpace(0.8, 0.95);
-        tone(440, 0.12, 0.016, "sine", -0.03);
-        window.setTimeout(() => tone(554.37, 0.18, 0.014, "sine", 0.02), 120);
-        return;
-      }
-      const cues = {
-        chain_inspect: [196, 0.12, 0.018, "sawtooth"],
-        pedal_rotate: [246.94, 0.16, 0.018, "triangle"],
-        chain_align: [329.63, 0.14, 0.02, "triangle"],
-        chain_seat: [392, 0.18, 0.022, "triangle"],
-        wheel_spin_success: [493.88, 0.28, 0.024, "sine"],
-        brake_check: [174.61, 0.11, 0.02, "square"],
-        tire_press: [146.83, 0.13, 0.018, "triangle"],
-        chain_roll: [220, 0.16, 0.018, "triangle"],
-        wheel_spin: [440, 0.16, 0.018, "sine"],
-        tube_slide: [123.47, 0.16, 0.014, "sawtooth"],
-        patch_press: [164.81, 0.12, 0.018, "triangle"],
-        pump_air: [110, 0.16, 0.016, "triangle"],
-        dialogue_open: [392, 0.1, 0.009, "sine"],
-        dialogue_next: [440, 0.055, 0.006, "sine"],
-        dialogue_close: [329.63, 0.085, 0.006, "sine"],
-        transition_soft: [220, 0.16, 0.01, "triangle"],
-        soft_click: [toneName === "careful" ? 330 : 440, 0.055, 0.01, "triangle"]
-      };
-      const cue = cues[name] || cues.soft_click;
+      const isReward = String(name).startsWith("reward_") || name === "soft_reward" || name === "reward_chime";
+      if (isReward) duckSpace(name === "reward_large" ? 0.62 : 0.76, Math.max(0.85, Number(durationSec) || 0.4));
       if (name === "transition_soft") duckSpace(0.68, 0.8);
-      tone(cue[0], cue[1], cue[2], cue[3], 0);
-      if (name === "pedal_rotate" || name === "chain_roll") {
-        window.setTimeout(() => tone(cue[0] * 1.12, 0.055, cue[2] * 0.45, cue[3], 0.04), 130);
+      const handle = makeMediaHandle(cueUrl, volumeDb, false);
+      if (!handle) return;
+      const targetGain = gainFromDb(Number.isFinite(volumeDb) ? volumeDb : -12);
+      handle.gain.gain.setValueAtTime(Math.max(0.0001, targetGain), c.currentTime);
+      handle.el.play().catch((error) => {
+        console.warn("[BikeBrowserAudio] authored cue playback failed", { name, cueUrl, error: error && error.message ? error.message : String(error) });
+      });
+      const stopAfter = Number(durationSec) > 0 ? Number(durationSec) : 0;
+      if (stopAfter > 0) {
+        window.setTimeout(() => fadeOutHandle(handle, 0.08), stopAfter * 1000);
+      } else {
+        handle.el.addEventListener("ended", () => fadeOutHandle(handle, 0.01), { once: true });
       }
     },
     speak(text, speaker, pitch, rate, voiceHint, voiceVolume) {

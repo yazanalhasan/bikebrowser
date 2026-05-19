@@ -11,6 +11,8 @@ var notebook_body: VBoxContainer
 var inventory_body: VBoxContainer
 var notebook_button: Button
 var inventory_button: Button
+var accomplishment_chip: Panel
+var accomplishment_label: Label
 var active_overlay := ""
 var overlay_modal_pushed := false
 
@@ -22,12 +24,14 @@ func _ready() -> void:
 	EventBus.game_event.connect(_on_game_event)
 	EventBus.reward_intent.connect(_on_reward_intent)
 	EventBus.reward_feedback.connect(_on_reward_feedback)
+	EventBus.accomplishment_feedback.connect(_on_accomplishment_feedback)
 	EventBus.interaction_feedback.connect(_on_interaction_feedback)
 	EventBus.notebook_updated.connect(_on_notebook_updated)
 	EventBus.inventory_updated.connect(_on_inventory_updated)
 	EventBus.recipe_feedback.connect(_on_recipe_feedback)
 	if reward_panel:
 		reward_panel.visible = false
+	_build_accomplishment_chip()
 	_build_field_panels()
 	_refresh_guidance()
 	_refresh_notebook()
@@ -80,6 +84,33 @@ func _on_reward_feedback(reward: Dictionary) -> void:
 	tween.tween_interval(2.15)
 	tween.tween_property(reward_panel, "modulate:a", 0.0, 0.65).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_callback(func() -> void: reward_panel.visible = false)
+
+func _on_accomplishment_feedback(accomplishment: Dictionary) -> void:
+	if accomplishment_chip == null or accomplishment_label == null:
+		return
+	var kind := String(accomplishment.get("kind", "accomplishment"))
+	var tier := String(accomplishment.get("tier", "small"))
+	var icon := "v"
+	if kind == "notebook" or kind == "recipe":
+		icon = "::"
+	elif kind == "item":
+		icon = "+"
+	elif tier == "large":
+		icon = "*"
+	accomplishment_label.text = icon
+	accomplishment_chip.visible = true
+	accomplishment_chip.modulate.a = 0.0
+	accomplishment_chip.scale = Vector2(0.88, 0.88)
+	var tween := create_tween()
+	tween.tween_property(accomplishment_chip, "modulate:a", 0.82, 0.16).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(accomplishment_chip, "scale", Vector2.ONE, 0.2).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_interval(0.42 if tier == "tiny" else 0.62)
+	tween.tween_property(accomplishment_chip, "modulate:a", 0.0, 0.32).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.parallel().tween_property(accomplishment_chip, "position:y", accomplishment_chip.position.y - 8.0, 0.32).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_callback(func() -> void:
+		accomplishment_chip.visible = false
+		accomplishment_chip.position = Vector2(604, 92)
+	)
 
 func _on_interaction_feedback(message: String, tone: String) -> void:
 	hint_label.text = message
@@ -166,6 +197,38 @@ func _build_toggle_bar() -> void:
 	bar.add_child(inventory_button)
 	notebook_button.pressed.connect(func() -> void: _toggle_overlay("notebook"))
 	inventory_button.pressed.connect(func() -> void: _toggle_overlay("inventory"))
+
+func _build_accomplishment_chip() -> void:
+	accomplishment_chip = Panel.new()
+	accomplishment_chip.name = "AccomplishmentMicroFeedback"
+	accomplishment_chip.position = Vector2(604, 92)
+	accomplishment_chip.custom_minimum_size = Vector2(72, 42)
+	accomplishment_chip.visible = false
+	accomplishment_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	accomplishment_chip.add_theme_stylebox_override("panel", _micro_feedback_style())
+	add_child(accomplishment_chip)
+	accomplishment_label = Label.new()
+	accomplishment_label.name = "AccomplishmentGlyph"
+	accomplishment_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	accomplishment_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	accomplishment_label.add_theme_font_size_override("font_size", 24)
+	accomplishment_label.add_theme_color_override("font_color", Color(0.98, 0.94, 0.82, 1.0))
+	accomplishment_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	accomplishment_chip.add_child(accomplishment_label)
+
+func _micro_feedback_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.16, 0.28, 0.22, 0.72)
+	style.border_color = Color(0.86, 0.72, 0.42, 0.58)
+	style.border_width_left = 1
+	style.border_width_top = 1
+	style.border_width_right = 1
+	style.border_width_bottom = 1
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	return style
 
 func _make_toggle_button(label: String, key_name: String) -> Button:
 	var button := Button.new()
