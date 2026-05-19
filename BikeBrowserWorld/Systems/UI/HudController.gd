@@ -15,6 +15,7 @@ var active_overlay := ""
 var overlay_modal_pushed := false
 
 func _ready() -> void:
+	layer = 5
 	EventBus.quest_started.connect(_on_quest_started)
 	EventBus.quest_step_completed.connect(_on_quest_step_completed)
 	EventBus.quest_completed.connect(_on_quest_completed)

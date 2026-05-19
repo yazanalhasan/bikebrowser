@@ -8,6 +8,7 @@ import {
 } from '../godot/bridgeEvents';
 
 const GODOT_EXPORT_URL = '/godot/BikeBrowserWorld/index.html';
+const GODOT_PLAYTEST_PARAMS = ['playtest', 'playtestRegion'];
 
 function diagnosticsRequested() {
   if (typeof window === 'undefined') return false;
@@ -32,6 +33,17 @@ export default function GodotPrototypePage() {
   const [invalidEvents, setInvalidEvents] = useState([]);
   const [iframeStatus, setIframeStatus] = useState('loading');
   const [showDiagnostics, setShowDiagnostics] = useState(diagnosticsRequested);
+  const godotExportUrl = useMemo(() => {
+    if (typeof window === 'undefined') return GODOT_EXPORT_URL;
+    const source = new URLSearchParams(window.location.search);
+    const target = new URLSearchParams();
+    GODOT_PLAYTEST_PARAMS.forEach((key) => {
+      const value = source.get(key);
+      if (value) target.set(key, value);
+    });
+    const suffix = target.toString();
+    return suffix ? `${GODOT_EXPORT_URL}?${suffix}` : GODOT_EXPORT_URL;
+  }, []);
 
   const hydrateMessage = useMemo(() => buildGodotMessage('hydrate_save', {
     saveKey: GODOT_SAVE_KEY,
@@ -95,7 +107,7 @@ export default function GodotPrototypePage() {
         ref={iframeRef}
         title="BikeBrowserWorld"
         data-testid="godot-iframe"
-        src={GODOT_EXPORT_URL}
+        src={godotExportUrl}
         onLoad={handleFrameLoad}
         onError={handleFrameError}
         allow="autoplay; fullscreen; gamepad"
@@ -155,7 +167,7 @@ export default function GodotPrototypePage() {
                 {iframeStatus}
               </span>
             </div>
-            <p className="mt-2 text-xs text-stone-500">{GODOT_EXPORT_URL}</p>
+            <p className="mt-2 text-xs text-stone-500">{godotExportUrl}</p>
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">

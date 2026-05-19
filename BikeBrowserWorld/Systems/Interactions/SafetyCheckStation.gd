@@ -130,9 +130,11 @@ func advance_check() -> void:
 func _begin_brake_check() -> void:
 	if brake_check_verified:
 		return
+	if not _mrs_ramirez_intro_recorded():
+		EventBus.interaction_feedback.emit("Talk with Mrs. Ramirez first, then try the brake together.", "quiet")
+		return
 	if not QuestRegistry.is_active(quest_id):
 		QuestRegistry.start_quest(quest_id)
-	QuestRegistry.record_objective(quest_id, "talk_to_mrs_ramirez")
 	brake_check_started = true
 	if brake_rig:
 		brake_rig.visible = true
@@ -154,7 +156,9 @@ func _update_visuals() -> void:
 	var done := step_index >= steps.size()
 	var next_step: Dictionary = steps[min(step_index, steps.size() - 1)]
 	if prompt:
-		if step_index == 0 and not brake_check_verified:
+		if step_index == 0 and not _mrs_ramirez_intro_recorded():
+			prompt.text = "[E] Talk to Mrs. Ramirez"
+		elif step_index == 0 and not brake_check_verified:
 			prompt.text = "[Hold E] Squeeze Brakes"
 		else:
 			prompt.text = "[E] " + ("Safety checked" if done else String(next_step["prompt"]))
@@ -223,3 +227,10 @@ func _hide_prompt() -> void:
 func _world_input_blocked() -> bool:
 	var event_bus := get_node_or_null("/root/EventBus")
 	return event_bus != null and event_bus.has_method("is_modal_active") and event_bus.is_modal_active()
+
+func _mrs_ramirez_intro_recorded() -> bool:
+	if QuestRegistry.completed_quests.has(quest_id):
+		return true
+	var state: Dictionary = QuestRegistry.active_quests.get(quest_id, {})
+	var completed: Array = state.get("completedObjectives", [])
+	return completed.has("talk_to_mrs_ramirez")

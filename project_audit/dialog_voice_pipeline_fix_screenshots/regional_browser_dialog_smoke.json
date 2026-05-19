@@ -1,0 +1,549 @@
+{
+  "results": [
+    {
+      "name": "ranger_nita_dialog",
+      "state": {
+        "unlocked": true,
+        "lastSpeechStatus": "speaking",
+        "lastCue": "dialogue_open",
+        "lastRegion": "desert"
+      }
+    },
+    {
+      "name": "dr_maya_dialog",
+      "state": {
+        "unlocked": true,
+        "lastSpeechStatus": "speaking",
+        "lastCue": "dialogue_open",
+        "lastRegion": "river"
+      }
+    },
+    {
+      "name": "old_miner_pete_dialog",
+      "state": {
+        "unlocked": true,
+        "lastSpeechStatus": "speaking",
+        "lastCue": "dialogue_open",
+        "lastRegion": "mine"
+      }
+    }
+  ],
+  "consoleMessages": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "log",
+      "text": "Service worker disabled in dev mode"
+    },
+    {
+      "type": "warning",
+      "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+    },
+    {
+      "type": "warning",
+      "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+    },
+    {
+      "type": "log",
+      "text": "✅ UX Safety Check Passed {route: /play, timestamp: 2026-05-19T09:20:15.533Z}"
+    },
+    {
+      "type": "log",
+      "text": "Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org"
+    },
+    {
+      "type": "log",
+      "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "type": "log",
+      "text": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support."
+    },
+    {
+      "type": "log",
+      "text": "QuestRegistry loaded 19 missions from res://Data/missions"
+    },
+    {
+      "type": "log",
+      "text": "Registered runtime quests:"
+    },
+    {
+      "type": "log",
+      "text": "- act1_regional_readiness"
+    },
+    {
+      "type": "log",
+      "text": "- algae_bloom_source"
+    },
+    {
+      "type": "log",
+      "text": "- bike_safety_check"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_material_test"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_1"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_2"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_3"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_4"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_5"
+    },
+    {
+      "type": "log",
+      "text": "- chain_repair"
+    },
+    {
+      "type": "log",
+      "text": "- copper_rock_id"
+    },
+    {
+      "type": "log",
+      "text": "- desert_plant_observation"
+    },
+    {
+      "type": "log",
+      "text": "- first_safety_check"
+    },
+    {
+      "type": "log",
+      "text": "- flat_tire_repair"
+    },
+    {
+      "type": "log",
+      "text": "- mine_cart_repair"
+    },
+    {
+      "type": "log",
+      "text": "- test_water_quality"
+    },
+    {
+      "type": "log",
+      "text": "- track_the_animal"
+    },
+    {
+      "type": "log",
+      "text": "- water_sample_observation"
+    },
+    {
+      "type": "log",
+      "text": "- workshop_first_build"
+    },
+    {
+      "type": "log",
+      "text": "Quest validation: 0 errors, 0 warnings"
+    },
+    {
+      "type": "log",
+      "text": "Runtime validation complete:"
+    },
+    {
+      "type": "log",
+      "text": "- errors: 0"
+    },
+    {
+      "type": "log",
+      "text": "- warnings: 1"
+    },
+    {
+      "type": "log",
+      "text": "- quests loaded: 19"
+    },
+    {
+      "type": "log",
+      "text": "- dialogue files: 25"
+    },
+    {
+      "type": "log",
+      "text": "- regions: 7"
+    },
+    {
+      "type": "log",
+      "text": "- audio mappings: 7/7"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x646c03942a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x646c03942a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x646c03942a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    },
+    {
+      "type": "warning",
+      "text": "[.WebGL-0x646c03942a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+    },
+    {
+      "type": "info",
+      "text": "[BikeBrowserAudio] unlocked"
+    },
+    {
+      "type": "info",
+      "text": "[BikeBrowserAudio] cue soft_click quiet"
+    },
+    {
+      "type": "info",
+      "text": "[BikeBrowserAudio] cue dialogue_open gentle"
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "log",
+      "text": "Service worker disabled in dev mode"
+    },
+    {
+      "type": "warning",
+      "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+    },
+    {
+      "type": "warning",
+      "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+    },
+    {
+      "type": "log",
+      "text": "✅ UX Safety Check Passed {route: /play, timestamp: 2026-05-19T09:20:23.727Z}"
+    },
+    {
+      "type": "log",
+      "text": "Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org"
+    },
+    {
+      "type": "log",
+      "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "type": "log",
+      "text": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support."
+    },
+    {
+      "type": "log",
+      "text": "QuestRegistry loaded 19 missions from res://Data/missions"
+    },
+    {
+      "type": "log",
+      "text": "Registered runtime quests:"
+    },
+    {
+      "type": "log",
+      "text": "- act1_regional_readiness"
+    },
+    {
+      "type": "log",
+      "text": "- algae_bloom_source"
+    },
+    {
+      "type": "log",
+      "text": "- bike_safety_check"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_material_test"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_1"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_2"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_3"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_4"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_5"
+    },
+    {
+      "type": "log",
+      "text": "- chain_repair"
+    },
+    {
+      "type": "log",
+      "text": "- copper_rock_id"
+    },
+    {
+      "type": "log",
+      "text": "- desert_plant_observation"
+    },
+    {
+      "type": "log",
+      "text": "- first_safety_check"
+    },
+    {
+      "type": "log",
+      "text": "- flat_tire_repair"
+    },
+    {
+      "type": "log",
+      "text": "- mine_cart_repair"
+    },
+    {
+      "type": "log",
+      "text": "- test_water_quality"
+    },
+    {
+      "type": "log",
+      "text": "- track_the_animal"
+    },
+    {
+      "type": "log",
+      "text": "- water_sample_observation"
+    },
+    {
+      "type": "log",
+      "text": "- workshop_first_build"
+    },
+    {
+      "type": "log",
+      "text": "Quest validation: 0 errors, 0 warnings"
+    },
+    {
+      "type": "log",
+      "text": "Runtime validation complete:"
+    },
+    {
+      "type": "log",
+      "text": "- errors: 0"
+    },
+    {
+      "type": "log",
+      "text": "- warnings: 1"
+    },
+    {
+      "type": "log",
+      "text": "- quests loaded: 19"
+    },
+    {
+      "type": "log",
+      "text": "- dialogue files: 25"
+    },
+    {
+      "type": "log",
+      "text": "- regions: 7"
+    },
+    {
+      "type": "log",
+      "text": "- audio mappings: 7/7"
+    },
+    {
+      "type": "info",
+      "text": "[BikeBrowserAudio] unlocked"
+    },
+    {
+      "type": "info",
+      "text": "[BikeBrowserAudio] cue soft_click quiet"
+    },
+    {
+      "type": "info",
+      "text": "[BikeBrowserAudio] cue dialogue_open gentle"
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "log",
+      "text": "Service worker disabled in dev mode"
+    },
+    {
+      "type": "warning",
+      "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+    },
+    {
+      "type": "warning",
+      "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+    },
+    {
+      "type": "log",
+      "text": "✅ UX Safety Check Passed {route: /play, timestamp: 2026-05-19T09:20:31.032Z}"
+    },
+    {
+      "type": "log",
+      "text": "Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org"
+    },
+    {
+      "type": "log",
+      "text": "OpenGL API OpenGL ES 3.0 (WebGL 2.0 (OpenGL ES 3.0 Chromium)) - Compatibility - Using Device: WebKit - WebKit WebGL"
+    },
+    {
+      "type": "log",
+      "text": "Build configuration: Emscripten 4.0.20, single-threaded, no GDExtension support."
+    },
+    {
+      "type": "log",
+      "text": "QuestRegistry loaded 19 missions from res://Data/missions"
+    },
+    {
+      "type": "log",
+      "text": "Registered runtime quests:"
+    },
+    {
+      "type": "log",
+      "text": "- act1_regional_readiness"
+    },
+    {
+      "type": "log",
+      "text": "- algae_bloom_source"
+    },
+    {
+      "type": "log",
+      "text": "- bike_safety_check"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_material_test"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_1"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_2"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_3"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_4"
+    },
+    {
+      "type": "log",
+      "text": "- bridge_quest_5"
+    },
+    {
+      "type": "log",
+      "text": "- chain_repair"
+    },
+    {
+      "type": "log",
+      "text": "- copper_rock_id"
+    },
+    {
+      "type": "log",
+      "text": "- desert_plant_observation"
+    },
+    {
+      "type": "log",
+      "text": "- first_safety_check"
+    },
+    {
+      "type": "log",
+      "text": "- flat_tire_repair"
+    },
+    {
+      "type": "log",
+      "text": "- mine_cart_repair"
+    },
+    {
+      "type": "log",
+      "text": "- test_water_quality"
+    },
+    {
+      "type": "log",
+      "text": "- track_the_animal"
+    },
+    {
+      "type": "log",
+      "text": "- water_sample_observation"
+    },
+    {
+      "type": "log",
+      "text": "- workshop_first_build"
+    },
+    {
+      "type": "log",
+      "text": "Quest validation: 0 errors, 0 warnings"
+    },
+    {
+      "type": "log",
+      "text": "Runtime validation complete:"
+    },
+    {
+      "type": "log",
+      "text": "- errors: 0"
+    },
+    {
+      "type": "log",
+      "text": "- warnings: 1"
+    },
+    {
+      "type": "log",
+      "text": "- quests loaded: 19"
+    },
+    {
+      "type": "log",
+      "text": "- dialogue files: 25"
+    },
+    {
+      "type": "log",
+      "text": "- regions: 7"
+    },
+    {
+      "type": "log",
+      "text": "- audio mappings: 7/7"
+    },
+    {
+      "type": "info",
+      "text": "[BikeBrowserAudio] unlocked"
+    },
+    {
+      "type": "info",
+      "text": "[BikeBrowserAudio] cue dialogue_open gentle"
+    }
+  ]
+}

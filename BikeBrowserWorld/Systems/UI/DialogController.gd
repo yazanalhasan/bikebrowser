@@ -14,6 +14,7 @@ var closing_dialogue := false
 @onready var close_button: Button = $Panel/VBox/ButtonRow/CloseButton
 
 func _ready() -> void:
+	layer = 30
 	panel.visible = false
 	EventBus.dialogue_requested.connect(_on_dialogue_requested)
 	voice_button.pressed.connect(_toggle_voice)
@@ -52,6 +53,11 @@ func _show_current_line() -> void:
 	body_label.visible_characters = 0
 	continue_button.text = "Begin" if current_index == lines.size() - 1 else "Next"
 	AudioService.speak(target_text, speaker_label.text)
+	EventBus.emit_game_event("dialogue_line_shown", {
+		"dialogueId": String(current_dialogue.get("id", "")),
+		"speaker": speaker_label.text,
+		"textLength": target_text.length(),
+	})
 
 func _process(delta: float) -> void:
 	if panel.visible and body_label.visible_characters < target_text.length():

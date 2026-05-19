@@ -47,7 +47,7 @@ func _process(delta: float) -> void:
 			_:
 				body_visual.position.y = body_base_position.y + sin(pulse_time * 1.6) * 0.8
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if _world_input_blocked():
 		return
 	if player_in_range and event.is_action_pressed("ui_accept"):
@@ -63,12 +63,14 @@ func interact() -> void:
 		interaction_locked = false
 		return
 	var dialogue_manager := get_node_or_null("/root/DialogueManager")
+	var dialogue_started := false
 	if dialogue_manager != null and dialogue_manager.has_method("start_dialogue"):
 		dialogue_manager.start_dialogue(_current_dialogue_id(), npc_id)
+		dialogue_started = true
 	else:
 		push_warning("DialogueManager autoload is not available for NPC dialogue: %s" % dialogue_id)
 	var event_bus := get_node_or_null("/root/EventBus")
-	if event_bus != null:
+	if event_bus != null and not dialogue_started:
 		event_bus.interaction_feedback.emit(_current_feedback_message(), feedback_tone)
 	await get_tree().create_timer(0.18).timeout
 	interaction_locked = false

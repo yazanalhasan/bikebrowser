@@ -154,7 +154,18 @@ func play_sfx(cue: String, tone: String = "soft") -> void:
 		_play_native_stinger(profile)
 
 func speak(text: String, speaker: String = "Narrator") -> void:
-	if muted or not voice_enabled or not audio_unlocked or text.strip_edges().is_empty():
+	var clean_text := text.strip_edges()
+	if clean_text.is_empty():
+		_log_tts_skipped("empty_text", speaker, text)
+		return
+	if muted:
+		_log_tts_skipped("muted", speaker, text)
+		return
+	if not voice_enabled:
+		_log_tts_skipped("voice_disabled", speaker, text)
+		return
+	if not audio_unlocked:
+		_log_tts_skipped("audio_locked", speaker, text)
 		return
 	var voice_profile := resolve_voice_profile(speaker)
 	_shape_voice_space()
@@ -483,17 +494,31 @@ func _web_layer_for_region(region_id: String) -> String:
 
 func _speak_native(text: String, speaker: String, voice_profile: Dictionary) -> void:
 	if not DisplayServer.has_feature(DisplayServer.FEATURE_TEXT_TO_SPEECH):
-		var warning := "TTS unavailable on this platform. Text was: %s" % text
+		var warning := "Native TTS unavailable; showing text only"
 		push_warning(warning)
-		EventBus.log_debug(warning)
+		EventBus.log_debug(warning, { "speaker": speaker, "textLength": text.length() })
 		EventBus.tts_unavailable.emit(text)
 		return
 	var voices := DisplayServer.tts_get_voices_for_language("en")
 	var voice_id := resolve_tts_voice_id(voice_profile)
+	if voice_id.is_empty():
+		var warning := "Native TTS voice unavailable; showing text only"
+		push_warning(warning)
+		EventBus.log_debug(warning, { "speaker": speaker, "textLength": text.length() })
+		EventBus.tts_unavailable.emit(text)
+		return
 	var pitch := float(voice_profile.get("pitch", 1.0))
 	var rate := float(voice_profile.get("rate", 0.95))
 	DisplayServer.tts_stop()
 	DisplayServer.tts_speak(text, voice_id, int(round(VOICE_VOLUME * 100.0)), pitch, rate, 0, true)
+
+func _log_tts_skipped(reason: String, speaker: String, text: String) -> void:
+	EventBus.log_debug("TTS skipped; showing text only", {
+		"reason": reason,
+		"speaker": speaker,
+		"textLength": text.length()
+	})
+	EventBus.tts_unavailable.emit(text)
 
 func _voice_preference_terms(hint: String) -> Array[String]:
 	if hint.find("feminine") != -1:
