@@ -10,12 +10,15 @@ extends CharacterBody2D
 @export var stop_snap_speed := 8.0
 @export var camera_lookahead_distance := 34.0
 @export var camera_lookahead_speed := 6.5
+@export var portrait_camera_zoom := 3.4
+@export var portrait_aspect_threshold := 0.92
 
 var facing := Vector2.DOWN
 var walk_time := 0.0
 var character_sprite: AnimatedSprite2D
 var character_base_scale := Vector2.ONE
 var _camera_lookahead := Vector2.ZERO
+var _camera_base_zoom := Vector2.ONE
 
 func _ready() -> void:
 	add_to_group("player")
@@ -32,9 +35,16 @@ func _ready() -> void:
 		camera.drag_horizontal_enabled = false
 		camera.drag_vertical_enabled = false
 		camera.offset = Vector2.ZERO
+		_camera_base_zoom = camera.zoom
+		_apply_responsive_camera_zoom()
+		var viewport := get_viewport()
+		if viewport != null and not viewport.size_changed.is_connected(_apply_responsive_camera_zoom):
+			viewport.size_changed.connect(_apply_responsive_camera_zoom)
 
 func _physics_process(delta: float) -> void:
 	var direction := _read_direction()
+	if _world_input_blocked():
+		direction = Vector2.ZERO
 	if direction.length() > 0.01:
 		facing = direction.normalized()
 	var target_velocity := direction.normalized() * speed if direction.length() > 0.01 else Vector2.ZERO
@@ -50,6 +60,8 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 func _read_direction() -> Vector2:
+	if _world_input_blocked():
+		return Vector2.ZERO
 	var keyboard := Vector2.ZERO
 	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
 		keyboard.x -= 1.0
@@ -104,3 +116,26 @@ func _apply_camera_feel(delta: float) -> void:
 		var desired_lookahead: Vector2 = velocity.normalized() * speed_ratio * camera_lookahead_distance if velocity.length() > 4.0 else Vector2.ZERO
 		_camera_lookahead = _camera_lookahead.lerp(desired_lookahead, 1.0 - exp(-camera_lookahead_speed * delta))
 		camera.position = _camera_lookahead.round()
+
+func _apply_responsive_camera_zoom() -> void:
+	var camera := get_node_or_null("Camera2D")
+	var viewport := get_viewport()
+	if not (camera is Camera2D) or viewport == null:
+		return
+	var size := Vector2(DisplayServer.window_get_size())
+	if size.x <= 0.0 or size.y <= 0.0:
+		size = viewport.get_visible_rect().size
+	if size.y <= 0.0:
+		camera.zoom = _camera_base_zoom
+		return
+	var aspect := size.x / size.y
+	if aspect < portrait_aspect_threshold:
+		var narrowness: float = clamp((portrait_aspect_threshold - aspect) / portrait_aspect_threshold, 0.0, 1.0)
+		var zoom_factor: float = lerpf(1.22, portrait_camera_zoom, sqrt(narrowness))
+		camera.zoom = _camera_base_zoom * zoom_factor
+	else:
+		camera.zoom = _camera_base_zoom
+
+func _world_input_blocked() -> bool:
+	var event_bus := get_node_or_null("/root/EventBus")
+	return event_bus != null and event_bus.has_method("is_modal_active") and event_bus.is_modal_active()

@@ -1,0 +1,242 @@
+{
+  "device": "cuda:0",
+  "cuda_available": true,
+  "gpu_name": "NVIDIA GeForce RTX 5090",
+  "image_count": 7,
+  "metrics": [
+    {
+      "file": "project_audit/mobile_play_after_camera_tune.png",
+      "width": 390,
+      "height": 844,
+      "mean_rgb": [
+        0.3917,
+        0.4114,
+        0.2934
+      ],
+      "std_rgb": [
+        0.1983,
+        0.1645,
+        0.0978
+      ],
+      "luminance_contrast": 0.1626,
+      "active_pixel_ratio": 0.3089,
+      "active_bbox_ratio": 0.6623,
+      "active_bbox": [
+        0,
+        5,
+        389,
+        563
+      ],
+      "margins": {
+        "top": 0.0059,
+        "bottom": 0.3318,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/recon_godot_export.png",
+      "width": 1280,
+      "height": 720,
+      "mean_rgb": [
+        0.0591,
+        0.0905,
+        0.1651
+      ],
+      "std_rgb": [
+        0.0084,
+        0.0101,
+        0.0128
+      ],
+      "luminance_contrast": 0.0097,
+      "active_pixel_ratio": 0.0012,
+      "active_bbox_ratio": 0.0064,
+      "active_bbox": [
+        605,
+        318,
+        675,
+        400
+      ],
+      "margins": {
+        "top": 0.4417,
+        "bottom": 0.4431,
+        "left": 0.4727,
+        "right": 0.4719
+      }
+    },
+    {
+      "file": "project_audit/recon_godot_export_5174.png",
+      "width": 1280,
+      "height": 720,
+      "mean_rgb": [
+        0.9476,
+        0.9565,
+        0.9582
+      ],
+      "std_rgb": [
+        0.1753,
+        0.1494,
+        0.1439
+      ],
+      "luminance_contrast": 0.1525,
+      "active_pixel_ratio": 0.1019,
+      "active_bbox_ratio": 0.9828,
+      "active_bbox": [
+        18,
+        0,
+        1275,
+        719
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0141,
+        "right": 0.0031
+      }
+    },
+    {
+      "file": "project_audit/recon_godot_export_5239.png",
+      "width": 1280,
+      "height": 720,
+      "mean_rgb": [
+        0.5712,
+        0.5398,
+        0.3602
+      ],
+      "std_rgb": [
+        0.2163,
+        0.2066,
+        0.1215
+      ],
+      "luminance_contrast": 0.1947,
+      "active_pixel_ratio": 0.7442,
+      "active_bbox_ratio": 0.934,
+      "active_bbox": [
+        15,
+        0,
+        1223,
+        711
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0111,
+        "left": 0.0117,
+        "right": 0.0437
+      }
+    },
+    {
+      "file": "project_audit/recon_play_route.png",
+      "width": 1280,
+      "height": 720,
+      "mean_rgb": [
+        0.0591,
+        0.0905,
+        0.1651
+      ],
+      "std_rgb": [
+        0.0084,
+        0.0101,
+        0.0128
+      ],
+      "luminance_contrast": 0.0097,
+      "active_pixel_ratio": 0.0012,
+      "active_bbox_ratio": 0.0064,
+      "active_bbox": [
+        605,
+        318,
+        675,
+        400
+      ],
+      "margins": {
+        "top": 0.4417,
+        "bottom": 0.4431,
+        "left": 0.4727,
+        "right": 0.4719
+      }
+    },
+    {
+      "file": "project_audit/recon_play_route_5174.png",
+      "width": 1280,
+      "height": 720,
+      "mean_rgb": [
+        0.9476,
+        0.9565,
+        0.9582
+      ],
+      "std_rgb": [
+        0.1753,
+        0.1494,
+        0.1439
+      ],
+      "luminance_contrast": 0.1525,
+      "active_pixel_ratio": 0.1019,
+      "active_bbox_ratio": 0.9828,
+      "active_bbox": [
+        18,
+        0,
+        1275,
+        719
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0141,
+        "right": 0.0031
+      }
+    },
+    {
+      "file": "project_audit/recon_play_route_5239.png",
+      "width": 1280,
+      "height": 720,
+      "mean_rgb": [
+        0.2261,
+        0.1953,
+        0.1642
+      ],
+      "std_rgb": [
+        0.1976,
+        0.2086,
+        0.2195
+      ],
+      "luminance_contrast": 0.2068,
+      "active_pixel_ratio": 0.5419,
+      "active_bbox_ratio": 0.9656,
+      "active_bbox": [
+        8,
+        8,
+        1271,
+        711
+      ],
+      "margins": {
+        "top": 0.0111,
+        "bottom": 0.0111,
+        "left": 0.0063,
+        "right": 0.0063
+      }
+    }
+  ],
+  "similar_pairs": [
+    {
+      "a": "project_audit/recon_godot_export.png",
+      "b": "project_audit/recon_play_route.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/recon_godot_export_5174.png",
+      "b": "project_audit/recon_play_route_5174.png",
+      "similarity": 1.0
+    }
+  ],
+  "findings": [
+    {
+      "severity": "high",
+      "file": "project_audit/recon_godot_export.png",
+      "issue": "very low active-pixel ratio; likely blank or mostly empty"
+    },
+    {
+      "severity": "high",
+      "file": "project_audit/recon_play_route.png",
+      "issue": "very low active-pixel ratio; likely blank or mostly empty"
+    }
+  ]
+}
