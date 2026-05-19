@@ -1,0 +1,174 @@
+{
+  "godot": [
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --quit",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "2.9",
+      "tail": "Exit code: 0\nWall time: 2.8 seconds\nOutput:\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\r\n   at: cleanup (core/object/object.cpp:2641)\r\nERROR: 1 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:810)\r\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://project_audit/runtime_repair_smoke.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "2.5",
+      "tail": "Exit code: 0\nWall time: 2.5 seconds\nOutput:\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\r\n   at: cleanup (core/object/object.cpp:2641)\r\nERROR: 1 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:810)\r\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/act1_regional_readiness_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "3.2",
+      "tail": "Exit code: 0\nWall time: 3.2 seconds\nOutput:\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\r\n   at: cleanup (core/object/object.cpp:2641)\r\nERROR: 2 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:810)\r\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/act1_player_path_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "3.2",
+      "tail": "Exit code: 0\nWall time: 3.2 seconds\nOutput:\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\r\n   at: cleanup (core/object/object.cpp:2641)\r\nERROR: 2 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:810)\r\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/act1_hud_guidance_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "3.1",
+      "tail": "Exit code: 0\nWall time: 3.1 seconds\nOutput:\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\r\n   at: cleanup (core/object/object.cpp:2641)\r\nERROR: 2 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:810)\r\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/act1_modal_interaction_guard_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "2.7",
+      "tail": "Exit code: 0\nWall time: 2.7 seconds\nOutput:\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/dialogue_modal_input_lock_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "3.6",
+      "tail": "t):\r\n       [0] _speak_native (res://Core/AudioService/AudioService.gd:480)\r\n       [1] speak (res://Core/AudioService/AudioService.gd:161)\r\n       [2] _show_current_line (res://Systems/UI/DialogController.gd:54)\r\n       [3] _on_dialogue_requested (res://Systems/UI/DialogController.gd:41)\r\n       [4] _run (res://tests/dialogue_modal_input_lock_check.gd:31)\r\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\r\n   at: cleanup (core/object/object.cpp:2641)\r\nERROR: 1 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:810)\r\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/playtest_rig_telemetry_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "2.6",
+      "tail": "Exit code: 0\nWall time: 2.6 seconds\nOutput:\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\r\n   at: cleanup (core/object/object.cpp:2641)\r\nERROR: 1 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:810)\r\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/vertical_slice_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "2.9",
+      "tail": "Exit code: 0\nWall time: 2.9 seconds\nOutput:\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\r\n   at: cleanup (core/object/object.cpp:2641)\r\nERROR: 2 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:810)\r\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/brake_rig_state_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "3.2",
+      "tail": "Exit code: 0\nWall time: 3.2 seconds\nOutput:\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\r\n   at: cleanup (core/object/object.cpp:2641)\r\nERROR: 1 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:810)\r\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/chain_rig_state_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "3.8",
+      "tail": "Exit code: 0\nWall time: 3.7 seconds\nOutput:\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\r\n   at: cleanup (core/object/object.cpp:2641)\r\nERROR: 1 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:810)\r\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/tire_rig_state_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "3.5",
+      "tail": "Exit code: 0\nWall time: 3.4 seconds\nOutput:\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\r\n   at: cleanup (core/object/object.cpp:2641)\r\nERROR: 1 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:810)\r\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/chain_hotspot_embodied_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "4.0",
+      "tail": "Exit code: 0\nWall time: 4 seconds\nOutput:\nWARNING: ObjectDB instances leaked at exit (run with --verbose for details).\r\n   at: cleanup (core/object/object.cpp:2641)\r\nERROR: 3 resources still in use at exit (run with --verbose for details).\r\n   at: clear (core/io/resource.cpp:810)\r\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/interaction_overlap_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "4.3",
+      "tail": "Exit code: 0\nWall time: 4.3 seconds\nOutput:\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/transition_dialogue_guard_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "4.3",
+      "tail": "Exit code: 0\nWall time: 4.3 seconds\nOutput:\n"
+    },
+    {
+      "cmd": "godot --headless --path .\\BikeBrowserWorld --script res://tests/garage_transition_check.gd",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "4.3",
+      "tail": "Exit code: 0\nWall time: 4.3 seconds\nOutput:\n"
+    }
+  ],
+  "browser": [
+    {
+      "name": "npm build",
+      "cmd": "npm run build",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "9.3",
+      "tail": "\u001b[39m\u001b[1m\u001b[33m2,081.49 kB\u001b[39m\u001b[22m\u001b[2m │ gzip: 768.98 kB\u001b[22m\n\u001b[32m✓ built in 8.51s\u001b[39m\n\u001b[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.\u001b[39m\n(node:38068) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/dev/bikebrowser/postcss.config.js is not specified and it doesn't parse as CommonJS.\nReparsing as ES module because module syntax was detected. This incurs a performance overhead.\nTo eliminate this warning, add \"type\": \"module\" to C:\\dev\\bikebrowser\\package.json.\n(Use `node --trace-warnings ...` to show where the warning was created)\n\u001b[33m\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\u001b[39m\n"
+    },
+    {
+      "name": "export",
+      "cmd": "powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\export-godot-web.ps1",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "4.5",
+      "tail": "Exit code: 0\nWall time: 4.5 seconds\nOutput:\n"
+    },
+    {
+      "name": "play smoke",
+      "cmd": "npx playwright test tests/e2e/godot-prototype.smoke.spec.js --reporter=line",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "3.5",
+      "tail": "Exit code: 0\nWall time: 3.5 seconds\nOutput:\n\nRunning 2 tests using 1 worker\n\n\u001b[1A\u001b[2K[1/2] [chromium] › tests\\e2e\\godot-prototype.smoke.spec.js:4:7 › Godot canonical route › renders the canonical Godot world at /play without diagnostics by default\n\u001b[1A\u001b[2K[2/2] [chromium] › tests\\e2e\\godot-prototype.smoke.spec.js:13:7 › Godot canonical route › keeps diagnostics opt-in and preserves bridge event handling\n\u001b[1A\u001b[2K  2 passed (2.4s)\n"
+    },
+    {
+      "name": "hud legacy smoke",
+      "cmd": "npx playwright test tests/e2e/mission-inventory-hud.smoke.spec.js --reporter=line",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "13.6",
+      "tail": "Exit code: 0\nWall time: 13.6 seconds\nOutput:\n\nRunning 2 tests using 1 worker\n\n\u001b[1A\u001b[2K[1/2] [chromium] › tests\\e2e\\mission-inventory-hud.smoke.spec.js:60:7 › mission and inventory HUD › active mission objective and inventory are visible to the player\n\u001b[1A\u001b[2K[2/2] [chromium] › tests\\e2e\\mission-inventory-hud.smoke.spec.js:77:7 › mission and inventory HUD › blocked forage steps tell the player what to do next\n\u001b[1A\u001b[2K  2 passed (12.5s)\n"
+    },
+    {
+      "name": "playthrough smoke",
+      "cmd": "npm run test:e2e:playthrough",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "20.6",
+      "tail": "Exit code: 0\nWall time: 20.5 seconds\nOutput:\n\n> bikebrowser@0.1.0 test:e2e:playthrough\n> playwright test full-game-playthrough.smoke flat-tire-flow.smoke gameplay-report-panel.smoke runtime-audit.smoke\n\n\nRunning 4 tests using 1 worker\n\n\u001b[1A\u001b[2K[1/4] [chromium] › tests\\e2e\\flat-tire-flow.smoke.spec.js:52:7 › flat tire repair flow › street bike interaction reaches explainer and cognitive scene boots\n\u001b[1A\u001b[2K[2/4] [chromium] › tests\\e2e\\full-game-playthrough.smoke.spec.js:98:7 › full game playthrough › every shipped quest can be completed in the browser runtime\n\u001b[1A\u001b[2K[3/4] [chromium] › tests\\e2e\\gameplay-report-panel.smoke.spec.js:52:7 › gameplay report panel › saved report stays visible as full selectable text\n\u001b[1A\u001b[2K[4/4] [chromium] › tests\\e2e\\runtime-audit.smoke.spec.js:16:7 › runtime audit smoke › runtime audit reports zero errors at boot\n\u001b[1A\u001b[2K  4 passed (19.6s)\n"
+    },
+    {
+      "name": "node mechanics",
+      "cmd": "node --test tests/godot-bridge.test.mjs tests/mechanical-state-simulation.test.mjs tests/mechanical-reasoning-graph.test.mjs",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "0.4",
+      "tail": "on deltas\n  ---\n  duration_ms: 17.21\n  type: 'test'\n  ...\n# Subtest: builds gear ratio curves across cassette range for visualization\nok 11 - builds gear ratio curves across cassette range for visualization\n  ---\n  duration_ms: 14.2219\n  type: 'test'\n  ...\n# Subtest: creates cascading failure propagation tree with secondary wear effects\nok 12 - creates cascading failure propagation tree with secondary wear effects\n  ---\n  duration_ms: 11.9878\n  type: 'test'\n  ...\n# Subtest: diagnoses skipping under load using mechanic questions and ranked causes\nok 13 - diagnoses skipping under load using mechanic questions and ranked causes\n  ---\n  duration_ms: 11.713\n  type: 'test'\n  ...\n# Subtest: mechanical memory updates wear and upgrade history for future reasoning\nok 14 - mechanical memory updates wear and upgrade history for future reasoning\n  ---\n  duration_ms: 12.6388\n  type: 'test'\n  ...\n1..14\n# tests 14\n# suites 0\n# pass 14\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 132.9411\n"
+    },
+    {
+      "name": "diff check",
+      "cmd": "git diff --check",
+      "status": "PASS",
+      "exitCode": 0,
+      "durationSec": "0.2",
+      "tail": "Exit code: 0\nWall time: 0.2 seconds\nOutput:\nwarning: in the working copy of 'BikeBrowserWorld/project_audit/latest_runtime_validation.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'public/godot/BikeBrowserWorld/index.audio.position.worklet.js', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'public/godot/BikeBrowserWorld/index.audio.worklet.js', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'public/godot/BikeBrowserWorld/index.html', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'public/godot/BikeBrowserWorld/index.js', LF will be replaced by CRLF the next time Git touches it\n"
+    }
+  ]
+}

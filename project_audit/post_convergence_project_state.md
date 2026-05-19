@@ -1,63 +1,40 @@
 # Post-Convergence Project State
 
-Generated: 2026-05-17
+Date: 2026-05-18
+Branch: `repair/runtime-canonicalization`
 
-## Final State
+## Convergence Result
 
-BikeBrowser now presents the Godot embodied repair slice as the canonical player experience.
+The project has converged on `/play` as the canonical Godot embodied-learning experience. The prior dashboard/toolkit energy is contained outside the player route, and diagnostics remain opt-in.
 
-The project moved from:
+## Act 1 Shape
 
-`expanding prototype platform`
+Act 1 now reads as:
 
-toward:
+bike repair -> bridge/material systems -> regional evidence -> workshop synthesis -> regional readiness -> spacecraft possibility.
 
-`coherent authored world`
+The main route is intentionally narrower than the backend graph. That is now documented and enforced through guidance, gating, badges, reports, and validation.
 
-## Files Changed In This Sprint
+## Major Improvements
 
-- `src/renderer/App.jsx`
-- `src/renderer/components/AppLayout.jsx`
-- `src/renderer/pages/GodotPrototypePage.jsx`
-- `src/renderer/utils/uxSafety.js`
-- `tests/e2e/helpers/gameBoot.js`
-- `tests/e2e/godot-prototype.smoke.spec.js`
-- `tests/README.md`
-- `scripts/check-app.mjs`
-- `scripts/check-routes.mjs`
-- `scripts/full-audit.mjs`
-- `public/godot/BikeBrowserWorld/version.json`
-- `project_audit/canonical_experience_convergence.md`
-- `project_audit/ui_surface_reduction_results.md`
-- `project_audit/legacy_tooling_containment.md`
-- `project_audit/playtest_readiness_review.md`
-- `project_audit/post_convergence_project_state.md`
+- Critical-path interaction locks and modal behavior.
+- Objective-level HUD guidance.
+- Act 1 capstone mission and reward path.
+- QuestObjectiveStation shared station system.
+- Domain-specific station visuals.
+- Mobile portrait camera framing.
+- World-promise cleanup for badges/deferred content.
+- Expanded regression checks and browser validation.
+- External playtest packet.
 
-## Validation Results
+## Residual Risk
 
-- Workspace write test: passed.
-- RuntimeValidator headless boot: passed, 0 errors, 1 known warning for native TTS availability.
-- `runtime_repair_smoke.gd`: passed.
-- `vertical_slice_check.gd`: passed.
-- `brake_rig_state_check.gd`: passed.
-- `chain_rig_state_check.gd`: passed.
-- `chain_hotspot_embodied_check.gd`: passed.
-- `interaction_overlap_check.gd`: passed.
-- `npm run build`: passed.
-- `tools/export-godot-web.ps1`: passed.
-- Canonical Godot route smoke: passed.
-- Legacy Phaser runtime audit smoke: passed.
-- Electron main syntax check: passed.
+- Godot headless cleanup warnings remain after successful exits.
+- Vite chunk/module-type warnings remain.
+- Generated screenshots/captures remain dirty artifacts and were not all committed.
+- Touch-only mobile controls need real-child observation.
 
-## Telemetry And Diagnostics
+## Recommendation
 
-- Godot bridge message validation remains active.
-- Save hydration remains active through `GODOT_SAVE_KEY`.
-- Diagnostics are opt-in and hidden by default.
-- Legacy Phaser report tooling remains available at `/legacy-play`.
+Proceed to a small external child playtest before expanding any Act 2 or side-quest content.
 
-## External Playtest Readiness
-
-Ready for a small controlled external playtest of the current embodied slice.
-
-The strongest emotional area is the warm neighborhood-to-garage repair flow. The biggest remaining risk is export freshness and any in-Godot HUD density that only becomes obvious during live play.
