@@ -589,6 +589,11 @@ func _install_web_audio_runtime() -> void:
     currentTrackRegion: "",
     musicPlaying: false,
     oscillatorFallbackDisabled: true,
+    availableVoiceCount: 0,
+    lastVoiceName: "",
+    lastVoiceHint: "",
+    lastVoiceSpeaker: "",
+    pendingSpeechToken: 0,
     lastSpeechStatus: "idle"
   };
   const regionMix = {
@@ -714,11 +719,26 @@ func _install_web_audio_runtime() -> void:
     if (value.includes("feminine")) return ["female", "woman", "zira", "aria", "jenny", "susan", "hazel", "heera"];
     if (value.includes("older") || value.includes("grounded")) return ["male", "man", "david", "mark", "george", "guy"];
     if (value.includes("bright") || value.includes("casual")) return ["female", "jenny", "aria", "zira", "neutral"];
+    if (value.includes("calm") || value.includes("warm")) return ["female", "zira", "aria", "jenny", "susan", "hazel", "neutral"];
+    if (value.includes("measured") || value.includes("steady") || value.includes("workshop")) return ["male", "david", "mark", "george", "guy", "neutral"];
     return ["neutral", "zira", "david"];
   }
-  function chooseVoice(hint) {
+  function getVoices() {
     if (!("speechSynthesis" in window)) return null;
     const voices = window.speechSynthesis.getVoices ? window.speechSynthesis.getVoices() : [];
+    state.availableVoiceCount = voices ? voices.length : 0;
+    window.BikeBrowserAudioState = state;
+    return voices || [];
+  }
+  function speakerIndex(speaker, size) {
+    if (!size) return 0;
+    const text = String(speaker || "");
+    let hash = 0;
+    for (let i = 0; i < text.length; i++) hash = ((hash * 31) + text.charCodeAt(i)) >>> 0;
+    return hash % size;
+  }
+  function chooseVoice(hint, speaker) {
+    const voices = getVoices();
     if (!voices || !voices.length) return null;
     const enVoices = voices.filter((voice) => String(voice.lang || "").toLowerCase().startsWith("en"));
     const pool = enVoices.length ? enVoices : voices;
@@ -727,7 +747,12 @@ func _install_web_audio_runtime() -> void:
       const found = pool.find((voice) => `${voice.name || ""} ${voice.voiceURI || ""} ${voice.lang || ""}`.toLowerCase().includes(term));
       if (found) return found;
     }
-    return pool[0] || null;
+    return pool[speakerIndex(speaker, pool.length)] || pool[0] || null;
+  }
+  function primeVoices() {
+    if (!("speechSynthesis" in window)) return;
+    getVoices();
+    window.speechSynthesis.onvoiceschanged = () => getVoices();
   }
   function duckSpace(amount, dur) {
     const c = ctx();
@@ -748,6 +773,7 @@ func _install_web_audio_runtime() -> void:
       if (!c) return false;
       const finish = () => {
         state.unlocked = true;
+        primeVoices();
         window.BikeBrowserAudioState = state;
         if (window.BikeBrowserAudioUnlockUI && window.BikeBrowserAudioUnlockUI.hide) window.BikeBrowserAudioUnlockUI.hide();
         console.info("[BikeBrowserAudio] unlocked");
@@ -850,7 +876,7 @@ func _install_web_audio_runtime() -> void:
         handle.el.addEventListener("ended", () => fadeOutHandle(handle, 0.01), { once: true });
       }
     },
-    speak(text, speaker, pitch, rate, voiceHint, voiceVolume) {
+    speak(text, speaker, pitch, rate, voiceHint, voiceVolume, forceDefault) {
       if (state.muted || !state.unlocked) return;
       if (!("speechSynthesis" in window)) {
         state.lastSpeechStatus = "unavailable";
@@ -858,11 +884,38 @@ func _install_web_audio_runtime() -> void:
         console.warn("[BikeBrowserAudio] TTS unavailable; showing text only", { speaker, text });
         return;
       }
+      primeVoices();
+      const token = ++state.pendingSpeechToken;
+      const voices = getVoices();
+      if ((!voices || !voices.length) && !forceDefault) {
+        state.lastSpeechStatus = "waiting_for_voices";
+        state.lastVoiceHint = voiceHint || "";
+        state.lastVoiceSpeaker = speaker || "";
+        window.BikeBrowserAudioState = state;
+        let attempts = 0;
+        const retry = () => {
+          if (token !== state.pendingSpeechToken) return;
+          const loaded = getVoices();
+          if (loaded && loaded.length) {
+            this.speak(text, speaker, pitch, rate, voiceHint, voiceVolume);
+          } else if (++attempts < 10) {
+            window.setTimeout(retry, 120);
+          } else {
+            console.warn("[BikeBrowserAudio] TTS voices did not load; browser default voice may be used", { speaker, voiceHint });
+            this.speak(text, speaker, pitch, rate, voiceHint, voiceVolume, true);
+          }
+        };
+        window.setTimeout(retry, 120);
+        return;
+      }
       window.speechSynthesis.cancel();
       duckSpace(0.58, 1.25);
       const utter = new SpeechSynthesisUtterance(text);
-      const voice = chooseVoice(voiceHint);
+      const voice = chooseVoice(voiceHint, speaker);
       if (voice) utter.voice = voice;
+      state.lastVoiceName = voice ? String(voice.name || voice.voiceURI || "") : "";
+      state.lastVoiceHint = voiceHint || "";
+      state.lastVoiceSpeaker = speaker || "";
       utter.rate = Number.isFinite(rate) ? rate : 0.95;
       utter.pitch = Number.isFinite(pitch) ? pitch : 1.0;
       utter.volume = Number.isFinite(voiceVolume) ? voiceVolume : 0.92;

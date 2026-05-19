@@ -51,6 +51,10 @@ func _run() -> void:
 
 	var fallback: Dictionary = audio_service.call("resolve_voice_profile", "Unknown Neighbor")
 	_assert(_valid_profile(fallback), "Unknown speakers use a calm restrained fallback")
+	var audio_source := FileAccess.get_file_as_string("res://Core/AudioService/AudioService.gd")
+	_assert(audio_source.find("waiting_for_voices") != -1, "Web TTS waits for browser voices before speaking")
+	_assert(audio_source.find("lastVoiceName") != -1, "Web TTS exposes selected voice state for validation")
+	_assert(audio_source.find("speakerIndex") != -1, "Web TTS has deterministic per-speaker fallback voice selection")
 	_finish()
 
 func _current_dialogue_speakers() -> Array[String]:
