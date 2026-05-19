@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bikebrowser_copper_mine"]
+[gd_scene load_steps=13 format=3 uid="uid://bikebrowser_copper_mine"]
 
 [ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
 [ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
@@ -8,12 +8,16 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/CopperMine/mine_entrance_arch.png" id="6_mine_entrance"]
 [ext_resource type="Texture2D" path="res://Assets/Props/CopperMine/copper_ore_chunk.png" id="7_ore"]
 [ext_resource type="Texture2D" path="res://Assets/Props/CopperMine/mine_cart.png" id="8_cart"]
+[ext_resource type="Script" path="res://Systems/Interactions/QuestObjectiveStation.gd" id="9_act1_station"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 18.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
 size = Vector2(160, 72)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ore"]
+size = Vector2(190, 104)
 
 [node name="CopperMine" type="Node2D"]
 script = ExtResource("1_region")
@@ -41,6 +45,31 @@ texture_filter = 1
 texture = ExtResource("8_cart")
 
 [node name="OldMinerPeteNpc" parent="." instance=ExtResource("4_miner")]
+
+[node name="CopperEvidenceStation" type="Area2D" parent="."]
+script = ExtResource("9_act1_station")
+quest_id = "copper_rock_id"
+objective_ids = Array[String](["find_copper_rock", "test_conductivity", "report_to_pete"])
+prompt_text = "Test Copper"
+completion_message = "Zuzu observes the blue-green stain, tests conductivity, and reports the copper evidence to Pete."
+completion_tone = "warm"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CopperEvidenceStation"]
+shape = SubResource("RectangleShape2D_ore")
+
+[node name="StationMat" type="Polygon2D" parent="CopperEvidenceStation"]
+
+[node name="Beacon" type="Polygon2D" parent="CopperEvidenceStation"]
+
+[node name="Sign" type="Label" parent="CopperEvidenceStation"]
+modulate = Color(1, 0.94, 0.78, 0.92)
+text = "Copper Evidence"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Prompt" type="Label" parent="CopperEvidenceStation"]
+text = "Test Copper"
+horizontal_alignment = 1
 
 [node name="BackToNeighborhood" type="Area2D" parent="."]
 script = ExtResource("3_transition")

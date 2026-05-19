@@ -2,7 +2,7 @@
 
 - Errors: 0
 - Warnings: 1
-- Quests loaded: 18 / mission files: 18
+- Quests loaded: 19 / mission files: 19
 - Dialogue files normalized: 25
 - Regions: 7
 - NPC scenes scanned: 10
@@ -26,10 +26,11 @@ None.
 		"dialogue_tree": 15,
 		"lines": 10
 	},
-	"mission_file_count": 18,
+	"mission_file_count": 19,
 	"npc_count": 10,
-	"quest_count": 18,
+	"quest_count": 19,
 	"quest_ids": [
+		"act1_regional_readiness",
 		"algae_bloom_source",
 		"bike_safety_check",
 		"bridge_material_test",

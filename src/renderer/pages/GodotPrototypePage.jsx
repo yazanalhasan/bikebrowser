@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Home } from 'lucide-react';
 import {
   GODOT_SAVE_KEY,
   buildGodotMessage,
@@ -24,6 +26,7 @@ function formatEvent(event) {
 }
 
 export default function GodotPrototypePage() {
+  const navigate = useNavigate();
   const iframeRef = useRef(null);
   const [events, setEvents] = useState([]);
   const [invalidEvents, setInvalidEvents] = useState([]);
@@ -98,6 +101,17 @@ export default function GodotPrototypePage() {
         allow="autoplay; fullscreen; gamepad"
         className="absolute inset-0 h-full w-full border-0 bg-black"
       />
+
+      <button
+        type="button"
+        data-testid="home-button"
+        aria-label="Home"
+        title="Home"
+        onClick={() => navigate('/')}
+        className="absolute right-[max(0.75rem,env(safe-area-inset-right))] top-[max(0.75rem,env(safe-area-inset-top))] z-20 flex h-11 w-11 items-center justify-center rounded-md border border-stone-200/25 bg-stone-950/45 text-stone-50 shadow-lg backdrop-blur-sm transition hover:bg-stone-900/70 focus:outline-none focus:ring-2 focus:ring-amber-200"
+      >
+        <Home aria-hidden="true" size={22} strokeWidth={2.4} />
+      </button>
 
       {iframeStatus === 'missing-export' && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-stone-950 px-6 text-center">

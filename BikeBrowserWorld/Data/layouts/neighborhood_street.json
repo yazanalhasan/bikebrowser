@@ -30,23 +30,23 @@
       "color": "#71546f"
     },
     "MapFrame": {
-      "x": -600,
+      "x": -720,
       "y": -360,
-      "w": 1200,
+      "w": 1440,
       "h": 720,
       "color": "#b78958"
     },
     "TopGrass": {
-      "x": -584,
+      "x": -704,
       "y": -344,
-      "w": 1168,
+      "w": 1408,
       "h": 300,
       "color": "#6f9f45"
     },
     "BottomGrass": {
-      "x": -584,
+      "x": -704,
       "y": 144,
-      "w": 1168,
+      "w": 1408,
       "h": 200,
       "color": "#638f3d"
     },
@@ -58,30 +58,30 @@
       "color": "#e7a765"
     },
     "Road": {
-      "x": -584,
+      "x": -704,
       "y": -28,
-      "w": 1168,
+      "w": 1408,
       "h": 172,
       "color": "#25313b"
     },
     "TopSidewalk": {
-      "x": -584,
+      "x": -704,
       "y": -52,
-      "w": 1168,
+      "w": 1408,
       "h": 24,
       "color": "#c9b995"
     },
     "Sidewalk": {
-      "x": -584,
+      "x": -704,
       "y": -52,
-      "w": 1168,
+      "w": 1408,
       "h": 24,
       "color": "#c9b995"
     },
     "BottomSidewalk": {
-      "x": -584,
+      "x": -704,
       "y": 144,
-      "w": 1168,
+      "w": 1408,
       "h": 24,
       "color": "#d3c1a1"
     },
@@ -473,6 +473,12 @@
       "w": 120,
       "h": 28
     },
+    "GarageEntrance/Guide": {
+      "x": -72,
+      "y": -78,
+      "w": 150,
+      "h": 24
+    },
     "MrChen": {
       "x": 308,
       "y": -82,
@@ -507,6 +513,12 @@
       "w": 120,
       "h": 28
     },
+    "MineExit/Guide": {
+      "x": 8,
+      "y": -150,
+      "w": 142,
+      "h": 24
+    },
     "DesertExit": {
       "x": 620,
       "y": 40,
@@ -518,6 +530,12 @@
       "y": -110,
       "w": 120,
       "h": 28
+    },
+    "DesertExit/Guide": {
+      "x": -154,
+      "y": -150,
+      "w": 150,
+      "h": 24
     },
     "RiverExit": {
       "x": 0,
@@ -531,6 +549,12 @@
       "w": 120,
       "h": 28
     },
+    "RiverExit/Guide": {
+      "x": -78,
+      "y": -126,
+      "w": 156,
+      "h": 24
+    },
     "ChainHotspotMarker": {
       "x": 112,
       "y": 148,
@@ -541,26 +565,36 @@
     "GroundArtLayer/RoadPanel": {
       "x": 0,
       "y": 58,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": -4
     },
     "GroundArtLayer/DuskMountainsPanel": {
       "x": 0,
       "y": -250,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": -8
     },
     "GroundArtLayer/YardGroundPanel": {
       "x": 0,
       "y": 0,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": -7
     },
     "GroundArtLayer/TopSidewalkPanel": {
       "x": 0,
       "y": -36,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": -3
     },
     "GroundArtLayer/BottomSidewalkPanel": {
       "x": 0,
       "y": 160,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": -3
     },
     "GroundArtLayer/DrivewayPanel": {
@@ -572,41 +606,57 @@
     "GroundArtLayer/RoadShadowOverlay": {
       "x": 0,
       "y": 58,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": -1
     },
     "GroundArtLayer/CurbDepthOverlay": {
       "x": 0,
       "y": 0,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": 0
     },
     "GroundArtLayer/HouseGroundingOverlay": {
       "x": 0,
       "y": 0,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": 1
     },
     "GroundArtLayer/PropGroundingOverlay": {
       "x": 0,
       "y": 0,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": 2
     },
     "GroundArtLayer/WarmLightFlowOverlay": {
       "x": 0,
       "y": 0,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": 3
     },
     "GroundArtLayer/StreetRhythmOverlay": {
       "x": 0,
       "y": 0,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": 4
     },
     "GroundArtLayer/CinematicFocusFlowOverlay": {
       "x": 0,
       "y": 0,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": 5
     },
     "GroundArtLayer/SilhouetteReadabilityOverlay": {
       "x": 0,
       "y": 0,
+      "scaleX": 1.12,
+      "scaleY": 1.0,
       "z": 6
     },
     "HouseLayer/ZuzuHouseFacade": {
@@ -680,6 +730,80 @@
       "y": -74,
       "scale": 0.55,
       "z": 8
+    },
+    "BridgeReviewStation": {
+      "x": 408,
+      "y": -106,
+      "w": 190,
+      "h": 96,
+      "z": 8
+    },
+    "BridgeReviewStation/StationMat": {
+      "x": -98,
+      "y": -46,
+      "w": 196,
+      "h": 92,
+      "color": "#5d8fb666",
+      "shape": "soft",
+      "z": -1
+    },
+    "BridgeReviewStation/Beacon": {
+      "x": -18,
+      "y": -86,
+      "w": 36,
+      "h": 34,
+      "color": "#ffd86b99",
+      "shape": "diamond",
+      "z": 1
+    },
+    "BridgeReviewStation/Sign": {
+      "x": -86,
+      "y": -118,
+      "w": 172,
+      "h": 26
+    },
+    "BridgeReviewStation/Prompt": {
+      "x": -80,
+      "y": -84,
+      "w": 160,
+      "h": 28
+    },
+    "Act1CapstoneStation": {
+      "x": 156,
+      "y": -222,
+      "w": 210,
+      "h": 104,
+      "z": 8
+    },
+    "Act1CapstoneStation/StationMat": {
+      "x": -108,
+      "y": -50,
+      "w": 216,
+      "h": 100,
+      "color": "#725aa866",
+      "shape": "soft",
+      "z": -1
+    },
+    "Act1CapstoneStation/Beacon": {
+      "x": -20,
+      "y": -92,
+      "w": 40,
+      "h": 38,
+      "color": "#ffd86baa",
+      "shape": "diamond",
+      "z": 1
+    },
+    "Act1CapstoneStation/Sign": {
+      "x": -92,
+      "y": -126,
+      "w": 184,
+      "h": 26
+    },
+    "Act1CapstoneStation/Prompt": {
+      "x": -80,
+      "y": -84,
+      "w": 160,
+      "h": 28
     },
     "GroundPropLayer/StoryGroundDetails/ChalkBestJump": {
       "x": 72,

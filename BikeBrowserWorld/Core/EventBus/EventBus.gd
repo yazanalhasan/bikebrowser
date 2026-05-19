@@ -15,6 +15,17 @@ signal tts_unavailable(text)
 signal save_requested(save_payload)
 signal debug_log(message, payload)
 
+var modal_stack := 0
+
+func push_modal() -> void:
+	modal_stack += 1
+
+func pop_modal() -> void:
+	modal_stack = max(0, modal_stack - 1)
+
+func is_modal_active() -> bool:
+	return modal_stack > 0
+
 func emit_game_event(type: String, payload: Dictionary = {}) -> void:
 	var event := payload.duplicate(true)
 	event["type"] = type

@@ -70,6 +70,19 @@ func _run() -> void:
 		root.remove_child(scene_rig)
 		scene_rig.free()
 
+	if station_scene:
+		var station: Node = station_scene.instantiate()
+		root.add_child(station)
+		await process_frame
+		station.set("player_in_range", true)
+		station.call("_update_prompt")
+		var station_prompt: Label = station.get_node_or_null("Prompt")
+		_assert(station_prompt != null, "station exposes player prompt")
+		if station_prompt:
+			_assert(station_prompt.text.begins_with("[Hold E]"), "station prompt uses consistent hold-key casing")
+		root.remove_child(station)
+		station.free()
+
 	root.remove_child(rig)
 	rig.free()
 	await process_frame

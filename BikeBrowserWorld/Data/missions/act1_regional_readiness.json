@@ -1,0 +1,62 @@
+{
+  "id": "act1_regional_readiness",
+  "name": "Regional Readiness Review",
+  "description": "Zuzu and the neighborhood mentors review the whole Sonoran first act: bike repair, bridge engineering, desert ecology, water testing, materials work, and workshop building. Completing it turns the local adventure into the first wider-region travel plan.",
+  "act": 1,
+  "chapter": "act1_capstone",
+  "quest_giver": "mr_chen",
+  "prerequisites": [
+    "bike_safety_check",
+    "flat_tire_repair",
+    "chain_repair",
+    "bridge_quest_5",
+    "desert_plant_observation",
+    "test_water_quality",
+    "copper_rock_id",
+    "workshop_first_build"
+  ],
+  "unlocks": [],
+  "steps": [
+    {
+      "id": "review_bike_systems",
+      "description": "Show that the tires, brakes, and chain have all been checked or repaired.",
+      "completion_condition": "review_complete:bike_systems"
+    },
+    {
+      "id": "review_bridge_systems",
+      "description": "Explain why the rebuilt bridge can carry force safely across the wash.",
+      "completion_condition": "review_complete:bridge_systems"
+    },
+    {
+      "id": "review_ecology_water",
+      "description": "Compare desert plant observations with water-quality evidence from the Salt River.",
+      "completion_condition": "review_complete:ecology_water"
+    },
+    {
+      "id": "review_materials_workshop",
+      "description": "Connect copper, workshop parts, and material testing to stronger future machines.",
+      "completion_condition": "review_complete:materials_workshop"
+    },
+    {
+      "id": "sketch_regional_questions",
+      "description": "Add the first wider-region questions to the travel sketchbook: what resources and knowledge come from other places?",
+      "completion_condition": "regional_travel_sketchbook_started"
+    },
+    {
+      "id": "receive_spacecraft_clue",
+      "description": "Receive the mentor clue that bridges, bikes, water loops, and tested materials can scale into spacecraft systems.",
+      "completion_condition": "spacecraft_clue_received"
+    }
+  ],
+  "dialogue_refs": ["mr_chen_bridge.triangle_lesson"],
+  "reward": {
+    "allowance": 30,
+    "badge": "Systems Thinker",
+    "reputation": 15,
+    "domain": "systems",
+    "label": "Act 1 regional readiness",
+    "childMessage": "Your local tools are ready to grow into a wider map.",
+    "items": ["regional_travel_sketchbook", "spacecraft_clue_card"],
+    "finalObjective": "receive_spacecraft_clue"
+  }
+}

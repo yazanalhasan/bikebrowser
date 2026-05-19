@@ -82,24 +82,32 @@ function auditQuestGivers() {
 }
 
 /**
- * auditQuestItems — every `requiredItem` in quest steps must exist in items.js.
- * Missing item = error.
+ * auditQuestItems — every quest item reference must exist in items.js.
+ * Missing item = error. This covers step gates and quest rewards so a quest
+ * cannot silently ask for or grant an item that the HUD/inventory cannot name.
  */
 function auditQuestItems() {
   const errors = [];
   const warnings = [];
 
   const itemIds = new Set(Object.keys(ITEMS));
+  const checkItem = (questId, stepId, field, itemId) => {
+    if (itemId && !itemIds.has(itemId)) {
+      errors.push(makeError(
+        'data/quests.js',
+        `quest "${questId}" ${stepId ? `step "${stepId}" ` : ''}${field} "${itemId}" not found in items.js`
+      ));
+    }
+  };
 
   for (const [questId, quest] of Object.entries(QUESTS)) {
     const steps = quest.steps || [];
     for (const step of steps) {
-      if (step.requiredItem && !itemIds.has(step.requiredItem)) {
-        errors.push(makeError(
-          'data/quests.js',
-          `quest "${questId}" step "${step.id}" requiredItem "${step.requiredItem}" not found in items.js`
-        ));
-      }
+      checkItem(questId, step.id, 'requiredItem', step.requiredItem);
+      checkItem(questId, step.id, 'requiredRecipe', step.requiredRecipe);
+    }
+    for (const rewardItem of quest.reward?.items || []) {
+      checkItem(questId, null, 'reward item', rewardItem);
     }
   }
 

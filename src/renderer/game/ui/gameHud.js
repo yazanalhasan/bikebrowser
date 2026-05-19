@@ -13,7 +13,7 @@ import {
   getKnownWorkbenchRecipes,
 } from '../data/workbenchRecipes.js';
 
-/** Return a short quest tracker string for the HUD. */
+/** Return a short quest tracker payload for the HUD. */
 export function getQuestSummary(state) {
   if (!state?.activeQuest) return null;
 
@@ -26,6 +26,12 @@ export function getQuestSummary(state) {
   let stepHint = null;
   if (step?.type === 'use_item') {
     stepHint = `Need: ${ITEMS[step.requiredItem]?.icon || ''} ${ITEMS[step.requiredItem]?.name || step.requiredItem}`;
+  } else if (step?.type === 'forage') {
+    stepHint = `Find: ${ITEMS[step.requiredItem]?.icon || ''} ${ITEMS[step.requiredItem]?.name || step.requiredItem}`;
+  } else if (step?.type === 'craft') {
+    stepHint = `Craft: ${ITEMS[step.requiredRecipe]?.icon || ''} ${ITEMS[step.requiredRecipe]?.name || step.requiredRecipe}`;
+  } else if (step?.type === 'observe') {
+    stepHint = step.hint || 'Complete the field task.';
   } else if (step?.type === 'quiz') {
     stepHint = 'Answer the question!';
   } else if (step?.type === 'dialogue') {
@@ -36,7 +42,29 @@ export function getQuestSummary(state) {
     stepHint = 'Almost done!';
   }
 
-  return { title: quest.title, progress, stepHint };
+  return {
+    title: quest.title,
+    progress,
+    stepId: step?.id || null,
+    stepType: step?.type || null,
+    objective: summarizeObjective(step?.text || quest.description || ''),
+    stepHint,
+  };
+}
+
+function summarizeObjective(text) {
+  const compact = String(text)
+    .replace(/\{[^}]+\}/g, '')
+    .replace(/[\r\n]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (compact.length <= 140) return compact;
+
+  const sentence = compact.match(/^.{60,140}?[.!?](\s|$)/)?.[0]?.trim();
+  if (sentence) return sentence;
+
+  return `${compact.slice(0, 137).trim()}...`;
 }
 
 /** Build a displayable inventory list. */

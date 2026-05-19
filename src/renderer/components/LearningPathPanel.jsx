@@ -163,7 +163,7 @@ export function LearningPathPanel({ videos, onVideoSelect }) {
       <div className="videos-list space-y-3 max-h-96 overflow-y-auto">
         {learningPath[selectedLevel].map((video, index) => (
           <div
-            key={video.videoId}
+            key={`${video.videoId || video.title}-${index}`}
             className="video-item bg-white rounded-lg p-4 hover:shadow-md transition cursor-pointer border-2 border-transparent hover:border-blue-400"
             onClick={() => onVideoSelect && onVideoSelect(video)}
           >

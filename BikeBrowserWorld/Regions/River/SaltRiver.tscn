@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bikebrowser_salt_river"]
+[gd_scene load_steps=14 format=3 uid="uid://bikebrowser_salt_river"]
 
 [ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
 [ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
@@ -9,12 +9,16 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/small_dock_boardwalk.png" id="7_dock"]
 [ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/water_sampling_kit.png" id="8_sampling"]
 [ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/cattail_plant.png" id="9_cattail"]
+[ext_resource type="Script" path="res://Systems/Interactions/QuestObjectiveStation.gd" id="10_act1_station"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 18.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
 size = Vector2(200, 72)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_water"]
+size = Vector2(200, 104)
 
 [node name="SaltRiver" type="Node2D"]
 script = ExtResource("1_region")
@@ -46,6 +50,31 @@ texture_filter = 1
 texture = ExtResource("9_cattail")
 
 [node name="DrMayaNpc" parent="." instance=ExtResource("4_maya")]
+
+[node name="WaterQualityStation" type="Area2D" parent="."]
+script = ExtResource("10_act1_station")
+quest_id = "test_water_quality"
+objective_ids = Array[String](["talk_to_dr_maya", "collect_water_sample", "run_ph_test", "identify_macroinvertebrates", "report_results"])
+prompt_text = "Water Test"
+completion_message = "Zuzu labels a sample, compares the pH strip, checks the tray, and reports the evidence chain to Dr. Maya."
+completion_tone = "warm"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WaterQualityStation"]
+shape = SubResource("RectangleShape2D_water")
+
+[node name="StationMat" type="Polygon2D" parent="WaterQualityStation"]
+
+[node name="Beacon" type="Polygon2D" parent="WaterQualityStation"]
+
+[node name="Sign" type="Label" parent="WaterQualityStation"]
+modulate = Color(1, 0.94, 0.78, 0.92)
+text = "Water Quality"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Prompt" type="Label" parent="WaterQualityStation"]
+text = "Water Test"
+horizontal_alignment = 1
 
 [node name="BackToNeighborhood" type="Area2D" parent="."]
 script = ExtResource("3_transition")

@@ -2,6 +2,7 @@ extends SceneTree
 
 var failures: Array[String] = []
 var observed_region_entered := false
+var observed_locked_feedback := false
 
 func _init() -> void:
 	call_deferred("_run")
@@ -37,6 +38,10 @@ func _run() -> void:
 	event_bus.region_entered.connect(func(_region_id: String, _spawn_id: String) -> void:
 		observed_region_entered = true
 	)
+	event_bus.interaction_feedback.connect(func(message: String, _tone: String) -> void:
+		if message.contains("road-ready"):
+			observed_locked_feedback = true
+	)
 
 	panel.visible = true
 	garage_entrance.player_in_range = true
@@ -45,6 +50,17 @@ func _run() -> void:
 
 	_assert(not observed_region_entered, "Garage transition waits while dialogue is visible")
 	_assert(not garage_entrance.transition_locked, "Garage transition unlocks after dialogue guard")
+
+	var mine_exit: Node = neighborhood.get_node_or_null("MineExit")
+	var player: Node = neighborhood.get_node_or_null("Player")
+	_assert(mine_exit != null, "Locked side-region exit exists")
+	_assert(player != null, "Player exists for locked side-region check")
+	if mine_exit != null and player != null:
+		observed_region_entered = false
+		mine_exit.call("_on_body_entered", player)
+		await process_frame
+		_assert(not observed_region_entered, "Locked side-region exit does not transition early")
+		_assert(observed_locked_feedback, "Locked side-region exit gives quiet feedback")
 	_finish()
 
 func _finish() -> void:

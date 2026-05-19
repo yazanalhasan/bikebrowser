@@ -319,6 +319,43 @@
       "w": 190,
       "h": 130
     },
+    "WorkshopBuildStation": {
+      "x": 410,
+      "y": 280,
+      "w": 190,
+      "h": 96,
+      "z": 9
+    },
+    "WorkshopBuildStation/StationMat": {
+      "x": -98,
+      "y": -46,
+      "w": 196,
+      "h": 92,
+      "color": "#6fbfa266",
+      "shape": "soft",
+      "z": -1
+    },
+    "WorkshopBuildStation/Beacon": {
+      "x": -18,
+      "y": -84,
+      "w": 36,
+      "h": 34,
+      "color": "#ffd86b99",
+      "shape": "diamond",
+      "z": 1
+    },
+    "WorkshopBuildStation/Sign": {
+      "x": -82,
+      "y": -116,
+      "w": 164,
+      "h": 26
+    },
+    "WorkshopBuildStation/Prompt": {
+      "x": -78,
+      "y": -72,
+      "w": 156,
+      "h": 28
+    },
     "InteractableLayer/LooseChainProp": {
       "x": 650,
       "y": 320,

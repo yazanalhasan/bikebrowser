@@ -1,248 +1,312 @@
 # Full Runtime Resource Inventory
 
-Date: 2026-05-17
-Sprint: Full System Utilization + Autonomous Game Evolution Sprint
-Scope: BikeBrowser / BikeBrowserWorld only.
+Date: 2026-05-18
+Scope: Phase 1 resource/runtime inventory for BikeBrowser / BikeBrowserWorld.
+Workspace: `C:\dev\bikebrowser`
 
-## Executive Summary
+## Summary
 
-The workstation is suitable for aggressive parallel validation, browser/runtime exploration, Godot export work, and CUDA-assisted screenshot or asset analysis.
+This machine is ready for parallel browser validation, Godot web export checks, CUDA-assisted visual analysis, Electron smoke work, and asset pipeline inspection. Hardware is not the current limiter.
 
-The main constraint is not hardware. It is governance/tool readiness:
+Planning constraints:
 
-- Telegram report-only governance is requested, but OpenClaw currently reports no configured chat channels. Phase reports cannot be delivered until a Telegram channel/target is configured.
-- Blender is installed under `C:\Program Files\Blender Foundation`, but `blender` does not resolve on PATH in this session.
-- The git worktree already had pre-existing uncommitted changes before this sprint began.
+- Worktree is already dirty from other workers; do not infer ownership from modified files outside this report.
+- `npm run build` was not executed during this inventory because it writes `build/`; build flow was inspected from `package.json`, lockfile, and installed package versions.
+- Blender is installed but not on PATH. Use the explicit install path until PATH is updated.
 
 ## Repository State
 
-- Repo: `C:\dev\bikebrowser`
-- Branch: `repair/runtime-canonicalization`
-- Remote state at start: ahead of `origin/repair/runtime-canonicalization` by 2 commits.
-- Pre-existing dirty files:
-  - `src/renderer/game/GameContainer.jsx`
-  - `src/renderer/game/ui/gameHud.js`
-  - `tests/e2e/mission-inventory-hud.smoke.spec.js`
+Commands:
 
-These were not modified during Phase 1 inventory.
+```powershell
+Get-Location
+git status --short
+Get-ChildItem -Force project_audit
+```
 
-## CPU And Memory
+Results:
 
-- CPU: Intel Core Ultra 9 285K
-- Physical cores reported: 24
-- Logical processors reported: 24
-- Max clock reported: 3700 MHz
-- L2 cache: 40960 KB
-- L3 cache: 36864 KB
-- RAM: 67,938,451,456 bytes, approximately 64 GiB
+- Repo path: `C:\dev\bikebrowser`
+- Existing root audit directory: `project_audit/`
+- Updated file: `project_audit/full_runtime_resource_inventory.md`
+- Dirty worktree observed before this report update, including Godot, React, screenshot, telemetry, test, and audit artifacts from other workers.
 
-Recommended use:
+## CPU, RAM, OS
 
-- Run Playwright and static scans with CPU parallelism.
-- Keep Godot validation scripts serialized when they share project cache/output.
-- Use CPU for repo-wide text, JSON, GDScript, and scene contract scans.
+Commands:
 
-## GPU, CUDA, And PyTorch
+```powershell
+Get-CimInstance Win32_Processor |
+  Select Name,NumberOfCores,NumberOfLogicalProcessors,MaxClockSpeed,L2CacheSize,L3CacheSize
+Get-CimInstance Win32_ComputerSystem | Select TotalPhysicalMemory
+Get-CimInstance Win32_OperatingSystem |
+  Select Caption,Version,BuildNumber,OSArchitecture,FreePhysicalMemory
+```
 
-Detected GPUs:
+Results:
 
-| Index | GPU | Driver | Memory | Free at audit | Temp | Utilization |
+- OS: Microsoft Windows 11 Pro, version `10.0.26200`, build `26200`, 64-bit.
+- CPU: Intel Core Ultra 9 285K.
+- CPU topology: 24 physical cores, 24 logical processors.
+- Max clock reported: 3700 MHz.
+- Cache: L2 40960 KB, L3 36864 KB.
+- RAM: 67,938,451,456 bytes, about 64 GiB.
+- Free physical memory at probe: 39,205,724 KB, about 37.4 GiB.
+
+Sprint use:
+
+- Safe to run Playwright/static scans in parallel when they do not share writable outputs.
+- Serialize Godot export and project-cache-sensitive checks.
+
+## GPU, CUDA, PyTorch
+
+Commands:
+
+```powershell
+nvidia-smi --query-gpu=index,name,driver_version,memory.total,memory.free,temperature.gpu,utilization.gpu --format=csv,noheader
+nvcc --version
+python - <<'PY'
+import torch
+print(torch.__version__, torch.cuda.is_available(), torch.version.cuda, torch.cuda.device_count())
+for i in range(torch.cuda.device_count()):
+    print(i, torch.cuda.get_device_name(i))
+PY
+```
+
+Results:
+
+| GPU | Name | Driver | VRAM | Free at probe | Temp | Util |
 | --- | --- | --- | --- | --- | --- | --- |
 | 0 | NVIDIA GeForce RTX 5090 | 591.86 | 32607 MiB | 31692 MiB | 51 C | 0% |
-| 1 | NVIDIA GeForce RTX 5090 | 591.86 | 32607 MiB | 31692 MiB | 34 C | 0% |
+| 1 | NVIDIA GeForce RTX 5090 | 591.86 | 32607 MiB | 31692 MiB | 35 C | 0% |
 
-CUDA readiness:
-
-- NVIDIA driver reports CUDA Version 13.1.
-- CUDA toolkit: 12.9, `nvcc` V12.9.41.
+- CUDA toolkit: `nvcc` release 12.9, V12.9.41.
 - PyTorch: `2.8.0+cu129`.
-- `torch.cuda.is_available()`: true.
+- `torch.cuda.is_available()`: `True`.
+- PyTorch CUDA runtime: `12.9`.
 - PyTorch device count: 2.
-- PyTorch device names: two NVIDIA GeForce RTX 5090 devices.
 
-Recommended use:
+Sprint use:
 
-- Use CUDA for screenshot embedding/comparison, visual clustering, local CV checks, and batch asset validation.
-- Do not force GPU usage for repo scans, JSON validation, or small deterministic tests where CPU tooling is simpler and faster.
+- CUDA is ready for screenshot comparison, visual clustering, asset analysis, and local CV helpers.
+- Repo scans, JSON checks, and deterministic smoke tests should remain CPU-first unless visual analysis benefits from GPU.
 
-## Node, Browser, Electron, And Build Runtime
+## Node, npm, Git, PowerShell, Python
 
-- Node: v22.22.3
-- npm: 10.9.8
-- Playwright: 1.59.1
-- Electron: v28.3.3
-- Vite/React app scripts are present.
+Commands:
 
-Important npm scripts:
+```powershell
+$PSVersionTable | Select PSVersion,PSEdition,GitCommitId,OS,Platform
+node --version
+npm --version
+git --version
+python --version
+```
 
-- `npm run build`
-- `npm run lint`
-- `npm run test:e2e`
-- `npm run test:e2e:smoke`
-- `npm run test:e2e:playthrough`
-- `npm run dev:react`
-- `npm run dev:electron`
-- `npm run dev:web`
+Results:
 
-Recommended use:
+- PowerShell: 7.6.1 Core.
+- Node: v22.22.3.
+- npm: 10.9.8.
+- Git: 2.54.0.windows.1.
+- Python: 3.11.9.
 
-- Treat Playwright as the browser/runtime truth layer.
-- Use screenshots, console capture, failed request capture, and canvas presence checks for regression discovery.
-- Keep `/play` canonical and avoid reintroducing app-shell/dashboard dominance.
+## npm, Build, Electron Runtime
 
-## Godot Runtime
+Commands:
 
-- Godot: 4.6.2 stable official, build `71f334935`.
-- Headless boot of `BikeBrowserWorld` succeeds.
-- Runtime boot loaded 18 missions:
-  - `algae_bloom_source`
-  - `bike_safety_check`
-  - `bridge_material_test`
-  - `bridge_quest_1`
-  - `bridge_quest_2`
-  - `bridge_quest_3`
-  - `bridge_quest_4`
-  - `bridge_quest_5`
-  - `chain_repair`
-  - `copper_rock_id`
-  - `desert_plant_observation`
-  - `first_safety_check`
-  - `flat_tire_repair`
-  - `mine_cart_repair`
-  - `test_water_quality`
-  - `track_the_animal`
-  - `water_sample_observation`
-  - `workshop_first_build`
-- Quest validation: 0 errors, 0 warnings.
-- RuntimeValidator summary:
-  - errors: 0
-  - warnings: 1
-  - quests loaded: 18
-  - dialogue files: 25
-  - regions: 7
-  - audio mappings: 7/7
+```powershell
+Get-Content package.json
+npm ls --depth=0 --json
+npx electron --version
+```
 
-Known headless shutdown noise:
+Installed/runtime highlights:
 
-- Godot reports one leaked ObjectDB/resource-at-exit message after validation. Existing audits indicate this is expected shutdown noise unless RuntimeValidator reports errors.
+- Electron CLI: `v28.3.3`.
+- Vite installed: `5.4.21`; package range is `^5.0.12`.
+- React installed: `18.3.1`; package range is `^18.2.0`.
+- Three installed: `0.184.0` with package override.
+- Phaser installed: `3.90.0`.
+- Playwright installed: `1.59.1`.
+- Electron Builder installed: `24.13.3`; package range is `^24.9.1`.
 
-Recommended use:
+Key npm scripts:
 
-- Use Godot headless checks as the first validation layer for embodied systems.
-- Re-export web after source changes before judging `/play`/iframe parity.
+- `npm run dev:web`: API server + Vite.
+- `npm run dev:react`: Vite on strict port 5173.
+- `npm run dev:electron`: waits for `http://localhost:5173`, then launches Electron.
+- `npm run build`: `vite build`, output `build/`.
+- `npm run build:electron`: `electron-builder`.
+- `npm run lint`: ESLint over `src/**/*.js(x)`.
+- `npm run test:e2e`: Playwright suite.
+- `npm run test:e2e:smoke`: `playwright test runtime-audit.smoke`.
+- `npm run test:e2e:playthrough`: targeted playthrough smoke group.
 
-## Godot Validation And Export Surface
+Vite config notes:
 
-Tracked validation scripts include:
+- Dev server: host enabled, strict port `5173`.
+- API proxy: `/api` -> `http://localhost:3001`.
+- Build output: `build/`.
+- Manual chunks split Phaser, Three/R3F/Drei/Rapier, and React Router.
+- Dev-only `/api/save-layout` middleware writes constrained layout JSON under `public/layouts/`.
 
-- `BikeBrowserWorld/tests/vertical_slice_check.gd`
-- `BikeBrowserWorld/tests/brake_rig_state_check.gd`
-- `BikeBrowserWorld/tests/chain_rig_state_check.gd`
-- `BikeBrowserWorld/tests/tire_rig_state_check.gd`
-- `BikeBrowserWorld/tests/chain_hotspot_embodied_check.gd`
-- `BikeBrowserWorld/tests/interaction_overlap_check.gd`
-- `BikeBrowserWorld/tests/input_prompt_mapping_check.gd`
-- `BikeBrowserWorld/tests/safety_check_brake_integration_check.gd`
-- `BikeBrowserWorld/project_audit/runtime_repair_smoke.gd`
+## Playwright / Browser Rendering Readiness
 
-Export tooling:
+Commands:
 
-- `tools/export-godot-web.ps1` exports `BikeBrowserWorld` to `public/godot/BikeBrowserWorld/`.
-- Prior audits identify export freshness as load-bearing for `/play` and `/godot-prototype` runtime truth.
+```powershell
+npx playwright --version
+node -e "const {chromium}=require('playwright'); const p=chromium.executablePath(); const fs=require('fs'); console.log(p, fs.existsSync(p));"
+node -e "const {chromium}=require('playwright'); (async()=>{ const b=await chromium.launch({headless:true}); const p=await b.newPage(); console.log(await p.evaluate(()=>({ua:navigator.userAgent, webgl:!!document.createElement('canvas').getContext('webgl'), webgl2:!!document.createElement('canvas').getContext('webgl2')}))); await b.close(); })();"
+```
 
-Recommended use:
+Results:
 
-- Run targeted Godot checks after each embodied-system change.
-- Run `tools/export-godot-web.ps1` after any Godot source or asset change that must be reflected in browser play.
+- Playwright: `1.59.1`.
+- Chromium executable exists: `C:\Users\admin\AppData\Local\ms-playwright\chromium-1217\chrome-win64\chrome.exe`.
+- Headless Chromium launches successfully.
+- Browser user agent: HeadlessChrome/147.0.7727.15.
+- WebGL: true.
+- WebGL2: true.
 
-## Asset, Animation, And Media Tools
+Project config:
 
-- Aseprite: 1.3.17.2-x64, resolves in this session.
-- FFmpeg: 8.1.1 full build, resolves in this session.
-- Blender: installed under `C:\Program Files\Blender Foundation`, but `blender` does not resolve on PATH in this session.
-- BikeBrowserWorld includes Aseprite import tooling/addons.
+- `playwright.config.js` runs `tests/e2e`, Chromium only, workers `1`, retries `0`.
+- Dev server command: `npm run dev:react`.
+- Base URL: `http://localhost:5173`.
+- Traces/videos retained on failure; screenshots only on failure.
 
-Recommended use:
+## Godot Runtime, Renderer, Export Tooling
 
-- Use Aseprite for restrained sprite readability, mechanic-eye overlays, deformation frames, contact patches, and tactile state diagrams.
-- Use Blender only after PATH or explicit executable path is resolved.
-- Use FFmpeg for playtest capture processing and short before/after clips if useful.
+Commands:
 
-## OpenClaw, Codex, Claude, And AI Runtimes
+```powershell
+godot --version
+Get-Content BikeBrowserWorld/project.godot
+Get-Content BikeBrowserWorld/export_presets.cfg | Select-String "\[preset|platform=|export_path=|runnable=|include_filter=|exclude_filter="
+```
 
-Available CLIs:
+Results:
 
-- OpenClaw: 2026.5.12
-- Codex CLI: 0.130.0
-- Claude Code: 2.1.143
+- Godot: `4.6.2.stable.official.71f334935`.
+- Project name: `BikeBrowserWorld`.
+- Main scene: `res://Regions/Neighborhood/NeighborhoodStreet.tscn`.
+- Renderer: `gl_compatibility` for desktop and mobile.
+- Viewport: 1280x720, stretch mode `canvas_items`, aspect `expand`.
+- Web export preset exists:
+  - platform: `Web`
+  - runnable: `true`
+  - export path: `exports/web/index.html`
+  - exclude filter: `exports/web/*`
+- Root export helper exists: `tools/export-godot-web.ps1`, targeting browser-facing assets under `public/godot/BikeBrowserWorld/`.
 
-OpenClaw runtime:
+Autoloads relevant to runtime checks:
 
-- Gateway reachable on local loopback.
-- Active agent workspace: main.
-- Enabled plugins: `codex`, `openai`, `memory-core`.
-- Doctor warnings:
-  - bundled provider discovery still in legacy compatibility mode while `plugins.allow` is restrictive
-  - personal Codex assets exist outside isolated OpenClaw agent homes
-  - no command owner configured
-- Skills eligible: 9.
-- Plugins loaded: 3, disabled: 87, errors: 0.
-- Chat channels: none configured.
+- `RuntimeValidator`: `res://Core/RuntimeValidator/RuntimeValidator.gd`.
+- `PlaytestRigTelemetry`: `res://Systems/Playtest/PlaytestRigTelemetry.gd`.
+- Core gameplay services include EventBus, SaveService, RegionRegistry, QuestRegistry, DiscoveryService, InventoryManager, DialogueManager, CompanionBridge, RewardBridge, AudioService, and ProjectIntegration.
 
-Recommended AI routing:
+## Aseprite, Blender, FFmpeg
 
-- Use GPT-5.5/Codex for architecture, integration judgment, precise patches, and validation loops.
-- Use Claude Code for broad implementation only when a bounded non-overlapping change set is useful.
-- Use local CUDA/PyTorch for mechanical screenshot analysis and asset similarity rather than spending frontier tokens on bulk visual comparison.
+Commands:
 
-## Telemetry And Runtime Observability
+```powershell
+aseprite --version
+Get-Content BikeBrowserWorld/tools/aseprite-path.txt
+blender --version
+Get-ChildItem "C:\Program Files\Blender Foundation"
+ffmpeg -version
+```
 
-Observed telemetry/observability systems:
+Results:
 
-- `RuntimeValidator` autoload in Godot.
-- `PlaytestRigTelemetry` for rig state observation.
-- `window.__UX_AUDIT__` from the React runtime audit hook.
-- Playwright smoke/playthrough tests.
-- Godot export `version.json` provenance.
+- Aseprite: `1.3.17.2-x64`.
+- Project Aseprite path file: `C:\Program Files\Aseprite\Aseprite.exe`.
+- Blender: not found on PATH.
+- Blender install directory observed: `C:\Program Files\Blender Foundation\Blender 5.1`.
+- FFmpeg: `8.1.1-full_build-www.gyan.dev`.
 
-Recommended use:
+Project integration:
 
-- Treat telemetry as a playtest-readiness asset, not debug clutter.
-- Keep debug surfaces hidden by default.
-- Use telemetry to answer child playtest questions: where the player hesitated, what they inspected, which physical checks they completed, and where recovery was needed.
+- Aseprite addons/importers are present under `BikeBrowserWorld/addons/`.
+- Aseprite helper scripts exist under `BikeBrowserWorld/tools/`, including sprite/tile export batch files and Lua import helpers.
+- Exported sprite/tile assets exist under `BikeBrowserWorld/Assets/Exports/`.
 
-## Governance Status
+## OpenClaw / Codex / Local Agent Runtime
 
-Telegram report-only governance was requested for this sprint.
+Commands:
 
-Current status:
+```powershell
+openclaw --version
+openclaw status
+codex --version
+claude --version
+```
 
-- `openclaw channels list`: no configured chat channels.
-- `openclaw channels status`: gateway reachable, but no Telegram channel is available.
+Results:
 
-Impact:
+- OpenClaw: `2026.5.12 (f066dd2)`.
+- Dashboard/gateway: `http://127.0.0.1:18789/`, local loopback reachable.
+- Gateway service: scheduled task installed/registered; listener detected on port 18789.
+- Active agent runtime: OpenAI Codex, default model shown as `gpt-5.5`.
+- Enabled/observable memory: `memory-core`.
+- Channels: none configured in `openclaw status`.
+- Codex CLI: `0.130.0`.
+- Claude Code: `2.1.143`.
 
-- Phase reports cannot currently be sent through Telegram.
-- This is a governance blocker, not a game/runtime blocker.
+Planning note:
 
-Required follow-up:
+- OpenClaw/Codex is locally usable for worker coordination and report generation.
+- No chat channel delivery should be assumed from this repo without a configured channel target.
 
-- Configure an OpenClaw Telegram channel and target, or provide the exact reporting target already used by this project.
+## Telemetry and Validation Systems
 
-## Phase 1 Readiness Verdict
+Commands:
 
-Phase 1 inventory is complete enough to proceed.
+```powershell
+rg -n "RuntimeValidator|PlaytestRigTelemetry|__UX_AUDIT__|runtimeAudit|progressionReachabilityAudit|visual-runtime|telemetry|validation|smoke|playtest" src tests tools BikeBrowserWorld
+```
 
-Proceed with:
+Observed systems:
 
-1. Full gameplay/system exploration.
-2. Baseline validation ladder.
-3. Playwright and Godot runtime mapping.
-4. Systemic bug discovery.
-5. Small, checkpointed improvements that preserve the canonical `/play` experience.
+- Godot boot validation: `BikeBrowserWorld/Core/RuntimeValidator/RuntimeValidator.gd`.
+- Godot rig telemetry: `BikeBrowserWorld/Systems/Playtest/PlaytestRigTelemetry.gd`.
+  - Enabled by `BIKEBROWSER_PLAYTEST=1` or `--playtest`.
+  - Writes rig sessions to `playtest/telemetry/rig_session_<timestamp>.json`.
+- Godot repair/runtime smoke: `BikeBrowserWorld/project_audit/runtime_repair_smoke.gd`.
+- Browser runtime audit: `src/renderer/game/systems/runtimeAudit.js`.
+- Browser reachability audit: `src/renderer/game/systems/progressionReachabilityAudit.js`.
+- UX audit hook: `src/renderer/hooks/useUXAudit.js`, writes `window.__UX_AUDIT__`.
+- Playwright helper waits on `window.__runtimeAuditResult` in `tests/e2e/helpers/gameBoot.js`.
+- Playwright smoke/playthrough specs include:
+  - `tests/e2e/runtime-audit.smoke.spec.js`
+  - `tests/e2e/full-game-playthrough.smoke.spec.js`
+  - `tests/e2e/flat-tire-flow.smoke.spec.js`
+  - `tests/e2e/gameplay-report-panel.smoke.spec.js`
+  - `tests/e2e/godot-prototype.smoke.spec.js`
+  - `tests/e2e/mission-inventory-hud.smoke.spec.js`
+- Visual runtime tooling:
+  - `tools/visual-runtime-capture.mjs`
+  - `tools/analyze_visual_runtime_cuda.py`
+  - root output dirs currently present: `playtest_captures/`, `visual_diffs/`, `screenshot_baselines/`, `telemetry/`, `test-results/`, `playwright-report/`.
 
-Do not proceed with:
+## Readiness Verdict
 
-- Public debug exposure.
-- Telegram assumptions without a configured channel.
-- Blender-dependent work until PATH or executable resolution is fixed.
+Phase 1 runtime/resource inventory is complete.
+
+Ready now:
+
+- CUDA/PyTorch visual analysis across two RTX 5090 GPUs.
+- Playwright Chromium validation with WebGL/WebGL2.
+- Godot 4.6.2 compatibility-renderer project inspection and web export flow.
+- Electron 28 runtime smoke work.
+- Aseprite/FFmpeg asset and capture workflows.
+- OpenClaw/Codex local coordination.
+
+Needs care:
+
+- Dirty parallel worktree: coordinate before editing shared files.
+- Build/export commands write outputs; use deliberately and announce ownership.
+- Blender requires explicit executable path or PATH update.
+- OpenClaw chat/channel reporting is not configured locally.

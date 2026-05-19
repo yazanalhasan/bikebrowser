@@ -23,17 +23,17 @@ import useGameAudio from './audio/useGameAudio.js';
 import { useLearningStore } from '../learning/learningStore.js';
 import { getQuestBoard, getNewlyUnlocked } from './data/questBoard.js';
 import { getShopItems } from './data/shop.js';
-import { addItem, removeItem, hasItem } from './systems/inventorySystem.js';
+import { hasItem } from './systems/inventorySystem.js';
 import { processEvent as processKnowledgeEvent } from './systems/knowledgeSystem.js';
 import { checkMilestones, applyRewards, getAvailableMilestones, getCompletedMilestones, getProgressionSummary } from './systems/milestoneEngine.js';
-import { CATEGORY_ICONS, PHASE_NAMES } from './data/milestones.js';
+import { PHASE_NAMES } from './data/milestones.js';
 import { canCraft, craft, getAllRecipes } from './systems/craftingSystem.js';
 import ITEMS from './data/items.js';
 import MaterialLogEntry from './components/MaterialLogEntry.jsx';
 import {
   autoSpeak, speak, speakAsNpc, replay as replaySpeech, cancelSpeech, resetLastSpoken,
   isSpeechAvailable, isSpeechEnabled, setSpeechEnabled,
-  setAutoSpeak, isAutoSpeakEnabled,
+  setAutoSpeak,
 } from './services/npcSpeech.js';
 import { clearDialogueCache } from './services/npcAiClient.js';
 import { setBusy, recordQuestionDismissed } from './systems/gameplayArbiter.js';
@@ -154,7 +154,7 @@ function getDialogPrimaryAction(dialog, state) {
   if (step.type === 'forage') {
     const hasRequiredItem = hasItem(inventory, step.requiredItem);
     return {
-      label: hasRequiredItem ? 'Continue ->' : 'Close',
+      label: hasRequiredItem ? 'Continue ->' : 'Close and forage',
       canAdvance: hasRequiredItem,
       hint: step.hint || 'Find the required item first.',
     };
@@ -168,7 +168,7 @@ function getDialogPrimaryAction(dialog, state) {
         ? 'Continue ->'
         : craftCheck.canCraft
           ? `Craft ${step.requiredRecipe.replace(/_/g, ' ')}`
-          : 'Close',
+          : 'Close and gather materials',
       canAdvance: hasRequiredItem || craftCheck.canCraft,
       craftRecipe: !hasRequiredItem && craftCheck.canCraft ? step.requiredRecipe : null,
       hint: step.hint || 'Craft the required item first.',
@@ -178,7 +178,7 @@ function getDialogPrimaryAction(dialog, state) {
   if (step.type === 'use_item') {
     const hasRequiredItem = hasItem(inventory, step.requiredItem);
     return {
-      label: hasRequiredItem ? `Use ${step.requiredItem.replace(/_/g, ' ')}` : 'Close',
+      label: hasRequiredItem ? `Use ${step.requiredItem.replace(/_/g, ' ')}` : 'Close and find item',
       canAdvance: hasRequiredItem,
       hint: step.hint || 'Find the required item first.',
     };
@@ -187,20 +187,13 @@ function getDialogPrimaryAction(dialog, state) {
   if (step.type === 'observe') {
     const observed = !step.requiredObservation || observations.includes(step.requiredObservation);
     return {
-      label: observed ? 'Continue ->' : 'Close',
+      label: observed ? 'Continue ->' : 'Close and observe',
       canAdvance: observed,
       hint: step.hint || 'Observe the target first.',
     };
   }
 
   return { label: 'Continue ->', canAdvance: true };
-}
-
-// ---------------------------------------------------------------------------
-// Mobile detection helper
-// ---------------------------------------------------------------------------
-function isTouchDevice() {
-  return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -316,9 +309,6 @@ export default function GameContainer() {
   const [reportStatus, setReportStatus] = useState(null);
   const [reportCopyText, setReportCopyText] = useState('');
   const [gameplayReports, setGameplayReports] = useState(() => readGameplayReports());
-
-  // Touch controls
-  const [showTouch, setShowTouch] = useState(false);
 
   // ------------------------------------------------------------------
   // HUD refresh
@@ -597,10 +587,18 @@ export default function GameContainer() {
       prevCompletedRef.current = completed;
     });
 
-    // Listen for dialog events from scenes
-    game.registry.events.on('changedata-dialogEvent', (_parent, value) => {
+    // Listen for dialog events from scenes. Phaser emits setdata-* the
+    // first time a registry key is assigned, then changedata-* afterward.
+    const handleDialogEvent = (_parent, value) => {
       setDialog(value);
-    });
+    };
+    const handleRegistrySet = (_parent, key, value) => {
+      if (key === 'dialogEvent') setDialog(value);
+    };
+    game.registry.events.on('setdata', handleRegistrySet);
+    game.registry.events.on('setdata-dialogEvent', handleDialogEvent);
+    game.registry.events.on('changedata-dialogEvent', handleDialogEvent);
+    game.registry.set('dialogEvent', null);
 
     // Listen for MCP AI alerts → surface as toast + assistant panel
     game.registry.events.on('changedata-mcpAlert', (_parent, value) => {
@@ -654,9 +652,6 @@ export default function GameContainer() {
       }
     });
 
-    // Detect touch device
-    setShowTouch(isTouchDevice());
-
     // If audio is already unlocked, inject it
     if (isUnlocked && audio) {
       game.registry.set('audioManager', audio);
@@ -665,13 +660,15 @@ export default function GameContainer() {
     // Cleanup on unmount
     return () => {
       resizeObserver.disconnect();
+      game.registry.events.off('setdata', handleRegistrySet);
+      game.registry.events.off('setdata-dialogEvent', handleDialogEvent);
+      game.registry.events.off('changedata-dialogEvent', handleDialogEvent);
       game.destroy(true);
       gameRef.current = null;
       if (import.meta.env.DEV && window.__phaserGame === game) {
         delete window.__phaserGame;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, bootKey, containerReady]);
 
   // ------------------------------------------------------------------
@@ -1067,8 +1064,13 @@ export default function GameContainer() {
       {/* ---- Audio unlock overlay (shown until first tap, only when playing) ---- */}
       {phase === 'playing' && !isUnlocked && (
         <div
-          className="absolute inset-0 z-50 bg-black/70 flex items-center justify-center cursor-pointer"
-          onClick={() => {
+          className="absolute inset-0 z-40 bg-black/35 flex items-center justify-center pointer-events-none"
+        >
+          <button
+            type="button"
+            className="bg-white rounded-2xl p-8 text-center shadow-xl max-w-xs mx-4 pointer-events-auto cursor-pointer"
+            aria-label="Start sound"
+            onClick={() => {
             unlock();
             // Inject audio manager into Phaser registry
             if (gameRef.current && audio) {
@@ -1079,8 +1081,8 @@ export default function GameContainer() {
                 audio.transitionToScene(activeScenes[0].scene.key);
               }
             }
-          }}
-          onTouchStart={() => {
+            }}
+            onTouchStart={() => {
             unlock();
             if (gameRef.current && audio) {
               gameRef.current.registry.set('audioManager', audio);
@@ -1089,16 +1091,15 @@ export default function GameContainer() {
                 audio.transitionToScene(activeScenes[0].scene.key);
               }
             }
-          }}
-        >
-          <div className="bg-white rounded-2xl p-8 text-center shadow-xl max-w-xs mx-4">
+            }}
+          >
             <div className="text-4xl mb-3">🎮</div>
             <div className="text-xl font-bold text-gray-800 mb-2">Zuzu&apos;s Bike Adventure</div>
             <div className="text-blue-600 font-semibold text-lg animate-pulse">
               Tap to Start 🔊
             </div>
             <div className="text-gray-400 text-xs mt-2">Sound will be enabled</div>
-          </div>
+          </button>
         </div>
       )}
 
@@ -1129,18 +1130,45 @@ export default function GameContainer() {
           <div className="flex items-start justify-between px-2 gap-2">
             {/* Quest tracker + Zuzubucks */}
             <div className="flex flex-col gap-1.5 max-w-[55%]">
-              {questInfo && (
-                <div className="bg-white/90 rounded-lg px-3 py-2 shadow text-xs sm:text-sm pointer-events-auto">
-                  <div className="font-bold text-blue-700 truncate">📋 {questInfo.title}</div>
-                  <div className="text-gray-600">Step {questInfo.progress}</div>
-                  {questInfo.stepHint && (
-                    <div className="text-amber-600 mt-0.5">{questInfo.stepHint}</div>
-                  )}
+              <div className="bg-white/90 rounded-lg px-3 py-2 shadow text-xs sm:text-sm pointer-events-auto max-w-[24rem]">
+                {questInfo ? (
+                  <>
+                    <div className="font-bold text-blue-700 truncate">📋 {questInfo.title}</div>
+                    <div className="text-[11px] text-gray-500">Step {questInfo.progress}</div>
+                    {questInfo.objective && (
+                      <div className="text-gray-800 mt-1 leading-snug">{questInfo.objective}</div>
+                    )}
+                    {questInfo.stepHint && (
+                      <div className="text-amber-700 mt-1 font-semibold">{questInfo.stepHint}</div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className="font-bold text-blue-700">📋 No active mission</div>
+                    <div className="text-gray-700 mt-1 leading-snug">
+                      Talk to a neighbor with a quest marker or open the quest board.
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className="flex gap-1.5 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowInventory(!showInventory); setShowNotebook(false); setShowAudioSettings(false); setShowQuestBoard(false); setShowShop(false); setShowMilestones(false); setShowReportPanel(false);
+                    audio?.playSfx(!showInventory ? 'ui_panel_open' : 'ui_panel_close');
+                  }}
+                  className="bg-white/90 rounded-lg px-3 py-1.5 shadow text-xs sm:text-sm pointer-events-auto w-fit hover:bg-white cursor-pointer transition-all duration-75 active:scale-95"
+                  aria-label="Open inventory"
+                  title="Inventory"
+                >
+                  <span className="font-bold text-emerald-700">🎒 {inventory.reduce((sum, item) => sum + (item.count || 1), 0)}</span>
+                  <span className="text-gray-500 ml-1">Items</span>
+                </button>
+                <div className="bg-white/90 rounded-lg px-3 py-1.5 shadow text-xs sm:text-sm pointer-events-auto w-fit">
+                  <span className="font-bold text-amber-600">💰 {zuzubucks}</span>
+                  <span className="text-gray-500 ml-1">Zuzubucks</span>
                 </div>
-              )}
-              <div className="bg-white/90 rounded-lg px-3 py-1.5 shadow text-xs sm:text-sm pointer-events-auto w-fit">
-                <span className="font-bold text-amber-600">💰 {zuzubucks}</span>
-                <span className="text-gray-500 ml-1">Zuzubucks</span>
               </div>
             </div>
 
@@ -1152,6 +1180,7 @@ export default function GameContainer() {
                   audio?.playSfx('ui_tap');
                 }}
                 className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
+                aria-label="Quest Board"
                 title="Quest Board"
               >📋</button>
               <button
@@ -1160,6 +1189,7 @@ export default function GameContainer() {
                   audio?.playSfx('ui_tap');
                 }}
                 className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
+                aria-label="Shop"
                 title="Shop"
               >🏪</button>
               <button
@@ -1168,6 +1198,7 @@ export default function GameContainer() {
                   audio?.playSfx(!showInventory ? 'ui_panel_open' : 'ui_panel_close');
                 }}
                 className="bg-white/90 rounded-lg p-2 shadow text-lg transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer"
+                aria-label="Inventory"
                 title="Inventory"
               >🎒</button>
               <button
@@ -1266,7 +1297,7 @@ export default function GameContainer() {
       {/* ---- Notebook panel ---- */}
       {showNotebook && (
         <div className="absolute top-14 right-2 z-20 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-3 w-64 max-h-72 overflow-y-auto">
-          <div className="font-bold text-gray-700 mb-2 text-sm">📓 Zuzu's Notebook</div>
+          <div className="font-bold text-gray-700 mb-2 text-sm">📓 Zuzu&apos;s Notebook</div>
           {journal.map((entry, i) => {
             if (typeof entry === 'string') {
               return (
@@ -1442,7 +1473,6 @@ export default function GameContainer() {
       {showGameSettings && gameState && (
         <GameSettingsPanel
           state={gameState}
-          speechOn={speechOn}
           onChangeSetting={(key, value) => {
             const game = gameRef.current;
             if (!game) return;
@@ -1603,6 +1633,12 @@ export default function GameContainer() {
               </div>
             )}
 
+            {!primaryAction.canAdvance && primaryAction.hint && (
+              <div className="text-amber-700 text-xs mb-2 bg-amber-50 rounded-lg px-3 py-1.5 border border-amber-200">
+                Next: {primaryAction.hint}
+              </div>
+            )}
+
             {/* Difficulty band indicator */}
             {dialog.band && (
               <div className="text-[10px] text-gray-300 mb-2">
@@ -1646,7 +1682,7 @@ export default function GameContainer() {
                 >
                   {primaryAction.label}
                 </button>
-                {primaryAction.label !== 'Close' && (
+                {primaryAction.canAdvance && (
                   <button
                     type="button"
                     onPointerDown={(e) => e.stopPropagation()}
@@ -2047,7 +2083,7 @@ function AIAssistantPanel({ messages, status, onClose, onClear }) {
             No messages yet. Explore to receive hints!
           </div>
         )}
-        {messages.map((msg, i) => {
+        {messages.map((msg) => {
           const age = Date.now() - msg.timestamp;
           const fading = age > 25000;
           return (
@@ -2207,7 +2243,7 @@ function AudioSettingsPanel({ settings, onChangeSetting, onClose }) {
 // ---------------------------------------------------------------------------
 // GameSettingsPanel — NPC speech & dialogue complexity settings
 // ---------------------------------------------------------------------------
-function GameSettingsPanel({ state, speechOn, onChangeSetting, onClose }) {
+function GameSettingsPanel({ state, onChangeSetting, onClose }) {
   const gs = state?.gameSettings || {};
   const complexityLabels = {
     adaptive: 'Adaptive (grows with you)',

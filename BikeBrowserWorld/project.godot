@@ -53,5 +53,6 @@ ui_accept={
 
 [rendering]
 
+environment/defaults/default_clear_color=Color(0.28, 0.33, 0.25, 1)
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"

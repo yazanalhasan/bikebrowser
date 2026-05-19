@@ -17,5 +17,5 @@ shape = SubResource("RectangleShape2D_station")
 [node name="Prompt" type="Label" parent="."]
 position = Vector2(-96, -98)
 size = Vector2(214, 30)
-text = "[hold E] feel for the leak"
+text = "[Hold E] feel for the leak"
 horizontal_alignment = 1

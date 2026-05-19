@@ -7,6 +7,116 @@ import useGlobalCart from '../hooks/useGlobalCart';
 import { apiClient } from '../../client/apiClient';
 import { getVideoId, isPlayableYouTubeVideo, normalizePlayableVideo } from '../utils/videoId';
 
+const FALLBACK_TUTORIALS = {
+  'bike-repair': [
+    {
+      videoId: 'bike-repair-local-1',
+      title: 'Start Here: What to Check Before a Ride',
+      channelName: 'BikeBrowser Workshop',
+      thumbnail: fallbackThumb('Safety Check'),
+      durationText: '6 min',
+      publishedTimeText: 'local guide',
+      viewCountText: 'Offline ready',
+      trustTier: 'prioritized',
+      trustBadge: { color: 'green', icon: '✓', label: 'Local guide' },
+      explanation: 'A calm checklist for brakes, tires, chain, and fit before moving on.'
+    },
+    {
+      videoId: 'bike-repair-local-2',
+      title: 'Flat Tire Flow: Find, Patch, Inflate, Verify',
+      channelName: 'BikeBrowser Workshop',
+      thumbnail: fallbackThumb('Flat Tire'),
+      durationText: '8 min',
+      publishedTimeText: 'local guide',
+      viewCountText: 'Offline ready',
+      trustTier: 'prioritized',
+      trustBadge: { color: 'green', icon: '✓', label: 'Local guide' },
+      explanation: 'Matches the in-game tire repair sequence so the learning path never dead-ends.'
+    }
+  ],
+  'bike-build': [
+    {
+      videoId: 'bike-build-local-1',
+      title: 'Build Order: Frame, Wheels, Brakes, Chain',
+      channelName: 'BikeBrowser Workshop',
+      thumbnail: fallbackThumb('Build Order'),
+      durationText: '9 min',
+      publishedTimeText: 'local guide',
+      viewCountText: 'Offline ready',
+      trustTier: 'prioritized',
+      trustBadge: { color: 'green', icon: '✓', label: 'Local guide' },
+      explanation: 'A stable build sequence for planning before shopping or watching outside videos.'
+    }
+  ],
+  'dirt-bike': [
+    {
+      videoId: 'dirt-bike-local-1',
+      title: 'Trail Readiness: Tires, Chain, Controls',
+      channelName: 'BikeBrowser Workshop',
+      thumbnail: fallbackThumb('Trail Check'),
+      durationText: '7 min',
+      publishedTimeText: 'local guide',
+      viewCountText: 'Offline ready',
+      trustTier: 'prioritized',
+      trustBadge: { color: 'green', icon: '✓', label: 'Local guide' },
+      explanation: 'Keeps the same mechanical grammar while shifting toward off-road checks.'
+    }
+  ],
+  'e-bike': [
+    {
+      videoId: 'e-bike-local-1',
+      title: 'E-Bike Basics: Battery, Motor, Brakes',
+      channelName: 'BikeBrowser Workshop',
+      thumbnail: fallbackThumb('E-Bike'),
+      durationText: '8 min',
+      publishedTimeText: 'local guide',
+      viewCountText: 'Offline ready',
+      trustTier: 'prioritized',
+      trustBadge: { color: 'green', icon: '✓', label: 'Local guide' },
+      explanation: 'Introduces power assist without leaving mechanical safety behind.'
+    }
+  ],
+  'bmx-tricks': [
+    {
+      videoId: 'bmx-local-1',
+      title: 'BMX Practice: Check the Bike Before the Jump',
+      channelName: 'BikeBrowser Workshop',
+      thumbnail: fallbackThumb('BMX Check'),
+      durationText: '5 min',
+      publishedTimeText: 'local guide',
+      viewCountText: 'Offline ready',
+      trustTier: 'prioritized',
+      trustBadge: { color: 'green', icon: '✓', label: 'Local guide' },
+      explanation: 'Connects the neighborhood ramp energy back to brakes, tires, and chain.'
+    }
+  ]
+};
+
+function fallbackThumb(label) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+    <rect width="640" height="360" fill="#203247"/>
+    <circle cx="190" cy="225" r="58" fill="none" stroke="#f3d37a" stroke-width="14"/>
+    <circle cx="430" cy="225" r="58" fill="none" stroke="#f3d37a" stroke-width="14"/>
+    <path d="M190 225 278 132 338 225 248 225 330 132 430 225" fill="none" stroke="#8fd3c7" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M330 132h70m-122 0h-50" stroke="#f7a35c" stroke-width="14" stroke-linecap="round"/>
+    <text x="320" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#fff4cf">${label}</text>
+    <text x="320" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#cfe7e2">BikeBrowser Workshop</text>
+  </svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+function uniqueVideos(videos) {
+  const seen = new Set();
+  return videos.filter((video) => {
+    const key = video?.videoId || video?.id?.videoId || video?.id || video?.title;
+    if (!key || seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
+}
+
 /**
  * Project Builder Page
  * 
@@ -86,10 +196,10 @@ export default function ProjectBuilderPage() {
     try {
       const search = await apiClient.search(query, { intent: 'watch' });
       const baseResults = Array.isArray(search.results) ? search.results : [];
-      const basePlayable = baseResults
+      const basePlayable = uniqueVideos(baseResults
         .filter(isPlayableYouTubeVideo)
         .map(normalizePlayableVideo)
-        .filter(Boolean);
+        .filter(Boolean));
 
       setVideos(basePlayable);
       setLoading(false);
@@ -97,10 +207,10 @@ export default function ProjectBuilderPage() {
       apiClient.rank({ query, results: baseResults })
         .then((rank) => {
           const initial = Array.isArray(rank.initial) && rank.initial.length > 0 ? rank.initial : baseResults;
-          const initialPlayable = initial
+          const initialPlayable = uniqueVideos(initial
             .filter(isPlayableYouTubeVideo)
             .map(normalizePlayableVideo)
-            .filter(Boolean);
+            .filter(Boolean));
 
           if (initialPlayable.length > 0 && mountedRef.current) {
             setVideos(initialPlayable);
@@ -117,10 +227,10 @@ export default function ProjectBuilderPage() {
                 clearInterval(rankPollRef.current);
                 rankPollRef.current = null;
 
-                const rankedPlayable = (status.result?.ranked || [])
+                const rankedPlayable = uniqueVideos((status.result?.ranked || [])
                   .filter(isPlayableYouTubeVideo)
                   .map(normalizePlayableVideo)
-                  .filter(Boolean);
+                  .filter(Boolean));
 
                 if (rankedPlayable.length > 0 && mountedRef.current) {
                   setVideos(rankedPlayable);
@@ -145,8 +255,9 @@ export default function ProjectBuilderPage() {
           setWarning('Ranking is slow right now. Showing direct search results.');
         });
     } catch (error) {
-      console.error('Search error:', error);
-      setVideos([]);
+      const fallback = FALLBACK_TUTORIALS[projectType] || FALLBACK_TUTORIALS['bike-repair'];
+      setWarning('Live tutorial search is unavailable, so BikeBrowser is showing the built-in workshop path.');
+      setVideos(fallback);
       setLoading(false);
     }
   };
@@ -263,14 +374,9 @@ export default function ProjectBuilderPage() {
           {/* Videos Grid */}
           {!loading && videos.length > 0 && (
             <>
-              {warning && (
-                <div className="rounded-lg border border-amber-300 bg-amber-100 p-3 text-sm text-amber-900">
-                  {warning}
-                </div>
-              )}
             <div className="videos-grid grid grid-cols-1 md:grid-cols-2 gap-4">
-              {videos.slice(0, 8).map(video => (
-                <div key={video.videoId} className="relative">
+              {videos.slice(0, 8).map((video, index) => (
+                <div key={`${video.videoId || video.title}-${index}`} className="relative">
                   <VideoCard video={video} onClick={handleVideoPlay} />
                   <button
                     onClick={() => handleVideoSelect(video)}
@@ -284,11 +390,17 @@ export default function ProjectBuilderPage() {
             </>
           )}
 
+          {warning && !loading && videos.length > 0 && (
+            <div className="rounded-lg border border-amber-300 bg-amber-100 p-3 text-sm text-amber-900">
+              {warning}
+            </div>
+          )}
+
           {/* Empty State */}
           {!loading && videos.length === 0 && (
             <div className="text-center py-12 bg-white rounded-xl">
-              <p className="text-xl text-gray-500 mb-2">🔍 No videos yet</p>
-              <p className="text-sm text-gray-400">Choose a project above to get started!</p>
+              <p className="text-xl text-gray-500 mb-2">No tutorials loaded</p>
+              <p className="text-sm text-gray-400">Choose a project above or try a more specific repair search.</p>
             </div>
           )}
         </div>

@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://bikebrowser_zuzu_garage"]
+[gd_scene load_steps=65 format=3 uid="uid://bikebrowser_zuzu_garage"]
 
 [ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
 [ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
@@ -58,12 +58,16 @@
 [ext_resource type="Script" path="res://Regions/Shared/SubtleAmbientLife.gd" id="55_ambient_life"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Bike/repair_chain_focus_glow.png" id="56_chain_focus"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Bike/repair_grease_scuff_detail.png" id="57_grease_scuff"]
+[ext_resource type="Script" path="res://Systems/Interactions/QuestObjectiveStation.gd" id="58_act1_station"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 18.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_zone"]
 size = Vector2(120, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_workshop_station"]
+size = Vector2(180, 92)
 
 [sub_resource type="Gradient" id="Gradient_warm_light"]
 offsets = PackedFloat32Array(0, 1)
@@ -532,6 +536,31 @@ z_index = 12
 [node name="ChainRig" parent="ChainHotspot/BikeVisual" instance=ExtResource("4b_chainrig")]
 
 [node name="TireRepairStation" parent="." instance=ExtResource("7_tire")]
+
+[node name="WorkshopBuildStation" type="Area2D" parent="."]
+script = ExtResource("58_act1_station")
+quest_id = "workshop_first_build"
+objective_ids = Array[String](["collect_raw_material", "choose_workshop_friend", "craft_first_part"])
+prompt_text = "First Build"
+completion_message = "Zuzu and the factory friends turn one raw material into a useful first part."
+completion_tone = "warm"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WorkshopBuildStation"]
+shape = SubResource("RectangleShape2D_workshop_station")
+
+[node name="StationMat" type="Polygon2D" parent="WorkshopBuildStation"]
+
+[node name="Beacon" type="Polygon2D" parent="WorkshopBuildStation"]
+
+[node name="Sign" type="Label" parent="WorkshopBuildStation"]
+modulate = Color(1, 0.94, 0.78, 0.92)
+text = "First Workshop Build"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Prompt" type="Label" parent="WorkshopBuildStation"]
+text = "First Build"
+horizontal_alignment = 1
 
 [node name="Player" type="CharacterBody2D" parent="."]
 script = ExtResource("2_zuzu")

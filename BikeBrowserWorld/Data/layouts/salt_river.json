@@ -12,6 +12,11 @@
     "CattailA": { "x": -330, "y": -20, "scale": 0.9, "z": 2 },
     "CattailB": { "x": 330, "y": -35, "scale": 0.9, "z": 2 },
     "DrMayaNpc": { "x": 80, "y": 40, "scale": 1.0 },
+    "WaterQualityStation": { "x": 142, "y": 72, "w": 230, "h": 118, "z": 5 },
+    "WaterQualityStation/StationMat": { "x": -116, "y": -56, "w": 232, "h": 108, "color": "#4d8fc466", "shape": "soft", "z": -1 },
+    "WaterQualityStation/Beacon": { "x": -18, "y": -94, "w": 36, "h": 34, "color": "#ffd86b99", "shape": "diamond", "z": 1 },
+    "WaterQualityStation/Sign": { "x": -88, "y": -126, "w": 176, "h": 26 },
+    "WaterQualityStation/Prompt": { "x": -78, "y": -84, "w": 156, "h": 28 },
     "BackToNeighborhood": { "x": 0, "y": 390, "w": 240, "h": 96 },
     "BackToNeighborhood/Prompt": { "x": -70, "y": -80, "w": 140, "h": 28 }
   }

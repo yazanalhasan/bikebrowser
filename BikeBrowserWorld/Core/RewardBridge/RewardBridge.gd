@@ -15,6 +15,7 @@ func emit_reward_intent(reward: Dictionary, quest_id: String) -> void:
 		"currency": reward.get("currency", "allowance_usd"),
 		"label": reward.get("label", "Quest reward"),
 		"badge": reward.get("badge", ""),
+		"items": reward.get("items", []),
 		"childMessage": reward.get("childMessage", "Nice work."),
 		"idempotencyKey": "godot:%s:%s:v1" % [quest_id, reward.get("finalObjective", "complete")]
 	}

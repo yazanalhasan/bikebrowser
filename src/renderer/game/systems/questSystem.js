@@ -21,6 +21,7 @@ import { runProgressionReachabilityAudit } from './progressionReachabilityAudit.
  * @type {string[]}
  */
 const _pendingDiscoveryUnlocks = [];
+let _discoveryBridgeUnsubscribe = null;
 
 /**
  * Wire discovery events to quest unlocks.
@@ -31,13 +32,14 @@ const _pendingDiscoveryUnlocks = [];
  * `consumePendingDiscoveryUnlocks(state)` which scenes call on their
  * next interaction checkpoint.
  *
- * Idempotent within a session — safe to call more than once (no duplicate
- * listeners are added because each call registers a distinct closure, but
- * calling multiple times is a no-op as both closures do the same work and
- * `startQuest` already guards against duplicate starts).
+ * Idempotent within a session — safe to call more than once. The first call
+ * registers the listener; later calls return the same unsubscribe function
+ * instead of stacking duplicate discovery handlers.
  */
 export function initDiscoveryQuestBridge() {
-  onRegionDiscovered(({ regionId }) => {
+  if (_discoveryBridgeUnsubscribe) return _discoveryBridgeUnsubscribe;
+
+  _discoveryBridgeUnsubscribe = onRegionDiscovered(({ regionId }) => {
     const spec = DISCOVERY_UNLOCKS[regionId];
     if (!spec || spec.pending) return;
     const questId = spec.questId;
@@ -53,6 +55,7 @@ export function initDiscoveryQuestBridge() {
       console.log(`[discovery→quest] queued unlock for quest "${questId}" (region: ${regionId})`);
     }
   });
+  return _discoveryBridgeUnsubscribe;
 }
 
 /**
@@ -94,8 +97,11 @@ export function consumePendingDiscoveryUnlocks(state) {
  * Start a quest by id. Returns updated save state, or null if already active.
  */
 export function startQuest(state, questId) {
-  if (state.activeQuest) return null; // one at a time for now
-  if (state.completedQuests.includes(questId)) return null; // already done
+  const completedQuests = Array.isArray(state?.completedQuests) ? state.completedQuests : [];
+  const journal = Array.isArray(state?.journal) ? state.journal : [];
+
+  if (state?.activeQuest) return null; // one at a time for now
+  if (completedQuests.includes(questId)) return null; // already done
 
   const quest = QUESTS[questId];
   if (!quest) return null;
@@ -130,7 +136,7 @@ export function startQuest(state, questId) {
     ...state,
     activeQuest: { id: questId, stepIndex: 0 },
     journal: [
-      ...state.journal,
+      ...journal,
       `📋 New quest: ${quest.title}`,
     ],
   };
@@ -138,7 +144,7 @@ export function startQuest(state, questId) {
 
 /** Get the current step object for the active quest, or null. */
 export function getCurrentStep(state) {
-  if (!state.activeQuest) return null;
+  if (!state?.activeQuest) return null;
   const quest = QUESTS[state.activeQuest.id];
   if (!quest) return null;
   return quest.steps[state.activeQuest.stepIndex] || null;
@@ -146,7 +152,7 @@ export function getCurrentStep(state) {
 
 /** Get full quest metadata for the active quest. */
 export function getActiveQuest(state) {
-  if (!state.activeQuest) return null;
+  if (!state?.activeQuest) return null;
   return QUESTS[state.activeQuest.id] || null;
 }
 
@@ -239,13 +245,15 @@ export function advanceQuest(state, choiceIndex) {
 
 /** Internal — complete the quest, grant rewards, clear active quest. */
 function finishQuest(state, quest) {
-  let inventory = [...state.inventory];
-  const upgrades = [...state.upgrades];
+  let inventory = Array.isArray(state.inventory) ? [...state.inventory] : [];
+  const upgrades = Array.isArray(state.upgrades) ? [...state.upgrades] : [];
+  const completedQuests = Array.isArray(state.completedQuests) ? state.completedQuests : [];
+  const journal = Array.isArray(state.journal) ? state.journal : [];
 
   // Grant reward items.
   for (const itemId of quest.reward?.items || []) {
     inventory = addItem(inventory, itemId);
-    if (itemId === 'basic_pump' || itemId.startsWith('upgrade_')) {
+    if ((itemId === 'basic_pump' || itemId.startsWith('upgrade_')) && !upgrades.includes(itemId)) {
       upgrades.push(itemId);
     }
   }
@@ -267,9 +275,11 @@ function finishQuest(state, quest) {
       upgrades,
       zuzubucks: (state.zuzubucks || 0) + earnedBucks,
       reputation: (state.reputation || 0) + earnedRep,
-      completedQuests: [...state.completedQuests, quest.id],
+      completedQuests: completedQuests.includes(quest.id)
+        ? completedQuests
+        : [...completedQuests, quest.id],
       activeQuest: null,
-      journal: [...state.journal, ...journalEntries],
+      journal: [...journal, ...journalEntries],
     },
     ok: true,
     message: 'Quest complete!',

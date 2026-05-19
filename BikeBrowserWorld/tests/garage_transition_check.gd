@@ -27,9 +27,9 @@ func _run() -> void:
 		_finish()
 		return
 
-	player.position = (garage_entrance as Node2D).position
-	await physics_frame
-	await physics_frame
+	player.global_position = (garage_entrance as Node2D).global_position
+	garage_entrance.call("_on_body_entered", player)
+	await process_frame
 	_assert(bool(garage_entrance.get("player_in_range")), "player enters garage trigger")
 	garage_entrance.call("_transition")
 	await create_timer(0.70).timeout

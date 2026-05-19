@@ -64,6 +64,8 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	pulse_time += delta
+	if _world_input_blocked() and brake_rig and brake_rig.has_method("set_brake_pressed"):
+		brake_rig.set_brake_pressed(false)
 	if prompt and prompt.visible:
 		prompt.modulate.a = 0.76 + sin(pulse_time * 1.8) * 0.025
 		prompt.scale = Vector2.ONE * (1.0 + sin(pulse_time * 1.6) * 0.003)
@@ -76,16 +78,21 @@ func _process(delta: float) -> void:
 	_pulse_active_overlay()
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _world_input_blocked():
+		return
 	if not player_in_range:
 		return
 	if step_index == 0 and not QuestRegistry.completed_quests.has(quest_id):
 		if event.is_action_pressed("ui_accept"):
+			get_viewport().set_input_as_handled()
 			_begin_brake_check()
 			if brake_rig and brake_rig.has_method("set_brake_pressed"):
 				brake_rig.set_brake_pressed(true)
 		elif event.is_action_released("ui_accept") and brake_rig and brake_rig.has_method("set_brake_pressed"):
+			get_viewport().set_input_as_handled()
 			brake_rig.set_brake_pressed(false)
 	elif event.is_action_pressed("ui_accept"):
+		get_viewport().set_input_as_handled()
 		advance_check()
 
 func advance_check() -> void:
@@ -125,6 +132,7 @@ func _begin_brake_check() -> void:
 		return
 	if not QuestRegistry.is_active(quest_id):
 		QuestRegistry.start_quest(quest_id)
+	QuestRegistry.record_objective(quest_id, "talk_to_mrs_ramirez")
 	brake_check_started = true
 	if brake_rig:
 		brake_rig.visible = true
@@ -211,3 +219,7 @@ func _hide_prompt() -> void:
 	var tween := create_tween()
 	tween.tween_property(prompt, "modulate:a", 0.0, 0.26).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_callback(func() -> void: prompt.visible = false)
+
+func _world_input_blocked() -> bool:
+	var event_bus := get_node_or_null("/root/EventBus")
+	return event_bus != null and event_bus.has_method("is_modal_active") and event_bus.is_modal_active()

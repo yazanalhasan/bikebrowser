@@ -4,6 +4,7 @@ extends Area2D
 @export var target_spawn := "default"
 @export var require_accept := true
 @export var feedback_message := "The warm light pulls Zuzu into the next space."
+@export var locked_feedback := "Finish helping with the bike first."
 # Set true on a transition that is intentionally overlapping an NPC interaction
 # circle (e.g. a doorway an NPC is supposed to greet from). The interaction-overlap
 # regression test treats this as opt-in.
@@ -33,13 +34,18 @@ func _process(delta: float) -> void:
 		prompt.scale = Vector2.ONE * (1.0 + sin(pulse_time * 1.6) * 0.003)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _world_input_blocked():
+		return
 	if require_accept and player_in_range and event.is_action_pressed("ui_accept"):
+		get_viewport().set_input_as_handled()
 		_transition()
 
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = true
 		if _is_locked():
+			if not locked_feedback.strip_edges().is_empty():
+				EventBus.interaction_feedback.emit(locked_feedback, "gentle")
 			return
 		if prompt:
 			_show_prompt()
@@ -61,11 +67,11 @@ func _on_body_exited(body: Node) -> void:
 			_hide_prompt()
 
 func _transition() -> void:
-	if transition_locked:
+	if transition_locked or _world_input_blocked():
 		return
 	if _is_locked():
-		return
-	if _dialogue_is_active():
+		if not locked_feedback.strip_edges().is_empty():
+			EventBus.interaction_feedback.emit(locked_feedback, "gentle")
 		return
 	transition_locked = true
 	if prompt:
@@ -81,11 +87,7 @@ func _transition() -> void:
 	RegionRegistry.change_region(target_region, target_spawn)
 
 func _dialogue_is_active() -> bool:
-	var scene := get_tree().current_scene
-	if scene == null:
-		return false
-	var dialogue_panel := scene.get_node_or_null("DialogBox/Panel")
-	return dialogue_panel is CanvasItem and dialogue_panel.visible
+	return _world_input_blocked()
 
 func _prompt_copy(raw_text: String) -> String:
 	var text := raw_text.strip_edges()
@@ -124,3 +126,7 @@ func _hide_prompt() -> void:
 	var tween := create_tween()
 	tween.tween_property(prompt, "modulate:a", 0.0, 0.26).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_callback(func() -> void: prompt.visible = false)
+
+func _world_input_blocked() -> bool:
+	var event_bus := get_node_or_null("/root/EventBus")
+	return event_bus != null and event_bus.has_method("is_modal_active") and event_bus.is_modal_active()

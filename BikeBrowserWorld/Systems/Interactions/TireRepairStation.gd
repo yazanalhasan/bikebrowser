@@ -60,17 +60,23 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	pulse_time += delta
+	if _world_input_blocked():
+		action_down = false
 	if tire_rig and tire_rig.has_method("set_current_action_pressed"):
 		tire_rig.set_current_action_pressed(player_in_range and action_down)
 	_update_prompt()
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _world_input_blocked():
+		return
 	if not player_in_range:
 		return
 	if event.is_action_pressed("ui_accept"):
+		get_viewport().set_input_as_handled()
 		action_down = true
 		_ensure_quest_started()
 	if event.is_action_released("ui_accept"):
+		get_viewport().set_input_as_handled()
 		action_down = false
 		if tire_rig and tire_rig.has_method("clear_actions"):
 			tire_rig.clear_actions()
@@ -110,7 +116,7 @@ func _update_prompt() -> void:
 	var label := "wheel ready"
 	if tire_rig and tire_rig.has_method("get_required_action_label"):
 		label = String(tire_rig.get_required_action_label())
-	prompt.text = "[hold E] " + label
+	prompt.text = "[Hold E] " + label
 	prompt.visible = player_in_range
 	if prompt.visible:
 		prompt.modulate.a = 0.74 + sin(pulse_time * 1.7) * 0.03
@@ -153,3 +159,7 @@ func _hide_prompt() -> void:
 	var tween := create_tween()
 	tween.tween_property(prompt, "modulate:a", 0.0, 0.26).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_callback(func() -> void: prompt.visible = false)
+
+func _world_input_blocked() -> bool:
+	var event_bus := get_node_or_null("/root/EventBus")
+	return event_bus != null and event_bus.has_method("is_modal_active") and event_bus.is_modal_active()

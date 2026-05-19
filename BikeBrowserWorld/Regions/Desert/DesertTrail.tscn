@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bikebrowser_desert_trail"]
+[gd_scene load_steps=14 format=3 uid="uid://bikebrowser_desert_trail"]
 
 [ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
 [ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
@@ -9,12 +9,16 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/Desert/barrel_cactus.png" id="7_barrel"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Desert/agave.png" id="8_agave"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Desert/mesquite_tree.png" id="9_mesquite"]
+[ext_resource type="Script" path="res://Systems/Interactions/QuestObjectiveStation.gd" id="10_act1_station"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 18.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
 size = Vector2(160, 72)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_observation"]
+size = Vector2(190, 104)
 
 [node name="DesertTrail" type="Node2D"]
 script = ExtResource("1_region")
@@ -46,6 +50,31 @@ texture_filter = 1
 texture = ExtResource("9_mesquite")
 
 [node name="RangerNitaNpc" parent="." instance=ExtResource("4_ranger")]
+
+[node name="PlantObservationStation" type="Area2D" parent="."]
+script = ExtResource("10_act1_station")
+quest_id = "desert_plant_observation"
+objective_ids = Array[String](["talk_to_ranger_nita", "observe_three_plants", "journal_observations", "return_to_nita"])
+prompt_text = "Plant Notes"
+completion_message = "Zuzu compares cactus, agave, and mesquite before sharing careful notes with Ranger Nita."
+completion_tone = "warm"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlantObservationStation"]
+shape = SubResource("RectangleShape2D_observation")
+
+[node name="StationMat" type="Polygon2D" parent="PlantObservationStation"]
+
+[node name="Beacon" type="Polygon2D" parent="PlantObservationStation"]
+
+[node name="Sign" type="Label" parent="PlantObservationStation"]
+modulate = Color(1, 0.94, 0.78, 0.92)
+text = "Plant Observation"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Prompt" type="Label" parent="PlantObservationStation"]
+text = "Plant Notes"
+horizontal_alignment = 1
 
 [node name="BackToNeighborhood" type="Area2D" parent="."]
 script = ExtResource("3_transition")

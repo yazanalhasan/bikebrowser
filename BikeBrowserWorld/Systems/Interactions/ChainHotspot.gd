@@ -62,6 +62,8 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	pulse_time += delta
+	if _world_input_blocked() and chain_rig and chain_rig.has_method("set_pedal_pressed"):
+		chain_rig.set_pedal_pressed(false)
 	if prompt and prompt.visible:
 		prompt.modulate.a = 0.76 + sin(pulse_time * 1.8) * 0.025
 		prompt.scale = Vector2.ONE * (1.0 + sin(pulse_time * 1.6) * 0.003)
@@ -72,17 +74,22 @@ func _process(delta: float) -> void:
 		_track_rig_state()
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _world_input_blocked():
+		return
 	if not player_in_range:
 		return
 	if QuestRegistry.completed_quests.has(quest_id):
 		if event.is_action_pressed("ui_accept"):
+			get_viewport().set_input_as_handled()
 			_quiet_post_repair_feedback()
 		return
 	if event.is_action_pressed("ui_accept"):
+		get_viewport().set_input_as_handled()
 		_engage_pedal()
 		if chain_rig and chain_rig.has_method("set_pedal_pressed"):
 			chain_rig.set_pedal_pressed(true)
 	elif event.is_action_released("ui_accept"):
+		get_viewport().set_input_as_handled()
 		if chain_rig and chain_rig.has_method("set_pedal_pressed"):
 			chain_rig.set_pedal_pressed(false)
 
@@ -244,3 +251,7 @@ func _hide_prompt() -> void:
 	var tween := create_tween()
 	tween.tween_property(prompt, "modulate:a", 0.0, 0.26).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_callback(func() -> void: prompt.visible = false)
+
+func _world_input_blocked() -> bool:
+	var event_bus := get_node_or_null("/root/EventBus")
+	return event_bus != null and event_bus.has_method("is_modal_active") and event_bus.is_modal_active()

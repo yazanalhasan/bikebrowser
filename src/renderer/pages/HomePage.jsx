@@ -21,12 +21,20 @@ function HomePage() {
 
   const topics = [
     {
+      id: 'play-game',
+      title: 'Play BikeBrowserWorld',
+      subtitle: 'Zuzu repairs, tests, and rides',
+      emoji: '🚲',
+      isGame: true,
+      color: 'from-emerald-500 to-sky-600'
+    },
+    {
       id: 'project-builder',
       title: 'Project Builder',
       subtitle: 'Guided tutorials & missions',
       emoji: '🏗️',
       isSpecial: true,
-      color: 'from-purple-400 to-pink-500'
+      color: 'from-sky-500 to-indigo-600'
     },
     {
       id: 'build-planner',
@@ -45,18 +53,10 @@ function HomePage() {
       color: 'from-emerald-400 to-teal-500'
     },
     {
-      id: 'play-game',
-      title: 'Play Game',
-      subtitle: "Zuzu's Bike Adventure",
-      emoji: '🎮',
-      isGame: true,
-      color: 'from-amber-400 to-orange-500'
-    },
-    {
       id: 'zaydan-spelling-trainer',
       title: "Zaydan's Spelling Trainer",
       subtitle: 'Practice spelling and worksheets',
-      emoji: 'ðŸ”¤',
+      emoji: '🔤',
       isSpellingTrainer: true,
       color: 'from-indigo-400 to-sky-500'
     },
@@ -119,7 +119,7 @@ function HomePage() {
             🚴 BikeBrowser
           </h1>
           <p className="text-center text-gray-600 mt-2 text-lg">
-            Learn about bikes, building, and engineering!
+            Start in Zuzu's neighborhood, then use videos and tools when you need them.
           </p>
         </div>
       </div>
@@ -168,7 +168,7 @@ function HomePage() {
       {/* Topic Tiles */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-          What interests you?
+          Start here
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {topics.map((topic) => (

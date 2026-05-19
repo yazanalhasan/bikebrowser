@@ -6,6 +6,7 @@ test.describe('Godot canonical route', () => {
 
     await expect(page.getByTestId('godot-prototype-page')).toBeVisible();
     await expect(page.getByTestId('godot-iframe')).toBeVisible();
+    await expect(page.getByTestId('home-button')).toBeVisible();
     await expect(page.getByTestId('godot-diagnostics')).toHaveCount(0);
   });
 

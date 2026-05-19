@@ -137,6 +137,9 @@ func _run() -> void:
 
 	_assert(tire_started, "flat_tire_repair starts from QuestRegistry")
 	_assert(observed_quest_started, "flat_tire_repair emits quest_started")
+	_assert(observed_reward_payload.is_empty(), "flat_tire_repair waits for physical verification before reward")
+	quest_registry.record_objective("flat_tire_repair", "verify_wheel_ready")
+	await process_frame
 	_assert(observed_reward_payload.get("questId") == "flat_tire_repair", "flat_tire_repair emits reward_intent")
 	_assert(observed_reward_payload.get("badge") == "Patch Hero", "flat_tire_repair reward includes badge feedback")
 

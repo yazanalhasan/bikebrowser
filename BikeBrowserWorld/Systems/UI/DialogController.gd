@@ -4,6 +4,7 @@ var current_dialogue: Dictionary = {}
 var current_index := 0
 var target_text := ""
 var reveal_speed := 36.0
+var closing_dialogue := false
 
 @onready var panel: Panel = $Panel
 @onready var speaker_label: Label = $Panel/VBox/SpeakerLabel
@@ -20,9 +21,16 @@ func _ready() -> void:
 	close_button.pressed.connect(_close)
 	_apply_button_copy()
 
+func _exit_tree() -> void:
+	if panel != null and (panel.visible or closing_dialogue):
+		EventBus.pop_modal()
+
 func _on_dialogue_requested(dialogue: Dictionary) -> void:
+	if not panel.visible:
+		EventBus.push_modal()
 	current_dialogue = dialogue
 	current_index = 0
+	closing_dialogue = false
 	panel.visible = true
 	panel.modulate.a = 0.0
 	panel.scale = Vector2(0.985, 0.985)
@@ -52,15 +60,22 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if panel.visible and event.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()
+		if closing_dialogue:
+			return
 		_advance()
 
 func _advance() -> void:
+	if closing_dialogue:
+		return
 	AudioService.cancel_speech()
 	AudioService.play_sfx("dialogue_next", "gentle")
 	current_index += 1
 	_show_current_line()
 
 func _complete_dialogue() -> void:
+	if closing_dialogue:
+		return
+	closing_dialogue = true
 	await get_tree().create_timer(0.14).timeout
 	_hide_panel()
 	var on_complete: Dictionary = current_dialogue.get("onComplete", {})
@@ -73,6 +88,9 @@ func _complete_dialogue() -> void:
 			QuestRegistry.record_objective(quest_id, "talk_to_mrs_ramirez")
 
 func _close() -> void:
+	if closing_dialogue:
+		return
+	closing_dialogue = true
 	AudioService.cancel_speech()
 	_hide_panel()
 
@@ -84,11 +102,16 @@ func _toggle_voice() -> void:
 
 func _hide_panel() -> void:
 	if not panel.visible:
+		closing_dialogue = false
 		return
 	AudioService.play_sfx("dialogue_close", "gentle")
 	var tween := create_tween()
 	tween.tween_property(panel, "modulate:a", 0.0, 0.28).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_callback(func() -> void: panel.visible = false)
+	tween.tween_callback(func() -> void:
+		panel.visible = false
+		closing_dialogue = false
+		EventBus.pop_modal()
+	)
 
 func _apply_button_copy() -> void:
 	voice_button.text = "Voice On"

@@ -57,7 +57,10 @@ func _process(delta: float) -> void:
 		_apply_idle_personality()
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _world_input_blocked():
+		return
 	if player_in_range and event.is_action_pressed("ui_accept"):
+		get_viewport().set_input_as_handled()
 		trigger_dialogue()
 
 func play_idle():
@@ -85,7 +88,7 @@ func face_player(player_position):
 		play_idle()
 
 func trigger_dialogue() -> void:
-	if interaction_locked:
+	if interaction_locked or _world_input_blocked():
 		return
 	interaction_locked = true
 	play_talk()
@@ -205,3 +208,7 @@ func _presence_line() -> String:
 func _quest_completed(quest_id: String) -> bool:
 	var quest_registry := get_node_or_null("/root/QuestRegistry")
 	return quest_registry != null and quest_registry.completed_quests.has(quest_id)
+
+func _world_input_blocked() -> bool:
+	var event_bus := get_node_or_null("/root/EventBus")
+	return event_bus != null and event_bus.has_method("is_modal_active") and event_bus.is_modal_active()

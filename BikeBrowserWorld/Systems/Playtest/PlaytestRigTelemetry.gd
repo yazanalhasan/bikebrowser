@@ -23,8 +23,8 @@ extends Node
 const ENV_FLAG := "BIKEBROWSER_PLAYTEST"
 const CLI_FLAG := "--playtest"
 const TELEMETRY_DIR := "res://../playtest/telemetry"
-const IDLE_STATES := ["idle_wheel_spinning", "chain_slipped"]
-const VERIFIED_STATES := ["brake_verified", "chain_verified"]
+const IDLE_STATES := ["idle_wheel_spinning", "chain_slipped", "tire_deflated_leaking"]
+const VERIFIED_STATES := ["brake_verified", "chain_verified", "tire_verified"]
 
 var enabled := false
 var session_start_msec := 0

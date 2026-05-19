@@ -11,6 +11,11 @@
     "OreB": { "x": 220, "y": 120, "scale": 0.85, "z": 2 },
     "MineCart": { "x": 250, "y": -20, "scale": 0.9, "z": 3 },
     "OldMinerPeteNpc": { "x": 0, "y": -40, "scale": 1.0 },
+    "CopperEvidenceStation": { "x": -108, "y": 70, "w": 220, "h": 116, "z": 5 },
+    "CopperEvidenceStation/StationMat": { "x": -112, "y": -56, "w": 224, "h": 108, "color": "#62b7b066", "shape": "soft", "z": -1 },
+    "CopperEvidenceStation/Beacon": { "x": -18, "y": -94, "w": 36, "h": 34, "color": "#ffd86b99", "shape": "diamond", "z": 1 },
+    "CopperEvidenceStation/Sign": { "x": -86, "y": -126, "w": 172, "h": 26 },
+    "CopperEvidenceStation/Prompt": { "x": -78, "y": -84, "w": 156, "h": 28 },
     "BackToNeighborhood": { "x": 0, "y": 390, "w": 220, "h": 96 },
     "BackToNeighborhood/Prompt": { "x": -70, "y": -80, "w": 140, "h": 28 }
   }
