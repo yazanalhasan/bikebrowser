@@ -1,6 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bikebrowser_tire_rig"]
+[gd_scene load_steps=6 format=3 uid="uid://bikebrowser_tire_rig"]
 
 [ext_resource type="Script" path="res://Prototypes/EmbodiedMechanics/TireRig.gd" id="1_tire_rig"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/inner_tube.png" id="2_inner_tube"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/floor_air_pump.png" id="3_floor_pump"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/tire_patch_kit.png" id="4_patch_kit"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hub"]
 radius = 11.0
@@ -15,6 +18,27 @@ patch_path = NodePath("Wheel/TireShape/Patch")
 pressure_bar_path = NodePath("PressureBar")
 pressure_fill_path = NodePath("PressureBar/Fill")
 readiness_label_path = NodePath("ReadinessLabel")
+
+[node name="RepairPropLayer" type="Node2D" parent="."]
+z_index = -1
+
+[node name="InnerTubeProp" type="Sprite2D" parent="RepairPropLayer"]
+position = Vector2(111, 27)
+scale = Vector2(0.62, 0.62)
+texture_filter = 1
+texture = ExtResource("2_inner_tube")
+
+[node name="FloorPumpProp" type="Sprite2D" parent="RepairPropLayer"]
+position = Vector2(-116, 18)
+scale = Vector2(0.68, 0.68)
+texture_filter = 1
+texture = ExtResource("3_floor_pump")
+
+[node name="PatchKitProp" type="Sprite2D" parent="RepairPropLayer"]
+position = Vector2(107, 92)
+scale = Vector2(0.78, 0.78)
+texture_filter = 1
+texture = ExtResource("4_patch_kit")
 
 [node name="Wheel" type="Node2D" parent="."]
 
