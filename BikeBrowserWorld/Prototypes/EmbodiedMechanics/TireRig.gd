@@ -17,8 +17,11 @@ const STATE_VERIFIED := "tire_verified"
 @export var sidewall_path: NodePath
 @export var leak_marker_path: NodePath
 @export var patch_path: NodePath
-@export var pressure_bar_path: NodePath
-@export var pressure_fill_path: NodePath
+@export var pressure_gauge_path: NodePath
+@export var gauge_needle_path: NodePath
+@export var pump_handle_path: NodePath
+@export var tube_prop_path: NodePath
+@export var wheel_ready_glow_path: NodePath
 @export var readiness_label_path: NodePath
 
 var pressure := 0.08
@@ -44,8 +47,11 @@ var active_action := ""
 @onready var sidewall: CanvasItem = get_node_or_null(sidewall_path)
 @onready var leak_marker: CanvasItem = get_node_or_null(leak_marker_path)
 @onready var patch: CanvasItem = get_node_or_null(patch_path)
-@onready var pressure_bar: CanvasItem = get_node_or_null(pressure_bar_path)
-@onready var pressure_fill: ColorRect = get_node_or_null(pressure_fill_path)
+@onready var pressure_gauge: CanvasItem = get_node_or_null(pressure_gauge_path)
+@onready var gauge_needle: Node2D = get_node_or_null(gauge_needle_path)
+@onready var pump_handle: Node2D = get_node_or_null(pump_handle_path)
+@onready var tube_prop: CanvasItem = get_node_or_null(tube_prop_path)
+@onready var wheel_ready_glow: CanvasItem = get_node_or_null(wheel_ready_glow_path)
 @onready var readiness_label: Label = get_node_or_null(readiness_label_path)
 
 func _ready() -> void:
@@ -60,6 +66,8 @@ func _ready() -> void:
 	register_part("tire_sidewall", sidewall, {"role": "deformation_readout"})
 	register_part("puncture", leak_marker, {"role": "leak_source"})
 	register_part("patch", patch, {"role": "seal"})
+	register_part("pressure_gauge", pressure_gauge, {"role": "in_world_pressure_readout"})
+	register_part("pump_handle", pump_handle, {"role": "pump_motion"})
 	_apply_visual_state()
 
 func _process(delta: float) -> void:
@@ -208,11 +216,23 @@ func _apply_visual_state() -> void:
 		patch.modulate.a = clamp(0.30 + patch_seal * 0.70, 0.0, 1.0)
 		if patch is Node2D:
 			patch.scale = Vector2.ONE * (0.82 + patch_seal * 0.18)
-	if pressure_bar:
-		pressure_bar.visible = patch_seal >= 0.92 or pressure > 0.20
-	if pressure_fill:
-		pressure_fill.size.x = 138.0 * clamp(pressure, 0.0, 1.0)
-		pressure_fill.color = Color(0.91, 0.60, 0.22, 1.0) if pressure < 0.72 else Color(0.34, 0.75, 0.48, 1.0)
+	if tube_prop:
+		tube_prop.visible = tube_exposure > 0.04
+		tube_prop.modulate.a = clamp(0.18 + tube_exposure * 0.82, 0.0, 1.0)
+		if tube_prop is Node2D:
+			(tube_prop as Node2D).position.y = 34.0 - tube_exposure * 18.0
+	if pressure_gauge:
+		pressure_gauge.visible = patch_seal >= 0.92 or pressure > 0.20
+		pressure_gauge.modulate = Color(1.0, 0.86 + pressure * 0.10, 0.66 + pressure * 0.20, 0.88)
+	if gauge_needle:
+		gauge_needle.visible = pressure_gauge == null or pressure_gauge.visible
+		gauge_needle.rotation = lerp(-1.18, 1.08, clamp(pressure, 0.0, 1.0))
+	if pump_handle:
+		var pump_motion: float = abs(sin(hold_time * 13.0)) if pump_pressed else 0.0
+		pump_handle.position.y = -18.0 + pump_motion * 24.0
+	if wheel_ready_glow:
+		wheel_ready_glow.visible = pressure >= 0.72 or tire_verified
+		wheel_ready_glow.modulate.a = clamp((pressure - 0.66) * 1.8 + wheel_readiness * 0.35, 0.0, 0.62)
 	if readiness_label:
 		readiness_label.visible = tire_verified
 

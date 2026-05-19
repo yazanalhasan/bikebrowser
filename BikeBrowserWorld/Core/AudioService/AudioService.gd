@@ -95,13 +95,19 @@ func _ready() -> void:
 		audio_unlocked = true
 	set_process(not OS.has_feature("web"))
 
+func _input(event: InputEvent) -> void:
+	if not OS.has_feature("web") or audio_unlocked:
+		return
+	if event.is_pressed() and not event.is_echo():
+		unlock_audio()
+
 func unlock_audio() -> bool:
 	if audio_unlocked:
 		return true
 	audio_unlocked = true
 	if OS.has_feature("web"):
 		_install_web_audio_runtime()
-		JavaScriptBridge.eval("window.BikeBrowserAudio && window.BikeBrowserAudio.unlock();", true)
+		JavaScriptBridge.eval("window.BikeBrowserAudio && window.BikeBrowserAudio.unlock(); window.BikeBrowserAudioUnlockUI && window.BikeBrowserAudioUnlockUI.hide();", true)
 	EventBus.audio_unlocked.emit()
 	EventBus.log_debug("Audio unlocked after user gesture", { "web": OS.has_feature("web") })
 	if not current_region.is_empty():
@@ -157,6 +163,7 @@ func speak(text: String, speaker: String = "Narrator") -> void:
 		var speaker_escaped := speaker.json_escape()
 		var hint_escaped := String(voice_profile.get("voiceHint", "")).json_escape()
 		JavaScriptBridge.eval("window.BikeBrowserAudio && window.BikeBrowserAudio.speak(\"%s\", \"%s\", %.3f, %.3f, \"%s\", %.3f);" % [escaped, speaker_escaped, float(voice_profile["pitch"]), float(voice_profile["rate"]), hint_escaped, VOICE_VOLUME], true)
+		EventBus.log_debug("Web TTS requested", { "speaker": speaker, "voiceHint": voice_profile.get("voiceHint", ""), "textLength": text.length() })
 	else:
 		_speak_native(text, speaker, voice_profile)
 
@@ -531,7 +538,10 @@ func _install_web_audio_runtime() -> void:
     unlocked: false,
     muted: false,
     quietUntil: 0,
-    cueTimes: {}
+    cueTimes: {},
+    lastCue: "",
+    lastRegion: "",
+    lastSpeechStatus: "idle"
   };
   const regionMix = {
     neighborhood: { freq: 146.83, musicGain: 0.012, ambFreq: 73, ambGain: 0.006, noiseGain: 0.004, fade: 2.1, pan: 0.24 },
@@ -670,6 +680,9 @@ func _install_web_audio_runtime() -> void:
       if (!c) return false;
       const finish = () => {
         state.unlocked = true;
+        window.BikeBrowserAudioState = state;
+        if (window.BikeBrowserAudioUnlockUI && window.BikeBrowserAudioUnlockUI.hide) window.BikeBrowserAudioUnlockUI.hide();
+        console.info("[BikeBrowserAudio] unlocked");
         this.playRegion("neighborhood");
         return true;
       };
@@ -684,6 +697,8 @@ func _install_web_audio_runtime() -> void:
       const c = ctx();
       if (!c || state.muted || !state.unlocked) return;
       const mix = regionMix[region] || regionMix.neighborhood;
+      state.lastRegion = region;
+      window.BikeBrowserAudioState = state;
       state.music.forEach((handle) => fadeOutHandle(handle, mix.fade));
       state.ambience.forEach((handle) => fadeOutHandle(handle, mix.fade + 0.35));
       const music = c.createOscillator();
@@ -714,6 +729,9 @@ func _install_web_audio_runtime() -> void:
     },
     cue(name, toneName) {
       if (!canCue(name)) return;
+      state.lastCue = name;
+      window.BikeBrowserAudioState = state;
+      console.info("[BikeBrowserAudio] cue", name, toneName || "");
       if (name === "reward_chime") {
         duckSpace(0.72, 1.2);
         tone(523.25, 0.16, 0.025, "sine", -0.04);
@@ -754,7 +772,13 @@ func _install_web_audio_runtime() -> void:
       }
     },
     speak(text, speaker, pitch, rate, voiceHint, voiceVolume) {
-      if (state.muted || !state.unlocked || !("speechSynthesis" in window)) return;
+      if (state.muted || !state.unlocked) return;
+      if (!("speechSynthesis" in window)) {
+        state.lastSpeechStatus = "unavailable";
+        window.BikeBrowserAudioState = state;
+        console.warn("[BikeBrowserAudio] TTS unavailable; showing text only", { speaker, text });
+        return;
+      }
       window.speechSynthesis.cancel();
       duckSpace(0.58, 1.25);
       const utter = new SpeechSynthesisUtterance(text);
@@ -763,6 +787,19 @@ func _install_web_audio_runtime() -> void:
       utter.rate = Number.isFinite(rate) ? rate : 0.95;
       utter.pitch = Number.isFinite(pitch) ? pitch : 1.0;
       utter.volume = Number.isFinite(voiceVolume) ? voiceVolume : 0.92;
+      utter.onstart = () => {
+        state.lastSpeechStatus = "speaking";
+        window.BikeBrowserAudioState = state;
+      };
+      utter.onerror = (event) => {
+        state.lastSpeechStatus = "error";
+        window.BikeBrowserAudioState = state;
+        console.warn("[BikeBrowserAudio] TTS failed; showing text only", { speaker, error: event.error || "unknown" });
+      };
+      utter.onend = () => {
+        state.lastSpeechStatus = "ended";
+        window.BikeBrowserAudioState = state;
+      };
       window.speechSynthesis.speak(utter);
     },
     cancelSpeech() {

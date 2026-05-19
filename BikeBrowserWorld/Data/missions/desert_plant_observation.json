@@ -1,7 +1,7 @@
 {
   "id": "desert_plant_observation",
   "name": "Desert Plant Observation",
-  "description": "Talk to Ranger Nita, observe three different desert plants, record each observation in the journal, and report back.",
+  "description": "Work with Ranger Nita to match desert plants from field marks, record mastery per plant, and report careful observations.",
   "steps": [
     {
       "id": "talk_to_ranger_nita",
@@ -10,12 +10,12 @@
     },
     {
       "id": "observe_three_plants",
-      "description": "Observe any three different Sonoran Desert plants.",
+      "description": "Use field tools to match the first three surfaced Sonoran Desert plants.",
       "completed": false
     },
     {
       "id": "journal_observations",
-      "description": "Describe each plant observation in the journal before explaining it.",
+      "description": "Record the matched plant structures and mastery notes in the field journal.",
       "completed": false
     },
     {

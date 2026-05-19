@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/Desert/barrel_cactus.png" id="7_barrel"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Desert/agave.png" id="8_agave"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Desert/mesquite_tree.png" id="9_mesquite"]
-[ext_resource type="Script" path="res://Systems/Interactions/QuestObjectiveStation.gd" id="10_act1_station"]
+[ext_resource type="Script" path="res://Systems/Interactions/PlantObservationStation.gd" id="10_act1_station"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 18.0
@@ -56,7 +56,7 @@ script = ExtResource("10_act1_station")
 quest_id = "desert_plant_observation"
 objective_ids = Array[String](["talk_to_ranger_nita", "observe_three_plants", "journal_observations", "return_to_nita"])
 prompt_text = "Plant Notes"
-completion_message = "Zuzu compares cactus, agave, and mesquite before sharing careful notes with Ranger Nita."
+completion_message = "Zuzu matches plant structures with field marks, records mastery for each plant, and reports careful notes to Ranger Nita."
 completion_tone = "warm"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlantObservationStation"]

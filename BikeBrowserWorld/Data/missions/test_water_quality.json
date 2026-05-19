@@ -1,7 +1,7 @@
 {
   "id": "test_water_quality",
   "name": "Test the Water Quality",
-  "description": "Work with Dr. Maya to collect a river sample, run a pH test, identify macroinvertebrates, and report what the evidence suggests.",
+  "description": "Work with Dr. Maya to collect a river sample, use a pH strip, compare the chart, identify a macroinvertebrate, infer quality, and report the evidence chain.",
   "steps": [
     {
       "id": "talk_to_dr_maya",

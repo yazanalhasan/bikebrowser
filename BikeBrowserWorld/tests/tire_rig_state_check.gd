@@ -63,10 +63,12 @@ func _run() -> void:
 		var scene_rig: Node = tire_rig_scene.instantiate()
 		root.add_child(scene_rig)
 		await process_frame
-		_assert(scene_rig.get_node_or_null("Wheel/TireShape/Sidewall") != null, "scene exposes sidewall deformation part")
+		_assert(scene_rig.get_node_or_null("Wheel/TireShape/WheelSprite") is Sprite2D, "scene exposes sprite sidewall deformation part")
 		_assert(scene_rig.get_node_or_null("Wheel/TireShape/LeakMarker") != null, "scene exposes leak marker")
 		_assert(scene_rig.get_node_or_null("Wheel/TireShape/Patch") != null, "scene exposes patch")
-		_assert(scene_rig.get_node_or_null("PressureBar/Fill") != null, "scene exposes pressure fill")
+		_assert(scene_rig.get_node_or_null("PumpAssembly/PressureGauge/Needle") != null, "scene exposes in-world pressure gauge")
+		_assert(scene_rig.get_node_or_null("PumpAssembly/PumpHandle") != null, "scene exposes animated pump handle")
+		_assert(scene_rig.get_node_or_null("PressureBar") == null, "scene does not use ColorRect pressure UI")
 		root.remove_child(scene_rig)
 		scene_rig.free()
 

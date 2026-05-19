@@ -14,6 +14,9 @@ signal audio_unlock_failed(reason)
 signal tts_unavailable(text)
 signal save_requested(save_payload)
 signal debug_log(message, payload)
+signal notebook_updated(snapshot)
+signal inventory_updated(snapshot)
+signal recipe_feedback(message, tone)
 
 var modal_stack := 0
 

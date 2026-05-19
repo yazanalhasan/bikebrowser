@@ -177,6 +177,21 @@ func get_act1_hud_guidance() -> Dictionary:
 		"totalCount": 0,
 	}
 
+func get_notebook_snapshot() -> Dictionary:
+	var current := get_act1_hud_guidance()
+	return {
+		"currentObjective": current,
+		"activeQuests": _quest_list(active_quests.keys(), false),
+		"completedQuests": _quest_list(completed_quests.keys(), true),
+		"learnedMechanics": _learned_mechanics(),
+		"discoveredPlants": _discovered_plants(),
+		"discoveredMaterials": _discovered_materials(),
+		"recipesLearned": InventoryManager.get_learned_recipe_cards() if InventoryManager != null and InventoryManager.has_method("get_learned_recipe_cards") else [],
+		"sketches": _notebook_sketches(),
+		"capstoneClues": _capstone_clues(),
+		"gentleHint": String(current.get("description", "Try the nearby glowing prompt, then write down what changed.")),
+	}
+
 func start_quest(quest_id: String) -> bool:
 	if completed_quests.has(quest_id):
 		return false
@@ -202,6 +217,7 @@ func start_quest(quest_id: String) -> bool:
 		"startedAt": Time.get_datetime_string_from_system(true)
 	}
 	EventBus.quest_started.emit(quest_id)
+	EventBus.notebook_updated.emit(get_notebook_snapshot())
 	CompanionBridge.send_event({
 		"type": "quest_started",
 		"questId": quest_id
@@ -240,6 +256,7 @@ func record_objective(quest_id: String, objective_id: String) -> void:
 	state["completedObjectives"] = completed
 	active_quests[quest_id] = state
 	EventBus.quest_step_completed.emit(quest_id, objective_id)
+	EventBus.notebook_updated.emit(get_notebook_snapshot())
 	if _quest_objectives_complete(quest_id, completed):
 		complete_quest(quest_id)
 	else:
@@ -254,6 +271,7 @@ func complete_quest(quest_id: String) -> void:
 		"completedAt": Time.get_datetime_string_from_system(true)
 	}
 	EventBus.quest_completed.emit(quest_id)
+	EventBus.notebook_updated.emit(get_notebook_snapshot())
 	RewardBridge.emit_reward_intent(quest.get("reward", {}), quest_id)
 	_emit_unlock_events(quest)
 	SaveService.save_now("quest_completed")
@@ -363,3 +381,82 @@ func _load_item_ids() -> Dictionary:
 			if not item_id.is_empty():
 				ids[item_id] = true
 	return ids
+
+func _quest_list(quest_ids: Array, completed: bool) -> Array:
+	var list: Array = []
+	for quest_id in quest_ids:
+		var id := String(quest_id)
+		var quest: Dictionary = quests.get(id, {})
+		var state: Dictionary = completed_quests.get(id, {}) if completed else active_quests.get(id, {})
+		list.append({
+			"id": id,
+			"title": get_quest_title(id),
+			"description": String(quest.get("description", "")),
+			"completedObjectives": state.get("completedObjectives", []),
+			"completedAt": state.get("completedAt", ""),
+		})
+	return list
+
+func _learned_mechanics() -> Array:
+	var lessons: Array = []
+	var lesson_map := {
+		"bike_safety_check:check_brakes": "Brake levers pull a cable so pads can slow the wheel.",
+		"bike_safety_check:check_tires": "A safe tire feels firm, not mushy and not overfilled.",
+		"bike_safety_check:check_chain": "A quiet chain follows the teeth instead of climbing sideways.",
+		"flat_tire_repair:apply_patch": "A patch works after the tube is clean and pressed flat.",
+		"flat_tire_repair:verify_wheel_ready": "A repair is not finished until the wheel holds air and spins clean.",
+		"chain_repair:seat_chain": "Chain links need to sit on the sprocket teeth before power transfers well.",
+		"test_water_quality:run_ph_test": "A test strip needs a chart before the color means anything.",
+		"copper_rock_id:test_conductivity": "Copper evidence gets stronger when observation and conductivity agree.",
+	}
+	for key in lesson_map.keys():
+		var parts := String(key).split(":")
+		if parts.size() != 2:
+			continue
+		if _objective_recorded(parts[0], parts[1]):
+			lessons.append({ "id": key, "text": lesson_map[key] })
+	return lessons
+
+func _objective_recorded(quest_id: String, objective_id: String) -> bool:
+	if completed_quests.has(quest_id):
+		return true
+	var state: Dictionary = active_quests.get(quest_id, {})
+	return state.get("completedObjectives", []).has(objective_id)
+
+func _discovered_plants() -> Array:
+	var plants: Array = []
+	if _objective_recorded("desert_plant_observation", "observe_three_plants"):
+		plants.append({ "id": "agave", "name": "Agave", "note": "Thick leaves store water and tough fibers." })
+		plants.append({ "id": "barrel_cactus", "name": "Barrel cactus", "note": "Ribs let the plant swell after rain." })
+		plants.append({ "id": "mesquite", "name": "Mesquite", "note": "Deep roots help it reach scarce water." })
+	return plants
+
+func _discovered_materials() -> Array:
+	var materials: Array = []
+	if _objective_recorded("test_water_quality", "collect_water_sample"):
+		materials.append({ "id": "water_sample", "name": "Water sample", "note": "Labeled before testing so the evidence chain stays clear." })
+	if _objective_recorded("copper_rock_id", "find_copper_rock"):
+		materials.append({ "id": "copper_ore", "name": "Copper ore", "note": "Blue-green staining is a useful clue, not the whole proof." })
+	if _objective_recorded("workshop_first_build", "collect_raw_material"):
+		materials.append({ "id": "raw_material", "name": "Workshop material", "note": "A useful part starts by matching material to job." })
+	return materials
+
+func _notebook_sketches() -> Array:
+	var sketches: Array = []
+	if _objective_recorded("flat_tire_repair", "inspect_wheel"):
+		sketches.append({ "title": "Tube leak map", "body": "tiny hiss -> clean spot -> patch" })
+	if _objective_recorded("chain_repair", "align_chain"):
+		sketches.append({ "title": "Chain path", "body": "pedal force follows seated links" })
+	if _objective_recorded("desert_plant_observation", "journal_observations"):
+		sketches.append({ "title": "Plant notes", "body": "shape, texture, water clue" })
+	if _objective_recorded("act1_regional_readiness", "sketch_regional_questions"):
+		sketches.append({ "title": "Regional questions", "body": "What does each place teach the bike?" })
+	return sketches
+
+func _capstone_clues() -> Array:
+	var clues: Array = []
+	if can_start_quest("act1_regional_readiness") or active_quests.has("act1_regional_readiness") or completed_quests.has("act1_regional_readiness"):
+		clues.append("Bike parts, bridge shapes, water loops, and copper tests can all become systems thinking.")
+	if completed_quests.has("act1_regional_readiness"):
+		clues.append("The spacecraft clue is earned: tested local ideas can scale to bigger machines.")
+	return clues

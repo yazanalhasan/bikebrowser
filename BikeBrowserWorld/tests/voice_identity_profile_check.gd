@@ -36,6 +36,15 @@ func _run() -> void:
 	if not chen_voice.is_empty() and not ramirez_voice.is_empty():
 		_assert(chen_voice != ramirez_voice, "Mrs. Ramirez and Mr. Chen prefer distinct installed TTS voices when available")
 
+	var required_speakers := ["Mrs. Ramirez", "Mr. Chen", "Ranger Nita", "Dr. Maya", "Miner Pete", "Workshop Friend", "Zevon", "Jacob", "Charlie", "Cole", "James"]
+	var signatures := {}
+	for speaker in required_speakers:
+		var profile: Dictionary = audio_service.call("resolve_voice_profile", speaker)
+		_assert(_valid_profile(profile), "%s resolves to a restrained voice profile" % speaker)
+		var signature := "%0.2f/%0.2f/%s" % [float(profile.get("pitch", 0.0)), float(profile.get("rate", 0.0)), String(profile.get("tone", ""))]
+		_assert(not signatures.has(signature), "%s has a distinct voice profile shape" % speaker)
+		signatures[signature] = speaker
+
 	for speaker in _current_dialogue_speakers():
 		var profile: Dictionary = audio_service.call("resolve_voice_profile", speaker)
 		_assert(_valid_profile(profile), "%s resolves to a restrained voice profile" % speaker)

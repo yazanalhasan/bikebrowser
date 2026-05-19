@@ -36,6 +36,12 @@
       "voiceHint": "older grounded",
       "tone": "unhurried"
     },
+    "Miner Pete": {
+      "pitch": 0.9,
+      "rate": 0.86,
+      "voiceHint": "older grounded",
+      "tone": "unhurried"
+    },
     "Zevon": {
       "pitch": 1.0,
       "rate": 0.96,
@@ -65,6 +71,18 @@
       "rate": 0.92,
       "voiceHint": "measured workshop",
       "tone": "measured"
+    },
+    "Workshop Friend": {
+      "pitch": 1.04,
+      "rate": 0.97,
+      "voiceHint": "bright casual",
+      "tone": "friendly"
+    },
+    "Workshop Friends": {
+      "pitch": 1.04,
+      "rate": 0.97,
+      "voiceHint": "bright casual",
+      "tone": "friendly"
     }
   }
 }

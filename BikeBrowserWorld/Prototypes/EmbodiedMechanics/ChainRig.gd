@@ -55,6 +55,7 @@ var hold_time := 0.0
 var verified_time := 0.0
 var crank_angle := 0.0
 var wheel_angle := 0.0
+var chain_scroll := 0.0
 
 @onready var crank: Node2D = get_node_or_null(crank_path)
 @onready var chainring: Node2D = get_node_or_null(chainring_path)
@@ -118,6 +119,7 @@ func step_mechanic(delta: float) -> void:
 
 	# Crank angle follows pedal_rotation linearly; wheel angle follows wheel_spin
 	crank_angle += delta * (pedal_rotation * 6.2)
+	chain_scroll = fposmod(chain_scroll + pedal_rotation * 52.0 * delta, 12.0)
 	if wheel_spin > 0.01:
 		wheel_angle += delta * (1.4 + wheel_spin * 8.0)
 
@@ -171,6 +173,8 @@ func _apply_visual_state() -> void:
 		chainring.rotation = crank_angle
 	if chain:
 		chain.modulate = Color(0.62 + chain_tension * 0.32, 0.66 + chain_tension * 0.22, 0.74 + chain_tension * 0.14, 0.46 + chain_tension * 0.50)
+		if chain is Node2D:
+			(chain as Node2D).position.x = chain_scroll - 6.0
 	if chain_slack:
 		chain_slack.visible = chain_tension < 0.88
 		chain_slack.modulate.a = clamp(0.62 - chain_tension * 0.66, 0.0, 0.62)
@@ -205,6 +209,17 @@ func _apply_visual_state() -> void:
 		sprocket_label.visible = mechanical_state in [STATE_SEATED, STATE_SPINNING]
 	if wheel_label:
 		wheel_label.visible = mechanical_state in [STATE_SPINNING, STATE_VERIFIED]
+
+func get_alignment_snapshot() -> Dictionary:
+	return {
+		"crank_position": crank.global_position if crank else Vector2.ZERO,
+		"chainring_position": chainring.global_position if chainring else Vector2.ZERO,
+		"rear_sprocket_position": sprocket.global_position if sprocket else Vector2.ZERO,
+		"rear_wheel_position": rear_wheel.global_position if rear_wheel else Vector2.ZERO,
+		"rear_drivetrain_aligned": sprocket != null and rear_wheel != null and sprocket.global_position.distance_to(rear_wheel.global_position) <= 4.0,
+		"chain_runs_to_rear": chainring != null and sprocket != null and sprocket.global_position.x > chainring.global_position.x,
+		"wheel_responds_to_pedal": pedal_rotation > 0.05 and drivetrain_engagement > 0.05 and wheel_spin > 0.01,
+	}
 
 func _emit_feedback(kind: String) -> void:
 	chain_soft_feedback.emit(kind)

@@ -12,6 +12,7 @@ func _init() -> void:
 
 func _run() -> void:
 	var ChainRig: GDScript = load("res://Prototypes/EmbodiedMechanics/ChainRig.gd")
+	var chain_scene: PackedScene = load("res://Prototypes/EmbodiedMechanics/ChainRigEmbedded.tscn")
 	var rig: Node2D = ChainRig.new()
 	root.add_child(rig)
 	rig.chain_verified_changed.connect(_on_verified)
@@ -41,6 +42,7 @@ func _run() -> void:
 	_assert(rig.chain_verified, "rig never reached chain_verified. final state: " + str(rig.mechanical_state))
 	_assert(rig.mechanical_state == rig.STATE_VERIFIED, "after verified, state must be STATE_VERIFIED, got " + str(rig.mechanical_state))
 	_assert(verified_signal_count == 1, "chain_verified_changed should emit exactly once. emitted: " + str(verified_signal_count))
+	_assert(float(rig.get("wheel_spin")) > 0.0, "pedal turns should produce wheel response after seating")
 
 	# Release pedal: scalars decay but verified should stick.
 	rig.set_pedal_pressed(false)
@@ -50,6 +52,19 @@ func _run() -> void:
 
 	rig.queue_free()
 	await process_frame
+
+	if chain_scene:
+		var scene_rig: Node2D = chain_scene.instantiate()
+		root.add_child(scene_rig)
+		await process_frame
+		var snapshot: Dictionary = scene_rig.call("get_alignment_snapshot")
+		_assert(bool(snapshot.get("rear_drivetrain_aligned", false)), "embedded sprocket is aligned to rear wheel")
+		_assert(bool(snapshot.get("chain_runs_to_rear", false)), "embedded chain runs from crank to rear drivetrain")
+		_assert(scene_rig.get_node_or_null("RearWheel/WheelSprite") is Sprite2D, "embedded rig uses rear wheel sprite art")
+		_assert(scene_rig.get_node_or_null("Sprocket/CassetteSprite") is Sprite2D, "embedded rig uses cassette sprite art")
+		root.remove_child(scene_rig)
+		scene_rig.free()
+		await process_frame
 	_finish()
 
 func _step(rig: Node2D, dt: float) -> void:

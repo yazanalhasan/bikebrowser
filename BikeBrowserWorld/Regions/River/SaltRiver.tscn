@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/small_dock_boardwalk.png" id="7_dock"]
 [ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/water_sampling_kit.png" id="8_sampling"]
 [ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/cattail_plant.png" id="9_cattail"]
-[ext_resource type="Script" path="res://Systems/Interactions/QuestObjectiveStation.gd" id="10_act1_station"]
+[ext_resource type="Script" path="res://Systems/Interactions/WaterQualityStation.gd" id="10_act1_station"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 18.0
@@ -56,7 +56,7 @@ script = ExtResource("10_act1_station")
 quest_id = "test_water_quality"
 objective_ids = Array[String](["talk_to_dr_maya", "collect_water_sample", "run_ph_test", "identify_macroinvertebrates", "report_results"])
 prompt_text = "Water Test"
-completion_message = "Zuzu labels a sample, compares the pH strip, checks the tray, and reports the evidence chain to Dr. Maya."
+completion_message = "Zuzu collects a sample, tests pH, identifies a mayfly nymph, infers likely healthy water, and reports the evidence chain to Dr. Maya."
 completion_tone = "warm"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WaterQualityStation"]
