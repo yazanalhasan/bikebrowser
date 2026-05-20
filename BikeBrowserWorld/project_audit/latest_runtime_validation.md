@@ -3,7 +3,7 @@
 - Errors: 0
 - Warnings: 1
 - Quests loaded: 19 / mission files: 19
-- Dialogue files normalized: 25
+- Dialogue files normalized: 26
 - Regions: 7
 - NPC scenes scanned: 10
 
@@ -21,10 +21,10 @@ None.
 {
 	"audio_errors": [],
 	"audio_mapped": 7,
-	"dialogue_count": 25,
+	"dialogue_count": 26,
 	"dialogue_schemas": {
 		"dialogue_tree": 15,
-		"lines": 10
+		"lines": 11
 	},
 	"mission_file_count": 19,
 	"npc_count": 10,
@@ -32,7 +32,7 @@ None.
 	"quest_ids": [
 		"act1_regional_readiness",
 		"algae_bloom_source",
-		"bike_safety_check",
+		"act1_pre_ride_check",
 		"bridge_material_test",
 		"bridge_quest_1",
 		"bridge_quest_2",

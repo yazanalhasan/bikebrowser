@@ -27,19 +27,22 @@ func _run() -> void:
 		_finish()
 		return
 
-	quest_registry.get("active_quests").erase("bike_safety_check")
-	quest_registry.get("completed_quests").erase("bike_safety_check")
+	quest_registry.get("active_quests").erase("act1_pre_ride_check")
+	quest_registry.get("completed_quests").erase("act1_pre_ride_check")
 	station.set("player_in_range", true)
 	station.call("_update_visuals")
 	_assert(prompt == null or prompt.text == "[E] Talk to Mrs. Ramirez", "Safety station asks for Mrs. Ramirez before hold")
-	station.call("_begin_brake_check")
+	station.call("_begin_brake_check", "brakes_front_checked")
 	await process_frame
-	_assert(not quest_registry.call("is_active", "bike_safety_check"), "Tap/hold cannot start safety check before NPC dialog")
+	_assert(not quest_registry.call("is_active", "act1_pre_ride_check"), "Tap/hold cannot start safety check before NPC dialog")
 
-	quest_registry.call("start_quest", "bike_safety_check")
-	quest_registry.call("record_objective", "bike_safety_check", "talk_to_mrs_ramirez")
+	quest_registry.call("start_quest", "act1_pre_ride_check")
+	quest_registry.call("record_objective", "act1_pre_ride_check", "talk_to_mrs_ramirez")
+	quest_registry.call("record_objective", "act1_pre_ride_check", "abc_page_created")
+	quest_registry.call("record_objective", "act1_pre_ride_check", "air_front_checked")
+	quest_registry.call("record_objective", "act1_pre_ride_check", "air_rear_flat_found")
 	station.call("_update_visuals")
-	_assert(prompt == null or prompt.text == "[Hold E] Squeeze Brakes", "Hold prompt appears after NPC dialog objective")
+	_assert(prompt == null or prompt.text == "[Hold E] Squeeze front brake", "Hold prompt appears after NPC dialog objective")
 
 	_finish()
 

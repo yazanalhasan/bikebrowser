@@ -4,8 +4,14 @@ var failures: Array[String] = []
 var reward_payload: Dictionary = {}
 
 const DIRECTLY_VALIDATED_MECHANICAL_QUESTS := {
-	"bike_safety_check": ["talk_to_mrs_ramirez", "check_brakes", "check_tires", "check_chain", "report_safety_check"],
-	"flat_tire_repair": ["inspect_wheel", "remove_tube", "apply_patch", "inflate_tire", "verify_wheel_ready"],
+	"act1_pre_ride_check": [
+		"talk_to_mrs_ramirez", "abc_page_created", "air_front_checked", "air_rear_flat_found",
+		"brakes_front_checked", "brakes_rear_checked", "chain_checked", "quick_wheel_checked",
+		"quick_seat_checked", "quick_handlebars_checked", "tube_received", "garage_arrived",
+		"tube_removed", "leak_found", "leak_marked", "patch_applied", "cement_set",
+		"tube_reinflated", "repair_tested", "tube_returned", "final_air_checked",
+		"final_brakes_checked", "final_chain_checked", "final_quick_checked", "final_report"
+	],
 	"chain_repair": ["inspect_chain", "rotate_pedals", "align_chain", "seat_chain", "test_rotation"],
 }
 
@@ -45,7 +51,7 @@ func _run() -> void:
 	_assert(_transition_has_visible_guide(neighborhood, "MineExit"), "mine exit has visible route guide")
 	_assert(_transition_has_visible_guide(neighborhood, "RiverExit"), "river exit has visible route guide")
 
-	_assert(_complete_station(neighborhood, "BridgeReviewStation"), "bridge review station completes bridge_quest_5")
+	_assert(await _complete_station(neighborhood, "BridgeReviewStation"), "bridge review station completes bridge_quest_5")
 	root.remove_child(neighborhood)
 	neighborhood.free()
 	await process_frame
@@ -56,7 +62,7 @@ func _run() -> void:
 		root.add_child(garage)
 		await process_frame
 		_assert(_station_has_visible_guidance(garage, "WorkshopBuildStation"), "workshop station has visible guidance art")
-		_assert(_complete_station(garage, "WorkshopBuildStation"), "workshop station completes workshop_first_build")
+		_assert(await _complete_station(garage, "WorkshopBuildStation"), "workshop station completes workshop_first_build")
 		root.remove_child(garage)
 		garage.free()
 		await process_frame
@@ -71,7 +77,7 @@ func _run() -> void:
 		root.add_child(neighborhood)
 		await process_frame
 		_assert(_station_has_visible_guidance(neighborhood, "Act1CapstoneStation"), "Act 1 capstone station has visible guidance art")
-		_assert(_complete_station(neighborhood, "Act1CapstoneStation"), "Act 1 capstone station completes regional readiness")
+		_assert(await _complete_station(neighborhood, "Act1CapstoneStation"), "Act 1 capstone station completes regional readiness")
 		root.remove_child(neighborhood)
 		neighborhood.free()
 
@@ -101,7 +107,7 @@ func _complete_station_in_scene(scene_path: String, station_name: String) -> boo
 		return false
 	root.add_child(scene_root)
 	await process_frame
-	var completed := _complete_station(scene_root, station_name)
+	var completed := await _complete_station(scene_root, station_name)
 	root.remove_child(scene_root)
 	scene_root.free()
 	await process_frame
@@ -114,7 +120,7 @@ func _complete_visible_station_in_scene(scene_path: String, station_name: String
 	root.add_child(scene_root)
 	await process_frame
 	var visible := _station_has_visible_guidance(scene_root, station_name)
-	var completed := _complete_station(scene_root, station_name)
+	var completed := await _complete_station(scene_root, station_name)
 	root.remove_child(scene_root)
 	scene_root.free()
 	await process_frame
@@ -124,7 +130,15 @@ func _complete_station(scene_root: Node, station_name: String) -> bool:
 	var station := scene_root.get_node_or_null(station_name)
 	if station == null or not station.has_method("complete_station"):
 		return false
-	return bool(station.call("complete_station"))
+	var guard := 0
+	var completed := false
+	while guard < 12:
+		completed = bool(station.call("complete_station"))
+		await process_frame
+		if completed:
+			return true
+		guard += 1
+	return false
 
 func _station_has_visible_guidance(scene_root: Node, station_name: String) -> bool:
 	var station := scene_root.get_node_or_null(station_name)

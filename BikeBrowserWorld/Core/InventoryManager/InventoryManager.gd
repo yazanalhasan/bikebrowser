@@ -24,6 +24,9 @@ const ITEM_LABELS := {
 	"inner_tube": "Inner Tube",
 	"patch_kit": "Patch Kit",
 	"inner_tube_ready": "Ready Inner Tube",
+	"mrs_ramirez_rear_tube_flat": "Mrs. Ramirez's rear tube (flat, slow leak)",
+	"mrs_ramirez_rear_tube_repaired": "Mrs. Ramirez's rear tube (repaired)",
+	"mrs_ramirez_bike_ready": "Mrs. Ramirez's bike: ready to ride",
 	"copper_ore": "Copper Ore",
 	"water_test_strip": "Water Test Strip",
 	"plant_sample": "Plant Sample",
@@ -41,8 +44,8 @@ const RECIPES := {
 		"ingredients": ["inner_tube", "patch_kit"],
 		"result": "inner_tube_ready",
 		"resultKind": "crafted",
-		"learnQuest": "flat_tire_repair",
-		"learnObjective": "apply_patch",
+		"learnQuest": "act1_pre_ride_check",
+		"learnObjective": "patch_applied",
 	},
 	"copper_conductivity_note": {
 		"name": "Copper Conductivity Note",
@@ -76,6 +79,15 @@ func add_item(item_id: String, quantity: int = 1, kind: String = "item") -> void
 	var entry: Dictionary = items.get(item_id, { "quantity": 0, "kind": kind })
 	entry["quantity"] = int(entry.get("quantity", 0)) + quantity
 	entry["kind"] = kind
+	items[item_id] = entry
+	EventBus.emit_game_event("inventory_changed", { "itemId": item_id, "quantity": entry["quantity"] })
+	EventBus.inventory_updated.emit(get_inventory_snapshot())
+
+func remove_item(item_id: String, quantity: int = 1) -> void:
+	if not items.has(item_id):
+		return
+	var entry: Dictionary = items[item_id]
+	entry["quantity"] = max(int(entry.get("quantity", 0)) - quantity, 0)
 	items[item_id] = entry
 	EventBus.emit_game_event("inventory_changed", { "itemId": item_id, "quantity": entry["quantity"] })
 	EventBus.inventory_updated.emit(get_inventory_snapshot())

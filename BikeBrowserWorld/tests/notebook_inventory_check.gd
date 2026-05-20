@@ -55,10 +55,10 @@ func _run() -> void:
 	_assert(not crafted_early, "unlearned recipe refuses crafting")
 	_assert(recipe_feedback.find("Not learned yet") != -1, "unlearned recipe gives child-readable feedback")
 
-	quest_registry.start_quest("flat_tire_repair")
-	quest_registry.record_objective("flat_tire_repair", "inspect_wheel")
-	quest_registry.record_objective("flat_tire_repair", "remove_tube")
-	quest_registry.record_objective("flat_tire_repair", "apply_patch")
+	quest_registry.start_quest("act1_pre_ride_check")
+	quest_registry.record_objective("act1_pre_ride_check", "leak_found")
+	quest_registry.record_objective("act1_pre_ride_check", "leak_marked")
+	quest_registry.record_objective("act1_pre_ride_check", "patch_applied")
 	await process_frame
 	_assert(inventory_manager.is_recipe_learned("patch_ready_tube"), "patch recipe learns from flat tire objective")
 	var crafted_after_learning: bool = inventory_manager.combine_items("inner_tube", "patch_kit")

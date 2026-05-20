@@ -157,10 +157,10 @@ func _nice_title(quest_id: String) -> String:
 	match quest_id:
 		"chain_repair":
 			return "Fix Mr. Chen's Chain"
-		"bike_safety_check":
-			return "Safety Check"
+		"act1_pre_ride_check", "bike_safety_check":
+			return "Mrs. Ramirez's Pre-Ride Check"
 		"flat_tire_repair":
-			return "Patch the Flat Tire"
+			return "Legacy Flat Tire Repair"
 		_:
 			return quest_id.replace("_", " ").capitalize()
 

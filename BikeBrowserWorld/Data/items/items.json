@@ -59,6 +59,9 @@
     { "id": "carbon_rod", "name": "Carbon Rod", "description": "A carbonized rod used to explore electrodes and material structure.", "category": "crafted", "stackable": true, "max_stack": 20, "value": 11 },
     { "id": "rubber_sheet", "name": "Rubber Sheet", "description": "A flexible sheet useful for seals, pads, and tire-related crafting.", "category": "crafted", "stackable": true, "max_stack": 20, "value": 10 },
     { "id": "fiber_rope", "name": "Fiber Rope", "description": "Twisted plant fibers that show how many weak strands can make one strong line.", "category": "crafted", "stackable": true, "max_stack": 20, "value": 8 },
+    { "id": "mrs_ramirez_rear_tube_flat", "name": "Mrs. Ramirez's rear tube (flat, slow leak)", "description": "The rear tube from Mrs. Ramirez's bike. It has a slow leak that needs a careful patch.", "category": "mechanics", "stackable": false, "max_stack": 1, "value": 0 },
+    { "id": "mrs_ramirez_rear_tube_repaired", "name": "Mrs. Ramirez's rear tube (repaired)", "description": "Mrs. Ramirez's rear tube after Zuzu marked, patched, inflated, and tested it clean.", "category": "mechanics", "stackable": false, "max_stack": 1, "value": 0 },
+    { "id": "mrs_ramirez_bike_ready", "name": "Mrs. Ramirez's bike: ready to ride", "description": "A symbolic record that Zuzu completed A-B-C-Quick and got Mrs. Ramirez's bike ready.", "category": "quest", "stackable": false, "max_stack": 1, "value": 0 },
     { "id": "regional_travel_sketchbook", "name": "Regional Travel Sketchbook", "description": "A planning notebook that turns Act 1 discoveries into wider-region questions.", "category": "tools", "stackable": false, "max_stack": 1, "value": 20 },
     { "id": "spacecraft_clue_card", "name": "Spacecraft Clue Card", "description": "A mentor note hinting that tested bridges, bike parts, water loops, and materials can scale into spacecraft systems.", "category": "tools", "stackable": false, "max_stack": 1, "value": 20 }
   ]

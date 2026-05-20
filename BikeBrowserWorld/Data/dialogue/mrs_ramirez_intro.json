@@ -4,19 +4,19 @@
   "lines": [
     {
       "speaker": "Mrs. Ramirez",
-      "text": "Hey, Zuzu. Before I ride, I give the bike a quick hello."
+      "text": "Zuzu - perfect timing. I was just about to do my pre-ride check. Want to learn how? We'll do it together."
     },
     {
       "speaker": "Mrs. Ramirez",
-      "text": "Brakes, tires, chain. Three little checks, and the whole ride feels calmer."
+      "text": "Every ride, before I roll out: A, B, C, then a quick check. Air. Brakes. Chain. Then wheels, seat, handlebars. It takes a minute and it saves your day."
     },
     {
       "speaker": "Mrs. Ramirez",
-      "text": "Come try it with me. Your bike tells you when something's off."
+      "text": "Start with air. Squeeze the tire - should feel firm, not squishy. Front first."
     }
   ],
   "onComplete": {
     "type": "start_quest",
-    "questId": "bike_safety_check"
+    "questId": "act1_pre_ride_check"
   }
 }

@@ -90,8 +90,9 @@ func _complete_dialogue() -> void:
 		QuestRegistry.start_quest(quest_id)
 		if quest_id == "chain_repair":
 			QuestRegistry.record_objective(quest_id, "talk_to_mr_chen")
-		elif quest_id == "bike_safety_check":
+		elif quest_id == "bike_safety_check" or quest_id == "act1_pre_ride_check":
 			QuestRegistry.record_objective(quest_id, "talk_to_mrs_ramirez")
+			QuestRegistry.record_objective(quest_id, "abc_page_created")
 
 func _close() -> void:
 	if closing_dialogue:

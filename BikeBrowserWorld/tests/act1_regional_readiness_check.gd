@@ -5,8 +5,7 @@ var reward_payload: Dictionary = {}
 var locked_event: Dictionary = {}
 
 const REQUIRED_ACT1_QUESTS := [
-	"bike_safety_check",
-	"flat_tire_repair",
+	"act1_pre_ride_check",
 	"chain_repair",
 	"bridge_quest_5",
 	"desert_plant_observation",
@@ -41,7 +40,7 @@ func _run() -> void:
 	_assert(not quest_registry.can_start_quest("act1_regional_readiness"), "Act 1 capstone starts locked")
 	_assert(not quest_registry.start_quest("act1_regional_readiness"), "locked capstone cannot start early")
 	_assert(not locked_event.is_empty(), "locked capstone emits a quest_locked event")
-	_assert(locked_event.get("missing", []).has("quest:bike_safety_check"), "locked event names missing prerequisites")
+	_assert(locked_event.get("missing", []).has("quest:act1_pre_ride_check"), "locked event names missing prerequisites")
 
 	for quest_id in REQUIRED_ACT1_QUESTS:
 		_complete_all_objectives(quest_registry, quest_id)

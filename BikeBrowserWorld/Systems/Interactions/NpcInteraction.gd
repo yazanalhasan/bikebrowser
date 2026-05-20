@@ -123,12 +123,12 @@ func _current_dialogue_id() -> String:
 		"mrs_ramirez":
 			if _quest_completed("chain_repair"):
 				return "mrs_ramirez_after_chain"
-			if _quest_completed("bike_safety_check"):
+			if _quest_completed("act1_pre_ride_check"):
 				return "mrs_ramirez_after_safety"
 		"mr_chen":
 			if _quest_completed("chain_repair"):
 				return "mr_chen_after_chain"
-			if _quest_completed("bike_safety_check"):
+			if _quest_completed("act1_pre_ride_check"):
 				return "mr_chen_after_safety"
 	return dialogue_id
 
@@ -137,12 +137,12 @@ func _current_feedback_message() -> String:
 		"mrs_ramirez":
 			if _quest_completed("chain_repair"):
 				return "Mrs. Ramirez glances at the bike chain and smiles like she heard the difference."
-			if _quest_completed("bike_safety_check"):
+			if _quest_completed("act1_pre_ride_check"):
 				return "Mrs. Ramirez gives the tire a tiny nod, already back in her riding rhythm."
 		"mr_chen":
 			if _quest_completed("chain_repair"):
 				return "Mr. Chen listens for the chain before he says anything."
-			if _quest_completed("bike_safety_check"):
+			if _quest_completed("act1_pre_ride_check"):
 				return "Mr. Chen notices Zuzu checking the bike before rushing in."
 	return feedback_message
 
@@ -163,13 +163,13 @@ func _presence_line() -> String:
 		"mrs_ramirez":
 			if _quest_completed("chain_repair"):
 				return "Mrs. Ramirez murmurs, \"That chain sounds happier.\""
-			if _quest_completed("bike_safety_check"):
+			if _quest_completed("act1_pre_ride_check"):
 				return "Mrs. Ramirez checks the breeze, then the curb, like she always does."
 			return "Mrs. Ramirez flexes her fingers in her gloves. \"Cool evening for a ride.\""
 		"mr_chen":
 			if _quest_completed("chain_repair"):
 				return "Mr. Chen rests a hand near the bike, just listening."
-			if _quest_completed("bike_safety_check"):
+			if _quest_completed("act1_pre_ride_check"):
 				return "Mr. Chen says softly, \"Careful eyes. Good start.\""
 			return "Mr. Chen studies the garage light for a moment."
 	return ""

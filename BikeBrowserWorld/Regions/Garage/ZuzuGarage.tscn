@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=3 uid="uid://bikebrowser_zuzu_garage"]
+[gd_scene load_steps=66 format=3 uid="uid://bikebrowser_zuzu_garage"]
 
 [ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
 [ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
@@ -59,6 +59,7 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/Bike/repair_chain_focus_glow.png" id="56_chain_focus"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Bike/repair_grease_scuff_detail.png" id="57_grease_scuff"]
 [ext_resource type="Script" path="res://Systems/Interactions/QuestObjectiveStation.gd" id="58_act1_station"]
+[ext_resource type="PackedScene" path="res://Regions/NPCs/MrChenNpc.tscn" id="59_mrchen"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 18.0
@@ -431,6 +432,14 @@ speed_scale = 0.65
 
 [node name="NPCLayer" type="Node2D" parent="."]
 y_sort_enabled = true
+
+[node name="MrChenGarageNpc" parent="NPCLayer" instance=ExtResource("59_mrchen")]
+position = Vector2(255, 205)
+dialogue_id = "mr_chen_pre_ride_repair"
+
+[node name="SoftShadow" type="Sprite2D" parent="NPCLayer/MrChenGarageNpc"]
+texture_filter = 1
+texture = ExtResource("41_shadow_small")
 
 [node name="ZevonNpc" parent="NPCLayer" instance=ExtResource("16_zevon")]
 

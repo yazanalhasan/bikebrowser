@@ -6,8 +6,7 @@
   "chapter": "act1_capstone",
   "quest_giver": "mr_chen",
   "prerequisites": [
-    "bike_safety_check",
-    "flat_tire_repair",
+    "act1_pre_ride_check",
     "chain_repair",
     "bridge_quest_5",
     "desert_plant_observation",

@@ -87,6 +87,20 @@ func set_brake_pressed(pressed: bool) -> void:
 	if pressed and mechanical_state == STATE_IDLE:
 		_emit_feedback("soft_lever_click")
 
+func reset_verification() -> void:
+	lever_pull = 0.0
+	cable_tension = 0.0
+	caliper_closure = 0.0
+	pad_contact = 0.0
+	friction_load = 0.0
+	wheel_spin = 1.0
+	brake_verified = false
+	brake_pressed = false
+	hold_time = 0.0
+	stopped_time = 0.0
+	mechanical_state = STATE_IDLE
+	_apply_visual_state()
+
 func step_mechanic(delta: float) -> void:
 	if brake_pressed:
 		hold_time += delta

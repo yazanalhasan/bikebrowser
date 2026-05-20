@@ -6,9 +6,10 @@ extends Node
 
 const MISSIONS_DIR := "res://Data/missions"
 const ITEMS_PATH := "res://Data/items/items.json"
+const PRE_RIDE_QUEST_ID := "act1_pre_ride_check"
+const LEGACY_PRE_RIDE_QUEST_ID := "bike_safety_check"
 const ACT1_GUIDANCE_ORDER := [
-	"bike_safety_check",
-	"flat_tire_repair",
+	PRE_RIDE_QUEST_ID,
 	"chain_repair",
 	"bridge_quest_5",
 	"desert_plant_observation",
@@ -18,8 +19,7 @@ const ACT1_GUIDANCE_ORDER := [
 	"act1_regional_readiness",
 ]
 const ACT1_FALLBACK_GUIDANCE := {
-	"bike_safety_check": "Find Mrs. Ramirez by the little bike and begin the safety check.",
-	"flat_tire_repair": "Use the garage tire station to inspect, patch, inflate, and verify the flat tire.",
+	PRE_RIDE_QUEST_ID: "Find Mrs. Ramirez by her bike, learn A-B-C-Quick, repair her rear tube, and finish the final inspection.",
 	"chain_repair": "Visit Mr. Chen's garage repair stand and work through the slipped-chain check.",
 	"bridge_quest_5": "Return to the bridge review station and trace why the triangle braces carry force safely.",
 	"desert_plant_observation": "Take the desert trail station and record plant structure before reporting the notes.",
@@ -78,6 +78,11 @@ func _load_mission_file(path: String) -> void:
 	mission["_source_path"] = path
 	quests[id] = mission
 
+func _canonical_quest_id(quest_id: String) -> String:
+	if quest_id == LEGACY_PRE_RIDE_QUEST_ID:
+		return PRE_RIDE_QUEST_ID
+	return quest_id
+
 func validate_quest_graph() -> void:
 	var item_ids := _load_item_ids()
 	for quest_id in quests.keys():
@@ -110,12 +115,15 @@ func get_validation_report() -> Dictionary:
 	}
 
 func has_quest(quest_id: String) -> bool:
+	quest_id = _canonical_quest_id(quest_id)
 	return quests.has(quest_id)
 
 func get_quest(quest_id: String) -> Dictionary:
+	quest_id = _canonical_quest_id(quest_id)
 	return quests.get(quest_id, {})
 
 func get_current_objective(quest_id: String) -> Dictionary:
+	quest_id = _canonical_quest_id(quest_id)
 	if not quests.has(quest_id):
 		return {}
 	var quest: Dictionary = quests.get(quest_id, {})
@@ -140,6 +148,7 @@ func get_current_objective(quest_id: String) -> Dictionary:
 	return {}
 
 func get_quest_title(quest_id: String) -> String:
+	quest_id = _canonical_quest_id(quest_id)
 	var quest: Dictionary = quests.get(quest_id, {})
 	var title := String(quest.get("name", quest.get("title", "")))
 	if title.is_empty():
@@ -193,6 +202,7 @@ func get_notebook_snapshot() -> Dictionary:
 	}
 
 func start_quest(quest_id: String) -> bool:
+	quest_id = _canonical_quest_id(quest_id)
 	if completed_quests.has(quest_id):
 		return false
 	if active_quests.has(quest_id):
@@ -226,12 +236,15 @@ func start_quest(quest_id: String) -> bool:
 	return true
 
 func is_active(quest_id: String) -> bool:
+	quest_id = _canonical_quest_id(quest_id)
 	return active_quests.has(quest_id)
 
 func can_start_quest(quest_id: String) -> bool:
+	quest_id = _canonical_quest_id(quest_id)
 	return quests.has(quest_id) and not completed_quests.has(quest_id) and get_locked_reasons(quest_id).is_empty()
 
 func get_locked_reasons(quest_id: String) -> Array:
+	quest_id = _canonical_quest_id(quest_id)
 	var missing: Array = []
 	if not quests.has(quest_id):
 		missing.append("missing_quest:%s" % quest_id)
@@ -243,6 +256,7 @@ func get_locked_reasons(quest_id: String) -> Array:
 	return missing
 
 func record_objective(quest_id: String, objective_id: String) -> void:
+	quest_id = _canonical_quest_id(quest_id)
 	if not active_quests.has(quest_id):
 		EventBus.log_debug("Objective ignored because quest is inactive", {
 			"questId": quest_id,
@@ -263,13 +277,16 @@ func record_objective(quest_id: String, objective_id: String) -> void:
 		SaveService.save_now("quest_objective")
 
 func complete_quest(quest_id: String) -> void:
+	quest_id = _canonical_quest_id(quest_id)
 	if not active_quests.has(quest_id):
 		return
 	var quest: Dictionary = quests.get(quest_id, {})
+	var previous_state: Dictionary = active_quests.get(quest_id, {})
 	active_quests.erase(quest_id)
-	completed_quests[quest_id] = {
+	completed_quests[quest_id] = previous_state.duplicate(true)
+	completed_quests[quest_id].merge({
 		"completedAt": Time.get_datetime_string_from_system(true)
-	}
+	}, true)
 	EventBus.quest_completed.emit(quest_id)
 	EventBus.notebook_updated.emit(get_notebook_snapshot())
 	RewardBridge.emit_reward_intent(quest.get("reward", {}), quest_id)
@@ -400,11 +417,12 @@ func _quest_list(quest_ids: Array, completed: bool) -> Array:
 func _learned_mechanics() -> Array:
 	var lessons: Array = []
 	var lesson_map := {
-		"bike_safety_check:check_brakes": "Brake levers pull a cable so pads can slow the wheel.",
-		"bike_safety_check:check_tires": "A safe tire feels firm, not mushy and not overfilled.",
-		"bike_safety_check:check_chain": "A quiet chain follows the teeth instead of climbing sideways.",
-		"flat_tire_repair:apply_patch": "A patch works after the tube is clean and pressed flat.",
-		"flat_tire_repair:verify_wheel_ready": "A repair is not finished until the wheel holds air and spins clean.",
+		"act1_pre_ride_check:abc_page_created": "A-B-C-Quick means Air, Brakes, Chain, then wheels, seat, and handlebars.",
+		"act1_pre_ride_check:air_rear_flat_found": "A pre-ride check keeps going after one problem so the whole bike is understood.",
+		"act1_pre_ride_check:brakes_rear_checked": "Brake levers should bite before they pull all the way to the grip.",
+		"act1_pre_ride_check:chain_checked": "A quiet chain follows the teeth instead of jumping or hanging slack.",
+		"act1_pre_ride_check:patch_applied": "A patch works after the tube is marked, cleaned, and pressed flat.",
+		"act1_pre_ride_check:repair_tested": "A repair is not finished until the tube holds air and tests clean.",
 		"chain_repair:seat_chain": "Chain links need to sit on the sprocket teeth before power transfers well.",
 		"test_water_quality:run_ph_test": "A test strip needs a chart before the color means anything.",
 		"copper_rock_id:test_conductivity": "Copper evidence gets stronger when observation and conductivity agree.",
@@ -418,6 +436,7 @@ func _learned_mechanics() -> Array:
 	return lessons
 
 func _objective_recorded(quest_id: String, objective_id: String) -> bool:
+	quest_id = _canonical_quest_id(quest_id)
 	if completed_quests.has(quest_id):
 		return true
 	var state: Dictionary = active_quests.get(quest_id, {})
@@ -445,6 +464,18 @@ func _notebook_sketches() -> Array:
 	var sketches: Array = []
 	if _objective_recorded("flat_tire_repair", "inspect_wheel"):
 		sketches.append({ "title": "Tube leak map", "body": "tiny hiss -> clean spot -> patch" })
+	if _objective_recorded(PRE_RIDE_QUEST_ID, "abc_page_created"):
+		var abc_body := "A Air\nB Brakes\nC Chain\nQuick: wheels, seat, bars"
+		if _objective_recorded(PRE_RIDE_QUEST_ID, "final_report"):
+			abc_body += "\nDone: I can do this for any bike."
+		sketches.append({ "title": "A-B-C-Quick", "body": abc_body })
+	if _objective_recorded(PRE_RIDE_QUEST_ID, "leak_marked"):
+		var zone := "right side of the tube"
+		var state: Dictionary = active_quests.get(PRE_RIDE_QUEST_ID, {})
+		zone = String(state.get("leakZone", zone))
+		if completed_quests.has(PRE_RIDE_QUEST_ID):
+			zone = String(completed_quests.get(PRE_RIDE_QUEST_ID, {}).get("leakZone", zone))
+		sketches.append({ "title": "Mrs. Ramirez tube repair", "body": "Leak marked: %s. Cement set, tested clean." % zone })
 	if _objective_recorded("chain_repair", "align_chain"):
 		sketches.append({ "title": "Chain path", "body": "pedal force follows seated links" })
 	if _objective_recorded("desert_plant_observation", "journal_observations"):
@@ -460,3 +491,11 @@ func _capstone_clues() -> Array:
 	if completed_quests.has("act1_regional_readiness"):
 		clues.append("The spacecraft clue is earned: tested local ideas can scale to bigger machines.")
 	return clues
+
+func set_quest_note(quest_id: String, key: String, value) -> void:
+	quest_id = _canonical_quest_id(quest_id)
+	if active_quests.has(quest_id):
+		var state: Dictionary = active_quests[quest_id]
+		state[key] = value
+		active_quests[quest_id] = state
+		EventBus.notebook_updated.emit(get_notebook_snapshot())

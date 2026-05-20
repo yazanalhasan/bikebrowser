@@ -1,8 +1,8 @@
 {
   "badges": [
     { "id": "chain_hero", "name": "Chain Hero", "description": "Repaired your first bike chain.", "unlock_condition": "complete_quest:chain_repair", "reward_amount": 25, "icon_name": "badge_chain_hero" },
-    { "id": "flat_fix_pro", "name": "Flat Fix Pro", "description": "Patched a flat tire and got rolling again.", "unlock_condition": "complete_quest:flat_tire_repair", "reward_amount": 30, "icon_name": "badge_flat_fix_pro" },
-    { "id": "safety_scout", "name": "Safety Scout", "description": "Completed Mrs. Ramirez's bike safety check.", "unlock_condition": "complete_quest:bike_safety_check", "reward_amount": 25, "icon_name": "badge_safety_scout" },
+    { "id": "flat_fix_pro", "name": "Flat Fix Pro", "description": "Patched Mrs. Ramirez's rear tube and tested it clean.", "unlock_condition": "complete_quest:act1_pre_ride_check", "reward_amount": 30, "icon_name": "badge_flat_fix_pro" },
+    { "id": "safety_scout", "name": "Safety Scout", "description": "Completed Mrs. Ramirez's A-B-C-Quick pre-ride check.", "unlock_condition": "complete_quest:act1_pre_ride_check", "reward_amount": 25, "icon_name": "badge_safety_scout" },
     { "id": "material_tester", "name": "Material Tester", "description": "Used bridge evidence to understand how triangles and materials share load.", "unlock_condition": "complete_quest:bridge_quest_5", "reward_amount": 35, "icon_name": "badge_material_tester" },
     { "id": "bridge_builder", "name": "Bridge Builder", "description": "Helped the neighborhood connect bridge structure to safer travel.", "unlock_condition": "complete_quest:bridge_quest_5", "reward_amount": 50, "icon_name": "badge_bridge_builder" },
     { "id": "desert_observer", "name": "Desert Observer", "description": "Observed three desert plants with Ranger Nita.", "unlock_condition": "complete_quest:desert_plant_observation", "reward_amount": 20, "icon_name": "badge_desert_observer" },

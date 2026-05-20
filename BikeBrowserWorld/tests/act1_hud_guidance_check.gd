@@ -26,21 +26,14 @@ func _run() -> void:
 	root.add_child(hud)
 	await process_frame
 
-	_assert_hud_contains("Bike Safety Check", "Mrs. Ramirez", "initial HUD points to safety check")
-	quest_registry.start_quest("bike_safety_check")
+	_assert_hud_contains("Mrs. Ramirez's Pre-Ride Check", "Mrs. Ramirez", "initial HUD points to pre-ride check")
+	quest_registry.start_quest("act1_pre_ride_check")
 	await process_frame
-	_assert_hud_contains("Bike Safety Check", "Talk with Mrs. Ramirez", "safety quest shows first objective")
-	quest_registry.record_objective("bike_safety_check", "talk_to_mrs_ramirez")
+	_assert_hud_contains("Mrs. Ramirez's Pre-Ride Check", "Talk with Mrs. Ramirez", "pre-ride quest shows first objective")
+	quest_registry.record_objective("act1_pre_ride_check", "talk_to_mrs_ramirez")
 	await process_frame
-	_assert_hud_contains("Bike Safety Check", "Squeeze the brake levers", "safety quest advances to brake objective")
-	_complete_all_objectives(quest_registry, "bike_safety_check")
-	await process_frame
-	_assert_hud_contains("Fix Mrs. Ramirez's Flat Tire", "tire station", "HUD points to flat tire after safety")
-
-	quest_registry.start_quest("flat_tire_repair")
-	await process_frame
-	_assert_hud_contains("Fix Mrs. Ramirez's Flat Tire", "Inspect the tire", "flat tire shows inspect objective")
-	_complete_all_objectives(quest_registry, "flat_tire_repair")
+	_assert_hud_contains("Mrs. Ramirez's Pre-Ride Check", "Write A-B-C-Quick", "pre-ride quest creates ABC page")
+	_complete_all_objectives(quest_registry, "act1_pre_ride_check")
 	await process_frame
 	_assert_hud_contains("Mr. Chen's Slipped Chain", "garage repair stand", "HUD points to chain after tire")
 

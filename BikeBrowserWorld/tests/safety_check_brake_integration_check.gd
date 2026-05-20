@@ -34,14 +34,19 @@ func _run() -> void:
 	quest_registry.completed_quests.clear()
 
 	station.set("player_in_range", true)
+	quest_registry.start_quest("act1_pre_ride_check")
+	quest_registry.record_objective("act1_pre_ride_check", "talk_to_mrs_ramirez")
+	quest_registry.record_objective("act1_pre_ride_check", "abc_page_created")
+	quest_registry.record_objective("act1_pre_ride_check", "air_front_checked")
+	quest_registry.record_objective("act1_pre_ride_check", "air_rear_flat_found")
 	station.call("advance_check")
 	await create_timer(0.25).timeout
 	var quest_id := String(station.get("quest_id"))
 	_assert(quest_registry.is_active(quest_id), "safety quest starts when brake check begins")
 	var active_state: Dictionary = quest_registry.active_quests.get(quest_id, {})
 	var completed: Array = active_state.get("completedObjectives", [])
-	_assert(not completed.has("check_brakes"), "button press alone does not complete brake objective")
-	_assert(station.get("step_index") == 0, "station stays on brake step until brake is physically verified")
+	_assert(not completed.has("brakes_front_checked"), "button press alone does not complete brake objective")
+	_assert(station.get("step_index") == 2, "station stays on brake step until brake is physically verified")
 
 	var brake_rig: Node = station.get_node_or_null("BikeVisual/BrakeRig")
 	_assert(brake_rig != null, "brake rig remains available after starting check")
@@ -53,8 +58,8 @@ func _run() -> void:
 			guard += 1
 		await process_frame
 		completed = quest_registry.active_quests.get(quest_id, {}).get("completedObjectives", [])
-		_assert(completed.has("check_brakes"), "physical brake verification completes brake objective")
-		_assert(station.get("step_index") == 1, "station advances to tire step after brake verification")
+		_assert(completed.has("brakes_front_checked"), "physical brake verification completes brake objective")
+		_assert(station.get("step_index") == 3, "station advances after brake verification")
 
 	root.remove_child(neighborhood)
 	neighborhood.free()

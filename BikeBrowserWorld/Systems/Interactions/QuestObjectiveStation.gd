@@ -115,11 +115,17 @@ func complete_station(_actor: Node = null) -> bool:
 		EventBus.interaction_feedback.emit(_locked_feedback_text(), "quiet")
 		interaction_locked = false
 		return false
-	for objective_id in objective_ids:
-		QuestRegistry.record_objective(quest_id, objective_id)
-	DiscoveryService.mark_discovered("quest_station_%s" % quest_id, { "questId": quest_id })
-	AudioService.play_sfx(audio_cue, completion_tone)
-	EventBus.interaction_feedback.emit(completion_message, completion_tone)
+	var objective_id := _next_objective_id()
+	if objective_id.is_empty():
+		_emit_quiet_feedback()
+		interaction_locked = false
+		return QuestRegistry.completed_quests.has(quest_id)
+	QuestRegistry.record_objective(quest_id, objective_id)
+	DiscoveryService.mark_discovered("quest_station_%s" % quest_id, { "questId": quest_id, "objectiveId": objective_id })
+	var completed := QuestRegistry.completed_quests.has(quest_id)
+	AudioService.play_sfx(audio_cue if completed else "reward_tiny", completion_tone)
+	EventBus.interaction_feedback.emit(completion_message if completed else _step_feedback_text(objective_id), completion_tone)
+	_refresh_station_state()
 	interaction_locked = false
 	return QuestRegistry.completed_quests.has(quest_id)
 
@@ -206,7 +212,7 @@ func _style_station_visuals() -> void:
 func _refresh_station_state() -> void:
 	var locked := _is_locked()
 	if prompt:
-		prompt.text = "[E] " + (locked_prompt_text if locked else prompt_text)
+		prompt.text = "[E] " + (locked_prompt_text if locked else _current_prompt_text())
 	if sign:
 		sign.text = locked_sign_text if locked else _base_sign_text
 		var alpha := 0.62 if locked else 0.92
@@ -218,6 +224,30 @@ func _refresh_station_state() -> void:
 
 func _is_locked() -> bool:
 	return quest_id.strip_edges() != "" and QuestRegistry != null and QuestRegistry.has_method("get_locked_reasons") and not QuestRegistry.get_locked_reasons(quest_id).is_empty()
+
+func _next_objective_id() -> String:
+	if objective_ids.is_empty():
+		return ""
+	var state: Dictionary = QuestRegistry.active_quests.get(quest_id, {})
+	var completed: Array = state.get("completedObjectives", [])
+	for objective_id in objective_ids:
+		var id := String(objective_id)
+		if not completed.has(id):
+			return id
+	return ""
+
+func _current_prompt_text() -> String:
+	var next_id := _next_objective_id()
+	if next_id.is_empty():
+		return prompt_text
+	return String(next_id.replace("_", " ").capitalize())
+
+func _step_feedback_text(objective_id: String) -> String:
+	var quest: Dictionary = QuestRegistry.get_quest(quest_id) if QuestRegistry != null and QuestRegistry.has_method("get_quest") else {}
+	for step in quest.get("steps", []):
+		if typeof(step) == TYPE_DICTIONARY and String(step.get("id", "")) == objective_id:
+			return String(step.get("description", step.get("text", objective_id.replace("_", " ").capitalize())))
+	return objective_id.replace("_", " ").capitalize()
 
 func _locked_feedback_text() -> String:
 	if QuestRegistry != null and QuestRegistry.has_method("get_locked_reasons"):
