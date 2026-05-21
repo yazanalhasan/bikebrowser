@@ -3,6 +3,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "review_bike_systems",
         "review_bridge_systems",
@@ -29,6 +31,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/algae_bloom_source.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "notice_green_water",
         "talk_to_dr_maya",
@@ -46,6 +50,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/balance_the_flow.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "collect_river_minerals",
         "collect_reed_fiber",
@@ -64,6 +70,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/bike_safety_check.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "talk_to_mrs_ramirez",
         "abc_page_created",
@@ -100,6 +108,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/bridge_material_test.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "collect_materials",
         "test_strength",
@@ -115,6 +125,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/bridge_quest_1.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "talk_to_mr_chen",
         "visit_broken_bridge",
@@ -132,6 +144,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/bridge_quest_2.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "talk_to_shopkeeper",
         "collect_wood_planks",
@@ -149,6 +163,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/bridge_quest_3.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "go_to_testing_rig",
         "test_wood",
@@ -166,6 +182,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/bridge_quest_4.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "choose_design",
         "place_supports",
@@ -183,6 +201,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/bridge_quest_5.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "talk_to_neighbors",
         "receive_badge",
@@ -201,6 +221,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/chain_repair.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "talk_to_mr_chen",
         "inspect_chain",
@@ -219,6 +241,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/copper_prospector.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "collect_surface_copper",
         "collect_deep_copper",
@@ -237,6 +261,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/copper_rock_id.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "find_copper_rock",
         "test_conductivity",
@@ -252,6 +278,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/desert_foraging_samples.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "gather_yucca",
         "gather_agave",
@@ -271,6 +299,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/desert_plant_observation.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "talk_to_ranger_nita",
         "observe_three_plants",
@@ -287,6 +317,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/desert_water_management.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "inspect_trail_marker",
         "inspect_scavenge_spot",
@@ -306,6 +338,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/first_safety_check.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "talk_to_mrs_ramirez",
         "inspect_bike",
@@ -321,6 +355,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/flat_tire_repair.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "inspect_wheel",
         "remove_tube",
@@ -338,6 +374,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/mine_cart_repair.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "inspect_broken_wheel",
         "find_replacement_wheel",
@@ -354,6 +392,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/mine_stability_check.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "inspect_support_beam",
         "calculate_load_capacity",
@@ -371,6 +411,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/river_ecosystem_survey.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "observe_fish_patterns",
         "collect_algae",
@@ -389,6 +431,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/test_water_quality.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "talk_to_dr_maya",
         "collect_water_sample",
@@ -406,6 +450,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/track_the_animal.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "find_tracks",
         "follow_tracks",
@@ -422,6 +468,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/water_sample_observation.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "talk_to_dr_maya",
         "collect_sample",
@@ -437,6 +485,8 @@
     {
       "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/workshop_first_build.json",
+      "next": "",
+      "next_in_chain": "",
       "objectives": [
         "collect_raw_material",
         "choose_workshop_friend",

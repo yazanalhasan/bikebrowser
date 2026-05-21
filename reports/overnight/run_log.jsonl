@@ -20,3 +20,24 @@
 {"time":"2026-05-21T07:40:16.3816858Z","sprint":1,"phase":"2","action":"stage Sprint 1 Phase 2 halt artifacts","files_touched":["reports/quest_wiring","reports/overnight","backups/overnight/sprint-1"],"outcome":"staged"}
 {"time":"2026-05-21T07:40:16.4884501Z","sprint":1,"phase":"2","action":"commit Sprint 1 Phase 2 halt artifacts","files_touched":["reports/quest_wiring","reports/overnight","backups/overnight/sprint-1"],"outcome":"git commit exit 0"}
 {"time":"2026-05-21T07:40:36.4081219Z","sprint":1,"phase":"handoff","action":"send Telegram [BikeBrowser] OVERNIGHT HANDOFF","files_touched":[],"outcome":"sent"}
+{"timestamp":"2026-05-21T07:55:10.5144591Z","sprint":"1","phase":"resume","action":"resume autonomous overnight order","files_touched":[],"result":"operator approved continuation from Phase 2; narrowed parser self-test","telegram":"none"}
+{"timestamp":"2026-05-21T07:55:11.3419731Z","sprint":"1","phase":"resume","action":"telegram: [BikeBrowser] Sprint 1 START — Quest Wiring Matrix Audit","files_touched":[],"result":"sent","telegram":"sent"}
+{"timestamp":"2026-05-21T07:55:11.3533319Z","sprint":"1","phase":"resume","action":"backup audit runner before parser refinement","files_touched":["backups/overnight/sprint-1/reports_quest_wiring_sprint1_audit.py.20260521_005511.bak"],"result":"backup created","telegram":"none"}
+{"time":"2026-05-21T07:55:59.801946+00:00","sprint":1,"phase":"1","action":"build quest-objective truth table","files_touched":["reports/quest_wiring/quest_truth_table.json"],"outcome":"written"}
+{"time":"2026-05-21T07:55:59.873539+00:00","sprint":1,"phase":"2","action":"parse scene and script objective producers","files_touched":["reports/quest_wiring/producers.json"],"outcome":"written"}
+{"time":"2026-05-21T07:55:59.881120+00:00","sprint":1,"phase":"3","action":"compute scene reachability graph","files_touched":["reports/quest_wiring/scene_reachability.json"],"outcome":"written"}
+{"time":"2026-05-21T07:55:59.882126+00:00","sprint":1,"phase":"4","action":"grade objective producers","files_touched":["reports/quest_wiring/producers_graded.json"],"outcome":"written"}
+{"time":"2026-05-21T07:55:59.884126+00:00","sprint":1,"phase":"5","action":"compute per-quest objective matrix","files_touched":["reports/quest_wiring/MATRIX.json"],"outcome":"written"}
+{"time":"2026-05-21T07:55:59.892634+00:00","sprint":1,"phase":"6","action":"check playable quest exposure","files_touched":["reports/quest_wiring/frontend_exposure.json"],"outcome":"written"}
+{"time":"2026-05-21T07:55:59.892634+00:00","sprint":1,"phase":"7","action":"write dependency graph dot","files_touched":["reports/quest_wiring/dependency_graph.dot"],"outcome":"written"}
+{"time":"2026-05-21T07:55:59.893636+00:00","sprint":1,"phase":"7","action":"write dependency graph json","files_touched":["reports/quest_wiring/dependency_graph.json"],"outcome":"written"}
+{"time":"2026-05-21T07:55:59.893636+00:00","sprint":1,"phase":"8","action":"verify named quest coverage","files_touched":["reports/quest_wiring/named_quest_coverage.json"],"outcome":"written"}
+{"time":"2026-05-21T07:55:59.894636+00:00","sprint":1,"phase":"9","action":"write Sprint 1 summary","files_touched":["reports/quest_wiring/SUMMARY.md"],"outcome":"written"}
+{"timestamp":"2026-05-21T07:56:32.6995352Z","sprint":"1","phase":"2","action":"telegram: [BikeBrowser] Sprint 1 Phase 2 DONE — Producer parser resumed","files_touched":[],"result":"sent","telegram":"sent"}
+{"timestamp":"2026-05-21T07:56:33.4465954Z","sprint":"1","phase":"3","action":"telegram: [BikeBrowser] Sprint 1 Phase 3 DONE — Reachability","files_touched":[],"result":"sent","telegram":"sent"}
+{"timestamp":"2026-05-21T07:56:34.1770324Z","sprint":"1","phase":"4","action":"telegram: [BikeBrowser] Sprint 1 Phase 4 DONE — Producer grading","files_touched":[],"result":"sent","telegram":"sent"}
+{"timestamp":"2026-05-21T07:56:34.9628749Z","sprint":"1","phase":"5","action":"telegram: [BikeBrowser] Sprint 1 Phase 5 DONE — Quest matrix","files_touched":[],"result":"sent","telegram":"sent"}
+{"timestamp":"2026-05-21T07:56:35.7192944Z","sprint":"1","phase":"6","action":"telegram: [BikeBrowser] Sprint 1 Phase 6 DONE — Exposure check","files_touched":[],"result":"sent","telegram":"sent"}
+{"timestamp":"2026-05-21T07:56:36.4931648Z","sprint":"1","phase":"7","action":"telegram: [BikeBrowser] Sprint 1 Phase 7 DONE — Dependency graph","files_touched":[],"result":"sent","telegram":"sent"}
+{"timestamp":"2026-05-21T07:56:37.2530572Z","sprint":"1","phase":"8","action":"telegram: [BikeBrowser] Sprint 1 Phase 8 DONE — Named quest coverage","files_touched":[],"result":"sent","telegram":"sent"}
+{"timestamp":"2026-05-21T07:56:38.0233740Z","sprint":"1","phase":"9","action":"telegram: [BikeBrowser] Sprint 1 Phase 9 DONE — Summary","files_touched":[],"result":"sent","telegram":"sent"}

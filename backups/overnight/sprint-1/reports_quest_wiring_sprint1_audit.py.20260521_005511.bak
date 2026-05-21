@@ -32,8 +32,6 @@ PROPERTY_NAMES = {
     "required_quest_id",
     "required_flags",
     "layout_path",
-    "target_region",
-    "target_spawn",
 }
 
 NAMED_QUESTS = [
@@ -112,8 +110,6 @@ def build_truth_table() -> dict[str, Any]:
                 "objectives": mission_objectives(data),
                 "prerequisites": [str(x) for x in data.get("prerequisites", [])],
                 "unlocks": [str(x) for x in data.get("unlocks", [])],
-                "next": str(data.get("next", "")),
-                "next_in_chain": str(data.get("next_in_chain", "")),
                 "region_hint": str(data.get("region_hint") or data.get("region") or ""),
                 "deprecated": bool(data.get("deprecated", False)),
                 "supersededBy": data.get("supersededBy", ""),
@@ -164,42 +160,12 @@ def script_class_map() -> dict[str, dict[str, str]]:
     return classes
 
 
-def registered_regions() -> dict[str, dict[str, Any]]:
-    regions_path = WORLD / "Data" / "regions" / "regions.json"
-    if not regions_path.exists():
-        return {}
-    raw = load_json(regions_path)
-    if isinstance(raw, dict) and isinstance(raw.get("regions"), list):
-        return {str(r.get("id")): r for r in raw["regions"]}
-    if isinstance(raw, dict):
-        return {str(k): v for k, v in raw.items() if isinstance(v, dict)}
-    return {}
-
-
-def scene_resource_to_path(scene_path: str) -> Path:
-    if scene_path.startswith("res://"):
-        return WORLD / scene_path[len("res://") :]
-    return WORLD / scene_path
-
-
 def scene_files() -> list[Path]:
-    files: set[Path] = set()
-    for region in registered_regions().values():
-        scene_path = str(region.get("scenePath") or region.get("scene") or "")
-        if scene_path:
-            p = scene_resource_to_path(scene_path)
-            if p.exists():
-                files.add(p)
-    known_gameplay = [
-        WORLD / "Regions" / "Garage" / "TireRepairStation.tscn",
-        WORLD / "Prototypes" / "EmbodiedMechanics" / "ChainRigEmbedded.tscn",
-        WORLD / "Prototypes" / "EmbodiedMechanics" / "BrakeTestPrototype.tscn",
-        WORLD / "Prototypes" / "EmbodiedMechanics" / "TireRig.tscn",
-    ]
-    for p in known_gameplay:
-        if p.exists():
-            files.add(p)
-    return sorted(p for p in files if not any(part in EXCLUDE_PARTS for part in p.parts))
+    files: list[Path] = []
+    for base in SCENE_ROOTS:
+        if base.exists():
+            files.extend(base.rglob("*.tscn"))
+    return sorted({p for p in files if not any(part in EXCLUDE_PARTS for part in p.parts)})
 
 
 def parse_scene(path: Path, scripts: dict[str, dict[str, str]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -268,8 +234,6 @@ def parse_scene(path: Path, scripts: dict[str, dict[str, str]]) -> tuple[list[di
                         "node_has_real_logic_script": bool(node.get("script_has_record_logic")),
                         "linked_npc": str(props.get("npc_id", "")),
                         "linked_dialog": str(props.get("dialog_id", "")),
-                        "target_region": str(props.get("target_region", "")),
-                        "target_spawn": str(props.get("target_spawn", "")),
                     }
                 )
     meta = {"scene_file": rel(path), "nodes": len(nodes), "matched_properties": sum(len(n["props"]) for n in nodes), "producer_records": len(producers)}
@@ -299,8 +263,6 @@ def script_call_producers() -> list[dict[str, Any]]:
                 if m.group(1) == "record_objective":
                     qid = args[0] if len(args) >= 2 else default_q
                     oid = args[1] if len(args) >= 2 else (args[0] if args else "<dynamic>")
-                    if oid in {"id", "quest_id", "objective_id"}:
-                        oid = "<dynamic>"
                     records.append({"quest_id": qid or "<dynamic>", "objective_id": oid, "producer_node_path": f"{rel(path)}:{idx}", "producer_node_type": "ScriptCall", "scene_file": "", "starts_quest_too": False, "prerequisites_declared": [], "node_has_real_logic_script": True, "linked_npc": "", "linked_dialog": ""})
     return records
 
@@ -314,16 +276,7 @@ def build_producers() -> dict[str, Any]:
         records.extend(producers)
         scene_meta.append(meta)
     records.extend(script_call_producers())
-    registered_scene_set = {rel(scene_resource_to_path(str(r.get("scenePath") or r.get("scene") or ""))) for r in registered_regions().values() if (r.get("scenePath") or r.get("scene"))}
-    gameplay_meta = [m for m in scene_meta if m["scene_file"] in registered_scene_set]
-    self_test = {
-        "scope": "registered gameplay region scenes plus known gameplay interaction scenes/scripts",
-        "registered_gameplay_scenes_checked": len(gameplay_meta),
-        "registered_gameplay_scene_parse_failures": [m for m in gameplay_meta if m["nodes"] == 0],
-        "registered_gameplay_scenes_with_zero_matched_properties": [m["scene_file"] for m in gameplay_meta if m["matched_properties"] == 0],
-        "note": "Zero quest properties in boot/stub regions are reported but do not block; prototype/UI/addon scenes are outside the blocking self-test.",
-    }
-    out = {"producers": records, "scene_parse": scene_meta, "producer_classes": producer_classes(scripts), "self_test": self_test}
+    out = {"producers": records, "scene_parse": scene_meta, "producer_classes": producer_classes(scripts)}
     dump_json(OUT / "producers.json", out, "2", "parse scene and script objective producers")
     return out
 
@@ -338,8 +291,9 @@ def producer_classes(scripts: dict[str, dict[str, str]]) -> list[dict[str, str]]
 
 
 def reachability() -> dict[str, Any]:
-    regions = registered_regions()
-    scene_by_id = {rid: str(r.get("scenePath") or r.get("scene") or "") for rid, r in regions.items()}
+    regions_path = WORLD / "Data" / "regions" / "regions.json"
+    regions = load_json(regions_path).get("regions", []) if regions_path.exists() else []
+    scene_by_id = {str(r.get("id")): str(r.get("scene")) for r in regions}
     edges: list[dict[str, str]] = []
     for scene in scene_files():
         if "Regions" not in scene.parts:
@@ -347,7 +301,7 @@ def reachability() -> dict[str, Any]:
         text = scene.read_text(encoding="utf-8", errors="ignore")
         targets = re.findall(r'target_region\s*=\s*"([^"]+)"', text)
         required = re.findall(r'required_quest_id\s*=\s*"([^"]*)"', text)
-        source = next((rid for rid, sp in scene_by_id.items() if sp and scene_resource_to_path(sp).resolve() == scene.resolve()), scene.stem)
+        source = next((rid for rid, sp in scene_by_id.items() if sp and sp.replace("res://", "").replace("/", "\\") in str(scene)), scene.stem)
         for i, target in enumerate(targets):
             edges.append({"from": source, "to": target, "required_quest_id": required[i] if i < len(required) else ""})
     def walk(done: set[str]) -> list[str]:
@@ -365,9 +319,7 @@ def reachability() -> dict[str, Any]:
         "edges": edges,
         "states": {
             "fresh_save": walk(set()),
-            "after_safety_pre_ride": walk({"act1_pre_ride_check", "first_safety_check"}),
             "after_chain_repair_complete": walk({"chain_repair"}),
-            "after_bridge_review": walk({"chain_repair", "bridge_quest_1", "bridge_quest_2"}),
             "after_act1_capstone_complete": walk({"chain_repair", "act1_regional_readiness"}),
         },
     }
@@ -408,7 +360,7 @@ def build_matrix(truth: dict[str, Any], graded: dict[str, Any], reach: dict[str,
         for rid in state:
             sp = reach["regions"].get(rid, "")
             if sp:
-                scenes_any.add(rel(scene_resource_to_path(sp)))
+                scenes_any.add(sp.replace("res://", "BikeBrowserWorld/"))
     for p in graded["producers"]:
         by_pair[(p["quest_id"], p["objective_id"])].append(p)
     quests = []
@@ -422,13 +374,9 @@ def build_matrix(truth: dict[str, Any], graded: dict[str, Any], reach: dict[str,
         qualities = []
         for oid in q["objectives"]:
             ps = by_pair.get((q["quest_id"], oid), [])
-            scene_ps = [p for p in ps if p.get("scene_file")]
-            reachable_ps = [p for p in scene_ps if p.get("scene_file") in scenes_any]
             qualities.extend(p["producer_quality"] for p in ps)
             if not ps:
                 status = "NO_PRODUCER"
-            elif scene_ps and not reachable_ps and all(p["producer_quality"] != "SCRIPT_CALL_ONLY" for p in ps):
-                status = "UNREACHABLE_SCENE"
             elif all(p["producer_quality"] == "SCRIPT_CALL_ONLY" for p in ps):
                 status = "SCRIPT_ONLY"
             elif any(p["producer_quality"] == "REAL_GAMEPLAY" for p in ps):
@@ -436,7 +384,7 @@ def build_matrix(truth: dict[str, Any], graded: dict[str, Any], reach: dict[str,
             elif any(p["producer_quality"] == "DIALOG_ONLY" for p in ps):
                 status = "PLAYABLE_DIALOG"
             elif any(p["producer_quality"] == "PICKUP" for p in ps):
-                status = "PICKUP_PLAYABLE"
+                status = "PLAYABLE_REAL"
             elif any(p["producer_quality"] == "GENERIC_STATION" for p in ps):
                 status = "PLAYABLE_GENERIC"
             elif any(p["producer_quality"] == "PLACEHOLDER" for p in ps):

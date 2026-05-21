@@ -92,7 +92,9 @@
       "producer_node_type": "ResourcePickup",
       "quest_id": "desert_foraging_samples",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -104,7 +106,9 @@
       "producer_node_type": "ResourcePickup",
       "quest_id": "desert_foraging_samples",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -116,7 +120,9 @@
       "producer_node_type": "ResourcePickup",
       "quest_id": "desert_foraging_samples",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -128,7 +134,9 @@
       "producer_node_type": "ResourcePickup",
       "quest_id": "desert_foraging_samples",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -140,7 +148,9 @@
       "producer_node_type": "ResourcePickup",
       "quest_id": "desert_foraging_samples",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -152,7 +162,9 @@
       "producer_node_type": "InspectableObject",
       "quest_id": "desert_water_management",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -164,7 +176,9 @@
       "producer_node_type": "InspectableObject",
       "quest_id": "desert_water_management",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -176,7 +190,9 @@
       "producer_node_type": "ChallengeStation",
       "quest_id": "desert_water_management",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -188,7 +204,9 @@
       "producer_node_type": "ChallengeStation",
       "quest_id": "desert_water_management",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -200,7 +218,9 @@
       "producer_node_type": "ChallengeStation",
       "quest_id": "desert_water_management",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -212,7 +232,9 @@
       "producer_node_type": "PlantObservationStation",
       "quest_id": "desert_plant_observation",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -224,7 +246,9 @@
       "producer_node_type": "PlantObservationStation",
       "quest_id": "desert_plant_observation",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -236,7 +260,9 @@
       "producer_node_type": "PlantObservationStation",
       "quest_id": "desert_plant_observation",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -248,7 +274,9 @@
       "producer_node_type": "PlantObservationStation",
       "quest_id": "desert_plant_observation",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -260,7 +288,9 @@
       "producer_node_type": "InspectableObject",
       "quest_id": "bridge_quest_1",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -272,7 +302,9 @@
       "producer_node_type": "InspectableObject",
       "quest_id": "bridge_quest_1",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -284,7 +316,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_1",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -296,7 +330,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_1",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -308,7 +344,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_1",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -320,7 +358,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_4",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -332,7 +372,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_4",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -344,7 +386,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_4",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -356,7 +400,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_4",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -368,7 +414,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_4",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -380,7 +428,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -392,7 +442,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -404,7 +456,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -416,7 +470,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -428,7 +484,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "workshop_first_build",
       "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -440,7 +498,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "workshop_first_build",
       "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -452,7 +512,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "workshop_first_build",
       "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -464,7 +526,9 @@
       "producer_node_type": "ResourcePickup",
       "quest_id": "copper_prospector",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -476,7 +540,9 @@
       "producer_node_type": "ResourcePickup",
       "quest_id": "copper_prospector",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -488,7 +554,9 @@
       "producer_node_type": "ResourcePickup",
       "quest_id": "copper_prospector",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -500,7 +568,9 @@
       "producer_node_type": "ChallengeStation",
       "quest_id": "copper_prospector",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -512,7 +582,9 @@
       "producer_node_type": "InspectableObject",
       "quest_id": "mine_stability_check",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -524,7 +596,9 @@
       "producer_node_type": "ChallengeStation",
       "quest_id": "mine_stability_check",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -536,7 +610,9 @@
       "producer_node_type": "InspectableObject",
       "quest_id": "mine_stability_check",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -548,7 +624,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "copper_rock_id",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -560,7 +638,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "copper_rock_id",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -572,7 +652,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "copper_rock_id",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -584,7 +666,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -596,7 +680,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -608,7 +694,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -620,7 +708,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -632,7 +722,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "act1_regional_readiness",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -644,7 +736,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "act1_regional_readiness",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -656,7 +750,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "act1_regional_readiness",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -668,7 +764,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "act1_regional_readiness",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -680,7 +778,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "act1_regional_readiness",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -692,7 +792,9 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "act1_regional_readiness",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -704,7 +806,9 @@
       "producer_node_type": "ResourcePickup",
       "quest_id": "river_ecosystem_survey",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -716,7 +820,9 @@
       "producer_node_type": "ResourcePickup",
       "quest_id": "river_ecosystem_survey",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -728,7 +834,9 @@
       "producer_node_type": "ResourcePickup",
       "quest_id": "balance_the_flow",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -740,7 +848,9 @@
       "producer_node_type": "ResourcePickup",
       "quest_id": "balance_the_flow",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -752,7 +862,9 @@
       "producer_node_type": "InspectableObject",
       "quest_id": "river_ecosystem_survey",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -764,7 +876,9 @@
       "producer_node_type": "ChallengeStation",
       "quest_id": "river_ecosystem_survey",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -776,7 +890,9 @@
       "producer_node_type": "InspectableObject",
       "quest_id": "balance_the_flow",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -788,7 +904,9 @@
       "producer_node_type": "ChallengeStation",
       "quest_id": "balance_the_flow",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -800,7 +918,9 @@
       "producer_node_type": "WaterQualityStation",
       "quest_id": "test_water_quality",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -812,7 +932,9 @@
       "producer_node_type": "WaterQualityStation",
       "quest_id": "test_water_quality",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -824,7 +946,9 @@
       "producer_node_type": "WaterQualityStation",
       "quest_id": "test_water_quality",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -836,7 +960,9 @@
       "producer_node_type": "WaterQualityStation",
       "quest_id": "test_water_quality",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -848,7 +974,9 @@
       "producer_node_type": "WaterQualityStation",
       "quest_id": "test_water_quality",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
-      "starts_quest_too": true
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
     },
     {
       "linked_dialog": "",
@@ -998,7 +1126,7 @@
       "linked_dialog": "",
       "linked_npc": "",
       "node_has_real_logic_script": true,
-      "objective_id": "id",
+      "objective_id": "<dynamic>",
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd:113",
       "producer_node_type": "ScriptCall",
@@ -1177,13 +1305,13 @@
       "scene_file": "BikeBrowserWorld/Regions/Boot/Boot.tscn"
     },
     {
-      "matched_properties": 39,
+      "matched_properties": 41,
       "nodes": 53,
       "producer_records": 14,
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
     },
     {
-      "matched_properties": 14,
+      "matched_properties": 16,
       "nodes": 46,
       "producer_records": 14,
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
@@ -1195,91 +1323,25 @@
       "scene_file": "BikeBrowserWorld/Regions/Garage/TireRepairStation.tscn"
     },
     {
-      "matched_properties": 5,
+      "matched_properties": 7,
       "nodes": 158,
       "producer_records": 3,
       "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
     },
     {
-      "matched_properties": 28,
+      "matched_properties": 30,
       "nodes": 43,
       "producer_records": 10,
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
     },
     {
-      "matched_properties": 2,
-      "nodes": 9,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/Neighborhood/MrChen.tscn"
-    },
-    {
-      "matched_properties": 10,
+      "matched_properties": 20,
       "nodes": 237,
       "producer_records": 10,
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
     },
     {
-      "matched_properties": 2,
-      "nodes": 4,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/NPCs/CharlieNpc.tscn"
-    },
-    {
-      "matched_properties": 2,
-      "nodes": 4,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/NPCs/ColeNpc.tscn"
-    },
-    {
-      "matched_properties": 2,
-      "nodes": 4,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/NPCs/DrMayaNpc.tscn"
-    },
-    {
-      "matched_properties": 2,
-      "nodes": 4,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/NPCs/JacobNpc.tscn"
-    },
-    {
-      "matched_properties": 2,
-      "nodes": 4,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/NPCs/JamesNpc.tscn"
-    },
-    {
-      "matched_properties": 2,
-      "nodes": 4,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/NPCs/MrChenNpc.tscn"
-    },
-    {
-      "matched_properties": 2,
-      "nodes": 4,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/NPCs/MrsRamirezNpc.tscn"
-    },
-    {
-      "matched_properties": 2,
-      "nodes": 4,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/NPCs/OldMinerPeteNpc.tscn"
-    },
-    {
-      "matched_properties": 2,
-      "nodes": 4,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/NPCs/RangerNitaNpc.tscn"
-    },
-    {
-      "matched_properties": 2,
-      "nodes": 4,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/NPCs/ZevonNpc.tscn"
-    },
-    {
-      "matched_properties": 32,
+      "matched_properties": 34,
       "nodes": 47,
       "producer_records": 13,
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
@@ -1288,37 +1350,17 @@
       "matched_properties": 0,
       "nodes": 1,
       "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/SystemShowcase/RuntimeSystemsDemo.tscn"
-    },
-    {
-      "matched_properties": 0,
-      "nodes": 1,
-      "producer_records": 0,
       "scene_file": "BikeBrowserWorld/Regions/SystemShowcase/SystemShowcase.tscn"
-    },
-    {
-      "matched_properties": 0,
-      "nodes": 1,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/SystemShowcase/ToolHelpersDemo.tscn"
-    },
-    {
-      "matched_properties": 0,
-      "nodes": 1,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/SystemShowcase/UiComponentsDemo.tscn"
-    },
-    {
-      "matched_properties": 0,
-      "nodes": 11,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/UI/DialogBox.tscn"
-    },
-    {
-      "matched_properties": 0,
-      "nodes": 13,
-      "producer_records": 0,
-      "scene_file": "BikeBrowserWorld/Regions/UI/Hud.tscn"
     }
-  ]
+  ],
+  "self_test": {
+    "note": "Zero quest properties in boot/stub regions are reported but do not block; prototype/UI/addon scenes are outside the blocking self-test.",
+    "registered_gameplay_scene_parse_failures": [],
+    "registered_gameplay_scenes_checked": 8,
+    "registered_gameplay_scenes_with_zero_matched_properties": [
+      "BikeBrowserWorld/Regions/Boot/Boot.tscn",
+      "BikeBrowserWorld/Regions/SystemShowcase/SystemShowcase.tscn"
+    ],
+    "scope": "registered gameplay region scenes plus known gameplay interaction scenes/scripts"
+  }
 }

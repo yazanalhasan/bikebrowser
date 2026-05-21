@@ -39,7 +39,6 @@
 - None
 
 ## STALE_REFERENCE Objectives
-- act1_pre_ride_check / id (1 producers)
 - act1_pre_ride_check / cement_set (1 producers)
 
 ## PLAYABLE_BUT_HIDDEN Quests

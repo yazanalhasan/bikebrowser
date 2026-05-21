@@ -1,60 +1,98 @@
 {
   "edges": [
     {
-      "from": "DesertTrail",
+      "from": "desert_trail",
       "required_quest_id": "",
       "to": "neighborhood_street"
     },
     {
-      "from": "DryWash",
+      "from": "dry_wash",
       "required_quest_id": "",
       "to": "neighborhood_street"
     },
     {
-      "from": "ZuzuGarage",
+      "from": "garage",
       "required_quest_id": "",
       "to": "neighborhood_street"
     },
     {
-      "from": "CopperMine",
+      "from": "copper_mine",
       "required_quest_id": "",
       "to": "neighborhood_street"
     },
     {
-      "from": "NeighborhoodStreet",
+      "from": "neighborhood_street",
       "required_quest_id": "chain_repair",
       "to": "garage"
     },
     {
-      "from": "NeighborhoodStreet",
+      "from": "neighborhood_street",
       "required_quest_id": "chain_repair",
       "to": "copper_mine"
     },
     {
-      "from": "NeighborhoodStreet",
+      "from": "neighborhood_street",
       "required_quest_id": "chain_repair",
       "to": "desert_trail"
     },
     {
-      "from": "NeighborhoodStreet",
+      "from": "neighborhood_street",
       "required_quest_id": "chain_repair",
       "to": "salt_river"
     },
     {
-      "from": "NeighborhoodStreet",
+      "from": "neighborhood_street",
       "required_quest_id": "",
       "to": "dry_wash"
     },
     {
-      "from": "SaltRiver",
+      "from": "salt_river",
       "required_quest_id": "",
       "to": "neighborhood_street"
     }
   ],
-  "regions": {},
+  "regions": {
+    "boot": "res://Regions/Boot/Boot.tscn",
+    "copper_mine": "res://Regions/Mine/CopperMine.tscn",
+    "desert_trail": "res://Regions/Desert/DesertTrail.tscn",
+    "dry_wash": "res://Regions/DryWash/DryWash.tscn",
+    "garage": "res://Regions/Garage/ZuzuGarage.tscn",
+    "neighborhood_street": "res://Regions/Neighborhood/NeighborhoodStreet.tscn",
+    "salt_river": "res://Regions/River/SaltRiver.tscn",
+    "system_showcase": "res://Regions/SystemShowcase/SystemShowcase.tscn"
+  },
   "states": {
-    "after_act1_capstone_complete": [],
-    "after_chain_repair_complete": [],
-    "fresh_save": []
+    "after_act1_capstone_complete": [
+      "copper_mine",
+      "desert_trail",
+      "dry_wash",
+      "garage",
+      "neighborhood_street",
+      "salt_river"
+    ],
+    "after_bridge_review": [
+      "copper_mine",
+      "desert_trail",
+      "dry_wash",
+      "garage",
+      "neighborhood_street",
+      "salt_river"
+    ],
+    "after_chain_repair_complete": [
+      "copper_mine",
+      "desert_trail",
+      "dry_wash",
+      "garage",
+      "neighborhood_street",
+      "salt_river"
+    ],
+    "after_safety_pre_ride": [
+      "dry_wash",
+      "neighborhood_street"
+    ],
+    "fresh_save": [
+      "dry_wash",
+      "neighborhood_street"
+    ]
   }
 }
