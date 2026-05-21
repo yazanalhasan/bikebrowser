@@ -2,9 +2,9 @@
 
 ## Headline Numbers
 - Total quests: 25
-- DATA_ONLY: 6
+- DATA_ONLY: 5
 - PARTIAL: 1
-- PLAYABLE: 5
+- PLAYABLE: 6
 - PLAYABLE_DEGRADED: 11
 - STALE_DUPLICATE: 2
 
@@ -13,7 +13,6 @@
 - bridge_quest_2
 - chain_repair
 - flat_tire_repair
-- track_the_animal
 - water_sample_observation
 
 ## PARTIAL Quests
@@ -48,14 +47,13 @@
 ## Producer Quality Distribution
 - GENERIC_STATION: 43
 - PICKUP: 12
-- REAL_GAMEPLAY: 18
-- SCRIPT_CALL_ONLY: 29
+- REAL_GAMEPLAY: 22
+- SCRIPT_CALL_ONLY: 30
 
 ## Recommended Fix Order
 - algae_bloom_source
 - bridge_quest_2
 - chain_repair
 - flat_tire_repair
-- track_the_animal
 - water_sample_observation
 - act1_pre_ride_check

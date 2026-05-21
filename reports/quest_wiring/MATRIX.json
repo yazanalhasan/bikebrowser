@@ -2121,32 +2121,96 @@
       "objectives": [
         {
           "objective_id": "find_tracks",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "find_tracks",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AnimalTrackStation",
+              "producer_node_type": "AnimalTrackStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "track_the_animal",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "follow_tracks",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "follow_tracks",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AnimalTrackStation",
+              "producer_node_type": "AnimalTrackStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "track_the_animal",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "identify_animal",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "identify_animal",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AnimalTrackStation",
+              "producer_node_type": "AnimalTrackStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "track_the_animal",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "report_findings",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "report_findings",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AnimalTrackStation",
+              "producer_node_type": "AnimalTrackStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "track_the_animal",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         }
       ],
       "prerequisites": [],
       "quest_id": "track_the_animal",
-      "quest_status": "DATA_ONLY",
+      "quest_status": "PLAYABLE",
       "unlocks": []
     },
     {

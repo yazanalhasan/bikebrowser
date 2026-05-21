@@ -1,6 +1,11 @@
 {
   "producer_classes": [
     {
+      "class_name": "AnimalTrackStation",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/AnimalTrackStation.gd"
+    },
+    {
       "class_name": "AnimatedNpcInteraction",
       "extends": "Area2D",
       "path": "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd"
@@ -92,6 +97,62 @@
     }
   ],
   "producers": [
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "find_tracks",
+      "prerequisites_declared": [],
+      "producer_node_path": "/AnimalTrackStation",
+      "producer_node_type": "AnimalTrackStation",
+      "quest_id": "track_the_animal",
+      "scene_file": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "follow_tracks",
+      "prerequisites_declared": [],
+      "producer_node_path": "/AnimalTrackStation",
+      "producer_node_type": "AnimalTrackStation",
+      "quest_id": "track_the_animal",
+      "scene_file": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "identify_animal",
+      "prerequisites_declared": [],
+      "producer_node_path": "/AnimalTrackStation",
+      "producer_node_type": "AnimalTrackStation",
+      "quest_id": "track_the_animal",
+      "scene_file": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "report_findings",
+      "prerequisites_declared": [],
+      "producer_node_path": "/AnimalTrackStation",
+      "producer_node_type": "AnimalTrackStation",
+      "quest_id": "track_the_animal",
+      "scene_file": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
     {
       "linked_dialog": "",
       "linked_npc": "",
@@ -1120,6 +1181,18 @@
       "node_has_real_logic_script": true,
       "objective_id": "<dynamic>",
       "prerequisites_declared": [],
+      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/AnimalTrackStation.gd:44",
+      "producer_node_type": "ScriptCall",
+      "quest_id": "track_the_animal",
+      "scene_file": "",
+      "starts_quest_too": false
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "<dynamic>",
+      "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/ChainHotspot.gd:140",
       "producer_node_type": "ScriptCall",
       "quest_id": "chain_repair",
@@ -1489,8 +1562,14 @@
       "scene_file": "BikeBrowserWorld/Regions/Boot/Boot.tscn"
     },
     {
+      "matched_properties": 2,
+      "nodes": 7,
+      "producer_records": 4,
+      "scene_file": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn"
+    },
+    {
       "matched_properties": 41,
-      "nodes": 55,
+      "nodes": 56,
       "producer_records": 14,
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
     },

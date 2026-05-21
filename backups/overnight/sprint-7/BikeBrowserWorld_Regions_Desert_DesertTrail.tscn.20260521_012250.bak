@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://bikebrowser_desert_trail"]
+[gd_scene load_steps=36 format=3 uid="uid://bikebrowser_desert_trail"]
 
 [ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
 [ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
@@ -21,7 +21,6 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/Desert/old_crate.png" id="19_crate"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Desert/foraging_basket.png" id="20_basket"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Desert/field_guide_binoculars.png" id="21_field_guide"]
-[ext_resource type="PackedScene" path="res://Regions/Desert/AnimalTrackStation.tscn" id="22_track_station"]
 
 
 [ext_resource type="PackedScene" path="res://Regions/UI/DialogBox.tscn" id="oc_dialog"]
@@ -74,8 +73,6 @@ texture_filter = 1
 texture = ExtResource("9_mesquite")
 
 [node name="RangerNitaNpc" parent="." instance=ExtResource("4_ranger")]
-
-[node name="AnimalTrackStation" parent="." instance=ExtResource("22_track_station")]
 
 [node name="YuccaFiberPickup" type="Area2D" parent="."]
 script = ExtResource("11_pickup")
@@ -319,5 +316,4 @@ position_smoothing_enabled = true
 [node name="DialogBox" parent="." instance=ExtResource("oc_dialog")]
 
 [node name="Hud" parent="." instance=ExtResource("oc_hud")]
-
 

@@ -149,6 +149,15 @@
     },
     {
       "exposure_status": "EXPOSED",
+      "quest_id": "track_the_animal",
+      "reference_files": [
+        "BikeBrowserWorld/Data/missions/track_the_animal.json",
+        "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn",
+        "BikeBrowserWorld/Systems/Interactions/AnimalTrackStation.gd"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
       "quest_id": "workshop_first_build",
       "reference_files": [
         "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
