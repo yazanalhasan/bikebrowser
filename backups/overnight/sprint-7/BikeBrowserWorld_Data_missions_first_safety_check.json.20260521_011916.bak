@@ -23,8 +23,5 @@
     "allowance": 25,
     "badge": "Safety Scout",
     "reputation": 5
-  },
-  "deprecated": true,
-  "supersededBy": "act1_pre_ride_check",
-  "overnight_note": "Legacy three-step safety check is superseded by the playable Act 1 A-B-C-Quick pre-ride quest."
+  }
 }
