@@ -97,3 +97,5 @@
 {"timestamp":"2026-05-21T08:03:14.1940954Z","sprint":"3","phase":"2","action":"telegram: [BikeBrowser] Sprint 3 Phase 2 DONE — Structural audit","files_touched":[],"result":"sent","telegram":"sent"}
 {"timestamp":"2026-05-21T08:03:14.9618519Z","sprint":"3","phase":"3","action":"telegram: [BikeBrowser] Sprint 3 Phase 3 DONE — Conformance","files_touched":[],"result":"sent","telegram":"sent"}
 {"timestamp":"2026-05-21T08:03:15.7263056Z","sprint":"3","phase":"4","action":"telegram: [BikeBrowser] Sprint 3 Phase 4 DONE — Summary","files_touched":[],"result":"sent","telegram":"sent"}
+{"timestamp":"2026-05-21T08:03:15.9260274Z","sprint":"3","phase":"commit","action":"commit Sprint 3 audit","files_touched":["reports/region_audit","reports/overnight","backups/overnight/sprint-3"],"result":"git commit exit 0","telegram":"none"}
+{"timestamp":"2026-05-21T08:03:16.6896118Z","sprint":"3","phase":"complete","action":"telegram: [BikeBrowser] Sprint 3 COMPLETE — Region & Perspective Audit","files_touched":[],"result":"sent","telegram":"sent"}
