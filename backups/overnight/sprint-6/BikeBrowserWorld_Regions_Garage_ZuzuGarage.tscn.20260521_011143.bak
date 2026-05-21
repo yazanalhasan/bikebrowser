@@ -1,4 +1,4 @@
-[gd_scene load_steps=67 format=3 uid="uid://bikebrowser_zuzu_garage"]
+[gd_scene load_steps=66 format=3 uid="uid://bikebrowser_zuzu_garage"]
 
 [ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
 [ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
@@ -60,7 +60,6 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/Bike/repair_grease_scuff_detail.png" id="57_grease_scuff"]
 [ext_resource type="Script" path="res://Systems/Interactions/QuestObjectiveStation.gd" id="58_act1_station"]
 [ext_resource type="PackedScene" path="res://Regions/NPCs/MrChenNpc.tscn" id="59_mrchen"]
-[ext_resource type="PackedScene" path="res://Regions/Garage/UniversalTestingMachine.tscn" id="60_utm"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 18.0
@@ -547,8 +546,6 @@ z_index = 12
 
 [node name="TireRepairStation" parent="." instance=ExtResource("7_tire")]
 
-[node name="UniversalTestingMachine" parent="InteractableLayer" instance=ExtResource("60_utm")]
-
 [node name="WorkshopBuildStation" type="Area2D" parent="."]
 script = ExtResource("58_act1_station")
 quest_id = "workshop_first_build"
@@ -627,4 +624,3 @@ position_smoothing_enabled = true
 [node name="DialogBox" parent="." instance=ExtResource("5_dialog")]
 
 [node name="Hud" parent="." instance=ExtResource("6_hud")]
-

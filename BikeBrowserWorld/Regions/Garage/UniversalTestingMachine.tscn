@@ -1,0 +1,115 @@
+[gd_scene load_steps=5 format=3 uid="uid://bikebrowser_universal_testing_machine"]
+
+[ext_resource type="Script" path="res://Systems/Interactions/UniversalTestingMachine.gd" id="1_utm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_utm"]
+size = Vector2(210, 120)
+
+[node name="UTM" type="Area2D"]
+script = ExtResource("1_utm")
+quest_id = "bridge_quest_3"
+go_to_objective_id = "go_to_testing_rig"
+objective_ids = Array[String](["go_to_testing_rig", "test_wood", "test_metal", "test_composite", "choose_best_material"])
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_utm")
+
+[node name="Glow" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-104, -64, 104, -64, 124, 56, -124, 56)
+color = Color(1, 0.72, 0.32, 0.18)
+
+[node name="WorkbenchSprite" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-100, -20, 100, -20, 112, 54, -112, 54)
+color = Color(0.29, 0.20, 0.15, 0.95)
+
+[node name="ChalkZones" type="Node2D" parent="."]
+
+[node name="BendZone" type="Polygon2D" parent="ChalkZones"]
+position = Vector2(-58, -32)
+polygon = PackedVector2Array(-22, -8, 22, -8, 22, 8, -22, 8)
+color = Color(0.46, 0.72, 0.54, 0.42)
+
+[node name="CrackZone" type="Polygon2D" parent="ChalkZones"]
+position = Vector2(0, -32)
+polygon = PackedVector2Array(-22, -8, 22, -8, 22, 8, -22, 8)
+color = Color(0.86, 0.72, 0.38, 0.42)
+
+[node name="BreakZone" type="Polygon2D" parent="ChalkZones"]
+position = Vector2(58, -32)
+polygon = PackedVector2Array(-22, -8, 22, -8, 22, 8, -22, 8)
+color = Color(0.86, 0.34, 0.28, 0.42)
+
+[node name="Clamps" type="Node2D" parent="."]
+
+[node name="LeftClamp" type="Polygon2D" parent="Clamps"]
+position = Vector2(-56, 0)
+polygon = PackedVector2Array(-12, -24, 12, -24, 12, 24, -12, 24)
+color = Color(0.18, 0.20, 0.22, 1)
+
+[node name="RightClamp" type="Polygon2D" parent="Clamps"]
+position = Vector2(56, 0)
+polygon = PackedVector2Array(-12, -24, 12, -24, 12, 24, -12, 24)
+color = Color(0.18, 0.20, 0.22, 1)
+
+[node name="SamplePivot" type="Node2D" parent="."]
+
+[node name="SampleVisual" type="Polygon2D" parent="SamplePivot"]
+polygon = PackedVector2Array(-48, -8, 48, -8, 48, 8, -48, 8)
+color = Color(0.72, 0.48, 0.28, 1)
+
+[node name="Lever" type="Polygon2D" parent="."]
+position = Vector2(92, 8)
+polygon = PackedVector2Array(-5, -46, 5, -46, 8, 32, -8, 32)
+color = Color(0.16, 0.18, 0.20, 1)
+
+[node name="Gauge" type="Node2D" parent="."]
+position = Vector2(0, -72)
+
+[node name="GaugeFace" type="Polygon2D" parent="Gauge"]
+polygon = PackedVector2Array(-42, -22, 42, -22, 48, 22, -48, 22)
+color = Color(0.12, 0.14, 0.15, 0.94)
+
+[node name="Needle" type="Line2D" parent="Gauge"]
+points = PackedVector2Array(0, 0, 0, -30)
+width = 4.0
+default_color = Color(1, 0.78, 0.32, 1)
+
+[node name="Notebook" type="Node2D" parent="."]
+position = Vector2(154, -20)
+
+[node name="NotebookSprite" type="Polygon2D" parent="Notebook"]
+polygon = PackedVector2Array(-58, -46, 58, -46, 58, 74, -58, 74)
+color = Color(0.88, 0.78, 0.58, 0.96)
+
+[node name="HeaderLabel" type="Label" parent="Notebook"]
+offset_left = -50.0
+offset_top = -38.0
+offset_right = 54.0
+offset_bottom = -18.0
+theme_override_font_sizes/font_size = 12
+text = "Material Testing Rig"
+
+[node name="ObservationLabel" type="Label" parent="Notebook"]
+offset_left = -50.0
+offset_top = -14.0
+offset_right = 52.0
+offset_bottom = 68.0
+theme_override_font_sizes/font_size = 9
+autowrap_mode = 3
+text = "Clamp a sample."
+
+[node name="Stamp" type="Label" parent="Notebook"]
+visible = false
+offset_left = 4.0
+offset_top = 46.0
+offset_right = 54.0
+offset_bottom = 66.0
+theme_override_font_sizes/font_size = 11
+text = "RECORDED"
+
+[node name="SampleSelector" type="Node2D" parent="."]
+
+[node name="Prompt" type="Label" parent="."]
+position = Vector2(-92, -104)
+theme_override_font_sizes/font_size = 13
+text = "[E] Test"

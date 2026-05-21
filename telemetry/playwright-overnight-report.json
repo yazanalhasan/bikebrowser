@@ -1,0 +1,2256 @@
+{
+  "config": {
+    "configFile": "C:\\dev\\bikebrowser\\.vscode\\playwright.overnight.config.js",
+    "rootDir": "C:/dev/bikebrowser/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/dev/bikebrowser/playtest_captures/playwright-overnight",
+        "repeatEach": 2,
+        "retries": 1,
+        "metadata": {},
+        "id": "desktop-chrome",
+        "name": "desktop-chrome",
+        "testDir": "C:/dev/bikebrowser/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/dev/bikebrowser/playtest_captures/playwright-overnight",
+        "repeatEach": 2,
+        "retries": 1,
+        "metadata": {},
+        "id": "tablet-portrait",
+        "name": "tablet-portrait",
+        "testDir": "C:/dev/bikebrowser/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/dev/bikebrowser/playtest_captures/playwright-overnight",
+        "repeatEach": 2,
+        "retries": 1,
+        "metadata": {},
+        "id": "mobile-portrait",
+        "name": "mobile-portrait",
+        "testDir": "C:/dev/bikebrowser/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/dev/bikebrowser/playtest_captures/playwright-overnight",
+        "repeatEach": 2,
+        "retries": 1,
+        "metadata": {},
+        "id": "mobile-landscape",
+        "name": "mobile-landscape",
+        "testDir": "C:/dev/bikebrowser/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      },
+      {
+        "outputDir": "C:/dev/bikebrowser/playtest_captures/playwright-overnight",
+        "repeatEach": 2,
+        "retries": 1,
+        "metadata": {},
+        "id": "low-res",
+        "name": "low-res",
+        "testDir": "C:/dev/bikebrowser/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 45000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "../playtest_captures/playwright-html",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../telemetry/playwright-overnight-report.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.59.1",
+    "workers": 8,
+    "webServer": {
+      "command": "npm run dev:react",
+      "url": "http://localhost:5173",
+      "reuseExistingServer": true,
+      "timeout": 60000,
+      "stdout": "pipe",
+      "stderr": "pipe"
+    }
+  },
+  "suites": [
+    {
+      "title": "flat-tire-flow.smoke.spec.js",
+      "file": "flat-tire-flow.smoke.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "flat tire repair flow",
+          "file": "flat-tire-flow.smoke.spec.js",
+          "line": 51,
+          "column": 6,
+          "specs": [
+            {
+              "title": "street bike interaction reaches explainer and cognitive scene boots",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "886db6a00cce86fa1efa-6b29e546a36b90563862",
+              "file": "flat-tire-flow.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "street bike interaction reaches explainer and cognitive scene boots",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "886db6a00cce86fa1efa-51eb7663bc4966a63881",
+              "file": "flat-tire-flow.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "street bike interaction reaches explainer and cognitive scene boots",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "886db6a00cce86fa1efa-adb4babdd9402712e383",
+              "file": "flat-tire-flow.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "street bike interaction reaches explainer and cognitive scene boots",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "886db6a00cce86fa1efa-3ef9f492de5630c3f8a5",
+              "file": "flat-tire-flow.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "street bike interaction reaches explainer and cognitive scene boots",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "886db6a00cce86fa1efa-c5af5e4d55606906070a",
+              "file": "flat-tire-flow.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "street bike interaction reaches explainer and cognitive scene boots",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "886db6a00cce86fa1efa-6da0902847d704a52f90",
+              "file": "flat-tire-flow.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "street bike interaction reaches explainer and cognitive scene boots",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "886db6a00cce86fa1efa-c32e3fc56a9706501ea2",
+              "file": "flat-tire-flow.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "street bike interaction reaches explainer and cognitive scene boots",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "886db6a00cce86fa1efa-1a7668989b02739ef85b",
+              "file": "flat-tire-flow.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "street bike interaction reaches explainer and cognitive scene boots",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "886db6a00cce86fa1efa-1d7a7da2732f807f2557",
+              "file": "flat-tire-flow.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "street bike interaction reaches explainer and cognitive scene boots",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "886db6a00cce86fa1efa-d0cc565ef4bed7be768a",
+              "file": "flat-tire-flow.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "full-game-playthrough.smoke.spec.js",
+      "file": "full-game-playthrough.smoke.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "full game playthrough",
+          "file": "full-game-playthrough.smoke.spec.js",
+          "line": 97,
+          "column": 6,
+          "specs": [
+            {
+              "title": "every shipped quest can be completed in the browser runtime",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f2e2e835156705dbefb5-f11874ce413c0cc2859f",
+              "file": "full-game-playthrough.smoke.spec.js",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "every shipped quest can be completed in the browser runtime",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f2e2e835156705dbefb5-b597acd318033d17d9c9",
+              "file": "full-game-playthrough.smoke.spec.js",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "every shipped quest can be completed in the browser runtime",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f2e2e835156705dbefb5-f6141a627bd1b438ea55",
+              "file": "full-game-playthrough.smoke.spec.js",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "every shipped quest can be completed in the browser runtime",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f2e2e835156705dbefb5-e4d16447500538b24cc8",
+              "file": "full-game-playthrough.smoke.spec.js",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "every shipped quest can be completed in the browser runtime",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f2e2e835156705dbefb5-a5b761cf71e7166ebf38",
+              "file": "full-game-playthrough.smoke.spec.js",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "every shipped quest can be completed in the browser runtime",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f2e2e835156705dbefb5-258d0734213ffbc1ddff",
+              "file": "full-game-playthrough.smoke.spec.js",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "every shipped quest can be completed in the browser runtime",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f2e2e835156705dbefb5-4f5d812e4c2119cfc157",
+              "file": "full-game-playthrough.smoke.spec.js",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "every shipped quest can be completed in the browser runtime",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f2e2e835156705dbefb5-aa9cb4670c043ac93656",
+              "file": "full-game-playthrough.smoke.spec.js",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "every shipped quest can be completed in the browser runtime",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f2e2e835156705dbefb5-8338f6c9fdc61e25a126",
+              "file": "full-game-playthrough.smoke.spec.js",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "every shipped quest can be completed in the browser runtime",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f2e2e835156705dbefb5-644b9ea617fb5b61bfc2",
+              "file": "full-game-playthrough.smoke.spec.js",
+              "line": 98,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "gameplay-report-panel.smoke.spec.js",
+      "file": "gameplay-report-panel.smoke.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "gameplay report panel",
+          "file": "gameplay-report-panel.smoke.spec.js",
+          "line": 51,
+          "column": 6,
+          "specs": [
+            {
+              "title": "saved report stays visible as full selectable text",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "38691b427f105dd614e5-5072bf79069482856344",
+              "file": "gameplay-report-panel.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "saved report stays visible as full selectable text",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "38691b427f105dd614e5-d1d02fa1b6b81980e2b9",
+              "file": "gameplay-report-panel.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "saved report stays visible as full selectable text",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "38691b427f105dd614e5-4cef43875e471cf61a64",
+              "file": "gameplay-report-panel.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "saved report stays visible as full selectable text",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "38691b427f105dd614e5-825c04da9d07d7bfbc96",
+              "file": "gameplay-report-panel.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "saved report stays visible as full selectable text",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "38691b427f105dd614e5-926e5a04eea92e1cbbae",
+              "file": "gameplay-report-panel.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "saved report stays visible as full selectable text",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "38691b427f105dd614e5-b1f49c60b9e2802db33e",
+              "file": "gameplay-report-panel.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "saved report stays visible as full selectable text",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "38691b427f105dd614e5-e38f900ad9fa6f98b659",
+              "file": "gameplay-report-panel.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "saved report stays visible as full selectable text",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "38691b427f105dd614e5-a0b92419ea180ad3a231",
+              "file": "gameplay-report-panel.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "saved report stays visible as full selectable text",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "38691b427f105dd614e5-292bd83ca3ae6a9873e6",
+              "file": "gameplay-report-panel.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "saved report stays visible as full selectable text",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "38691b427f105dd614e5-e28d0ceb852bb84be7a0",
+              "file": "gameplay-report-panel.smoke.spec.js",
+              "line": 52,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "godot-prototype.smoke.spec.js",
+      "file": "godot-prototype.smoke.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Godot canonical route",
+          "file": "godot-prototype.smoke.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "renders the canonical Godot world at /play without diagnostics by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-7d96190cde9f4b975603",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "keeps diagnostics opt-in and preserves bridge event handling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-4d747444ed266c1a0d17",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 13,
+              "column": 7
+            },
+            {
+              "title": "renders the canonical Godot world at /play without diagnostics by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-3ac74b05b194ca6eeda2",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "keeps diagnostics opt-in and preserves bridge event handling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-3898cf5293e8b5dd6dc5",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 13,
+              "column": 7
+            },
+            {
+              "title": "renders the canonical Godot world at /play without diagnostics by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-5d9d3d6775f6c13b3caa",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "keeps diagnostics opt-in and preserves bridge event handling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-5c4006fb91a5f792528d",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 13,
+              "column": 7
+            },
+            {
+              "title": "renders the canonical Godot world at /play without diagnostics by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-abeb2e7fb58b9a185091",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "keeps diagnostics opt-in and preserves bridge event handling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-f2930258740029cb334b",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 13,
+              "column": 7
+            },
+            {
+              "title": "renders the canonical Godot world at /play without diagnostics by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-cfe892fdacb16c3a000c",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "keeps diagnostics opt-in and preserves bridge event handling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-7d6d8e741c1ff9a2e3a1",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 13,
+              "column": 7
+            },
+            {
+              "title": "renders the canonical Godot world at /play without diagnostics by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-1911a2dac2b80c6cfe6b",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "keeps diagnostics opt-in and preserves bridge event handling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-c55a305033eec6d33040",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 13,
+              "column": 7
+            },
+            {
+              "title": "renders the canonical Godot world at /play without diagnostics by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-c3cab88ae05fb25ed1ee",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "keeps diagnostics opt-in and preserves bridge event handling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-139f668bc12e425f6810",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 13,
+              "column": 7
+            },
+            {
+              "title": "renders the canonical Godot world at /play without diagnostics by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-147af228603f6fe5bc09",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "keeps diagnostics opt-in and preserves bridge event handling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-46c4d657e8dfee6e0edd",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 13,
+              "column": 7
+            },
+            {
+              "title": "renders the canonical Godot world at /play without diagnostics by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-7a259b49f2a7019f8454",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "keeps diagnostics opt-in and preserves bridge event handling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-38f5fbfcbfac7abde310",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 13,
+              "column": 7
+            },
+            {
+              "title": "renders the canonical Godot world at /play without diagnostics by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-dfea157780339a34e8eb",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "keeps diagnostics opt-in and preserves bridge event handling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "79a764fefbac9ec51582-610eed35de8586b55765",
+              "file": "godot-prototype.smoke.spec.js",
+              "line": 13,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "mission-inventory-hud.smoke.spec.js",
+      "file": "mission-inventory-hud.smoke.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "mission and inventory HUD",
+          "file": "mission-inventory-hud.smoke.spec.js",
+          "line": 59,
+          "column": 6,
+          "specs": [
+            {
+              "title": "active mission objective and inventory are visible to the player",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-6c5ab051489fcd956d9a",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "blocked forage steps tell the player what to do next",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-6af72b35c7f77660c414",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 77,
+              "column": 7
+            },
+            {
+              "title": "active mission objective and inventory are visible to the player",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-09cefbc61f9cd88fdad7",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "blocked forage steps tell the player what to do next",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-19c11b2d5b5ad50e1418",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 77,
+              "column": 7
+            },
+            {
+              "title": "active mission objective and inventory are visible to the player",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-ad340aef4809e9ae22a1",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "blocked forage steps tell the player what to do next",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-14ff07d86e2cbc1b0a14",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 77,
+              "column": 7
+            },
+            {
+              "title": "active mission objective and inventory are visible to the player",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-53287913b2f5d61bf668",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "blocked forage steps tell the player what to do next",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-70ede2f283b603ad58be",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 77,
+              "column": 7
+            },
+            {
+              "title": "active mission objective and inventory are visible to the player",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-4353f2e1bea929cd3537",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "blocked forage steps tell the player what to do next",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-149eb1502916f0c884c2",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 77,
+              "column": 7
+            },
+            {
+              "title": "active mission objective and inventory are visible to the player",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-cd6cfb8626a36cb0a6ae",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "blocked forage steps tell the player what to do next",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-a97a269d1a2b66da1c7e",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 77,
+              "column": 7
+            },
+            {
+              "title": "active mission objective and inventory are visible to the player",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-c8a19fe2c6b8b4459240",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "blocked forage steps tell the player what to do next",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-3ece58f80e568874ea2a",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 77,
+              "column": 7
+            },
+            {
+              "title": "active mission objective and inventory are visible to the player",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-49c4110eb2c1b12c1146",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "blocked forage steps tell the player what to do next",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-79920c9b900747046378",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 77,
+              "column": 7
+            },
+            {
+              "title": "active mission objective and inventory are visible to the player",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-d23287092de8f0dbdfd8",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "blocked forage steps tell the player what to do next",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-8763f8bb6ddfb931037f",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 77,
+              "column": 7
+            },
+            {
+              "title": "active mission objective and inventory are visible to the player",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-7098f1188e23dc9f5b3f",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "blocked forage steps tell the player what to do next",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "4000a9a620b62855026b-4ebde53dec86d6282ed8",
+              "file": "mission-inventory-hud.smoke.spec.js",
+              "line": 77,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "route-coherence.smoke.spec.js",
+      "file": "route-coherence.smoke.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "route coherence",
+          "file": "route-coherence.smoke.spec.js",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "youtube search without a query invites search instead of spinning forever",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-49ae999a6007870ab811",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "3D prototype route does not expose debug controls by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-9597c171e7fb63fbd63a",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "youtube search without a query invites search instead of spinning forever",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-02c27aa3b373259578fc",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "3D prototype route does not expose debug controls by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-34218d46353757bfcee4",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "youtube search without a query invites search instead of spinning forever",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-5e59aa98a14a90513849",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "3D prototype route does not expose debug controls by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-409628fbeaf42a1dfe87",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "youtube search without a query invites search instead of spinning forever",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-8bc1e7735f4e0ece2165",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "3D prototype route does not expose debug controls by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-7499e6a11b6fd0f078fe",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "youtube search without a query invites search instead of spinning forever",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-4fe69c857252653a88ad",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "3D prototype route does not expose debug controls by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-14b3c2e97c95b58df722",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "youtube search without a query invites search instead of spinning forever",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-d05885376cc5d65630ff",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "3D prototype route does not expose debug controls by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-fce595504dab2c960cd8",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "youtube search without a query invites search instead of spinning forever",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-121fa99c481707aace43",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "3D prototype route does not expose debug controls by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-e86099a8dfe2b4734473",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "youtube search without a query invites search instead of spinning forever",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-1809a65b7080559f776d",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "3D prototype route does not expose debug controls by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-60fa3e8089bb666d084a",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "youtube search without a query invites search instead of spinning forever",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-df27edf52762136dd5a4",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "3D prototype route does not expose debug controls by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-74d2a30df38b7b155ad9",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "youtube search without a query invites search instead of spinning forever",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-4632e4809430b7f21daf",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "3D prototype route does not expose debug controls by default",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ab9035ea187e2b584510-d0d0bfa062831a6e7aa6",
+              "file": "route-coherence.smoke.spec.js",
+              "line": 12,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "runtime-audit.smoke.spec.js",
+      "file": "runtime-audit.smoke.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "runtime audit smoke",
+          "file": "runtime-audit.smoke.spec.js",
+          "line": 15,
+          "column": 6,
+          "specs": [
+            {
+              "title": "runtime audit reports zero errors at boot",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "57e0a694e8906ec73bbe-cb6a7b3b701dda9ea856",
+              "file": "runtime-audit.smoke.spec.js",
+              "line": 16,
+              "column": 7
+            },
+            {
+              "title": "runtime audit reports zero errors at boot",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-chrome",
+                  "projectName": "desktop-chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "57e0a694e8906ec73bbe-2cc6c96acc8a597f0e85",
+              "file": "runtime-audit.smoke.spec.js",
+              "line": 16,
+              "column": 7
+            },
+            {
+              "title": "runtime audit reports zero errors at boot",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "57e0a694e8906ec73bbe-62f1e7e9cdbf9d0479e6",
+              "file": "runtime-audit.smoke.spec.js",
+              "line": 16,
+              "column": 7
+            },
+            {
+              "title": "runtime audit reports zero errors at boot",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "57e0a694e8906ec73bbe-9abb5ddc71dde7daa4df",
+              "file": "runtime-audit.smoke.spec.js",
+              "line": 16,
+              "column": 7
+            },
+            {
+              "title": "runtime audit reports zero errors at boot",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "57e0a694e8906ec73bbe-5262a526acd2cceb38a3",
+              "file": "runtime-audit.smoke.spec.js",
+              "line": 16,
+              "column": 7
+            },
+            {
+              "title": "runtime audit reports zero errors at boot",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-portrait",
+                  "projectName": "mobile-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "57e0a694e8906ec73bbe-4b1f91fb9924ed3adeb9",
+              "file": "runtime-audit.smoke.spec.js",
+              "line": 16,
+              "column": 7
+            },
+            {
+              "title": "runtime audit reports zero errors at boot",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "57e0a694e8906ec73bbe-b5f14d77b30bb47d93ff",
+              "file": "runtime-audit.smoke.spec.js",
+              "line": 16,
+              "column": 7
+            },
+            {
+              "title": "runtime audit reports zero errors at boot",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "mobile-landscape",
+                  "projectName": "mobile-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "57e0a694e8906ec73bbe-518f89bfd3e29980ed63",
+              "file": "runtime-audit.smoke.spec.js",
+              "line": 16,
+              "column": 7
+            },
+            {
+              "title": "runtime audit reports zero errors at boot",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "57e0a694e8906ec73bbe-60a097f79e03cbf4b59f",
+              "file": "runtime-audit.smoke.spec.js",
+              "line": 16,
+              "column": 7
+            },
+            {
+              "title": "runtime audit reports zero errors at boot",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 45000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "low-res",
+                  "projectName": "low-res",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "57e0a694e8906ec73bbe-eada41a1cbbf99d2db5d",
+              "file": "runtime-audit.smoke.spec.js",
+              "line": 16,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-05-18T07:44:43.193Z",
+    "duration": 26.152000000000044,
+    "expected": 0,
+    "skipped": 100,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

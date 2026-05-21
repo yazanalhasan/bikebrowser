@@ -106,7 +106,7 @@
       "unlocks": []
     },
     {
-      "deprecated": true,
+      "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/bridge_material_test.json",
       "next": "",
       "next_in_chain": "",
@@ -118,7 +118,7 @@
       "prerequisites": [],
       "quest_id": "bridge_material_test",
       "region_hint": "",
-      "supersededBy": "bridge_quest_3",
+      "supersededBy": "",
       "title": "Bridge Material Test",
       "unlocks": []
     },

@@ -487,7 +487,7 @@
       "unlocks": []
     },
     {
-      "deprecated": true,
+      "deprecated": false,
       "file": "BikeBrowserWorld/Data/missions/bridge_material_test.json",
       "objectives": [
         {
@@ -511,7 +511,7 @@
       ],
       "prerequisites": [],
       "quest_id": "bridge_material_test",
-      "quest_status": "STALE_DUPLICATE",
+      "quest_status": "DATA_ONLY",
       "unlocks": []
     },
     {
@@ -680,131 +680,38 @@
       "objectives": [
         {
           "objective_id": "go_to_testing_rig",
-          "objective_status": "PLAYABLE_REAL",
-          "producer_count": 1,
-          "producers": [
-            {
-              "linked_dialog": "",
-              "linked_npc": "",
-              "node_has_real_logic_script": true,
-              "objective_id": "go_to_testing_rig",
-              "prerequisites_declared": [],
-              "producer_node_path": "/UTM",
-              "producer_node_type": "UniversalTestingMachine",
-              "producer_quality": "REAL_GAMEPLAY",
-              "quest_id": "bridge_quest_3",
-              "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
-              "starts_quest_too": true,
-              "target_region": "",
-              "target_spawn": ""
-            }
-          ]
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
         },
         {
           "objective_id": "test_wood",
-          "objective_status": "PLAYABLE_REAL",
-          "producer_count": 1,
-          "producers": [
-            {
-              "linked_dialog": "",
-              "linked_npc": "",
-              "node_has_real_logic_script": true,
-              "objective_id": "test_wood",
-              "prerequisites_declared": [],
-              "producer_node_path": "/UTM",
-              "producer_node_type": "UniversalTestingMachine",
-              "producer_quality": "REAL_GAMEPLAY",
-              "quest_id": "bridge_quest_3",
-              "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
-              "starts_quest_too": true,
-              "target_region": "",
-              "target_spawn": ""
-            }
-          ]
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
         },
         {
           "objective_id": "test_metal",
-          "objective_status": "PLAYABLE_REAL",
-          "producer_count": 1,
-          "producers": [
-            {
-              "linked_dialog": "",
-              "linked_npc": "",
-              "node_has_real_logic_script": true,
-              "objective_id": "test_metal",
-              "prerequisites_declared": [],
-              "producer_node_path": "/UTM",
-              "producer_node_type": "UniversalTestingMachine",
-              "producer_quality": "REAL_GAMEPLAY",
-              "quest_id": "bridge_quest_3",
-              "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
-              "starts_quest_too": true,
-              "target_region": "",
-              "target_spawn": ""
-            }
-          ]
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
         },
         {
           "objective_id": "test_composite",
-          "objective_status": "PLAYABLE_REAL",
-          "producer_count": 1,
-          "producers": [
-            {
-              "linked_dialog": "",
-              "linked_npc": "",
-              "node_has_real_logic_script": true,
-              "objective_id": "test_composite",
-              "prerequisites_declared": [],
-              "producer_node_path": "/UTM",
-              "producer_node_type": "UniversalTestingMachine",
-              "producer_quality": "REAL_GAMEPLAY",
-              "quest_id": "bridge_quest_3",
-              "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
-              "starts_quest_too": true,
-              "target_region": "",
-              "target_spawn": ""
-            }
-          ]
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
         },
         {
           "objective_id": "choose_best_material",
-          "objective_status": "PLAYABLE_REAL",
-          "producer_count": 2,
-          "producers": [
-            {
-              "linked_dialog": "",
-              "linked_npc": "",
-              "node_has_real_logic_script": true,
-              "objective_id": "choose_best_material",
-              "prerequisites_declared": [],
-              "producer_node_path": "/UTM",
-              "producer_node_type": "UniversalTestingMachine",
-              "producer_quality": "REAL_GAMEPLAY",
-              "quest_id": "bridge_quest_3",
-              "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
-              "starts_quest_too": true,
-              "target_region": "",
-              "target_spawn": ""
-            },
-            {
-              "linked_dialog": "",
-              "linked_npc": "",
-              "node_has_real_logic_script": true,
-              "objective_id": "choose_best_material",
-              "prerequisites_declared": [],
-              "producer_node_path": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd:182",
-              "producer_node_type": "ScriptCall",
-              "producer_quality": "SCRIPT_CALL_ONLY",
-              "quest_id": "bridge_quest_3",
-              "scene_file": "",
-              "starts_quest_too": false
-            }
-          ]
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
         }
       ],
       "prerequisites": [],
       "quest_id": "bridge_quest_3",
-      "quest_status": "PLAYABLE",
+      "quest_status": "DATA_ONLY",
       "unlocks": []
     },
     {

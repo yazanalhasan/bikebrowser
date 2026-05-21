@@ -29,16 +29,6 @@
     },
     {
       "exposure_status": "EXPOSED",
-      "quest_id": "bridge_quest_3",
-      "reference_files": [
-        "BikeBrowserWorld/Data/missions/bridge_material_test.json",
-        "BikeBrowserWorld/Data/missions/bridge_quest_3.json",
-        "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
-        "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd"
-      ]
-    },
-    {
-      "exposure_status": "EXPOSED",
       "quest_id": "bridge_quest_4",
       "reference_files": [
         "BikeBrowserWorld/Data/missions/bridge_quest_4.json",

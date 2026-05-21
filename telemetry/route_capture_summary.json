@@ -1,0 +1,463 @@
+{
+  "startedAt": "2026-05-18T07:45:13.517Z",
+  "finishedAt": "2026-05-18T07:45:46.69Z",
+  "outputDir": "C:/dev/bikebrowser/playtest_captures/runtime_screens",
+  "screenshotCount": 50,
+  "routeCount": 5,
+  "viewportCount": 5,
+  "repeatCount": 2,
+  "concurrency": 8,
+  "failingCaptureCount": 50,
+  "failingRoutes": [
+    {
+      "viewport": "desktop",
+      "route": "godot_diagnostics",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 4
+    },
+    {
+      "viewport": "desktop",
+      "route": "godot_diagnostics",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 4
+    },
+    {
+      "viewport": "desktop",
+      "route": "home",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "desktop",
+      "route": "home",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "desktop",
+      "route": "legacy_play",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "desktop",
+      "route": "legacy_play",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "desktop",
+      "route": "play",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "desktop",
+      "route": "play",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "desktop",
+      "route": "play3d",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 4
+    },
+    {
+      "viewport": "desktop",
+      "route": "play3d",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 4
+    },
+    {
+      "viewport": "lowres",
+      "route": "godot_diagnostics",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "lowres",
+      "route": "godot_diagnostics",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "lowres",
+      "route": "home",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "lowres",
+      "route": "home",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "lowres",
+      "route": "legacy_play",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "lowres",
+      "route": "legacy_play",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "lowres",
+      "route": "play",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "lowres",
+      "route": "play",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "lowres",
+      "route": "play3d",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 4
+    },
+    {
+      "viewport": "lowres",
+      "route": "play3d",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 4
+    },
+    {
+      "viewport": "mobile_landscape",
+      "route": "godot_diagnostics",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_landscape",
+      "route": "godot_diagnostics",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_landscape",
+      "route": "home",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_landscape",
+      "route": "home",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_landscape",
+      "route": "legacy_play",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_landscape",
+      "route": "legacy_play",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_landscape",
+      "route": "play",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_landscape",
+      "route": "play",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_landscape",
+      "route": "play3d",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 4
+    },
+    {
+      "viewport": "mobile_landscape",
+      "route": "play3d",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 4
+    },
+    {
+      "viewport": "mobile_portrait",
+      "route": "godot_diagnostics",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_portrait",
+      "route": "godot_diagnostics",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_portrait",
+      "route": "home",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_portrait",
+      "route": "home",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_portrait",
+      "route": "legacy_play",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_portrait",
+      "route": "legacy_play",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_portrait",
+      "route": "play",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_portrait",
+      "route": "play",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "mobile_portrait",
+      "route": "play3d",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 4
+    },
+    {
+      "viewport": "mobile_portrait",
+      "route": "play3d",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 4
+    },
+    {
+      "viewport": "tablet_portrait",
+      "route": "godot_diagnostics",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "tablet_portrait",
+      "route": "godot_diagnostics",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "tablet_portrait",
+      "route": "home",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "tablet_portrait",
+      "route": "home",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "tablet_portrait",
+      "route": "legacy_play",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "tablet_portrait",
+      "route": "legacy_play",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "tablet_portrait",
+      "route": "play",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "tablet_portrait",
+      "route": "play",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 2,
+      "consoleFailureCount": 2
+    },
+    {
+      "viewport": "tablet_portrait",
+      "route": "play3d",
+      "iteration": 1,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 4
+    },
+    {
+      "viewport": "tablet_portrait",
+      "route": "play3d",
+      "iteration": 2,
+      "status": "ok",
+      "errorCount": 0,
+      "requestFailureCount": 0,
+      "consoleFailureCount": 4
+    }
+  ]
+}

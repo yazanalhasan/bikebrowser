@@ -76,6 +76,11 @@
       "path": "BikeBrowserWorld/Prototypes/EmbodiedMechanics/TireRig.gd"
     },
     {
+      "class_name": "UniversalTestingMachine",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd"
+    },
+    {
       "class_name": "WaterQualityStation",
       "extends": "res://Systems/Interactions/QuestObjectiveStation.gd",
       "path": "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd"
@@ -470,6 +475,76 @@
       "producer_node_type": "QuestObjectiveStation",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "go_to_testing_rig",
+      "prerequisites_declared": [],
+      "producer_node_path": "/UTM",
+      "producer_node_type": "UniversalTestingMachine",
+      "quest_id": "bridge_quest_3",
+      "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "test_wood",
+      "prerequisites_declared": [],
+      "producer_node_path": "/UTM",
+      "producer_node_type": "UniversalTestingMachine",
+      "quest_id": "bridge_quest_3",
+      "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "test_metal",
+      "prerequisites_declared": [],
+      "producer_node_path": "/UTM",
+      "producer_node_type": "UniversalTestingMachine",
+      "quest_id": "bridge_quest_3",
+      "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "test_composite",
+      "prerequisites_declared": [],
+      "producer_node_path": "/UTM",
+      "producer_node_type": "UniversalTestingMachine",
+      "quest_id": "bridge_quest_3",
+      "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "choose_best_material",
+      "prerequisites_declared": [],
+      "producer_node_path": "/UTM",
+      "producer_node_type": "UniversalTestingMachine",
+      "quest_id": "bridge_quest_3",
+      "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
       "starts_quest_too": true,
       "target_region": "",
       "target_spawn": ""
@@ -1104,7 +1179,7 @@
       "node_has_real_logic_script": true,
       "objective_id": "<dynamic>",
       "prerequisites_declared": [],
-      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd:245",
+      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd:247",
       "producer_node_type": "ScriptCall",
       "quest_id": "act1_pre_ride_check",
       "scene_file": "",
@@ -1167,6 +1242,42 @@
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd:216",
       "producer_node_type": "ScriptCall",
       "quest_id": "act1_pre_ride_check",
+      "scene_file": "",
+      "starts_quest_too": false
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "<dynamic>",
+      "prerequisites_declared": [],
+      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd:88",
+      "producer_node_type": "ScriptCall",
+      "quest_id": "bridge_quest_3",
+      "scene_file": "",
+      "starts_quest_too": false
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "<dynamic>",
+      "prerequisites_declared": [],
+      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd:169",
+      "producer_node_type": "ScriptCall",
+      "quest_id": "bridge_quest_3",
+      "scene_file": "",
+      "starts_quest_too": false
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "choose_best_material",
+      "prerequisites_declared": [],
+      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd:182",
+      "producer_node_type": "ScriptCall",
+      "quest_id": "bridge_quest_3",
       "scene_file": "",
       "starts_quest_too": false
     },
@@ -1300,19 +1411,19 @@
     },
     {
       "matched_properties": 0,
-      "nodes": 9,
+      "nodes": 11,
       "producer_records": 0,
       "scene_file": "BikeBrowserWorld/Regions/Boot/Boot.tscn"
     },
     {
       "matched_properties": 41,
-      "nodes": 53,
+      "nodes": 55,
       "producer_records": 14,
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
     },
     {
       "matched_properties": 16,
-      "nodes": 46,
+      "nodes": 48,
       "producer_records": 14,
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
     },
@@ -1323,32 +1434,38 @@
       "scene_file": "BikeBrowserWorld/Regions/Garage/TireRepairStation.tscn"
     },
     {
+      "matched_properties": 3,
+      "nodes": 24,
+      "producer_records": 5,
+      "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn"
+    },
+    {
       "matched_properties": 7,
-      "nodes": 158,
+      "nodes": 159,
       "producer_records": 3,
       "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
     },
     {
       "matched_properties": 30,
-      "nodes": 43,
+      "nodes": 45,
       "producer_records": 10,
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
     },
     {
       "matched_properties": 20,
-      "nodes": 237,
+      "nodes": 238,
       "producer_records": 10,
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
     },
     {
       "matched_properties": 34,
-      "nodes": 47,
+      "nodes": 49,
       "producer_records": 13,
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
     },
     {
       "matched_properties": 0,
-      "nodes": 1,
+      "nodes": 3,
       "producer_records": 0,
       "scene_file": "BikeBrowserWorld/Regions/SystemShowcase/SystemShowcase.tscn"
     }

@@ -409,11 +409,7 @@ def build_matrix(truth: dict[str, Any], graded: dict[str, Any], reach: dict[str,
         for rid in state:
             sp = reach["regions"].get(rid, "")
             if sp:
-                region_scene = scene_resource_to_path(sp)
-                scenes_any.add(rel(region_scene))
-                if region_scene.exists():
-                    for packed_scene in re.findall(r'path="(res://[^"]+\.tscn)"', region_scene.read_text(encoding="utf-8", errors="ignore")):
-                        scenes_any.add(rel(scene_resource_to_path(packed_scene)))
+                scenes_any.add(rel(scene_resource_to_path(sp)))
     for p in graded["producers"]:
         by_pair[(p["quest_id"], p["objective_id"])].append(p)
     quests = []

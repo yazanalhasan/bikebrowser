@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "materials": [
+    {
+      "id": "wood",
+      "display": "Wood plank",
+      "tensile": 5,
+      "compressive": 6,
+      "flexibility": 4,
+      "weight": 3,
+      "cost": 2,
+      "fail_at_step": 6,
+      "failure_mode": "split_along_grain",
+      "best_use": "beam"
+    },
+    {
+      "id": "steel",
+      "display": "Steel beam",
+      "tensile": 10,
+      "compressive": 9,
+      "flexibility": 3,
+      "weight": 9,
+      "cost": 7,
+      "fail_at_step": 12,
+      "failure_mode": "yield_then_snap",
+      "best_use": "beam"
+    },
+    {
+      "id": "aluminum",
+      "display": "Aluminum bar",
+      "tensile": 7,
+      "compressive": 6,
+      "flexibility": 4,
+      "weight": 4,
+      "cost": 6,
+      "fail_at_step": 8,
+      "failure_mode": "bend_permanent",
+      "best_use": "beam"
+    },
+    {
+      "id": "rubber",
+      "display": "Rubber strip",
+      "tensile": 3,
+      "compressive": 2,
+      "flexibility": 10,
+      "weight": 2,
+      "cost": 3,
+      "fail_at_step": 4,
+      "failure_mode": "stretch_then_tear",
+      "best_use": "suspension"
+    },
+    {
+      "id": "composite",
+      "display": "Composite fiber",
+      "tensile": 9,
+      "compressive": 7,
+      "flexibility": 6,
+      "weight": 3,
+      "cost": 9,
+      "fail_at_step": 10,
+      "failure_mode": "delaminate",
+      "best_use": "suspension"
+    },
+    {
+      "id": "cable",
+      "display": "Rope/cable",
+      "tensile": 8,
+      "compressive": 1,
+      "flexibility": 7,
+      "weight": 2,
+      "cost": 4,
+      "fail_at_step": 9,
+      "failure_mode": "buckle_or_fray",
+      "best_use": "suspension"
+    }
+  ]
+}

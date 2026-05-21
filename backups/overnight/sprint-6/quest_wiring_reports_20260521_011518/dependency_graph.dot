@@ -1,0 +1,16 @@
+digraph quest_dependencies {
+  "act1_pre_ride_check" -> "act1_regional_readiness" [label="prerequisite"];
+  "chain_repair" -> "act1_regional_readiness" [label="prerequisite"];
+  "bridge_quest_5" -> "act1_regional_readiness" [label="prerequisite"];
+  "desert_plant_observation" -> "act1_regional_readiness" [label="prerequisite"];
+  "test_water_quality" -> "act1_regional_readiness" [label="prerequisite"];
+  "copper_rock_id" -> "act1_regional_readiness" [label="prerequisite"];
+  "workshop_first_build" -> "act1_regional_readiness" [label="prerequisite"];
+  "test_water_quality" -> "balance_the_flow" [label="prerequisite"];
+  "chain_repair" -> "bridge_quest_5" [label="prerequisite"];
+  "copper_rock_id" -> "copper_prospector" [label="prerequisite"];
+  "desert_plant_observation" -> "desert_foraging_samples" [label="prerequisite"];
+  "desert_plant_observation" -> "desert_water_management" [label="prerequisite"];
+  "copper_rock_id" -> "mine_stability_check" [label="prerequisite"];
+  "test_water_quality" -> "river_ecosystem_survey" [label="prerequisite"];
+}

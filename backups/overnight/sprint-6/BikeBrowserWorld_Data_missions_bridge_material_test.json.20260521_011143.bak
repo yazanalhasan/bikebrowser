@@ -23,7 +23,5 @@
     "allowance": 35,
     "badge": "Bridge Builder",
     "reputation": 8
-  },
-  "deprecated": true,
-  "supersededBy": "bridge_quest_3"
+  }
 }

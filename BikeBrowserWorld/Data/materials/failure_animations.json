@@ -1,0 +1,16 @@
+{
+  "failure_modes": {
+    "split_along_grain": "placeholder_shake_tint_wood_split",
+    "yield_then_snap": "placeholder_shake_tint_metal_yield",
+    "bend_permanent": "placeholder_shake_tint_bend",
+    "stretch_then_tear": "placeholder_shake_tint_tear",
+    "delaminate": "placeholder_shake_tint_delaminate",
+    "buckle_or_fray": "placeholder_shake_tint_fray"
+  },
+  "placeholder_behavior": {
+    "duration_seconds": 0.4,
+    "motion": "small shake",
+    "visual": "warm tint shift",
+    "note": "Art replacement deferred; UTM v1 uses tactile state changes and notebook observations."
+  }
+}

@@ -1,4 +1,86 @@
 {
+  "producer_classes": [
+    {
+      "class_name": "AnimatedNpcInteraction",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd"
+    },
+    {
+      "class_name": "BrakeRig",
+      "extends": "Node2D",
+      "path": "BikeBrowserWorld/Prototypes/EmbodiedMechanics/BrakeRig.gd"
+    },
+    {
+      "class_name": "ChainHotspot",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/ChainHotspot.gd"
+    },
+    {
+      "class_name": "ChainRig",
+      "extends": "Node2D",
+      "path": "BikeBrowserWorld/Prototypes/EmbodiedMechanics/ChainRig.gd"
+    },
+    {
+      "class_name": "ChallengeStation",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/ChallengeStation.gd"
+    },
+    {
+      "class_name": "DialogController",
+      "extends": "CanvasLayer",
+      "path": "BikeBrowserWorld/Systems/UI/DialogController.gd"
+    },
+    {
+      "class_name": "InspectableObject",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/InspectableObject.gd"
+    },
+    {
+      "class_name": "NpcInteraction",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd"
+    },
+    {
+      "class_name": "PlantObservationStation",
+      "extends": "res://Systems/Interactions/QuestObjectiveStation.gd",
+      "path": "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd"
+    },
+    {
+      "class_name": "PlaytestRigTelemetry",
+      "extends": "Node",
+      "path": "BikeBrowserWorld/Systems/Playtest/PlaytestRigTelemetry.gd"
+    },
+    {
+      "class_name": "QuestObjectiveStation",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd"
+    },
+    {
+      "class_name": "ResourcePickup",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/ResourcePickup.gd"
+    },
+    {
+      "class_name": "SafetyCheckStation",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+    },
+    {
+      "class_name": "TireRepairStation",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+    },
+    {
+      "class_name": "TireRig",
+      "extends": "res://Systems/Mechanical/MechanicalSystemCore.gd",
+      "path": "BikeBrowserWorld/Prototypes/EmbodiedMechanics/TireRig.gd"
+    },
+    {
+      "class_name": "WaterQualityStation",
+      "extends": "res://Systems/Interactions/QuestObjectiveStation.gd",
+      "path": "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd"
+    }
+  ],
   "producers": [
     {
       "linked_dialog": "",
@@ -8,7 +90,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/YuccaFiberPickup",
       "producer_node_type": "ResourcePickup",
-      "producer_quality": "PICKUP",
       "quest_id": "desert_foraging_samples",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -23,7 +104,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/AgaveFiberPickup",
       "producer_node_type": "ResourcePickup",
-      "producer_quality": "PICKUP",
       "quest_id": "desert_foraging_samples",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -38,7 +118,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/JojobaPickup",
       "producer_node_type": "ResourcePickup",
-      "producer_quality": "PICKUP",
       "quest_id": "desert_foraging_samples",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -53,7 +132,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/CreosotePickup",
       "producer_node_type": "ResourcePickup",
-      "producer_quality": "PICKUP",
       "quest_id": "desert_foraging_samples",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -68,7 +146,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/CactusWaterPickup",
       "producer_node_type": "ResourcePickup",
-      "producer_quality": "PICKUP",
       "quest_id": "desert_foraging_samples",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -83,7 +160,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/TrailMarkerInspectable",
       "producer_node_type": "InspectableObject",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "desert_water_management",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -98,7 +174,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/ScavengeInspectable",
       "producer_node_type": "InspectableObject",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "desert_water_management",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -113,7 +188,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/WaterHoursChallenge",
       "producer_node_type": "ChallengeStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "desert_water_management",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -128,7 +202,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/PlantRatioChallenge",
       "producer_node_type": "ChallengeStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "desert_water_management",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -143,7 +216,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/HeatSurvivalChallenge",
       "producer_node_type": "ChallengeStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "desert_water_management",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -158,7 +230,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/PlantObservationStation",
       "producer_node_type": "PlantObservationStation",
-      "producer_quality": "REAL_GAMEPLAY",
       "quest_id": "desert_plant_observation",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -173,7 +244,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/PlantObservationStation",
       "producer_node_type": "PlantObservationStation",
-      "producer_quality": "REAL_GAMEPLAY",
       "quest_id": "desert_plant_observation",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -188,7 +258,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/PlantObservationStation",
       "producer_node_type": "PlantObservationStation",
-      "producer_quality": "REAL_GAMEPLAY",
       "quest_id": "desert_plant_observation",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -203,7 +272,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/PlantObservationStation",
       "producer_node_type": "PlantObservationStation",
-      "producer_quality": "REAL_GAMEPLAY",
       "quest_id": "desert_plant_observation",
       "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
       "starts_quest_too": true,
@@ -218,7 +286,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BrokenPlanksInspectable",
       "producer_node_type": "InspectableObject",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_1",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -233,7 +300,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BrokenBeamsInspectable",
       "producer_node_type": "InspectableObject",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_1",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -248,7 +314,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/AssessBridgeStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_1",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -263,7 +328,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/AssessBridgeStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_1",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -278,7 +342,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/AssessBridgeStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_1",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -293,7 +356,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeBuildStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_4",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -308,7 +370,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeBuildStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_4",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -323,7 +384,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeBuildStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_4",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -338,7 +398,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeBuildStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_4",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -353,7 +412,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeBuildStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_4",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -368,7 +426,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeReviewStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -383,7 +440,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeReviewStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -398,7 +454,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeReviewStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
       "starts_quest_too": true,
@@ -413,84 +468,8 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeReviewStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
-      "starts_quest_too": true,
-      "target_region": "",
-      "target_spawn": ""
-    },
-    {
-      "linked_dialog": "",
-      "linked_npc": "",
-      "node_has_real_logic_script": true,
-      "objective_id": "go_to_testing_rig",
-      "prerequisites_declared": [],
-      "producer_node_path": "/UTM",
-      "producer_node_type": "UniversalTestingMachine",
-      "producer_quality": "REAL_GAMEPLAY",
-      "quest_id": "bridge_quest_3",
-      "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
-      "starts_quest_too": true,
-      "target_region": "",
-      "target_spawn": ""
-    },
-    {
-      "linked_dialog": "",
-      "linked_npc": "",
-      "node_has_real_logic_script": true,
-      "objective_id": "test_wood",
-      "prerequisites_declared": [],
-      "producer_node_path": "/UTM",
-      "producer_node_type": "UniversalTestingMachine",
-      "producer_quality": "REAL_GAMEPLAY",
-      "quest_id": "bridge_quest_3",
-      "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
-      "starts_quest_too": true,
-      "target_region": "",
-      "target_spawn": ""
-    },
-    {
-      "linked_dialog": "",
-      "linked_npc": "",
-      "node_has_real_logic_script": true,
-      "objective_id": "test_metal",
-      "prerequisites_declared": [],
-      "producer_node_path": "/UTM",
-      "producer_node_type": "UniversalTestingMachine",
-      "producer_quality": "REAL_GAMEPLAY",
-      "quest_id": "bridge_quest_3",
-      "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
-      "starts_quest_too": true,
-      "target_region": "",
-      "target_spawn": ""
-    },
-    {
-      "linked_dialog": "",
-      "linked_npc": "",
-      "node_has_real_logic_script": true,
-      "objective_id": "test_composite",
-      "prerequisites_declared": [],
-      "producer_node_path": "/UTM",
-      "producer_node_type": "UniversalTestingMachine",
-      "producer_quality": "REAL_GAMEPLAY",
-      "quest_id": "bridge_quest_3",
-      "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
-      "starts_quest_too": true,
-      "target_region": "",
-      "target_spawn": ""
-    },
-    {
-      "linked_dialog": "",
-      "linked_npc": "",
-      "node_has_real_logic_script": true,
-      "objective_id": "choose_best_material",
-      "prerequisites_declared": [],
-      "producer_node_path": "/UTM",
-      "producer_node_type": "UniversalTestingMachine",
-      "producer_quality": "REAL_GAMEPLAY",
-      "quest_id": "bridge_quest_3",
-      "scene_file": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn",
       "starts_quest_too": true,
       "target_region": "",
       "target_spawn": ""
@@ -503,7 +482,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/WorkshopBuildStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "workshop_first_build",
       "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
       "starts_quest_too": true,
@@ -518,7 +496,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/WorkshopBuildStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "workshop_first_build",
       "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
       "starts_quest_too": true,
@@ -533,7 +510,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/WorkshopBuildStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "workshop_first_build",
       "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
       "starts_quest_too": true,
@@ -548,7 +524,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/SurfaceCopperPickup",
       "producer_node_type": "ResourcePickup",
-      "producer_quality": "PICKUP",
       "quest_id": "copper_prospector",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
       "starts_quest_too": true,
@@ -563,7 +538,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/DeepCopperPickup",
       "producer_node_type": "ResourcePickup",
-      "producer_quality": "PICKUP",
       "quest_id": "copper_prospector",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
       "starts_quest_too": true,
@@ -578,7 +552,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/WireSpoolPickup",
       "producer_node_type": "ResourcePickup",
-      "producer_quality": "PICKUP",
       "quest_id": "copper_prospector",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
       "starts_quest_too": true,
@@ -593,7 +566,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/ConductivityChallenge",
       "producer_node_type": "ChallengeStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "copper_prospector",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
       "starts_quest_too": true,
@@ -608,7 +580,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/SupportBeamInspectable",
       "producer_node_type": "InspectableObject",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "mine_stability_check",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
       "starts_quest_too": true,
@@ -623,7 +594,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/LoadCapacityChallenge",
       "producer_node_type": "ChallengeStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "mine_stability_check",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
       "starts_quest_too": true,
@@ -638,7 +608,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/RubbleDensityInspectable",
       "producer_node_type": "InspectableObject",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "mine_stability_check",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
       "starts_quest_too": true,
@@ -653,7 +622,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/CopperEvidenceStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "copper_rock_id",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
       "starts_quest_too": true,
@@ -668,7 +636,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/CopperEvidenceStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "copper_rock_id",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
       "starts_quest_too": true,
@@ -683,7 +650,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/CopperEvidenceStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "copper_rock_id",
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
       "starts_quest_too": true,
@@ -698,7 +664,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeReviewStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
       "starts_quest_too": true,
@@ -713,7 +678,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeReviewStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
       "starts_quest_too": true,
@@ -728,7 +692,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeReviewStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
       "starts_quest_too": true,
@@ -743,7 +706,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeReviewStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "bridge_quest_5",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
       "starts_quest_too": true,
@@ -758,7 +720,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/Act1CapstoneStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "act1_regional_readiness",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
       "starts_quest_too": true,
@@ -773,7 +734,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/Act1CapstoneStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "act1_regional_readiness",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
       "starts_quest_too": true,
@@ -788,7 +748,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/Act1CapstoneStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "act1_regional_readiness",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
       "starts_quest_too": true,
@@ -803,7 +762,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/Act1CapstoneStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "act1_regional_readiness",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
       "starts_quest_too": true,
@@ -818,7 +776,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/Act1CapstoneStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "act1_regional_readiness",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
       "starts_quest_too": true,
@@ -833,7 +790,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/Act1CapstoneStation",
       "producer_node_type": "QuestObjectiveStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "act1_regional_readiness",
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
       "starts_quest_too": true,
@@ -848,7 +804,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/AlgaeSamplePickup",
       "producer_node_type": "ResourcePickup",
-      "producer_quality": "PICKUP",
       "quest_id": "river_ecosystem_survey",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -863,7 +818,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/MicrobialSamplePickup",
       "producer_node_type": "ResourcePickup",
-      "producer_quality": "PICKUP",
       "quest_id": "river_ecosystem_survey",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -878,7 +832,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/RiverMineralsPickup",
       "producer_node_type": "ResourcePickup",
-      "producer_quality": "PICKUP",
       "quest_id": "balance_the_flow",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -893,7 +846,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/ReedFiberPickup",
       "producer_node_type": "ResourcePickup",
-      "producer_quality": "PICKUP",
       "quest_id": "balance_the_flow",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -908,7 +860,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/FoodWebInspectable",
       "producer_node_type": "InspectableObject",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "river_ecosystem_survey",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -923,7 +874,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/FlowRateChallenge",
       "producer_node_type": "ChallengeStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "river_ecosystem_survey",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -938,7 +888,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/IrrigationInspectable",
       "producer_node_type": "InspectableObject",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "balance_the_flow",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -953,7 +902,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/IrrigationFractionChallenge",
       "producer_node_type": "ChallengeStation",
-      "producer_quality": "GENERIC_STATION",
       "quest_id": "balance_the_flow",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -968,7 +916,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/WaterQualityStation",
       "producer_node_type": "WaterQualityStation",
-      "producer_quality": "REAL_GAMEPLAY",
       "quest_id": "test_water_quality",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -983,7 +930,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/WaterQualityStation",
       "producer_node_type": "WaterQualityStation",
-      "producer_quality": "REAL_GAMEPLAY",
       "quest_id": "test_water_quality",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -998,7 +944,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/WaterQualityStation",
       "producer_node_type": "WaterQualityStation",
-      "producer_quality": "REAL_GAMEPLAY",
       "quest_id": "test_water_quality",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -1013,7 +958,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/WaterQualityStation",
       "producer_node_type": "WaterQualityStation",
-      "producer_quality": "REAL_GAMEPLAY",
       "quest_id": "test_water_quality",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -1028,7 +972,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "/WaterQualityStation",
       "producer_node_type": "WaterQualityStation",
-      "producer_quality": "REAL_GAMEPLAY",
       "quest_id": "test_water_quality",
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
       "starts_quest_too": true,
@@ -1043,7 +986,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/ChainHotspot.gd:140",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "chain_repair",
       "scene_file": "",
       "starts_quest_too": false
@@ -1056,7 +998,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/ChallengeStation.gd:71",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1069,7 +1010,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/InspectableObject.gd:51",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1082,7 +1022,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd:67",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1095,7 +1034,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd:205",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1108,7 +1046,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd:241",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1121,7 +1058,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd:242",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1134,7 +1070,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd:267",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1147,7 +1082,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd:123",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1160,7 +1094,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/ResourcePickup.gd:58",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1171,9 +1104,8 @@
       "node_has_real_logic_script": true,
       "objective_id": "<dynamic>",
       "prerequisites_declared": [],
-      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd:247",
+      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd:245",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "act1_pre_ride_check",
       "scene_file": "",
       "starts_quest_too": false
@@ -1186,7 +1118,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd:104",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "act1_pre_ride_check",
       "scene_file": "",
       "starts_quest_too": false
@@ -1199,7 +1130,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd:113",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "act1_pre_ride_check",
       "scene_file": "",
       "starts_quest_too": false
@@ -1212,7 +1142,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd:125",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "act1_pre_ride_check",
       "scene_file": "",
       "starts_quest_too": false
@@ -1225,7 +1154,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd:139",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "act1_pre_ride_check",
       "scene_file": "",
       "starts_quest_too": false
@@ -1238,47 +1166,7 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd:216",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "act1_pre_ride_check",
-      "scene_file": "",
-      "starts_quest_too": false
-    },
-    {
-      "linked_dialog": "",
-      "linked_npc": "",
-      "node_has_real_logic_script": true,
-      "objective_id": "<dynamic>",
-      "prerequisites_declared": [],
-      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd:88",
-      "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
-      "quest_id": "bridge_quest_3",
-      "scene_file": "",
-      "starts_quest_too": false
-    },
-    {
-      "linked_dialog": "",
-      "linked_npc": "",
-      "node_has_real_logic_script": true,
-      "objective_id": "<dynamic>",
-      "prerequisites_declared": [],
-      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd:169",
-      "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
-      "quest_id": "bridge_quest_3",
-      "scene_file": "",
-      "starts_quest_too": false
-    },
-    {
-      "linked_dialog": "",
-      "linked_npc": "",
-      "node_has_real_logic_script": true,
-      "objective_id": "choose_best_material",
-      "prerequisites_declared": [],
-      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd:182",
-      "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
-      "quest_id": "bridge_quest_3",
       "scene_file": "",
       "starts_quest_too": false
     },
@@ -1290,7 +1178,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd:49",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1303,7 +1190,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd:141",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1316,7 +1202,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd:149",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1329,7 +1214,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd:178",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1342,7 +1226,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd:188",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1355,7 +1238,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd:249",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1368,7 +1250,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/UI/DialogController.gd:92",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1381,7 +1262,6 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/UI/DialogController.gd:94",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
@@ -1394,16 +1274,93 @@
       "prerequisites_declared": [],
       "producer_node_path": "BikeBrowserWorld/Systems/UI/DialogController.gd:95",
       "producer_node_type": "ScriptCall",
-      "producer_quality": "SCRIPT_CALL_ONLY",
       "quest_id": "<dynamic>",
       "scene_file": "",
       "starts_quest_too": false
     }
   ],
-  "quality_distribution": {
-    "GENERIC_STATION": 43,
-    "PICKUP": 12,
-    "REAL_GAMEPLAY": 14,
-    "SCRIPT_CALL_ONLY": 28
+  "scene_parse": [
+    {
+      "matched_properties": 0,
+      "nodes": 40,
+      "producer_records": 0,
+      "scene_file": "BikeBrowserWorld/Prototypes/EmbodiedMechanics/BrakeTestPrototype.tscn"
+    },
+    {
+      "matched_properties": 0,
+      "nodes": 24,
+      "producer_records": 0,
+      "scene_file": "BikeBrowserWorld/Prototypes/EmbodiedMechanics/ChainRigEmbedded.tscn"
+    },
+    {
+      "matched_properties": 0,
+      "nodes": 21,
+      "producer_records": 0,
+      "scene_file": "BikeBrowserWorld/Prototypes/EmbodiedMechanics/TireRig.tscn"
+    },
+    {
+      "matched_properties": 0,
+      "nodes": 9,
+      "producer_records": 0,
+      "scene_file": "BikeBrowserWorld/Regions/Boot/Boot.tscn"
+    },
+    {
+      "matched_properties": 41,
+      "nodes": 53,
+      "producer_records": 14,
+      "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+    },
+    {
+      "matched_properties": 16,
+      "nodes": 46,
+      "producer_records": 14,
+      "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+    },
+    {
+      "matched_properties": 0,
+      "nodes": 4,
+      "producer_records": 0,
+      "scene_file": "BikeBrowserWorld/Regions/Garage/TireRepairStation.tscn"
+    },
+    {
+      "matched_properties": 7,
+      "nodes": 158,
+      "producer_records": 3,
+      "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+    },
+    {
+      "matched_properties": 30,
+      "nodes": 43,
+      "producer_records": 10,
+      "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+    },
+    {
+      "matched_properties": 20,
+      "nodes": 237,
+      "producer_records": 10,
+      "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
+    },
+    {
+      "matched_properties": 34,
+      "nodes": 47,
+      "producer_records": 13,
+      "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+    },
+    {
+      "matched_properties": 0,
+      "nodes": 1,
+      "producer_records": 0,
+      "scene_file": "BikeBrowserWorld/Regions/SystemShowcase/SystemShowcase.tscn"
+    }
+  ],
+  "self_test": {
+    "note": "Zero quest properties in boot/stub regions are reported but do not block; prototype/UI/addon scenes are outside the blocking self-test.",
+    "registered_gameplay_scene_parse_failures": [],
+    "registered_gameplay_scenes_checked": 8,
+    "registered_gameplay_scenes_with_zero_matched_properties": [
+      "BikeBrowserWorld/Regions/Boot/Boot.tscn",
+      "BikeBrowserWorld/Regions/SystemShowcase/SystemShowcase.tscn"
+    ],
+    "scope": "registered gameplay region scenes plus known gameplay interaction scenes/scripts"
   }
 }
