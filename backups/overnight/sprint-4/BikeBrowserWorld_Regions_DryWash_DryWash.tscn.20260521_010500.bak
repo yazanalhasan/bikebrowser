@@ -1,0 +1,222 @@
+[gd_scene load_steps=24 format=3 uid="uid://bikebrowser_dry_wash"]
+
+[ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
+[ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
+[ext_resource type="Script" path="res://Systems/World/TransitionZone.gd" id="3_transition"]
+[ext_resource type="PackedScene" path="res://Regions/NPCs/MrChenNpc.tscn" id="4_mrchen"]
+[ext_resource type="SpriteFrames" path="res://Assets/Characters/Zuzu/Zuzu.spriteframes.tres" id="5_zuzu_frames"]
+[ext_resource type="Script" path="res://Systems/Interactions/QuestObjectiveStation.gd" id="6_station"]
+[ext_resource type="Script" path="res://Systems/Interactions/InspectableObject.gd" id="7_inspect"]
+[ext_resource type="Texture2D" path="res://Assets/Props/DryWash/dry_wash_channel_tile.png" id="8_channel"]
+[ext_resource type="Texture2D" path="res://Assets/Props/DryWash/broken_bridge_plank.png" id="9_plank"]
+[ext_resource type="Texture2D" path="res://Assets/Props/DryWash/broken_bridge_beam.png" id="10_beam"]
+[ext_resource type="Texture2D" path="res://Assets/Props/DryWash/bridge_support_pier.png" id="11_pier"]
+[ext_resource type="Texture2D" path="res://Assets/Props/DryWash/test_bridge_segment.png" id="12_bridge_segment"]
+[ext_resource type="Texture2D" path="res://Assets/Props/DryWash/clipboard_bridge_plan.png" id="13_clipboard"]
+[ext_resource type="Texture2D" path="res://Assets/Props/DryWash/measuring_tape.png" id="14_tape"]
+[ext_resource type="Texture2D" path="res://Assets/Props/DryWash/rope_coil.png" id="15_rope"]
+[ext_resource type="Texture2D" path="res://Assets/Props/DryWash/monsoon_warning_sign.png" id="16_sign"]
+[ext_resource type="Texture2D" path="res://Assets/Props/DryWash/rock_pile_wash_stones.png" id="17_rocks"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 18.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
+size = Vector2(220, 72)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_station"]
+size = Vector2(180, 96)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_inspect"]
+size = Vector2(140, 86)
+
+[node name="DryWash" type="Node2D"]
+script = ExtResource("1_region")
+region_id = "dry_wash"
+layout_path = "res://Data/layouts/dry_wash.json"
+
+[node name="Background" type="Polygon2D" parent="."]
+
+[node name="FarBank" type="Polygon2D" parent="."]
+
+[node name="NearBank" type="Polygon2D" parent="."]
+
+[node name="WashChannel" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("8_channel")
+
+[node name="WarningSign" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("16_sign")
+
+[node name="RockPileA" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("17_rocks")
+
+[node name="RockPileB" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("17_rocks")
+
+[node name="MrChenNpc" parent="." instance=ExtResource("4_mrchen")]
+
+[node name="BrokenPlanksInspectable" type="Area2D" parent="."]
+script = ExtResource("7_inspect")
+inspect_id = "dry_wash_broken_planks"
+quest_id = "bridge_quest_1"
+objective_id = "inspect_planks"
+prompt_text = "Inspect planks"
+observation_text = "The planks snapped where flood force lifted and twisted the bridge deck."
+notebook_tag = "bridge_damage"
+once_only = true
+
+[node name="Sprite" type="Sprite2D" parent="BrokenPlanksInspectable"]
+texture_filter = 1
+texture = ExtResource("9_plank")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BrokenPlanksInspectable"]
+shape = SubResource("RectangleShape2D_inspect")
+
+[node name="BrokenBeamsInspectable" type="Area2D" parent="."]
+script = ExtResource("7_inspect")
+inspect_id = "dry_wash_broken_beams"
+quest_id = "bridge_quest_1"
+objective_id = "inspect_beams_supports"
+prompt_text = "Inspect beams"
+observation_text = "The beams shifted because the supports were not carrying force into stable ground."
+notebook_tag = "bridge_damage"
+once_only = true
+
+[node name="Sprite" type="Sprite2D" parent="BrokenBeamsInspectable"]
+texture_filter = 1
+texture = ExtResource("10_beam")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BrokenBeamsInspectable"]
+shape = SubResource("RectangleShape2D_inspect")
+
+[node name="AssessBridgeStation" type="Area2D" parent="."]
+script = ExtResource("6_station")
+quest_id = "bridge_quest_1"
+objective_ids = Array[String](["talk_to_mr_chen", "visit_broken_bridge", "return_report"])
+prompt_text = "Assess bridge"
+completion_message = "Zuzu records the broken bridge visit and reports the damage pattern to Mr. Chen."
+completion_tone = "warm"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AssessBridgeStation"]
+shape = SubResource("RectangleShape2D_station")
+
+[node name="StationMat" type="Polygon2D" parent="AssessBridgeStation"]
+
+[node name="Beacon" type="Polygon2D" parent="AssessBridgeStation"]
+
+[node name="Sign" type="Label" parent="AssessBridgeStation"]
+text = "Damage Review"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Prompt" type="Label" parent="AssessBridgeStation"]
+text = "Assess bridge"
+horizontal_alignment = 1
+
+[node name="BridgeBuildStation" type="Area2D" parent="."]
+script = ExtResource("6_station")
+quest_id = "bridge_quest_4"
+objective_ids = Array[String](["choose_design", "place_supports", "lay_planks", "secure_connections", "walk_test"])
+prompt_text = "Build bridge"
+completion_message = "Zuzu stages supports, planks, connections, and a careful walk-test across the dry wash."
+completion_tone = "warm"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BridgeBuildStation"]
+shape = SubResource("RectangleShape2D_station")
+
+[node name="StationMat" type="Polygon2D" parent="BridgeBuildStation"]
+
+[node name="Beacon" type="Polygon2D" parent="BridgeBuildStation"]
+
+[node name="Sign" type="Label" parent="BridgeBuildStation"]
+text = "Bridge Build"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Prompt" type="Label" parent="BridgeBuildStation"]
+text = "Build bridge"
+horizontal_alignment = 1
+
+[node name="BridgeReviewStation" type="Area2D" parent="."]
+script = ExtResource("6_station")
+quest_id = "bridge_quest_5"
+objective_ids = Array[String](["talk_to_neighbors", "receive_badge", "unlock_new_area", "learn_triangles"])
+prompt_text = "Review triangles"
+completion_message = "Mr. Chen shows how triangles keep the rebuilt bridge from folding under load."
+completion_tone = "warm"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BridgeReviewStation"]
+shape = SubResource("RectangleShape2D_station")
+
+[node name="StationMat" type="Polygon2D" parent="BridgeReviewStation"]
+
+[node name="Beacon" type="Polygon2D" parent="BridgeReviewStation"]
+
+[node name="Sign" type="Label" parent="BridgeReviewStation"]
+text = "Triangle Review"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="Prompt" type="Label" parent="BridgeReviewStation"]
+text = "Review"
+horizontal_alignment = 1
+
+[node name="SupportPierA" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("11_pier")
+
+[node name="SupportPierB" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("11_pier")
+
+[node name="TestBridgeSegment" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("12_bridge_segment")
+
+[node name="ClipboardPlan" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("13_clipboard")
+
+[node name="MeasuringTape" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("14_tape")
+
+[node name="RopeCoil" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("15_rope")
+
+[node name="BackToNeighborhood" type="Area2D" parent="."]
+script = ExtResource("3_transition")
+target_region = "neighborhood_street"
+target_spawn = "from_dry_wash"
+require_accept = false
+feedback_message = "Zuzu rides back from the dry wash."
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BackToNeighborhood"]
+shape = SubResource("RectangleShape2D_exit")
+
+[node name="Prompt" type="Label" parent="BackToNeighborhood"]
+text = "Neighborhood"
+horizontal_alignment = 1
+
+[node name="Player" type="CharacterBody2D" parent="."]
+script = ExtResource("2_zuzu")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Player"]
+texture_filter = 1
+position = Vector2(0, -32)
+scale = Vector2(1.15, 1.15)
+sprite_frames = ExtResource("5_zuzu_frames")
+animation = &"idle_down"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+enabled = true
+process_callback = 0
+position_smoothing_enabled = true
