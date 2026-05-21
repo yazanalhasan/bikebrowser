@@ -2,7 +2,7 @@
 
 Generated: 2026-05-21T08:38:49.103066+00:00
 Current branch: overnight/sprint-1-phase-2
-Latest commit before final summary commit: a196a7e
+Latest commit hash: e62cab2
 
 ## What Completed
 
@@ -261,3 +261,4 @@ Resume with daytime triage for bridge_quest_2:
 1. Decide whether to add a Shopkeeper NPC or revise the quest giver/objective wording.
 2. Add exact item ids metal_bracket and rope_coil or revise completion conditions.
 3. Wire material pickups/deposit station, then run scripts/audit-quest-wiring.py --strict.
+
