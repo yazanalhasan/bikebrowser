@@ -23,8 +23,5 @@
     "allowance": 30,
     "badge": "River Scientist",
     "reputation": 7
-  },
-  "deprecated": true,
-  "supersededBy": "test_water_quality",
-  "overnight_note": "Legacy short water observation quest is superseded by the playable Dr. Maya water-quality station."
+  }
 }
