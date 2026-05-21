@@ -2,19 +2,17 @@
 
 ## Headline Numbers
 - Total quests: 25
-- DATA_ONLY: 8
+- DATA_ONLY: 6
 - PARTIAL: 1
-- PLAYABLE: 4
+- PLAYABLE: 5
 - PLAYABLE_DEGRADED: 11
-- STALE_DUPLICATE: 1
+- STALE_DUPLICATE: 2
 
 ## DATA_ONLY Quests
 - algae_bloom_source
 - bridge_quest_2
 - chain_repair
-- first_safety_check
 - flat_tire_repair
-- mine_cart_repair
 - track_the_animal
 - water_sample_observation
 
@@ -36,6 +34,7 @@
 
 ## STALE_DUPLICATE Quests
 - bridge_material_test
+- first_safety_check
 
 ## STALE_REFERENCE Objectives
 - act1_pre_ride_check / cement_set (1 producers)
@@ -49,16 +48,14 @@
 ## Producer Quality Distribution
 - GENERIC_STATION: 43
 - PICKUP: 12
-- REAL_GAMEPLAY: 14
-- SCRIPT_CALL_ONLY: 28
+- REAL_GAMEPLAY: 18
+- SCRIPT_CALL_ONLY: 29
 
 ## Recommended Fix Order
 - algae_bloom_source
 - bridge_quest_2
 - chain_repair
-- first_safety_check
 - flat_tire_repair
-- mine_cart_repair
 - track_the_animal
 - water_sample_observation
 - act1_pre_ride_check

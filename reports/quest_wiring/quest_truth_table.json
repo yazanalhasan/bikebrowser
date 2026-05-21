@@ -336,7 +336,7 @@
       "unlocks": []
     },
     {
-      "deprecated": false,
+      "deprecated": true,
       "file": "BikeBrowserWorld/Data/missions/first_safety_check.json",
       "next": "",
       "next_in_chain": "",
@@ -348,7 +348,7 @@
       "prerequisites": [],
       "quest_id": "first_safety_check",
       "region_hint": "",
-      "supersededBy": "",
+      "supersededBy": "act1_pre_ride_check",
       "title": "First Safety Check",
       "unlocks": []
     },

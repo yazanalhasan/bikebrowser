@@ -1652,7 +1652,7 @@
       "unlocks": []
     },
     {
-      "deprecated": false,
+      "deprecated": true,
       "file": "BikeBrowserWorld/Data/missions/first_safety_check.json",
       "objectives": [
         {
@@ -1676,7 +1676,7 @@
       ],
       "prerequisites": [],
       "quest_id": "first_safety_check",
-      "quest_status": "DATA_ONLY",
+      "quest_status": "STALE_DUPLICATE",
       "unlocks": []
     },
     {
@@ -1725,32 +1725,96 @@
       "objectives": [
         {
           "objective_id": "inspect_broken_wheel",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "inspect_broken_wheel",
+              "prerequisites_declared": [],
+              "producer_node_path": "/MineCartRepairStation",
+              "producer_node_type": "MineCartRepairStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "mine_cart_repair",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "find_replacement_wheel",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "find_replacement_wheel",
+              "prerequisites_declared": [],
+              "producer_node_path": "/MineCartRepairStation",
+              "producer_node_type": "MineCartRepairStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "mine_cart_repair",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "install_wheel",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "install_wheel",
+              "prerequisites_declared": [],
+              "producer_node_path": "/MineCartRepairStation",
+              "producer_node_type": "MineCartRepairStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "mine_cart_repair",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "test_cart",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "test_cart",
+              "prerequisites_declared": [],
+              "producer_node_path": "/MineCartRepairStation",
+              "producer_node_type": "MineCartRepairStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "mine_cart_repair",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         }
       ],
       "prerequisites": [],
       "quest_id": "mine_cart_repair",
-      "quest_status": "DATA_ONLY",
+      "quest_status": "PLAYABLE",
       "unlocks": []
     },
     {

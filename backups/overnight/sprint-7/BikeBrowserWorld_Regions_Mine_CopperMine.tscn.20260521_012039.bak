@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://bikebrowser_copper_mine"]
+[gd_scene load_steps=30 format=3 uid="uid://bikebrowser_copper_mine"]
 
 [ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
 [ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
@@ -20,7 +20,6 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/CopperMine/mine_depth_marker.png" id="18_depth_marker"]
 [ext_resource type="Texture2D" path="res://Assets/Props/CopperMine/lantern.png" id="19_lantern"]
 [ext_resource type="Texture2D" path="res://Assets/Props/CopperMine/dust_pile_rubble.png" id="20_rubble"]
-[ext_resource type="PackedScene" path="res://Regions/Mine/MineCartRepairStation.tscn" id="21_cart_station"]
 
 
 [ext_resource type="PackedScene" path="res://Regions/UI/DialogBox.tscn" id="oc_dialog"]
@@ -67,8 +66,6 @@ texture = ExtResource("7_ore")
 [node name="MineCart" type="Sprite2D" parent="."]
 texture_filter = 1
 texture = ExtResource("8_cart")
-
-[node name="MineCartRepairStation" parent="." instance=ExtResource("21_cart_station")]
 
 [node name="OldMinerPeteNpc" parent="." instance=ExtResource("4_miner")]
 
@@ -264,5 +261,4 @@ position_smoothing_enabled = true
 [node name="DialogBox" parent="." instance=ExtResource("oc_dialog")]
 
 [node name="Hud" parent="." instance=ExtResource("oc_hud")]
-
 

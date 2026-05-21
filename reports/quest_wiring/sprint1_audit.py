@@ -193,6 +193,7 @@ def scene_files() -> list[Path]:
     known_gameplay = [
         WORLD / "Regions" / "Garage" / "TireRepairStation.tscn",
         WORLD / "Regions" / "Garage" / "UniversalTestingMachine.tscn",
+        WORLD / "Regions" / "Mine" / "MineCartRepairStation.tscn",
         WORLD / "Prototypes" / "EmbodiedMechanics" / "ChainRigEmbedded.tscn",
         WORLD / "Prototypes" / "EmbodiedMechanics" / "BrakeTestPrototype.tscn",
         WORLD / "Prototypes" / "EmbodiedMechanics" / "TireRig.tscn",

@@ -36,6 +36,11 @@
       "path": "BikeBrowserWorld/Systems/Interactions/InspectableObject.gd"
     },
     {
+      "class_name": "MineCartRepairStation",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/MineCartRepairStation.gd"
+    },
+    {
       "class_name": "NpcInteraction",
       "extends": "Area2D",
       "path": "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd"
@@ -735,6 +740,62 @@
       "linked_dialog": "",
       "linked_npc": "",
       "node_has_real_logic_script": true,
+      "objective_id": "inspect_broken_wheel",
+      "prerequisites_declared": [],
+      "producer_node_path": "/MineCartRepairStation",
+      "producer_node_type": "MineCartRepairStation",
+      "quest_id": "mine_cart_repair",
+      "scene_file": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "find_replacement_wheel",
+      "prerequisites_declared": [],
+      "producer_node_path": "/MineCartRepairStation",
+      "producer_node_type": "MineCartRepairStation",
+      "quest_id": "mine_cart_repair",
+      "scene_file": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "install_wheel",
+      "prerequisites_declared": [],
+      "producer_node_path": "/MineCartRepairStation",
+      "producer_node_type": "MineCartRepairStation",
+      "quest_id": "mine_cart_repair",
+      "scene_file": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "test_cart",
+      "prerequisites_declared": [],
+      "producer_node_path": "/MineCartRepairStation",
+      "producer_node_type": "MineCartRepairStation",
+      "quest_id": "mine_cart_repair",
+      "scene_file": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
       "objective_id": "talk_to_neighbors",
       "prerequisites_declared": [],
       "producer_node_path": "/BridgeReviewStation",
@@ -1086,6 +1147,18 @@
       "producer_node_path": "BikeBrowserWorld/Systems/Interactions/InspectableObject.gd:51",
       "producer_node_type": "ScriptCall",
       "quest_id": "<dynamic>",
+      "scene_file": "",
+      "starts_quest_too": false
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "<dynamic>",
+      "prerequisites_declared": [],
+      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/MineCartRepairStation.gd:53",
+      "producer_node_type": "ScriptCall",
+      "quest_id": "mine_cart_repair",
       "scene_file": "",
       "starts_quest_too": false
     },
@@ -1447,9 +1520,15 @@
     },
     {
       "matched_properties": 30,
-      "nodes": 45,
+      "nodes": 46,
       "producer_records": 10,
       "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+    },
+    {
+      "matched_properties": 2,
+      "nodes": 7,
+      "producer_records": 4,
+      "scene_file": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn"
     },
     {
       "matched_properties": 20,

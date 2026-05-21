@@ -199,3 +199,26 @@
 {"timestamp":"2026-05-21T08:19:16.9483575Z","sprint":"7","phase":"start","action":"telegram: [BikeBrowser] Sprint 7 START — DATA_ONLY quest wire-up loop","files_touched":[],"result":"sent","telegram":"sent"}
 {"timestamp":"2026-05-21T08:19:16.9990834Z","sprint":"7","phase":"first_safety_check","action":"mark stale duplicate instead of duplicate wiring","files_touched":["BikeBrowserWorld/Data/missions/first_safety_check.json","reports/overnight/blocked_first_safety_check.md"],"result":"deprecated and documented","telegram":"none"}
 {"timestamp":"2026-05-21T08:19:17.7545836Z","sprint":"7","phase":"first_safety_check","action":"telegram: [BikeBrowser] Sprint 7 COMPLETE — first_safety_check","files_touched":[],"result":"sent","telegram":"sent"}
+{"timestamp":"2026-05-21T08:20:39.6829185Z","sprint":"7","phase":"mine_cart_repair","action":"wire mine cart repair station into copper mine","files_touched":["BikeBrowserWorld/Regions/Mine/CopperMine.tscn","BikeBrowserWorld/Data/layouts/copper_mine.json"],"result":"modified","telegram":"none"}
+{"time":"2026-05-21T08:20:52.404066+00:00","sprint":1,"phase":"1","action":"build quest-objective truth table","files_touched":["reports/quest_wiring/quest_truth_table.json"],"outcome":"written"}
+{"time":"2026-05-21T08:20:52.478145+00:00","sprint":1,"phase":"2","action":"parse scene and script objective producers","files_touched":["reports/quest_wiring/producers.json"],"outcome":"written"}
+{"time":"2026-05-21T08:20:52.486220+00:00","sprint":1,"phase":"3","action":"compute scene reachability graph","files_touched":["reports/quest_wiring/scene_reachability.json"],"outcome":"written"}
+{"time":"2026-05-21T08:20:52.487740+00:00","sprint":1,"phase":"4","action":"grade objective producers","files_touched":["reports/quest_wiring/producers_graded.json"],"outcome":"written"}
+{"time":"2026-05-21T08:20:52.491284+00:00","sprint":1,"phase":"5","action":"compute per-quest objective matrix","files_touched":["reports/quest_wiring/MATRIX.json"],"outcome":"written"}
+{"time":"2026-05-21T08:20:52.505314+00:00","sprint":1,"phase":"6","action":"check playable quest exposure","files_touched":["reports/quest_wiring/frontend_exposure.json"],"outcome":"written"}
+{"time":"2026-05-21T08:20:52.505314+00:00","sprint":1,"phase":"7","action":"write dependency graph dot","files_touched":["reports/quest_wiring/dependency_graph.dot"],"outcome":"written"}
+{"time":"2026-05-21T08:20:52.505314+00:00","sprint":1,"phase":"7","action":"write dependency graph json","files_touched":["reports/quest_wiring/dependency_graph.json"],"outcome":"written"}
+{"time":"2026-05-21T08:20:52.506314+00:00","sprint":1,"phase":"8","action":"verify named quest coverage","files_touched":["reports/quest_wiring/named_quest_coverage.json"],"outcome":"written"}
+{"time":"2026-05-21T08:20:52.506314+00:00","sprint":1,"phase":"9","action":"write Sprint 1 summary","files_touched":["reports/quest_wiring/SUMMARY.md"],"outcome":"written"}
+{"timestamp":"2026-05-21T08:20:52.5550654Z","sprint":"7","phase":"mine_cart_repair","action":"validate mine_cart_repair wiring","files_touched":["validation/sprint-7_mine_cart_godot.log","reports/quest_wiring/MATRIX.json"],"result":"godot exit 0; audit rerun","telegram":"none"}
+{"time":"2026-05-21T08:21:09.876926+00:00","sprint":1,"phase":"1","action":"build quest-objective truth table","files_touched":["reports/quest_wiring/quest_truth_table.json"],"outcome":"written"}
+{"time":"2026-05-21T08:21:09.951010+00:00","sprint":1,"phase":"2","action":"parse scene and script objective producers","files_touched":["reports/quest_wiring/producers.json"],"outcome":"written"}
+{"time":"2026-05-21T08:21:09.959531+00:00","sprint":1,"phase":"3","action":"compute scene reachability graph","files_touched":["reports/quest_wiring/scene_reachability.json"],"outcome":"written"}
+{"time":"2026-05-21T08:21:09.960536+00:00","sprint":1,"phase":"4","action":"grade objective producers","files_touched":["reports/quest_wiring/producers_graded.json"],"outcome":"written"}
+{"time":"2026-05-21T08:21:09.965534+00:00","sprint":1,"phase":"5","action":"compute per-quest objective matrix","files_touched":["reports/quest_wiring/MATRIX.json"],"outcome":"written"}
+{"time":"2026-05-21T08:21:09.974036+00:00","sprint":1,"phase":"6","action":"check playable quest exposure","files_touched":["reports/quest_wiring/frontend_exposure.json"],"outcome":"written"}
+{"time":"2026-05-21T08:21:09.974036+00:00","sprint":1,"phase":"7","action":"write dependency graph dot","files_touched":["reports/quest_wiring/dependency_graph.dot"],"outcome":"written"}
+{"time":"2026-05-21T08:21:09.975042+00:00","sprint":1,"phase":"7","action":"write dependency graph json","files_touched":["reports/quest_wiring/dependency_graph.json"],"outcome":"written"}
+{"time":"2026-05-21T08:21:09.975042+00:00","sprint":1,"phase":"8","action":"verify named quest coverage","files_touched":["reports/quest_wiring/named_quest_coverage.json"],"outcome":"written"}
+{"time":"2026-05-21T08:21:09.976042+00:00","sprint":1,"phase":"9","action":"write Sprint 1 summary","files_touched":["reports/quest_wiring/SUMMARY.md"],"outcome":"written"}
+{"timestamp":"2026-05-21T08:21:29.0313517Z","sprint":"7","phase":"mine_cart_repair","action":"telegram: [BikeBrowser] Sprint 7 COMPLETE — mine_cart_repair","files_touched":[],"result":"sent","telegram":"sent"}

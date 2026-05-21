@@ -111,6 +111,15 @@
     },
     {
       "exposure_status": "EXPOSED",
+      "quest_id": "mine_cart_repair",
+      "reference_files": [
+        "BikeBrowserWorld/Data/missions/mine_cart_repair.json",
+        "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn",
+        "BikeBrowserWorld/Systems/Interactions/MineCartRepairStation.gd"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
       "quest_id": "mine_stability_check",
       "reference_files": [
         "BikeBrowserWorld/Data/missions/mine_stability_check.json",
