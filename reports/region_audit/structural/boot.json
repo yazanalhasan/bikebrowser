@@ -1,0 +1,24 @@
+{
+  "canonical_layer_groups_present": [],
+  "conformance": "PERSPECTIVE_DRIFT",
+  "depth_layer_count_estimate": 0,
+  "dialogbox_present": false,
+  "dominant_light_direction_estimate": "upper-right if existing warm light/shadow assets are used; otherwise unclear",
+  "flags": [
+    "MISSING_HUD",
+    "MISSING_DIALOGBOX"
+  ],
+  "horizon_line_estimate": "unknown",
+  "hud_present": false,
+  "node_count": 9,
+  "parallax_layers": [],
+  "polygon2d_hidden": 0,
+  "polygon2d_total": 0,
+  "region_id": "boot",
+  "root_children": [
+    "Boot",
+    "Center"
+  ],
+  "scene": "BikeBrowserWorld/Regions/Boot/Boot.tscn",
+  "scene_exists": true
+}

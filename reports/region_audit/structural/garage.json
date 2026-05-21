@@ -1,0 +1,51 @@
+{
+  "canonical_layer_groups_present": [
+    "Background"
+  ],
+  "conformance": "PERSPECTIVE_DRIFT",
+  "depth_layer_count_estimate": 1,
+  "dialogbox_present": true,
+  "dominant_light_direction_estimate": "upper-right if existing warm light/shadow assets are used; otherwise unclear",
+  "flags": [
+    "PLACEHOLDER_DEBT_HIGH"
+  ],
+  "horizon_line_estimate": "approx y=-32 from upper-quartile scene node positions",
+  "hud_present": true,
+  "node_count": 158,
+  "parallax_layers": [],
+  "polygon2d_hidden": 17,
+  "polygon2d_total": 54,
+  "region_id": "garage",
+  "root_children": [
+    "ZuzuGarage",
+    "GarageAmbience",
+    "FloorLayer",
+    "WallLayer",
+    "ShadowLayer",
+    "PropLayer",
+    "InteractableLayer",
+    "LightingLayer",
+    "GarageAmbientLife",
+    "FXLayer",
+    "NPCLayer",
+    "PlayerLayer",
+    "Background",
+    "Floor",
+    "Workbench",
+    "BikeStand",
+    "WarmLight",
+    "ToolShadow",
+    "ToolWall",
+    "CozyRug",
+    "BikeNotes",
+    "ExitZone",
+    "ChainHotspot",
+    "TireRepairStation",
+    "WorkshopBuildStation",
+    "Player",
+    "DialogBox",
+    "Hud"
+  ],
+  "scene": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+  "scene_exists": true
+}

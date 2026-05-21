@@ -1,0 +1,46 @@
+{
+  "canonical_layer_groups_present": [
+    "Background"
+  ],
+  "conformance": "PERSPECTIVE_DRIFT",
+  "depth_layer_count_estimate": 1,
+  "dialogbox_present": false,
+  "dominant_light_direction_estimate": "upper-right if existing warm light/shadow assets are used; otherwise unclear",
+  "flags": [
+    "MISSING_HUD",
+    "MISSING_DIALOGBOX",
+    "LAYERS_MISSING",
+    "PERSPECTIVE_DRIFT_LIGHTING_UNCLEAR"
+  ],
+  "horizon_line_estimate": "approx y=-34 from upper-quartile scene node positions",
+  "hud_present": false,
+  "node_count": 47,
+  "parallax_layers": [],
+  "polygon2d_hidden": 0,
+  "polygon2d_total": 4,
+  "region_id": "salt_river",
+  "root_children": [
+    "SaltRiver",
+    "Background",
+    "RiverBand",
+    "SandyBank",
+    "Dock",
+    "SamplingKit",
+    "CattailA",
+    "CattailB",
+    "DrMayaNpc",
+    "AlgaeSamplePickup",
+    "MicrobialSamplePickup",
+    "RiverMineralsPickup",
+    "ReedFiberPickup",
+    "FoodWebInspectable",
+    "FlowRateChallenge",
+    "IrrigationInspectable",
+    "IrrigationFractionChallenge",
+    "WaterQualityStation",
+    "BackToNeighborhood",
+    "Player"
+  ],
+  "scene": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+  "scene_exists": true
+}
