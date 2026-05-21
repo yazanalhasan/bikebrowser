@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bribj560x2usj"
-path="res://.godot/imported/small_safety_check_bike_tires_overlay.png-e32c663deafbe35b603d5defa9c30bd9.ctex"
+uid="uid://bhrsor2k7hpqd"
+path="res://.godot/imported/small_safety_check_bike_tires_flat.png-873dbcb7976f98497e4ff4d6924d4924.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Props/Bike/small_safety_check_bike_tires_overlay.png"
-dest_files=["res://.godot/imported/small_safety_check_bike_tires_overlay.png-e32c663deafbe35b603d5defa9c30bd9.ctex"]
+source_file="res://Assets/Props/Bike/small_safety_check_bike_tires_flat.png"
+dest_files=["res://.godot/imported/small_safety_check_bike_tires_flat.png-873dbcb7976f98497e4ff4d6924d4924.ctex"]
 
 [params]
 

@@ -144,7 +144,6 @@ var steps := [
 @onready var brake_highlight: Sprite2D = get_node_or_null("BikeVisual/BrakeHighlight")
 @onready var tire_highlight: Sprite2D = get_node_or_null("BikeVisual/TireHighlight")
 @onready var chain_highlight: Sprite2D = get_node_or_null("BikeVisual/ChainHighlight")
-@onready var part_focus_glow: Sprite2D = get_node_or_null("BikeVisual/PartFocusGlow")
 @onready var brake_rig: Node = get_node_or_null("BikeVisual/BrakeRig")
 @onready var glow: Polygon2D = get_node_or_null("Glow")
 
@@ -156,7 +155,6 @@ var hold_bar: ColorRect
 var hold_fill: ColorRect
 var garage_hint: Line2D
 var chain_motion: Polygon2D
-var active_state_variant: Sprite2D
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
@@ -341,14 +339,12 @@ func _update_visuals() -> void:
 func _set_overlay_visibility() -> void:
 	var step := _current_step()
 	var objective := String(step.get("id", ""))
-	var target_variant: Sprite2D = null
-	if objective.find("brakes") != -1 and not brake_check_started:
-		target_variant = brake_highlight
-	elif objective.find("air_") == 0 or objective == "final_air_checked":
-		target_variant = tire_highlight
-	elif objective == "chain_checked" or objective == "final_chain_checked":
-		target_variant = chain_highlight
-	_set_state_variant(target_variant, objective)
+	if brake_highlight:
+		brake_highlight.visible = objective.find("brakes") != -1 and not brake_check_started
+	if tire_highlight:
+		tire_highlight.visible = objective.find("air_") == 0 or objective == "final_air_checked"
+	if chain_highlight:
+		chain_highlight.visible = objective == "chain_checked" or objective == "final_chain_checked"
 	if brake_rig:
 		brake_rig.visible = String(step.get("kind", "")) == "hold_brake" and brake_check_started and not brake_check_verified
 	if front_tire_marker:
@@ -364,54 +360,15 @@ func _set_overlay_visibility() -> void:
 		chain_motion.visible = objective == "chain_checked" or objective == "final_chain_checked"
 
 func _pulse_active_overlay() -> void:
-	if active_state_variant and active_state_variant.visible:
-		active_state_variant.modulate.a = 0.82 + sin(pulse_time * 3.0) * 0.04
-	if part_focus_glow and part_focus_glow.visible:
-		part_focus_glow.modulate.a = 0.28 + sin(pulse_time * 3.4) * 0.09
+	for overlay in [brake_highlight, tire_highlight, chain_highlight]:
+		if overlay and overlay.visible:
+			overlay.modulate.a = 0.34 + sin(pulse_time * 3.0) * 0.09
 	if seat_marker and seat_marker.visible:
 		seat_marker.position.y = -28 + sin(pulse_time * 10.0) * 1.3
 	if handlebar_marker and handlebar_marker.visible:
 		handlebar_marker.rotation = sin(pulse_time * 6.0) * 0.025
 	if chain_motion and chain_motion.visible:
 		chain_motion.rotation += 0.08
-
-func _set_state_variant(target_variant: Sprite2D, objective: String) -> void:
-	if target_variant == active_state_variant:
-		_position_part_focus_glow(objective, target_variant != null)
-		return
-	for variant in [brake_highlight, tire_highlight, chain_highlight]:
-		if variant == null:
-			continue
-		if variant == target_variant:
-			variant.visible = true
-			variant.modulate.a = 0.0
-			var fade_in := create_tween()
-			fade_in.tween_property(variant, "modulate:a", 0.86, 0.3)
-		elif variant.visible:
-			var fade_out := create_tween()
-			fade_out.tween_property(variant, "modulate:a", 0.0, 0.3)
-			fade_out.tween_callback(func() -> void:
-				if variant != active_state_variant:
-					variant.visible = false
-			)
-	active_state_variant = target_variant
-	_position_part_focus_glow(objective, target_variant != null)
-
-func _position_part_focus_glow(objective: String, visible: bool) -> void:
-	if part_focus_glow == null:
-		return
-	part_focus_glow.visible = visible
-	if not visible:
-		return
-	if objective.find("brakes") != -1:
-		part_focus_glow.position = Vector2(208, 48)
-		part_focus_glow.scale = Vector2(1.05, 0.72)
-	elif objective.find("air_") == 0 or objective == "final_air_checked":
-		part_focus_glow.position = Vector2(244, 184)
-		part_focus_glow.scale = Vector2(1.22, 0.82)
-	elif objective == "chain_checked" or objective == "final_chain_checked":
-		part_focus_glow.position = Vector2(8, 134)
-		part_focus_glow.scale = Vector2(0.94, 0.62)
 
 func _update_hold_visuals() -> void:
 	if hold_bar == null or hold_fill == null:

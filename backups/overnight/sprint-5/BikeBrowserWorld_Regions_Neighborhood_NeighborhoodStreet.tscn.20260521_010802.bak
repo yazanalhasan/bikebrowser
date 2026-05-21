@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=3 uid="uid://bikebrowser_neighborhood_street"]
+[gd_scene load_steps=61 format=3 uid="uid://bikebrowser_neighborhood_street"]
 
 [ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
 [ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
@@ -29,9 +29,9 @@
 [ext_resource type="Script" path="res://Systems/Interactions/SafetyCheckStation.gd" id="27_safety"]
 [ext_resource type="Script" path="res://Prototypes/EmbodiedMechanics/BrakeRig.gd" id="27_brake_rig"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Bike/small_safety_check_bike.png" id="28_safety_bike"]
-[ext_resource type="Texture2D" path="res://Assets/Props/Bike/small_safety_check_bike_brakes_worn.png" id="29_brake_overlay"]
-[ext_resource type="Texture2D" path="res://Assets/Props/Bike/small_safety_check_bike_tires_flat.png" id="30_tire_overlay"]
-[ext_resource type="Texture2D" path="res://Assets/Props/Bike/small_safety_check_bike_chain_slipped.png" id="31_chain_overlay"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Bike/small_safety_check_bike_brakes_overlay.png" id="29_brake_overlay"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Bike/small_safety_check_bike_tires_overlay.png" id="30_tire_overlay"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Bike/small_safety_check_bike_chain_overlay.png" id="31_chain_overlay"]
 [ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/soft_shadow_small.png" id="32_shadow_small"]
 [ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/neighborhood_road_panel_v2.png" id="33_road_panel"]
 [ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/neighborhood_top_sidewalk_panel_v2.png" id="34_sidewalk_panel"]
@@ -54,7 +54,6 @@
 [ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/NeighborhoodFoundation/street_rhythm_composition_overlay.png" id="51_street_rhythm"]
 [ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/NeighborhoodFoundation/silhouette_readability_ground_overlay.png" id="52_silhouette_read"]
 [ext_resource type="Script" path="res://Systems/Interactions/QuestObjectiveStation.gd" id="53_act1_station"]
-[ext_resource type="Texture2D" path="res://Assets/Props/Bike/repair_chain_focus_glow.png" id="54_focus_glow"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 18.0
@@ -598,12 +597,6 @@ texture = ExtResource("30_tire_overlay")
 texture_filter = 1
 texture = ExtResource("31_chain_overlay")
 
-
-[node name="PartFocusGlow" type="Sprite2D" parent="SafetyCheckStation/BikeVisual"]
-visible = false
-modulate = Color(1, 0.78, 0.36, 0.32)
-texture_filter = 1
-texture = ExtResource("54_focus_glow")
 [node name="BrakeRig" type="Node2D" parent="SafetyCheckStation/BikeVisual"]
 visible = false
 position = Vector2(-4, -2)
@@ -1000,4 +993,3 @@ position_smoothing_enabled = true
 [node name="DialogBox" parent="." instance=ExtResource("5_dialog")]
 
 [node name="Hud" parent="." instance=ExtResource("6_hud")]
-

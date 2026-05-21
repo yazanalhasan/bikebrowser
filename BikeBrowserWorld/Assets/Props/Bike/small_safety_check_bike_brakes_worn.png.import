@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://o4b6m76prpte"
-path="res://.godot/imported/small_safety_check_bike_chain_overlay.png-e25a32c6b249ebc8945fb32636ab26cd.ctex"
+uid="uid://dq0uhw585oi85"
+path="res://.godot/imported/small_safety_check_bike_brakes_worn.png-f3c2171a67726341e394abe8c093a7b5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Props/Bike/small_safety_check_bike_chain_overlay.png"
-dest_files=["res://.godot/imported/small_safety_check_bike_chain_overlay.png-e25a32c6b249ebc8945fb32636ab26cd.ctex"]
+source_file="res://Assets/Props/Bike/small_safety_check_bike_brakes_worn.png"
+dest_files=["res://.godot/imported/small_safety_check_bike_brakes_worn.png-f3c2171a67726341e394abe8c093a7b5.ctex"]
 
 [params]
 
