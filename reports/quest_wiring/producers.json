@@ -1,6 +1,11 @@
 {
   "producer_classes": [
     {
+      "class_name": "AlgaeBloomStation",
+      "extends": "Area2D",
+      "path": "BikeBrowserWorld/Systems/Interactions/AlgaeBloomStation.gd"
+    },
+    {
       "class_name": "AnimalTrackStation",
       "extends": "Area2D",
       "path": "BikeBrowserWorld/Systems/Interactions/AnimalTrackStation.gd"
@@ -997,6 +1002,76 @@
       "linked_dialog": "",
       "linked_npc": "",
       "node_has_real_logic_script": true,
+      "objective_id": "notice_green_water",
+      "prerequisites_declared": [],
+      "producer_node_path": "/AlgaeBloomStation",
+      "producer_node_type": "AlgaeBloomStation",
+      "quest_id": "algae_bloom_source",
+      "scene_file": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "talk_to_dr_maya",
+      "prerequisites_declared": [],
+      "producer_node_path": "/AlgaeBloomStation",
+      "producer_node_type": "AlgaeBloomStation",
+      "quest_id": "algae_bloom_source",
+      "scene_file": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "follow_channel",
+      "prerequisites_declared": [],
+      "producer_node_path": "/AlgaeBloomStation",
+      "producer_node_type": "AlgaeBloomStation",
+      "quest_id": "algae_bloom_source",
+      "scene_file": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "find_runoff_source",
+      "prerequisites_declared": [],
+      "producer_node_path": "/AlgaeBloomStation",
+      "producer_node_type": "AlgaeBloomStation",
+      "quest_id": "algae_bloom_source",
+      "scene_file": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "report_solution",
+      "prerequisites_declared": [],
+      "producer_node_path": "/AlgaeBloomStation",
+      "producer_node_type": "AlgaeBloomStation",
+      "quest_id": "algae_bloom_source",
+      "scene_file": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn",
+      "starts_quest_too": true,
+      "target_region": "",
+      "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
       "objective_id": "collect_algae",
       "prerequisites_declared": [],
       "producer_node_path": "/AlgaeSamplePickup",
@@ -1174,6 +1249,18 @@
       "starts_quest_too": true,
       "target_region": "",
       "target_spawn": ""
+    },
+    {
+      "linked_dialog": "",
+      "linked_npc": "",
+      "node_has_real_logic_script": true,
+      "objective_id": "<dynamic>",
+      "prerequisites_declared": [],
+      "producer_node_path": "BikeBrowserWorld/Systems/Interactions/AlgaeBloomStation.gd:44",
+      "producer_node_type": "ScriptCall",
+      "quest_id": "algae_bloom_source",
+      "scene_file": "",
+      "starts_quest_too": false
     },
     {
       "linked_dialog": "",
@@ -1616,8 +1703,14 @@
       "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
     },
     {
+      "matched_properties": 2,
+      "nodes": 6,
+      "producer_records": 5,
+      "scene_file": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn"
+    },
+    {
       "matched_properties": 34,
-      "nodes": 49,
+      "nodes": 50,
       "producer_records": 13,
       "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
     },

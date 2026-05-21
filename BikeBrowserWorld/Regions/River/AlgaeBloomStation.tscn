@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://bikebrowser_algae_bloom_station"]
+
+[ext_resource type="Script" path="res://Systems/Interactions/AlgaeBloomStation.gd" id="1_station"]
+[ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/algae_sample.png" id="2_algae"]
+[ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/irrigation_channel_sign.png" id="3_channel"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_algae"]
+size = Vector2(220, 120)
+
+[node name="AlgaeBloomStation" type="Area2D"]
+script = ExtResource("1_station")
+quest_id = "algae_bloom_source"
+objective_ids = Array[String](["notice_green_water", "talk_to_dr_maya", "follow_channel", "find_runoff_source", "report_solution"])
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_algae")
+
+[node name="AlgaePatch" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-42, 18)
+scale = Vector2(0.82, 0.82)
+texture = ExtResource("2_algae")
+
+[node name="ChannelSign" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(58, -12)
+scale = Vector2(0.76, 0.76)
+texture = ExtResource("3_channel")
+
+[node name="ChannelLine" type="Line2D" parent="."]
+visible = false
+points = PackedVector2Array(-82, 34, -18, 18, 48, -4, 96, -36)
+width = 5.0
+default_color = Color(0.48, 0.86, 0.42, 0.64)
+
+[node name="Prompt" type="Label" parent="."]
+position = Vector2(-104, -82)
+theme_override_font_sizes/font_size = 13
+text = "[E] Algae clue"

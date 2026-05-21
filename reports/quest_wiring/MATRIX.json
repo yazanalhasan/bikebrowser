@@ -156,38 +156,118 @@
       "objectives": [
         {
           "objective_id": "notice_green_water",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "notice_green_water",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AlgaeBloomStation",
+              "producer_node_type": "AlgaeBloomStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "algae_bloom_source",
+              "scene_file": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "talk_to_dr_maya",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "talk_to_dr_maya",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AlgaeBloomStation",
+              "producer_node_type": "AlgaeBloomStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "algae_bloom_source",
+              "scene_file": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "follow_channel",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "follow_channel",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AlgaeBloomStation",
+              "producer_node_type": "AlgaeBloomStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "algae_bloom_source",
+              "scene_file": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "find_runoff_source",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "find_runoff_source",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AlgaeBloomStation",
+              "producer_node_type": "AlgaeBloomStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "algae_bloom_source",
+              "scene_file": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "report_solution",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "report_solution",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AlgaeBloomStation",
+              "producer_node_type": "AlgaeBloomStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "algae_bloom_source",
+              "scene_file": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         }
       ],
       "prerequisites": [],
       "quest_id": "algae_bloom_source",
-      "quest_status": "DATA_ONLY",
+      "quest_status": "PLAYABLE",
       "unlocks": []
     },
     {
@@ -2214,7 +2294,7 @@
       "unlocks": []
     },
     {
-      "deprecated": false,
+      "deprecated": true,
       "file": "BikeBrowserWorld/Data/missions/water_sample_observation.json",
       "objectives": [
         {
@@ -2238,7 +2318,7 @@
       ],
       "prerequisites": [],
       "quest_id": "water_sample_observation",
-      "quest_status": "DATA_ONLY",
+      "quest_status": "STALE_DUPLICATE",
       "unlocks": []
     },
     {

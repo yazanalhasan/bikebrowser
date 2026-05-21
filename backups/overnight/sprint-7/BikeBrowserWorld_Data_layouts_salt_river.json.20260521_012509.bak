@@ -1,0 +1,31 @@
+{
+  "spawns": {
+    "default": { "x": 0, "y": 170 },
+    "from_neighborhood": { "x": 0, "y": 180 }
+  },
+  "nodes": {
+    "Background": { "x": -960, "y": -540, "w": 1920, "h": 1080, "color": "#9fc495" },
+    "RiverBand": { "x": 0, "y": -155, "scaleX": 6.0, "scaleY": 2.2, "z": 0 },
+    "SandyBank": { "x": -620, "y": 18, "w": 1240, "h": 140, "color": "#d5bd86", "shape": "soft" },
+    "Dock": { "x": -150, "y": -10, "scale": 0.95, "z": 3 },
+    "SamplingKit": { "x": 170, "y": 92, "scale": 0.85, "z": 4 },
+    "CattailA": { "x": -330, "y": -20, "scale": 0.9, "z": 2 },
+    "CattailB": { "x": 330, "y": -35, "scale": 0.9, "z": 2 },
+    "DrMayaNpc": { "x": 80, "y": 40, "scale": 1.0 },
+    "AlgaeSamplePickup": { "x": -190, "y": 10, "scale": 1.3, "z": 5 },
+    "MicrobialSamplePickup": { "x": -250, "y": 158, "scale": 1.25, "z": 5 },
+    "RiverMineralsPickup": { "x": 318, "y": 154, "scale": 1.25, "z": 5 },
+    "ReedFiberPickup": { "x": 292, "y": 0, "scale": 1.2, "z": 5 },
+    "FoodWebInspectable": { "x": -76, "y": 8, "scale": 1.05, "z": 5 },
+    "FlowRateChallenge": { "x": -366, "y": 152, "scale": 1.2, "z": 5 },
+    "IrrigationInspectable": { "x": 324, "y": -56, "scale": 1.05, "z": 5 },
+    "IrrigationFractionChallenge": { "x": 416, "y": 100, "scale": 0.98, "z": 5 },
+    "WaterQualityStation": { "x": 142, "y": 72, "w": 230, "h": 118, "z": 5 },
+    "WaterQualityStation/StationMat": { "x": -116, "y": -56, "w": 232, "h": 108, "color": "#4d8fc466", "shape": "soft", "z": -1 },
+    "WaterQualityStation/Beacon": { "x": -18, "y": -94, "w": 36, "h": 34, "color": "#ffd86b99", "shape": "diamond", "z": 1 },
+    "WaterQualityStation/Sign": { "x": -88, "y": -126, "w": 176, "h": 26 },
+    "WaterQualityStation/Prompt": { "x": -78, "y": -84, "w": 156, "h": 28 },
+    "BackToNeighborhood": { "x": 0, "y": 390, "w": 240, "h": 96 },
+    "BackToNeighborhood/Prompt": { "x": -70, "y": -80, "w": 140, "h": 28 }
+  }
+}

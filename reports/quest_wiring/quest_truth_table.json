@@ -466,7 +466,7 @@
       "unlocks": []
     },
     {
-      "deprecated": false,
+      "deprecated": true,
       "file": "BikeBrowserWorld/Data/missions/water_sample_observation.json",
       "next": "",
       "next_in_chain": "",
@@ -478,7 +478,7 @@
       "prerequisites": [],
       "quest_id": "water_sample_observation",
       "region_hint": "",
-      "supersededBy": "",
+      "supersededBy": "test_water_quality",
       "title": "Water Sample Observation",
       "unlocks": []
     },

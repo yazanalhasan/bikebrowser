@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://bikebrowser_salt_river"]
+[gd_scene load_steps=33 format=3 uid="uid://bikebrowser_salt_river"]
 
 [ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
 [ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
@@ -21,7 +21,6 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/irrigation_channel_sign.png" id="19_channel"]
 [ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/macroinvertebrate_tray.png" id="20_foodweb"]
 [ext_resource type="Texture2D" path="res://Assets/Props/SaltRiver/dragonfly.png" id="21_dragonfly"]
-[ext_resource type="PackedScene" path="res://Regions/River/AlgaeBloomStation.tscn" id="22_algae_station"]
 
 
 [ext_resource type="PackedScene" path="res://Regions/UI/DialogBox.tscn" id="oc_dialog"]
@@ -281,7 +280,4 @@ position_smoothing_enabled = true
 [node name="DialogBox" parent="." instance=ExtResource("oc_dialog")]
 
 [node name="Hud" parent="." instance=ExtResource("oc_hud")]
-
-
-[node name="AlgaeBloomStation" parent="." instance=ExtResource("22_algae_station")]
 

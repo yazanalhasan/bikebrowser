@@ -12,6 +12,16 @@
     },
     {
       "exposure_status": "EXPOSED",
+      "quest_id": "algae_bloom_source",
+      "reference_files": [
+        "BikeBrowserWorld/Data/badges/badges.json",
+        "BikeBrowserWorld/Data/missions/algae_bloom_source.json",
+        "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn",
+        "BikeBrowserWorld/Systems/Interactions/AlgaeBloomStation.gd"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
       "quest_id": "balance_the_flow",
       "reference_files": [
         "BikeBrowserWorld/Data/missions/balance_the_flow.json",
@@ -143,6 +153,7 @@
         "BikeBrowserWorld/Data/missions/balance_the_flow.json",
         "BikeBrowserWorld/Data/missions/river_ecosystem_survey.json",
         "BikeBrowserWorld/Data/missions/test_water_quality.json",
+        "BikeBrowserWorld/Data/missions/water_sample_observation.json",
         "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
         "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd"
       ]
