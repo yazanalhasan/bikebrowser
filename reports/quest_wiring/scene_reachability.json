@@ -1,0 +1,60 @@
+{
+  "edges": [
+    {
+      "from": "DesertTrail",
+      "required_quest_id": "",
+      "to": "neighborhood_street"
+    },
+    {
+      "from": "DryWash",
+      "required_quest_id": "",
+      "to": "neighborhood_street"
+    },
+    {
+      "from": "ZuzuGarage",
+      "required_quest_id": "",
+      "to": "neighborhood_street"
+    },
+    {
+      "from": "CopperMine",
+      "required_quest_id": "",
+      "to": "neighborhood_street"
+    },
+    {
+      "from": "NeighborhoodStreet",
+      "required_quest_id": "chain_repair",
+      "to": "garage"
+    },
+    {
+      "from": "NeighborhoodStreet",
+      "required_quest_id": "chain_repair",
+      "to": "copper_mine"
+    },
+    {
+      "from": "NeighborhoodStreet",
+      "required_quest_id": "chain_repair",
+      "to": "desert_trail"
+    },
+    {
+      "from": "NeighborhoodStreet",
+      "required_quest_id": "chain_repair",
+      "to": "salt_river"
+    },
+    {
+      "from": "NeighborhoodStreet",
+      "required_quest_id": "",
+      "to": "dry_wash"
+    },
+    {
+      "from": "SaltRiver",
+      "required_quest_id": "",
+      "to": "neighborhood_street"
+    }
+  ],
+  "regions": {},
+  "states": {
+    "after_act1_capstone_complete": [],
+    "after_chain_repair_complete": [],
+    "fresh_save": []
+  }
+}

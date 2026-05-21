@@ -1,0 +1,20 @@
+{"time":"2026-05-21T07:35:16.5155576Z","sprint":1,"phase":"setup","action":"confirm dev mode flag","files_touched":[],"outcome":"BIKEBROWSER_DEV_EDITOR=1"}
+{"time":"2026-05-21T07:35:16.5294397Z","sprint":1,"phase":"setup","action":"write recovery file","files_touched":["reports/overnight/RECOVERY.md"],"outcome":"created recovery scaffold for overnight work"}
+{"time":"2026-05-21T07:35:16.7200033Z","sprint":1,"phase":"setup","action":"send Telegram Sprint 1 START","files_touched":["reports/overnight/telegram_outbox.jsonl"],"outcome":"failed; queued: telegram exit 1"}
+{"time":"2026-05-21T07:35:37.0642544Z","sprint":1,"phase":"setup","action":"retry Telegram Sprint 1 START with allowed notification type","files_touched":[],"outcome":"sent"}
+{"time":"2026-05-21T07:38:29.9543312Z","sprint":1,"phase":"script","action":"backup audit runner before syntax fix","files_touched":["backups/overnight/sprint-1/sprint1_audit.py.bak.20260521_003829"],"outcome":"created backup"}
+{"time":"2026-05-21T07:38:55.548007+00:00","sprint":1,"phase":"1","action":"build quest-objective truth table","files_touched":["reports/quest_wiring/quest_truth_table.json"],"outcome":"written"}
+{"time":"2026-05-21T07:38:55.624397+00:00","sprint":1,"phase":"2","action":"parse scene and script objective producers","files_touched":["reports/quest_wiring/producers.json"],"outcome":"written"}
+{"time":"2026-05-21T07:38:55.627305+00:00","sprint":1,"phase":"3","action":"compute scene reachability graph","files_touched":["reports/quest_wiring/scene_reachability.json"],"outcome":"written"}
+{"time":"2026-05-21T07:38:55.628438+00:00","sprint":1,"phase":"4","action":"grade objective producers","files_touched":["reports/quest_wiring/producers_graded.json"],"outcome":"written"}
+{"time":"2026-05-21T07:38:55.629441+00:00","sprint":1,"phase":"5","action":"compute per-quest objective matrix","files_touched":["reports/quest_wiring/MATRIX.json"],"outcome":"written"}
+{"time":"2026-05-21T07:38:55.638441+00:00","sprint":1,"phase":"6","action":"check playable quest exposure","files_touched":["reports/quest_wiring/frontend_exposure.json"],"outcome":"written"}
+{"time":"2026-05-21T07:38:55.638441+00:00","sprint":1,"phase":"7","action":"write dependency graph dot","files_touched":["reports/quest_wiring/dependency_graph.dot"],"outcome":"written"}
+{"time":"2026-05-21T07:38:55.638441+00:00","sprint":1,"phase":"7","action":"write dependency graph json","files_touched":["reports/quest_wiring/dependency_graph.json"],"outcome":"written"}
+{"time":"2026-05-21T07:38:55.639442+00:00","sprint":1,"phase":"8","action":"verify named quest coverage","files_touched":["reports/quest_wiring/named_quest_coverage.json"],"outcome":"written"}
+{"time":"2026-05-21T07:38:55.639442+00:00","sprint":1,"phase":"9","action":"write Sprint 1 summary","files_touched":["reports/quest_wiring/SUMMARY.md"],"outcome":"written"}
+{"time":"2026-05-21T07:40:02.2182941Z","sprint":1,"phase":"1","action":"send Telegram [BikeBrowser] Sprint 1 Phase 1 DONE — Quest truth table","files_touched":[],"outcome":"sent"}
+{"time":"2026-05-21T07:40:02.2283312Z","sprint":1,"phase":"2","action":"write halt summary","files_touched":["reports/overnight/halt_1_2.md"],"outcome":"written"}
+{"time":"2026-05-21T07:40:03.0351122Z","sprint":1,"phase":"2","action":"send Telegram [BikeBrowser] HALT — Sprint 1 Phase 2","files_touched":[],"outcome":"sent"}
+{"time":"2026-05-21T07:40:16.2958546Z","sprint":1,"phase":"2","action":"switch to halt branch","files_touched":[],"outcome":"from repair/runtime-canonicalization to overnight/sprint-1-phase-2"}
+{"time":"2026-05-21T07:40:16.3816858Z","sprint":1,"phase":"2","action":"stage Sprint 1 Phase 2 halt artifacts","files_touched":["reports/quest_wiring","reports/overnight","backups/overnight/sprint-1"],"outcome":"staged"}

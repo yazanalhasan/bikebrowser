@@ -1,0 +1,89 @@
+{
+  "named_quest_coverage": [
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "bridge_quest_3"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "bridge_material_test"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "algae_bloom_source"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "mine_cart_repair"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "track_the_animal"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "water_sample_observation"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "first_safety_check"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "bridge_quest_2"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "bridge_quest_1"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "bridge_quest_4"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "balance_the_flow"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "copper_prospector"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "desert_foraging_samples"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "desert_water_management"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "mine_stability_check"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "river_ecosystem_survey"
+    },
+    {
+      "present_in_matrix": true,
+      "present_in_truth_table": true,
+      "quest_id": "flat_tire_repair"
+    }
+  ]
+}

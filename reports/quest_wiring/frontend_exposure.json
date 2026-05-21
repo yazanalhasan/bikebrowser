@@ -1,0 +1,142 @@
+{
+  "quests": [
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "act1_regional_readiness",
+      "reference_files": [
+        "BikeBrowserWorld/Data/badges/badges.json",
+        "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+        "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+        "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "balance_the_flow",
+      "reference_files": [
+        "BikeBrowserWorld/Data/missions/balance_the_flow.json",
+        "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "bridge_quest_1",
+      "reference_files": [
+        "BikeBrowserWorld/Data/missions/bridge_quest_1.json",
+        "BikeBrowserWorld/Data/notes/environmental_notes.json",
+        "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "bridge_quest_4",
+      "reference_files": [
+        "BikeBrowserWorld/Data/missions/bridge_quest_4.json",
+        "BikeBrowserWorld/Data/notes/environmental_notes.json",
+        "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "bridge_quest_5",
+      "reference_files": [
+        "BikeBrowserWorld/Data/badges/badges.json",
+        "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+        "BikeBrowserWorld/Data/missions/bridge_quest_5.json",
+        "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+        "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+        "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "copper_prospector",
+      "reference_files": [
+        "BikeBrowserWorld/Data/missions/copper_prospector.json",
+        "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "copper_rock_id",
+      "reference_files": [
+        "BikeBrowserWorld/Data/badges/badges.json",
+        "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+        "BikeBrowserWorld/Data/missions/copper_prospector.json",
+        "BikeBrowserWorld/Data/missions/copper_rock_id.json",
+        "BikeBrowserWorld/Data/missions/mine_stability_check.json",
+        "BikeBrowserWorld/Data/notes/environmental_notes.json",
+        "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+        "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "desert_foraging_samples",
+      "reference_files": [
+        "BikeBrowserWorld/Data/missions/desert_foraging_samples.json",
+        "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "desert_plant_observation",
+      "reference_files": [
+        "BikeBrowserWorld/Data/badges/badges.json",
+        "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+        "BikeBrowserWorld/Data/missions/desert_foraging_samples.json",
+        "BikeBrowserWorld/Data/missions/desert_plant_observation.json",
+        "BikeBrowserWorld/Data/missions/desert_water_management.json",
+        "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+        "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "desert_water_management",
+      "reference_files": [
+        "BikeBrowserWorld/Data/missions/desert_water_management.json",
+        "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "mine_stability_check",
+      "reference_files": [
+        "BikeBrowserWorld/Data/missions/mine_stability_check.json",
+        "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "river_ecosystem_survey",
+      "reference_files": [
+        "BikeBrowserWorld/Data/missions/river_ecosystem_survey.json",
+        "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "test_water_quality",
+      "reference_files": [
+        "BikeBrowserWorld/Data/badges/badges.json",
+        "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+        "BikeBrowserWorld/Data/missions/balance_the_flow.json",
+        "BikeBrowserWorld/Data/missions/river_ecosystem_survey.json",
+        "BikeBrowserWorld/Data/missions/test_water_quality.json",
+        "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+        "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd"
+      ]
+    },
+    {
+      "exposure_status": "EXPOSED",
+      "quest_id": "workshop_first_build",
+      "reference_files": [
+        "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+        "BikeBrowserWorld/Data/missions/workshop_first_build.json",
+        "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+        "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd"
+      ]
+    }
+  ]
+}

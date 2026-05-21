@@ -1,0 +1,1984 @@
+{
+  "quests": [
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+      "objectives": [
+        {
+          "objective_id": "review_bike_systems",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "review_bike_systems",
+              "prerequisites_declared": [],
+              "producer_node_path": "/Act1CapstoneStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "act1_regional_readiness",
+              "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "review_bridge_systems",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "review_bridge_systems",
+              "prerequisites_declared": [],
+              "producer_node_path": "/Act1CapstoneStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "act1_regional_readiness",
+              "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "review_ecology_water",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "review_ecology_water",
+              "prerequisites_declared": [],
+              "producer_node_path": "/Act1CapstoneStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "act1_regional_readiness",
+              "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "review_materials_workshop",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "review_materials_workshop",
+              "prerequisites_declared": [],
+              "producer_node_path": "/Act1CapstoneStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "act1_regional_readiness",
+              "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "sketch_regional_questions",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "sketch_regional_questions",
+              "prerequisites_declared": [],
+              "producer_node_path": "/Act1CapstoneStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "act1_regional_readiness",
+              "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "receive_spacecraft_clue",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "receive_spacecraft_clue",
+              "prerequisites_declared": [],
+              "producer_node_path": "/Act1CapstoneStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "act1_regional_readiness",
+              "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        "act1_pre_ride_check",
+        "chain_repair",
+        "bridge_quest_5",
+        "desert_plant_observation",
+        "test_water_quality",
+        "copper_rock_id",
+        "workshop_first_build"
+      ],
+      "quest_id": "act1_regional_readiness",
+      "quest_status": "PLAYABLE_DEGRADED",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/algae_bloom_source.json",
+      "objectives": [
+        {
+          "objective_id": "notice_green_water",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "talk_to_dr_maya",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "follow_channel",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "find_runoff_source",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "report_solution",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "algae_bloom_source",
+      "quest_status": "DATA_ONLY",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/balance_the_flow.json",
+      "objectives": [
+        {
+          "objective_id": "collect_river_minerals",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "collect_river_minerals",
+              "prerequisites_declared": [],
+              "producer_node_path": "/RiverMineralsPickup",
+              "producer_node_type": "ResourcePickup",
+              "producer_quality": "PICKUP",
+              "quest_id": "balance_the_flow",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "collect_reed_fiber",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "collect_reed_fiber",
+              "prerequisites_declared": [],
+              "producer_node_path": "/ReedFiberPickup",
+              "producer_node_type": "ResourcePickup",
+              "producer_quality": "PICKUP",
+              "quest_id": "balance_the_flow",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "inspect_channels",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "inspect_channels",
+              "prerequisites_declared": [],
+              "producer_node_path": "/IrrigationInspectable",
+              "producer_node_type": "InspectableObject",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "balance_the_flow",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "fraction_question",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "fraction_question",
+              "prerequisites_declared": [],
+              "producer_node_path": "/IrrigationFractionChallenge",
+              "producer_node_type": "ChallengeStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "balance_the_flow",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        "test_water_quality"
+      ],
+      "quest_id": "balance_the_flow",
+      "quest_status": "PLAYABLE_DEGRADED",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bike_safety_check.json",
+      "objectives": [
+        {
+          "objective_id": "talk_to_mrs_ramirez",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "abc_page_created",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "air_front_checked",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "air_rear_flat_found",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "brakes_front_checked",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "brakes_rear_checked",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "chain_checked",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "quick_wheel_checked",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "quick_seat_checked",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "quick_handlebars_checked",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "tube_received",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "garage_arrived",
+          "objective_status": "SCRIPT_ONLY",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "garage_arrived",
+              "prerequisites_declared": [],
+              "producer_node_path": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd:104",
+              "producer_node_type": "ScriptCall",
+              "producer_quality": "SCRIPT_CALL_ONLY",
+              "quest_id": "act1_pre_ride_check",
+              "scene_file": "",
+              "starts_quest_too": false
+            }
+          ]
+        },
+        {
+          "objective_id": "tube_removed",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "leak_found",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "leak_marked",
+          "objective_status": "SCRIPT_ONLY",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "leak_marked",
+              "prerequisites_declared": [],
+              "producer_node_path": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd:216",
+              "producer_node_type": "ScriptCall",
+              "producer_quality": "SCRIPT_CALL_ONLY",
+              "quest_id": "act1_pre_ride_check",
+              "scene_file": "",
+              "starts_quest_too": false
+            }
+          ]
+        },
+        {
+          "objective_id": "patch_applied",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "tube_reinflated",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "repair_tested",
+          "objective_status": "SCRIPT_ONLY",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "repair_tested",
+              "prerequisites_declared": [],
+              "producer_node_path": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd:139",
+              "producer_node_type": "ScriptCall",
+              "producer_quality": "SCRIPT_CALL_ONLY",
+              "quest_id": "act1_pre_ride_check",
+              "scene_file": "",
+              "starts_quest_too": false
+            }
+          ]
+        },
+        {
+          "objective_id": "tube_returned",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "final_air_checked",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "final_brakes_checked",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "final_chain_checked",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "final_quick_checked",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "final_report",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "act1_pre_ride_check",
+      "quest_status": "PARTIAL",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_material_test.json",
+      "objectives": [
+        {
+          "objective_id": "collect_materials",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "test_strength",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "choose_bridge_part",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "bridge_material_test",
+      "quest_status": "DATA_ONLY",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_1.json",
+      "objectives": [
+        {
+          "objective_id": "talk_to_mr_chen",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "talk_to_mr_chen",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AssessBridgeStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_1",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "visit_broken_bridge",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "visit_broken_bridge",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AssessBridgeStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_1",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "inspect_planks",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "inspect_planks",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BrokenPlanksInspectable",
+              "producer_node_type": "InspectableObject",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_1",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "inspect_beams_supports",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "inspect_beams_supports",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BrokenBeamsInspectable",
+              "producer_node_type": "InspectableObject",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_1",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "return_report",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "return_report",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AssessBridgeStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_1",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "bridge_quest_1",
+      "quest_status": "PLAYABLE_DEGRADED",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_2.json",
+      "objectives": [
+        {
+          "objective_id": "talk_to_shopkeeper",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "collect_wood_planks",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "collect_metal_brackets",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "collect_rope_coil",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "return_materials",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "bridge_quest_2",
+      "quest_status": "DATA_ONLY",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_3.json",
+      "objectives": [
+        {
+          "objective_id": "go_to_testing_rig",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "test_wood",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "test_metal",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "test_composite",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "choose_best_material",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "bridge_quest_3",
+      "quest_status": "DATA_ONLY",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_4.json",
+      "objectives": [
+        {
+          "objective_id": "choose_design",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "choose_design",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeBuildStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_4",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "place_supports",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "place_supports",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeBuildStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_4",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "lay_planks",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "lay_planks",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeBuildStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_4",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "secure_connections",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "secure_connections",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeBuildStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_4",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "walk_test",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "walk_test",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeBuildStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_4",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "bridge_quest_4",
+      "quest_status": "PLAYABLE_DEGRADED",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_5.json",
+      "objectives": [
+        {
+          "objective_id": "talk_to_neighbors",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 2,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "talk_to_neighbors",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeReviewStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_5",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            },
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "talk_to_neighbors",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeReviewStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_5",
+              "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "receive_badge",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 2,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "receive_badge",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeReviewStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_5",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            },
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "receive_badge",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeReviewStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_5",
+              "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "unlock_new_area",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 2,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "unlock_new_area",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeReviewStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_5",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            },
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "unlock_new_area",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeReviewStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_5",
+              "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "learn_triangles",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 2,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "learn_triangles",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeReviewStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_5",
+              "scene_file": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+              "starts_quest_too": true
+            },
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "learn_triangles",
+              "prerequisites_declared": [],
+              "producer_node_path": "/BridgeReviewStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "bridge_quest_5",
+              "scene_file": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        "chain_repair"
+      ],
+      "quest_id": "bridge_quest_5",
+      "quest_status": "PLAYABLE_DEGRADED",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/chain_repair.json",
+      "objectives": [
+        {
+          "objective_id": "talk_to_mr_chen",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "inspect_chain",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "rotate_pedals",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "align_chain",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "seat_chain",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "test_rotation",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "chain_repair",
+      "quest_status": "DATA_ONLY",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/copper_prospector.json",
+      "objectives": [
+        {
+          "objective_id": "collect_surface_copper",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "collect_surface_copper",
+              "prerequisites_declared": [],
+              "producer_node_path": "/SurfaceCopperPickup",
+              "producer_node_type": "ResourcePickup",
+              "producer_quality": "PICKUP",
+              "quest_id": "copper_prospector",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "collect_deep_copper",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "collect_deep_copper",
+              "prerequisites_declared": [],
+              "producer_node_path": "/DeepCopperPickup",
+              "producer_node_type": "ResourcePickup",
+              "producer_quality": "PICKUP",
+              "quest_id": "copper_prospector",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "conductivity_question",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "conductivity_question",
+              "prerequisites_declared": [],
+              "producer_node_path": "/ConductivityChallenge",
+              "producer_node_type": "ChallengeStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "copper_prospector",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "collect_wire_spool",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "collect_wire_spool",
+              "prerequisites_declared": [],
+              "producer_node_path": "/WireSpoolPickup",
+              "producer_node_type": "ResourcePickup",
+              "producer_quality": "PICKUP",
+              "quest_id": "copper_prospector",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        "copper_rock_id"
+      ],
+      "quest_id": "copper_prospector",
+      "quest_status": "PLAYABLE_DEGRADED",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/copper_rock_id.json",
+      "objectives": [
+        {
+          "objective_id": "find_copper_rock",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "find_copper_rock",
+              "prerequisites_declared": [],
+              "producer_node_path": "/CopperEvidenceStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "copper_rock_id",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "test_conductivity",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "test_conductivity",
+              "prerequisites_declared": [],
+              "producer_node_path": "/CopperEvidenceStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "copper_rock_id",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "report_to_pete",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "report_to_pete",
+              "prerequisites_declared": [],
+              "producer_node_path": "/CopperEvidenceStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "copper_rock_id",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "copper_rock_id",
+      "quest_status": "PLAYABLE_DEGRADED",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/desert_foraging_samples.json",
+      "objectives": [
+        {
+          "objective_id": "gather_yucca",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "gather_yucca",
+              "prerequisites_declared": [],
+              "producer_node_path": "/YuccaFiberPickup",
+              "producer_node_type": "ResourcePickup",
+              "producer_quality": "PICKUP",
+              "quest_id": "desert_foraging_samples",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "gather_agave",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "gather_agave",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AgaveFiberPickup",
+              "producer_node_type": "ResourcePickup",
+              "producer_quality": "PICKUP",
+              "quest_id": "desert_foraging_samples",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "gather_jojoba",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "gather_jojoba",
+              "prerequisites_declared": [],
+              "producer_node_path": "/JojobaPickup",
+              "producer_node_type": "ResourcePickup",
+              "producer_quality": "PICKUP",
+              "quest_id": "desert_foraging_samples",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "gather_creosote",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "gather_creosote",
+              "prerequisites_declared": [],
+              "producer_node_path": "/CreosotePickup",
+              "producer_node_type": "ResourcePickup",
+              "producer_quality": "PICKUP",
+              "quest_id": "desert_foraging_samples",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "note_cactus_water",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "note_cactus_water",
+              "prerequisites_declared": [],
+              "producer_node_path": "/CactusWaterPickup",
+              "producer_node_type": "ResourcePickup",
+              "producer_quality": "PICKUP",
+              "quest_id": "desert_foraging_samples",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        "desert_plant_observation"
+      ],
+      "quest_id": "desert_foraging_samples",
+      "quest_status": "PLAYABLE",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/desert_plant_observation.json",
+      "objectives": [
+        {
+          "objective_id": "talk_to_ranger_nita",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "talk_to_ranger_nita",
+              "prerequisites_declared": [],
+              "producer_node_path": "/PlantObservationStation",
+              "producer_node_type": "PlantObservationStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "desert_plant_observation",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "observe_three_plants",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "observe_three_plants",
+              "prerequisites_declared": [],
+              "producer_node_path": "/PlantObservationStation",
+              "producer_node_type": "PlantObservationStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "desert_plant_observation",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "journal_observations",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "journal_observations",
+              "prerequisites_declared": [],
+              "producer_node_path": "/PlantObservationStation",
+              "producer_node_type": "PlantObservationStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "desert_plant_observation",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "return_to_nita",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "return_to_nita",
+              "prerequisites_declared": [],
+              "producer_node_path": "/PlantObservationStation",
+              "producer_node_type": "PlantObservationStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "desert_plant_observation",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "desert_plant_observation",
+      "quest_status": "PLAYABLE",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/desert_water_management.json",
+      "objectives": [
+        {
+          "objective_id": "inspect_trail_marker",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "inspect_trail_marker",
+              "prerequisites_declared": [],
+              "producer_node_path": "/TrailMarkerInspectable",
+              "producer_node_type": "InspectableObject",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "desert_water_management",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "inspect_scavenge_spot",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "inspect_scavenge_spot",
+              "prerequisites_declared": [],
+              "producer_node_path": "/ScavengeInspectable",
+              "producer_node_type": "InspectableObject",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "desert_water_management",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "water_hours_question",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "water_hours_question",
+              "prerequisites_declared": [],
+              "producer_node_path": "/WaterHoursChallenge",
+              "producer_node_type": "ChallengeStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "desert_water_management",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "plant_ratio_question",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "plant_ratio_question",
+              "prerequisites_declared": [],
+              "producer_node_path": "/PlantRatioChallenge",
+              "producer_node_type": "ChallengeStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "desert_water_management",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "heat_survival_question",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "heat_survival_question",
+              "prerequisites_declared": [],
+              "producer_node_path": "/HeatSurvivalChallenge",
+              "producer_node_type": "ChallengeStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "desert_water_management",
+              "scene_file": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        "desert_plant_observation"
+      ],
+      "quest_id": "desert_water_management",
+      "quest_status": "PLAYABLE_DEGRADED",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/first_safety_check.json",
+      "objectives": [
+        {
+          "objective_id": "talk_to_mrs_ramirez",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "inspect_bike",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "report_findings",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "first_safety_check",
+      "quest_status": "DATA_ONLY",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/flat_tire_repair.json",
+      "objectives": [
+        {
+          "objective_id": "inspect_wheel",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "remove_tube",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "apply_patch",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "inflate_tire",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "verify_wheel_ready",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "flat_tire_repair",
+      "quest_status": "DATA_ONLY",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/mine_cart_repair.json",
+      "objectives": [
+        {
+          "objective_id": "inspect_broken_wheel",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "find_replacement_wheel",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "install_wheel",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "test_cart",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "mine_cart_repair",
+      "quest_status": "DATA_ONLY",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/mine_stability_check.json",
+      "objectives": [
+        {
+          "objective_id": "inspect_support_beam",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "inspect_support_beam",
+              "prerequisites_declared": [],
+              "producer_node_path": "/SupportBeamInspectable",
+              "producer_node_type": "InspectableObject",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "mine_stability_check",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "calculate_load_capacity",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "calculate_load_capacity",
+              "prerequisites_declared": [],
+              "producer_node_path": "/LoadCapacityChallenge",
+              "producer_node_type": "ChallengeStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "mine_stability_check",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "mark_rubble_density",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "mark_rubble_density",
+              "prerequisites_declared": [],
+              "producer_node_path": "/RubbleDensityInspectable",
+              "producer_node_type": "InspectableObject",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "mine_stability_check",
+              "scene_file": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        "copper_rock_id"
+      ],
+      "quest_id": "mine_stability_check",
+      "quest_status": "PLAYABLE_DEGRADED",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/river_ecosystem_survey.json",
+      "objectives": [
+        {
+          "objective_id": "observe_fish_patterns",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "observe_fish_patterns",
+              "prerequisites_declared": [],
+              "producer_node_path": "/FoodWebInspectable",
+              "producer_node_type": "InspectableObject",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "river_ecosystem_survey",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "collect_algae",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "collect_algae",
+              "prerequisites_declared": [],
+              "producer_node_path": "/AlgaeSamplePickup",
+              "producer_node_type": "ResourcePickup",
+              "producer_quality": "PICKUP",
+              "quest_id": "river_ecosystem_survey",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "collect_microbes",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "collect_microbes",
+              "prerequisites_declared": [],
+              "producer_node_path": "/MicrobialSamplePickup",
+              "producer_node_type": "ResourcePickup",
+              "producer_quality": "PICKUP",
+              "quest_id": "river_ecosystem_survey",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "flow_rate_question",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "flow_rate_question",
+              "prerequisites_declared": [],
+              "producer_node_path": "/FlowRateChallenge",
+              "producer_node_type": "ChallengeStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "river_ecosystem_survey",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [
+        "test_water_quality"
+      ],
+      "quest_id": "river_ecosystem_survey",
+      "quest_status": "PLAYABLE_DEGRADED",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/test_water_quality.json",
+      "objectives": [
+        {
+          "objective_id": "talk_to_dr_maya",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "talk_to_dr_maya",
+              "prerequisites_declared": [],
+              "producer_node_path": "/WaterQualityStation",
+              "producer_node_type": "WaterQualityStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "test_water_quality",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "collect_water_sample",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "collect_water_sample",
+              "prerequisites_declared": [],
+              "producer_node_path": "/WaterQualityStation",
+              "producer_node_type": "WaterQualityStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "test_water_quality",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "run_ph_test",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "run_ph_test",
+              "prerequisites_declared": [],
+              "producer_node_path": "/WaterQualityStation",
+              "producer_node_type": "WaterQualityStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "test_water_quality",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "identify_macroinvertebrates",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "identify_macroinvertebrates",
+              "prerequisites_declared": [],
+              "producer_node_path": "/WaterQualityStation",
+              "producer_node_type": "WaterQualityStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "test_water_quality",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "report_results",
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "report_results",
+              "prerequisites_declared": [],
+              "producer_node_path": "/WaterQualityStation",
+              "producer_node_type": "WaterQualityStation",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "test_water_quality",
+              "scene_file": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "test_water_quality",
+      "quest_status": "PLAYABLE",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/track_the_animal.json",
+      "objectives": [
+        {
+          "objective_id": "find_tracks",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "follow_tracks",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "identify_animal",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "report_findings",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "track_the_animal",
+      "quest_status": "DATA_ONLY",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/water_sample_observation.json",
+      "objectives": [
+        {
+          "objective_id": "talk_to_dr_maya",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "collect_sample",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "compare_evidence",
+          "objective_status": "NO_PRODUCER",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "water_sample_observation",
+      "quest_status": "DATA_ONLY",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/workshop_first_build.json",
+      "objectives": [
+        {
+          "objective_id": "collect_raw_material",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "collect_raw_material",
+              "prerequisites_declared": [],
+              "producer_node_path": "/WorkshopBuildStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "workshop_first_build",
+              "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "choose_workshop_friend",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "choose_workshop_friend",
+              "prerequisites_declared": [],
+              "producer_node_path": "/WorkshopBuildStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "workshop_first_build",
+              "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        },
+        {
+          "objective_id": "craft_first_part",
+          "objective_status": "PLAYABLE_GENERIC",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "craft_first_part",
+              "prerequisites_declared": [],
+              "producer_node_path": "/WorkshopBuildStation",
+              "producer_node_type": "QuestObjectiveStation",
+              "producer_quality": "GENERIC_STATION",
+              "quest_id": "workshop_first_build",
+              "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+              "starts_quest_too": true
+            }
+          ]
+        }
+      ],
+      "prerequisites": [],
+      "quest_id": "workshop_first_build",
+      "quest_status": "PLAYABLE_DEGRADED",
+      "unlocks": []
+    }
+  ],
+  "stale_references": [
+    {
+      "objective_id": "id",
+      "producers": 1,
+      "quest_id": "act1_pre_ride_check"
+    },
+    {
+      "objective_id": "cement_set",
+      "producers": 1,
+      "quest_id": "act1_pre_ride_check"
+    }
+  ]
+}
