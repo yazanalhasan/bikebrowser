@@ -1,0 +1,78 @@
+[
+  {
+    "class_name": "ChallengeStation",
+    "file": "BikeBrowserWorld/Systems/Interactions/ChallengeStation.gd",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "class_name": "PlantObservationStation",
+    "file": "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Data/layouts/desert_trail.json",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+      "BikeBrowserWorld/tests/act1_player_path_check.gd",
+      "BikeBrowserWorld/tests/act1_validation_hooks_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "class_name": "QuestObjectiveStation",
+    "file": "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "class_name": "SafetyCheckStation",
+    "file": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd",
+    "reference_count": 5,
+    "references": [
+      "BikeBrowserWorld/Data/layouts/neighborhood_street.json",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/tests/interaction_overlap_check.gd",
+      "BikeBrowserWorld/tests/safety_check_brake_integration_check.gd",
+      "BikeBrowserWorld/tests/safety_hold_requires_npc_dialog_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "class_name": "TireRepairStation",
+    "file": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Data/layouts/garage.json",
+      "BikeBrowserWorld/Regions/Garage/TireRepairStation.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/tests/act1_modal_interaction_guard_check.gd",
+      "BikeBrowserWorld/tests/tire_rig_state_check.gd",
+      "BikeBrowserWorld/tests/vertical_slice_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "class_name": "WaterQualityStation",
+    "file": "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Data/layouts/salt_river.json",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/tests/act1_player_path_check.gd",
+      "BikeBrowserWorld/tests/act1_validation_hooks_check.gd"
+    ],
+    "status": "REFERENCED"
+  }
+]

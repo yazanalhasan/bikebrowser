@@ -1,0 +1,256 @@
+[
+  {
+    "dialog_id": "abuela_rosa_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/abuela_rosa_intro.json",
+    "npc_id": "abuela_rosa",
+    "speaker": "",
+    "voices": [
+      "abuela_rosa_greeting"
+    ]
+  },
+  {
+    "dialog_id": "charlie_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/charlie_intro.json",
+    "npc_id": "charlie",
+    "speaker": "Charlie",
+    "voices": [
+      "charlie_greeting",
+      "charlie_materials",
+      "charlie_quirk"
+    ]
+  },
+  {
+    "dialog_id": "cole_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/cole_intro.json",
+    "npc_id": "cole",
+    "speaker": "Cole",
+    "voices": [
+      "cole_greeting",
+      "cole_materials",
+      "cole_quirk"
+    ]
+  },
+  {
+    "dialog_id": "dr_maya_expanded",
+    "file": "BikeBrowserWorld/Data/dialogue/dr_maya_expanded.json",
+    "npc_id": "river_biologist",
+    "speaker": "Dr. Maya",
+    "voices": [
+      "dr_maya_career_path",
+      "dr_maya_greeting",
+      "dr_maya_human_impact",
+      "dr_maya_macroinvertebrates",
+      "dr_maya_stoneflies",
+      "dr_maya_test_intro",
+      "dr_maya_water_quality"
+    ]
+  },
+  {
+    "dialog_id": "dr_maya_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/dr_maya_intro.json",
+    "npc_id": "",
+    "speaker": "Dr. Maya",
+    "voices": []
+  },
+  {
+    "dialog_id": "jacob_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/jacob_intro.json",
+    "npc_id": "jacob",
+    "speaker": "Jacob",
+    "voices": [
+      "jacob_greeting",
+      "jacob_materials",
+      "jacob_quirk"
+    ]
+  },
+  {
+    "dialog_id": "james_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/james_intro.json",
+    "npc_id": "james",
+    "speaker": "James",
+    "voices": [
+      "james_greeting",
+      "james_materials",
+      "james_quirk"
+    ]
+  },
+  {
+    "dialog_id": "mom_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/mom_intro.json",
+    "npc_id": "mom",
+    "speaker": "",
+    "voices": [
+      "mom_greeting"
+    ]
+  },
+  {
+    "dialog_id": "mr_chen_after_chain",
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_after_chain.json",
+    "npc_id": "",
+    "speaker": "Mr. Chen",
+    "voices": []
+  },
+  {
+    "dialog_id": "mr_chen_after_safety",
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_after_safety.json",
+    "npc_id": "",
+    "speaker": "Mr. Chen",
+    "voices": []
+  },
+  {
+    "dialog_id": "mr_chen_bridge",
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_bridge.json",
+    "npc_id": "mr_chen",
+    "speaker": "Mr. Chen",
+    "voices": []
+  },
+  {
+    "dialog_id": "mr_chen_chain",
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_chain.json",
+    "npc_id": "",
+    "speaker": "Mr. Chen",
+    "voices": []
+  },
+  {
+    "dialog_id": "mr_chen_expanded",
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_expanded.json",
+    "npc_id": "mr_chen",
+    "speaker": "Mr. Chen",
+    "voices": [
+      "mr_chen_biology_bridge",
+      "mr_chen_bridge_intro",
+      "mr_chen_chain_observe",
+      "mr_chen_chain_teach",
+      "mr_chen_encouragement",
+      "mr_chen_greeting",
+      "mr_chen_materials_intro",
+      "mr_chen_simple_machines",
+      "mr_chen_tools_intro"
+    ]
+  },
+  {
+    "dialog_id": "mr_chen_pre_ride_repair",
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_pre_ride_repair.json",
+    "npc_id": "",
+    "speaker": "Mr. Chen",
+    "voices": []
+  },
+  {
+    "dialog_id": "mrs_ramirez_after_chain",
+    "file": "BikeBrowserWorld/Data/dialogue/mrs_ramirez_after_chain.json",
+    "npc_id": "",
+    "speaker": "Mrs. Ramirez",
+    "voices": []
+  },
+  {
+    "dialog_id": "mrs_ramirez_after_safety",
+    "file": "BikeBrowserWorld/Data/dialogue/mrs_ramirez_after_safety.json",
+    "npc_id": "",
+    "speaker": "Mrs. Ramirez",
+    "voices": []
+  },
+  {
+    "dialog_id": "mrs_ramirez_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/mrs_ramirez_intro.json",
+    "npc_id": "",
+    "speaker": "Mrs. Ramirez",
+    "voices": []
+  },
+  {
+    "dialog_id": "mrs_ramirez_questline",
+    "file": "BikeBrowserWorld/Data/dialogue/mrs_ramirez_questline.json",
+    "npc_id": "mrs_ramirez",
+    "speaker": "Mrs. Ramirez",
+    "voices": [
+      "mrs_ramirez_brake_intro",
+      "mrs_ramirez_chain_intro",
+      "mrs_ramirez_flat_intro",
+      "mrs_ramirez_patch_intro",
+      "mrs_ramirez_puncture_intro",
+      "mrs_ramirez_remove_tire_intro",
+      "mrs_ramirez_safety_encouragement",
+      "mrs_ramirez_safety_greeting",
+      "mrs_ramirez_tire_intro"
+    ]
+  },
+  {
+    "dialog_id": "neighbor_kid_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/neighbor_kid_intro.json",
+    "npc_id": "neighbor_kid",
+    "speaker": "",
+    "voices": [
+      "neighbor_kid_greeting"
+    ]
+  },
+  {
+    "dialog_id": "old_miner_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/old_miner_intro.json",
+    "npc_id": "",
+    "speaker": "Old Miner Pete",
+    "voices": []
+  },
+  {
+    "dialog_id": "old_miner_pete_expanded",
+    "file": "BikeBrowserWorld/Data/dialogue/old_miner_pete_expanded.json",
+    "npc_id": "old_miner",
+    "speaker": "Old Miner Pete",
+    "voices": [
+      "old_miner_cart_quest",
+      "old_miner_copper_quest",
+      "old_miner_copper_uses",
+      "old_miner_environment_note",
+      "old_miner_greeting",
+      "old_miner_mine_system",
+      "old_miner_rock_id"
+    ]
+  },
+  {
+    "dialog_id": "ranger_nita_expanded",
+    "file": "BikeBrowserWorld/Data/dialogue/ranger_nita_expanded.json",
+    "npc_id": "desert_guide",
+    "speaker": "Ranger Nita",
+    "voices": [
+      "ranger_nita_greeting",
+      "ranger_nita_journal",
+      "ranger_nita_plant_observation",
+      "ranger_nita_respect",
+      "ranger_nita_tracks"
+    ]
+  },
+  {
+    "dialog_id": "ranger_nita_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/ranger_nita_intro.json",
+    "npc_id": "",
+    "speaker": "Ranger Nita",
+    "voices": []
+  },
+  {
+    "dialog_id": "shopkeeper_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/shopkeeper_intro.json",
+    "npc_id": "shopkeeper",
+    "speaker": "",
+    "voices": [
+      "shopkeeper_greeting"
+    ]
+  },
+  {
+    "dialog_id": "uncle_karim_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/uncle_karim_intro.json",
+    "npc_id": "uncle_karim",
+    "speaker": "",
+    "voices": [
+      "uncle_karim_greeting"
+    ]
+  },
+  {
+    "dialog_id": "zevon_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/zevon_intro.json",
+    "npc_id": "zevon",
+    "speaker": "Zevon",
+    "voices": [
+      "zevon_greeting",
+      "zevon_materials",
+      "zevon_quirk"
+    ]
+  }
+]

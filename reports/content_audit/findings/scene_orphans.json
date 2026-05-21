@@ -1,0 +1,47 @@
+[
+  {
+    "file": "BikeBrowserWorld/Data/dialogue/abuela_rosa_intro.json",
+    "id": "abuela_rosa",
+    "status": "REFERENCE_WITHOUT_INVENTORY_MATCH"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/dialogue/mom_intro.json",
+    "id": "mom",
+    "status": "REFERENCE_WITHOUT_INVENTORY_MATCH"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_bridge.json",
+    "id": "shopkeeper",
+    "status": "REFERENCE_WITHOUT_INVENTORY_MATCH"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_bridge.json",
+    "id": "neighbor_kid",
+    "status": "REFERENCE_WITHOUT_INVENTORY_MATCH"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/dialogue/neighbor_kid_intro.json",
+    "id": "neighbor_kid",
+    "status": "REFERENCE_WITHOUT_INVENTORY_MATCH"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/dialogue/shopkeeper_intro.json",
+    "id": "shopkeeper",
+    "status": "REFERENCE_WITHOUT_INVENTORY_MATCH"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/dialogue/uncle_karim_intro.json",
+    "id": "uncle_karim",
+    "status": "REFERENCE_WITHOUT_INVENTORY_MATCH"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/npc_schedules.json",
+    "id": "miner_pete",
+    "status": "REFERENCE_WITHOUT_INVENTORY_MATCH"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/npc_schedules.json",
+    "id": "ranger_nita",
+    "status": "REFERENCE_WITHOUT_INVENTORY_MATCH"
+  }
+]

@@ -1,0 +1,771 @@
+[
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "chain",
+    "reference_count": 56,
+    "references": [
+      "BikeBrowserWorld/AchievementSystem/badges.json",
+      "BikeBrowserWorld/addons/DialogueSystem/dialogue_example.json",
+      "BikeBrowserWorld/addons/nklbdev.importality/combined_editor_import_plugin.gd",
+      "BikeBrowserWorld/addons/ProceduralQuest/item_database.json",
+      "BikeBrowserWorld/addons/ToolHelpers/QuestValidator/QuestValidator.gd",
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Assets/Props/props_manifest.json",
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Core/ProjectIntegration/ProjectIntegration.gd",
+      "BikeBrowserWorld/Core/QuestRegistry/QuestRegistry.gd",
+      "BikeBrowserWorld/Data/badges/badges.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_after_chain.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_after_safety.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_chain.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_expanded.json",
+      "BikeBrowserWorld/Data/dialogue/mrs_ramirez_after_chain.json",
+      "BikeBrowserWorld/Data/dialogue/mrs_ramirez_questline.json",
+      "BikeBrowserWorld/Data/dialogue/neighbor_kid_intro.json",
+      "BikeBrowserWorld/Data/domains/mechanics.json",
+      "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+      "BikeBrowserWorld/Data/missions/bike_safety_check.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_5.json",
+      "BikeBrowserWorld/Data/missions/chain_repair.json",
+      "BikeBrowserWorld/Data/missions/first_safety_check.json",
+      "BikeBrowserWorld/Data/missions/test_water_quality.json",
+      "BikeBrowserWorld/Data/notes/environmental_notes.json",
+      "BikeBrowserWorld/Data/npcs/mr_chen.json",
+      "BikeBrowserWorld/Domains/Mechanics/MechanicsDomain.gd",
+      "BikeBrowserWorld/Prototypes/EmbodiedMechanics/ChainRig.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "inner_tube",
+    "reference_count": 7,
+    "references": [
+      "BikeBrowserWorld/addons/InventorySystem/recipes.json",
+      "BikeBrowserWorld/addons/ProceduralQuest/item_database.json",
+      "BikeBrowserWorld/Assets/Props/props_manifest.json",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Prototypes/EmbodiedMechanics/TireRig.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/tests/notebook_inventory_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "patch_kit",
+    "reference_count": 7,
+    "references": [
+      "BikeBrowserWorld/addons/InventorySystem/recipes.json",
+      "BikeBrowserWorld/addons/ProceduralQuest/item_database.json",
+      "BikeBrowserWorld/Assets/Props/props_manifest.json",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Prototypes/EmbodiedMechanics/TireRig.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/tests/notebook_inventory_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "tire_lever",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Prototypes/EmbodiedMechanics/TireRig.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "air_pump",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/props_manifest.json",
+      "BikeBrowserWorld/Prototypes/EmbodiedMechanics/TireRig.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "multi_tool",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "chain_lube",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "brake_pads",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "spoke",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/addons/InventorySystem/recipes.json",
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Assets/Props/props_manifest.json",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "gear_cable",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "copper_ore",
+    "reference_count": 15,
+    "references": [
+      "BikeBrowserWorld/addons/InventorySystem/recipes.json",
+      "BikeBrowserWorld/addons/ProceduralQuest/item_database.json",
+      "BikeBrowserWorld/addons/ProceduralQuest/quest_generator.gd",
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Core/QuestRegistry/QuestRegistry.gd",
+      "BikeBrowserWorld/Localization/languages/ar.json",
+      "BikeBrowserWorld/Localization/languages/en.json",
+      "BikeBrowserWorld/Localization/languages/es.json",
+      "BikeBrowserWorld/Localization/languages/fa.json",
+      "BikeBrowserWorld/Localization/languages/qu.json",
+      "BikeBrowserWorld/Localization/languages/sw.json",
+      "BikeBrowserWorld/Localization/languages/tr.json",
+      "BikeBrowserWorld/Localization/languages/zh.json",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "surface_copper",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/copper_prospector.json",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "deep_copper",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/copper_prospector.json",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "wire_spool",
+    "reference_count": 5,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/copper_prospector.json",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "iron_ore",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "wood_plank",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/addons/ProceduralQuest/item_database.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_2.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_3.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "rubber_strip",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/addons/InventorySystem/recipes.json",
+      "BikeBrowserWorld/addons/ProceduralQuest/item_database.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "metal_strip",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "glass_shard",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "silica",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "turquoise",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Data/missions/copper_rock_id.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "aluminum_scrap",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "steel_bolt",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "agave_fiber",
+    "reference_count": 5,
+    "references": [
+      "BikeBrowserWorld/addons/ProceduralQuest/item_database.json",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/ecology/plants.json",
+      "BikeBrowserWorld/Data/missions/desert_foraging_samples.json",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "yucca_fiber",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/ecology/plants.json",
+      "BikeBrowserWorld/Data/missions/desert_foraging_samples.json",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "mesquite_pod",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Data/ecology/plants.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "creosote_leaves",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "prickly_pear_fruit",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Data/ecology/plants.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "jojoba_bean",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "barrel_cactus_fruit",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Data/ecology/plants.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "cactus_water",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/desert_foraging_samples.json",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "desert_fiber_bundle",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/desert_foraging_samples.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "ocotillo_flower",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Data/ecology/plants.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "cholla_bud",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Data/ecology/plants.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "desert_lavender",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Data/ecology/plants.json",
+      "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "water_sample",
+    "reference_count": 7,
+    "references": [
+      "BikeBrowserWorld/addons/ProceduralQuest/item_database.json",
+      "BikeBrowserWorld/Core/QuestRegistry/QuestRegistry.gd",
+      "BikeBrowserWorld/Data/missions/test_water_quality.json",
+      "BikeBrowserWorld/Data/missions/water_sample_observation.json",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd",
+      "BikeBrowserWorld/tests/act1_validation_hooks_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "algae_sample",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/river_ecosystem_survey.json",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "microbial_sample",
+    "reference_count": 5,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/river_ecosystem_survey.json",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "river_minerals",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/balance_the_flow.json",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "reed_fiber",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/balance_the_flow.json",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "organic_compound",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/river_ecosystem_survey.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "irrigation_valve",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/balance_the_flow.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "plant_sample",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "soil_sample",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "macroinvertebrate",
+    "reference_count": 8,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Data/biology/water_parameters.json",
+      "BikeBrowserWorld/Data/dialogue/dr_maya_expanded.json",
+      "BikeBrowserWorld/Data/missions/test_water_quality.json",
+      "BikeBrowserWorld/Data/notes/environmental_notes.json",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd",
+      "BikeBrowserWorld/tests/act1_validation_hooks_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "water_test_strip",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "ph_chart",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "pickaxe",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "hard_hat",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/mine_stability_check.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "lantern",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Data/missions/mine_stability_check.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "field_guide",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+      "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "binoculars",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+      "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "water_kit",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "clipboard",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/addons/level_editor/EditorOverlay.gd",
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Data/notes/environmental_notes.json",
+      "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+      "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "magnifying_glass",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "water_filter",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/desert_water_management.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "tire",
+    "reference_count": 37,
+    "references": [
+      "BikeBrowserWorld/addons/InventorySystem/recipes.json",
+      "BikeBrowserWorld/addons/nklbdev.importality/rect_packer.gd",
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Assets/Props/props_manifest.json",
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Core/QuestRegistry/QuestRegistry.gd",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_bridge.json",
+      "BikeBrowserWorld/Data/dialogue/mrs_ramirez_intro.json",
+      "BikeBrowserWorld/Data/dialogue/mrs_ramirez_questline.json",
+      "BikeBrowserWorld/Data/dialogue/old_miner_pete_expanded.json",
+      "BikeBrowserWorld/Data/dialogue/zevon_intro.json",
+      "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+      "BikeBrowserWorld/Data/missions/bike_safety_check.json",
+      "BikeBrowserWorld/Data/missions/first_safety_check.json",
+      "BikeBrowserWorld/Data/missions/flat_tire_repair.json",
+      "BikeBrowserWorld/Data/notes/environmental_notes.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Prototypes/EmbodiedMechanics/TireRig.gd",
+      "BikeBrowserWorld/Prototypes/EmbodiedMechanics/TireRig.tscn",
+      "BikeBrowserWorld/Regions/Garage/TireRepairStation.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Regions/SystemShowcase/UiComponentsDemo.gd",
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd",
+      "BikeBrowserWorld/Systems/Playtest/PlaytestRigTelemetry.gd",
+      "BikeBrowserWorld/Systems/UI/HudController.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "inner_tube_ready",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/tests/notebook_inventory_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "chain_link",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/addons/ProceduralQuest/item_database.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "battery_cell",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "refined_copper",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/copper_prospector.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "carbon_rod",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "rubber_sheet",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "fiber_rope",
+    "reference_count": 0,
+    "references": [],
+    "status": "UNREFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "mrs_ramirez_rear_tube_flat",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "mrs_ramirez_rear_tube_repaired",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "mrs_ramirez_bike_ready",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/bike_safety_check.json",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "regional_travel_sketchbook",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+      "BikeBrowserWorld/tests/act1_player_path_check.gd",
+      "BikeBrowserWorld/tests/act1_regional_readiness_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "spacecraft_clue_card",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+      "BikeBrowserWorld/tests/act1_player_path_check.gd",
+      "BikeBrowserWorld/tests/act1_regional_readiness_check.gd"
+    ],
+    "status": "REFERENCED"
+  }
+]

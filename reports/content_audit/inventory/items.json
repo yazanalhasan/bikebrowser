@@ -1,0 +1,278 @@
+[
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "chain"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "inner_tube"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "patch_kit"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "tire_lever"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "air_pump"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "multi_tool"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "chain_lube"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "brake_pads"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "spoke"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "gear_cable"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "copper_ore"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "surface_copper"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "deep_copper"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "wire_spool"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "iron_ore"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "wood_plank"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "rubber_strip"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "metal_strip"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "glass_shard"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "silica"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "turquoise"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "aluminum_scrap"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "steel_bolt"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "agave_fiber"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "yucca_fiber"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "mesquite_pod"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "creosote_leaves"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "prickly_pear_fruit"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "jojoba_bean"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "barrel_cactus_fruit"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "cactus_water"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "desert_fiber_bundle"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "ocotillo_flower"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "cholla_bud"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "desert_lavender"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "water_sample"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "algae_sample"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "microbial_sample"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "river_minerals"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "reed_fiber"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "organic_compound"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "irrigation_valve"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "plant_sample"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "soil_sample"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "macroinvertebrate"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "water_test_strip"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "ph_chart"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "pickaxe"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "hard_hat"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "lantern"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "field_guide"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "binoculars"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "water_kit"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "clipboard"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "magnifying_glass"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "water_filter"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "tire"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "inner_tube_ready"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "chain_link"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "battery_cell"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "refined_copper"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "carbon_rod"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "rubber_sheet"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "fiber_rope"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "mrs_ramirez_rear_tube_flat"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "mrs_ramirez_rear_tube_repaired"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "mrs_ramirez_bike_ready"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "regional_travel_sketchbook"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/items/items.json",
+    "item_id": "spacecraft_clue_card"
+  }
+]

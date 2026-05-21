@@ -1,0 +1,119 @@
+[
+  {
+    "file": "BikeBrowserWorld/Data/layouts/copper_mine.json",
+    "layout_id": "copper_mine",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/layouts/desert_trail.json",
+    "layout_id": "desert_trail",
+    "reference_count": 5,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/layouts/dry_wash.json",
+    "layout_id": "dry_wash",
+    "reference_count": 8,
+    "references": [
+      "BikeBrowserWorld/addons/TerrainGenerator/biomes.json",
+      "BikeBrowserWorld/addons/TerrainGenerator/TerrainGenerator.gd",
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/ecology/plants.json",
+      "BikeBrowserWorld/Data/notes/environmental_notes.json",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/layouts/garage.json",
+    "layout_id": "garage",
+    "reference_count": 41,
+    "references": [
+      "BikeBrowserWorld/addons/DialogueSystem/dialogue_example.json",
+      "BikeBrowserWorld/addons/ProceduralQuest/location_database.json",
+      "BikeBrowserWorld/addons/ProceduralQuest/npc_database.json",
+      "BikeBrowserWorld/Assets/Exports/Tilesets/garage_floor_tiles.json",
+      "BikeBrowserWorld/Assets/Exports/Tilesets/garage_lighting.json",
+      "BikeBrowserWorld/Assets/Exports/Tilesets/garage_props.json",
+      "BikeBrowserWorld/Assets/Exports/Tilesets/garage_wall_tiles.json",
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Assets/Props/props_manifest.json",
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Core/QuestRegistry/QuestRegistry.gd",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_chain.json",
+      "BikeBrowserWorld/Data/dialogue/neighbor_kid_intro.json",
+      "BikeBrowserWorld/Data/environment_kits/garage_kit.json",
+      "BikeBrowserWorld/Data/layouts/neighborhood_street.json",
+      "BikeBrowserWorld/Data/missions/bike_safety_check.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_2.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_3.json",
+      "BikeBrowserWorld/Data/notes/environmental_notes.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Boot/Boot.gd",
+      "BikeBrowserWorld/Regions/Boot/Boot.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/ChainHotspot.gd",
+      "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/layouts/neighborhood_street.json",
+    "layout_id": "neighborhood_street",
+    "reference_count": 14,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Core/ProjectIntegration/ProjectIntegration.gd",
+      "BikeBrowserWorld/Data/missions/chain_repair.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Data/npcs/mr_chen.json",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Boot/Boot.gd",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+      "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/layouts/salt_river.json",
+    "layout_id": "salt_river",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  }
+]

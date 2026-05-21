@@ -1,0 +1,337 @@
+[
+  {
+    "dialog_refs": [],
+    "dialog_refs_valid": {},
+    "dialogbox_present": false,
+    "hud_present": false,
+    "npc_refs": [],
+    "pickup_count": 0,
+    "region_id": "boot",
+    "scene": "BikeBrowserWorld/Regions/Boot/Boot.tscn",
+    "scene_exists": true,
+    "station_count": 0,
+    "stations": []
+  },
+  {
+    "dialog_refs": [],
+    "dialog_refs_valid": {},
+    "dialogbox_present": true,
+    "hud_present": true,
+    "npc_refs": [
+      "DrMayaNpc",
+      "MrChenNpc",
+      "MrsRamirezNpc",
+      "OldMinerPeteNpc",
+      "RangerNitaNpc"
+    ],
+    "pickup_count": 0,
+    "region_id": "neighborhood_street",
+    "scene": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+    "scene_exists": true,
+    "station_count": 6,
+    "stations": [
+      {
+        "node": "MineExit",
+        "quest_id": "chain_repair",
+        "quest_valid": true
+      },
+      {
+        "node": "DesertExit",
+        "quest_id": "chain_repair",
+        "quest_valid": true
+      },
+      {
+        "node": "RiverExit",
+        "quest_id": "chain_repair",
+        "quest_valid": true
+      },
+      {
+        "node": "DryWashExit",
+        "quest_id": "chain_repair",
+        "quest_valid": true
+      },
+      {
+        "node": "BridgeReviewStation",
+        "quest_id": "bridge_quest_5",
+        "quest_valid": true
+      },
+      {
+        "node": "Act1CapstoneStation",
+        "quest_id": "act1_regional_readiness",
+        "quest_valid": true
+      }
+    ]
+  },
+  {
+    "dialog_refs": [
+      "mr_chen_pre_ride_repair"
+    ],
+    "dialog_refs_valid": {
+      "mr_chen_pre_ride_repair": true
+    },
+    "dialogbox_present": true,
+    "hud_present": true,
+    "npc_refs": [
+      "CharlieNpc",
+      "ColeNpc",
+      "JacobNpc",
+      "JamesNpc",
+      "MrChenNpc",
+      "ZevonNpc"
+    ],
+    "pickup_count": 0,
+    "region_id": "garage",
+    "scene": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+    "scene_exists": true,
+    "station_count": 1,
+    "stations": [
+      {
+        "node": "WorkshopBuildStation",
+        "quest_id": "workshop_first_build",
+        "quest_valid": true
+      }
+    ]
+  },
+  {
+    "dialog_refs": [],
+    "dialog_refs_valid": {},
+    "dialogbox_present": false,
+    "hud_present": false,
+    "npc_refs": [
+      "OldMinerPeteNpc"
+    ],
+    "pickup_count": 10,
+    "region_id": "copper_mine",
+    "scene": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+    "scene_exists": true,
+    "station_count": 8,
+    "stations": [
+      {
+        "node": "SurfaceCopperPickup",
+        "quest_id": "copper_prospector",
+        "quest_valid": true
+      },
+      {
+        "node": "DeepCopperPickup",
+        "quest_id": "copper_prospector",
+        "quest_valid": true
+      },
+      {
+        "node": "WireSpoolPickup",
+        "quest_id": "copper_prospector",
+        "quest_valid": true
+      },
+      {
+        "node": "ConductivityChallenge",
+        "quest_id": "copper_prospector",
+        "quest_valid": true
+      },
+      {
+        "node": "SupportBeamInspectable",
+        "quest_id": "mine_stability_check",
+        "quest_valid": true
+      },
+      {
+        "node": "LoadCapacityChallenge",
+        "quest_id": "mine_stability_check",
+        "quest_valid": true
+      },
+      {
+        "node": "RubbleDensityInspectable",
+        "quest_id": "mine_stability_check",
+        "quest_valid": true
+      },
+      {
+        "node": "CopperEvidenceStation",
+        "quest_id": "copper_rock_id",
+        "quest_valid": true
+      }
+    ]
+  },
+  {
+    "dialog_refs": [],
+    "dialog_refs_valid": {},
+    "dialogbox_present": false,
+    "hud_present": false,
+    "npc_refs": [
+      "RangerNitaNpc"
+    ],
+    "pickup_count": 16,
+    "region_id": "desert_trail",
+    "scene": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+    "scene_exists": true,
+    "station_count": 11,
+    "stations": [
+      {
+        "node": "YuccaFiberPickup",
+        "quest_id": "desert_foraging_samples",
+        "quest_valid": true
+      },
+      {
+        "node": "AgaveFiberPickup",
+        "quest_id": "desert_foraging_samples",
+        "quest_valid": true
+      },
+      {
+        "node": "JojobaPickup",
+        "quest_id": "desert_foraging_samples",
+        "quest_valid": true
+      },
+      {
+        "node": "CreosotePickup",
+        "quest_id": "desert_foraging_samples",
+        "quest_valid": true
+      },
+      {
+        "node": "CactusWaterPickup",
+        "quest_id": "desert_foraging_samples",
+        "quest_valid": true
+      },
+      {
+        "node": "TrailMarkerInspectable",
+        "quest_id": "desert_water_management",
+        "quest_valid": true
+      },
+      {
+        "node": "ScavengeInspectable",
+        "quest_id": "desert_water_management",
+        "quest_valid": true
+      },
+      {
+        "node": "WaterHoursChallenge",
+        "quest_id": "desert_water_management",
+        "quest_valid": true
+      },
+      {
+        "node": "PlantRatioChallenge",
+        "quest_id": "desert_water_management",
+        "quest_valid": true
+      },
+      {
+        "node": "HeatSurvivalChallenge",
+        "quest_id": "desert_water_management",
+        "quest_valid": true
+      },
+      {
+        "node": "PlantObservationStation",
+        "quest_id": "desert_plant_observation",
+        "quest_valid": true
+      }
+    ]
+  },
+  {
+    "dialog_refs": [],
+    "dialog_refs_valid": {},
+    "dialogbox_present": false,
+    "hud_present": false,
+    "npc_refs": [
+      "DrMayaNpc"
+    ],
+    "pickup_count": 13,
+    "region_id": "salt_river",
+    "scene": "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+    "scene_exists": true,
+    "station_count": 9,
+    "stations": [
+      {
+        "node": "AlgaeSamplePickup",
+        "quest_id": "river_ecosystem_survey",
+        "quest_valid": true
+      },
+      {
+        "node": "MicrobialSamplePickup",
+        "quest_id": "river_ecosystem_survey",
+        "quest_valid": true
+      },
+      {
+        "node": "RiverMineralsPickup",
+        "quest_id": "balance_the_flow",
+        "quest_valid": true
+      },
+      {
+        "node": "ReedFiberPickup",
+        "quest_id": "balance_the_flow",
+        "quest_valid": true
+      },
+      {
+        "node": "FoodWebInspectable",
+        "quest_id": "river_ecosystem_survey",
+        "quest_valid": true
+      },
+      {
+        "node": "FlowRateChallenge",
+        "quest_id": "river_ecosystem_survey",
+        "quest_valid": true
+      },
+      {
+        "node": "IrrigationInspectable",
+        "quest_id": "balance_the_flow",
+        "quest_valid": true
+      },
+      {
+        "node": "IrrigationFractionChallenge",
+        "quest_id": "balance_the_flow",
+        "quest_valid": true
+      },
+      {
+        "node": "WaterQualityStation",
+        "quest_id": "test_water_quality",
+        "quest_valid": true
+      }
+    ]
+  },
+  {
+    "dialog_refs": [],
+    "dialog_refs_valid": {},
+    "dialogbox_present": false,
+    "hud_present": false,
+    "npc_refs": [
+      "MrChenNpc"
+    ],
+    "pickup_count": 0,
+    "region_id": "dry_wash",
+    "scene": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+    "scene_exists": true,
+    "station_count": 5,
+    "stations": [
+      {
+        "node": "BrokenPlanksInspectable",
+        "quest_id": "bridge_quest_1",
+        "quest_valid": true
+      },
+      {
+        "node": "BrokenBeamsInspectable",
+        "quest_id": "bridge_quest_1",
+        "quest_valid": true
+      },
+      {
+        "node": "AssessBridgeStation",
+        "quest_id": "bridge_quest_1",
+        "quest_valid": true
+      },
+      {
+        "node": "BridgeBuildStation",
+        "quest_id": "bridge_quest_4",
+        "quest_valid": true
+      },
+      {
+        "node": "BridgeReviewStation",
+        "quest_id": "bridge_quest_5",
+        "quest_valid": true
+      }
+    ]
+  },
+  {
+    "dialog_refs": [],
+    "dialog_refs_valid": {},
+    "dialogbox_present": false,
+    "hud_present": false,
+    "npc_refs": [],
+    "pickup_count": 0,
+    "region_id": "system_showcase",
+    "scene": "BikeBrowserWorld/Regions/SystemShowcase/SystemShowcase.tscn",
+    "scene_exists": true,
+    "station_count": 0,
+    "stations": []
+  }
+]

@@ -1,0 +1,57 @@
+[
+  {
+    "dialogue": "",
+    "file": "BikeBrowserWorld/Data/npcs/mr_chen.json",
+    "npc_id": "mr_chen"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/CharlieNpc.tscn",
+    "npc_id": "charlie",
+    "scene": "BikeBrowserWorld/Regions/NPCs/CharlieNpc.tscn"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/ColeNpc.tscn",
+    "npc_id": "cole",
+    "scene": "BikeBrowserWorld/Regions/NPCs/ColeNpc.tscn"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/DrMayaNpc.tscn",
+    "npc_id": "river_biologist",
+    "scene": "BikeBrowserWorld/Regions/NPCs/DrMayaNpc.tscn"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/JacobNpc.tscn",
+    "npc_id": "jacob",
+    "scene": "BikeBrowserWorld/Regions/NPCs/JacobNpc.tscn"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/JamesNpc.tscn",
+    "npc_id": "james",
+    "scene": "BikeBrowserWorld/Regions/NPCs/JamesNpc.tscn"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/MrChenNpc.tscn",
+    "npc_id": "mr_chen",
+    "scene": "BikeBrowserWorld/Regions/NPCs/MrChenNpc.tscn"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/MrsRamirezNpc.tscn",
+    "npc_id": "mrs_ramirez",
+    "scene": "BikeBrowserWorld/Regions/NPCs/MrsRamirezNpc.tscn"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/OldMinerPeteNpc.tscn",
+    "npc_id": "old_miner",
+    "scene": "BikeBrowserWorld/Regions/NPCs/OldMinerPeteNpc.tscn"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/RangerNitaNpc.tscn",
+    "npc_id": "desert_guide",
+    "scene": "BikeBrowserWorld/Regions/NPCs/RangerNitaNpc.tscn"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/ZevonNpc.tscn",
+    "npc_id": "zevon",
+    "scene": "BikeBrowserWorld/Regions/NPCs/ZevonNpc.tscn"
+  }
+]

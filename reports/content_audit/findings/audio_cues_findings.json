@@ -1,0 +1,450 @@
+[
+  {
+    "cue_id": "reward_large",
+    "file": "BikeBrowserWorld/Assets/Audio/Cues/reward_large.ogg",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "reward_medium",
+    "file": "BikeBrowserWorld/Assets/Audio/Cues/reward_medium.ogg",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "reward_small",
+    "file": "BikeBrowserWorld/Assets/Audio/Cues/reward_small.ogg",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "reward_tiny",
+    "file": "BikeBrowserWorld/Assets/Audio/Cues/reward_tiny.ogg",
+    "reference_count": 7,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Systems/Interactions/ChallengeStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/ResourcePickup.gd",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "copper_mine",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/copper_mine.mp3",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "copper_mine",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/copper_mine.ogg",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "dry_wash_bridge",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/dry_wash_bridge.mp3",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "dry_wash_bridge",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/dry_wash_bridge.ogg",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "garage_workshop",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/garage_workshop.mp3",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/npc_schedules.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "garage_workshop",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/garage_workshop.ogg",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/npc_schedules.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "neighborhood_street",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/neighborhood_street.mp3",
+    "reference_count": 14,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Core/ProjectIntegration/ProjectIntegration.gd",
+      "BikeBrowserWorld/Data/missions/chain_repair.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Data/npcs/mr_chen.json",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Boot/Boot.gd",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+      "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "neighborhood_street",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/neighborhood_street.ogg",
+    "reference_count": 14,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Core/ProjectIntegration/ProjectIntegration.gd",
+      "BikeBrowserWorld/Data/missions/chain_repair.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Data/npcs/mr_chen.json",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Boot/Boot.gd",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+      "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "salt_river",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/salt_river.mp3",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "salt_river",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/salt_river.ogg",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "title_screen",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/title_screen.mp3",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "title_screen",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/title_screen.ogg",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "chain_repair_success",
+    "file": "BikeBrowserWorld/Assets/Audio/Stingers/chain_repair_success.mp3",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "quest_fanfare",
+    "file": "BikeBrowserWorld/Assets/Audio/Stingers/quest_fanfare.mp3",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "reward_large",
+    "file": "BikeBrowserWorld/assets/audio/Cues/reward_large.ogg",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "reward_medium",
+    "file": "BikeBrowserWorld/assets/audio/Cues/reward_medium.ogg",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "reward_small",
+    "file": "BikeBrowserWorld/assets/audio/Cues/reward_small.ogg",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "reward_tiny",
+    "file": "BikeBrowserWorld/assets/audio/Cues/reward_tiny.ogg",
+    "reference_count": 7,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Systems/Interactions/ChallengeStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/ResourcePickup.gd",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "copper_mine",
+    "file": "BikeBrowserWorld/assets/audio/Music/copper_mine.mp3",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "copper_mine",
+    "file": "BikeBrowserWorld/assets/audio/Music/copper_mine.ogg",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "dry_wash_bridge",
+    "file": "BikeBrowserWorld/assets/audio/Music/dry_wash_bridge.mp3",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "dry_wash_bridge",
+    "file": "BikeBrowserWorld/assets/audio/Music/dry_wash_bridge.ogg",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "garage_workshop",
+    "file": "BikeBrowserWorld/assets/audio/Music/garage_workshop.mp3",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/npc_schedules.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "garage_workshop",
+    "file": "BikeBrowserWorld/assets/audio/Music/garage_workshop.ogg",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/npc_schedules.json"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "neighborhood_street",
+    "file": "BikeBrowserWorld/assets/audio/Music/neighborhood_street.mp3",
+    "reference_count": 14,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Core/ProjectIntegration/ProjectIntegration.gd",
+      "BikeBrowserWorld/Data/missions/chain_repair.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Data/npcs/mr_chen.json",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Boot/Boot.gd",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+      "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "neighborhood_street",
+    "file": "BikeBrowserWorld/assets/audio/Music/neighborhood_street.ogg",
+    "reference_count": 14,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Core/ProjectIntegration/ProjectIntegration.gd",
+      "BikeBrowserWorld/Data/missions/chain_repair.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Data/npcs/mr_chen.json",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Boot/Boot.gd",
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+      "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "salt_river",
+    "file": "BikeBrowserWorld/assets/audio/Music/salt_river.mp3",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "salt_river",
+    "file": "BikeBrowserWorld/assets/audio/Music/salt_river.ogg",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Data/regions/regions.json",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn",
+      "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd",
+      "BikeBrowserWorld/tests/music_reward_cues_check.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "title_screen",
+    "file": "BikeBrowserWorld/assets/audio/Music/title_screen.mp3",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "title_screen",
+    "file": "BikeBrowserWorld/assets/audio/Music/title_screen.ogg",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Assets/Props/generated_asset_batch_manifest.json",
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "chain_repair_success",
+    "file": "BikeBrowserWorld/assets/audio/Stingers/chain_repair_success.mp3",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "cue_id": "quest_fanfare",
+    "file": "BikeBrowserWorld/assets/audio/Stingers/quest_fanfare.mp3",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd"
+    ],
+    "status": "REFERENCED"
+  }
+]

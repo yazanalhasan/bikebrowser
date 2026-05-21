@@ -1,0 +1,53 @@
+[
+  {
+    "file": "BikeBrowserWorld/Data/audio/voice_profiles.json",
+    "npc_id": "",
+    "reference_count": 46,
+    "references": [
+      "BikeBrowserWorld/addons/AsepriteWizard/aseprite/file_exporter.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/config/config.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/config/wizard_config.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/creators/animation_player/animation_creator.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/creators/sprite_frames/sprite_frames_creator.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/importers/noop_import_plugin.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/importers/sprite_frames_import_plugin.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/importers/sprite_frames_multiple_import_plugin.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/importers/static_texture_import_plugin.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/importers/static_texture_multiple_import_plugin.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/importers/tileset_texture_import_plugin.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/interface/docks/base_inspector_dock.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/interface/docks/dock_fields.tscn",
+      "BikeBrowserWorld/addons/AsepriteWizard/interface/docks/layer_select_field.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/interface/docks/sprite/sprite_inspector_dock.gd",
+      "BikeBrowserWorld/addons/AsepriteWizard/interface/docks/wizard/as_wizard_window.gd",
+      "BikeBrowserWorld/addons/nklbdev.aseprite_importers/common.gd",
+      "BikeBrowserWorld/addons/nklbdev.aseprite_importers/editor_import_plugins/_animation_importer_base.gd",
+      "BikeBrowserWorld/addons/nklbdev.importality/export/_pxo_v2.gd",
+      "BikeBrowserWorld/addons/nklbdev.importality/export/_pxo_v3.gd",
+      "BikeBrowserWorld/addons/nklbdev.importality/export/aseprite.gd",
+      "BikeBrowserWorld/addons/nklbdev.importality/export/krita.gd",
+      "BikeBrowserWorld/addons/nklbdev.importality/import/_.gd",
+      "BikeBrowserWorld/addons/nklbdev.importality/options.gd",
+      "BikeBrowserWorld/addons/nklbdev.importality/setting.gd",
+      "BikeBrowserWorld/addons/nklbdev.importality/uuid.gd",
+      "BikeBrowserWorld/CameraSystem/CutsceneCamera.gd",
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/Core/RegionRegistry/RegionRegistry.gd",
+      "BikeBrowserWorld/Data/layouts/copper_mine.json"
+    ],
+    "status": "REFERENCED",
+    "voice_id": "default"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/audio/voice_profiles.json",
+    "npc_id": "",
+    "reference_count": 3,
+    "references": [
+      "BikeBrowserWorld/Core/AudioService/AudioService.gd",
+      "BikeBrowserWorld/tests/dialog_voice_pipeline_check.gd",
+      "BikeBrowserWorld/tests/voice_identity_profile_check.gd"
+    ],
+    "status": "REFERENCED",
+    "voice_id": "speakers"
+  }
+]

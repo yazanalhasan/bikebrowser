@@ -1,0 +1,26 @@
+[
+  {
+    "class_name": "ChallengeStation",
+    "file": "BikeBrowserWorld/Systems/Interactions/ChallengeStation.gd"
+  },
+  {
+    "class_name": "PlantObservationStation",
+    "file": "BikeBrowserWorld/Systems/Interactions/PlantObservationStation.gd"
+  },
+  {
+    "class_name": "QuestObjectiveStation",
+    "file": "BikeBrowserWorld/Systems/Interactions/QuestObjectiveStation.gd"
+  },
+  {
+    "class_name": "SafetyCheckStation",
+    "file": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+  },
+  {
+    "class_name": "TireRepairStation",
+    "file": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+  },
+  {
+    "class_name": "WaterQualityStation",
+    "file": "BikeBrowserWorld/Systems/Interactions/WaterQualityStation.gd"
+  }
+]

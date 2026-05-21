@@ -1,0 +1,226 @@
+[
+  {
+    "dialogue": "",
+    "file": "BikeBrowserWorld/Data/npcs/mr_chen.json",
+    "npc_id": "mr_chen",
+    "reference_count": 25,
+    "references": [
+      "BikeBrowserWorld/addons/DialogueSystem/dialogue_example.json",
+      "BikeBrowserWorld/Assets/Characters/NPCs/MrChen/mr_chen_spriteframes.tres",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_after_chain.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_after_safety.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_bridge.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_chain.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_expanded.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_pre_ride_repair.json",
+      "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_1.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_2.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_3.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_4.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_5.json",
+      "BikeBrowserWorld/Data/missions/chain_repair.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/MrChen.tscn",
+      "BikeBrowserWorld/Regions/NPCs/MrChenNpc.tscn",
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd",
+      "BikeBrowserWorld/Systems/UI/DialogController.gd",
+      "BikeBrowserWorld/tests/vertical_slice_check.gd",
+      "BikeBrowserWorld/tools/build_npc_spriteframes.gd"
+    ],
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/CharlieNpc.tscn",
+    "npc_id": "charlie",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Assets/Characters/Charlie/charlie_spriteframes.tres",
+      "BikeBrowserWorld/Data/dialogue/charlie_intro.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/tools/build_npc_spriteframes.gd",
+      "BikeBrowserWorld/tools/check_npc_assets.gd"
+    ],
+    "scene": "BikeBrowserWorld/Regions/NPCs/CharlieNpc.tscn",
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/ColeNpc.tscn",
+    "npc_id": "cole",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Assets/Characters/Cole/cole_spriteframes.tres",
+      "BikeBrowserWorld/Data/dialogue/cole_intro.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/tools/build_npc_spriteframes.gd",
+      "BikeBrowserWorld/tools/check_npc_assets.gd"
+    ],
+    "scene": "BikeBrowserWorld/Regions/NPCs/ColeNpc.tscn",
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/DrMayaNpc.tscn",
+    "npc_id": "river_biologist",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Assets/Characters/DrMaya/river_biologist_spriteframes.tres",
+      "BikeBrowserWorld/Data/dialogue/dr_maya_expanded.json",
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd",
+      "BikeBrowserWorld/tools/build_npc_spriteframes.gd",
+      "BikeBrowserWorld/tools/check_npc_assets.gd"
+    ],
+    "scene": "BikeBrowserWorld/Regions/NPCs/DrMayaNpc.tscn",
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/JacobNpc.tscn",
+    "npc_id": "jacob",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Assets/Characters/Jacob/jacob_spriteframes.tres",
+      "BikeBrowserWorld/Data/dialogue/jacob_intro.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/tools/build_npc_spriteframes.gd",
+      "BikeBrowserWorld/tools/check_npc_assets.gd"
+    ],
+    "scene": "BikeBrowserWorld/Regions/NPCs/JacobNpc.tscn",
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/JamesNpc.tscn",
+    "npc_id": "james",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Assets/Characters/James/james_spriteframes.tres",
+      "BikeBrowserWorld/Data/dialogue/james_intro.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/tools/build_npc_spriteframes.gd",
+      "BikeBrowserWorld/tools/check_npc_assets.gd"
+    ],
+    "scene": "BikeBrowserWorld/Regions/NPCs/JamesNpc.tscn",
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/MrChenNpc.tscn",
+    "npc_id": "mr_chen",
+    "reference_count": 25,
+    "references": [
+      "BikeBrowserWorld/addons/DialogueSystem/dialogue_example.json",
+      "BikeBrowserWorld/Assets/Characters/NPCs/MrChen/mr_chen_spriteframes.tres",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_after_chain.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_after_safety.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_bridge.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_chain.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_expanded.json",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_pre_ride_repair.json",
+      "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_1.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_2.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_3.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_4.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_5.json",
+      "BikeBrowserWorld/Data/missions/chain_repair.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Data/npcs/mr_chen.json",
+      "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/Regions/Neighborhood/MrChen.tscn",
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd",
+      "BikeBrowserWorld/Systems/UI/DialogController.gd",
+      "BikeBrowserWorld/tests/vertical_slice_check.gd",
+      "BikeBrowserWorld/tools/build_npc_spriteframes.gd"
+    ],
+    "scene": "BikeBrowserWorld/Regions/NPCs/MrChenNpc.tscn",
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/MrsRamirezNpc.tscn",
+    "npc_id": "mrs_ramirez",
+    "reference_count": 23,
+    "references": [
+      "BikeBrowserWorld/Assets/Characters/MrsRamirez/mrs_ramirez_spriteframes.tres",
+      "BikeBrowserWorld/Core/InventoryManager/InventoryManager.gd",
+      "BikeBrowserWorld/Data/dialogue/mr_chen_bridge.json",
+      "BikeBrowserWorld/Data/dialogue/mrs_ramirez_after_chain.json",
+      "BikeBrowserWorld/Data/dialogue/mrs_ramirez_after_safety.json",
+      "BikeBrowserWorld/Data/dialogue/mrs_ramirez_intro.json",
+      "BikeBrowserWorld/Data/dialogue/mrs_ramirez_questline.json",
+      "BikeBrowserWorld/Data/items/items.json",
+      "BikeBrowserWorld/Data/missions/bike_safety_check.json",
+      "BikeBrowserWorld/Data/missions/first_safety_check.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd",
+      "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd",
+      "BikeBrowserWorld/Systems/UI/DialogController.gd",
+      "BikeBrowserWorld/tests/act1_hud_guidance_check.gd",
+      "BikeBrowserWorld/tests/act1_player_path_check.gd",
+      "BikeBrowserWorld/tests/safety_check_brake_integration_check.gd",
+      "BikeBrowserWorld/tests/safety_hold_requires_npc_dialog_check.gd",
+      "BikeBrowserWorld/tools/build_npc_spriteframes.gd",
+      "BikeBrowserWorld/tools/check_npc_assets.gd"
+    ],
+    "scene": "BikeBrowserWorld/Regions/NPCs/MrsRamirezNpc.tscn",
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/OldMinerPeteNpc.tscn",
+    "npc_id": "old_miner",
+    "reference_count": 10,
+    "references": [
+      "BikeBrowserWorld/Assets/Characters/MinerPete/old_miner_spriteframes.tres",
+      "BikeBrowserWorld/Data/dialogue/old_miner_intro.json",
+      "BikeBrowserWorld/Data/dialogue/old_miner_pete_expanded.json",
+      "BikeBrowserWorld/Data/missions/copper_prospector.json",
+      "BikeBrowserWorld/Data/missions/mine_stability_check.json",
+      "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn",
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd",
+      "BikeBrowserWorld/tools/build_npc_spriteframes.gd",
+      "BikeBrowserWorld/tools/check_npc_assets.gd"
+    ],
+    "scene": "BikeBrowserWorld/Regions/NPCs/OldMinerPeteNpc.tscn",
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/RangerNitaNpc.tscn",
+    "npc_id": "desert_guide",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Assets/Characters/RangerNita/desert_guide_spriteframes.tres",
+      "BikeBrowserWorld/Data/dialogue/ranger_nita_expanded.json",
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd",
+      "BikeBrowserWorld/tools/build_npc_spriteframes.gd",
+      "BikeBrowserWorld/tools/check_npc_assets.gd"
+    ],
+    "scene": "BikeBrowserWorld/Regions/NPCs/RangerNitaNpc.tscn",
+    "status": "REFERENCED"
+  },
+  {
+    "file": "BikeBrowserWorld/Regions/NPCs/ZevonNpc.tscn",
+    "npc_id": "zevon",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Assets/Characters/Zevon/zevon_spriteframes.tres",
+      "BikeBrowserWorld/Data/dialogue/zevon_intro.json",
+      "BikeBrowserWorld/Data/npc_schedules.json",
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+      "BikeBrowserWorld/tools/build_npc_spriteframes.gd",
+      "BikeBrowserWorld/tools/check_npc_assets.gd"
+    ],
+    "scene": "BikeBrowserWorld/Regions/NPCs/ZevonNpc.tscn",
+    "status": "REFERENCED"
+  }
+]
