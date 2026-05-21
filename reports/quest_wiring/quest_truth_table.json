@@ -353,7 +353,7 @@
       "unlocks": []
     },
     {
-      "deprecated": false,
+      "deprecated": true,
       "file": "BikeBrowserWorld/Data/missions/flat_tire_repair.json",
       "next": "",
       "next_in_chain": "",
@@ -367,7 +367,7 @@
       "prerequisites": [],
       "quest_id": "flat_tire_repair",
       "region_hint": "",
-      "supersededBy": "",
+      "supersededBy": "act1_pre_ride_check",
       "title": "Fix Mrs. Ramirez's Flat Tire",
       "unlocks": []
     },

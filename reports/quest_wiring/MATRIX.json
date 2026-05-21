@@ -1173,44 +1173,140 @@
       "objectives": [
         {
           "objective_id": "talk_to_mr_chen",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "talk_to_mr_chen",
+              "prerequisites_declared": [],
+              "producer_node_path": "/ChainHotspot",
+              "producer_node_type": "ChainHotspot",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "chain_repair",
+              "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "inspect_chain",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "inspect_chain",
+              "prerequisites_declared": [],
+              "producer_node_path": "/ChainHotspot",
+              "producer_node_type": "ChainHotspot",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "chain_repair",
+              "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "rotate_pedals",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "rotate_pedals",
+              "prerequisites_declared": [],
+              "producer_node_path": "/ChainHotspot",
+              "producer_node_type": "ChainHotspot",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "chain_repair",
+              "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "align_chain",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "align_chain",
+              "prerequisites_declared": [],
+              "producer_node_path": "/ChainHotspot",
+              "producer_node_type": "ChainHotspot",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "chain_repair",
+              "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "seat_chain",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "seat_chain",
+              "prerequisites_declared": [],
+              "producer_node_path": "/ChainHotspot",
+              "producer_node_type": "ChainHotspot",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "chain_repair",
+              "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         },
         {
           "objective_id": "test_rotation",
-          "objective_status": "NO_PRODUCER",
-          "producer_count": 0,
-          "producers": []
+          "objective_status": "PLAYABLE_REAL",
+          "producer_count": 1,
+          "producers": [
+            {
+              "linked_dialog": "",
+              "linked_npc": "",
+              "node_has_real_logic_script": true,
+              "objective_id": "test_rotation",
+              "prerequisites_declared": [],
+              "producer_node_path": "/ChainHotspot",
+              "producer_node_type": "ChainHotspot",
+              "producer_quality": "REAL_GAMEPLAY",
+              "quest_id": "chain_repair",
+              "scene_file": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn",
+              "starts_quest_too": true,
+              "target_region": "",
+              "target_spawn": ""
+            }
+          ]
         }
       ],
       "prerequisites": [],
       "quest_id": "chain_repair",
-      "quest_status": "DATA_ONLY",
+      "quest_status": "PLAYABLE",
       "unlocks": []
     },
     {
@@ -1760,7 +1856,7 @@
       "unlocks": []
     },
     {
-      "deprecated": false,
+      "deprecated": true,
       "file": "BikeBrowserWorld/Data/missions/flat_tire_repair.json",
       "objectives": [
         {
@@ -1796,7 +1892,7 @@
       ],
       "prerequisites": [],
       "quest_id": "flat_tire_repair",
-      "quest_status": "DATA_ONLY",
+      "quest_status": "STALE_DUPLICATE",
       "unlocks": []
     },
     {

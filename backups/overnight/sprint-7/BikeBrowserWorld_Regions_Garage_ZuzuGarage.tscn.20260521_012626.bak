@@ -531,8 +531,6 @@ horizontal_alignment = 1
 
 [node name="ChainHotspot" type="Area2D" parent="."]
 script = ExtResource("4_chain")
-quest_id = "chain_repair"
-objective_ids = Array[String](["talk_to_mr_chen", "inspect_chain", "rotate_pedals", "align_chain", "seat_chain", "test_rotation"])
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ChainHotspot"]
 shape = SubResource("RectangleShape2D_zone")
@@ -629,5 +627,4 @@ position_smoothing_enabled = true
 [node name="DialogBox" parent="." instance=ExtResource("5_dialog")]
 
 [node name="Hud" parent="." instance=ExtResource("6_hud")]
-
 

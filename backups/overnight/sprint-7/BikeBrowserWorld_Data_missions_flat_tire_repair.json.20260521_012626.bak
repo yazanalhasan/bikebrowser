@@ -35,8 +35,5 @@
     "allowance": 0.25,
     "badge": "Patch Hero",
     "reputation": 5
-  },
-  "deprecated": true,
-  "supersededBy": "act1_pre_ride_check",
-  "overnight_note": "Legacy flat tire repair quest is superseded by the playable Act 1 tire repair segment inside act1_pre_ride_check."
+  }
 }

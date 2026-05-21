@@ -2,16 +2,14 @@
 
 ## Headline Numbers
 - Total quests: 25
-- DATA_ONLY: 3
+- DATA_ONLY: 1
 - PARTIAL: 1
-- PLAYABLE: 7
+- PLAYABLE: 8
 - PLAYABLE_DEGRADED: 11
-- STALE_DUPLICATE: 3
+- STALE_DUPLICATE: 4
 
 ## DATA_ONLY Quests
 - bridge_quest_2
-- chain_repair
-- flat_tire_repair
 
 ## PARTIAL Quests
 - act1_pre_ride_check
@@ -32,6 +30,7 @@
 ## STALE_DUPLICATE Quests
 - bridge_material_test
 - first_safety_check
+- flat_tire_repair
 - water_sample_observation
 
 ## STALE_REFERENCE Objectives
@@ -46,11 +45,9 @@
 ## Producer Quality Distribution
 - GENERIC_STATION: 43
 - PICKUP: 12
-- REAL_GAMEPLAY: 27
+- REAL_GAMEPLAY: 33
 - SCRIPT_CALL_ONLY: 31
 
 ## Recommended Fix Order
 - bridge_quest_2
-- chain_repair
-- flat_tire_repair
 - act1_pre_ride_check

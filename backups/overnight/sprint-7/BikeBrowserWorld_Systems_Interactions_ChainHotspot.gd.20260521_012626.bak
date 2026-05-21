@@ -16,14 +16,6 @@ extends Area2D
 # Verified completes the quest naturally via the existing record chain.
 
 @export var quest_id := "chain_repair"
-@export var objective_ids: Array[String] = [
-	"talk_to_mr_chen",
-	"inspect_chain",
-	"rotate_pedals",
-	"align_chain",
-	"seat_chain",
-	"test_rotation",
-]
 
 const SLIPPED_CHAIN_TEXTURE := preload("res://Assets/Props/Bike/garage_repair_stand_bmx_slipped_chain.png")
 const ALIGNING_CHAIN_TEXTURE := preload("res://Assets/Props/Bike/garage_repair_stand_bmx_aligning_chain.png")
@@ -110,8 +102,6 @@ func _engage_pedal() -> void:
 	if bike_visual:
 		bike_visual.visible = true
 	_zoom_camera(ZOOM_ENGAGED)
-	_record_objective_once("talk_to_mr_chen", "chain_inspect", "gentle",
-		"Mr. Chen points out the clunk. Time to trace the chain path.")
 	_record_objective_once("inspect_chain", "chain_inspect", "gentle",
 		"There it is. The chain is trying to climb sideways.")
 
