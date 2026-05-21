@@ -1,0 +1,1999 @@
+{
+  "counts": {
+    "DATA_ONLY": 1,
+    "HAS_PRODUCERS": 20,
+    "STALE_DUPLICATE": 4
+  },
+  "quests": [
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "review_bike_systems",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "Act1CapstoneStation",
+              "objective_id": "review_bike_systems",
+              "producer_type": "scene_property",
+              "quest_id": "act1_regional_readiness",
+              "source": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "review_bridge_systems",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "Act1CapstoneStation",
+              "objective_id": "review_bridge_systems",
+              "producer_type": "scene_property",
+              "quest_id": "act1_regional_readiness",
+              "source": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "review_ecology_water",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "Act1CapstoneStation",
+              "objective_id": "review_ecology_water",
+              "producer_type": "scene_property",
+              "quest_id": "act1_regional_readiness",
+              "source": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "review_materials_workshop",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "Act1CapstoneStation",
+              "objective_id": "review_materials_workshop",
+              "producer_type": "scene_property",
+              "quest_id": "act1_regional_readiness",
+              "source": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "sketch_regional_questions",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "Act1CapstoneStation",
+              "objective_id": "sketch_regional_questions",
+              "producer_type": "scene_property",
+              "quest_id": "act1_regional_readiness",
+              "source": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "receive_spacecraft_clue",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "Act1CapstoneStation",
+              "objective_id": "receive_spacecraft_clue",
+              "producer_type": "scene_property",
+              "quest_id": "act1_regional_readiness",
+              "source": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "act1_regional_readiness",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/algae_bloom_source.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "notice_green_water",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "AlgaeBloomStation",
+              "objective_id": "notice_green_water",
+              "producer_type": "scene_property",
+              "quest_id": "algae_bloom_source",
+              "source": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "notice_green_water",
+              "producer_type": "script_export_metadata",
+              "quest_id": "algae_bloom_source",
+              "source": "BikeBrowserWorld/Systems/Interactions/AlgaeBloomStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "talk_to_dr_maya",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "AlgaeBloomStation",
+              "objective_id": "talk_to_dr_maya",
+              "producer_type": "scene_property",
+              "quest_id": "algae_bloom_source",
+              "source": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "talk_to_dr_maya",
+              "producer_type": "script_export_metadata",
+              "quest_id": "algae_bloom_source",
+              "source": "BikeBrowserWorld/Systems/Interactions/AlgaeBloomStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "follow_channel",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "AlgaeBloomStation",
+              "objective_id": "follow_channel",
+              "producer_type": "scene_property",
+              "quest_id": "algae_bloom_source",
+              "source": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "follow_channel",
+              "producer_type": "script_export_metadata",
+              "quest_id": "algae_bloom_source",
+              "source": "BikeBrowserWorld/Systems/Interactions/AlgaeBloomStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "find_runoff_source",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "AlgaeBloomStation",
+              "objective_id": "find_runoff_source",
+              "producer_type": "scene_property",
+              "quest_id": "algae_bloom_source",
+              "source": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "find_runoff_source",
+              "producer_type": "script_export_metadata",
+              "quest_id": "algae_bloom_source",
+              "source": "BikeBrowserWorld/Systems/Interactions/AlgaeBloomStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "report_solution",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "AlgaeBloomStation",
+              "objective_id": "report_solution",
+              "producer_type": "scene_property",
+              "quest_id": "algae_bloom_source",
+              "source": "BikeBrowserWorld/Regions/River/AlgaeBloomStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "report_solution",
+              "producer_type": "script_export_metadata",
+              "quest_id": "algae_bloom_source",
+              "source": "BikeBrowserWorld/Systems/Interactions/AlgaeBloomStation.gd"
+            }
+          ]
+        }
+      ],
+      "quest_id": "algae_bloom_source",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/balance_the_flow.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "collect_river_minerals",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "RiverMineralsPickup",
+              "objective_id": "collect_river_minerals",
+              "producer_type": "scene_property",
+              "quest_id": "balance_the_flow",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "collect_reed_fiber",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "ReedFiberPickup",
+              "objective_id": "collect_reed_fiber",
+              "producer_type": "scene_property",
+              "quest_id": "balance_the_flow",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "inspect_channels",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "IrrigationInspectable",
+              "objective_id": "inspect_channels",
+              "producer_type": "scene_property",
+              "quest_id": "balance_the_flow",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "fraction_question",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "IrrigationFractionChallenge",
+              "objective_id": "fraction_question",
+              "producer_type": "scene_property",
+              "quest_id": "balance_the_flow",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "balance_the_flow",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bike_safety_check.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "talk_to_mrs_ramirez",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "talk_to_mrs_ramirez",
+              "producer_type": "script_conditional_variable_call",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/UI/DialogController.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "abc_page_created",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "abc_page_created",
+              "producer_type": "script_conditional_variable_call",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/UI/DialogController.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "air_front_checked",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "air_front_checked",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "air_rear_flat_found",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "air_rear_flat_found",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "brakes_front_checked",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "brakes_front_checked",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "brakes_rear_checked",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "brakes_rear_checked",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "chain_checked",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "chain_checked",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "quick_wheel_checked",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "quick_wheel_checked",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "quick_seat_checked",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "quick_seat_checked",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "quick_handlebars_checked",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "quick_handlebars_checked",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "tube_received",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "tube_received",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "garage_arrived",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "garage_arrived",
+              "producer_type": "script_variable_call",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "tube_removed",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "tube_removed",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "leak_found",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "leak_found",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "leak_marked",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "leak_marked",
+              "producer_type": "script_variable_call",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "patch_applied",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "patch_applied",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "tube_reinflated",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "tube_reinflated",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "repair_tested",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "repair_tested",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+            },
+            {
+              "node": "",
+              "objective_id": "repair_tested",
+              "producer_type": "script_variable_call",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/TireRepairStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "tube_returned",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "tube_returned",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "final_air_checked",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "final_air_checked",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "final_brakes_checked",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "final_brakes_checked",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "final_chain_checked",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "final_chain_checked",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "final_quick_checked",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "final_quick_checked",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "final_report",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "",
+              "objective_id": "final_report",
+              "producer_type": "script_step_table",
+              "quest_id": "act1_pre_ride_check",
+              "source": "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+            }
+          ]
+        }
+      ],
+      "quest_id": "act1_pre_ride_check",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": true,
+      "file": "BikeBrowserWorld/Data/missions/bridge_material_test.json",
+      "missing_objectives": [
+        "collect_materials",
+        "test_strength",
+        "choose_bridge_part"
+      ],
+      "objectives": [
+        {
+          "objective_id": "collect_materials",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "test_strength",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "choose_bridge_part",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "quest_id": "bridge_material_test",
+      "status": "STALE_DUPLICATE",
+      "supersededBy": "bridge_quest_3"
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_1.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "talk_to_mr_chen",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "AssessBridgeStation",
+              "objective_id": "talk_to_mr_chen",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_1",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "visit_broken_bridge",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "AssessBridgeStation",
+              "objective_id": "visit_broken_bridge",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_1",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "inspect_planks",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "BrokenPlanksInspectable",
+              "objective_id": "inspect_planks",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_1",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "inspect_beams_supports",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "BrokenBeamsInspectable",
+              "objective_id": "inspect_beams_supports",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_1",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "return_report",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "AssessBridgeStation",
+              "objective_id": "return_report",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_1",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "bridge_quest_1",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_2.json",
+      "missing_objectives": [
+        "talk_to_shopkeeper",
+        "collect_wood_planks",
+        "collect_metal_brackets",
+        "collect_rope_coil",
+        "return_materials"
+      ],
+      "objectives": [
+        {
+          "objective_id": "talk_to_shopkeeper",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "collect_wood_planks",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "collect_metal_brackets",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "collect_rope_coil",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "return_materials",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "quest_id": "bridge_quest_2",
+      "status": "DATA_ONLY",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_3.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "go_to_testing_rig",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "UTM",
+              "objective_id": "go_to_testing_rig",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_3",
+              "source": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "go_to_testing_rig",
+              "producer_type": "script_export_metadata",
+              "quest_id": "bridge_quest_3",
+              "source": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "test_wood",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "UTM",
+              "objective_id": "test_wood",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_3",
+              "source": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "test_wood",
+              "producer_type": "script_export_metadata",
+              "quest_id": "bridge_quest_3",
+              "source": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "test_metal",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "UTM",
+              "objective_id": "test_metal",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_3",
+              "source": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "test_metal",
+              "producer_type": "script_export_metadata",
+              "quest_id": "bridge_quest_3",
+              "source": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "test_composite",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "UTM",
+              "objective_id": "test_composite",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_3",
+              "source": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "test_composite",
+              "producer_type": "script_export_metadata",
+              "quest_id": "bridge_quest_3",
+              "source": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "choose_best_material",
+          "producer_count": 3,
+          "producers": [
+            {
+              "node": "UTM",
+              "objective_id": "choose_best_material",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_3",
+              "source": "BikeBrowserWorld/Regions/Garage/UniversalTestingMachine.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "choose_best_material",
+              "producer_type": "script_export_metadata",
+              "quest_id": "bridge_quest_3",
+              "source": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd"
+            },
+            {
+              "node": "",
+              "objective_id": "choose_best_material",
+              "producer_type": "script_variable_call",
+              "quest_id": "bridge_quest_3",
+              "source": "BikeBrowserWorld/Systems/Interactions/UniversalTestingMachine.gd"
+            }
+          ]
+        }
+      ],
+      "quest_id": "bridge_quest_3",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_4.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "choose_design",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "BridgeBuildStation",
+              "objective_id": "choose_design",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_4",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "place_supports",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "BridgeBuildStation",
+              "objective_id": "place_supports",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_4",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "lay_planks",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "BridgeBuildStation",
+              "objective_id": "lay_planks",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_4",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "secure_connections",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "BridgeBuildStation",
+              "objective_id": "secure_connections",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_4",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "walk_test",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "BridgeBuildStation",
+              "objective_id": "walk_test",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_4",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "bridge_quest_4",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_5.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "talk_to_neighbors",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "BridgeReviewStation",
+              "objective_id": "talk_to_neighbors",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_5",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            },
+            {
+              "node": "BridgeReviewStation",
+              "objective_id": "talk_to_neighbors",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_5",
+              "source": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "receive_badge",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "BridgeReviewStation",
+              "objective_id": "receive_badge",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_5",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            },
+            {
+              "node": "BridgeReviewStation",
+              "objective_id": "receive_badge",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_5",
+              "source": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "unlock_new_area",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "BridgeReviewStation",
+              "objective_id": "unlock_new_area",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_5",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            },
+            {
+              "node": "BridgeReviewStation",
+              "objective_id": "unlock_new_area",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_5",
+              "source": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "learn_triangles",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "BridgeReviewStation",
+              "objective_id": "learn_triangles",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_5",
+              "source": "BikeBrowserWorld/Regions/DryWash/DryWash.tscn"
+            },
+            {
+              "node": "BridgeReviewStation",
+              "objective_id": "learn_triangles",
+              "producer_type": "scene_property",
+              "quest_id": "bridge_quest_5",
+              "source": "BikeBrowserWorld/Regions/Neighborhood/NeighborhoodStreet.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "bridge_quest_5",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/chain_repair.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "talk_to_mr_chen",
+          "producer_count": 3,
+          "producers": [
+            {
+              "node": "ChainHotspot",
+              "objective_id": "talk_to_mr_chen",
+              "producer_type": "scene_property",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "talk_to_mr_chen",
+              "producer_type": "script_export_metadata",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Systems/Interactions/ChainHotspot.gd"
+            },
+            {
+              "node": "",
+              "objective_id": "talk_to_mr_chen",
+              "producer_type": "script_conditional_variable_call",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Systems/UI/DialogController.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "inspect_chain",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "ChainHotspot",
+              "objective_id": "inspect_chain",
+              "producer_type": "scene_property",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "inspect_chain",
+              "producer_type": "script_export_metadata",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Systems/Interactions/ChainHotspot.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "rotate_pedals",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "ChainHotspot",
+              "objective_id": "rotate_pedals",
+              "producer_type": "scene_property",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "rotate_pedals",
+              "producer_type": "script_export_metadata",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Systems/Interactions/ChainHotspot.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "align_chain",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "ChainHotspot",
+              "objective_id": "align_chain",
+              "producer_type": "scene_property",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "align_chain",
+              "producer_type": "script_export_metadata",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Systems/Interactions/ChainHotspot.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "seat_chain",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "ChainHotspot",
+              "objective_id": "seat_chain",
+              "producer_type": "scene_property",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "seat_chain",
+              "producer_type": "script_export_metadata",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Systems/Interactions/ChainHotspot.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "test_rotation",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "ChainHotspot",
+              "objective_id": "test_rotation",
+              "producer_type": "scene_property",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "test_rotation",
+              "producer_type": "script_export_metadata",
+              "quest_id": "chain_repair",
+              "source": "BikeBrowserWorld/Systems/Interactions/ChainHotspot.gd"
+            }
+          ]
+        }
+      ],
+      "quest_id": "chain_repair",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/copper_prospector.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "collect_surface_copper",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "SurfaceCopperPickup",
+              "objective_id": "collect_surface_copper",
+              "producer_type": "scene_property",
+              "quest_id": "copper_prospector",
+              "source": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "collect_deep_copper",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "DeepCopperPickup",
+              "objective_id": "collect_deep_copper",
+              "producer_type": "scene_property",
+              "quest_id": "copper_prospector",
+              "source": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "conductivity_question",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "ConductivityChallenge",
+              "objective_id": "conductivity_question",
+              "producer_type": "scene_property",
+              "quest_id": "copper_prospector",
+              "source": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "collect_wire_spool",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "WireSpoolPickup",
+              "objective_id": "collect_wire_spool",
+              "producer_type": "scene_property",
+              "quest_id": "copper_prospector",
+              "source": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "copper_prospector",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/copper_rock_id.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "find_copper_rock",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "CopperEvidenceStation",
+              "objective_id": "find_copper_rock",
+              "producer_type": "scene_property",
+              "quest_id": "copper_rock_id",
+              "source": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "test_conductivity",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "CopperEvidenceStation",
+              "objective_id": "test_conductivity",
+              "producer_type": "scene_property",
+              "quest_id": "copper_rock_id",
+              "source": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "report_to_pete",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "CopperEvidenceStation",
+              "objective_id": "report_to_pete",
+              "producer_type": "scene_property",
+              "quest_id": "copper_rock_id",
+              "source": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "copper_rock_id",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/desert_foraging_samples.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "gather_yucca",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "YuccaFiberPickup",
+              "objective_id": "gather_yucca",
+              "producer_type": "scene_property",
+              "quest_id": "desert_foraging_samples",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "gather_agave",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "AgaveFiberPickup",
+              "objective_id": "gather_agave",
+              "producer_type": "scene_property",
+              "quest_id": "desert_foraging_samples",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "gather_jojoba",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "JojobaPickup",
+              "objective_id": "gather_jojoba",
+              "producer_type": "scene_property",
+              "quest_id": "desert_foraging_samples",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "gather_creosote",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "CreosotePickup",
+              "objective_id": "gather_creosote",
+              "producer_type": "scene_property",
+              "quest_id": "desert_foraging_samples",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "note_cactus_water",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "CactusWaterPickup",
+              "objective_id": "note_cactus_water",
+              "producer_type": "scene_property",
+              "quest_id": "desert_foraging_samples",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "desert_foraging_samples",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/desert_plant_observation.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "talk_to_ranger_nita",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "PlantObservationStation",
+              "objective_id": "talk_to_ranger_nita",
+              "producer_type": "scene_property",
+              "quest_id": "desert_plant_observation",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "observe_three_plants",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "PlantObservationStation",
+              "objective_id": "observe_three_plants",
+              "producer_type": "scene_property",
+              "quest_id": "desert_plant_observation",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "journal_observations",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "PlantObservationStation",
+              "objective_id": "journal_observations",
+              "producer_type": "scene_property",
+              "quest_id": "desert_plant_observation",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "return_to_nita",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "PlantObservationStation",
+              "objective_id": "return_to_nita",
+              "producer_type": "scene_property",
+              "quest_id": "desert_plant_observation",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "desert_plant_observation",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/desert_water_management.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "inspect_trail_marker",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "TrailMarkerInspectable",
+              "objective_id": "inspect_trail_marker",
+              "producer_type": "scene_property",
+              "quest_id": "desert_water_management",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "inspect_scavenge_spot",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "ScavengeInspectable",
+              "objective_id": "inspect_scavenge_spot",
+              "producer_type": "scene_property",
+              "quest_id": "desert_water_management",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "water_hours_question",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "WaterHoursChallenge",
+              "objective_id": "water_hours_question",
+              "producer_type": "scene_property",
+              "quest_id": "desert_water_management",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "plant_ratio_question",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "PlantRatioChallenge",
+              "objective_id": "plant_ratio_question",
+              "producer_type": "scene_property",
+              "quest_id": "desert_water_management",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "heat_survival_question",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "HeatSurvivalChallenge",
+              "objective_id": "heat_survival_question",
+              "producer_type": "scene_property",
+              "quest_id": "desert_water_management",
+              "source": "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "desert_water_management",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": true,
+      "file": "BikeBrowserWorld/Data/missions/first_safety_check.json",
+      "missing_objectives": [
+        "talk_to_mrs_ramirez",
+        "inspect_bike",
+        "report_findings"
+      ],
+      "objectives": [
+        {
+          "objective_id": "talk_to_mrs_ramirez",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "inspect_bike",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "report_findings",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "quest_id": "first_safety_check",
+      "status": "STALE_DUPLICATE",
+      "supersededBy": "act1_pre_ride_check"
+    },
+    {
+      "deprecated": true,
+      "file": "BikeBrowserWorld/Data/missions/flat_tire_repair.json",
+      "missing_objectives": [
+        "inspect_wheel",
+        "remove_tube",
+        "apply_patch",
+        "inflate_tire",
+        "verify_wheel_ready"
+      ],
+      "objectives": [
+        {
+          "objective_id": "inspect_wheel",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "remove_tube",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "apply_patch",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "inflate_tire",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "verify_wheel_ready",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "quest_id": "flat_tire_repair",
+      "status": "STALE_DUPLICATE",
+      "supersededBy": "act1_pre_ride_check"
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/mine_cart_repair.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "inspect_broken_wheel",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "MineCartRepairStation",
+              "objective_id": "inspect_broken_wheel",
+              "producer_type": "scene_property",
+              "quest_id": "mine_cart_repair",
+              "source": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "inspect_broken_wheel",
+              "producer_type": "script_export_metadata",
+              "quest_id": "mine_cart_repair",
+              "source": "BikeBrowserWorld/Systems/Interactions/MineCartRepairStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "find_replacement_wheel",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "MineCartRepairStation",
+              "objective_id": "find_replacement_wheel",
+              "producer_type": "scene_property",
+              "quest_id": "mine_cart_repair",
+              "source": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "find_replacement_wheel",
+              "producer_type": "script_export_metadata",
+              "quest_id": "mine_cart_repair",
+              "source": "BikeBrowserWorld/Systems/Interactions/MineCartRepairStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "install_wheel",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "MineCartRepairStation",
+              "objective_id": "install_wheel",
+              "producer_type": "scene_property",
+              "quest_id": "mine_cart_repair",
+              "source": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "install_wheel",
+              "producer_type": "script_export_metadata",
+              "quest_id": "mine_cart_repair",
+              "source": "BikeBrowserWorld/Systems/Interactions/MineCartRepairStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "test_cart",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "MineCartRepairStation",
+              "objective_id": "test_cart",
+              "producer_type": "scene_property",
+              "quest_id": "mine_cart_repair",
+              "source": "BikeBrowserWorld/Regions/Mine/MineCartRepairStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "test_cart",
+              "producer_type": "script_export_metadata",
+              "quest_id": "mine_cart_repair",
+              "source": "BikeBrowserWorld/Systems/Interactions/MineCartRepairStation.gd"
+            }
+          ]
+        }
+      ],
+      "quest_id": "mine_cart_repair",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/mine_stability_check.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "inspect_support_beam",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "SupportBeamInspectable",
+              "objective_id": "inspect_support_beam",
+              "producer_type": "scene_property",
+              "quest_id": "mine_stability_check",
+              "source": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "calculate_load_capacity",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "LoadCapacityChallenge",
+              "objective_id": "calculate_load_capacity",
+              "producer_type": "scene_property",
+              "quest_id": "mine_stability_check",
+              "source": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "mark_rubble_density",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "RubbleDensityInspectable",
+              "objective_id": "mark_rubble_density",
+              "producer_type": "scene_property",
+              "quest_id": "mine_stability_check",
+              "source": "BikeBrowserWorld/Regions/Mine/CopperMine.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "mine_stability_check",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/river_ecosystem_survey.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "observe_fish_patterns",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "FoodWebInspectable",
+              "objective_id": "observe_fish_patterns",
+              "producer_type": "scene_property",
+              "quest_id": "river_ecosystem_survey",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "collect_algae",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "AlgaeSamplePickup",
+              "objective_id": "collect_algae",
+              "producer_type": "scene_property",
+              "quest_id": "river_ecosystem_survey",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "collect_microbes",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "MicrobialSamplePickup",
+              "objective_id": "collect_microbes",
+              "producer_type": "scene_property",
+              "quest_id": "river_ecosystem_survey",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "flow_rate_question",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "FlowRateChallenge",
+              "objective_id": "flow_rate_question",
+              "producer_type": "scene_property",
+              "quest_id": "river_ecosystem_survey",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "river_ecosystem_survey",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/test_water_quality.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "talk_to_dr_maya",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "WaterQualityStation",
+              "objective_id": "talk_to_dr_maya",
+              "producer_type": "scene_property",
+              "quest_id": "test_water_quality",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "collect_water_sample",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "WaterQualityStation",
+              "objective_id": "collect_water_sample",
+              "producer_type": "scene_property",
+              "quest_id": "test_water_quality",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "run_ph_test",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "WaterQualityStation",
+              "objective_id": "run_ph_test",
+              "producer_type": "scene_property",
+              "quest_id": "test_water_quality",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "identify_macroinvertebrates",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "WaterQualityStation",
+              "objective_id": "identify_macroinvertebrates",
+              "producer_type": "scene_property",
+              "quest_id": "test_water_quality",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "report_results",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "WaterQualityStation",
+              "objective_id": "report_results",
+              "producer_type": "scene_property",
+              "quest_id": "test_water_quality",
+              "source": "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "test_water_quality",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/track_the_animal.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "find_tracks",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "AnimalTrackStation",
+              "objective_id": "find_tracks",
+              "producer_type": "scene_property",
+              "quest_id": "track_the_animal",
+              "source": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "find_tracks",
+              "producer_type": "script_export_metadata",
+              "quest_id": "track_the_animal",
+              "source": "BikeBrowserWorld/Systems/Interactions/AnimalTrackStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "follow_tracks",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "AnimalTrackStation",
+              "objective_id": "follow_tracks",
+              "producer_type": "scene_property",
+              "quest_id": "track_the_animal",
+              "source": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "follow_tracks",
+              "producer_type": "script_export_metadata",
+              "quest_id": "track_the_animal",
+              "source": "BikeBrowserWorld/Systems/Interactions/AnimalTrackStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "identify_animal",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "AnimalTrackStation",
+              "objective_id": "identify_animal",
+              "producer_type": "scene_property",
+              "quest_id": "track_the_animal",
+              "source": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "identify_animal",
+              "producer_type": "script_export_metadata",
+              "quest_id": "track_the_animal",
+              "source": "BikeBrowserWorld/Systems/Interactions/AnimalTrackStation.gd"
+            }
+          ]
+        },
+        {
+          "objective_id": "report_findings",
+          "producer_count": 2,
+          "producers": [
+            {
+              "node": "AnimalTrackStation",
+              "objective_id": "report_findings",
+              "producer_type": "scene_property",
+              "quest_id": "track_the_animal",
+              "source": "BikeBrowserWorld/Regions/Desert/AnimalTrackStation.tscn"
+            },
+            {
+              "node": "",
+              "objective_id": "report_findings",
+              "producer_type": "script_export_metadata",
+              "quest_id": "track_the_animal",
+              "source": "BikeBrowserWorld/Systems/Interactions/AnimalTrackStation.gd"
+            }
+          ]
+        }
+      ],
+      "quest_id": "track_the_animal",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    },
+    {
+      "deprecated": true,
+      "file": "BikeBrowserWorld/Data/missions/water_sample_observation.json",
+      "missing_objectives": [
+        "talk_to_dr_maya",
+        "collect_sample",
+        "compare_evidence"
+      ],
+      "objectives": [
+        {
+          "objective_id": "talk_to_dr_maya",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "collect_sample",
+          "producer_count": 0,
+          "producers": []
+        },
+        {
+          "objective_id": "compare_evidence",
+          "producer_count": 0,
+          "producers": []
+        }
+      ],
+      "quest_id": "water_sample_observation",
+      "status": "STALE_DUPLICATE",
+      "supersededBy": "test_water_quality"
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/workshop_first_build.json",
+      "missing_objectives": [],
+      "objectives": [
+        {
+          "objective_id": "collect_raw_material",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "WorkshopBuildStation",
+              "objective_id": "collect_raw_material",
+              "producer_type": "scene_property",
+              "quest_id": "workshop_first_build",
+              "source": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "choose_workshop_friend",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "WorkshopBuildStation",
+              "objective_id": "choose_workshop_friend",
+              "producer_type": "scene_property",
+              "quest_id": "workshop_first_build",
+              "source": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+            }
+          ]
+        },
+        {
+          "objective_id": "craft_first_part",
+          "producer_count": 1,
+          "producers": [
+            {
+              "node": "WorkshopBuildStation",
+              "objective_id": "craft_first_part",
+              "producer_type": "scene_property",
+              "quest_id": "workshop_first_build",
+              "source": "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+            }
+          ]
+        }
+      ],
+      "quest_id": "workshop_first_build",
+      "status": "HAS_PRODUCERS",
+      "supersededBy": ""
+    }
+  ]
+}

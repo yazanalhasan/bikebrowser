@@ -116,36 +116,6 @@ func _validate_quests() -> void:
 		errors.append("QuestRegistry: %s" % message)
 	for message in report.get("warnings", []):
 		warnings.append("QuestRegistry: %s" % message)
-	_validate_dev_quest_wiring_matrix()
-
-func _validate_dev_quest_wiring_matrix() -> void:
-	if OS.get_environment("BIKEBROWSER_DEV_EDITOR") != "1":
-		return
-	var workspace_root := ProjectSettings.globalize_path("res://").path_join("..").simplify_path()
-	var matrix_path := workspace_root.path_join("reports/quest_wiring_gate/latest.json")
-	if not FileAccess.file_exists(matrix_path):
-		matrix_path = workspace_root.path_join("reports/quest_wiring/MATRIX.json")
-	if not FileAccess.file_exists(matrix_path):
-		warnings.append("Quest wiring matrix not found for dev-mode warning: reports/quest_wiring_gate/latest.json")
-		return
-	var parsed = JSON.parse_string(FileAccess.get_file_as_string(matrix_path))
-	if typeof(parsed) != TYPE_DICTIONARY:
-		warnings.append("Quest wiring matrix could not be parsed for dev-mode warning")
-		return
-	var quests: Array = parsed.get("quests", [])
-	var blocked: Array[String] = []
-	details["quest_wiring_gate_source"] = matrix_path
-	for quest in quests:
-		if typeof(quest) != TYPE_DICTIONARY:
-			continue
-		if bool(quest.get("deprecated", false)):
-			continue
-		var status := String(quest.get("quest_status", quest.get("status", "")))
-		if status == "DATA_ONLY" or status == "PARTIAL":
-			blocked.append("%s:%s" % [String(quest.get("quest_id", "")), status])
-	details["quest_wiring_gate"] = blocked
-	if not blocked.is_empty():
-		warnings.append("Dev quest wiring gate found active DATA_ONLY/PARTIAL quests: %s" % ", ".join(blocked))
 
 func _validate_dialogue() -> void:
 	var report := {}
