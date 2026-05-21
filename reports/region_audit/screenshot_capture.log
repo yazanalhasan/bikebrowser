@@ -1,0 +1,77 @@
+WorkerThreadPool: 24 threads, 7 max low-priority.
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Unrecognized output string "misc2" in mapping:
+030000008a2e0000dd10000000000000,Hand Held Legend GC Ultimate,a:b0,b:b2,back:b17,dpdown:b5,dpleft:b6,dpright:b7,dpup:b4,guide:b18,leftshoulder:b10,leftstick:b8,lefttrigger:a3,leftx:a0,lefty:a1,misc1:b19,misc2:b24,paddle1:b13,paddle2:b12,rightshoulder:b11,rightstick:b9,righttrigger:a4,rightx:a2,righty:a5,start:b16,x:b1,y:b3,platform:Windows,
+Unrecognized output string "misc2" in mapping:
+030000000d0f00000202000000000000,Horipad O Nintendo Switch 2 Controller,a:b1,b:b0,back:b8,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b4,leftstick:b10,lefttrigger:b6,leftx:a0,lefty:a1,misc1:b13,misc2:b14,rightshoulder:b5,rightstick:b11,righttrigger:b7,rightx:a2,righty:a3,start:b9,x:b3,y:b2,platform:Windows,
+Unrecognized output string "misc2" in mapping:
+030000000d0f00009601000000000000,Horipad Steam,a:b0,b:b1,back:b10,dpdown:h0.4,dpleft:h0.8,dpright:h0.2,dpup:h0.1,guide:b12,leftshoulder:b6,leftstick:b13,lefttrigger:b8,leftx:a0,lefty:a1,misc2:b2,paddle1:b5,paddle2:b15,paddle3:b18,paddle4:b19,rightshoulder:b7,rightstick:b14,righttrigger:b9,rightx:a3,righty:a4,start:b11,x:b3,y:b4,platform:Windows,
+Unrecognized output string "misc2" in mapping:
+030000007e0500006920000000000000,Nintendo Switch 2 Pro Controller,a:b0,b:b1,back:b14,dpdown:b8,dpleft:b10,dpright:b9,dpup:b11,guide:b16,leftshoulder:b12,leftstick:b15,lefttrigger:b13,leftx:a0,lefty:a1~,misc1:b17,misc2:b20,paddle1:b18,paddle2:b19,rightshoulder:b4,rightstick:b7,righttrigger:b5,rightx:a2,righty:a3~,start:b6,x:b2,y:b3,platform:Windows,
+Using "default" pen tablet driver...
+
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 4039755037
+EDITOR API HASH: 223528947
+Loading resource: res://../reports/region_audit/capture_region_screenshots.gd
+SceneTreeFTI: traversal method DEFAULT
+Loading resource: res://Core/DevMode/DevMode.gd
+Loading resource: res://Core/EventBus/EventBus.gd
+Loading resource: res://Core/SaveService/SaveService.gd
+Loading resource: res://Core/DialogueManager/DialogueManager.gd
+Loading resource: res://Core/AccomplishmentBus/AccomplishmentBus.gd
+Loading resource: res://Core/AudioService/AudioService.gd
+Loading resource: res://Core/RuntimeValidator/RuntimeValidator.gd
+Loading resource: res://Core/ProjectIntegration/ProjectIntegration.gd
+Loading resource: res://Systems/Playtest/PlaytestRigTelemetry.gd
+Loading resource: res://Core/LevelEditor/LevelEditor.gd
+Loaded system CA certificates
+QuestRegistry loaded 25 missions from res://Data/missions
+Registered runtime quests:
+- act1_regional_readiness
+- algae_bloom_source
+- balance_the_flow
+- act1_pre_ride_check
+- bridge_material_test
+- bridge_quest_1
+- bridge_quest_2
+- bridge_quest_3
+- bridge_quest_4
+- bridge_quest_5
+- chain_repair
+- copper_prospector
+- copper_rock_id
+- desert_foraging_samples
+- desert_plant_observation
+- desert_water_management
+- first_safety_check
+- flat_tire_repair
+- mine_cart_repair
+- mine_stability_check
+- river_ecosystem_survey
+- test_water_quality
+- track_the_animal
+- water_sample_observation
+- workshop_first_build
+Quest validation: 0 errors, 0 warnings
+Loading resource: res://Regions/Boot/Boot.tscn
+Loading resource: res://Regions/Boot/Boot.gd
+Loading resource: res://Assets/Audio/Music/neighborhood_street.ogg
+Loading resource: res://.godot/imported/neighborhood_street.ogg-d7afbc69572b921db7119a4c6fe8de97.oggvorbisstr
+Runtime validation complete:
+- errors: 0
+- warnings: 1
+- quests loaded: 25
+- dialogue files: 26
+- regions: 8
+- audio mappings: 8/8
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (./servers/rendering/dummy/storage/texture_storage.h:106)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../reports/region_audit/capture_region_screenshots.gd:28)
+SCRIPT ERROR: Cannot call method 'save_png' on a null value.
+   at: _run (res://../reports/region_audit/capture_region_screenshots.gd:30)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../reports/region_audit/capture_region_screenshots.gd:30)

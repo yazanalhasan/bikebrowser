@@ -1,0 +1,42 @@
+[
+  {
+    "region": "boot",
+    "hud": true,
+    "dialogbox": true
+  },
+  {
+    "region": "neighborhood_street",
+    "hud": true,
+    "dialogbox": true
+  },
+  {
+    "region": "garage",
+    "hud": true,
+    "dialogbox": true
+  },
+  {
+    "region": "copper_mine",
+    "hud": true,
+    "dialogbox": true
+  },
+  {
+    "region": "desert_trail",
+    "hud": true,
+    "dialogbox": true
+  },
+  {
+    "region": "salt_river",
+    "hud": true,
+    "dialogbox": true
+  },
+  {
+    "region": "dry_wash",
+    "hud": true,
+    "dialogbox": true
+  },
+  {
+    "region": "system_showcase",
+    "hud": true,
+    "dialogbox": true
+  }
+]

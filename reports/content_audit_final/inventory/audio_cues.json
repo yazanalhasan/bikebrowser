@@ -1,0 +1,146 @@
+[
+  {
+    "cue_id": "reward_large",
+    "file": "BikeBrowserWorld/Assets/Audio/Cues/reward_large.ogg"
+  },
+  {
+    "cue_id": "reward_medium",
+    "file": "BikeBrowserWorld/Assets/Audio/Cues/reward_medium.ogg"
+  },
+  {
+    "cue_id": "reward_small",
+    "file": "BikeBrowserWorld/Assets/Audio/Cues/reward_small.ogg"
+  },
+  {
+    "cue_id": "reward_tiny",
+    "file": "BikeBrowserWorld/Assets/Audio/Cues/reward_tiny.ogg"
+  },
+  {
+    "cue_id": "copper_mine",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/copper_mine.mp3"
+  },
+  {
+    "cue_id": "copper_mine",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/copper_mine.ogg"
+  },
+  {
+    "cue_id": "dry_wash_bridge",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/dry_wash_bridge.mp3"
+  },
+  {
+    "cue_id": "dry_wash_bridge",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/dry_wash_bridge.ogg"
+  },
+  {
+    "cue_id": "garage_workshop",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/garage_workshop.mp3"
+  },
+  {
+    "cue_id": "garage_workshop",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/garage_workshop.ogg"
+  },
+  {
+    "cue_id": "neighborhood_street",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/neighborhood_street.mp3"
+  },
+  {
+    "cue_id": "neighborhood_street",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/neighborhood_street.ogg"
+  },
+  {
+    "cue_id": "salt_river",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/salt_river.mp3"
+  },
+  {
+    "cue_id": "salt_river",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/salt_river.ogg"
+  },
+  {
+    "cue_id": "title_screen",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/title_screen.mp3"
+  },
+  {
+    "cue_id": "title_screen",
+    "file": "BikeBrowserWorld/Assets/Audio/Music/title_screen.ogg"
+  },
+  {
+    "cue_id": "chain_repair_success",
+    "file": "BikeBrowserWorld/Assets/Audio/Stingers/chain_repair_success.mp3"
+  },
+  {
+    "cue_id": "quest_fanfare",
+    "file": "BikeBrowserWorld/Assets/Audio/Stingers/quest_fanfare.mp3"
+  },
+  {
+    "cue_id": "reward_large",
+    "file": "BikeBrowserWorld/assets/audio/Cues/reward_large.ogg"
+  },
+  {
+    "cue_id": "reward_medium",
+    "file": "BikeBrowserWorld/assets/audio/Cues/reward_medium.ogg"
+  },
+  {
+    "cue_id": "reward_small",
+    "file": "BikeBrowserWorld/assets/audio/Cues/reward_small.ogg"
+  },
+  {
+    "cue_id": "reward_tiny",
+    "file": "BikeBrowserWorld/assets/audio/Cues/reward_tiny.ogg"
+  },
+  {
+    "cue_id": "copper_mine",
+    "file": "BikeBrowserWorld/assets/audio/Music/copper_mine.mp3"
+  },
+  {
+    "cue_id": "copper_mine",
+    "file": "BikeBrowserWorld/assets/audio/Music/copper_mine.ogg"
+  },
+  {
+    "cue_id": "dry_wash_bridge",
+    "file": "BikeBrowserWorld/assets/audio/Music/dry_wash_bridge.mp3"
+  },
+  {
+    "cue_id": "dry_wash_bridge",
+    "file": "BikeBrowserWorld/assets/audio/Music/dry_wash_bridge.ogg"
+  },
+  {
+    "cue_id": "garage_workshop",
+    "file": "BikeBrowserWorld/assets/audio/Music/garage_workshop.mp3"
+  },
+  {
+    "cue_id": "garage_workshop",
+    "file": "BikeBrowserWorld/assets/audio/Music/garage_workshop.ogg"
+  },
+  {
+    "cue_id": "neighborhood_street",
+    "file": "BikeBrowserWorld/assets/audio/Music/neighborhood_street.mp3"
+  },
+  {
+    "cue_id": "neighborhood_street",
+    "file": "BikeBrowserWorld/assets/audio/Music/neighborhood_street.ogg"
+  },
+  {
+    "cue_id": "salt_river",
+    "file": "BikeBrowserWorld/assets/audio/Music/salt_river.mp3"
+  },
+  {
+    "cue_id": "salt_river",
+    "file": "BikeBrowserWorld/assets/audio/Music/salt_river.ogg"
+  },
+  {
+    "cue_id": "title_screen",
+    "file": "BikeBrowserWorld/assets/audio/Music/title_screen.mp3"
+  },
+  {
+    "cue_id": "title_screen",
+    "file": "BikeBrowserWorld/assets/audio/Music/title_screen.ogg"
+  },
+  {
+    "cue_id": "chain_repair_success",
+    "file": "BikeBrowserWorld/assets/audio/Stingers/chain_repair_success.mp3"
+  },
+  {
+    "cue_id": "quest_fanfare",
+    "file": "BikeBrowserWorld/assets/audio/Stingers/quest_fanfare.mp3"
+  }
+]

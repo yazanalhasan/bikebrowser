@@ -1,0 +1,75 @@
+{
+  "edges": [
+    {
+      "from": "act1_pre_ride_check",
+      "to": "act1_regional_readiness",
+      "type": "prerequisite"
+    },
+    {
+      "from": "chain_repair",
+      "to": "act1_regional_readiness",
+      "type": "prerequisite"
+    },
+    {
+      "from": "bridge_quest_5",
+      "to": "act1_regional_readiness",
+      "type": "prerequisite"
+    },
+    {
+      "from": "desert_plant_observation",
+      "to": "act1_regional_readiness",
+      "type": "prerequisite"
+    },
+    {
+      "from": "test_water_quality",
+      "to": "act1_regional_readiness",
+      "type": "prerequisite"
+    },
+    {
+      "from": "copper_rock_id",
+      "to": "act1_regional_readiness",
+      "type": "prerequisite"
+    },
+    {
+      "from": "workshop_first_build",
+      "to": "act1_regional_readiness",
+      "type": "prerequisite"
+    },
+    {
+      "from": "test_water_quality",
+      "to": "balance_the_flow",
+      "type": "prerequisite"
+    },
+    {
+      "from": "chain_repair",
+      "to": "bridge_quest_5",
+      "type": "prerequisite"
+    },
+    {
+      "from": "copper_rock_id",
+      "to": "copper_prospector",
+      "type": "prerequisite"
+    },
+    {
+      "from": "desert_plant_observation",
+      "to": "desert_foraging_samples",
+      "type": "prerequisite"
+    },
+    {
+      "from": "desert_plant_observation",
+      "to": "desert_water_management",
+      "type": "prerequisite"
+    },
+    {
+      "from": "copper_rock_id",
+      "to": "mine_stability_check",
+      "type": "prerequisite"
+    },
+    {
+      "from": "test_water_quality",
+      "to": "river_ecosystem_survey",
+      "type": "prerequisite"
+    }
+  ],
+  "issues": []
+}

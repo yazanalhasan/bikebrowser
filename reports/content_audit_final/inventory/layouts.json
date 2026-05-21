@@ -1,0 +1,26 @@
+[
+  {
+    "file": "BikeBrowserWorld/Data/layouts/copper_mine.json",
+    "layout_id": "copper_mine"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/layouts/desert_trail.json",
+    "layout_id": "desert_trail"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/layouts/dry_wash.json",
+    "layout_id": "dry_wash"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/layouts/garage.json",
+    "layout_id": "garage"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/layouts/neighborhood_street.json",
+    "layout_id": "neighborhood_street"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/layouts/salt_river.json",
+    "layout_id": "salt_river"
+  }
+]

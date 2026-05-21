@@ -16,7 +16,6 @@ MISSION_DIR = ROOT / "BikeBrowserWorld" / "Data" / "missions"
 WORLD = ROOT / "BikeBrowserWorld"
 SCENE_ROOTS = [WORLD / "Regions", WORLD / "Prototypes", WORLD / "Systems"]
 EXCLUDE_PARTS = {".godot", "addons", "backups", "reports", "references", "project_audit", "tests"}
-QUEST_ALIASES = {"bike_safety_check": "act1_pre_ride_check"}
 
 PROPERTY_NAMES = {
     "quest_id",
@@ -297,22 +296,12 @@ def script_call_producers() -> list[dict[str, Any]]:
         default_q = ""
         qm = re.search(r'@export var quest_id\s*:?=?[^"]*"([^"]+)"', text)
         if qm:
-            default_q = QUEST_ALIASES.get(qm.group(1), qm.group(1))
-        if default_q:
-            table_objectives = re.findall(r'"id"\s*:\s*"([^"]+)"', text)
-            for oid in table_objectives:
-                records.append({"quest_id": default_q, "objective_id": oid, "producer_node_path": f"{rel(path)}:step_table", "producer_node_type": path.stem, "scene_file": "", "starts_quest_too": False, "prerequisites_declared": [], "node_has_real_logic_script": True, "linked_npc": "", "linked_dialog": ""})
-            for oid in re.findall(r'QuestRegistry\.record_objective\(\s*quest_id\s*,\s*"([^"]+)"', text):
-                records.append({"quest_id": default_q, "objective_id": oid, "producer_node_path": f"{rel(path)}:variable_call", "producer_node_type": path.stem, "scene_file": "", "starts_quest_too": False, "prerequisites_declared": [], "node_has_real_logic_script": True, "linked_npc": "", "linked_dialog": ""})
-        conditional_quests = {QUEST_ALIASES.get(q, q) for q in re.findall(r'quest_id\s*==\s*"([^"]+)"', text)}
-        for qid in conditional_quests:
-            for oid in re.findall(r'QuestRegistry\.record_objective\(\s*quest_id\s*,\s*"([^"]+)"', text):
-                records.append({"quest_id": qid, "objective_id": oid, "producer_node_path": f"{rel(path)}:conditional_call", "producer_node_type": path.stem, "scene_file": "", "starts_quest_too": False, "prerequisites_declared": [], "node_has_real_logic_script": True, "linked_npc": "", "linked_dialog": ""})
+            default_q = qm.group(1)
         for idx, line in enumerate(text.splitlines(), 1):
             for m in call.finditer(line):
                 args = re.findall(r'"([^"]+)"', m.group(2))
                 if m.group(1) == "record_objective":
-                    qid = QUEST_ALIASES.get(args[0], args[0]) if len(args) >= 2 else default_q
+                    qid = args[0] if len(args) >= 2 else default_q
                     oid = args[1] if len(args) >= 2 else (args[0] if args else "<dynamic>")
                     if oid in {"id", "quest_id", "objective_id"}:
                         oid = "<dynamic>"

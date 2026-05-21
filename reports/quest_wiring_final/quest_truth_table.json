@@ -1,0 +1,504 @@
+{
+  "quests": [
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "review_bike_systems",
+        "review_bridge_systems",
+        "review_ecology_water",
+        "review_materials_workshop",
+        "sketch_regional_questions",
+        "receive_spacecraft_clue"
+      ],
+      "prerequisites": [
+        "act1_pre_ride_check",
+        "chain_repair",
+        "bridge_quest_5",
+        "desert_plant_observation",
+        "test_water_quality",
+        "copper_rock_id",
+        "workshop_first_build"
+      ],
+      "quest_id": "act1_regional_readiness",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Regional Readiness Review",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/algae_bloom_source.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "notice_green_water",
+        "talk_to_dr_maya",
+        "follow_channel",
+        "find_runoff_source",
+        "report_solution"
+      ],
+      "prerequisites": [],
+      "quest_id": "algae_bloom_source",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Find the Source of Algae Bloom",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/balance_the_flow.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "collect_river_minerals",
+        "collect_reed_fiber",
+        "inspect_channels",
+        "fraction_question"
+      ],
+      "prerequisites": [
+        "test_water_quality"
+      ],
+      "quest_id": "balance_the_flow",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Flow Controller",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bike_safety_check.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "talk_to_mrs_ramirez",
+        "abc_page_created",
+        "air_front_checked",
+        "air_rear_flat_found",
+        "brakes_front_checked",
+        "brakes_rear_checked",
+        "chain_checked",
+        "quick_wheel_checked",
+        "quick_seat_checked",
+        "quick_handlebars_checked",
+        "tube_received",
+        "garage_arrived",
+        "tube_removed",
+        "leak_found",
+        "leak_marked",
+        "patch_applied",
+        "tube_reinflated",
+        "repair_tested",
+        "tube_returned",
+        "final_air_checked",
+        "final_brakes_checked",
+        "final_chain_checked",
+        "final_quick_checked",
+        "final_report"
+      ],
+      "prerequisites": [],
+      "quest_id": "act1_pre_ride_check",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Mrs. Ramirez's Pre-Ride Check",
+      "unlocks": []
+    },
+    {
+      "deprecated": true,
+      "file": "BikeBrowserWorld/Data/missions/bridge_material_test.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "collect_materials",
+        "test_strength",
+        "choose_bridge_part"
+      ],
+      "prerequisites": [],
+      "quest_id": "bridge_material_test",
+      "region_hint": "",
+      "supersededBy": "bridge_quest_3",
+      "title": "Bridge Material Test",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_1.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "talk_to_mr_chen",
+        "visit_broken_bridge",
+        "inspect_planks",
+        "inspect_beams_supports",
+        "return_report"
+      ],
+      "prerequisites": [],
+      "quest_id": "bridge_quest_1",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Assess the Damage",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_2.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "talk_to_shopkeeper",
+        "collect_wood_planks",
+        "collect_metal_brackets",
+        "collect_rope_coil",
+        "return_materials"
+      ],
+      "prerequisites": [],
+      "quest_id": "bridge_quest_2",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Gather Materials",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_3.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "go_to_testing_rig",
+        "test_wood",
+        "test_metal",
+        "test_composite",
+        "choose_best_material"
+      ],
+      "prerequisites": [],
+      "quest_id": "bridge_quest_3",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Test Material Strength",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_4.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "choose_design",
+        "place_supports",
+        "lay_planks",
+        "secure_connections",
+        "walk_test"
+      ],
+      "prerequisites": [],
+      "quest_id": "bridge_quest_4",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Build the Bridge",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/bridge_quest_5.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "talk_to_neighbors",
+        "receive_badge",
+        "unlock_new_area",
+        "learn_triangles"
+      ],
+      "prerequisites": [
+        "chain_repair"
+      ],
+      "quest_id": "bridge_quest_5",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Celebrate and Learn",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/chain_repair.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "talk_to_mr_chen",
+        "inspect_chain",
+        "rotate_pedals",
+        "align_chain",
+        "seat_chain",
+        "test_rotation"
+      ],
+      "prerequisites": [],
+      "quest_id": "chain_repair",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Mr. Chen's Slipped Chain",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/copper_prospector.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "collect_surface_copper",
+        "collect_deep_copper",
+        "conductivity_question",
+        "collect_wire_spool"
+      ],
+      "prerequisites": [
+        "copper_rock_id"
+      ],
+      "quest_id": "copper_prospector",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Copper Prospector",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/copper_rock_id.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "find_copper_rock",
+        "test_conductivity",
+        "report_to_pete"
+      ],
+      "prerequisites": [],
+      "quest_id": "copper_rock_id",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Identify the Copper Ore",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/desert_foraging_samples.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "gather_yucca",
+        "gather_agave",
+        "gather_jojoba",
+        "gather_creosote",
+        "note_cactus_water"
+      ],
+      "prerequisites": [
+        "desert_plant_observation"
+      ],
+      "quest_id": "desert_foraging_samples",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Desert Foraging Samples",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/desert_plant_observation.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "talk_to_ranger_nita",
+        "observe_three_plants",
+        "journal_observations",
+        "return_to_nita"
+      ],
+      "prerequisites": [],
+      "quest_id": "desert_plant_observation",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Desert Plant Observation",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/desert_water_management.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "inspect_trail_marker",
+        "inspect_scavenge_spot",
+        "water_hours_question",
+        "plant_ratio_question",
+        "heat_survival_question"
+      ],
+      "prerequisites": [
+        "desert_plant_observation"
+      ],
+      "quest_id": "desert_water_management",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Water Wise",
+      "unlocks": []
+    },
+    {
+      "deprecated": true,
+      "file": "BikeBrowserWorld/Data/missions/first_safety_check.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "talk_to_mrs_ramirez",
+        "inspect_bike",
+        "report_findings"
+      ],
+      "prerequisites": [],
+      "quest_id": "first_safety_check",
+      "region_hint": "",
+      "supersededBy": "act1_pre_ride_check",
+      "title": "First Safety Check",
+      "unlocks": []
+    },
+    {
+      "deprecated": true,
+      "file": "BikeBrowserWorld/Data/missions/flat_tire_repair.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "inspect_wheel",
+        "remove_tube",
+        "apply_patch",
+        "inflate_tire",
+        "verify_wheel_ready"
+      ],
+      "prerequisites": [],
+      "quest_id": "flat_tire_repair",
+      "region_hint": "",
+      "supersededBy": "act1_pre_ride_check",
+      "title": "Fix Mrs. Ramirez's Flat Tire",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/mine_cart_repair.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "inspect_broken_wheel",
+        "find_replacement_wheel",
+        "install_wheel",
+        "test_cart"
+      ],
+      "prerequisites": [],
+      "quest_id": "mine_cart_repair",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Fix the Mine Cart",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/mine_stability_check.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "inspect_support_beam",
+        "calculate_load_capacity",
+        "mark_rubble_density"
+      ],
+      "prerequisites": [
+        "copper_rock_id"
+      ],
+      "quest_id": "mine_stability_check",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Mine Stability Check",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/river_ecosystem_survey.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "observe_fish_patterns",
+        "collect_algae",
+        "collect_microbes",
+        "flow_rate_question"
+      ],
+      "prerequisites": [
+        "test_water_quality"
+      ],
+      "quest_id": "river_ecosystem_survey",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Ecosystem Survey",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/test_water_quality.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "talk_to_dr_maya",
+        "collect_water_sample",
+        "run_ph_test",
+        "identify_macroinvertebrates",
+        "report_results"
+      ],
+      "prerequisites": [],
+      "quest_id": "test_water_quality",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Test the Water Quality",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/track_the_animal.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "find_tracks",
+        "follow_tracks",
+        "identify_animal",
+        "report_findings"
+      ],
+      "prerequisites": [],
+      "quest_id": "track_the_animal",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Track the Animal",
+      "unlocks": []
+    },
+    {
+      "deprecated": true,
+      "file": "BikeBrowserWorld/Data/missions/water_sample_observation.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "talk_to_dr_maya",
+        "collect_sample",
+        "compare_evidence"
+      ],
+      "prerequisites": [],
+      "quest_id": "water_sample_observation",
+      "region_hint": "",
+      "supersededBy": "test_water_quality",
+      "title": "Water Sample Observation",
+      "unlocks": []
+    },
+    {
+      "deprecated": false,
+      "file": "BikeBrowserWorld/Data/missions/workshop_first_build.json",
+      "next": "",
+      "next_in_chain": "",
+      "objectives": [
+        "collect_raw_material",
+        "choose_workshop_friend",
+        "craft_first_part"
+      ],
+      "prerequisites": [],
+      "quest_id": "workshop_first_build",
+      "region_hint": "",
+      "supersededBy": "",
+      "title": "Workshop First Build",
+      "unlocks": []
+    }
+  ],
+  "source_dir": "BikeBrowserWorld/Data/missions"
+}

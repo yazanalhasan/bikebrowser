@@ -1,0 +1,382 @@
+[
+  {
+    "dialog_id": "abuela_rosa_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/abuela_rosa_intro.json",
+    "npc_id": "abuela_rosa",
+    "reference_count": 0,
+    "references": [],
+    "speaker": "",
+    "status": "UNREFERENCED",
+    "voices": [
+      "abuela_rosa_greeting"
+    ]
+  },
+  {
+    "dialog_id": "charlie_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/charlie_intro.json",
+    "npc_id": "charlie",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Regions/NPCs/CharlieNpc.tscn"
+    ],
+    "speaker": "Charlie",
+    "status": "REFERENCED",
+    "voices": [
+      "charlie_greeting",
+      "charlie_materials",
+      "charlie_quirk"
+    ]
+  },
+  {
+    "dialog_id": "cole_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/cole_intro.json",
+    "npc_id": "cole",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Regions/NPCs/ColeNpc.tscn"
+    ],
+    "speaker": "Cole",
+    "status": "REFERENCED",
+    "voices": [
+      "cole_greeting",
+      "cole_materials",
+      "cole_quirk"
+    ]
+  },
+  {
+    "dialog_id": "dr_maya_expanded",
+    "file": "BikeBrowserWorld/Data/dialogue/dr_maya_expanded.json",
+    "npc_id": "river_biologist",
+    "reference_count": 0,
+    "references": [],
+    "speaker": "Dr. Maya",
+    "status": "UNREFERENCED",
+    "voices": [
+      "dr_maya_career_path",
+      "dr_maya_greeting",
+      "dr_maya_human_impact",
+      "dr_maya_macroinvertebrates",
+      "dr_maya_stoneflies",
+      "dr_maya_test_intro",
+      "dr_maya_water_quality"
+    ]
+  },
+  {
+    "dialog_id": "dr_maya_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/dr_maya_intro.json",
+    "npc_id": "",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Regions/NPCs/DrMayaNpc.tscn"
+    ],
+    "speaker": "Dr. Maya",
+    "status": "REFERENCED",
+    "voices": []
+  },
+  {
+    "dialog_id": "jacob_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/jacob_intro.json",
+    "npc_id": "jacob",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Regions/NPCs/JacobNpc.tscn"
+    ],
+    "speaker": "Jacob",
+    "status": "REFERENCED",
+    "voices": [
+      "jacob_greeting",
+      "jacob_materials",
+      "jacob_quirk"
+    ]
+  },
+  {
+    "dialog_id": "james_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/james_intro.json",
+    "npc_id": "james",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Regions/NPCs/JamesNpc.tscn"
+    ],
+    "speaker": "James",
+    "status": "REFERENCED",
+    "voices": [
+      "james_greeting",
+      "james_materials",
+      "james_quirk"
+    ]
+  },
+  {
+    "dialog_id": "mom_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/mom_intro.json",
+    "npc_id": "mom",
+    "reference_count": 0,
+    "references": [],
+    "speaker": "",
+    "status": "UNREFERENCED",
+    "voices": [
+      "mom_greeting"
+    ]
+  },
+  {
+    "dialog_id": "mr_chen_after_chain",
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_after_chain.json",
+    "npc_id": "",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd"
+    ],
+    "speaker": "Mr. Chen",
+    "status": "REFERENCED",
+    "voices": []
+  },
+  {
+    "dialog_id": "mr_chen_after_safety",
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_after_safety.json",
+    "npc_id": "",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd"
+    ],
+    "speaker": "Mr. Chen",
+    "status": "REFERENCED",
+    "voices": []
+  },
+  {
+    "dialog_id": "mr_chen_bridge",
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_bridge.json",
+    "npc_id": "mr_chen",
+    "reference_count": 7,
+    "references": [
+      "BikeBrowserWorld/Data/dialogue/mr_chen_expanded.json",
+      "BikeBrowserWorld/Data/missions/act1_regional_readiness.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_1.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_2.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_3.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_4.json",
+      "BikeBrowserWorld/Data/missions/bridge_quest_5.json"
+    ],
+    "speaker": "Mr. Chen",
+    "status": "REFERENCED",
+    "voices": []
+  },
+  {
+    "dialog_id": "mr_chen_chain",
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_chain.json",
+    "npc_id": "",
+    "reference_count": 6,
+    "references": [
+      "BikeBrowserWorld/Data/dialogue/mr_chen_expanded.json",
+      "BikeBrowserWorld/Data/npcs/mr_chen.json",
+      "BikeBrowserWorld/Regions/Neighborhood/MrChen.tscn",
+      "BikeBrowserWorld/Regions/NPCs/MrChenNpc.tscn",
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/tests/vertical_slice_check.gd"
+    ],
+    "speaker": "Mr. Chen",
+    "status": "REFERENCED",
+    "voices": []
+  },
+  {
+    "dialog_id": "mr_chen_expanded",
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_expanded.json",
+    "npc_id": "mr_chen",
+    "reference_count": 0,
+    "references": [],
+    "speaker": "Mr. Chen",
+    "status": "UNREFERENCED",
+    "voices": [
+      "mr_chen_biology_bridge",
+      "mr_chen_bridge_intro",
+      "mr_chen_chain_observe",
+      "mr_chen_chain_teach",
+      "mr_chen_encouragement",
+      "mr_chen_greeting",
+      "mr_chen_materials_intro",
+      "mr_chen_simple_machines",
+      "mr_chen_tools_intro"
+    ]
+  },
+  {
+    "dialog_id": "mr_chen_pre_ride_repair",
+    "file": "BikeBrowserWorld/Data/dialogue/mr_chen_pre_ride_repair.json",
+    "npc_id": "",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Regions/Garage/ZuzuGarage.tscn"
+    ],
+    "speaker": "Mr. Chen",
+    "status": "REFERENCED",
+    "voices": []
+  },
+  {
+    "dialog_id": "mrs_ramirez_after_chain",
+    "file": "BikeBrowserWorld/Data/dialogue/mrs_ramirez_after_chain.json",
+    "npc_id": "",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd"
+    ],
+    "speaker": "Mrs. Ramirez",
+    "status": "REFERENCED",
+    "voices": []
+  },
+  {
+    "dialog_id": "mrs_ramirez_after_safety",
+    "file": "BikeBrowserWorld/Data/dialogue/mrs_ramirez_after_safety.json",
+    "npc_id": "",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Systems/Interactions/AnimatedNpcInteraction.gd",
+      "BikeBrowserWorld/Systems/Interactions/NpcInteraction.gd"
+    ],
+    "speaker": "Mrs. Ramirez",
+    "status": "REFERENCED",
+    "voices": []
+  },
+  {
+    "dialog_id": "mrs_ramirez_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/mrs_ramirez_intro.json",
+    "npc_id": "",
+    "reference_count": 2,
+    "references": [
+      "BikeBrowserWorld/Regions/NPCs/MrsRamirezNpc.tscn",
+      "BikeBrowserWorld/Systems/Interactions/SafetyCheckStation.gd"
+    ],
+    "speaker": "Mrs. Ramirez",
+    "status": "REFERENCED",
+    "voices": []
+  },
+  {
+    "dialog_id": "mrs_ramirez_questline",
+    "file": "BikeBrowserWorld/Data/dialogue/mrs_ramirez_questline.json",
+    "npc_id": "mrs_ramirez",
+    "reference_count": 0,
+    "references": [],
+    "speaker": "Mrs. Ramirez",
+    "status": "UNREFERENCED",
+    "voices": [
+      "mrs_ramirez_brake_intro",
+      "mrs_ramirez_chain_intro",
+      "mrs_ramirez_flat_intro",
+      "mrs_ramirez_patch_intro",
+      "mrs_ramirez_puncture_intro",
+      "mrs_ramirez_remove_tire_intro",
+      "mrs_ramirez_safety_encouragement",
+      "mrs_ramirez_safety_greeting",
+      "mrs_ramirez_tire_intro"
+    ]
+  },
+  {
+    "dialog_id": "neighbor_kid_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/neighbor_kid_intro.json",
+    "npc_id": "neighbor_kid",
+    "reference_count": 0,
+    "references": [],
+    "speaker": "",
+    "status": "UNREFERENCED",
+    "voices": [
+      "neighbor_kid_greeting"
+    ]
+  },
+  {
+    "dialog_id": "old_miner_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/old_miner_intro.json",
+    "npc_id": "",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Regions/NPCs/OldMinerPeteNpc.tscn"
+    ],
+    "speaker": "Old Miner Pete",
+    "status": "REFERENCED",
+    "voices": []
+  },
+  {
+    "dialog_id": "old_miner_pete_expanded",
+    "file": "BikeBrowserWorld/Data/dialogue/old_miner_pete_expanded.json",
+    "npc_id": "old_miner",
+    "reference_count": 0,
+    "references": [],
+    "speaker": "Old Miner Pete",
+    "status": "UNREFERENCED",
+    "voices": [
+      "old_miner_cart_quest",
+      "old_miner_copper_quest",
+      "old_miner_copper_uses",
+      "old_miner_environment_note",
+      "old_miner_greeting",
+      "old_miner_mine_system",
+      "old_miner_rock_id"
+    ]
+  },
+  {
+    "dialog_id": "ranger_nita_expanded",
+    "file": "BikeBrowserWorld/Data/dialogue/ranger_nita_expanded.json",
+    "npc_id": "desert_guide",
+    "reference_count": 0,
+    "references": [],
+    "speaker": "Ranger Nita",
+    "status": "UNREFERENCED",
+    "voices": [
+      "ranger_nita_greeting",
+      "ranger_nita_journal",
+      "ranger_nita_plant_observation",
+      "ranger_nita_respect",
+      "ranger_nita_tracks"
+    ]
+  },
+  {
+    "dialog_id": "ranger_nita_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/ranger_nita_intro.json",
+    "npc_id": "",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Regions/NPCs/RangerNitaNpc.tscn"
+    ],
+    "speaker": "Ranger Nita",
+    "status": "REFERENCED",
+    "voices": []
+  },
+  {
+    "dialog_id": "shopkeeper_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/shopkeeper_intro.json",
+    "npc_id": "shopkeeper",
+    "reference_count": 0,
+    "references": [],
+    "speaker": "",
+    "status": "UNREFERENCED",
+    "voices": [
+      "shopkeeper_greeting"
+    ]
+  },
+  {
+    "dialog_id": "uncle_karim_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/uncle_karim_intro.json",
+    "npc_id": "uncle_karim",
+    "reference_count": 0,
+    "references": [],
+    "speaker": "",
+    "status": "UNREFERENCED",
+    "voices": [
+      "uncle_karim_greeting"
+    ]
+  },
+  {
+    "dialog_id": "zevon_intro",
+    "file": "BikeBrowserWorld/Data/dialogue/zevon_intro.json",
+    "npc_id": "zevon",
+    "reference_count": 1,
+    "references": [
+      "BikeBrowserWorld/Regions/NPCs/ZevonNpc.tscn"
+    ],
+    "speaker": "Zevon",
+    "status": "REFERENCED",
+    "voices": [
+      "zevon_greeting",
+      "zevon_materials",
+      "zevon_quirk"
+    ]
+  }
+]

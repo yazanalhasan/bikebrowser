@@ -1,0 +1,14 @@
+[
+  {
+    "class_name": "InspectableObject",
+    "file": "BikeBrowserWorld/Systems/Interactions/InspectableObject.gd",
+    "reference_count": 4,
+    "references": [
+      "BikeBrowserWorld/Regions/Desert/DesertTrail.tscn",
+      "BikeBrowserWorld/Regions/DryWash/DryWash.tscn",
+      "BikeBrowserWorld/Regions/Mine/CopperMine.tscn",
+      "BikeBrowserWorld/Regions/River/SaltRiver.tscn"
+    ],
+    "status": "REFERENCED"
+  }
+]

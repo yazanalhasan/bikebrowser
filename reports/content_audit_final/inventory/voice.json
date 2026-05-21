@@ -1,0 +1,12 @@
+[
+  {
+    "file": "BikeBrowserWorld/Data/audio/voice_profiles.json",
+    "npc_id": "",
+    "voice_id": "default"
+  },
+  {
+    "file": "BikeBrowserWorld/Data/audio/voice_profiles.json",
+    "npc_id": "",
+    "voice_id": "speakers"
+  }
+]
