@@ -1116,11 +1116,11 @@ const QUESTS = {
     id: 'bridge_collapse',
     title: 'The Bridge That Broke',
     description:
-      'Collect, weigh, and test real materials to build a bridge. ' +
-      'Choose the wrong one and it collapses — choose wisely!',
+      'Learn why bridge shapes matter, then collect, weigh, and test real materials to build a bridge. ' +
+      'Choose the wrong shape or material and it collapses — choose wisely!',
     giver: 'mr_chen',
     category: 'materials',
-    learningGoal: 'Material selection through hands-on testing and comparison.',
+    learningGoal: 'Bridge load paths, triangle trusses, and material selection through hands-on testing and comparison.',
     systemsUsed: ['materials', 'mining', 'simulation'],
     steps: [
       // --- Act 1: The Problem ---
@@ -1130,7 +1130,45 @@ const QUESTS = {
         text:
           'Zuzu, there\'s a dry wash that floods during monsoon. ' +
           'We need a bridge strong enough to hold a bike and rider — ' +
-          'about 100 kg of load. Let\'s find the right material.',
+          'about 100 kg of load. Before we choose material, let\'s learn how the bridge shape carries that load.',
+      },
+      {
+        id: 'triangle_bridge_lesson',
+        type: 'dialogue',
+        text:
+          'Mr. Chen unrolls an old bridge article called "Getting Over the Abyss."\n\n' +
+          'A bridge connects two banks, two slopes, or two sides of a road. A beam bridge is a flat deck on supports. An arch carries compression into its abutments. Frame, cable-stayed, suspension, and combination bridges each send force through a different path.\n\n' +
+          'For our small dry-wash bridge, the important parts are the superstructure, the abutments at the ends, and any pier or support in the middle. A rectangle can rack into a slanted shape, but a triangle holds its shape unless a side stretches or compresses. That is why triangle trusses are bridge-builder magic: they give the load a clear path from deck, to braces, to supports, to ground.',
+        lessonTitle: 'Mr. Chen: Triangle Bridge Building',
+        presentation: [
+          {
+            title: 'Why bridges exist',
+            body: 'The earliest bridges were logs, stones, and rough planks. The engineering question is always: where does the weight go?',
+          },
+          {
+            title: 'Bridge families',
+            body: 'Beams bend, arches compress, frames use rigid members, and cable-stayed or suspension bridges use tension.',
+          },
+          {
+            title: 'Bridge parts',
+            body: 'The superstructure carries the deck. Abutments hold the ends. Piers or intermediate supports carry load in the middle.',
+          },
+          {
+            title: 'Why triangles',
+            body: 'A rectangle can lean into a parallelogram. A triangle resists that racking, so trusses keep the bridge from folding.',
+          },
+        ],
+      },
+      {
+        id: 'quiz_triangle_truss',
+        type: 'quiz',
+        text: 'Why does Mr. Chen want triangle braces in the bridge?',
+        choices: [
+          { label: 'Triangles resist racking and give the load a path to the supports', correct: true },
+          { label: 'Triangles make the bridge heavier on purpose', correct: false },
+          { label: 'Triangles replace the need for abutments', correct: false },
+          { label: 'Triangles are only decoration', correct: false },
+        ],
       },
       {
         id: 'learn_stress',

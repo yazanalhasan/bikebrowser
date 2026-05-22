@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bridge_presentation_preview"]
+
+[ext_resource type="Script" path="res://Regions/Debug/BridgePresentationPreview.gd" id="1_preview"]
+
+[node name="BridgePresentationPreview" type="Node2D"]
+script = ExtResource("1_preview")

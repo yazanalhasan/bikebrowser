@@ -122,6 +122,7 @@ func complete_station(_actor: Node = null) -> bool:
 		return QuestRegistry.completed_quests.has(quest_id)
 	QuestRegistry.record_objective(quest_id, objective_id)
 	DiscoveryService.mark_discovered("quest_station_%s" % quest_id, { "questId": quest_id, "objectiveId": objective_id })
+	_maybe_show_presentation(objective_id)
 	var completed := QuestRegistry.completed_quests.has(quest_id)
 	AudioService.play_sfx(audio_cue if completed else "reward_tiny", completion_tone)
 	EventBus.interaction_feedback.emit(completion_message if completed else _step_feedback_text(objective_id), completion_tone)
@@ -248,6 +249,34 @@ func _step_feedback_text(objective_id: String) -> String:
 		if typeof(step) == TYPE_DICTIONARY and String(step.get("id", "")) == objective_id:
 			return String(step.get("description", step.get("text", objective_id.replace("_", " ").capitalize())))
 	return objective_id.replace("_", " ").capitalize()
+
+func _maybe_show_presentation(objective_id: String) -> void:
+	if objective_id != "watch_bridge_presentation" or EventBus == null:
+		return
+	if DisplayServer.get_name() == "headless":
+		return
+	var quest: Dictionary = QuestRegistry.get_quest(quest_id) if QuestRegistry != null and QuestRegistry.has_method("get_quest") else {}
+	var presentation_id := String(quest.get("presentation_id", ""))
+	if presentation_id.is_empty():
+		return
+	var presentation := _load_presentation(presentation_id)
+	if presentation.is_empty():
+		EventBus.interaction_feedback.emit("Mr. Chen's bridge lesson notes are missing.", "quiet")
+		return
+	EventBus.emit_game_event("presentation_requested", {
+		"quest_id": quest_id,
+		"objective_id": objective_id,
+		"presentation": presentation,
+	})
+
+func _load_presentation(presentation_id: String) -> Dictionary:
+	var path := "res://Data/presentations/%s.json" % presentation_id
+	if not FileAccess.file_exists(path):
+		return {}
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if typeof(parsed) == TYPE_DICTIONARY:
+		return parsed
+	return {}
 
 func _locked_feedback_text() -> String:
 	if QuestRegistry != null and QuestRegistry.has_method("get_locked_reasons"):

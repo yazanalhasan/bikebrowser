@@ -17,7 +17,8 @@
     "saveSegment": "regions.neighborhood_street",
     "spawns": {
       "default": { "layoutAnchor": "default" },
-      "from_garage": { "layoutAnchor": "from_garage" }
+      "from_garage": { "layoutAnchor": "from_garage" },
+      "from_dry_wash": { "layoutAnchor": "from_garage" }
     }
   },
   "garage": {
@@ -68,6 +69,18 @@
       "from_neighborhood": { "layoutAnchor": "from_neighborhood" }
     }
   },
+  "dry_wash": {
+    "id": "dry_wash",
+    "title": "Dry Wash Bridge",
+    "scenePath": "res://Regions/DryWash/DryWash.tscn",
+    "domainTags": ["engineering", "bridge"],
+    "streamingGroup": "desert_cluster",
+    "saveSegment": "regions.dry_wash",
+    "spawns": {
+      "default": { "layoutAnchor": "default" },
+      "from_neighborhood": { "layoutAnchor": "from_neighborhood" }
+    }
+  },
   "system_showcase": {
     "id": "system_showcase",
     "title": "Projects 1-20 Showcase",
@@ -75,6 +88,17 @@
     "domainTags": ["tools", "systems"],
     "streamingGroup": "demo_cluster",
     "saveSegment": "regions.system_showcase",
+    "spawns": {
+      "default": { "layoutAnchor": "default" }
+    }
+  },
+  "bridge_presentation_preview": {
+    "id": "bridge_presentation_preview",
+    "title": "Bridge Presentation Preview",
+    "scenePath": "res://Regions/Debug/BridgePresentationPreview.tscn",
+    "domainTags": ["engineering", "bridge", "preview"],
+    "streamingGroup": "demo_cluster",
+    "saveSegment": "regions.bridge_presentation_preview",
     "spawns": {
       "default": { "layoutAnchor": "default" }
     }

@@ -895,11 +895,11 @@ texture = ExtResource("36_glint")
 [node name="BridgeReviewStation" type="Area2D" parent="."]
 script = ExtResource("53_act1_station")
 quest_id = "bridge_quest_5"
-objective_ids = Array[String](["talk_to_neighbors", "receive_badge", "unlock_new_area", "learn_triangles"])
-prompt_text = "Bridge Review"
+objective_ids = Array[String](["watch_bridge_presentation", "compare_bridge_types", "identify_bridge_parts", "learn_triangles", "trace_load_path", "talk_to_neighbors", "receive_badge", "unlock_new_area"])
+prompt_text = "Bridge Lesson"
 locked_prompt_text = "Road-ready first"
 locked_sign_text = "Bridge Review"
-completion_message = "Neighbors trace the triangle braces with Zuzu before the bridge opens wider paths."
+completion_message = "Mr. Chen shows how bridge types, bridge parts, and triangle braces carry the neighborhood safely across the wash."
 completion_tone = "warm"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BridgeReviewStation"]
@@ -911,12 +911,12 @@ shape = SubResource("RectangleShape2D_act1_station")
 
 [node name="Sign" type="Label" parent="BridgeReviewStation"]
 modulate = Color(1, 0.94, 0.78, 0.92)
-text = "Bridge Review"
+text = "Bridge Lesson"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 12
 
 [node name="Prompt" type="Label" parent="BridgeReviewStation"]
-text = "Bridge Review"
+text = "Bridge Lesson"
 horizontal_alignment = 1
 
 [node name="Act1CapstoneStation" type="Area2D" parent="."]

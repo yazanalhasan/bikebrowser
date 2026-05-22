@@ -1,0 +1,70 @@
+{
+  "id": "mr_chen_triangle_bridge_lesson",
+  "title": "Getting Over the Abyss",
+  "speaker": "Mr. Chen",
+  "source_note": "Adapted from the bridge article concepts: early crossings, bridge parts, construction types, and how shapes carry load.",
+  "quest_id": "bridge_quest_5",
+  "slides": [
+    {
+      "id": "crossing_problem",
+      "title": "Crossing the Dry Wash",
+      "body": "A crossing is a promise: weight must find ground again.",
+      "mr_chen_line": "A crossing is a promise: weight must find ground again.",
+      "demo_type": "crossing_problem",
+      "interaction_type": "place_crossing",
+      "prompt": "Place the bridge deck across the wash.",
+      "takeaway": "A bridge gives force a path from traveler to ground."
+    },
+    {
+      "id": "bridge_types",
+      "title": "Six Ways Across",
+      "body": "Beam bridges bend. Arches squeeze. Cables pull. Trusses mix forces through triangles.",
+      "mr_chen_line": "Different bridges solve the same problem with different forces.",
+      "demo_type": "bridge_types",
+      "interaction_type": "sort_forces",
+      "prompt": "Sort each bridge sketch by its main force behavior.",
+      "takeaway": "Bridge shape decides where bending, squeezing, and pulling go."
+    },
+    {
+      "id": "main_parts",
+      "title": "Name the Parts",
+      "body": "The deck or superstructure carries the bike. Abutments and piers carry the deck.",
+      "mr_chen_line": "A bridge is easier to fix when you can name what carries what.",
+      "demo_type": "bridge_parts",
+      "interaction_type": "label_parts",
+      "prompt": "Label deck, abutments, and pier on Mr. Chen's clipboard.",
+      "takeaway": "Deck carries the bike. Abutments and piers carry the deck."
+    },
+    {
+      "id": "rectangle_wobble",
+      "title": "The Wobble Problem",
+      "body": "A rectangle can look strong until the side push arrives.",
+      "mr_chen_line": "A rectangle can look strong until the side push arrives.",
+      "demo_type": "rectangle_wobble",
+      "interaction_type": "push_rectangle",
+      "prompt": "Push the rectangle frame.",
+      "takeaway": "Rectangles can fold sideways into a parallelogram."
+    },
+    {
+      "id": "triangle_truss",
+      "title": "Add the Brace",
+      "body": "A diagonal brace turns the wobble into triangles.",
+      "mr_chen_line": "A diagonal brace turns the wobble into triangles.",
+      "demo_type": "triangle_truss",
+      "interaction_type": "place_brace",
+      "prompt": "Place the diagonal brace, then push again.",
+      "takeaway": "Triangles lock shape because the sides cannot slide without changing length."
+    },
+    {
+      "id": "dry_wash_design",
+      "title": "Trace the Load",
+      "body": "Now follow the bike's weight all the way down.",
+      "mr_chen_line": "Now follow the bike's weight all the way down.",
+      "demo_type": "load_path",
+      "interaction_type": "trace_load_path",
+      "prompt": "Tap the load path: deck, braces, supports, ground.",
+      "takeaway": "Triangles keep a bridge from folding. A good bridge sends the bike's weight from the deck, through braces, into supports, and down to the ground."
+    }
+  ],
+  "takeaway": "Strong bridge design is shape plus support: a triangle truss gives the load a path from deck to braces to supports to ground."
+}

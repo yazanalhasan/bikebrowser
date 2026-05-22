@@ -142,7 +142,7 @@ func _apply_load() -> void:
 	var data := _material(active_sample_id)
 	load_step += 1
 	var fail_at := int(data.get("fail_at_step", 6))
-	var gauge_value := clamp(float(load_step) / float(fail_at), 0.0, 1.0)
+	var gauge_value: float = clamp(float(load_step) / float(fail_at), 0.0, 1.0)
 	if needle:
 		needle.rotation_degrees = lerp(-45.0, 45.0, gauge_value)
 	if sample_visual:

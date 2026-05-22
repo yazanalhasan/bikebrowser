@@ -1,5 +1,7 @@
 extends CanvasLayer
 
+const BridgePresentationDiagram := preload("res://Systems/UI/BridgePresentationDiagram.gd")
+
 @onready var quest_label: Label = $Panel/HBox/VBox/QuestLabel
 @onready var hint_label: Label = $Panel/HBox/VBox/HintLabel
 @onready var reward_panel: Panel = $RewardPanel
@@ -13,8 +15,20 @@ var notebook_button: Button
 var inventory_button: Button
 var accomplishment_chip: Panel
 var accomplishment_label: Label
+var presentation_panel: Panel
+var presentation_diagram: Control
+var presentation_title: Label
+var presentation_body: Label
+var presentation_counter: Label
+var presentation_next_button: Button
+var presentation_close_button: Button
+var current_presentation: Dictionary = {}
+var current_slide_index := 0
+var completed_presentation_pages := {}
+var current_presentation_quest_id := ""
 var active_overlay := ""
 var overlay_modal_pushed := false
+var presentation_modal_pushed := false
 
 func _ready() -> void:
 	layer = 5
@@ -33,6 +47,7 @@ func _ready() -> void:
 		reward_panel.visible = false
 	_build_accomplishment_chip()
 	_build_field_panels()
+	_build_presentation_panel()
 	_refresh_guidance()
 	_refresh_notebook()
 	_refresh_inventory()
@@ -48,6 +63,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_ESCAPE and active_overlay != "":
 			get_viewport().set_input_as_handled()
 			_toggle_overlay("")
+		elif event.keycode == KEY_ESCAPE and presentation_panel != null and presentation_panel.visible:
+			get_viewport().set_input_as_handled()
+			_close_presentation()
+		elif presentation_panel != null and presentation_panel.visible and (event.keycode == KEY_ENTER or event.keycode == KEY_SPACE):
+			get_viewport().set_input_as_handled()
+			_advance_presentation()
 
 func _on_quest_started(quest_id: String) -> void:
 	_refresh_guidance(quest_id)
@@ -62,6 +83,8 @@ func _on_game_event(event: Dictionary) -> void:
 	var event_type := String(event.get("type", ""))
 	if event_type == "quest_unlocked" or event_type == "quest_locked":
 		_refresh_guidance()
+	elif event_type == "presentation_requested":
+		_show_presentation(event.get("presentation", {}))
 
 func _on_reward_intent(reward: Dictionary) -> void:
 	_refresh_guidance(String(reward.get("questId", "")))
@@ -184,6 +207,187 @@ func _build_field_panels() -> void:
 	inventory_body = _make_panel_body(inventory_panel, "InventoryBody")
 	notebook_panel.visible = false
 	inventory_panel.visible = false
+
+func _build_presentation_panel() -> void:
+	presentation_panel = Panel.new()
+	presentation_panel.name = "BridgePresentationPanel"
+	presentation_panel.position = Vector2(76, 56)
+	presentation_panel.size = Vector2(1128, 608)
+	presentation_panel.visible = false
+	presentation_panel.add_theme_stylebox_override("panel", _presentation_style())
+	add_child(presentation_panel)
+
+	var margin := MarginContainer.new()
+	margin.name = "Margin"
+	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 28)
+	margin.add_theme_constant_override("margin_top", 24)
+	margin.add_theme_constant_override("margin_right", 28)
+	margin.add_theme_constant_override("margin_bottom", 22)
+	presentation_panel.add_child(margin)
+
+	var column := VBoxContainer.new()
+	column.name = "Content"
+	column.add_theme_constant_override("separation", 14)
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margin.add_child(column)
+
+	presentation_counter = _make_label("Slide 1/1", 13, Color(0.43, 0.28, 0.16, 1.0))
+	column.add_child(presentation_counter)
+
+	presentation_title = _make_label("Bridge Lesson", 34, Color(0.20, 0.13, 0.09, 1.0))
+	column.add_child(presentation_title)
+
+	presentation_diagram = BridgePresentationDiagram.new()
+	presentation_diagram.name = "BridgePresentationDiagram"
+	presentation_diagram.custom_minimum_size = Vector2(1068, 270)
+	presentation_diagram.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.add_child(presentation_diagram)
+	if presentation_diagram.has_signal("page_completed"):
+		presentation_diagram.page_completed.connect(_on_presentation_page_completed)
+
+	presentation_body = _make_label("", 24, Color(0.28, 0.20, 0.14, 1.0))
+	presentation_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	presentation_body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	presentation_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(presentation_body)
+
+	var row := HBoxContainer.new()
+	row.name = "Buttons"
+	row.alignment = BoxContainer.ALIGNMENT_END
+	row.add_theme_constant_override("separation", 10)
+	column.add_child(row)
+
+	presentation_close_button = _make_toggle_button("Rest", "Esc")
+	presentation_next_button = _make_toggle_button("Next", "Enter")
+	row.add_child(presentation_close_button)
+	row.add_child(presentation_next_button)
+	presentation_close_button.pressed.connect(_close_presentation)
+	presentation_next_button.pressed.connect(_advance_presentation)
+
+func _show_presentation(presentation) -> void:
+	if typeof(presentation) != TYPE_DICTIONARY or presentation_panel == null:
+		return
+	current_presentation = presentation.duplicate(true)
+	current_presentation_quest_id = String(current_presentation.get("quest_id", "bridge_quest_5"))
+	completed_presentation_pages.clear()
+	current_slide_index = 0
+	_render_presentation_slide()
+	presentation_panel.visible = true
+	presentation_panel.modulate.a = 0.0
+	presentation_panel.scale = Vector2(0.985, 0.985)
+	if not presentation_modal_pushed:
+		EventBus.push_modal()
+		presentation_modal_pushed = true
+	var tween := create_tween()
+	tween.tween_property(presentation_panel, "modulate:a", 0.98, 0.22).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(presentation_panel, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+func _render_presentation_slide() -> void:
+	var slides: Array = current_presentation.get("slides", [])
+	if slides.is_empty():
+		presentation_title.text = String(current_presentation.get("title", "Bridge Lesson"))
+		presentation_body.text = String(current_presentation.get("text", "Mr. Chen has no notes for this lesson yet."))
+		presentation_counter.text = "Slide 1/1"
+		presentation_next_button.text = "Done [Enter]"
+		return
+	current_slide_index = clampi(current_slide_index, 0, slides.size() - 1)
+	var slide: Dictionary = slides[current_slide_index]
+	presentation_title.text = String(slide.get("title", current_presentation.get("title", "Bridge Lesson")))
+	if presentation_diagram != null:
+		if presentation_diagram.has_method("set_slide"):
+			presentation_diagram.set_slide(slide)
+		else:
+			presentation_diagram.demo_type = String(slide.get("demo_type", "overview"))
+	presentation_counter.text = "Mr. Chen's Workshop Notebook  Page %d/%d" % [current_slide_index + 1, slides.size()]
+	presentation_next_button.text = "Done [Enter]" if current_slide_index >= slides.size() - 1 else "Next [Enter]"
+	_update_presentation_copy(slide)
+	if AudioService != null and AudioService.has_method("speak") and DisplayServer.get_name() != "headless":
+		AudioService.speak(String(slide.get("mr_chen_line", slide.get("body", ""))), "Mr. Chen")
+
+func _update_presentation_copy(slide: Dictionary) -> void:
+	var page_id := String(slide.get("id", ""))
+	var is_complete := bool(completed_presentation_pages.get(page_id, false))
+	var mr_line := String(slide.get("mr_chen_line", slide.get("body", slide.get("text", ""))))
+	var prompt := String(slide.get("prompt", "Try the sketch."))
+	var takeaway := String(slide.get("takeaway", ""))
+	if is_complete and not takeaway.is_empty():
+		presentation_body.text = "Mr. Chen: %s\n\nNotebook: %s" % [mr_line, takeaway]
+	else:
+		presentation_body.text = "Mr. Chen: %s\n\n%s" % [mr_line, prompt]
+	presentation_next_button.disabled = not is_complete
+	presentation_next_button.modulate.a = 1.0 if is_complete else 0.45
+
+func _on_presentation_page_completed(page_id: String) -> void:
+	completed_presentation_pages[page_id] = true
+	_record_bridge_lesson_progress(page_id)
+	_play_bridge_notebook_cue(page_id)
+	var slides: Array = current_presentation.get("slides", [])
+	if not slides.is_empty():
+		_update_presentation_copy(slides[current_slide_index])
+
+func _play_bridge_notebook_cue(page_id: String) -> void:
+	if AudioService == null or not AudioService.has_method("play_sfx"):
+		return
+	var cue := "pencil_scratch"
+	match page_id:
+		"rectangle_wobble":
+			cue = "bridge_test_thump"
+		"triangle_truss":
+			cue = "brace_click"
+		"dry_wash_design":
+			cue = "force_path_cue"
+		_:
+			cue = "pencil_scratch"
+	AudioService.play_sfx(cue, "quiet")
+
+func _record_bridge_lesson_progress(page_id: String) -> void:
+	if QuestRegistry == null or current_presentation_quest_id.is_empty():
+		return
+	if not QuestRegistry.has_method("record_objective") or not QuestRegistry.is_active(current_presentation_quest_id):
+		return
+	var objective_id := ""
+	match page_id:
+		"bridge_types":
+			objective_id = "compare_bridge_types"
+		"main_parts":
+			objective_id = "identify_bridge_parts"
+		"triangle_truss":
+			objective_id = "learn_triangles"
+		"dry_wash_design":
+			objective_id = "trace_load_path"
+		_:
+			objective_id = ""
+	if not objective_id.is_empty():
+		QuestRegistry.record_objective(current_presentation_quest_id, objective_id)
+
+func _advance_presentation() -> void:
+	var slides: Array = current_presentation.get("slides", [])
+	if not slides.is_empty():
+		var slide: Dictionary = slides[current_slide_index]
+		if not bool(completed_presentation_pages.get(String(slide.get("id", "")), false)):
+			EventBus.interaction_feedback.emit("Try Mr. Chen's sketch before turning the page.", "quiet")
+			return
+	if slides.is_empty() or current_slide_index >= slides.size() - 1:
+		_close_presentation()
+		return
+	current_slide_index += 1
+	if AudioService != null and AudioService.has_method("play_sfx"):
+		AudioService.play_sfx("paper_flip", "quiet")
+	_render_presentation_slide()
+
+func _close_presentation() -> void:
+	if presentation_panel == null or not presentation_panel.visible:
+		return
+	presentation_panel.visible = false
+	current_presentation = {}
+	current_presentation_quest_id = ""
+	completed_presentation_pages.clear()
+	current_slide_index = 0
+	if presentation_modal_pushed:
+		EventBus.pop_modal()
+		presentation_modal_pushed = false
 
 func _build_toggle_bar() -> void:
 	var bar := HBoxContainer.new()
@@ -435,6 +639,17 @@ func _notebook_style() -> StyleBoxFlat:
 	style.shadow_color = Color(0.08, 0.06, 0.04, 0.24)
 	style.shadow_size = 12
 	style.shadow_offset = Vector2(0, 5)
+	return style
+
+func _presentation_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.99, 0.93, 0.78, 0.98)
+	style.border_color = Color(0.55, 0.34, 0.18, 0.66)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(8)
+	style.shadow_color = Color(0.05, 0.04, 0.03, 0.30)
+	style.shadow_size = 16
+	style.shadow_offset = Vector2(0, 7)
 	return style
 
 func _paper_button_style(hovered: bool) -> StyleBoxFlat:

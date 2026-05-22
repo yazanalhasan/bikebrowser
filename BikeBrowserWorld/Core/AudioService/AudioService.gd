@@ -10,8 +10,10 @@ const MUSIC_BY_REGION := {
 	"garage": "res://Assets/Audio/Music/garage_workshop.ogg",
 	"copper_mine": "res://Assets/Audio/Music/copper_mine.ogg",
 	"desert_trail": "res://Assets/Audio/Music/dry_wash_bridge.ogg",
+	"dry_wash": "res://Assets/Audio/Music/dry_wash_bridge.ogg",
 	"salt_river": "res://Assets/Audio/Music/salt_river.ogg",
 	"system_showcase": "res://Assets/Audio/Music/title_screen.ogg",
+	"bridge_presentation_preview": "res://Assets/Audio/Music/title_screen.ogg",
 }
 
 const DEFAULT_MUSIC := "res://Assets/Audio/Music/neighborhood_street.ogg"
@@ -35,6 +37,7 @@ const MUSIC_MIX_BY_REGION := {
 	"garage": { "volume_db": -13.5, "fade_out": 0.85, "fade_in": 2.15 },
 	"copper_mine": { "volume_db": -12.5, "fade_out": 0.75, "fade_in": 1.9 },
 	"desert_trail": { "volume_db": -12.0, "fade_out": 0.8, "fade_in": 1.95 },
+	"dry_wash": { "volume_db": -12.5, "fade_out": 0.8, "fade_in": 1.95 },
 	"salt_river": { "volume_db": -12.0, "fade_out": 0.8, "fade_in": 1.95 },
 	"system_showcase": { "volume_db": -14.0, "fade_out": 0.55, "fade_in": 1.35 },
 }
@@ -45,6 +48,11 @@ const CUE_PROFILES := {
 	"dialogue_open": { "path": SOFT_CLICK_STINGER, "volume_db": -30.0, "pitch": 1.0, "duration": 0.14, "min_gap": 500 },
 	"dialogue_next": { "path": SOFT_CLICK_STINGER, "volume_db": -34.0, "pitch": 1.08, "duration": 0.07, "min_gap": 650 },
 	"dialogue_close": { "path": SOFT_CLICK_STINGER, "volume_db": -33.0, "pitch": 0.84, "duration": 0.12, "min_gap": 500, "post_silence": 260 },
+	"pencil_scratch": { "path": SOFT_CLICK_STINGER, "volume_db": -34.0, "pitch": 1.28, "duration": 0.09, "min_gap": 220 },
+	"paper_flip": { "path": SOFT_CLICK_STINGER, "volume_db": -32.0, "pitch": 0.92, "duration": 0.16, "min_gap": 360 },
+	"brace_click": { "path": SOFT_CLICK_STINGER, "volume_db": -28.5, "pitch": 0.76, "duration": 0.14, "min_gap": 260 },
+	"bridge_test_thump": { "path": SOFT_CLICK_STINGER, "volume_db": -29.0, "pitch": 0.58, "duration": 0.20, "min_gap": 340 },
+	"force_path_cue": { "path": SOFT_CLICK_STINGER, "volume_db": -31.0, "pitch": 1.36, "duration": 0.12, "min_gap": 220 },
 	"chain_inspect": { "path": SOFT_CLICK_STINGER, "volume_db": -25.5, "pitch": 0.78, "duration": 0.2, "min_gap": 320 },
 	"pedal_rotate": { "path": SOFT_CLICK_STINGER, "volume_db": -25.0, "pitch": 0.92, "duration": 0.24, "min_gap": 340 },
 	"chain_align": { "path": SOFT_CLICK_STINGER, "volume_db": -24.5, "pitch": 1.0, "duration": 0.22, "min_gap": 340 },
@@ -70,6 +78,7 @@ const AMBIENCE_BY_REGION := {
 	"garage": { "volume_db": -33.0, "hum": 58.0, "hum_gain": 0.017, "air_gain": 0.012, "texture": "workshop", "breath": 0.32, "space": -0.14 },
 	"copper_mine": { "volume_db": -36.0, "hum": 46.0, "hum_gain": 0.014, "air_gain": 0.016, "texture": "settle", "breath": 0.34, "space": -0.18 },
 	"desert_trail": { "volume_db": -36.0, "hum": 64.0, "hum_gain": 0.008, "air_gain": 0.025, "texture": "wind", "breath": 0.52, "space": 0.22 },
+	"dry_wash": { "volume_db": -36.0, "hum": 58.0, "hum_gain": 0.01, "air_gain": 0.024, "texture": "wind", "breath": 0.5, "space": 0.16 },
 	"salt_river": { "volume_db": -36.0, "hum": 82.0, "hum_gain": 0.008, "air_gain": 0.023, "texture": "water", "breath": 0.46, "space": 0.18 },
 	"boot": { "volume_db": -40.0, "hum": 64.0, "hum_gain": 0.006, "air_gain": 0.008, "texture": "quiet", "breath": 0.6, "space": 0.0 },
 	"system_showcase": { "volume_db": -40.0, "hum": 64.0, "hum_gain": 0.006, "air_gain": 0.008, "texture": "quiet", "breath": 0.6, "space": 0.0 },

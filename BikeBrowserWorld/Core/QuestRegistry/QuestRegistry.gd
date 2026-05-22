@@ -21,7 +21,7 @@ const ACT1_GUIDANCE_ORDER := [
 const ACT1_FALLBACK_GUIDANCE := {
 	PRE_RIDE_QUEST_ID: "Find Mrs. Ramirez by her bike, learn A-B-C-Quick, repair her rear tube, and finish the final inspection.",
 	"chain_repair": "Visit Mr. Chen's garage repair stand and work through the slipped-chain check.",
-	"bridge_quest_5": "Return to the bridge review station and trace why the triangle braces carry force safely.",
+	"bridge_quest_5": "Go back to Mr. Chen at the bridge review station and learn why triangles make a bridge hold steady.",
 	"desert_plant_observation": "Take the desert trail station and record plant structure before reporting the notes.",
 	"test_water_quality": "Use the Salt River water station to collect, test, identify, and report the evidence chain.",
 	"copper_rock_id": "Use the copper mine test station to observe the sample, check conductivity, and report the evidence.",
@@ -424,6 +424,8 @@ func _learned_mechanics() -> Array:
 		"act1_pre_ride_check:patch_applied": "A patch works after the tube is marked, cleaned, and pressed flat.",
 		"act1_pre_ride_check:repair_tested": "A repair is not finished until the tube holds air and tests clean.",
 		"chain_repair:seat_chain": "Chain links need to sit on the sprocket teeth before power transfers well.",
+		"bridge_quest_5:learn_triangles": "Triangles keep a bridge from folding sideways.",
+		"bridge_quest_5:trace_load_path": "A good bridge sends bike weight from deck to braces to supports to ground.",
 		"test_water_quality:run_ph_test": "A test strip needs a chart before the color means anything.",
 		"copper_rock_id:test_conductivity": "Copper evidence gets stronger when observation and conductivity agree.",
 	}
@@ -478,6 +480,13 @@ func _notebook_sketches() -> Array:
 		sketches.append({ "title": "Mrs. Ramirez tube repair", "body": "Leak marked: %s. Cement set, tested clean." % zone })
 	if _objective_recorded("chain_repair", "align_chain"):
 		sketches.append({ "title": "Chain path", "body": "pedal force follows seated links" })
+	if _objective_recorded("bridge_quest_5", "compare_bridge_types"):
+		sketches.append({ "title": "Bridge families", "body": "beam bends; arch squeezes; cables pull; trusses mix forces" })
+	if _objective_recorded("bridge_quest_5", "learn_triangles"):
+		sketches.append({ "title": "Triangle brace", "body": "rectangle wobbles; diagonal brace makes triangles" })
+	if _objective_recorded("bridge_quest_5", "trace_load_path"):
+		sketches.append({ "title": "Bridge load path", "body": "deck -> braces -> supports -> ground" })
+		sketches.append({ "title": "Mr. Chen's bridge note", "body": "Triangles keep a bridge from folding. A good bridge sends the bike's weight from the deck, through braces, into supports, and down to the ground." })
 	if _objective_recorded("desert_plant_observation", "journal_observations"):
 		sketches.append({ "title": "Plant notes", "body": "shape, texture, water clue" })
 	if _objective_recorded("act1_regional_readiness", "sketch_regional_questions"):

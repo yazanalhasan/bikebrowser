@@ -1,10 +1,35 @@
 {
   "id": "bridge_quest_5",
-  "name": "Celebrate and Learn",
-  "description": "Celebrate the rebuilt bridge, learn why triangles make structures stronger, and unlock the neighborhood across the wash.",
+  "name": "Mr. Chen's Triangle Bridge Lesson",
+  "description": "Use Mr. Chen's bridge presentation to compare bridge types, name the main bridge parts, and explain why triangular trusses keep the rebuilt dry-wash crossing from folding.",
   "quest_giver": "mr_chen",
   "prerequisites": ["chain_repair"],
   "steps": [
+    {
+      "id": "watch_bridge_presentation",
+      "description": "Watch Mr. Chen's bridge presentation: bridges carry people over streams, ravines, and roads by giving forces a safe path to the ground.",
+      "completion_condition": "mr_chen_bridge_presentation_complete"
+    },
+    {
+      "id": "compare_bridge_types",
+      "description": "Compare beam, arch, frame, cable-stayed, suspension, and combination bridges.",
+      "completion_condition": "bridge_types_compared"
+    },
+    {
+      "id": "identify_bridge_parts",
+      "description": "Name the superstructure, abutments, and intermediate substructure or pier on the bridge sketch.",
+      "completion_condition": "bridge_parts_identified"
+    },
+    {
+      "id": "learn_triangles",
+      "description": "Explain why triangle braces resist racking while rectangles can lean into a parallelogram.",
+      "completion_condition": "mr_chen_triangle_lesson_complete"
+    },
+    {
+      "id": "trace_load_path",
+      "description": "Trace the deck load through triangle braces into supports, abutments, and stable ground.",
+      "completion_condition": "bridge_load_path_traced"
+    },
     {
       "id": "talk_to_neighbors",
       "description": "Talk to three grateful neighbors near the new bridge.",
@@ -19,14 +44,16 @@
       "id": "unlock_new_area",
       "description": "Cross the bridge to unlock the new area.",
       "completion_condition": "region_unlocked:across_bridge"
-    },
-    {
-      "id": "learn_triangles",
-      "description": "Listen to Mr. Chen explain how triangles distribute force.",
-      "completion_condition": "mr_chen_triangle_lesson_complete"
     }
   ],
-  "dialogue_refs": ["mr_chen_bridge.celebrate_start", "mr_chen_bridge.triangle_lesson"],
+  "presentation_id": "mr_chen_triangle_bridge_lesson",
+  "presentation_ref": "mr_chen_bridge.triangle_bridge_presentation",
+  "dialogue_refs": [
+    "mr_chen_bridge.celebrate_start",
+    "mr_chen_bridge.triangle_bridge_presentation",
+    "mr_chen_bridge.triangle_lesson",
+    "mr_chen_bridge.load_path_wrap"
+  ],
   "reward": {
     "allowance": 25,
     "badge": "Bridge Builder",

@@ -147,9 +147,9 @@ horizontal_alignment = 1
 [node name="BridgeReviewStation" type="Area2D" parent="."]
 script = ExtResource("6_station")
 quest_id = "bridge_quest_5"
-objective_ids = Array[String](["talk_to_neighbors", "receive_badge", "unlock_new_area", "learn_triangles"])
-prompt_text = "Review triangles"
-completion_message = "Mr. Chen shows how triangles keep the rebuilt bridge from folding under load."
+objective_ids = Array[String](["watch_bridge_presentation", "compare_bridge_types", "identify_bridge_parts", "learn_triangles", "trace_load_path", "talk_to_neighbors", "receive_badge", "unlock_new_area"])
+prompt_text = "Bridge lesson"
+completion_message = "Mr. Chen's bridge lesson shows how triangle braces move force into the supports instead of letting the deck fold."
 completion_tone = "warm"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BridgeReviewStation"]
@@ -160,12 +160,12 @@ shape = SubResource("RectangleShape2D_station")
 [node name="Beacon" type="Polygon2D" parent="BridgeReviewStation"]
 
 [node name="Sign" type="Label" parent="BridgeReviewStation"]
-text = "Triangle Review"
+text = "Triangle Lesson"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 12
 
 [node name="Prompt" type="Label" parent="BridgeReviewStation"]
-text = "Review"
+text = "Bridge lesson"
 horizontal_alignment = 1
 
 [node name="SupportPierA" type="Sprite2D" parent="."]

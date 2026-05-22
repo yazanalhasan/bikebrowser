@@ -37,11 +37,58 @@
     },
     {
       "id": "celebrate_start",
-      "text": "The neighbors can cross again. Take a minute with them. Repairs belong to people, not just wood."
+      "text": "The neighbors can cross again. Before we celebrate, let's read the bridge like engineers. Repairs belong to people, but the forces still need a safe path."
+    },
+    {
+      "id": "triangle_bridge_presentation",
+      "title": "Getting Over the Abyss",
+      "text": "Mr. Chen opens a worn engineering spread. \"A bridge is a promise between two banks. A beam lies across the gap, an arch squeezes force into its supports, suspension and cable-stayed bridges use tension, and combination bridges borrow more than one trick.\"",
+      "slides": [
+        {
+          "title": "Why Bridges Exist",
+          "body": "A bridge is a force path from traveler, to deck, to supports, to ground.",
+          "demo_type": "bridge_types",
+          "teaching_point": "A bridge is not just a deck. It is a load path."
+        },
+        {
+          "title": "Six Bridge Families",
+          "body": "Beams bend, arches compress, frames lock members, cables pull in tension, and trusses use repeated triangles.",
+          "demo_type": "bridge_types",
+          "teaching_point": "Different shapes handle compression, tension, and bending differently."
+        },
+        {
+          "title": "Main Parts",
+          "body": "The superstructure carries the deck. Abutments hold the ends. A pier helps carry a long span.",
+          "demo_type": "bridge_parts",
+          "teaching_point": "Name the parts before you decide what failed."
+        },
+        {
+          "title": "Rectangles Can Rack",
+          "body": "A rectangle can lean into a parallelogram when pushed from the side.",
+          "demo_type": "rectangle_wobble",
+          "teaching_point": "Wobble is a shape problem, not just a material problem."
+        },
+        {
+          "title": "Why Triangles",
+          "body": "A triangle resists changing shape, so truss braces share load instead of letting the bridge fold.",
+          "demo_type": "triangle_truss",
+          "teaching_point": "Triangle trusses turn wobble into shared tension and compression."
+        },
+        {
+          "title": "Trace The Load Path",
+          "body": "Trace the bike load through the deck, into triangle braces, then into supports and steady ground.",
+          "demo_type": "load_path",
+          "teaching_point": "The right bridge is the one whose shape and supports match the site."
+        }
+      ]
     },
     {
       "id": "triangle_lesson",
-      "text": "A rectangle likes to lean. A triangle holds its ground. That's why builders trust them."
+      "text": "A rectangle likes to lean. A triangle holds its ground because changing its shape means stretching or compressing a side. That is why trusses use repeated triangles."
+    },
+    {
+      "id": "load_path_wrap",
+      "text": "Now trace it: feet push the deck, the deck pushes the triangle braces, the braces carry force to the supports, and the supports press it into steady ground. That is the bridge doing its quiet work."
     }
   ],
   "other_npc_lines": [
