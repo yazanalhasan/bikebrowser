@@ -14,6 +14,7 @@ const MUSIC_BY_REGION := {
 	"salt_river": "res://Assets/Audio/Music/salt_river.ogg",
 	"system_showcase": "res://Assets/Audio/Music/title_screen.ogg",
 	"bridge_presentation_preview": "res://Assets/Audio/Music/title_screen.ogg",
+	"bike_repair_visual_preview": "res://Assets/Audio/Music/garage_workshop.ogg",
 }
 
 const DEFAULT_MUSIC := "res://Assets/Audio/Music/neighborhood_street.ogg"
@@ -40,6 +41,7 @@ const MUSIC_MIX_BY_REGION := {
 	"dry_wash": { "volume_db": -12.5, "fade_out": 0.8, "fade_in": 1.95 },
 	"salt_river": { "volume_db": -12.0, "fade_out": 0.8, "fade_in": 1.95 },
 	"system_showcase": { "volume_db": -14.0, "fade_out": 0.55, "fade_in": 1.35 },
+	"bike_repair_visual_preview": { "volume_db": -13.5, "fade_out": 0.55, "fade_in": 1.35 },
 }
 
 const CUE_PROFILES := {
@@ -82,6 +84,7 @@ const AMBIENCE_BY_REGION := {
 	"salt_river": { "volume_db": -36.0, "hum": 82.0, "hum_gain": 0.008, "air_gain": 0.023, "texture": "water", "breath": 0.46, "space": 0.18 },
 	"boot": { "volume_db": -40.0, "hum": 64.0, "hum_gain": 0.006, "air_gain": 0.008, "texture": "quiet", "breath": 0.6, "space": 0.0 },
 	"system_showcase": { "volume_db": -40.0, "hum": 64.0, "hum_gain": 0.006, "air_gain": 0.008, "texture": "quiet", "breath": 0.6, "space": 0.0 },
+	"bike_repair_visual_preview": { "volume_db": -38.0, "hum": 58.0, "hum_gain": 0.008, "air_gain": 0.008, "texture": "workshop", "breath": 0.4, "space": -0.1 },
 }
 
 var audio_unlocked := false

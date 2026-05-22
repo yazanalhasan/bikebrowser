@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bikebrowser_tire_rig"]
+[gd_scene load_steps=10 format=3 uid="uid://bikebrowser_tire_rig"]
 
 [ext_resource type="Script" path="res://Prototypes/EmbodiedMechanics/TireRig.gd" id="1_tire_rig"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Repair/bike_wheel.png" id="2_bike_wheel"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/Garage/air_pressure_gauge.png" id="6_gauge"]
 [ext_resource type="Texture2D" path="res://Assets/Props/BikeRepair/tire_lever_set.png" id="7_tire_levers"]
 [ext_resource type="Texture2D" path="res://Assets/Props/BikeRepair/patch_with_glue_tube.png" id="8_patch_glue"]
+[ext_resource type="Texture2D" path="res://Assets/Props/BikeRepair/single_tube_patch.png" id="9_single_patch"]
 
 [node name="TireRig" type="Node2D"]
 script = ExtResource("1_tire_rig")
@@ -25,19 +26,24 @@ readiness_label_path = NodePath("ReadinessLabel")
 
 [node name="WorkMatShadow" type="Polygon2D" parent="."]
 z_index = -3
-color = Color(0.08, 0.10, 0.13, 0.42)
-polygon = PackedVector2Array(-120, 78, 96, 78, 132, 106, -86, 118)
+color = Color(0.10, 0.08, 0.06, 0.48)
+polygon = PackedVector2Array(-154, 70, 126, 70, 154, 118, -132, 126)
+
+[node name="RepairMat" type="Polygon2D" parent="."]
+z_index = -2
+color = Color(0.48, 0.66, 0.58, 0.58)
+polygon = PackedVector2Array(-148, 54, 124, 54, 148, 108, -126, 116)
 
 [node name="WheelReadyGlow" type="Sprite2D" parent="."]
 visible = false
-position = Vector2(-6, 2)
+position = Vector2(0, 0)
 scale = Vector2(0.86, 0.86)
 modulate = Color(0.78, 0.94, 1, 0)
 texture_filter = 1
 texture = ExtResource("2_bike_wheel")
 
 [node name="Wheel" type="Node2D" parent="."]
-position = Vector2(-18, 0)
+position = Vector2(0, 0)
 
 [node name="TireShape" type="Node2D" parent="Wheel"]
 
@@ -66,30 +72,36 @@ polygon = PackedVector2Array(3, 0, 2, 2, 0, 3, -2, 2, -3, 0, -2, -2, 0, -3, 2, -
 
 [node name="Patch" type="Sprite2D" parent="Wheel/TireShape"]
 visible = false
-position = Vector2(50, 24)
-scale = Vector2(0.42, 0.42)
+position = Vector2(48, 24)
+scale = Vector2(0.46, 0.46)
 texture_filter = 1
-texture = ExtResource("8_patch_glue")
+texture = ExtResource("9_single_patch")
 
 [node name="TubeExposure" type="Node2D" parent="."]
 z_index = -1
 
 [node name="TubeProp" type="Sprite2D" parent="TubeExposure"]
 visible = false
-position = Vector2(92, 34)
-scale = Vector2(0.62, 0.62)
+position = Vector2(54, 34)
+scale = Vector2(0.48, 0.48)
 modulate = Color(1, 1, 1, 0)
 texture_filter = 1
 texture = ExtResource("3_inner_tube")
 
 [node name="TireLeverSet" type="Sprite2D" parent="TubeExposure"]
-position = Vector2(76, 74)
-scale = Vector2(0.72, 0.72)
+position = Vector2(98, 76)
+scale = Vector2(0.58, 0.58)
 texture_filter = 1
 texture = ExtResource("7_tire_levers")
 
 [node name="PumpAssembly" type="Node2D" parent="."]
-position = Vector2(-128, 28)
+position = Vector2(-128, 24)
+
+[node name="PumpHose" type="Line2D" parent="PumpAssembly"]
+points = PackedVector2Array(8, 6, 36, 24, 86, 18, 128, 8)
+width = 4.0
+default_color = Color(0.08, 0.10, 0.11, 0.92)
+texture_filter = 1
 
 [node name="FloorPumpProp" type="Sprite2D" parent="PumpAssembly"]
 scale = Vector2(0.82, 0.82)
@@ -117,10 +129,16 @@ color = Color(0.08, 0.10, 0.13, 1)
 polygon = PackedVector2Array(-2, 0, 2, 0, 2, -24, -2, -24)
 
 [node name="PatchKitProp" type="Sprite2D" parent="."]
-position = Vector2(92, 92)
-scale = Vector2(0.78, 0.78)
+position = Vector2(112, 94)
+scale = Vector2(0.50, 0.50)
 texture_filter = 1
 texture = ExtResource("5_patch_kit")
+
+[node name="GlueTubeSupply" type="Sprite2D" parent="."]
+position = Vector2(76, 92)
+scale = Vector2(0.42, 0.42)
+texture_filter = 1
+texture = ExtResource("8_patch_glue")
 
 [node name="ReadinessLabel" type="Label" parent="."]
 visible = false

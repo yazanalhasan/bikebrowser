@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bikebrowser_chainrig_embedded"]
+[gd_scene load_steps=10 format=3 uid="uid://bikebrowser_chainrig_embedded"]
 
 [ext_resource type="Script" path="res://Prototypes/EmbodiedMechanics/ChainRig.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Repair/bike_wheel.png" id="2_wheel"]
@@ -6,6 +6,14 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/Garage/rear_derailleur_closeup.png" id="4_derailleur"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Repair/loose_bike_chain.png" id="5_chain"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Bike/repair_chain_focus_glow.png" id="6_glow"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_click"]
+size = Vector2(190, 72)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_anchor"]
+size = Vector2(8, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_link"]
+size = Vector2(12, 5)
 
 [node name="ChainRig" type="Node2D"]
 position = Vector2(72, 12)
@@ -28,7 +36,7 @@ wheel_label_path = NodePath("WheelLabel")
 
 [node name="SeatedGlow" type="Sprite2D" parent="."]
 visible = false
-position = Vector2(78, -4)
+position = Vector2(-106, -4)
 scale = Vector2(0.78, 0.78)
 modulate = Color(1, 0.86, 0.45, 0.36)
 texture_filter = 1
@@ -36,14 +44,14 @@ texture = ExtResource("6_glow")
 
 [node name="SpinGhost" type="Sprite2D" parent="."]
 visible = false
-position = Vector2(78, -4)
+position = Vector2(-106, -4)
 scale = Vector2(0.46, 0.46)
 modulate = Color(0.85, 0.93, 1, 0.22)
 texture_filter = 1
 texture = ExtResource("2_wheel")
 
 [node name="RearWheel" type="Node2D" parent="."]
-position = Vector2(78, -4)
+position = Vector2(-106, -4)
 
 [node name="WheelSprite" type="Sprite2D" parent="RearWheel"]
 scale = Vector2(0.62, 0.62)
@@ -51,7 +59,7 @@ texture_filter = 1
 texture = ExtResource("2_wheel")
 
 [node name="Sprocket" type="Node2D" parent="."]
-position = Vector2(78, -4)
+position = Vector2(-106, -4)
 
 [node name="CassetteSprite" type="Sprite2D" parent="Sprocket"]
 scale = Vector2(0.76, 0.76)
@@ -59,13 +67,13 @@ texture_filter = 1
 texture = ExtResource("3_cassette")
 
 [node name="DerailleurCloseup" type="Sprite2D" parent="."]
-position = Vector2(98, 20)
+position = Vector2(-128, 20)
 scale = Vector2(0.56, 0.56)
 texture_filter = 1
 texture = ExtResource("4_derailleur")
 
 [node name="Chainring" type="Node2D" parent="."]
-position = Vector2(-84, 22)
+position = Vector2(18, 22)
 
 [node name="ChainringDisc" type="Polygon2D" parent="Chainring"]
 color = Color(0.48, 0.43, 0.34, 1)
@@ -76,7 +84,7 @@ color = Color(0.15, 0.17, 0.21, 1)
 polygon = PackedVector2Array(8, 0, 5.7, 5.7, 0, 8, -5.7, 5.7, -8, 0, -5.7, -5.7, 0, -8, 5.7, -5.7)
 
 [node name="Crank" type="Node2D" parent="."]
-position = Vector2(-84, 22)
+position = Vector2(18, 22)
 
 [node name="CrankArm" type="Polygon2D" parent="Crank"]
 color = Color(0.18, 0.20, 0.25, 1)
@@ -89,41 +97,370 @@ polygon = PackedVector2Array(-13, -5, 13, -5, 16, -1, 16, 3, 11, 7, -12, 7, -16,
 
 [node name="Chain" type="Node2D" parent="."]
 
-[node name="UpperRun" type="Sprite2D" parent="Chain"]
-position = Vector2(-5, -20)
-rotation = 0.153
-scale = Vector2(0.88, 0.23)
-texture_filter = 1
-texture = ExtResource("5_chain")
+[node name="ClickArea" type="Area2D" parent="Chain"]
+position = Vector2(-12, 20)
+input_pickable = true
 
-[node name="LowerRun" type="Sprite2D" parent="Chain"]
-position = Vector2(-5, 20)
-rotation = -0.141
-scale = Vector2(0.88, 0.23)
-texture_filter = 1
-texture = ExtResource("5_chain")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/ClickArea"]
+shape = SubResource("RectangleShape2D_click")
 
-[node name="ChainSlack" type="Sprite2D" parent="."]
+[node name="ChainringAnchor" type="StaticBody2D" parent="Chain"]
+position = Vector2(18, -7)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/ChainringAnchor"]
+shape = SubResource("RectangleShape2D_anchor")
+
+[node name="Links" type="Node2D" parent="Chain"]
+
+[node name="Link00" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(18, -7)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link00"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link00"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link01" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(12, -2)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link01"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link01"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link02" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(5, 4)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link02"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link02"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link03" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-3, 10)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link03"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link03"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link04" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-12, 16)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link04"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link04"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link05" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-22, 22)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link05"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link05"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link06" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-34, 27)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link06"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link06"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link07" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-46, 32)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link07"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link07"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link08" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-58, 36)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link08"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link08"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link09" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-70, 40)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link09"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link09"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link10" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-82, 43)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link10"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link10"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link11" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-92, 46)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link11"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link11"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link12" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-100, 48)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link12"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link12"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link13" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-104, 50)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link13"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link13"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link14" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-106, 51)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link14"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link14"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link15" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-107, 52)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link15"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link15"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link16" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-106, 52)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link16"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link16"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Link17" type="RigidBody2D" parent="Chain/Links"]
+position = Vector2(-104, 52)
+mass = 0.04
+gravity_scale = 0.0
+
+[node name="LinkSprite" type="Polygon2D" parent="Chain/Links/Link17"]
+color = Color(0.54, 0.59, 0.66, 1)
+polygon = PackedVector2Array(-6, -2, 4, -2, 7, 0, 4, 2, -6, 2, -8, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chain/Links/Link17"]
+shape = SubResource("RectangleShape2D_link")
+
+[node name="Joints" type="Node2D" parent="Chain"]
+
+[node name="ChainringAnchorJoint" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(18, -7)
+node_a = NodePath("../../ChainringAnchor")
+node_b = NodePath("../../Links/Link00")
+disable_collision = true
+
+[node name="Link00ToLink01" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(-81, -4.5)
+node_a = NodePath("../../Links/Link00")
+node_b = NodePath("../../Links/Link01")
+disable_collision = true
+
+[node name="Link01ToLink02" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(-74.5, 1)
+node_a = NodePath("../../Links/Link01")
+node_b = NodePath("../../Links/Link02")
+disable_collision = true
+
+[node name="Link02ToLink03" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(-67.5, 7)
+node_a = NodePath("../../Links/Link02")
+node_b = NodePath("../../Links/Link03")
+disable_collision = true
+
+[node name="Link03ToLink04" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(-60, 13)
+node_a = NodePath("../../Links/Link03")
+node_b = NodePath("../../Links/Link04")
+disable_collision = true
+
+[node name="Link04ToLink05" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(-52, 19)
+node_a = NodePath("../../Links/Link04")
+node_b = NodePath("../../Links/Link05")
+disable_collision = true
+
+[node name="Link05ToLink06" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(-43.5, 24.5)
+node_a = NodePath("../../Links/Link05")
+node_b = NodePath("../../Links/Link06")
+disable_collision = true
+
+[node name="Link06ToLink07" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(-34.5, 29.5)
+node_a = NodePath("../../Links/Link06")
+node_b = NodePath("../../Links/Link07")
+disable_collision = true
+
+[node name="Link07ToLink08" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(-25, 34)
+node_a = NodePath("../../Links/Link07")
+node_b = NodePath("../../Links/Link08")
+disable_collision = true
+
+[node name="Link08ToLink09" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(-14.5, 38)
+node_a = NodePath("../../Links/Link08")
+node_b = NodePath("../../Links/Link09")
+disable_collision = true
+
+[node name="Link09ToLink10" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(-3.5, 41.5)
+node_a = NodePath("../../Links/Link09")
+node_b = NodePath("../../Links/Link10")
+disable_collision = true
+
+[node name="Link10ToLink11" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(7.5, 44.5)
+node_a = NodePath("../../Links/Link10")
+node_b = NodePath("../../Links/Link11")
+disable_collision = true
+
+[node name="Link11ToLink12" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(19, 47)
+node_a = NodePath("../../Links/Link11")
+node_b = NodePath("../../Links/Link12")
+disable_collision = true
+
+[node name="Link12ToLink13" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(31, 49)
+node_a = NodePath("../../Links/Link12")
+node_b = NodePath("../../Links/Link13")
+disable_collision = true
+
+[node name="Link13ToLink14" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(43, 50.5)
+node_a = NodePath("../../Links/Link13")
+node_b = NodePath("../../Links/Link14")
+disable_collision = true
+
+[node name="Link14ToLink15" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(52.5, 51.5)
+node_a = NodePath("../../Links/Link14")
+node_b = NodePath("../../Links/Link15")
+disable_collision = true
+
+[node name="Link15ToLink16" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(58, 52)
+node_a = NodePath("../../Links/Link15")
+node_b = NodePath("../../Links/Link16")
+disable_collision = true
+
+[node name="Link16ToLink17" type="PinJoint2D" parent="Chain/Joints"]
+position = Vector2(61, 52)
+node_a = NodePath("../../Links/Link16")
+node_b = NodePath("../../Links/Link17")
+disable_collision = true
+
+[node name="ChainSlack" type="Node2D" parent="."]
 visible = false
-position = Vector2(-68, 58)
+position = Vector2(-58, 58)
 rotation = 0.34
-scale = Vector2(0.46, 0.34)
 modulate = Color(0.68, 0.72, 0.78, 0.62)
-texture_filter = 1
-texture = ExtResource("5_chain")
 
+[node name="SlackLine" type="Line2D" parent="ChainSlack"]
+points = PackedVector2Array(-18, 0, -4, 8, 14, 4, 24, -6)
+width = 5.0
+default_color = Color(0.54, 0.59, 0.66, 1)
+texture_filter = 1
 [node name="ChainTensionMark" type="Sprite2D" parent="."]
 visible = false
-position = Vector2(28, -18)
+position = Vector2(-52, -18)
 scale = Vector2(0.34, 0.34)
 modulate = Color(1, 0.85, 0.42, 0.72)
 texture_filter = 1
 texture = ExtResource("6_glow")
 
 [node name="PedalLabel" type="Label" parent="."]
-offset_left = -154.0
+offset_left = -36.0
 offset_top = 64.0
-offset_right = -50.0
+offset_right = 68.0
 offset_bottom = 84.0
 theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(0.98, 0.93, 0.78, 0.92)
@@ -135,9 +472,9 @@ horizontal_alignment = 1
 
 [node name="ChainLabel" type="Label" parent="."]
 visible = false
-offset_left = -46.0
+offset_left = -126.0
 offset_top = -58.0
-offset_right = 54.0
+offset_right = -26.0
 offset_bottom = -38.0
 theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(0.98, 0.93, 0.78, 0.92)
@@ -149,9 +486,9 @@ horizontal_alignment = 1
 
 [node name="SprocketLabel" type="Label" parent="."]
 visible = false
-offset_left = 36.0
+offset_left = -158.0
 offset_top = -74.0
-offset_right = 134.0
+offset_right = -60.0
 offset_bottom = -54.0
 theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(0.98, 0.93, 0.78, 0.92)
@@ -163,9 +500,9 @@ horizontal_alignment = 1
 
 [node name="WheelLabel" type="Label" parent="."]
 visible = false
-offset_left = 24.0
+offset_left = -164.0
 offset_top = 70.0
-offset_right = 142.0
+offset_right = -46.0
 offset_bottom = 90.0
 theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(0.98, 0.93, 0.78, 0.92)

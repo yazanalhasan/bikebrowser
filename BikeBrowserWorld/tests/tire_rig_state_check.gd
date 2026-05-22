@@ -65,9 +65,15 @@ func _run() -> void:
 		await process_frame
 		_assert(scene_rig.get_node_or_null("Wheel/TireShape/WheelSprite") is Sprite2D, "scene exposes sprite sidewall deformation part")
 		_assert(scene_rig.get_node_or_null("Wheel/TireShape/LeakMarker") != null, "scene exposes leak marker")
-		_assert(scene_rig.get_node_or_null("Wheel/TireShape/Patch") != null, "scene exposes patch")
+		var patch: Sprite2D = scene_rig.get_node_or_null("Wheel/TireShape/Patch")
+		_assert(patch != null, "scene exposes patch")
+		if patch != null:
+			_assert(patch.texture != null and patch.texture.resource_path.ends_with("single_tube_patch.png"), "applied patch uses the single rubber patch art")
+			_assert(patch.position.distance_to(Vector2(48, 24)) <= 3.0, "applied patch aligns to leak marker")
 		_assert(scene_rig.get_node_or_null("PumpAssembly/PressureGauge/Needle") != null, "scene exposes in-world pressure gauge")
 		_assert(scene_rig.get_node_or_null("PumpAssembly/PumpHandle") != null, "scene exposes animated pump handle")
+		_assert(scene_rig.get_node_or_null("PumpAssembly/PumpHose") is Line2D, "scene connects pump to tire with a hose")
+		_assert(scene_rig.get_node_or_null("RepairMat") is Polygon2D, "scene stages the repair on one coherent mat")
 		_assert(scene_rig.get_node_or_null("PressureBar") == null, "scene does not use ColorRect pressure UI")
 		root.remove_child(scene_rig)
 		scene_rig.free()

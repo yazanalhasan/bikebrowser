@@ -17,6 +17,7 @@ extends Node2D
 
 signal chain_soft_feedback(kind: String)
 signal chain_verified_changed(verified: bool)
+signal mechanical_state_changed(previous_state: String, next_state: String)
 
 const STATE_SLIPPED := "chain_slipped"
 const STATE_PEDAL := "pedal_rotated"
@@ -25,6 +26,10 @@ const STATE_GUIDED := "chain_guided"
 const STATE_SEATED := "chain_seated"
 const STATE_SPINNING := "wheel_turns_cleanly"
 const STATE_VERIFIED := "chain_verified"
+const LIVE_CHAIN_STIFFNESS := 34.0 # px/s² visual spring force toward readable chain path.
+const LIVE_CHAIN_DAMPING := 4.8 # px/s velocity damping for chain links.
+const LIVE_CHAIN_TORQUE := 18.0 # rad/s² torque toward readable link tangent.
+const LIVE_CHAIN_ANGULAR_DAMPING := 3.2 # rad/s angular damping for chain links.
 
 @export var crank_path: NodePath
 @export var chainring_path: NodePath
@@ -56,10 +61,13 @@ var verified_time := 0.0
 var crank_angle := 0.0
 var wheel_angle := 0.0
 var chain_scroll := 0.0
+var chain_links: Array[RigidBody2D] = []
 
 @onready var crank: Node2D = get_node_or_null(crank_path)
 @onready var chainring: Node2D = get_node_or_null(chainring_path)
 @onready var chain: CanvasItem = get_node_or_null(chain_path)
+@onready var chain_links_container: Node = get_node_or_null("Chain/Links")
+@onready var chain_joints_container: Node = get_node_or_null("Chain/Joints")
 @onready var chain_slack: CanvasItem = get_node_or_null(chain_slack_path)
 @onready var chain_tension_mark: CanvasItem = get_node_or_null(chain_tension_mark_path)
 @onready var sprocket: Node2D = get_node_or_null(sprocket_path)
@@ -73,6 +81,7 @@ var chain_scroll := 0.0
 @onready var wheel_label: Label = get_node_or_null(wheel_label_path)
 
 func _ready() -> void:
+	_collect_chain_links()
 	_apply_visual_state()
 
 func _process(delta: float) -> void:
@@ -126,7 +135,7 @@ func step_mechanic(delta: float) -> void:
 	var previous_state := mechanical_state
 	mechanical_state = _resolve_state()
 	if previous_state != mechanical_state:
-		_on_state_changed(mechanical_state)
+		_on_state_changed(previous_state, mechanical_state)
 
 	if mechanical_state == STATE_SPINNING:
 		verified_time += delta
@@ -155,12 +164,16 @@ func _resolve_state() -> String:
 func _set_verified() -> void:
 	if chain_verified:
 		return
+	var previous_state := mechanical_state
 	chain_verified = true
 	mechanical_state = STATE_VERIFIED
+	if previous_state != mechanical_state:
+		mechanical_state_changed.emit(previous_state, mechanical_state)
 	chain_verified_changed.emit(true)
 	_emit_feedback("clean_drivetrain_spin")
 
-func _on_state_changed(next_state: String) -> void:
+func _on_state_changed(previous_state: String, next_state: String) -> void:
+	mechanical_state_changed.emit(previous_state, next_state)
 	if next_state == STATE_TENSION:
 		_emit_feedback("subtle_chain_tension")
 	elif next_state == STATE_SEATED:
@@ -173,8 +186,7 @@ func _apply_visual_state() -> void:
 		chainring.rotation = crank_angle
 	if chain:
 		chain.modulate = Color(0.62 + chain_tension * 0.32, 0.66 + chain_tension * 0.22, 0.74 + chain_tension * 0.14, 0.46 + chain_tension * 0.50)
-		if chain is Node2D:
-			(chain as Node2D).position.x = chain_scroll - 6.0
+		_apply_chain_link_state()
 	if chain_slack:
 		chain_slack.visible = chain_tension < 0.88
 		chain_slack.modulate.a = clamp(0.62 - chain_tension * 0.66, 0.0, 0.62)
@@ -217,9 +229,86 @@ func get_alignment_snapshot() -> Dictionary:
 		"rear_sprocket_position": sprocket.global_position if sprocket else Vector2.ZERO,
 		"rear_wheel_position": rear_wheel.global_position if rear_wheel else Vector2.ZERO,
 		"rear_drivetrain_aligned": sprocket != null and rear_wheel != null and sprocket.global_position.distance_to(rear_wheel.global_position) <= 4.0,
-		"chain_runs_to_rear": chainring != null and sprocket != null and sprocket.global_position.x > chainring.global_position.x,
+		"bike_faces_right": true,
+		"rear_sits_behind_crank": chainring != null and sprocket != null and sprocket.global_position.x < chainring.global_position.x,
+		"chain_runs_to_rear": chainring != null and sprocket != null and sprocket.global_position.x < chainring.global_position.x,
 		"wheel_responds_to_pedal": pedal_rotation > 0.05 and drivetrain_engagement > 0.05 and wheel_spin > 0.01,
 	}
+
+func _collect_chain_links() -> void:
+	chain_links.clear()
+	if not chain_links_container:
+		return
+	for child in chain_links_container.get_children():
+		if child is RigidBody2D:
+			child.freeze = false
+			child.sleeping = false
+			chain_links.append(child)
+	chain_links.sort_custom(func(a: RigidBody2D, b: RigidBody2D) -> bool: return a.name < b.name)
+
+func _apply_chain_link_state() -> void:
+	if chain_links.is_empty():
+		return
+	var seating_weight: float = clamp(chain_alignment * 0.35 + chain_seated, 0.0, 1.0)
+	var tension_weight: float = clamp(chain_tension, 0.0, 1.0)
+	var link_count: int = chain_links.size()
+	for index in range(link_count):
+		var t: float = float(index) / max(float(link_count - 1), 1.0)
+		var slipped_position: Vector2 = _slipped_chain_point(t)
+		var seated_position: Vector2 = _seated_chain_point(t)
+		var target_position: Vector2 = slipped_position.lerp(seated_position, seating_weight)
+		target_position.y -= sin(t * PI) * tension_weight * (1.0 - seating_weight) * 8.0
+		var link: RigidBody2D = chain_links[index]
+		link.sleeping = false
+		var correction: Vector2 = target_position - link.position
+		var desired_velocity: Vector2 = correction * (6.0 + tension_weight * 5.0)
+		var spring_force: Vector2 = correction * LIVE_CHAIN_STIFFNESS - link.linear_velocity * LIVE_CHAIN_DAMPING
+		link.apply_central_force(spring_force)
+		link.linear_velocity = link.linear_velocity.lerp(desired_velocity, 0.16)
+		var target_angle := _chain_link_angle(t, seating_weight)
+		target_angle += sin((t + chain_scroll / 12.0) * TAU) * pedal_rotation * 0.035
+		var angle_delta := wrapf(target_angle - link.rotation, -PI, PI)
+		link.apply_torque(angle_delta * LIVE_CHAIN_TORQUE - link.angular_velocity * LIVE_CHAIN_ANGULAR_DAMPING)
+		link.angular_velocity = lerp(link.angular_velocity, angle_delta * 7.0, 0.12)
+		link.modulate.a = clamp(0.72 + chain_tension * 0.28, 0.72, 1.0)
+	_apply_chain_joint_positions()
+
+func _apply_chain_joint_positions() -> void:
+	if not chain_joints_container or chain_links.is_empty():
+		return
+	var anchor_joint := chain_joints_container.get_node_or_null("ChainringAnchorJoint") as Node2D
+	if anchor_joint:
+		anchor_joint.position = chain_links[0].position
+	for index in range(chain_links.size() - 1):
+		var joint_name: String = "Link%02dToLink%02d" % [index, index + 1]
+		var joint := chain_joints_container.get_node_or_null(joint_name) as Node2D
+		if joint:
+			joint.position = chain_links[index].position.lerp(chain_links[index + 1].position, 0.5)
+
+func _slipped_chain_point(t: float) -> Vector2:
+	# Pixel coordinates in the rig's local space; the front anchor is the
+	# chainring, while the free slipped tail hangs back toward the rear wheel.
+	var start: Vector2 = Vector2(18.0, -7.0)
+	var control: Vector2 = Vector2(-24.0, 42.0)
+	var free_tail: Vector2 = Vector2(-104.0, 52.0)
+	var left: Vector2 = start.lerp(control, t)
+	var right: Vector2 = control.lerp(free_tail, t)
+	return left.lerp(right, t)
+
+func _seated_chain_point(t: float) -> Vector2:
+	if t <= 0.50:
+		return Vector2(18.0, -9.0).lerp(Vector2(-106.0, -17.0), t / 0.50)
+	if t <= 0.72:
+		var arc_t: float = (t - 0.50) / 0.22
+		var angle: float = lerp(-PI * 0.5, PI * 0.5, arc_t)
+		return Vector2(-106.0, -4.0) + Vector2(cos(angle), sin(angle)) * 13.0
+	var return_t: float = (t - 0.72) / 0.28
+	return Vector2(-106.0, 9.0).lerp(Vector2(14.0, 28.0), return_t)
+
+func _chain_link_angle(t: float, seating_weight: float) -> float:
+	var sample_a: Vector2 = _slipped_chain_point(max(t - 0.02, 0.0)).lerp(_seated_chain_point(max(t - 0.02, 0.0)), seating_weight)
+	var sample_b: Vector2 = _slipped_chain_point(min(t + 0.02, 1.0)).lerp(_seated_chain_point(min(t + 0.02, 1.0)), seating_weight)
+	return (sample_b - sample_a).angle()
 
 func _emit_feedback(kind: String) -> void:
 	chain_soft_feedback.emit(kind)

@@ -29,6 +29,8 @@ var last_presence_msec := -30000
 func _ready():
 	interaction_area.body_entered.connect(_on_interaction_body_entered)
 	interaction_area.body_exited.connect(_on_interaction_body_exited)
+	interaction_area.input_event.connect(_on_interaction_area_input_event)
+	interaction_area.input_pickable = true
 	_apply_interaction_radius()
 	if sprite:
 		sprite_base_position = sprite.position
@@ -60,6 +62,13 @@ func _input(event: InputEvent) -> void:
 	if _world_input_blocked():
 		return
 	if player_in_range and event.is_action_pressed("ui_accept"):
+		get_viewport().set_input_as_handled()
+		trigger_dialogue()
+
+func _on_interaction_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if _world_input_blocked() or not player_in_range:
+		return
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		get_viewport().set_input_as_handled()
 		trigger_dialogue()
 

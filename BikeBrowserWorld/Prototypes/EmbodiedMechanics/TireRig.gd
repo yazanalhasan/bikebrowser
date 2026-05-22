@@ -41,6 +41,9 @@ var spin_pressed := false
 var hold_time := 0.0
 var wheel_angle := 0.0
 var active_action := ""
+var patch_base_scale := Vector2.ONE
+var tube_base_position := Vector2.ZERO
+var tube_base_scale := Vector2.ONE
 
 @onready var wheel: Node2D = get_node_or_null(wheel_path)
 @onready var tire_shape: Node2D = get_node_or_null(tire_shape_path)
@@ -56,6 +59,11 @@ var active_action := ""
 
 func _ready() -> void:
 	mechanical_state = STATE_DEFLATED
+	if patch is Node2D:
+		patch_base_scale = (patch as Node2D).scale
+	if tube_prop is Node2D:
+		tube_base_position = (tube_prop as Node2D).position
+		tube_base_scale = (tube_prop as Node2D).scale
 	validation_tags = {
 		"domain": "bicycle",
 		"mechanic": "tire_pressure_patch_readiness",
@@ -215,12 +223,14 @@ func _apply_visual_state() -> void:
 		patch.visible = patch_seal > 0.08
 		patch.modulate.a = clamp(0.30 + patch_seal * 0.70, 0.0, 1.0)
 		if patch is Node2D:
-			patch.scale = Vector2.ONE * (0.82 + patch_seal * 0.18)
+			patch.scale = patch_base_scale * (0.82 + patch_seal * 0.18)
 	if tube_prop:
 		tube_prop.visible = tube_exposure > 0.04
 		tube_prop.modulate.a = clamp(0.18 + tube_exposure * 0.82, 0.0, 1.0)
 		if tube_prop is Node2D:
-			(tube_prop as Node2D).position.y = 34.0 - tube_exposure * 18.0
+			var tube_node := tube_prop as Node2D
+			tube_node.position = tube_base_position + Vector2(-tube_exposure * 16.0, -tube_exposure * 12.0)
+			tube_node.scale = tube_base_scale * (0.84 + tube_exposure * 0.16)
 	if pressure_gauge:
 		pressure_gauge.visible = patch_seal >= 0.92 or pressure > 0.20
 		pressure_gauge.modulate = Color(1.0, 0.86 + pressure * 0.10, 0.66 + pressure * 0.20, 0.88)

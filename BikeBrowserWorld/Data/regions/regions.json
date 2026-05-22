@@ -102,5 +102,16 @@
     "spawns": {
       "default": { "layoutAnchor": "default" }
     }
+  },
+  "bike_repair_visual_preview": {
+    "id": "bike_repair_visual_preview",
+    "title": "Bike Repair Visual Preview",
+    "scenePath": "res://Regions/Debug/BikeRepairVisualPreview.tscn",
+    "domainTags": ["mechanics", "preview"],
+    "streamingGroup": "demo_cluster",
+    "saveSegment": "regions.bike_repair_visual_preview",
+    "spawns": {
+      "default": { "layoutAnchor": "default" }
+    }
   }
 }
