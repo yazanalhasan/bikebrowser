@@ -100,6 +100,7 @@ func trigger_dialogue() -> void:
 	if interaction_locked or _world_input_blocked():
 		return
 	interaction_locked = true
+	_request_camera_focus()
 	play_talk()
 	await get_tree().create_timer(0.08).timeout
 	if not player_in_range:
@@ -129,6 +130,7 @@ func _on_interaction_body_exited(body: Node) -> void:
 	if body == player_ref:
 		player_in_range = false
 		player_ref = null
+		EventBus.interaction_focus_released.emit(0.26)
 		stop_talk()
 
 func _play_animation(animation_name: String) -> void:
@@ -223,3 +225,11 @@ func _quest_completed(quest_id: String) -> bool:
 func _world_input_blocked() -> bool:
 	var event_bus := get_node_or_null("/root/EventBus")
 	return event_bus != null and event_bus.has_method("is_modal_active") and event_bus.is_modal_active()
+
+func _request_camera_focus() -> void:
+	if EventBus == null:
+		return
+	var focus_position := global_position
+	if player_ref:
+		focus_position = player_ref.global_position.lerp(global_position, 0.62)
+	EventBus.interaction_focus_requested.emit(focus_position + Vector2(0, -18), 1.42, 0.22)

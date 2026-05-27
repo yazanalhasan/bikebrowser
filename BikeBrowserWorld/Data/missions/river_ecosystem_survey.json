@@ -1,0 +1,24 @@
+{
+  "id": "river_ecosystem_survey",
+  "name": "Ecosystem Survey",
+  "description": "Study the Salt River ecosystem and collect biological evidence without disturbing the habitat.",
+  "act": 1,
+  "quest_giver": "dr_maya",
+  "prerequisites": ["test_water_quality"],
+  "steps": [
+    { "id": "observe_fish_patterns", "description": "Observe the shallow-water food web and movement patterns.", "completion_condition": "inspect_river_food_web" },
+    { "id": "collect_algae", "description": "Collect an algae sample from the riverbank.", "completion_condition": "pickup_algae_sample" },
+    { "id": "collect_microbes", "description": "Collect a microbial sample jar for lab observation.", "completion_condition": "pickup_microbial_sample" },
+    { "id": "flow_rate_question", "description": "Use river speed and fish swimming speed to reason about relative motion.", "completion_condition": "challenge_flow_rate" }
+  ],
+  "reward": {
+    "allowance": 35,
+    "badge": "River Ecologist",
+    "reputation": 15,
+    "domain": "biology",
+    "label": "Ecosystem survey",
+    "childMessage": "You gathered river evidence without breaking the habitat.",
+    "items": ["organic_compound"],
+    "finalObjective": "flow_rate_question"
+  }
+}

@@ -42,6 +42,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		advance()
 
 func advance() -> void:
+	_request_camera_focus()
 	if not QuestRegistry.is_active(quest_id) and not QuestRegistry.completed_quests.has(quest_id):
 		if not QuestRegistry.start_quest(quest_id):
 			EventBus.interaction_feedback.emit("Old Miner Pete wants this repair later.", "quiet")
@@ -76,6 +77,7 @@ func _on_body_entered(body: Node) -> void:
 func _on_body_exited(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = false
+		EventBus.interaction_focus_released.emit(0.24)
 		if prompt:
 			prompt.visible = false
 
@@ -114,3 +116,8 @@ func _emit_telemetry(objective_id: String) -> void:
 
 func _world_input_blocked() -> bool:
 	return EventBus != null and EventBus.has_method("is_modal_active") and EventBus.is_modal_active()
+
+func _request_camera_focus() -> void:
+	if EventBus == null:
+		return
+	EventBus.interaction_focus_requested.emit(global_position + Vector2(0, -10), 1.38, 0.20)

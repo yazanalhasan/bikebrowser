@@ -20,6 +20,7 @@ const SCENES := [
 const NPC_SCRIPT := "res://Systems/Interactions/AnimatedNpcInteraction.gd"
 const TRANSITION_SCRIPT := "res://Systems/World/TransitionZone.gd"
 const SAFETY_SCRIPT := "res://Systems/Interactions/SafetyCheckStation.gd"
+const CHAIN_HOTSPOT_SCRIPT := "res://Systems/Interactions/ChainHotspot.gd"
 
 var failures: Array[String] = []
 
@@ -46,6 +47,7 @@ func _check_region(scene_path: String, region: Node) -> void:
 	var npcs: Array = _find_with_script(region, NPC_SCRIPT)
 	var consumers: Array = _find_with_script(region, TRANSITION_SCRIPT)
 	consumers.append_array(_find_with_script(region, SAFETY_SCRIPT))
+	consumers.append_array(_find_with_script(region, CHAIN_HOTSPOT_SCRIPT))
 	for npc in npcs:
 		var interaction_area: Node = npc.get_node_or_null("InteractionArea")
 		if interaction_area == null:
@@ -61,7 +63,7 @@ func _check_region(scene_path: String, region: Node) -> void:
 				continue
 			if not _overlaps(npc_shape, consumer_shape):
 				continue
-			if bool(npc.get("allow_overlap")) or bool(consumer.get("allow_overlap")):
+			if npc.get("allow_overlap") == true or consumer.get("allow_overlap") == true:
 				continue
 			failures.append(
 				"%s — %s ∩ %s (both consume ui_accept; neither opts in via allow_overlap)" % [

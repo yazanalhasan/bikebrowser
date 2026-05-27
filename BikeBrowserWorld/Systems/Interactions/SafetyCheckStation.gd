@@ -205,6 +205,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if kind == "hold_brake":
 		if event.is_action_pressed("ui_accept"):
 			get_viewport().set_input_as_handled()
+			_request_camera_focus()
 			_begin_brake_check(String(step["id"]))
 			if brake_rig and brake_rig.has_method("set_brake_pressed"):
 				brake_rig.set_brake_pressed(true)
@@ -214,6 +215,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				brake_rig.set_brake_pressed(false)
 	elif event.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()
+		_request_camera_focus()
 		advance_check()
 
 func advance_check() -> void:
@@ -499,6 +501,7 @@ func _on_body_entered(body: Node) -> void:
 func _on_body_exited(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = false
+		EventBus.interaction_focus_released.emit(0.28)
 		if prompt:
 			_hide_prompt()
 		if brake_rig and brake_rig.has_method("set_brake_pressed"):
@@ -537,6 +540,11 @@ func _hide_prompt() -> void:
 func _world_input_blocked() -> bool:
 	var event_bus := get_node_or_null("/root/EventBus")
 	return event_bus != null and event_bus.has_method("is_modal_active") and event_bus.is_modal_active()
+
+func _request_camera_focus() -> void:
+	if EventBus == null:
+		return
+	EventBus.interaction_focus_requested.emit(global_position + Vector2(0, -12), 1.48, 0.20)
 
 func _mrs_ramirez_intro_recorded() -> bool:
 	if QuestRegistry.completed_quests.has(quest_id):

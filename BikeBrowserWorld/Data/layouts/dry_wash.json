@@ -1,0 +1,41 @@
+{
+  "spawns": {
+    "default": { "x": -280, "y": 170 },
+    "from_neighborhood": { "x": -280, "y": 170 }
+  },
+  "nodes": {
+    "Background": { "x": -960, "y": -540, "w": 1920, "h": 1080, "color": "#d7ad72" },
+    "FarBank": { "x": -620, "y": -360, "w": 1240, "h": 280, "color": "#c0915f", "shape": "soft", "z": -3 },
+    "NearBank": { "x": -620, "y": 122, "w": 1240, "h": 320, "color": "#c99d6b", "shape": "soft", "z": -2 },
+    "WashChannel": { "x": 0, "y": -10, "scaleX": 3.6, "scaleY": 2.0, "z": -1 },
+    "WarningSign": { "x": -420, "y": -170, "scale": 0.9, "z": 2 },
+    "RockPileA": { "x": -390, "y": 92, "scale": 0.9, "z": 2 },
+    "RockPileB": { "x": 390, "y": 82, "scale": 0.8, "z": 2 },
+    "MrChenNpc": { "x": -180, "y": 36, "scale": 1.0 },
+    "BrokenPlanksInspectable": { "x": -84, "y": -22, "scale": 1.05, "z": 5 },
+    "BrokenBeamsInspectable": { "x": 86, "y": 20, "scale": 1.0, "z": 5 },
+    "AssessBridgeStation": { "x": -292, "y": 36, "w": 190, "h": 104, "z": 6 },
+    "AssessBridgeStation/StationMat": { "x": -96, "y": -48, "w": 192, "h": 96, "color": "#6f5b4366", "shape": "soft", "z": -1 },
+    "AssessBridgeStation/Beacon": { "x": -18, "y": -86, "w": 36, "h": 34, "color": "#ffd86b99", "shape": "diamond", "z": 1 },
+    "AssessBridgeStation/Sign": { "x": -84, "y": -118, "w": 168, "h": 26 },
+    "AssessBridgeStation/Prompt": { "x": -78, "y": -82, "w": 156, "h": 28 },
+    "BridgeBuildStation": { "x": 0, "y": 178, "w": 190, "h": 104, "z": 6 },
+    "BridgeBuildStation/StationMat": { "x": -96, "y": -48, "w": 192, "h": 96, "color": "#5c7c6d66", "shape": "soft", "z": -1 },
+    "BridgeBuildStation/Beacon": { "x": -18, "y": -86, "w": 36, "h": 34, "color": "#ffd86b99", "shape": "diamond", "z": 1 },
+    "BridgeBuildStation/Sign": { "x": -84, "y": -118, "w": 168, "h": 26 },
+    "BridgeBuildStation/Prompt": { "x": -78, "y": -82, "w": 156, "h": 28 },
+    "BridgeReviewStation": { "x": 210, "y": 28, "w": 190, "h": 104, "z": 6 },
+    "BridgeReviewStation/StationMat": { "x": -96, "y": -48, "w": 192, "h": 96, "color": "#5d8fb666", "shape": "soft", "z": -1 },
+    "BridgeReviewStation/Beacon": { "x": -18, "y": -86, "w": 36, "h": 34, "color": "#ffd86b99", "shape": "diamond", "z": 1 },
+    "BridgeReviewStation/Sign": { "x": -84, "y": -118, "w": 168, "h": 26 },
+    "BridgeReviewStation/Prompt": { "x": -78, "y": -82, "w": 156, "h": 28 },
+    "SupportPierA": { "x": -120, "y": 100, "scale": 0.82, "z": 4 },
+    "SupportPierB": { "x": 118, "y": 100, "scale": 0.82, "z": 4 },
+    "TestBridgeSegment": { "x": 0, "y": 72, "scale": 0.72, "z": 5 },
+    "ClipboardPlan": { "x": -260, "y": -106, "scale": 0.8, "z": 5 },
+    "MeasuringTape": { "x": 190, "y": -94, "scale": 0.9, "z": 5 },
+    "RopeCoil": { "x": 318, "y": 192, "scale": 0.86, "z": 5 },
+    "BackToNeighborhood": { "x": -300, "y": 390, "w": 240, "h": 96 },
+    "BackToNeighborhood/Prompt": { "x": -70, "y": -80, "w": 140, "h": 28 }
+  }
+}

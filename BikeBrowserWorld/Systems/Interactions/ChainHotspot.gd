@@ -15,6 +15,8 @@ extends Area2D
 #   STATE_SEATED  → STATE_SPINNING → record "test_rotation"
 # Verified completes the quest naturally via the existing record chain.
 
+signal chain_grabbed
+
 @export var quest_id := "chain_repair"
 @export var objective_ids: Array[String] = [
 	"talk_to_mr_chen",
@@ -25,9 +27,7 @@ extends Area2D
 	"test_rotation",
 ]
 
-const SLIPPED_CHAIN_TEXTURE := preload("res://Assets/Props/Bike/garage_repair_stand_bmx_slipped_chain.png")
-const ALIGNING_CHAIN_TEXTURE := preload("res://Assets/Props/Bike/garage_repair_stand_bmx_aligning_chain.png")
-const SEATED_CHAIN_TEXTURE := preload("res://Assets/Props/Bike/garage_repair_stand_bmx_seated_chain.png")
+@export var hide_bike_until_engaged := false
 
 # Mechanic-eye zoom — gentle, restored on disengagement. Preserves the calm
 # garage mood; the player feels invited closer to the drivetrain, not pulled.
@@ -47,26 +47,27 @@ var zoom_tween: Tween = null
 @onready var prompt: Label = get_node_or_null("Prompt")
 @onready var chain_prop: Node2D = get_parent().get_node_or_null("InteractableLayer/LooseChainProp") if get_parent() else null
 @onready var wheel_prop: Node2D = get_parent().get_node_or_null("InteractableLayer/BikeWheelRepairProp") if get_parent() else null
-@onready var repair_bike: Sprite2D = get_parent().get_node_or_null("InteractableLayer/RepairBike") if get_parent() else null
 @onready var repair_glint: Sprite2D = get_parent().get_node_or_null("InteractableLayer/RepairGlint") if get_parent() else null
 @onready var bike_visual: Node2D = get_node_or_null("BikeVisual")
 @onready var chain_rig: Node = get_node_or_null("BikeVisual/ChainRig")
+@onready var chain_click_area: Area2D = get_node_or_null("BikeVisual/ChainRig/Chain/ClickArea")
 @onready var player_camera: Camera2D = _find_player_camera()
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	if chain_click_area:
+		chain_click_area.input_event.connect(_on_chain_click_area_input_event)
 	if chain_rig and chain_rig.has_signal("chain_verified_changed"):
 		chain_rig.chain_verified_changed.connect(_on_chain_verified_changed)
 	if bike_visual:
-		bike_visual.visible = false
+		bike_visual.visible = not hide_bike_until_engaged
 	if QuestRegistry.completed_quests.has(quest_id):
 		chain_repair_verified = true
 		last_state = "chain_verified"
 	if prompt:
 		_style_prompt(prompt)
 		prompt.visible = false
-	_update_repair_visual()
 
 func _process(delta: float) -> void:
 	pulse_time += delta
@@ -115,6 +116,23 @@ func _engage_pedal() -> void:
 	_record_objective_once("inspect_chain", "chain_inspect", "gentle",
 		"There it is. The chain is trying to climb sideways.")
 
+func _on_chain_click_area_input_event(_viewport: Viewport, event: InputEvent, _shape_idx: int) -> void:
+	if _world_input_blocked():
+		return
+	var grabbed := false
+	if event is InputEventMouseButton:
+		grabbed = event.pressed and event.button_index == MOUSE_BUTTON_LEFT
+	elif event is InputEventScreenTouch:
+		grabbed = event.pressed
+	if not grabbed:
+		return
+	chain_grabbed.emit()
+	if QuestRegistry.completed_quests.has(quest_id):
+		_quiet_post_repair_feedback()
+	else:
+		_engage_pedal()
+	get_viewport().set_input_as_handled()
+
 func _track_rig_state() -> void:
 	if chain_rig == null:
 		return
@@ -150,7 +168,6 @@ func _record_objective_once(objective_id: String, audio_cue: String, tone: Strin
 	QuestRegistry.record_objective(quest_id, objective_id)
 	DiscoveryService.mark_discovered("chain_hotspot_%s" % objective_id, { "questId": quest_id })
 	EventBus.interaction_feedback.emit(message, tone)
-	_update_repair_visual()
 
 func _on_chain_verified_changed(verified: bool) -> void:
 	if not verified or chain_repair_verified:
@@ -188,21 +205,6 @@ func _find_player_camera() -> Camera2D:
 		return null
 	return player.get_node_or_null("Camera2D") as Camera2D
 
-func _update_repair_visual() -> void:
-	if repair_bike == null:
-		return
-	if not recorded_objectives.has("align_chain"):
-		repair_bike.texture = SLIPPED_CHAIN_TEXTURE
-		if repair_glint:
-			repair_glint.position = repair_bike.position + Vector2(88, -22)
-	elif not recorded_objectives.has("seat_chain"):
-		repair_bike.texture = ALIGNING_CHAIN_TEXTURE
-		if repair_glint:
-			repair_glint.position = repair_bike.position + Vector2(72, -10)
-	else:
-		repair_bike.texture = SEATED_CHAIN_TEXTURE
-		if repair_glint:
-			repair_glint.position = repair_bike.position + Vector2(50, 18)
 
 func _update_prompt() -> void:
 	if prompt == null:

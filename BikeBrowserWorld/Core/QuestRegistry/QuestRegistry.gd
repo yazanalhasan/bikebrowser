@@ -477,7 +477,7 @@ func _notebook_sketches() -> Array:
 		zone = String(state.get("leakZone", zone))
 		if completed_quests.has(PRE_RIDE_QUEST_ID):
 			zone = String(completed_quests.get(PRE_RIDE_QUEST_ID, {}).get("leakZone", zone))
-		sketches.append({ "title": "Mrs. Ramirez tube repair", "body": "Leak marked: %s. Cement set, tested clean." % zone })
+		sketches.append({ "title": "Mrs. Ramirez tube repair", "body": "Air escaped through a tiny hole at the %s. A cleaned patch sealed the hole; the tire held pressure again." % zone })
 	if _objective_recorded("chain_repair", "align_chain"):
 		sketches.append({ "title": "Chain path", "body": "pedal force follows seated links" })
 	if _objective_recorded("bridge_quest_5", "compare_bridge_types"):

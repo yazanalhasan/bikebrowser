@@ -94,6 +94,7 @@ func _on_body_entered(body: Node) -> void:
 func _on_body_exited(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = false
+		EventBus.interaction_focus_released.emit(0.26)
 		if prompt:
 			prompt.visible = false
 
@@ -105,6 +106,7 @@ func _cycle(direction: int) -> void:
 	_refresh_station()
 
 func _interact() -> void:
+	_request_camera_focus()
 	if QuestRegistry.completed_quests.has(quest_id):
 		EventBus.interaction_feedback.emit("The notebook already has the bridge material test.", "quiet")
 		return
@@ -238,3 +240,8 @@ func _emit_telemetry(event_name: String, payload: Dictionary) -> void:
 
 func _world_input_blocked() -> bool:
 	return EventBus != null and EventBus.has_method("is_modal_active") and EventBus.is_modal_active()
+
+func _request_camera_focus() -> void:
+	if EventBus == null:
+		return
+	EventBus.interaction_focus_requested.emit(global_position + Vector2(0, -10), 1.42, 0.20)

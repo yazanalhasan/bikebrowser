@@ -2,14 +2,11 @@ extends SceneTree
 
 # Integration test: ChainHotspot now drives a real ChainRig instead of the
 # legacy 5-press ladder. This test proves the embodied loop end-to-end:
-#   1. Player enters the hotspot zone
-#   2. Pedal press engages the rig (rig becomes visible, camera zooms)
-#   3. Sustained pedal pressure advances rig through state machine
-#   4. Each state transition records the matching chain_repair objective
+#   1. SlippedChainStation exposes the chain rig's Area2D click surface
+#   2. Clicking that chain Area2D emits chain_grabbed exactly once
+#   3. Garage instances the station as ChainHotspot
+#   4. Sustained pedal pressure advances rig through state machine
 #   5. STATE_VERIFIED fires, quest completes, reward_intent emits
-#
-# Together with brake_integration_check this establishes the shared embodied
-# pattern: ChainRig and BrakeRig are interchangeable templates.
 
 var failures: Array[String] = []
 var quest_started := false
@@ -29,6 +26,30 @@ func _run() -> void:
 
 	quest_registry.active_quests.clear()
 	quest_registry.completed_quests.clear()
+	event_bus.set("modal_stack", 0)
+
+	var station_scene: PackedScene = load("res://Regions/Garage/SlippedChainStation.tscn")
+	_assert(station_scene != null, "SlippedChainStation scene loads")
+	if station_scene == null:
+		_finish()
+		return
+
+	var station: Area2D = station_scene.instantiate()
+	root.add_child(station)
+	await process_frame
+	await process_frame
+	_assert(station.get_node_or_null("BikeVisual/ChainRig") is Node2D, "station contains embedded ChainRig")
+	_assert(station.get_node_or_null("BikeVisual/ChainRig/Chain/ClickArea") is Area2D, "station exposes chain Area2D click surface")
+	_assert(station.has_signal("chain_grabbed"), "ChainHotspot exposes chain_grabbed signal")
+	var station_grab_count: Array[int] = [0]
+	station.connect("chain_grabbed", func() -> void: station_grab_count[0] += 1)
+	var station_click_area: Area2D = station.get_node_or_null("BikeVisual/ChainRig/Chain/ClickArea")
+	station_click_area.emit_signal("input_event", root, _left_click_event(), 0)
+	_assert(station_grab_count[0] == 1, "direct station click emits chain_grabbed exactly once")
+	_teardown(station)
+	quest_registry.active_quests.clear()
+	quest_registry.completed_quests.clear()
+	event_bus.set("modal_stack", 0)
 
 	event_bus.quest_started.connect(func(qid: String) -> void:
 		if qid == "chain_repair":
@@ -53,35 +74,39 @@ func _run() -> void:
 	var hotspot: Area2D = garage.get_node_or_null("ChainHotspot")
 	var bike_visual: Node2D = garage.get_node_or_null("ChainHotspot/BikeVisual")
 	var rig: Node2D = garage.get_node_or_null("ChainHotspot/BikeVisual/ChainRig")
+	var click_area: Area2D = garage.get_node_or_null("ChainHotspot/BikeVisual/ChainRig/Chain/ClickArea")
 	var player: Node2D = garage.get_node_or_null("Player")
 	_assert(hotspot != null, "ChainHotspot exists in garage")
+	_assert(hotspot != null and hotspot.scene_file_path == "res://Regions/Garage/SlippedChainStation.tscn", "garage ChainHotspot instances SlippedChainStation")
 	_assert(bike_visual != null, "BikeVisual subtree exists under ChainHotspot")
 	_assert(rig != null, "Embedded ChainRig instance exists")
+	_assert(click_area != null, "garage chain click target is an Area2D")
 	_assert(player != null, "Player exists in garage")
-	if hotspot == null or rig == null or bike_visual == null:
+	if hotspot == null or rig == null or bike_visual == null or click_area == null:
 		_teardown(garage)
 		_finish()
 		return
 
-	_assert(not bike_visual.visible, "BikeVisual starts hidden")
+	_assert(bike_visual.visible, "BikeVisual starts visible so the real chain can be clicked")
 
 	# Stop the rig's own _process so the test owns the time step deterministically.
 	rig.set_process(false)
 	rig.set_process_unhandled_input(false)
 
-	# Engage the hotspot directly — equivalent to player entering range and pressing E.
-	hotspot.player_in_range = true
-	hotspot._engage_pedal()
-	rig.set_pedal_pressed(true)
+	var grab_count: Array[int] = [0]
+	hotspot.connect("chain_grabbed", func() -> void: grab_count[0] += 1)
+	click_area.emit_signal("input_event", root, _left_click_event(), 0)
 	await process_frame
 
-	_assert(bike_visual.visible, "BikeVisual becomes visible on engage")
-	_assert(quest_started, "engage starts chain_repair quest")
-	_assert(quest_registry.is_active("chain_repair"), "chain_repair is active after engage")
-	_assert(hotspot.recorded_objectives.has("inspect_chain"), "inspect_chain recorded on engage")
+	_assert(grab_count[0] == 1, "garage chain click emits chain_grabbed exactly once")
+	_assert(bike_visual.visible, "BikeVisual remains visible on chain grab")
+	_assert(quest_started, "chain grab starts chain_repair quest")
+	_assert(quest_registry.is_active("chain_repair"), "chain_repair is active after grab")
+	_assert(hotspot.recorded_objectives.has("inspect_chain"), "inspect_chain recorded on grab")
 
 	# Drive the rig to verified via deterministic stepping. Process the hotspot
 	# manually so its _track_rig_state observes state transitions.
+	rig.set_pedal_pressed(true)
 	for _i in range(80):
 		rig.step_mechanic(0.05)
 		hotspot._track_rig_state()
@@ -100,6 +125,12 @@ func _run() -> void:
 
 	_teardown(garage)
 	_finish()
+
+func _left_click_event() -> InputEventMouseButton:
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = true
+	return event
 
 func _teardown(node: Node) -> void:
 	root.remove_child(node)

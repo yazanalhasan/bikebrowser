@@ -118,6 +118,7 @@ func _hide_panel() -> void:
 		panel.visible = false
 		closing_dialogue = false
 		EventBus.pop_modal()
+		EventBus.interaction_focus_released.emit(0.30)
 	)
 
 func _apply_button_copy() -> void:

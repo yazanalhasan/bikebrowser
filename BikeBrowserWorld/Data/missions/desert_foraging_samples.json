@@ -1,0 +1,25 @@
+{
+  "id": "desert_foraging_samples",
+  "name": "Desert Foraging Samples",
+  "description": "Gather useful desert plant samples while practicing respectful, low-impact field work.",
+  "act": 1,
+  "quest_giver": "ranger_nita",
+  "prerequisites": ["desert_plant_observation"],
+  "steps": [
+    { "id": "gather_yucca", "description": "Gather yucca fiber.", "completion_condition": "pickup_yucca_fiber" },
+    { "id": "gather_agave", "description": "Gather agave fiber.", "completion_condition": "pickup_agave_fiber" },
+    { "id": "gather_jojoba", "description": "Collect jojoba plant material.", "completion_condition": "pickup_jojoba" },
+    { "id": "gather_creosote", "description": "Collect creosote leaves for plant chemistry notes.", "completion_condition": "pickup_creosote" },
+    { "id": "note_cactus_water", "description": "Record how cactus water storage works without damaging living plants.", "completion_condition": "pickup_cactus_water" }
+  ],
+  "reward": {
+    "allowance": 30,
+    "badge": "Desert Forager",
+    "reputation": 10,
+    "domain": "ecology",
+    "label": "Desert foraging",
+    "childMessage": "You collected samples without treating the desert like a supply closet.",
+    "items": ["desert_fiber_bundle"],
+    "finalObjective": "note_cactus_water"
+  }
+}

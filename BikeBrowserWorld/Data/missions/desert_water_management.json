@@ -1,0 +1,25 @@
+{
+  "id": "desert_water_management",
+  "name": "Water Wise",
+  "description": "Use trail observations and simple ratios to plan a safe desert walk.",
+  "act": 1,
+  "quest_giver": "ranger_nita",
+  "prerequisites": ["desert_plant_observation"],
+  "steps": [
+    { "id": "inspect_trail_marker", "description": "Inspect the trail marker and plan the return route.", "completion_condition": "inspect_trail_marker" },
+    { "id": "inspect_scavenge_spot", "description": "Inspect the old crate and scavenge spot without taking unsafe junk.", "completion_condition": "inspect_scavenge_spot" },
+    { "id": "water_hours_question", "description": "Calculate that 2 liters at 250 ml per hour lasts 8 hours.", "completion_condition": "challenge_water_hours" },
+    { "id": "plant_ratio_question", "description": "Compare useful plant samples as a ratio.", "completion_condition": "challenge_plant_ratio" },
+    { "id": "heat_survival_question", "description": "Choose the safest desert heat plan.", "completion_condition": "challenge_heat_survival" }
+  ],
+  "reward": {
+    "allowance": 20,
+    "badge": "Water Wise",
+    "reputation": 5,
+    "domain": "ecology",
+    "label": "Water management",
+    "childMessage": "You planned water, shade, and route before wandering farther.",
+    "items": ["water_filter"],
+    "finalObjective": "heat_survival_question"
+  }
+}

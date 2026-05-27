@@ -58,6 +58,7 @@ func interact() -> void:
 	if interaction_locked or _world_input_blocked():
 		return
 	interaction_locked = true
+	_request_camera_focus()
 	await get_tree().create_timer(0.08).timeout
 	if not player_in_range:
 		interaction_locked = false
@@ -85,6 +86,7 @@ func _on_body_entered(body: Node) -> void:
 func _on_body_exited(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = false
+		EventBus.interaction_focus_released.emit(0.26)
 		if prompt:
 			_hide_prompt()
 
@@ -181,3 +183,8 @@ func _quest_completed(quest_id: String) -> bool:
 func _world_input_blocked() -> bool:
 	var event_bus := get_node_or_null("/root/EventBus")
 	return event_bus != null and event_bus.has_method("is_modal_active") and event_bus.is_modal_active()
+
+func _request_camera_focus() -> void:
+	if EventBus == null:
+		return
+	EventBus.interaction_focus_requested.emit(global_position + Vector2(0, -18), 1.42, 0.22)

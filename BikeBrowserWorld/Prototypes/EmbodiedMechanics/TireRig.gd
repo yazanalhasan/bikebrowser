@@ -23,6 +23,9 @@ const STATE_VERIFIED := "tire_verified"
 @export var tube_prop_path: NodePath
 @export var wheel_ready_glow_path: NodePath
 @export var readiness_label_path: NodePath
+@export var prepared_surface_path: NodePath
+@export var air_escape_path: NodePath
+@export var notebook_artifact_path: NodePath
 
 var pressure := 0.08
 var deformation := 0.92
@@ -42,6 +45,7 @@ var hold_time := 0.0
 var wheel_angle := 0.0
 var active_action := ""
 var patch_base_scale := Vector2.ONE
+var patch_base_position := Vector2.ZERO
 var tube_base_position := Vector2.ZERO
 var tube_base_scale := Vector2.ONE
 
@@ -56,10 +60,14 @@ var tube_base_scale := Vector2.ONE
 @onready var tube_prop: CanvasItem = get_node_or_null(tube_prop_path)
 @onready var wheel_ready_glow: CanvasItem = get_node_or_null(wheel_ready_glow_path)
 @onready var readiness_label: Label = get_node_or_null(readiness_label_path)
+@onready var prepared_surface: CanvasItem = get_node_or_null(prepared_surface_path)
+@onready var air_escape: CanvasItem = get_node_or_null(air_escape_path)
+@onready var notebook_artifact: CanvasItem = get_node_or_null(notebook_artifact_path)
 
 func _ready() -> void:
 	mechanical_state = STATE_DEFLATED
 	if patch is Node2D:
+		patch_base_position = (patch as Node2D).position
 		patch_base_scale = (patch as Node2D).scale
 	if tube_prop is Node2D:
 		tube_base_position = (tube_prop as Node2D).position
@@ -73,7 +81,9 @@ func _ready() -> void:
 	register_part("wheel", wheel, {"role": "rotating_support"})
 	register_part("tire_sidewall", sidewall, {"role": "deformation_readout"})
 	register_part("puncture", leak_marker, {"role": "leak_source"})
+	register_part("prepared_surface", prepared_surface, {"role": "adhesion_zone"})
 	register_part("patch", patch, {"role": "seal"})
+	register_part("air_escape_trace", air_escape, {"role": "cause_effect_readout"})
 	register_part("pressure_gauge", pressure_gauge, {"role": "in_world_pressure_readout"})
 	register_part("pump_handle", pump_handle, {"role": "pump_motion"})
 	_apply_visual_state()
@@ -126,7 +136,7 @@ func get_required_action_label() -> String:
 	if action == "tube":
 		return "ease the tube out"
 	if action == "patch":
-		return "press the patch"
+		return "clean, glue, press patch"
 	if action == "pump":
 		return "pump until the tire firms"
 	if action == "verify":
@@ -138,7 +148,6 @@ func step_mechanic(delta: float) -> void:
 	hold_time = hold_time + delta if engaged else max(hold_time - delta * 1.4, 0.0)
 
 	if inspect_pressed:
-		wheel_angle += delta * 2.8
 		leak_signal = _approach(leak_signal, 1.0, delta * 0.86)
 		pressure = max(pressure - delta * leak_size * 0.035, 0.02)
 	elif leak_signal >= 1.0 and tube_exposure < 1.0 and patch_pressed:
@@ -219,11 +228,20 @@ func _apply_visual_state() -> void:
 	if leak_marker:
 		leak_marker.visible = leak_signal > 0.16 and leak_size > 0.08
 		leak_marker.modulate.a = clamp(leak_signal * leak_size, 0.0, 0.78)
+	if air_escape:
+		air_escape.visible = leak_signal > 0.20 and leak_size > 0.08 and patch_seal < 0.92
+		air_escape.modulate.a = clamp(leak_signal * leak_size, 0.0, 0.88)
+	if prepared_surface:
+		prepared_surface.visible = tube_exposure > 0.22 and patch_seal < 0.98
+		prepared_surface.modulate.a = clamp(tube_exposure * (1.0 - patch_seal * 0.55), 0.0, 0.92)
 	if patch:
 		patch.visible = patch_seal > 0.08
 		patch.modulate.a = clamp(0.30 + patch_seal * 0.70, 0.0, 1.0)
 		if patch is Node2D:
-			patch.scale = patch_base_scale * (0.82 + patch_seal * 0.18)
+			var patch_node := patch as Node2D
+			patch_node.position = patch_base_position
+			patch_node.rotation = -wheel_angle
+			patch_node.scale = patch_base_scale * (0.82 + patch_seal * 0.18)
 	if tube_prop:
 		tube_prop.visible = tube_exposure > 0.04
 		tube_prop.modulate.a = clamp(0.18 + tube_exposure * 0.82, 0.0, 1.0)
@@ -245,6 +263,9 @@ func _apply_visual_state() -> void:
 		wheel_ready_glow.modulate.a = clamp((pressure - 0.66) * 1.8 + wheel_readiness * 0.35, 0.0, 0.62)
 	if readiness_label:
 		readiness_label.visible = tire_verified
+	if notebook_artifact:
+		notebook_artifact.visible = patch_seal >= 0.92 or tire_verified
+		notebook_artifact.modulate.a = clamp((patch_seal - 0.70) * 3.4, 0.0, 0.92)
 
 func _emit_feedback(kind: String) -> void:
 	tire_soft_feedback.emit(kind)

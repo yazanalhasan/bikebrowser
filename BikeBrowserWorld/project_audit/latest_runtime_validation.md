@@ -1,10 +1,10 @@
 # Runtime Validation Report
 
 - Errors: 0
-- Warnings: 2
+- Warnings: 1
 - Quests loaded: 25 / mission files: 25
 - Dialogue files normalized: 26
-- Regions: 8
+- Regions: 10
 - NPC scenes scanned: 10
 
 ## Errors
@@ -13,7 +13,6 @@ None.
 
 ## Warnings
 
-- Dev quest wiring gate found active DATA_ONLY/PARTIAL quests: bridge_quest_2:DATA_ONLY
 - Native TTS unavailable on this platform
 
 ## Details
@@ -21,7 +20,7 @@ None.
 ```json
 {
 	"audio_errors": [],
-	"audio_mapped": 8,
+	"audio_mapped": 10,
 	"dialogue_count": 26,
 	"dialogue_schemas": {
 		"dialogue_tree": 15,
@@ -57,11 +56,7 @@ None.
 		"water_sample_observation",
 		"workshop_first_build"
 	],
-	"quest_wiring_gate": [
-		"bridge_quest_2:DATA_ONLY"
-	],
-	"quest_wiring_gate_source": "C:/dev/bikebrowser/reports/quest_wiring_gate/latest.json",
-	"region_count": 8,
+	"region_count": 10,
 	"region_ids": [
 		"boot",
 		"neighborhood_street",
@@ -70,7 +65,9 @@ None.
 		"desert_trail",
 		"salt_river",
 		"dry_wash",
-		"system_showcase"
+		"system_showcase",
+		"bridge_presentation_preview",
+		"bike_repair_visual_preview"
 	]
 }
 ```

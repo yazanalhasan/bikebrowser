@@ -19,6 +19,11 @@ var character_sprite: AnimatedSprite2D
 var character_base_scale := Vector2.ONE
 var _camera_lookahead := Vector2.ZERO
 var _camera_base_zoom := Vector2.ONE
+var _camera_focus_active := false
+var _camera_focus_position := Vector2.ZERO
+var _camera_focus_zoom := 1.0
+var _camera_focus_blend := 0.0
+var _camera_focus_blend_speed := 9.0
 
 func _ready() -> void:
 	add_to_group("player")
@@ -40,6 +45,11 @@ func _ready() -> void:
 		var viewport := get_viewport()
 		if viewport != null and not viewport.size_changed.is_connected(_apply_responsive_camera_zoom):
 			viewport.size_changed.connect(_apply_responsive_camera_zoom)
+	if EventBus != null:
+		if not EventBus.interaction_focus_requested.is_connected(_on_interaction_focus_requested):
+			EventBus.interaction_focus_requested.connect(_on_interaction_focus_requested)
+		if not EventBus.interaction_focus_released.is_connected(_on_interaction_focus_released):
+			EventBus.interaction_focus_released.connect(_on_interaction_focus_released)
 
 func _physics_process(delta: float) -> void:
 	var direction := _read_direction()
@@ -112,29 +122,51 @@ func _direction_name(vector: Vector2) -> String:
 func _apply_camera_feel(delta: float) -> void:
 	var camera := get_node_or_null("Camera2D")
 	if camera is Camera2D:
+		if _camera_focus_active:
+			_camera_focus_blend = lerpf(_camera_focus_blend, 1.0, 1.0 - exp(-_camera_focus_blend_speed * delta))
+		else:
+			_camera_focus_blend = lerpf(_camera_focus_blend, 0.0, 1.0 - exp(-_camera_focus_blend_speed * delta))
 		var speed_ratio: float = min(velocity.length() / speed, 1.0)
 		var desired_lookahead: Vector2 = velocity.normalized() * speed_ratio * camera_lookahead_distance if velocity.length() > 4.0 else Vector2.ZERO
 		_camera_lookahead = _camera_lookahead.lerp(desired_lookahead, 1.0 - exp(-camera_lookahead_speed * delta))
-		camera.position = _camera_lookahead.round()
+		var follow_position := _camera_lookahead.round()
+		var focus_position := (_camera_focus_position - global_position).round()
+		camera.position = follow_position.lerp(focus_position, _camera_focus_blend)
+		var responsive_zoom := _responsive_camera_zoom()
+		var focused_zoom := responsive_zoom * _camera_focus_zoom
+		camera.zoom = responsive_zoom.lerp(focused_zoom, _camera_focus_blend)
 
 func _apply_responsive_camera_zoom() -> void:
 	var camera := get_node_or_null("Camera2D")
-	var viewport := get_viewport()
-	if not (camera is Camera2D) or viewport == null:
+	if not (camera is Camera2D):
 		return
+	camera.zoom = _responsive_camera_zoom() * (lerpf(1.0, _camera_focus_zoom, _camera_focus_blend) if _camera_focus_blend > 0.01 else 1.0)
+
+func _responsive_camera_zoom() -> Vector2:
+	var viewport := get_viewport()
+	if viewport == null:
+		return _camera_base_zoom
 	var size := Vector2(DisplayServer.window_get_size())
 	if size.x <= 0.0 or size.y <= 0.0:
 		size = viewport.get_visible_rect().size
 	if size.y <= 0.0:
-		camera.zoom = _camera_base_zoom
-		return
+		return _camera_base_zoom
 	var aspect := size.x / size.y
-	if aspect < portrait_aspect_threshold:
-		var narrowness: float = clamp((portrait_aspect_threshold - aspect) / portrait_aspect_threshold, 0.0, 1.0)
-		var zoom_factor: float = lerpf(1.22, portrait_camera_zoom, sqrt(narrowness))
-		camera.zoom = _camera_base_zoom * zoom_factor
-	else:
-		camera.zoom = _camera_base_zoom
+	if aspect >= portrait_aspect_threshold:
+		return _camera_base_zoom
+	var narrowness: float = clamp((portrait_aspect_threshold - aspect) / portrait_aspect_threshold, 0.0, 1.0)
+	var zoom_factor: float = lerpf(1.22, portrait_camera_zoom, sqrt(narrowness))
+	return _camera_base_zoom * zoom_factor
+
+func _on_interaction_focus_requested(target_position: Vector2, zoom_multiplier: float = 1.45, duration: float = 0.22) -> void:
+	_camera_focus_active = true
+	_camera_focus_position = target_position
+	_camera_focus_zoom = maxf(zoom_multiplier, 1.0)
+	_camera_focus_blend_speed = 1.0 / maxf(duration, 0.08)
+
+func _on_interaction_focus_released(duration: float = 0.28) -> void:
+	_camera_focus_active = false
+	_camera_focus_blend_speed = 1.0 / maxf(duration, 0.08)
 
 func _world_input_blocked() -> bool:
 	var event_bus := get_node_or_null("/root/EventBus")

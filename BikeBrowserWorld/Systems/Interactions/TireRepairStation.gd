@@ -25,25 +25,25 @@ const LEAK_ZONES := [
 var state_objectives := {
 	"leak_found": {
 		"id": "leak_found",
-		"message": "You found the soft hiss instead of guessing.",
+		"message": "Air is escaping from one tiny hole.",
 		"tone": "curious",
 		"audio_cue": "wheel_spin",
 	},
 	"patch_sealed": {
 		"id": "patch_applied",
-		"message": "The patch settles in and the leak quiets down.",
+		"message": "The cleaned patch covers the hole; the hiss stops.",
 		"tone": "careful",
 		"audio_cue": "patch_press",
 	},
 	"tube_exposed": {
 		"id": "tube_removed",
-		"message": "The tube eases out without a pinch.",
+		"message": "The tube is out where hands can clean and seal it.",
 		"tone": "careful",
 		"audio_cue": "tube_slide",
 	},
 	"pressure_safe": {
 		"id": "tube_reinflated",
-		"message": "The tire feels firm without being overfilled.",
+		"message": "Air stays inside now, so the tire firms up.",
 		"tone": "warm",
 		"audio_cue": "pump_air",
 	},
@@ -85,6 +85,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("ui_accept"):
 		get_viewport().set_input_as_handled()
+		_request_camera_focus()
 		_ensure_quest_started()
 		if _needs_leak_mark():
 			_mark_leak_in_notebook()
@@ -170,6 +171,7 @@ func _on_body_exited(body: Node) -> void:
 	if body.is_in_group("player"):
 		player_in_range = false
 		action_down = false
+		EventBus.interaction_focus_released.emit(0.28)
 		if tire_rig and tire_rig.has_method("clear_actions"):
 			tire_rig.clear_actions()
 		if prompt:
@@ -216,3 +218,8 @@ func _mark_leak_in_notebook() -> void:
 	QuestRegistry.record_objective(quest_id, "leak_marked")
 	AudioService.play_sfx("reward_tiny", "accomplishment")
 	EventBus.interaction_feedback.emit("Notebook tube diagram marked: %s." % zone, "curious")
+
+func _request_camera_focus() -> void:
+	if EventBus == null:
+		return
+	EventBus.interaction_focus_requested.emit(global_position + Vector2(0, -10), 1.55, 0.20)

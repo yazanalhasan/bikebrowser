@@ -1,0 +1,24 @@
+{
+  "id": "balance_the_flow",
+  "name": "Flow Controller",
+  "description": "Inspect the irrigation channel and solve a fraction split so water is shared fairly.",
+  "act": 1,
+  "quest_giver": "dr_maya",
+  "prerequisites": ["test_water_quality"],
+  "steps": [
+    { "id": "collect_river_minerals", "description": "Collect mineral evidence from the river edge.", "completion_condition": "pickup_river_minerals" },
+    { "id": "collect_reed_fiber", "description": "Collect a reed fiber sample from the bank.", "completion_condition": "pickup_reed_fiber" },
+    { "id": "inspect_channels", "description": "Inspect the irrigation channel sign and compare the three branches.", "completion_condition": "inspect_irrigation_channels" },
+    { "id": "fraction_question", "description": "If A gets 2/5 and B gets 1/5, calculate that C gets 2/5.", "completion_condition": "challenge_irrigation_fraction" }
+  ],
+  "reward": {
+    "allowance": 30,
+    "badge": "Flow Controller",
+    "reputation": 10,
+    "domain": "water",
+    "label": "Balanced flow",
+    "childMessage": "You used fractions to keep water moving fairly.",
+    "items": ["irrigation_valve"],
+    "finalObjective": "fraction_question"
+  }
+}

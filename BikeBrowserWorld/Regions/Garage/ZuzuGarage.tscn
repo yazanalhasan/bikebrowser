@@ -1,10 +1,9 @@
-[gd_scene load_steps=67 format=3 uid="uid://bikebrowser_zuzu_garage"]
+[gd_scene load_steps=63 format=3 uid="uid://bikebrowser_zuzu_garage"]
 
 [ext_resource type="Script" path="res://Systems/World/RegionScene.gd" id="1_region"]
 [ext_resource type="Script" path="res://Systems/World/ZuzuController.gd" id="2_zuzu"]
 [ext_resource type="Script" path="res://Systems/World/TransitionZone.gd" id="3_transition"]
-[ext_resource type="Script" path="res://Systems/Interactions/ChainHotspot.gd" id="4_chain"]
-[ext_resource type="PackedScene" path="res://Prototypes/EmbodiedMechanics/ChainRigEmbedded.tscn" id="4b_chainrig"]
+[ext_resource type="PackedScene" path="res://Regions/Garage/SlippedChainStation.tscn" id="4_chain_station"]
 [ext_resource type="PackedScene" path="res://Regions/UI/DialogBox.tscn" id="5_dialog"]
 [ext_resource type="PackedScene" path="res://Regions/UI/Hud.tscn" id="6_hud"]
 [ext_resource type="PackedScene" path="res://Regions/Garage/TireRepairStation.tscn" id="7_tire"]
@@ -37,14 +36,11 @@
 [ext_resource type="Texture2D" path="res://Assets/Props/Repair/floor_air_pump.png" id="34_pump_png"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Repair/tire_patch_kit.png" id="35_patch_kit"]
 [ext_resource type="Script" path="res://Regions/Garage/GarageAmbience.gd" id="36_ambience"]
-[ext_resource type="Texture2D" path="res://Assets/Props/Bike/garage_repair_stand_bmx_slipped_chain.png" id="37_repair_slipped"]
 [ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/garage_floor_panel.png" id="38_floor_panel"]
 [ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/garage_wall_panel.png" id="39_wall_panel"]
 [ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/soft_shadow_large.png" id="40_shadow_large"]
 [ext_resource type="Texture2D" path="res://Assets/Backgrounds/Derived/soft_shadow_small.png" id="41_shadow_small"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Bike/warm_repair_glint.png" id="42_glint"]
-[ext_resource type="Texture2D" path="res://Assets/Props/Bike/garage_repair_stand_bmx_aligning_chain.png" id="43_repair_aligned"]
-[ext_resource type="Texture2D" path="res://Assets/Props/Bike/garage_repair_stand_bmx_seated_chain.png" id="44_repair_seated"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Garage/rear_derailleur_closeup.png" id="45_derailleur"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Garage/cassette_gear_cluster.png" id="46_cassette"]
 [ext_resource type="Texture2D" path="res://Assets/Props/Garage/chain_lube_bottle.png" id="47_chain_lube"]
@@ -320,19 +316,8 @@ texture = ExtResource("32_wheel_png")
 texture_filter = 1
 texture = ExtResource("40_shadow_large")
 
-[node name="RepairBike" type="Sprite2D" parent="InteractableLayer"]
-texture_filter = 1
-texture = ExtResource("37_repair_slipped")
 
-[node name="RepairBikeAligning" type="Sprite2D" parent="InteractableLayer"]
-visible = false
-texture_filter = 1
-texture = ExtResource("43_repair_aligned")
 
-[node name="RepairBikeSeated" type="Sprite2D" parent="InteractableLayer"]
-visible = false
-texture_filter = 1
-texture = ExtResource("44_repair_seated")
 
 [node name="RepairGlint" type="Sprite2D" parent="InteractableLayer"]
 modulate = Color(1, 1, 1, 0.72)
@@ -529,23 +514,7 @@ shape = SubResource("RectangleShape2D_zone")
 text = "Go Outside"
 horizontal_alignment = 1
 
-[node name="ChainHotspot" type="Area2D" parent="."]
-script = ExtResource("4_chain")
-quest_id = "chain_repair"
-objective_ids = Array[String](["talk_to_mr_chen", "inspect_chain", "rotate_pedals", "align_chain", "seat_chain", "test_rotation"])
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ChainHotspot"]
-shape = SubResource("RectangleShape2D_zone")
-
-[node name="Prompt" type="Label" parent="ChainHotspot"]
-text = "[Hold E] Pedal"
-horizontal_alignment = 1
-
-[node name="BikeVisual" type="Node2D" parent="ChainHotspot"]
-visible = false
-z_index = 12
-
-[node name="ChainRig" parent="ChainHotspot/BikeVisual" instance=ExtResource("4b_chainrig")]
+[node name="ChainHotspot" parent="." instance=ExtResource("4_chain_station")]
 
 [node name="TireRepairStation" parent="." instance=ExtResource("7_tire")]
 

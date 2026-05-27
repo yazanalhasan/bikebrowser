@@ -39,6 +39,7 @@ func complete_station(_actor: Node = null) -> bool:
 func _open_water_panel() -> void:
 	if interaction_locked or panel != null:
 		return
+	_request_camera_focus()
 	if QuestRegistry.completed_quests.has(quest_id):
 		_emit_quiet_feedback()
 		return
@@ -240,6 +241,7 @@ func _close_panel() -> void:
 		panel.queue_free()
 		panel = null
 	EventBus.pop_modal()
+	EventBus.interaction_focus_released.emit(0.30)
 	interaction_locked = false
 
 func _complete_for_validation() -> bool:

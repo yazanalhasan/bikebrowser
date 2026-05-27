@@ -1,0 +1,23 @@
+{
+  "id": "mine_stability_check",
+  "name": "Mine Stability Check",
+  "description": "Inspect the mine supports and calculate whether the beam is close to its load limit.",
+  "act": 1,
+  "quest_giver": "old_miner_pete",
+  "prerequisites": ["copper_rock_id"],
+  "steps": [
+    { "id": "inspect_support_beam", "description": "Inspect the timber support beam for cracks, shifting, and load paths.", "completion_condition": "inspect_mine_support_beam" },
+    { "id": "calculate_load_capacity", "description": "Calculate that 450 kg on a 500 kg beam uses 90% of capacity.", "completion_condition": "challenge_mine_load_capacity" },
+    { "id": "mark_rubble_density", "description": "Record how lantern light, support spacing, and rubble density reveal mine safety conditions.", "completion_condition": "inspect_mine_rubble_density" }
+  ],
+  "reward": {
+    "allowance": 25,
+    "badge": "Structural Inspector",
+    "reputation": 10,
+    "domain": "materials",
+    "label": "Mine stability check",
+    "childMessage": "You checked the mine before trusting it.",
+    "items": ["hard_hat"],
+    "finalObjective": "mark_rubble_density"
+  }
+}

@@ -13,6 +13,10 @@
     {
       "speaker": "Mr. Chen",
       "text": "This chain has been making a small complaint. Let's listen a little."
+    },
+    {
+      "speaker": "Mr. Chen",
+      "text": "I put my bike on the repair stand in the garage. Come with me and we'll listen from there."
     }
   ],
   "onComplete": {

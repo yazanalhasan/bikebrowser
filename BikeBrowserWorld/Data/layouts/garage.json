@@ -840,6 +840,12 @@
       "color": "#20324726",
       "shape": "soft",
       "z": -1
+    },
+    "InteractableLayer/UniversalTestingMachine": {
+      "x": 905,
+      "y": 365,
+      "scale": 1.0,
+      "z": 11
     }
   }
 }

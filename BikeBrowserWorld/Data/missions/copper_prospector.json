@@ -1,0 +1,24 @@
+{
+  "id": "copper_prospector",
+  "name": "Copper Prospector",
+  "description": "Collect copper samples from the mine and prove why copper is useful for circuits.",
+  "act": 1,
+  "quest_giver": "old_miner_pete",
+  "prerequisites": ["copper_rock_id"],
+  "steps": [
+    { "id": "collect_surface_copper", "description": "Collect surface copper ore from the mine entrance.", "completion_condition": "pickup_surface_copper" },
+    { "id": "collect_deep_copper", "description": "Collect deeper copper ore from the main shaft.", "completion_condition": "pickup_deep_copper" },
+    { "id": "conductivity_question", "description": "Answer Pete's conductivity question: silver conducts better, but copper is cheaper and still excellent.", "completion_condition": "challenge_copper_conductivity" },
+    { "id": "collect_wire_spool", "description": "Collect a wire spool for workshop circuit examples.", "completion_condition": "pickup_wire_spool" }
+  ],
+  "reward": {
+    "allowance": 40,
+    "badge": "Copper Prospector",
+    "reputation": 15,
+    "domain": "materials",
+    "label": "Copper prospector",
+    "childMessage": "You connected ore samples to real conductive wire.",
+    "items": ["refined_copper"],
+    "finalObjective": "collect_wire_spool"
+  }
+}
