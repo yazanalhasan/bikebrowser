@@ -15,4 +15,18 @@ test.describe('route coherence', () => {
     await expect(page.getByText('physics debug')).toHaveCount(0);
     await expect(page.locator('canvas')).toBeVisible();
   });
+
+  test('legacy Phaser route remains available', async ({ page }) => {
+    await page.goto('/legacy-play');
+
+    await expect(page.getByText('Start Adventure!')).toBeVisible();
+  });
+
+  test('canonical Godot route loads in a mobile viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/play');
+
+    await expect(page.getByTestId('godot-prototype-page')).toBeVisible();
+    await expect(page.getByTestId('godot-iframe')).toBeVisible();
+  });
 });

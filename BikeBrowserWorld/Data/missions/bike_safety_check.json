@@ -84,6 +84,11 @@
       "completed": false
     },
     {
+      "id": "cement_set",
+      "description": "Let the patch cement set before adding pressure.",
+      "completed": false
+    },
+    {
       "id": "tube_reinflated",
       "description": "Re-inflate the tube until it firms up.",
       "completed": false

@@ -3,6 +3,8 @@
   "name": "Gather Materials",
   "description": "Collect usable repair supplies from around the neighborhood and bring them to the garage.",
   "quest_giver": "mr_chen",
+  "surface_status": "deferred_backend_only",
+  "deferred_reason": "The current Act 1 player-facing bridge truth uses the condensed Mr. Chen triangle lesson path. The full gather-materials chapter needs a shopkeeper/material routing scene before it should be surfaced.",
   "steps": [
     {
       "id": "talk_to_shopkeeper",

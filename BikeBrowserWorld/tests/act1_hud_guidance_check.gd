@@ -42,7 +42,7 @@ func _run() -> void:
 	_assert_hud_contains("Mr. Chen's Slipped Chain", "Look closely at the chain path", "chain skips dialogue and shows repair objective")
 	_complete_all_objectives(quest_registry, "chain_repair")
 	await process_frame
-	_assert_hud_contains("Celebrate and Learn", "bridge review station", "HUD points to bridge review after drivetrain repair")
+	_assert_hud_contains("Mr. Chen's Triangle Bridge Lesson", "bridge review station", "HUD points to bridge review after drivetrain repair")
 
 	_complete_all_objectives(quest_registry, "bridge_quest_5")
 	await process_frame

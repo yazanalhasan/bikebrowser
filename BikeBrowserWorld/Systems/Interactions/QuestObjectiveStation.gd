@@ -121,6 +121,9 @@ func complete_station(_actor: Node = null) -> bool:
 		_emit_quiet_feedback()
 		interaction_locked = false
 		return QuestRegistry.completed_quests.has(quest_id)
+	if not _objective_evidence_available(objective_id):
+		interaction_locked = false
+		return false
 	QuestRegistry.record_objective(quest_id, objective_id)
 	DiscoveryService.mark_discovered("quest_station_%s" % quest_id, { "questId": quest_id, "objectiveId": objective_id })
 	_maybe_show_presentation(objective_id)
@@ -270,6 +273,30 @@ func _maybe_show_presentation(objective_id: String) -> void:
 		"objective_id": objective_id,
 		"presentation": presentation,
 	})
+
+func _objective_evidence_available(objective_id: String) -> bool:
+	if quest_id != "bridge_quest_5":
+		return true
+	if objective_id == "watch_bridge_presentation":
+		_maybe_show_presentation(objective_id)
+		QuestRegistry.record_objective(quest_id, objective_id)
+		EventBus.interaction_feedback.emit("Open Mr. Chen's bridge notebook and work through each sketch.", "curious")
+		return false
+	if objective_id in ["compare_bridge_types", "identify_bridge_parts", "learn_triangles", "trace_load_path"]:
+		EventBus.interaction_feedback.emit("Use the bridge notebook sketch first; this note needs evidence.", "quiet")
+		return false
+	if objective_id in ["talk_to_neighbors", "receive_badge", "unlock_new_area"]:
+		if not _objective_completed("trace_load_path"):
+			EventBus.interaction_feedback.emit("Finish tracing the bridge load path first.", "quiet")
+			return false
+		return true
+	return true
+
+func _objective_completed(objective_id: String) -> bool:
+	if QuestRegistry.completed_quests.has(quest_id):
+		return true
+	var state: Dictionary = QuestRegistry.active_quests.get(quest_id, {})
+	return state.get("completedObjectives", []).has(objective_id)
 
 func _load_presentation(presentation_id: String) -> Dictionary:
 	var path := "res://Data/presentations/%s.json" % presentation_id

@@ -34,6 +34,8 @@ var active_quests: Dictionary = {}
 var completed_quests: Dictionary = {}
 var quest_errors: Array = []
 var quest_warnings: Array = []
+var objective_record_errors: Array = []
+var strict_objective_schema := true
 
 func _ready() -> void:
 	load_all_missions()
@@ -257,6 +259,15 @@ func get_locked_reasons(quest_id: String) -> Array:
 
 func record_objective(quest_id: String, objective_id: String) -> void:
 	quest_id = _canonical_quest_id(quest_id)
+	var validity := get_objective_record_status(quest_id, objective_id)
+	if validity == "undeclared_objective" or validity == "missing_quest":
+		var message := "QuestRegistry rejected %s for %s:%s" % [validity, quest_id, objective_id]
+		objective_record_errors.append(message)
+		if strict_objective_schema:
+			push_error(message)
+			return
+		EventBus.log_debug(message, { "questId": quest_id, "objectiveId": objective_id })
+		return
 	if not active_quests.has(quest_id):
 		EventBus.log_debug("Objective ignored because quest is inactive", {
 			"questId": quest_id,
@@ -267,6 +278,11 @@ func record_objective(quest_id: String, objective_id: String) -> void:
 	var completed: Array = state.get("completedObjectives", [])
 	if not completed.has(objective_id):
 		completed.append(objective_id)
+	else:
+		EventBus.log_debug("Duplicate objective ignored", {
+			"questId": quest_id,
+			"objectiveId": objective_id
+		})
 	state["completedObjectives"] = completed
 	active_quests[quest_id] = state
 	EventBus.quest_step_completed.emit(quest_id, objective_id)
@@ -275,6 +291,30 @@ func record_objective(quest_id: String, objective_id: String) -> void:
 		complete_quest(quest_id)
 	else:
 		SaveService.save_now("quest_objective")
+
+func get_objective_record_status(quest_id: String, objective_id: String) -> String:
+	quest_id = _canonical_quest_id(quest_id)
+	if not quests.has(quest_id):
+		return "missing_quest"
+	if objective_id.strip_edges().is_empty():
+		return "undeclared_objective"
+	if not _quest_declares_objective(quest_id, objective_id):
+		return "undeclared_objective"
+	if completed_quests.has(quest_id):
+		var completed_state: Dictionary = completed_quests.get(quest_id, {})
+		if completed_state.get("completedObjectives", []).has(objective_id):
+			return "completed_objective"
+	var state: Dictionary = active_quests.get(quest_id, {})
+	if state.get("completedObjectives", []).has(objective_id):
+		return "duplicate_objective"
+	return "valid_objective"
+
+func _quest_declares_objective(quest_id: String, objective_id: String) -> bool:
+	var quest: Dictionary = quests.get(_canonical_quest_id(quest_id), {})
+	for step in quest.get("steps", []):
+		if typeof(step) == TYPE_DICTIONARY and String(step.get("id", "")) == objective_id:
+			return true
+	return false
 
 func complete_quest(quest_id: String) -> void:
 	quest_id = _canonical_quest_id(quest_id)

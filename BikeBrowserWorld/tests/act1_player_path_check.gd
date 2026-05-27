@@ -135,10 +135,21 @@ func _complete_station(scene_root: Node, station_name: String) -> bool:
 	while guard < 12:
 		completed = bool(station.call("complete_station"))
 		await process_frame
+		_maybe_supply_station_evidence(station)
 		if completed:
 			return true
 		guard += 1
 	return false
+
+func _maybe_supply_station_evidence(station: Node) -> void:
+	if String(station.get("quest_id")) != "bridge_quest_5":
+		return
+	var quest_registry: Node = root.get_node_or_null("QuestRegistry")
+	if quest_registry == null or not quest_registry.is_active("bridge_quest_5"):
+		return
+	for objective_id in ["compare_bridge_types", "identify_bridge_parts", "learn_triangles", "trace_load_path"]:
+		if quest_registry.get_objective_record_status("bridge_quest_5", objective_id) == "valid_objective":
+			quest_registry.record_objective("bridge_quest_5", objective_id)
 
 func _station_has_visible_guidance(scene_root: Node, station_name: String) -> bool:
 	var station := scene_root.get_node_or_null(station_name)
