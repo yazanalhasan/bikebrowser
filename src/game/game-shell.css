@@ -1,0 +1,18 @@
+.bb-game-shell {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #1f2a27;
+}
+
+.bb-game-frame {
+  width: 100%;
+  height: 100%;
+}
+
+.bb-game-frame canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: auto;
+}

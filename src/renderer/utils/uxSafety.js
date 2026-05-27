@@ -32,6 +32,7 @@ export const ROUTE_EXEMPTIONS = {
   '/play': ['MUST_HAVE_HOME_BUTTON', 'MUST_HAVE_HEADER', 'MUST_HAVE_NAV_CONTAINER', 'NO_EMPTY_SCREEN'],
   '/legacy-play': ['MUST_HAVE_HOME_BUTTON', 'MUST_HAVE_HEADER', 'MUST_HAVE_NAV_CONTAINER', 'NO_EMPTY_SCREEN'],
   '/godot-prototype': ['MUST_HAVE_HOME_BUTTON', 'MUST_HAVE_HEADER', 'MUST_HAVE_NAV_CONTAINER', 'NO_EMPTY_SCREEN'],
+  '/game-rebuild': ['MUST_HAVE_HOME_BUTTON', 'MUST_HAVE_HEADER', 'MUST_HAVE_NAV_CONTAINER', 'NO_EMPTY_SCREEN'],
 };
 
 // ============================================================================

@@ -18,6 +18,7 @@ const ShoppingPage = lazy(() => import('./pages/ShoppingPage'));
 const BuildPlannerPage = lazy(() => import('./pages/BuildPlannerPage'));
 const AllProjectNotesPage = lazy(() => import('./pages/AllProjectNotesPage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
+const GameRebuildPage = lazy(() => import('./pages/GameRebuildPage'));
 const Game3DPage = lazy(() => import('./pages/Game3DPage'));
 const GodotPrototypePage = lazy(() => import('./pages/GodotPrototypePage'));
 const SpellingTrainerApp = lazy(() => import('./spellingTrainer/SpellingTrainerApp'));
@@ -76,6 +77,7 @@ function AppContent() {
           <Route path="/shop" element={<ShoppingPage />} />
           <Route path="/safe-search" element={<SafeSearchPage />} />
           <Route path="/play" element={<GodotPrototypePage />} />
+          <Route path="/game-rebuild" element={<GameRebuildPage />} />
           <Route path="/legacy-play" element={<GamePage />} />
           <Route path="/godot-prototype" element={<GodotPrototypePage />} />
           <Route path="/play3d" element={<Game3DPage />} />

@@ -1,0 +1,17 @@
+export const act1NotebookEntries = [
+  { id: 'bike_check', category: 'Bike', title: 'Bike Check', body: 'Tires, brakes, chain, and frame all need a quick systems check before crossing rough ground.' },
+  { id: 'broken_wash', category: 'Observation', title: 'Broken Wash', body: 'The dry wash cuts the neighborhood in two after flood water damaged the crossing.' },
+  { id: 'bridge_problem', category: 'Construction', title: 'Bridge Problem', body: 'A useful bridge needs a deck, supports, and braces that carry load safely.' },
+  { id: 'mesquite', category: 'Material', title: 'Mesquite', body: 'Mesquite is strong for its size and comes from the local desert ecology.' },
+  { id: 'steel', category: 'Material', title: 'Steel', body: 'Steel is strong and reliable, but heavier and less locally available.' },
+  { id: 'copper_brace', category: 'Material', title: 'Copper Brace', body: 'Copper conducts well and can brace small structures, but it is not always the main load-bearing choice.' },
+  { id: 'weak_scrap', category: 'Material', title: 'Weak Scrap', body: 'Scrap that bends too easily is useful evidence: not every found material belongs in a bridge.' },
+  { id: 'material_test_results', category: 'Test Result', title: 'Material Test Results', body: 'The UTM made differences visible: stiffness, strength, brittleness, and usefulness are not the same thing.' },
+  { id: 'bridge_plan', category: 'Construction', title: 'Bridge Plan', body: 'The safest plan uses a deck, supports, and triangular braces selected from tested materials.' },
+  { id: 'desert_plant', category: 'Ecology', title: 'Desert Plant', body: 'Desert plants solve heat, water, and shade problems. Harvesting has limits.' },
+  { id: 'chemistry_result', category: 'Chemistry', title: 'Chemistry Result', body: 'Mixing, concentration, drying, and heat change whether a repair compound works.' },
+  { id: 'spanish_interaction', category: 'Language', title: 'Spanish Interaction', body: 'A neighbor used Spanish naturally while offering help and trust.' },
+  { id: 'arabic_interaction', category: 'Language', title: 'Arabic Interaction', body: 'A mentor used Arabic as part of relationship and welcome, not as a quiz.' },
+  { id: 'trust_milestone', category: 'Trust', title: 'Trust Milestone', body: 'Neighbors trust Zuzu because observations, testing, and help became visible actions.' },
+  { id: 'wider_map_unlocked', category: 'Map', title: 'Wider Map Unlocked', body: 'The repaired crossing reveals the first hint that local systems connect to a much bigger world.' },
+];

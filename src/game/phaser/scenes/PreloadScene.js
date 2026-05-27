@@ -1,0 +1,19 @@
+import { createPlaceholderTextures } from '../systems/AssetRegistry.js';
+import { Act1RuntimeSystem } from '../systems/Act1RuntimeSystem.js';
+
+export default class PreloadScene extends Phaser.Scene {
+  constructor() {
+    super('PreloadScene');
+  }
+
+  create() {
+    createPlaceholderTextures(this);
+    const runtime = new Act1RuntimeSystem(this.game);
+    runtime.bindRegistry(this.registry);
+    window.__GAME__ = runtime.createDebugApi();
+    this.scene.start('NeighborhoodScene');
+    this.scene.launch('QuestScene');
+    this.scene.launch('DialogueScene');
+    this.scene.launch('DebugScene');
+  }
+}

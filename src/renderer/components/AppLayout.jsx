@@ -28,6 +28,7 @@ function AppLayout({ children }) {
     '/play',
     '/legacy-play',
     '/godot-prototype',
+    '/game-rebuild',
   ].includes(location.pathname);
   const [cartOpen, setCartOpen] = useState(false);
   const globalCart = useGlobalCart();
