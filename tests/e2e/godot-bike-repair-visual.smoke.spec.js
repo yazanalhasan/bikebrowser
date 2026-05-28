@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 const SCREENSHOT_DIR = path.resolve('project_audit/screenshots/bike_repair_visual_correctness_rescue');
-const PLAY_BASE_URL = process.env.BIKEBROWSER_PLAY_BASE_URL || 'http://localhost:5174';
+const PLAY_BASE_URL = process.env.BIKEBROWSER_PLAY_BASE_URL || '';
 
 function playUrl(query = '') {
   return `${PLAY_BASE_URL}/play${query}`;

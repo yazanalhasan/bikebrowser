@@ -12,7 +12,9 @@ import { NotebookSystem } from './NotebookSystem.js';
 import { QuestSystem } from './QuestSystem.js';
 import { TrustSystem } from './TrustSystem.js';
 import { PLACEHOLDER_ASSET_CONTRACT } from './AssetRegistry.js';
+import { getAssetRegistryState } from './AssetRegistry.js';
 import { clearRebuildState, loadRebuildState, saveRebuildState } from './SaveSystem.js';
+import { Act1AudioSystem } from '../audio/Act1AudioSystem.js';
 
 export class Act1RuntimeSystem {
   constructor(game = null) {
@@ -43,6 +45,7 @@ export class Act1RuntimeSystem {
     this.languageSystem = new LanguageSystem();
     this.discoveryMapSystem = new DiscoveryMapSystem();
     this.debugDiagnosticSystem = new DebugDiagnosticSystem(this);
+    this.audioSystem = new Act1AudioSystem();
     this.assetContract = PLACEHOLDER_ASSET_CONTRACT;
     this.act1Complete = false;
     this.feedbackLog = [];
@@ -63,6 +66,7 @@ export class Act1RuntimeSystem {
     registry.set('trustSystem', this.trustSystem);
     registry.set('languageSystem', this.languageSystem);
     registry.set('discoveryMapSystem', this.discoveryMapSystem);
+    registry.set('act1AudioSystem', this.audioSystem);
   }
 
   completeObjective(objectiveId) {
@@ -81,13 +85,31 @@ export class Act1RuntimeSystem {
     this.feedbackLog = this.feedbackLog.slice(-20);
     this.lastFeedback = entry;
     this.registry?.events?.emit('act1:feedback', entry);
+    this.routeFeedbackAudio(kind);
     return entry;
+  }
+
+  routeFeedbackAudio(kind) {
+    const cueByKind = {
+      notebook: 'notebook_open',
+      bike: 'material_test',
+      utm: 'material_test',
+      bridge: 'bridge_confirm',
+      map: 'map_unlock',
+      chemistry: 'chemistry_success',
+      ecology: 'ecology_observe',
+      trust: 'trust_gain',
+      language: 'trust_gain',
+      discovery: 'map_unlock',
+      inventory: 'material_test',
+    };
+    if (cueByKind[kind]) this.audioSystem.playInteractionCue(cueByKind[kind]);
   }
 
   unlockNotebookEntries(entryIds = []) {
     const results = this.notebookSystem.unlockMany(entryIds);
     for (const result of results) {
-      if (result.ok && result.isNew) this.recordFeedback('notebook', `Notebook: ${result.entry.title}`, result.entry);
+      if (result.ok && result.isNew) this.recordFeedback('notebook', `New field note: ${result.entry.title}`, result.entry);
     }
     return results;
   }
@@ -119,17 +141,19 @@ export class Act1RuntimeSystem {
         this.unlockNotebookEntries(['bike_check']);
         this.completeObjective('inspect_bike');
         this.completeObjective('unlock_garage');
-        this.recordFeedback('bike', 'Bike check complete: tires, brakes, chain, frame.');
+        this.recordFeedback('bike', 'Bike check complete: tires, brakes, chain, frame checked.');
         return { ok: true };
       },
       dry_wash: () => {
+        this.audioSystem.transitionMusic('bridge_problem');
+        this.audioSystem.setAmbient('dry_wash');
         this.discoveryMapSystem.discover('dry_wash');
         this.discoveryMapSystem.discover('bridge');
         this.unlockNotebookEntries(['broken_wash', 'bridge_problem']);
         this.completeObjective('find_bridge_path');
         this.completeObjective('discover_wash');
         this.completeObjective('inspect_bridge');
-        this.recordFeedback('discovery', 'Dry wash mapped. The crossing needs tested evidence.');
+        this.recordFeedback('discovery', 'Dry wash mapped. The bridge needs proof before anyone crosses.');
         return { ok: true };
       },
       collect_materials: () => {
@@ -158,6 +182,8 @@ export class Act1RuntimeSystem {
   }
 
   testMaterial(materialId) {
+    this.audioSystem.transitionMusic('utm_testing');
+    this.audioSystem.setAmbient('garage_testing');
     const result = this.materialsLabSystem.testMaterial(materialId);
     if (!result.ok) return result;
     this.unlockNotebookEntries(['material_test_results']);
@@ -168,7 +194,7 @@ export class Act1RuntimeSystem {
       weak_scrap: 'test_scrap',
     };
     if (objectiveByMaterial[materialId]) this.completeObjective(objectiveByMaterial[materialId]);
-    this.recordFeedback('utm', `${result.result.displayName}: ${result.result.strengthBand}.`, result.result);
+    this.recordFeedback('utm', `${result.result.displayName}: ${result.result.strengthBand}. Evidence added.`, result.result);
     return result;
   }
 
@@ -180,7 +206,7 @@ export class Act1RuntimeSystem {
     }
     this.unlockNotebookEntries(['bridge_plan']);
     ['choose_deck', 'choose_support', 'choose_brace'].forEach((id) => this.completeObjective(id));
-    this.recordFeedback('bridge', 'Bridge plan ready: deck, supports, triangles, tested materials.', result.plan);
+    this.recordFeedback('bridge', 'Bridge plan ready: triangles, supports, and tested materials.', result.plan);
     return result;
   }
 
@@ -192,14 +218,22 @@ export class Act1RuntimeSystem {
     }
     this.bikeSystem.upgradeBike();
     this.completeObjective('repair_bridge');
-    this.constructionSystem.crossBridge();
+    const crossing = this.constructionSystem.crossBridge();
     this.completeObjective('cross_bridge');
     this.discoveryMapSystem.discover('wider_gate');
-    this.recordFeedback('bridge', 'Crossing reconnected. The neighborhood path is open again.');
-    return result;
+    this.unlockNotebookEntries(['bridge_repaired']);
+    this.audioSystem.transitionMusic('map_unlock');
+    this.recordFeedback(
+      'bridge',
+      'Bridge repaired: Zuzu tested, built, crossed, and the path feels safe again.',
+      { ...result, crossingMoment: crossing.crossingMoment }
+    );
+    return { ...result, crossingMoment: crossing.crossingMoment };
   }
 
   observeEcology(speciesId) {
+    this.audioSystem.transitionMusic('ecology_chemistry');
+    this.audioSystem.setAmbient('ecology_patch');
     const result = this.ecologySystem.observe(speciesId);
     if (!result.ok) return result;
     this.unlockNotebookEntries(['desert_plant']);
@@ -214,6 +248,8 @@ export class Act1RuntimeSystem {
   }
 
   runChemistryRecipe(recipeId) {
+    this.audioSystem.transitionMusic('ecology_chemistry');
+    this.audioSystem.setAmbient('chemistry_station');
     const result = this.chemistrySystem.runRecipe(recipeId);
     if (!result.ok) return result;
     this.unlockNotebookEntries(['chemistry_result']);
@@ -330,6 +366,7 @@ export class Act1RuntimeSystem {
     this.trustSystem = fresh.trustSystem;
     this.languageSystem = fresh.languageSystem;
     this.discoveryMapSystem = fresh.discoveryMapSystem;
+    this.audioSystem.stopSpeech();
     this.act1Complete = false;
     this.feedbackLog = [];
     this.lastFeedback = null;
@@ -352,6 +389,17 @@ export class Act1RuntimeSystem {
       getDiscoveryState: () => this.discoveryMapSystem.getState(),
       getTrustState: () => this.trustSystem.getState(),
       getLanguageState: () => this.languageSystem.getState(),
+      getAudioState: () => this.audioSystem.getState(),
+      getAssetRegistryState: () => getAssetRegistryState(),
+      normalizeSpeech: (text, context) => this.audioSystem.normalizer.normalize(text, context),
+      getVoiceProfile: (speakerOrVoiceId) => this.audioSystem.voiceRegistry.getProfile(speakerOrVoiceId),
+      speakLine: (text, voiceId, options) => this.audioSystem.speakLine(text, voiceId, options),
+      stopSpeech: () => this.audioSystem.stopSpeech(),
+      replaySpeech: () => this.audioSystem.replayLast(),
+      unlockAudio: () => this.audioSystem.unlockAudio(),
+      setAudioSettings: (settings) => this.audioSystem.setSettings(settings),
+      transitionMusic: (stateKey) => this.audioSystem.transitionMusic(stateKey),
+      playInteractionCue: (cueId) => this.audioSystem.playInteractionCue(cueId),
       getFeedbackState: () => ({ last: this.lastFeedback, log: this.feedbackLog }),
       validateLoadedState: (state) => this.validateLoadedState(state),
       saveGame: () => this.saveGame(),

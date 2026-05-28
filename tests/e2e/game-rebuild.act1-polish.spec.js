@@ -23,6 +23,101 @@ test.describe('Act 1 polish hardening', () => {
     expect(feedback.last.message).toContain('Bike check complete');
   });
 
+  test('normal HUD and notebook read as child-facing surfaces by default', async ({ page }) => {
+    await ready(page);
+    const hud = await page.evaluate(() => {
+      const questScene = window.__bikebrowserRebuildGame.scene.getScene('QuestScene');
+      const neighborhood = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+      neighborhood.updateEvidencePanel();
+      return {
+        title: questScene.title.text,
+        body: questScene.body.text,
+        cluePanel: neighborhood.evidencePanel.text,
+        debugVisible: window.__bikebrowserRebuildGame.scene.getScene('DebugScene').text.visible,
+      };
+    });
+    expect(hud.title).toBe('Today\'s trail');
+    expect(hud.body).not.toContain('✓');
+    expect(hud.body).not.toContain('•');
+    expect(hud.cluePanel).toContain('Current clue');
+    expect(hud.cluePanel).not.toContain('Trust:');
+    expect(hud.debugVisible).toBe(false);
+
+    await page.evaluate(() => {
+      window.__GAME__.handleInteraction('bike_check');
+      window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene').toggleNotebook();
+    });
+    const notebook = await page.evaluate(() => {
+      const scene = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+      return {
+        header: scene.notebookHeader.text,
+        categories: scene.notebookCategoryText.text,
+        cards: scene.notebookCardsText.text,
+        hint: scene.notebookHint.text,
+      };
+    });
+    expect(notebook.header).toContain('Zuzu\'s Field Notebook');
+    expect(notebook.header).toContain('clues');
+    expect(notebook.cards).toContain('★ Bike Check');
+    expect(notebook.cards).toContain('Tires, brakes, chain');
+    expect(notebook.hint).toContain('New clues');
+  });
+
+  test('neighborhood characters use larger Aseprite animation sheets', async ({ page }) => {
+    await ready(page);
+
+    const visuals = await page.evaluate(async () => {
+      const scene = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+      const before = {
+        playerScale: scene.playerVisualState.scale,
+        playerTexture: scene.player.texture.key,
+        playerAnimation: scene.player.anims?.currentAnim?.key || null,
+        animatedSheets: scene.characterVisuals.animatedSheets,
+        npcIds: scene.characterVisuals.npcIds,
+        npcScale: scene.characterVisuals.npcScale,
+      };
+      scene.updatePlayerAnimation(performance.now(), { x: 1, y: 0 });
+      return {
+        ...before,
+        movingAnimation: scene.playerVisualState.animation,
+      };
+    });
+
+    expect(visuals.playerScale).toBeGreaterThan(1.35);
+    expect(visuals.npcScale).toBeGreaterThan(1.3);
+    expect(visuals.playerTexture).toBe('act1.zuzu.walk.sheet');
+    expect(visuals.playerAnimation).toBe('zuzu.idle');
+    expect(visuals.movingAnimation).toBe('zuzu.walk');
+    expect(visuals.npcIds).toEqual(['mr_chen', 'neighbor', 'auntie_mariam']);
+    expect(visuals.animatedSheets).toEqual(expect.arrayContaining([
+      'act1.npc.garage_mentor.talk.sheet',
+      'act1.npc.neighbor.talk.sheet',
+      'act1.npc.arabic_mentor.talk.sheet',
+    ]));
+  });
+
+  test('visual language state covers the full Act 1 loop without generated runtime art', async ({ page }) => {
+    await ready(page);
+    const visualLanguage = await page.evaluate(() => {
+      const scene = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+      return scene.visualLanguageState;
+    });
+
+    expect(visualLanguage.scope).toBe('complete_act1');
+    expect(visualLanguage.generatedRuntimeArt).toBe(false);
+    expect(visualLanguage.authoredBeats).toEqual(expect.arrayContaining([
+      'garage_sanctuary',
+      'npc_identity_cluster',
+      'dry_wash_bridge_problem',
+      'utm_tactile_testing',
+      'ecology_living_patch',
+      'chemistry_maker_surface',
+      'field_notebook_reward',
+      'bridge_repaired_payoff',
+      'wider_map_tease',
+    ]));
+  });
+
   test('bridge planning rejects weak-only plans and accepts tested evidence', async ({ page }) => {
     await ready(page);
     await page.evaluate(() => window.__GAME__.resetAct1());
@@ -46,6 +141,34 @@ test.describe('Act 1 polish hardening', () => {
     const lockedMap = await page.evaluate(() => window.__GAME__.unlockWiderMap());
     expect(lockedMap.ok).toBe(false);
     expect(lockedMap.reason).toBe('bridge_not_reconnected');
+  });
+
+  test('UTM tactile cues and bridge payoff are inspectable game state', async ({ page }) => {
+    await ready(page);
+    await page.evaluate(() => window.__GAME__.resetAct1());
+
+    await page.evaluate(() => {
+      window.__GAME__.handleInteraction('collect_materials');
+      ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => window.__GAME__.testMaterial(id));
+      window.__GAME__.completeBridgePlan('tested_triangle_plan');
+      window.__GAME__.repairBridge();
+    });
+
+    const state = await page.evaluate(() => window.__GAME__.getAct1State());
+    expect(state.materialTests.tactileSummary.map((entry) => entry.materialId)).toEqual([
+      'mesquite',
+      'steel',
+      'copper_brace',
+      'weak_scrap',
+    ]);
+    expect(state.materialTests.tested.find((entry) => entry.materialId === 'weak_scrap').tactileCue).toContain('fails early');
+    expect(state.bridge.repairMoment.childSummary).toContain('evidence');
+    expect(state.bridge.crossingMoment.unlockHint).toContain('safe again');
+    expect(state.notebook.unlocked).toContain('bridge_repaired');
+
+    const feedback = await page.evaluate(() => window.__GAME__.getFeedbackState().last);
+    expect(feedback.message).toContain('Bridge repaired');
+    expect(feedback.details.repairMoment.socialAcknowledgement).toContain('tested');
   });
 
   test('diagnostics catch structural regressions and save corruption recovers safely', async ({ page }) => {

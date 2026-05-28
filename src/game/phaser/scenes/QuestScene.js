@@ -11,20 +11,25 @@ export default class QuestScene extends Phaser.Scene {
     this.registry.set('questSystem', questSystem);
 
     this.panel = this.add.container(18, 18).setScrollFactor(0).setDepth(1000);
-    const bg = this.add.rectangle(0, 0, 310, 96, 0x16201d, 0.72).setOrigin(0, 0);
+    const bg = this.add.rectangle(0, 0, 342, 86, 0x203029, 0.72).setOrigin(0, 0);
+    bg.setStrokeStyle(2, 0xf2c46d, 0.44);
+    const paperGlow = this.add.rectangle(8, 8, 326, 70, 0xfff0c7, 0.05).setOrigin(0, 0);
+    const trailDot = this.add.circle(22, 25, 7, 0xf2c46d, 0.92);
+    const trailLine = this.add.rectangle(34, 25, 44, 2, 0x8ed6c9, 0.58).setOrigin(0, 0.5);
     const title = this.add.text(14, 10, '', {
       fontFamily: 'Arial',
-      fontSize: '16px',
+      fontSize: '15px',
       color: '#ffe8aa',
+      fontStyle: 'bold',
     });
-    const body = this.add.text(14, 35, '', {
+    const body = this.add.text(14, 34, '', {
       fontFamily: 'Arial',
-      fontSize: '13px',
+      fontSize: '14px',
       color: '#f4f1dc',
-      lineSpacing: 4,
-      wordWrap: { width: 280 },
+      lineSpacing: 3,
+      wordWrap: { width: 300 },
     });
-    this.panel.add([bg, title, body]);
+    this.panel.add([bg, paperGlow, trailDot, trailLine, title, body]);
     this.title = title;
     this.body = body;
     this.refresh();
@@ -35,7 +40,8 @@ export default class QuestScene extends Phaser.Scene {
   refresh() {
     const summary = this.registry.get('questSystem')?.getSummary();
     if (!summary) return;
-    this.title.setText(summary.name);
-    this.body.setText(summary.objectives.map((objective) => `${objective.complete ? '✓' : '•'} ${objective.label}`).join('\n'));
+    const nextObjective = summary.objectives.find((objective) => !objective.complete);
+    this.title.setText('Today\'s trail');
+    this.body.setText(nextObjective ? `${summary.name}: ${nextObjective.label}` : `${summary.name}: follow the next clue.`);
   }
 }
