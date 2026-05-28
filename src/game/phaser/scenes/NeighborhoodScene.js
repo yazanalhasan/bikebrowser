@@ -29,6 +29,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
       scope: 'complete_act1',
       palette: 'warm_sonoran_neighborhood',
       authoredBeats: [
+        'southwest_house_styles',
+        'layered_sonoran_mountains',
         'garage_sanctuary',
         'npc_identity_cluster',
         'dry_wash_bridge_problem',
@@ -113,9 +115,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this.add.rectangle(x, 486, 56, 4, 0xd8c073).setAlpha(0.48);
     }
 
-    this.add.image(265, 300, ASSET_KEYS.house).setScale(1.4);
-    this.add.text(214, 374, 'Zuzu home', labelStyle());
-    this.add.image(520, 270, ASSET_KEYS.house).setScale(1.1).setTint(0x8f6f5c);
+    this.drawSouthwestHomes();
     this.drawGarageWarmth();
     this.drawGarageSanctuaryDetails();
     this.add.image(650, 312, ASSET_KEYS.garageWorkbench).setScale(1.0);
@@ -201,26 +201,142 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
   drawSonoranVista() {
     const vista = this.add.graphics();
-    vista.fillStyle(0xffd17a, 0.18).fillEllipse(264, 152, 420, 118);
-    vista.fillStyle(0x6d5a82, 0.42);
-    vista.fillTriangle(0, 342, 185, 106, 398, 342);
-    vista.fillTriangle(292, 340, 528, 118, 782, 340);
-    vista.fillTriangle(1038, 338, 1286, 106, 1600, 338);
-    vista.fillStyle(0xd89152, 0.3);
-    vista.fillTriangle(52, 334, 185, 106, 264, 334);
-    vista.fillTriangle(1100, 334, 1286, 106, 1390, 334);
-    vista.fillStyle(0x8bbf65, 0.26).fillRect(0, 318, 1600, 70);
+    vista.fillStyle(0xffd17a, 0.14).fillEllipse(264, 144, 520, 132);
+    vista.fillStyle(0xfff0c7, 0.12).fillEllipse(860, 118, 740, 56);
+
+    // Layered basin-and-range silhouettes, with softer Sonoran colors than the old triangle peaks.
+    this.drawMountainRange(vista, [
+      [0, 332], [96, 276], [178, 176], [268, 316], [382, 254], [520, 126],
+      [686, 318], [812, 246], [932, 326], [1084, 198], [1248, 116],
+      [1390, 286], [1540, 178], [1600, 232], [1600, 356], [0, 356],
+    ], 0x4d526d, 0.42);
+    this.drawMountainRange(vista, [
+      [0, 346], [132, 292], [250, 236], [384, 332], [520, 274],
+      [664, 202], [810, 336], [990, 286], [1128, 184], [1288, 334],
+      [1438, 258], [1600, 318], [1600, 368], [0, 368],
+    ], 0x755c76, 0.34);
+    this.drawMountainRange(vista, [
+      [0, 362], [140, 318], [268, 286], [418, 354], [612, 302],
+      [792, 274], [964, 352], [1134, 300], [1300, 258], [1468, 344],
+      [1600, 314], [1600, 384], [0, 384],
+    ], 0xb7764a, 0.25);
+
+    vista.fillStyle(0xf2c46d, 0.18);
+    vista.fillTriangle(92, 318, 178, 176, 234, 318);
+    vista.fillTriangle(1108, 304, 1248, 116, 1322, 304);
+    vista.fillTriangle(1288, 334, 1438, 258, 1490, 334);
+    vista.lineStyle(3, 0xffd17a, 0.14);
+    vista.lineBetween(158, 226, 94, 330);
+    vista.lineBetween(1240, 162, 1158, 320);
+    vista.lineBetween(664, 202, 728, 316);
+
+    vista.fillStyle(0x8bbf65, 0.28).fillRect(0, 318, 1600, 70);
+    vista.fillStyle(0x5e7249, 0.24).fillRoundedRect(0, 350, 1600, 26, 12);
     for (const [x, y, h] of [[138, 362, 68], [226, 348, 84], [1138, 354, 80], [1470, 344, 96]]) {
       vista.fillStyle(0x2f7f5c, 0.88).fillRoundedRect(x, y - h, 10, h, 5);
       vista.fillRoundedRect(x - 18, y - h * 0.46, 18, 8, 4);
       vista.fillRoundedRect(x + 10, y - h * 0.65, 18, 8, 4);
     }
-    for (const [x, y] of [[178, 304], [356, 296], [1110, 302], [1328, 292]]) {
-      vista.fillStyle(0xd9b28a, 0.78).fillRect(x, y, 84, 48);
-      vista.fillStyle(0x9f4029, 0.86).fillTriangle(x - 8, y, x + 42, y - 24, x + 92, y);
-      vista.fillStyle(0xffd57a, 0.82).fillRect(x + 18, y + 16, 14, 16);
-      vista.fillRect(x + 54, y + 16, 14, 16);
+    this.drawBackgroundHome(vista, 178, 304, 'adobe');
+    this.drawBackgroundHome(vista, 356, 296, 'mission');
+    this.drawBackgroundHome(vista, 1110, 302, 'territorial');
+    this.drawBackgroundHome(vista, 1328, 292, 'adobe');
+  }
+
+  drawMountainRange(graphics, points, color, alpha) {
+    graphics.fillStyle(color, alpha);
+    graphics.beginPath();
+    graphics.moveTo(points[0][0], points[0][1]);
+    for (const [x, y] of points.slice(1)) graphics.lineTo(x, y);
+    graphics.closePath();
+    graphics.fillPath();
+  }
+
+  drawBackgroundHome(graphics, x, y, style) {
+    if (style === 'mission') {
+      graphics.fillStyle(0xe1c39b, 0.84).fillRoundedRect(x, y + 6, 88, 44, 5);
+      graphics.fillStyle(0xb34f2f, 0.9).fillTriangle(x - 8, y + 8, x + 44, y - 16, x + 96, y + 8);
+      graphics.fillStyle(0xf5d47c, 0.88).fillRoundedRect(x + 34, y + 24, 18, 26, 9);
+      graphics.fillStyle(0x3d5d68, 0.72).fillRoundedRect(x + 12, y + 22, 16, 14, 3);
+      graphics.fillRoundedRect(x + 62, y + 22, 16, 14, 3);
+      return;
     }
+    if (style === 'territorial') {
+      graphics.fillStyle(0xc99c70, 0.84).fillRoundedRect(x, y + 2, 92, 46, 4);
+      graphics.fillStyle(0xf0d19a, 0.8).fillRect(x - 6, y + 10, 104, 8);
+      graphics.fillStyle(0x6b4a33, 0.72).fillRect(x + 10, y + 18, 4, 30);
+      graphics.fillRect(x + 78, y + 18, 4, 30);
+      graphics.fillStyle(0xffd57a, 0.86).fillRect(x + 40, y + 25, 16, 23);
+      return;
+    }
+    graphics.fillStyle(0xd4a57a, 0.84).fillRoundedRect(x, y + 4, 88, 46, 10);
+    graphics.fillStyle(0xb78558, 0.9).fillRect(x - 2, y, 92, 10);
+    graphics.fillStyle(0x6b4a33, 0.68);
+    for (let i = 10; i < 84; i += 18) graphics.fillRect(x + i, y - 4, 8, 8);
+    graphics.fillStyle(0xffd57a, 0.86).fillRect(x + 20, y + 24, 14, 18);
+    graphics.fillRect(x + 58, y + 24, 14, 18);
+  }
+
+  drawSouthwestHomes() {
+    this.drawPuebloRevivalHome(170, 246, 205, 108, {
+      body: 0xbf805b,
+      trim: 0xe7bd88,
+      door: 0xf2c46d,
+      label: 'Zuzu home',
+    });
+    this.drawMissionTileHome(416, 230, 160, 104);
+    this.drawTerritorialPorchHome(566, 220, 200, 110);
+  }
+
+  drawPuebloRevivalHome(x, y, w, h, options = {}) {
+    const g = this.add.graphics();
+    const body = options.body || 0xc78d67;
+    const trim = options.trim || 0xe1b783;
+    g.fillStyle(0x17221f, 0.18).fillEllipse(x + w * 0.5, y + h + 8, w * 0.48, 12);
+    g.fillStyle(body, 1).fillRoundedRect(x, y + 18, w, h - 18, 14);
+    g.fillStyle(trim, 0.95).fillRoundedRect(x + 12, y + 8, w - 24, 24, 10);
+    g.fillStyle(0x8b5a3e, 1).fillRoundedRect(x - 8, y + 6, w + 16, 16, 8);
+    g.fillStyle(0x5e392b, 0.86);
+    for (let beamX = x + 18; beamX < x + w - 12; beamX += 28) {
+      g.fillRoundedRect(beamX, y, 14, 16, 5);
+    }
+    g.fillStyle(options.door || 0xf2c46d, 1).fillRoundedRect(x + w * 0.44, y + h - 48, 32, 48, 5);
+    g.fillStyle(0x31485a, 0.86).fillRoundedRect(x + 28, y + 48, 36, 26, 5);
+    g.fillRoundedRect(x + w - 66, y + 48, 36, 26, 5);
+    g.lineStyle(2, 0xfff0c7, 0.28).strokeRoundedRect(x + 6, y + 22, w - 12, h - 28, 12);
+    this.add.text(x + 42, y + h + 10, options.label || 'adobe home', labelStyle());
+  }
+
+  drawMissionTileHome(x, y, w, h) {
+    const g = this.add.graphics();
+    g.fillStyle(0x17221f, 0.16).fillEllipse(x + w * 0.5, y + h + 8, w * 0.46, 12);
+    g.fillStyle(0xd9b28a, 1).fillRoundedRect(x + 14, y + 34, w - 28, h - 34, 7);
+    g.fillStyle(0xb44f30, 1).fillTriangle(x, y + 38, x + w * 0.5, y + 2, x + w, y + 38);
+    g.fillStyle(0x8e3d2a, 0.72);
+    for (let tileX = x + 22; tileX < x + w - 20; tileX += 18) {
+      g.fillTriangle(tileX, y + 28, tileX + 9, y + 20, tileX + 18, y + 28);
+    }
+    g.fillStyle(0x31485a, 0.82).fillRoundedRect(x + 34, y + 58, 28, 22, 4);
+    g.fillRoundedRect(x + w - 62, y + 58, 28, 22, 4);
+    g.fillStyle(0xf2c46d, 1).fillRoundedRect(x + w * 0.5 - 15, y + 62, 30, 38, 15);
+    g.lineStyle(4, 0xf5d6a6, 0.62).strokeRoundedRect(x + w * 0.5 - 19, y + 58, 38, 44, 18);
+    this.add.text(x + 18, y + h + 10, 'mission tile home', labelStyle()).setAlpha(0.84);
+  }
+
+  drawTerritorialPorchHome(x, y, w, h) {
+    const g = this.add.graphics();
+    g.fillStyle(0x17221f, 0.16).fillEllipse(x + w * 0.5, y + h + 8, w * 0.46, 12);
+    g.fillStyle(0xc79b6f, 1).fillRoundedRect(x, y + 22, w, h - 22, 5);
+    g.fillStyle(0xf0d19a, 0.94).fillRoundedRect(x - 10, y + 42, w + 20, 18, 3);
+    g.fillStyle(0x6b4a33, 0.86);
+    for (let postX = x + 14; postX < x + w; postX += 46) {
+      g.fillRoundedRect(postX, y + 56, 7, h - 56, 3);
+    }
+    g.fillStyle(0x8f5e3d, 1).fillTriangle(x - 4, y + 24, x + w * 0.5, y, x + w + 4, y + 24);
+    g.fillStyle(0x31485a, 0.82).fillRoundedRect(x + 32, y + 66, 28, 24, 4);
+    g.fillRoundedRect(x + w - 60, y + 66, 28, 24, 4);
+    g.fillStyle(0xf2c46d, 1).fillRoundedRect(x + w * 0.48, y + 68, 28, 42, 4);
+    this.add.text(x + 22, y + h + 10, 'territorial porch', labelStyle()).setAlpha(0.84);
   }
 
   drawDesertDetails() {
