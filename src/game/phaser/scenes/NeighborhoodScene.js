@@ -97,8 +97,9 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
   createEnvironment() {
     this.add.rectangle(800, 500, 1600, 1000, 0x2e4a3d);
-    this.add.rectangle(800, 306, 1600, 178, 0x5e7249).setAlpha(0.34);
-    this.add.rectangle(800, 162, 1600, 110, 0x243b37).setAlpha(0.32);
+    this.add.rectangle(800, 238, 1600, 286, 0x7fb08f).setAlpha(0.22);
+    this.add.rectangle(800, 306, 1600, 178, 0x8a8d57).setAlpha(0.3);
+    this.add.rectangle(800, 128, 1600, 160, 0x7db3b8).setAlpha(0.2);
     this.drawSonoranVista();
     this.drawNeighborhoodColorLanguage();
 
@@ -201,37 +202,49 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
   drawSonoranVista() {
     const vista = this.add.graphics();
-    vista.fillStyle(0xffd17a, 0.14).fillEllipse(264, 144, 520, 132);
-    vista.fillStyle(0xfff0c7, 0.12).fillEllipse(860, 118, 740, 56);
+    vista.fillStyle(0x8ed6c9, 0.16).fillRect(0, 0, 1600, 230);
+    vista.fillStyle(0xffd17a, 0.28).fillEllipse(282, 118, 680, 176);
+    vista.fillStyle(0xfff0c7, 0.2).fillEllipse(890, 98, 900, 70);
+    vista.fillStyle(0xf28f45, 0.1).fillEllipse(1240, 162, 560, 96);
 
     // Layered basin-and-range silhouettes, with softer Sonoran colors than the old triangle peaks.
     this.drawMountainRange(vista, [
-      [0, 332], [96, 276], [178, 176], [268, 316], [382, 254], [520, 126],
-      [686, 318], [812, 246], [932, 326], [1084, 198], [1248, 116],
-      [1390, 286], [1540, 178], [1600, 232], [1600, 356], [0, 356],
-    ], 0x4d526d, 0.42);
+      [0, 330], [88, 286], [172, 198], [268, 304], [402, 242], [532, 118],
+      [692, 314], [828, 236], [946, 322], [1084, 190], [1242, 98],
+      [1396, 276], [1542, 170], [1600, 224], [1600, 358], [0, 358],
+    ], 0x3f536f, 0.64);
     this.drawMountainRange(vista, [
-      [0, 346], [132, 292], [250, 236], [384, 332], [520, 274],
-      [664, 202], [810, 336], [990, 286], [1128, 184], [1288, 334],
-      [1438, 258], [1600, 318], [1600, 368], [0, 368],
-    ], 0x755c76, 0.34);
+      [0, 344], [122, 300], [254, 230], [390, 328], [520, 266],
+      [664, 190], [812, 330], [990, 276], [1130, 172], [1288, 324],
+      [1438, 248], [1600, 310], [1600, 372], [0, 372],
+    ], 0x9b5b75, 0.54);
     this.drawMountainRange(vista, [
-      [0, 362], [140, 318], [268, 286], [418, 354], [612, 302],
-      [792, 274], [964, 352], [1134, 300], [1300, 258], [1468, 344],
-      [1600, 314], [1600, 384], [0, 384],
-    ], 0xb7764a, 0.25);
+      [0, 360], [142, 314], [268, 284], [418, 352], [612, 298],
+      [792, 266], [964, 348], [1134, 296], [1300, 250], [1468, 338],
+      [1600, 306], [1600, 386], [0, 386],
+    ], 0xd47b3d, 0.46);
 
-    vista.fillStyle(0xf2c46d, 0.18);
-    vista.fillTriangle(92, 318, 178, 176, 234, 318);
-    vista.fillTriangle(1108, 304, 1248, 116, 1322, 304);
-    vista.fillTriangle(1288, 334, 1438, 258, 1490, 334);
-    vista.lineStyle(3, 0xffd17a, 0.14);
-    vista.lineBetween(158, 226, 94, 330);
-    vista.lineBetween(1240, 162, 1158, 320);
-    vista.lineBetween(664, 202, 728, 316);
+    vista.fillStyle(0xffc76b, 0.34);
+    vista.fillTriangle(86, 318, 172, 198, 238, 318);
+    vista.fillTriangle(1104, 304, 1242, 98, 1328, 304);
+    vista.fillTriangle(1282, 330, 1438, 248, 1502, 330);
+    vista.fillStyle(0x704071, 0.28);
+    vista.fillTriangle(404, 242, 532, 118, 614, 300);
+    vista.fillTriangle(992, 276, 1130, 172, 1218, 318);
+    vista.lineStyle(5, 0xffd17a, 0.28);
+    for (const [x1, y1, x2, y2] of [
+      [158, 226, 94, 330], [182, 220, 242, 322], [1240, 146, 1158, 320],
+      [1266, 150, 1340, 318], [664, 202, 728, 316], [536, 126, 466, 288],
+    ]) {
+      vista.lineBetween(x1, y1, x2, y2);
+    }
 
-    vista.fillStyle(0x8bbf65, 0.28).fillRect(0, 318, 1600, 70);
-    vista.fillStyle(0x5e7249, 0.24).fillRoundedRect(0, 350, 1600, 26, 12);
+    vista.lineStyle(3, 0x2f3f58, 0.24);
+    vista.lineBetween(0, 330, 1600, 310);
+    vista.lineBetween(0, 360, 1600, 338);
+    vista.fillStyle(0xa8b86d, 0.36).fillRect(0, 318, 1600, 70);
+    vista.fillStyle(0x637d4e, 0.34).fillRoundedRect(0, 350, 1600, 28, 12);
+    vista.fillStyle(0xd9b36a, 0.18).fillRoundedRect(0, 372, 1600, 20, 10);
     for (const [x, y, h] of [[138, 362, 68], [226, 348, 84], [1138, 354, 80], [1470, 344, 96]]) {
       vista.fillStyle(0x2f7f5c, 0.88).fillRoundedRect(x, y - h, 10, h, 5);
       vista.fillRoundedRect(x - 18, y - h * 0.46, 18, 8, 4);
@@ -278,14 +291,21 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   drawSouthwestHomes() {
-    this.drawPuebloRevivalHome(170, 246, 205, 108, {
-      body: 0xbf805b,
-      trim: 0xe7bd88,
+    this.drawPuebloRevivalHome(46, 204, 312, 152, {
+      body: 0xc88457,
+      trim: 0xf0c997,
       door: 0xf2c46d,
       label: 'Zuzu home',
     });
-    this.drawMissionTileHome(416, 230, 160, 104);
-    this.drawTerritorialPorchHome(566, 220, 200, 110);
+    this.drawMissionTileHome(364, 220, 218, 128);
+    this.drawTerritorialPorchHome(972, 208, 260, 136);
+    this.drawPuebloRevivalHome(1248, 204, 232, 126, {
+      body: 0xd39a66,
+      trim: 0xf3d19d,
+      door: 0xf2c46d,
+      label: '',
+    });
+    this.drawLowDesertWalls();
   }
 
   drawPuebloRevivalHome(x, y, w, h, options = {}) {
@@ -303,8 +323,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
     g.fillStyle(options.door || 0xf2c46d, 1).fillRoundedRect(x + w * 0.44, y + h - 48, 32, 48, 5);
     g.fillStyle(0x31485a, 0.86).fillRoundedRect(x + 28, y + 48, 36, 26, 5);
     g.fillRoundedRect(x + w - 66, y + 48, 36, 26, 5);
+    g.fillStyle(0xf7d48a, 0.72).fillRoundedRect(x + 78, y + 48, 52, 26, 12);
+    g.lineStyle(4, 0xe7bd88, 0.92).strokeRoundedRect(x + 75, y + 45, 58, 32, 16);
+    g.fillStyle(0xf7d48a, 0.9).fillRoundedRect(x + w * 0.16, y + h - 34, 42, 10, 5);
+    g.fillStyle(0x7c4e35, 0.7).fillRoundedRect(x + w * 0.16 + 6, y + h - 42, 30, 8, 4);
     g.lineStyle(2, 0xfff0c7, 0.28).strokeRoundedRect(x + 6, y + 22, w - 12, h - 28, 12);
-    this.add.text(x + 42, y + h + 10, options.label || 'adobe home', labelStyle());
+    if (options.label) this.add.text(x + 42, y + h + 10, options.label, labelStyle());
   }
 
   drawMissionTileHome(x, y, w, h) {
@@ -316,11 +340,16 @@ export default class NeighborhoodScene extends Phaser.Scene {
     for (let tileX = x + 22; tileX < x + w - 20; tileX += 18) {
       g.fillTriangle(tileX, y + 28, tileX + 9, y + 20, tileX + 18, y + 28);
     }
+    for (let tileX = x + 18; tileX < x + w - 18; tileX += 20) {
+      g.lineStyle(2, 0xffb166, 0.34).lineBetween(tileX, y + 21, tileX + 14, y + 39);
+    }
     g.fillStyle(0x31485a, 0.82).fillRoundedRect(x + 34, y + 58, 28, 22, 4);
     g.fillRoundedRect(x + w - 62, y + 58, 28, 22, 4);
     g.fillStyle(0xf2c46d, 1).fillRoundedRect(x + w * 0.5 - 15, y + 62, 30, 38, 15);
     g.lineStyle(4, 0xf5d6a6, 0.62).strokeRoundedRect(x + w * 0.5 - 19, y + 58, 38, 44, 18);
-    this.add.text(x + 18, y + h + 10, 'mission tile home', labelStyle()).setAlpha(0.84);
+    g.fillStyle(0x8bbf65, 0.72).fillRoundedRect(x + 22, y + h - 16, w - 44, 12, 6);
+    g.fillStyle(0x7fb069, 0.8).fillRoundedRect(x - 12, y + h - 26, 8, 34, 4);
+    g.fillRoundedRect(x + w + 6, y + h - 34, 8, 42, 4);
   }
 
   drawTerritorialPorchHome(x, y, w, h) {
@@ -328,6 +357,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     g.fillStyle(0x17221f, 0.16).fillEllipse(x + w * 0.5, y + h + 8, w * 0.46, 12);
     g.fillStyle(0xc79b6f, 1).fillRoundedRect(x, y + 22, w, h - 22, 5);
     g.fillStyle(0xf0d19a, 0.94).fillRoundedRect(x - 10, y + 42, w + 20, 18, 3);
+    g.fillStyle(0xf7e0b4, 1).fillRoundedRect(x - 14, y + 58, w + 28, 20, 6);
     g.fillStyle(0x6b4a33, 0.86);
     for (let postX = x + 14; postX < x + w; postX += 46) {
       g.fillRoundedRect(postX, y + 56, 7, h - 56, 3);
@@ -336,7 +366,24 @@ export default class NeighborhoodScene extends Phaser.Scene {
     g.fillStyle(0x31485a, 0.82).fillRoundedRect(x + 32, y + 66, 28, 24, 4);
     g.fillRoundedRect(x + w - 60, y + 66, 28, 24, 4);
     g.fillStyle(0xf2c46d, 1).fillRoundedRect(x + w * 0.48, y + 68, 28, 42, 4);
-    this.add.text(x + 22, y + h + 10, 'territorial porch', labelStyle()).setAlpha(0.84);
+    g.lineStyle(2, 0xf0d19a, 0.7).lineBetween(x + 4, y + 58, x + w - 4, y + 58);
+  }
+
+  drawLowDesertWalls() {
+    const g = this.add.graphics();
+    g.fillStyle(0xd9b28a, 0.78).fillRoundedRect(20, 356, 336, 18, 8);
+    g.fillRoundedRect(348, 358, 224, 14, 7);
+    g.fillRoundedRect(984, 356, 504, 18, 8);
+    g.fillStyle(0x8f623e, 0.64);
+    for (const x of [44, 108, 172, 236, 300, 388, 452, 516, 1018, 1084, 1150, 1216, 1282, 1348, 1414]) {
+      g.fillRoundedRect(x, 348, 10, 26, 4);
+    }
+    g.fillStyle(0x4f9c75, 0.9);
+    for (const [x, y, h] of [[392, 354, 40], [1190, 350, 52], [1470, 348, 60]]) {
+      g.fillRoundedRect(x, y - h, 9, h, 5);
+      g.fillRoundedRect(x - 13, y - h * 0.45, 13, 7, 4);
+      g.fillRoundedRect(x + 9, y - h * 0.62, 13, 7, 4);
+    }
   }
 
   drawDesertDetails() {
