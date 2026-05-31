@@ -47,6 +47,7 @@ test.describe('Act 1 complete substrate', () => {
       'bridge_problem',
       'material_test_results',
       'bridge_plan',
+      'bridge_repaired',
       'desert_plant',
       'chemistry_result',
       'spanish_interaction',
@@ -54,6 +55,8 @@ test.describe('Act 1 complete substrate', () => {
       'trust_milestone',
       'wider_map_unlocked',
     ]));
+    expect(state.bridge.repairMoment.socialAcknowledgement).toContain('tested');
+    expect(state.bridge.crossingMoment.feeling).toContain('stays steady');
 
     await page.evaluate(() => window.__GAME__.saveGame());
     await page.reload();

@@ -19,6 +19,9 @@ export class DebugDiagnosticSystem {
     const missingInteractionActions = sceneZones.filter((zone) => !zone.dialogueId && !zone.action).map((zone) => zone.id);
     const unreachableInteractionZones = sceneZones.filter((zone) => zone.x < 0 || zone.y < 0 || zone.x > 1600 || zone.y > 1000).map((zone) => zone.id);
     const bridgeCorruption = state.bridge.bridgeReconnected && !state.bridge.plan;
+    const audioState = this.runtime.audioSystem?.getState?.();
+    const assetRegistryState = window.__GAME__?.getAssetRegistryState?.();
+    const requiredVoices = ['zuzu', 'garage_mentor', 'neighbor', 'spanish_neighbor', 'arabic_mentor', 'ecology_sign', 'trader'];
     const checks = [
       ['routeReady', Boolean(window.__bikebrowserRebuildReady)],
       ['sceneReady', Boolean(this.runtime.sceneReady)],
@@ -37,6 +40,11 @@ export class DebugDiagnosticSystem {
       ['interactionsReachable', unreachableInteractionZones.length === 0],
       ['interactionsHavePurpose', missingInteractionActions.length === 0],
       ['noGeneratedRuntimeArt', this.runtime.assetContract?.generatedArtDirectRuntime === false],
+      ['assetRegistryInspectable', Boolean(assetRegistryState?.act1Manifest)],
+      ['finalAssetsExplicitlyTracked', Array.isArray(assetRegistryState?.act1Manifest?.missingFinal)],
+      ['audioSystemAvailable', Boolean(audioState)],
+      ['voiceProfilesRegistered', requiredVoices.every((voiceId) => audioState?.voices?.profiles?.[voiceId])],
+      ['speechNormalizationAvailable', this.runtime.audioSystem?.normalizer?.normalize?.('1/2 cm3 pH') === 'one-half cubic centimeters P H'],
     ];
     return {
       ok: checks.every(([, ok]) => ok),

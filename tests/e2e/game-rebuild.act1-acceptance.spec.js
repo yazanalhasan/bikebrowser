@@ -1,0 +1,246 @@
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { test, expect } from 'playwright/test';
+
+const captureDir = 'playtest_captures/game_rebuild_act1_acceptance';
+
+async function ready(page) {
+  await page.goto('/game-rebuild');
+  await page.waitForFunction(() => window.__bikebrowserRebuildReady === true && Boolean(window.__GAME__));
+  await expect(page.locator('canvas')).toBeVisible();
+}
+
+async function playerPosition(page) {
+  return page.evaluate(() => {
+    const scene = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+    return { x: scene.player.x, y: scene.player.y };
+  });
+}
+
+async function hold(page, key, ms = 140) {
+  await page.keyboard.down(key);
+  await page.waitForTimeout(ms);
+  await page.keyboard.up(key);
+  await page.waitForTimeout(40);
+}
+
+async function walkTo(page, x, y) {
+  for (let guard = 0; guard < 120; guard += 1) {
+    const pos = await playerPosition(page);
+    const dx = x - pos.x;
+    const dy = y - pos.y;
+    if (Math.hypot(dx, dy) < 42) return pos;
+    if (Math.abs(dx) > 28) {
+      await hold(page, dx > 0 ? 'ArrowRight' : 'ArrowLeft', Math.min(220, Math.max(90, Math.abs(dx) * 2.2)));
+    }
+    if (Math.abs(dy) > 28) {
+      await hold(page, dy > 0 ? 'ArrowDown' : 'ArrowUp', Math.min(220, Math.max(90, Math.abs(dy) * 2.2)));
+    }
+  }
+  throw new Error(`Could not walk to ${x},${y}; current ${JSON.stringify(await playerPosition(page))}`);
+}
+
+async function closeDialogue(page) {
+  for (let guard = 0; guard < 8; guard += 1) {
+    const visible = await page.evaluate(() => {
+      const scene = window.__bikebrowserRebuildGame.scene.getScene('DialogueScene');
+      return Boolean(scene.panel?.visible);
+    });
+    if (!visible) return;
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(100);
+  }
+}
+
+async function interactAt(page, step) {
+  await walkTo(page, step.x, step.y);
+  await page.waitForFunction((expected) => {
+    const scene = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+    return scene.prompt.visible && scene.prompt.text.includes(expected);
+  }, step.prompt);
+  await page.keyboard.press('KeyE');
+  await page.waitForTimeout(220);
+  await closeDialogue(page);
+  if (step.waitFor) await page.waitForFunction(step.waitFor);
+  await page.screenshot({ path: `${captureDir}/${step.file}.png`, fullPage: true });
+}
+
+test.describe('Act 1 player-visible acceptance walkthrough', () => {
+  test('completes Act 1 through visible movement and interaction prompts', async ({ page }) => {
+    test.setTimeout(120_000);
+    mkdirSync(captureDir, { recursive: true });
+    await ready(page);
+
+    await page.evaluate(() => {
+      window.__GAME__.resetAct1();
+      window.__GAME__.setAudioSettings({ speechEnabled: true, autoSpeak: true, musicEnabled: true });
+    });
+    await page.screenshot({ path: `${captureDir}/00_start.png`, fullPage: true });
+
+    const steps = [
+      {
+        id: 'bike_check',
+        x: 470,
+        y: 432,
+        prompt: 'Inspect the bike',
+        file: '01_bike_check',
+        waitFor: () => window.__GAME__.getAct1State().notebook.unlocked.includes('bike_check'),
+      },
+      {
+        id: 'mr_chen',
+        x: 282,
+        y: 438,
+        prompt: 'Talk to Mr. Chen',
+        file: '02_mr_chen_dialogue',
+        waitFor: () => window.__GAME__.getAudioState().lastSpoken?.voiceId === 'garage_mentor',
+      },
+      {
+        id: 'dry_wash',
+        x: 1190,
+        y: 574,
+        prompt: 'Read bridge sign',
+        file: '03_dry_wash_discovery',
+        waitFor: () => window.__GAME__.getAct1State().discovery.discovered.includes('dry_wash'),
+      },
+      {
+        id: 'materials_table',
+        x: 880,
+        y: 410,
+        prompt: 'Collect candidate materials',
+        file: '04_collect_materials',
+        waitFor: () => window.__GAME__.getAct1State().inventory.items.includes('steel'),
+      },
+      {
+        id: 'ecology_patch',
+        x: 1030,
+        y: 760,
+        prompt: 'Observe desert helpers',
+        file: '05_ecology_observation',
+        waitFor: () => window.__GAME__.getAct1State().notebook.unlocked.includes('desert_plant'),
+      },
+      {
+        id: 'chemistry_station',
+        x: 820,
+        y: 444,
+        prompt: 'Mix, dry, test',
+        file: '06_chemistry_station',
+        waitFor: () => window.__GAME__.getAct1State().notebook.unlocked.includes('chemistry_result'),
+      },
+      {
+        id: 'utm',
+        x: 742,
+        y: 408,
+        prompt: 'Run UTM material tests',
+        file: '07_utm_tests',
+        waitFor: () => window.__GAME__.getAct1State().materialTests.tested.length >= 4,
+      },
+      {
+        id: 'bridge_plan',
+        x: 935,
+        y: 454,
+        prompt: 'Plan bridge repair',
+        file: '08_bridge_plan',
+        waitFor: () => Boolean(window.__GAME__.getAct1State().bridge.plan),
+      },
+      {
+        id: 'bridge_repair',
+        x: 1255,
+        y: 642,
+        prompt: 'Reconnect the crossing',
+        file: '09_bridge_repaired',
+        waitFor: () => window.__GAME__.getAct1State().bridge.bridgeReconnected === true,
+      },
+      {
+        id: 'wider_gate',
+        x: 1484,
+        y: 514,
+        prompt: 'Open wider map clue',
+        file: '10_wider_map_unlocked',
+        waitFor: () => window.__GAME__.getAct1State().act1Complete === true,
+      },
+    ];
+
+    for (const step of steps) {
+      await interactAt(page, step);
+    }
+
+    await page.keyboard.press('KeyN');
+    await page.waitForFunction(() => window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene').notebookPanel.visible);
+    await page.screenshot({ path: `${captureDir}/11_final_notebook_completion.png`, fullPage: true });
+
+    const finalState = await page.evaluate(() => {
+      const state = window.__GAME__.getAct1State();
+      const audio = window.BIKEBROWSER_AUDIO_AUDIT?.captureAudioState?.();
+      const scene = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+      return {
+        act1Complete: state.act1Complete,
+        bridgeReconnected: state.bridge.bridgeReconnected,
+        widerMapUnlocked: state.discovery.widerMapUnlocked,
+        unlockedNotebookEntries: state.notebook.unlocked,
+        materialTestCount: state.materialTests.tested.length,
+        chemistryResults: state.chemistry.completedRecipes,
+        ecologyObservations: state.ecology.observations,
+        finalFeedback: window.__GAME__.getFeedbackState().last,
+        promptText: scene.prompt.text,
+        audioSummary: audio ? {
+          hookVerified: audio.available,
+          musicState: audio.music.currentState,
+          voiceLineVoiceId: audio.lastSpoken?.voiceId,
+          musicTransitions: audio.eventCounts.music_transition || 0,
+          interactionCues: audio.eventCounts.interaction_cue || 0,
+          speechAttempts: audio.eventCounts.speech_attempt || 0,
+          errors: audio.errors,
+        } : null,
+      };
+    });
+
+    expect(finalState.act1Complete).toBe(true);
+    expect(finalState.bridgeReconnected).toBe(true);
+    expect(finalState.widerMapUnlocked).toBe(true);
+    expect(finalState.unlockedNotebookEntries).toEqual(expect.arrayContaining([
+      'bike_check',
+      'broken_wash',
+      'bridge_problem',
+      'material_test_results',
+      'desert_plant',
+      'chemistry_result',
+      'bridge_plan',
+      'bridge_repaired',
+      'wider_map_unlocked',
+    ]));
+    expect(finalState.materialTestCount).toBeGreaterThanOrEqual(4);
+    expect(finalState.finalFeedback.message).toContain('Wider map unlocked');
+
+    const report = {
+      generatedAt: new Date().toISOString(),
+      playerVisibleWalkthrough: true,
+      backendCompletionShortcutsUsed: false,
+      setupShortcutsUsed: ['resetAct1 only before play'],
+      steps: steps.map((step) => ({
+        id: step.id,
+        prompt: step.prompt,
+        screenshot: `${captureDir}/${step.file}.png`,
+      })),
+      finalScreenshot: `${captureDir}/11_final_notebook_completion.png`,
+      finalState,
+    };
+    writeFileSync(`${captureDir}/act1_player_visible_acceptance_report.json`, JSON.stringify(report, null, 2), 'utf8');
+    writeFileSync(
+      `${captureDir}/act1_player_visible_acceptance_report.md`,
+      [
+        '# Act 1 Player-Visible Acceptance Walkthrough',
+        '',
+        '- Player-visible walkthrough: `true`',
+        '- Backend completion shortcuts used: `false`',
+        '- Act 1 complete: `true`',
+        '- Bridge reconnected: `true`',
+        '- Wider map unlocked: `true`',
+        `- Final screenshot: \`${report.finalScreenshot}\``,
+        '',
+        '## Steps',
+        ...report.steps.map((step) => `- ${step.id}: ${step.prompt} -> \`${step.screenshot}\``),
+        '',
+      ].join('\n'),
+      'utf8'
+    );
+  });
+});

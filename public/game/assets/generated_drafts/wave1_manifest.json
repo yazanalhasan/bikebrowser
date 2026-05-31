@@ -1,0 +1,18 @@
+{
+  "status": "draft",
+  "approved": false,
+  "source_tool": "UNKNOWN_DRAFT",
+  "created_by": "Codex temporary SVG-to-PNG stub generator",
+  "created_for": "Wave 1 wiring and placement validation only",
+  "runtime_promotion": "forbidden until replaced by approved Meshy/Blender/Aseprite/ComfyUI/Hunyuan pipeline output",
+  "assets": [
+    "wave1_sonoran_vista_draft.png",
+    "wave1_road_system_draft.png",
+    "house_pueblo_01_draft.png",
+    "house_pueblo_02_draft.png",
+    "house_mission_01_draft.png",
+    "house_territorial_01_draft.png",
+    "vegetation_saguaro_cluster_draft.png",
+    "quest_marker_story_draft.png"
+  ]
+}

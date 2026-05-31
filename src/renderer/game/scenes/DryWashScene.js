@@ -115,12 +115,7 @@ export default class DryWashScene extends LocalSceneBase {
       saveGame(updated);
     }
 
-    // ── Sky / background ──
-    this.add.rectangle(this.layout.sky.x, this.layout.sky.y, this.layout.sky.w, this.layout.sky.h, 0xf2c98f);
-    // ── Sandy near-side ground ──
-    this.add.rectangle(this.layout.ground_near.x, this.layout.ground_near.y, this.layout.ground_near.w, this.layout.ground_near.h, 0xc8a274);
-    // ── Far-side ground (slightly different tone to read as "across") ──
-    this.add.rectangle(this.layout.ground_far.x, this.layout.ground_far.y, this.layout.ground_far.w, this.layout.ground_far.h, 0xb89368);
+    this._renderNeighborhoodWashBackdrop(width, height);
 
     // ── Wash channel (jagged tan-brown arroyo at y≈400) ──
     this._renderWashChannel(width);
@@ -221,6 +216,46 @@ export default class DryWashScene extends LocalSceneBase {
       const px = 20 + Math.random() * (width - 40);
       const py = washY - 18 + Math.random() * 50;
       pebbles.fillCircle(px, py, 2 + Math.random() * 2);
+    }
+  }
+
+  _renderNeighborhoodWashBackdrop(width, height) {
+    this.add.rectangle(this.layout.sky.x, this.layout.sky.y, this.layout.sky.w, this.layout.sky.h, 0x9fd8e7);
+    this.add.rectangle(width / 2, 118, width, 236, 0xffcf79).setAlpha(0.24);
+
+    const mountains = this.add.graphics();
+    mountains.fillStyle(0x6c5b86, 0.42);
+    mountains.fillTriangle(0, 246, 160, 92, 340, 246);
+    mountains.fillTriangle(238, 246, 430, 112, 640, 246);
+    mountains.fillTriangle(560, 246, 740, 104, width, 246);
+    mountains.fillStyle(0xd98c4d, 0.34);
+    mountains.fillTriangle(42, 242, 160, 92, 220, 242);
+    mountains.fillTriangle(604, 242, 740, 104, 812, 242);
+
+    const ground = this.add.graphics();
+    ground.fillStyle(0xbfd17a, 0.82).fillRect(0, 210, width, 170);
+    ground.fillStyle(0xc8a274, 1).fillRect(0, 360, width, height - 360);
+    ground.fillStyle(0x7fb46e, 0.6).fillEllipse(170, 330, 280, 72);
+    ground.fillEllipse(720, 326, 300, 78);
+
+    const homes = this.add.graphics();
+    for (const [x, y, body, roof] of [
+      [95, 282, 0xd9b28a, 0x9f4029],
+      [228, 270, 0xe2c69a, 0xa83e2b],
+      [680, 276, 0xd8b789, 0x8d3d2c],
+      [784, 286, 0xe5caa0, 0xa4422e],
+    ]) {
+      homes.fillStyle(body, 0.82).fillRect(x, y, 74, 42);
+      homes.fillStyle(roof, 0.9).fillTriangle(x - 8, y, x + 37, y - 24, x + 82, y);
+      homes.fillStyle(0xffd57a, 0.82).fillRect(x + 14, y + 15, 12, 14);
+      homes.fillRect(x + 46, y + 15, 12, 14);
+    }
+
+    const plants = this.add.graphics();
+    for (const [x, y, s] of [[60, 346, 1], [820, 338, 0.8], [768, 382, 0.7], [130, 395, 0.75]]) {
+      plants.fillStyle(0x3f8f61, 0.92).fillRoundedRect(x, y - 34 * s, 9 * s, 68 * s, 5);
+      plants.fillRoundedRect(x - 14 * s, y - 4 * s, 16 * s, 7 * s, 4);
+      plants.fillRoundedRect(x + 8 * s, y - 13 * s, 16 * s, 7 * s, 4);
     }
   }
 

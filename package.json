@@ -22,6 +22,7 @@
     "lint": "eslint src --ext js,jsx",
     "tunnel": "cloudflared tunnel run bikebrowser",
     "check:health": "node scripts/check-health.js",
+    "art:audit:act1": "node scripts/art_audit/capture_runtime_character_frames.mjs",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test runtime-audit.smoke",
     "test:e2e:playthrough": "playwright test full-game-playthrough.smoke flat-tire-flow.smoke gameplay-report-panel.smoke runtime-audit.smoke",

@@ -1,5 +1,9 @@
+import { act1AssetManifest, getAct1AssetManifestState } from '../../data/act1/index.js';
+
 export const ASSET_KEYS = {
   zuzu: 'placeholder.zuzu',
+  zuzuWalkSheet: 'act1.zuzu.walk.sheet',
+  zuzuRepairSheet: 'act1.zuzu.repair.sheet',
   bike: 'placeholder.bike',
   house: 'placeholder.house',
   street: 'placeholder.street',
@@ -12,6 +16,20 @@ export const ASSET_KEYS = {
   ecologyPlant: 'placeholder.ecologyPlant',
   chemistryStation: 'placeholder.chemistryStation',
   mapGate: 'placeholder.mapGate',
+  garageWorkbench: 'act1.garage_workbench',
+  materialSamples: 'act1.material_samples',
+  bridgeBroken: 'act1.bridge_broken',
+  bridgeRepaired: 'act1.bridge_repaired',
+  notebookUi: 'act1.notebook_ui',
+  hudFrame: 'act1.hud_frame',
+  npcGarageMentor: 'act1.npc.garage_mentor',
+  npcNeighbor: 'act1.npc.neighbor',
+  npcArabicMentor: 'act1.npc.arabic_mentor',
+  npcGarageMentorTalkSheet: 'act1.npc.garage_mentor.talk.sheet',
+  npcGarageMentorRepairSheet: 'act1.npc.garage_mentor.repair.sheet',
+  npcNeighborTalkSheet: 'act1.npc.neighbor.talk.sheet',
+  npcNeighborCheerSheet: 'act1.npc.neighbor.cheer.sheet',
+  npcArabicMentorTalkSheet: 'act1.npc.arabic_mentor.talk.sheet',
   notebook: 'placeholder.notebook',
   schoolNode: 'placeholder.schoolNode',
   npc: 'placeholder.npc',
@@ -19,7 +37,64 @@ export const ASSET_KEYS = {
   interactionMarker: 'placeholder.interactionMarker',
   dialogueBubble: 'placeholder.dialogueBubble',
   toolItem: 'placeholder.toolItem',
+  wave1SonoranVistaDraft: 'act1.wave1.sonoran_vista.draft',
+  wave1RoadSystemDraft: 'act1.wave1.road_system.draft',
+  housePueblo01Draft: 'act1.house.pueblo_01.draft',
+  housePueblo02Draft: 'act1.house.pueblo_02.draft',
+  houseMission01Draft: 'act1.house.mission_01.draft',
+  houseTerritorial01Draft: 'act1.house.territorial_01.draft',
+  vegetationSaguaroClusterDraft: 'act1.vegetation.saguaro_cluster.draft',
+  questMarkerStoryDraft: 'act1.quest_marker.story.draft',
+  propClarityGpsPost: 'act1.prop_clarity.gps_post',
+  propClarityWorldScaleVista: 'act1.prop_clarity.world_scale_vista',
+  propClarityRouteMarkerSet: 'act1.prop_clarity.route_marker_set',
+  propClaritySonoranLandmarkSet: 'act1.prop_clarity.sonoran_landmark_set',
 };
+
+export const ACT1_CHARACTER_ANIMATION_SHEETS = [
+  {
+    key: ASSET_KEYS.zuzuWalkSheet,
+    url: new URL('../../art/final/act1/characters/zuzu_walk_native96_sheet.png', import.meta.url).href,
+    frameWidth: 96,
+    frameHeight: 96,
+  },
+  {
+    key: ASSET_KEYS.zuzuRepairSheet,
+    url: new URL('../../art/final/act1/characters/zuzu_repair_4dir_sheet.png', import.meta.url).href,
+    frameWidth: 48,
+    frameHeight: 48,
+  },
+  {
+    key: ASSET_KEYS.npcGarageMentorTalkSheet,
+    url: new URL('../../art/final/act1/characters/mr_chen_talk_sheet.png', import.meta.url).href,
+    frameWidth: 96,
+    frameHeight: 96,
+  },
+  {
+    key: ASSET_KEYS.npcGarageMentorRepairSheet,
+    url: new URL('../../art/final/act1/characters/mr_chen_repair_sheet.png', import.meta.url).href,
+    frameWidth: 96,
+    frameHeight: 96,
+  },
+  {
+    key: ASSET_KEYS.npcNeighborTalkSheet,
+    url: new URL('../../art/final/act1/characters/mrs_ramirez_talk_sheet.png', import.meta.url).href,
+    frameWidth: 96,
+    frameHeight: 96,
+  },
+  {
+    key: ASSET_KEYS.npcNeighborCheerSheet,
+    url: new URL('../../art/final/act1/characters/mrs_ramirez_cheer_sheet.png', import.meta.url).href,
+    frameWidth: 96,
+    frameHeight: 96,
+  },
+  {
+    key: ASSET_KEYS.npcArabicMentorTalkSheet,
+    url: new URL('../../art/final/act1/characters/auntie_mariam_style_reference_sheet.png', import.meta.url).href,
+    frameWidth: 96,
+    frameHeight: 96,
+  },
+];
 
 export const PLACEHOLDER_ASSET_CONTRACT = {
   source: 'generated_phaser_geometry',
@@ -28,6 +103,37 @@ export const PLACEHOLDER_ASSET_CONTRACT = {
   finalArtRequiresAseprite: true,
   keys: Object.keys(ASSET_KEYS),
 };
+
+export function getAssetRegistryState() {
+  return {
+    placeholderContract: { ...PLACEHOLDER_ASSET_CONTRACT },
+    act1Manifest: getAct1AssetManifestState(),
+  };
+}
+
+export function loadAct1FinalAssets(scene) {
+  const loadedPlaceholderKeys = new Set();
+  for (const asset of act1AssetManifest) {
+    if (!['final_ready', 'draft'].includes(asset.status) || !asset.runtimeUrl) continue;
+    if (asset.placeholderKey && !loadedPlaceholderKeys.has(asset.placeholderKey) && !scene.textures.exists(asset.placeholderKey)) {
+      scene.load.image(asset.placeholderKey, asset.runtimeUrl);
+      loadedPlaceholderKeys.add(asset.placeholderKey);
+    }
+    if (asset.finalKey && !scene.textures.exists(asset.finalKey)) {
+      scene.load.image(asset.finalKey, asset.runtimeUrl);
+    }
+  }
+}
+
+export function loadAct1CharacterAnimationSheets(scene) {
+  for (const sheet of ACT1_CHARACTER_ANIMATION_SHEETS) {
+    if (scene.textures.exists(sheet.key)) continue;
+    scene.load.spritesheet(sheet.key, sheet.url, {
+      frameWidth: sheet.frameWidth,
+      frameHeight: sheet.frameHeight,
+    });
+  }
+}
 
 export function createPlaceholderTextures(scene) {
   createZuzu(scene);
@@ -62,7 +168,8 @@ function texture(scene, key, width, height, draw) {
 
 function createZuzu(scene) {
   texture(scene, ASSET_KEYS.zuzu, 40, 52, (g) => {
-    g.fillStyle(0x000000, 0.22).fillEllipse(20, 48, 26, 8);
+    g.fillStyle(0x000000, 0.26).fillEllipse(20, 48, 28, 8);
+    g.lineStyle(3, 0xfff0c7, 0.85).strokeRoundedRect(8, 10, 24, 36, 9);
     g.fillStyle(0x7b4b31, 1).fillCircle(20, 13, 10);
     g.fillStyle(0xd9905d, 1).fillCircle(20, 16, 8);
     g.fillStyle(0xf2c94c, 1).fillRoundedRect(10, 24, 20, 17, 5);
@@ -210,6 +317,7 @@ function createSchoolNode(scene) {
 function createNpc(scene) {
   texture(scene, ASSET_KEYS.npc, 40, 52, (g) => {
     g.fillStyle(0x000000, 0.22).fillEllipse(20, 48, 25, 8);
+    g.lineStyle(2, 0xfff0c7, 0.55).strokeRoundedRect(9, 9, 22, 38, 8);
     g.fillStyle(0x3d485a, 1).fillCircle(20, 13, 11);
     g.fillStyle(0xc88f65, 1).fillCircle(20, 17, 8);
     g.fillStyle(0x5aa67b, 1).fillRoundedRect(10, 25, 20, 21, 5);

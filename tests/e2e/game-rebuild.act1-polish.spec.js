@@ -75,24 +75,65 @@ test.describe('Act 1 polish hardening', () => {
         animatedSheets: scene.characterVisuals.animatedSheets,
         npcIds: scene.characterVisuals.npcIds,
         npcScale: scene.characterVisuals.npcScale,
+        runtimeSource: scene.characterVisuals.runtimeSource,
+        npcPlacements: scene.characterVisuals.npcPlacements,
+        npcRuntimeSources: scene.children.list
+          .filter((object) => object.getData?.('characterId'))
+          .map((object) => ({
+            id: object.getData('characterId'),
+            texture: object.texture.key,
+            animation: object.anims?.currentAnim?.key || null,
+            frameIndex: object.frame?.textureFrame ?? object.frame?.name ?? null,
+            usesAsepriteRuntimeSheet: object.getData('usesAsepriteRuntimeSheet'),
+          })),
       };
       scene.updatePlayerAnimation(performance.now(), { x: 1, y: 0 });
+      const right = { animation: scene.playerVisualState.animation, facing: scene.playerVisualState.facing };
+      scene.updatePlayerAnimation(performance.now(), { x: -1, y: 0 });
+      const left = { animation: scene.playerVisualState.animation, facing: scene.playerVisualState.facing };
+      scene.updatePlayerAnimation(performance.now(), { x: 0, y: -1 });
+      const up = { animation: scene.playerVisualState.animation, facing: scene.playerVisualState.facing };
+      scene.updatePlayerAnimation(performance.now(), { x: 0, y: 1 });
+      const down = { animation: scene.playerVisualState.animation, facing: scene.playerVisualState.facing };
       return {
         ...before,
-        movingAnimation: scene.playerVisualState.animation,
+        playerDirections: { right, left, up, down },
       };
     });
 
     expect(visuals.playerScale).toBeGreaterThan(1.35);
     expect(visuals.npcScale).toBeGreaterThan(1.3);
+    expect(visuals.runtimeSource).toBe('aseprite_final_character_sheets');
     expect(visuals.playerTexture).toBe('act1.zuzu.walk.sheet');
-    expect(visuals.playerAnimation).toBe('zuzu.idle');
-    expect(visuals.movingAnimation).toBe('zuzu.walk');
+    expect(visuals.playerAnimation).toBe('zuzu.idle.down');
+    expect(visuals.playerDirections).toEqual({
+      right: { animation: 'zuzu.walk.right', facing: 'right' },
+      left: { animation: 'zuzu.walk.left', facing: 'left' },
+      up: { animation: 'zuzu.walk.up', facing: 'up' },
+      down: { animation: 'zuzu.walk.down', facing: 'down' },
+    });
     expect(visuals.npcIds).toEqual(['mr_chen', 'neighbor', 'auntie_mariam']);
     expect(visuals.animatedSheets).toEqual(expect.arrayContaining([
       'act1.npc.garage_mentor.talk.sheet',
       'act1.npc.neighbor.talk.sheet',
       'act1.npc.arabic_mentor.talk.sheet',
+    ]));
+    expect(visuals.npcRuntimeSources.every((npc) => npc.usesAsepriteRuntimeSheet)).toBe(true);
+    expect(visuals.npcRuntimeSources.map((npc) => npc.texture)).toEqual([
+      'act1.npc.garage_mentor.talk.sheet',
+      'act1.npc.neighbor.talk.sheet',
+      'act1.npc.arabic_mentor.talk.sheet',
+    ]);
+    expect(visuals.npcRuntimeSources.map((npc) => npc.animation)).toEqual([
+      'chen.talk',
+      'ramirez.talk',
+      'mariam.talk',
+    ]);
+    expect(visuals.npcRuntimeSources.every((npc) => Number(npc.frameIndex) >= 0 && Number(npc.frameIndex) <= 3)).toBe(true);
+    expect(visuals.npcPlacements).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: 'mr_chen', runtimeFinal: true }),
+      expect.objectContaining({ id: 'neighbor', runtimeFinal: true }),
+      expect.objectContaining({ id: 'auntie_mariam', runtimeFinal: true }),
     ]));
   });
 

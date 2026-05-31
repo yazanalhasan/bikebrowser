@@ -17,10 +17,14 @@ test.describe('Act 1 visual captures', () => {
   test('captures major Act 1 runtime states', async ({ page }) => {
     mkdirSync(captureDir, { recursive: true });
     await page.goto('/game-rebuild');
-    await page.waitForFunction(() => window.__bikebrowserRebuildReady === true && Boolean(window.__GAME__));
+    await page.waitForFunction(() =>
+      window.BIKEBROWSER_READY === true &&
+      Boolean(window.BIKEBROWSER_TEST_BRIDGE?.isReady?.()) &&
+      Boolean(window.__GAME__)
+    );
     await expect(page.locator('canvas')).toBeVisible();
 
-    await frame(page, 420, 500);
+    await frame(page, 305, 506);
     await page.screenshot({ path: `${captureDir}/01_act1_start.png`, fullPage: true });
     await page.evaluate(() => window.__GAME__.handleInteraction('bike_check'));
     await page.evaluate(() => window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene').toggleNotebook());
@@ -68,5 +72,43 @@ test.describe('Act 1 visual captures', () => {
     });
     await frame(page, 1484, 514);
     await page.screenshot({ path: `${captureDir}/08_bridge_repaired_map_unlock.png`, fullPage: true });
+  });
+
+  test('captures mobile bridge payoff and notebook readability', async ({ page }) => {
+    const mobileDir = 'playtest_captures/game_rebuild_mobile_payoff';
+    mkdirSync(mobileDir, { recursive: true });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/game-rebuild');
+    await page.waitForFunction(() =>
+      window.BIKEBROWSER_READY === true &&
+      Boolean(window.BIKEBROWSER_TEST_BRIDGE?.isReady?.()) &&
+      Boolean(window.__GAME__)
+    );
+    await expect(page.locator('canvas')).toBeVisible();
+
+    await page.evaluate(() => {
+      const game = window.__GAME__;
+      game.resetAct1();
+      game.handleInteraction('bike_check');
+      game.handleInteraction('collect_materials');
+      ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => game.testMaterial(id));
+      game.completeBridgePlan('tested_triangle_plan');
+      game.repairBridge();
+      window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene').toggleNotebook();
+    });
+    await frame(page, 1255, 642);
+    await page.screenshot({ path: `${mobileDir}/01_mobile_bridge_payoff_notebook.png`, fullPage: true });
+
+    const mobileState = await page.evaluate(() => {
+      const scene = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+      return {
+        notebookVisible: scene.notebookPanel.visible,
+        payoffVisible: scene.bridgePayoffText.visible,
+        notebookText: scene.notebookCardsText.text,
+      };
+    });
+    expect(mobileState.notebookVisible).toBe(true);
+    expect(mobileState.payoffVisible).toBe(true);
+    expect(mobileState.notebookText).toContain('Bridge Repaired');
   });
 });

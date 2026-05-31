@@ -39,19 +39,7 @@ export default class DesertTrailScene extends LocalSceneBase {
 
     const { width, height } = this.getWorldSize();
 
-    // === GROUND ===
-    // Desert sand base
-    this.add.rectangle(this.layout.ground_base.x, this.layout.ground_base.y, this.layout.ground_base.w, this.layout.ground_base.h, 0xe8c170);
-
-    // Color variation patches
-    const sandGfx = this.add.graphics();
-    sandGfx.fillStyle(0xd4a853, 0.4);
-    sandGfx.fillCircle(this.layout.sand_patches[0].x, this.layout.sand_patches[0].y, this.layout.sand_patches[0].r);
-    sandGfx.fillCircle(this.layout.sand_patches[1].x, this.layout.sand_patches[1].y, this.layout.sand_patches[1].r);
-    sandGfx.fillCircle(this.layout.sand_patches[2].x, this.layout.sand_patches[2].y, this.layout.sand_patches[2].r);
-    sandGfx.fillStyle(0xf0d68a, 0.3);
-    sandGfx.fillCircle(this.layout.sand_patches[3].x, this.layout.sand_patches[3].y, this.layout.sand_patches[3].r);
-    sandGfx.fillCircle(this.layout.sand_patches[4].x, this.layout.sand_patches[4].y, this.layout.sand_patches[4].r);
+    this._renderSunsetTrailBackground(width, height);
 
     // === TRAILS ===
     const pathGfx = this.add.graphics();
@@ -168,6 +156,59 @@ export default class DesertTrailScene extends LocalSceneBase {
       targetSpawn: 'fromDesertTrail',
       label: '🗺️ Leave ⬅',
     });
+  }
+
+  _renderSunsetTrailBackground(width, height) {
+    this.add.rectangle(width / 2, height / 2, width, height, 0x5fb7f2);
+    this.add.rectangle(width / 2, 138, width, 276, 0xffc35a).setAlpha(0.28);
+    this.add.circle(width * 0.64, 176, 86, 0xffd35c, 0.76);
+
+    const sky = this.add.graphics();
+    sky.fillStyle(0xff8f3b, 0.58);
+    sky.fillEllipse(680, 122, 260, 64);
+    sky.fillEllipse(830, 108, 210, 52);
+    sky.fillStyle(0xf7a4c0, 0.3);
+    sky.fillEllipse(320, 118, 250, 44);
+
+    const mountains = this.add.graphics();
+    mountains.fillStyle(0x47326f, 0.72);
+    mountains.fillTriangle(0, 330, 210, 142, 420, 330);
+    mountains.fillTriangle(270, 330, 520, 166, 760, 330);
+    mountains.fillTriangle(700, 330, 970, 138, width, 330);
+    mountains.fillStyle(0xff9c35, 0.48);
+    mountains.fillTriangle(45, 310, 210, 142, 260, 310);
+    mountains.fillTriangle(750, 316, 970, 138, 1030, 316);
+
+    const desert = this.add.graphics();
+    desert.fillStyle(0xe99f3f, 1).fillRect(0, 300, width, height - 300);
+    desert.fillStyle(0x7452a2, 0.22).fillEllipse(920, 650, 560, 130);
+    desert.fillStyle(0xf6c15f, 0.64).fillEllipse(320, 600, 700, 150);
+
+    const path = this.add.graphics();
+    path.fillStyle(0xffcf62, 0.92);
+    path.beginPath();
+    path.moveTo(0, 660);
+    path.lineTo(350, 520);
+    path.lineTo(550, 400);
+    path.lineTo(670, 330);
+    path.lineTo(742, 338);
+    path.lineTo(628, 430);
+    path.lineTo(468, 560);
+    path.lineTo(270, height);
+    path.lineTo(0, height);
+    path.closePath();
+    path.fillPath();
+    path.fillStyle(0x5d4595, 0.28);
+    path.fillEllipse(490, 640, 160, 28);
+    path.fillEllipse(610, 456, 120, 18);
+
+    const flowers = this.add.graphics();
+    for (const [x, y, color] of [
+      [120, 526, 0xff7b2e], [188, 482, 0xd95ad1], [252, 548, 0xffda54],
+      [870, 520, 0xd95ad1], [990, 478, 0x35b7c5], [1040, 570, 0xff7b2e],
+    ]) {
+      flowers.fillStyle(color, 0.78).fillEllipse(x, y, 54, 26);
+    }
   }
 }
 

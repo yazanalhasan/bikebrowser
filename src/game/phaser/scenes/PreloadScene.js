@@ -1,9 +1,19 @@
-import { createPlaceholderTextures } from '../systems/AssetRegistry.js';
+import {
+  createPlaceholderTextures,
+  loadAct1CharacterAnimationSheets,
+  loadAct1FinalAssets,
+} from '../systems/AssetRegistry.js';
 import { Act1RuntimeSystem } from '../systems/Act1RuntimeSystem.js';
 
 export default class PreloadScene extends Phaser.Scene {
   constructor() {
     super('PreloadScene');
+  }
+
+  preload() {
+    this.load.json('act1NeighborhoodLayout', 'layouts/neighborhood.layout.json');
+    loadAct1FinalAssets(this);
+    loadAct1CharacterAnimationSheets(this);
   }
 
   create() {

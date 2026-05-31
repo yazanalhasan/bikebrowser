@@ -2,6 +2,12 @@ import { ASSET_KEYS } from '../systems/AssetRegistry.js';
 import { InputSystem } from '../systems/InputSystem.js';
 import { InteractionSystem } from '../systems/InteractionSystem.js';
 import { configureNeighborhoodCamera } from '../systems/CameraSystem.js';
+import { installCharacterArtAuditBridge } from '../systems/CharacterArtAuditBridge.js';
+import { act1Locations } from '../../data/act1/index.js';
+import { loadLayout } from '../../../renderer/game/utils/loadLayout.js';
+
+const USE_PROVENANCED_ENVIRONMENT_ASSETS =
+  import.meta.env?.VITE_USE_PROVENANCED_ENVIRONMENT_ASSETS === 'true';
 
 export default class NeighborhoodScene extends Phaser.Scene {
   constructor() {
@@ -9,6 +15,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   create() {
+    this.layout = loadLayout(this, 'act1NeighborhoodLayout');
     this.worldWidth = 1600;
     this.worldHeight = 1000;
     this.inputSystem = new InputSystem(this);
@@ -19,11 +26,16 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.runtime.audioSystem.setAmbient('neighborhood');
     this.currentVelocity = { x: 0, y: 0 };
     this.lastNearestId = null;
+    this.useProvenancedEnvironmentAssets = Boolean(
+      USE_PROVENANCED_ENVIRONMENT_ASSETS || window.__USE_PROVENANCED_ENVIRONMENT_ASSETS === true,
+    );
     this.characterVisuals = {
       playerScale: 1.6,
       npcScale: 1.52,
+      runtimeSource: 'aseprite_final_character_sheets',
       animatedSheets: [],
       npcIds: [],
+      npcPlacements: [],
     };
     this.visualLanguageState = {
       scope: 'complete_act1',
@@ -51,9 +63,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.createPlayer();
     this.createInteractions();
     this.createFeedbackHud();
+    this.createWorldMapHud();
     configureNeighborhoodCamera(this, this.player);
 
-    this.helpText = this.add.text(18, 680, 'WASD / arrows move • E or Space explore • N notebook • R replay voice • M quiet', {
+    this.helpText = this.add.text(18, 680, 'WASD / arrows move • E or Space explore • G GPS • N notebook • R replay voice • M quiet', {
       fontFamily: 'Arial',
       fontSize: '14px',
       color: '#ffe8aa',
@@ -67,18 +80,37 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this.runtime?.audioSystem.setSettings({ reducedAudio: !current });
       this.showFeedback({ message: !current ? 'Quiet audio mode on.' : 'Full audio cues on.' });
     });
+    this.input.keyboard.on('keydown-G', () => this.toggleWorldMapHud(true));
+    const unlockAudioOnce = () => this.runtime?.audioSystem.unlockAudio();
+    this.input.once('pointerdown', unlockAudioOnce);
+    this.input.keyboard.once('keydown', unlockAudioOnce);
 
-    window.__bikebrowserRebuildReady = true;
+    installCharacterArtAuditBridge(this);
+    this.publishTestReadiness();
   }
 
   createCharacterAnimations() {
-    this.createSheetAnimation('zuzu.walk', ASSET_KEYS.zuzuWalkSheet, 0, 15, 10);
+    this.createDirectionalCharacterAnimations('zuzu', ASSET_KEYS.zuzuWalkSheet, 10);
+    this.createSheetAnimation('zuzu.walk', ASSET_KEYS.zuzuWalkSheet, 0, 3, 10);
     this.createSheetAnimation('zuzu.idle', ASSET_KEYS.zuzuWalkSheet, 0, 3, 4);
-    this.createSheetAnimation('chen.talk', ASSET_KEYS.npcGarageMentorTalkSheet, 0, 15, 6);
+    this.createSheetAnimation('chen.talk', ASSET_KEYS.npcGarageMentorTalkSheet, 0, 3, 3);
     this.createSheetAnimation('chen.repair', ASSET_KEYS.npcGarageMentorRepairSheet, 0, 15, 7);
-    this.createSheetAnimation('ramirez.talk', ASSET_KEYS.npcNeighborTalkSheet, 0, 15, 6);
+    this.createSheetAnimation('ramirez.talk', ASSET_KEYS.npcNeighborTalkSheet, 0, 3, 3);
     this.createSheetAnimation('ramirez.cheer', ASSET_KEYS.npcNeighborCheerSheet, 0, 15, 7);
-    this.createSheetAnimation('mariam.talk', ASSET_KEYS.npcArabicMentorTalkSheet, 0, 15, 5);
+    this.createSheetAnimation('mariam.talk', ASSET_KEYS.npcArabicMentorTalkSheet, 0, 3, 3);
+  }
+
+  createDirectionalCharacterAnimations(prefix, textureKey, frameRate) {
+    const rows = [
+      ['down', 0, 3],
+      ['left', 4, 7],
+      ['right', 8, 11],
+      ['up', 12, 15],
+    ];
+    for (const [direction, start, end] of rows) {
+      this.createSheetAnimation(`${prefix}.walk.${direction}`, textureKey, start, end, frameRate);
+      this.createSheetAnimation(`${prefix}.idle.${direction}`, textureKey, start, start, 1);
+    }
   }
 
   createSheetAnimation(key, textureKey, start, end, frameRate) {
@@ -97,23 +129,31 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
   createEnvironment() {
     this.add.rectangle(800, 500, 1600, 1000, 0x2e4a3d);
-    this.add.rectangle(800, 238, 1600, 286, 0x7fb08f).setAlpha(0.22);
-    this.add.rectangle(800, 306, 1600, 178, 0x8a8d57).setAlpha(0.3);
-    this.add.rectangle(800, 128, 1600, 160, 0x7db3b8).setAlpha(0.2);
-    this.drawSonoranVista();
+    if (this.canUseWave1Asset(ASSET_KEYS.wave1SonoranVistaDraft)) {
+      this.add.image(800, 196, ASSET_KEYS.wave1SonoranVistaDraft).setDepth(2);
+    } else {
+      this.add.rectangle(800, 238, 1600, 286, 0x7fb08f).setAlpha(0.22);
+      this.add.rectangle(800, 306, 1600, 178, 0x8a8d57).setAlpha(0.3);
+      this.add.rectangle(800, 128, 1600, 160, 0x7db3b8).setAlpha(0.2);
+      this.drawLegacySonoranVista();
+    }
     this.drawNeighborhoodColorLanguage();
 
-    for (let x = 64; x < this.worldWidth; x += 128) {
-      for (let y = 0; y < this.worldHeight; y += 96) {
-        this.add.image(x, y + 48, ASSET_KEYS.street).setAlpha(y > 380 && y < 590 ? 1 : 0);
+    if (this.canUseWave1Asset(ASSET_KEYS.wave1RoadSystemDraft)) {
+      this.add.image(800, 486, ASSET_KEYS.wave1RoadSystemDraft).setDepth(8);
+    } else {
+      for (let x = 64; x < this.worldWidth; x += 128) {
+        for (let y = 0; y < this.worldHeight; y += 96) {
+          this.add.image(x, y + 48, ASSET_KEYS.street).setAlpha(y > 380 && y < 590 ? 1 : 0);
+        }
       }
-    }
 
-    this.add.rectangle(800, 486, 1600, 116, 0x26343b);
-    this.add.rectangle(800, 400, 1600, 28, 0x55646d).setAlpha(0.82);
-    this.add.rectangle(800, 574, 1600, 28, 0x55646d).setAlpha(0.82);
-    for (let x = 80; x < this.worldWidth; x += 120) {
-      this.add.rectangle(x, 486, 56, 4, 0xd8c073).setAlpha(0.48);
+      this.add.rectangle(800, 486, 1600, 116, 0x26343b);
+      this.add.rectangle(800, 400, 1600, 28, 0x55646d).setAlpha(0.82);
+      this.add.rectangle(800, 574, 1600, 28, 0x55646d).setAlpha(0.82);
+      for (let x = 80; x < this.worldWidth; x += 120) {
+        this.add.rectangle(x, 486, 56, 4, 0xd8c073).setAlpha(0.48);
+      }
     }
 
     this.drawSouthwestHomes();
@@ -200,7 +240,17 @@ export default class NeighborhoodScene extends Phaser.Scene {
     }).setDepth(910);
   }
 
-  drawSonoranVista() {
+  canUseWave1Asset(key) {
+    return this.useProvenancedEnvironmentAssets && this.textures.exists(key);
+  }
+
+  wave1QuestMarkerKey() {
+    return this.canUseWave1Asset(ASSET_KEYS.questMarkerStoryDraft)
+      ? ASSET_KEYS.questMarkerStoryDraft
+      : ASSET_KEYS.questMarker;
+  }
+
+  drawLegacySonoranVista() {
     const vista = this.add.graphics();
     vista.fillStyle(0x8ed6c9, 0.16).fillRect(0, 0, 1600, 230);
     vista.fillStyle(0xffd17a, 0.28).fillEllipse(282, 118, 680, 176);
@@ -208,17 +258,17 @@ export default class NeighborhoodScene extends Phaser.Scene {
     vista.fillStyle(0xf28f45, 0.1).fillEllipse(1240, 162, 560, 96);
 
     // Layered basin-and-range silhouettes, with softer Sonoran colors than the old triangle peaks.
-    this.drawMountainRange(vista, [
+    this.drawLegacyMountainRange(vista, [
       [0, 330], [88, 286], [172, 198], [268, 304], [402, 242], [532, 118],
       [692, 314], [828, 236], [946, 322], [1084, 190], [1242, 98],
       [1396, 276], [1542, 170], [1600, 224], [1600, 358], [0, 358],
     ], 0x3f536f, 0.64);
-    this.drawMountainRange(vista, [
+    this.drawLegacyMountainRange(vista, [
       [0, 344], [122, 300], [254, 230], [390, 328], [520, 266],
       [664, 190], [812, 330], [990, 276], [1130, 172], [1288, 324],
       [1438, 248], [1600, 310], [1600, 372], [0, 372],
     ], 0x9b5b75, 0.54);
-    this.drawMountainRange(vista, [
+    this.drawLegacyMountainRange(vista, [
       [0, 360], [142, 314], [268, 284], [418, 352], [612, 298],
       [792, 266], [964, 348], [1134, 296], [1300, 250], [1468, 338],
       [1600, 306], [1600, 386], [0, 386],
@@ -250,13 +300,13 @@ export default class NeighborhoodScene extends Phaser.Scene {
       vista.fillRoundedRect(x - 18, y - h * 0.46, 18, 8, 4);
       vista.fillRoundedRect(x + 10, y - h * 0.65, 18, 8, 4);
     }
-    this.drawBackgroundHome(vista, 178, 304, 'adobe');
-    this.drawBackgroundHome(vista, 356, 296, 'mission');
-    this.drawBackgroundHome(vista, 1110, 302, 'territorial');
-    this.drawBackgroundHome(vista, 1328, 292, 'adobe');
+    this.drawLegacyBackgroundHome(vista, 178, 304, 'adobe');
+    this.drawLegacyBackgroundHome(vista, 356, 296, 'mission');
+    this.drawLegacyBackgroundHome(vista, 1110, 302, 'territorial');
+    this.drawLegacyBackgroundHome(vista, 1328, 292, 'adobe');
   }
 
-  drawMountainRange(graphics, points, color, alpha) {
+  drawLegacyMountainRange(graphics, points, color, alpha) {
     graphics.fillStyle(color, alpha);
     graphics.beginPath();
     graphics.moveTo(points[0][0], points[0][1]);
@@ -265,7 +315,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     graphics.fillPath();
   }
 
-  drawBackgroundHome(graphics, x, y, style) {
+  drawLegacyBackgroundHome(graphics, x, y, style) {
     if (style === 'mission') {
       graphics.fillStyle(0xe1c39b, 0.84).fillRoundedRect(x, y + 6, 88, 44, 5);
       graphics.fillStyle(0xb34f2f, 0.9).fillTriangle(x - 8, y + 8, x + 44, y - 16, x + 96, y + 8);
@@ -291,24 +341,50 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   drawSouthwestHomes() {
-    this.drawPuebloRevivalHome(46, 204, 312, 152, {
+    if (this.drawProvenancedSouthwestHomes()) {
+      return;
+    }
+    this.drawLegacySouthwestHomes();
+  }
+
+  drawProvenancedSouthwestHomes() {
+    const required = [
+      ASSET_KEYS.housePueblo01Draft,
+      ASSET_KEYS.houseMission01Draft,
+      ASSET_KEYS.houseTerritorial01Draft,
+      ASSET_KEYS.housePueblo02Draft,
+    ];
+    if (!this.useProvenancedEnvironmentAssets || required.some((key) => !this.textures.exists(key))) {
+      return false;
+    }
+    this.add.image(202, 280, ASSET_KEYS.housePueblo01Draft).setDisplaySize(312, 152).setDepth(18);
+    this.add.text(88, 366, 'Zuzu home', labelStyle()).setDepth(30);
+    this.add.image(473, 284, ASSET_KEYS.houseMission01Draft).setDisplaySize(218, 128).setDepth(18);
+    this.add.image(1102, 276, ASSET_KEYS.houseTerritorial01Draft).setDisplaySize(260, 136).setDepth(18);
+    this.add.image(1364, 267, ASSET_KEYS.housePueblo02Draft).setDisplaySize(232, 126).setDepth(18);
+    this.drawLegacyLowDesertWalls();
+    return true;
+  }
+
+  drawLegacySouthwestHomes() {
+    this.drawLegacyPuebloRevivalHome(46, 204, 312, 152, {
       body: 0xc88457,
       trim: 0xf0c997,
       door: 0xf2c46d,
       label: 'Zuzu home',
     });
-    this.drawMissionTileHome(364, 220, 218, 128);
-    this.drawTerritorialPorchHome(972, 208, 260, 136);
-    this.drawPuebloRevivalHome(1248, 204, 232, 126, {
+    this.drawLegacyMissionTileHome(364, 220, 218, 128);
+    this.drawLegacyTerritorialPorchHome(972, 208, 260, 136);
+    this.drawLegacyPuebloRevivalHome(1248, 204, 232, 126, {
       body: 0xd39a66,
       trim: 0xf3d19d,
       door: 0xf2c46d,
       label: '',
     });
-    this.drawLowDesertWalls();
+    this.drawLegacyLowDesertWalls();
   }
 
-  drawPuebloRevivalHome(x, y, w, h, options = {}) {
+  drawLegacyPuebloRevivalHome(x, y, w, h, options = {}) {
     const g = this.add.graphics();
     const body = options.body || 0xc78d67;
     const trim = options.trim || 0xe1b783;
@@ -331,7 +407,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     if (options.label) this.add.text(x + 42, y + h + 10, options.label, labelStyle());
   }
 
-  drawMissionTileHome(x, y, w, h) {
+  drawLegacyMissionTileHome(x, y, w, h) {
     const g = this.add.graphics();
     g.fillStyle(0x17221f, 0.16).fillEllipse(x + w * 0.5, y + h + 8, w * 0.46, 12);
     g.fillStyle(0xd9b28a, 1).fillRoundedRect(x + 14, y + 34, w - 28, h - 34, 7);
@@ -352,7 +428,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     g.fillRoundedRect(x + w + 6, y + h - 34, 8, 42, 4);
   }
 
-  drawTerritorialPorchHome(x, y, w, h) {
+  drawLegacyTerritorialPorchHome(x, y, w, h) {
     const g = this.add.graphics();
     g.fillStyle(0x17221f, 0.16).fillEllipse(x + w * 0.5, y + h + 8, w * 0.46, 12);
     g.fillStyle(0xc79b6f, 1).fillRoundedRect(x, y + 22, w, h - 22, 5);
@@ -369,7 +445,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     g.lineStyle(2, 0xf0d19a, 0.7).lineBetween(x + 4, y + 58, x + w - 4, y + 58);
   }
 
-  drawLowDesertWalls() {
+  drawLegacyLowDesertWalls() {
     const g = this.add.graphics();
     g.fillStyle(0xd9b28a, 0.78).fillRoundedRect(20, 356, 336, 18, 8);
     g.fillRoundedRect(348, 358, 224, 14, 7);
@@ -387,6 +463,16 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   drawDesertDetails() {
+    if (this.canUseWave1Asset(ASSET_KEYS.vegetationSaguaroClusterDraft)) {
+      for (const [x, y, scale] of [[1140, 540, 0.9], [1360, 580, 1.0], [980, 705, 1.12], [1420, 728, 0.86]]) {
+        this.add.image(x + 5, y, ASSET_KEYS.vegetationSaguaroClusterDraft).setScale(scale).setDepth(24);
+      }
+      return;
+    }
+    this.drawLegacyDesertDetails();
+  }
+
+  drawLegacyDesertDetails() {
     const g = this.add.graphics();
     const cactusColor = 0x4f9c75;
     for (const [x, y] of [[1140, 540], [1360, 580], [980, 705], [1420, 728]]) {
@@ -435,16 +521,18 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
   createPlayer() {
     const animated = this.textures.exists(ASSET_KEYS.zuzuWalkSheet);
-    this.player = this.physics.add.sprite(305, 506, animated ? ASSET_KEYS.zuzuWalkSheet : ASSET_KEYS.zuzu);
+    this.player = this.physics.add.sprite(420, 600, animated ? ASSET_KEYS.zuzuWalkSheet : ASSET_KEYS.zuzu);
     this.player.setScale(this.characterVisuals.playerScale).setDepth(260);
     this.player.setCollideWorldBounds(true);
     this.player.body.setSize(animated ? 22 : 24, animated ? 28 : 30);
     this.player.body.setOffset(animated ? 37 : 8, animated ? 54 : 20);
-    if (animated) this.player.play('zuzu.idle');
+    this.playerFacing = 'down';
+    if (animated) this.player.play('zuzu.idle.down');
     this.playerVisualState = {
       textureKey: this.player.texture.key,
       scale: this.player.scaleX,
       animation: this.player.anims?.currentAnim?.key || null,
+      facing: this.playerFacing,
     };
     this.registry.set('playerPosition', { x: this.player.x, y: this.player.y });
   }
@@ -461,7 +549,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.add.image(1030, 760, ASSET_KEYS.ecologyPlant).setScale(1.25);
     this.createEcologyVisualizer();
     this.add.image(1484, 514, ASSET_KEYS.mapGate).setScale(1.2);
-    this.add.image(650, 372, ASSET_KEYS.questMarker);
+    this.add.image(650, 372, this.wave1QuestMarkerKey());
 
     this.createAnimatedNpc({
       id: 'mr_chen',
@@ -514,7 +602,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     const trader = this.add.image(905, 394, ASSET_KEYS.materialSamples).setScale(1.05);
     this.add.text(858, 426, 'materials table', labelStyle());
 
-    const washMarker = this.add.image(1190, 574, ASSET_KEYS.questMarker);
+    const washMarker = this.add.image(1190, 574, this.wave1QuestMarkerKey());
     washMarker.setTint(0x8ed6c9);
 
     this.interactions.register({
@@ -685,16 +773,25 @@ export default class NeighborhoodScene extends Phaser.Scene {
     if (animated && this.anims.exists(animationKey)) {
       npc.play({ key: animationKey, repeat: -1, delay: Phaser.Math.Between(0, 220) });
     }
+    npc.setData('usesAsepriteRuntimeSheet', animated);
+    npc.setData('runtimeSource', animated ? sheetKey : fallbackKey);
     this.tweens.add({
       targets: npc,
       y: y - 3,
-      scaleY: this.characterVisuals.npcScale * 1.035,
-      duration: 820 + Phaser.Math.Between(0, 180),
+      scaleY: this.characterVisuals.npcScale * 1.018,
+      duration: 1450 + Phaser.Math.Between(0, 260),
       ease: 'Sine.easeInOut',
       yoyo: true,
       repeat: -1,
     });
     this.characterVisuals.npcIds.push(id);
+    this.characterVisuals.npcPlacements.push({
+      id,
+      x,
+      y,
+      texture: animated ? sheetKey : fallbackKey,
+      runtimeFinal: animated,
+    });
     return npc;
   }
 
@@ -842,6 +939,107 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.registry.events.on('act1:feedback', (entry) => this.showFeedback(entry));
   }
 
+  createWorldMapHud() {
+    const layout = this.layout.world_map_hud;
+    this.worldMapHud = this.add.container(layout.x, layout.y).setScrollFactor(0).setDepth(955);
+    this.worldMapHudExpanded = false;
+    this.worldMapHudUserPinned = false;
+    this.worldMapHudSignature = '';
+    this.worldMapAutoCollapseTimer = null;
+    this.worldMapHudState = {
+      visible: false,
+      currentLocation: 'street',
+      discovered: [],
+      lockedDestinations: [],
+      unlockedDestinations: [],
+      activeQuestMarker: 'dry_wash',
+    };
+    this.worldMapGraphics = this.add.graphics();
+    this.worldMapVista = this.textures.exists(ASSET_KEYS.propClarityWorldScaleVista)
+      ? this.add.image(layout.vista_backplate.x, layout.vista_backplate.y, ASSET_KEYS.propClarityWorldScaleVista)
+        .setDisplaySize(layout.vista_backplate.w, layout.vista_backplate.h)
+        .setAlpha(layout.vista_backplate.alpha)
+      : null;
+    this.worldMapGpsDevice = this.textures.exists(ASSET_KEYS.propClarityGpsPost)
+      ? this.add.image(layout.gps_device.x, layout.gps_device.y, ASSET_KEYS.propClarityGpsPost)
+        .setDisplaySize(layout.gps_device.w, layout.gps_device.h)
+        .setAlpha(layout.gps_device.alpha)
+      : null;
+    this.worldMapTitle = this.add.text(layout.title.x, layout.title.y, 'Zuzu GPS', {
+      fontFamily: 'Arial',
+      fontSize: '13px',
+      color: '#ffe8aa',
+      fontStyle: 'bold',
+    });
+    this.worldMapSubtitle = this.add.text(layout.subtitle.x, layout.subtitle.y, 'Arizona city routes', {
+      fontFamily: 'Arial',
+      fontSize: '11px',
+      color: '#b8d9d0',
+    });
+    this.worldMapToggleHint = this.add.text(layout.w - 62, 10, 'G open', {
+      fontFamily: 'Arial',
+      fontSize: '10px',
+      color: '#fff0c7',
+      backgroundColor: 'rgba(22,32,29,0.4)',
+      padding: { x: 5, y: 3 },
+    });
+    this.worldMapStatusLabels = layout.status_items.map((item) => this.add.text(item.x, item.y, item.label, {
+      fontFamily: 'Arial',
+      fontSize: '9px',
+      color: '#e4efea',
+    }));
+    this.worldMapLegend = this.add.text(layout.legend.x, layout.legend.y, '', {
+      fontFamily: 'Arial',
+      fontSize: '11px',
+      color: '#f6e6b4',
+      wordWrap: { width: layout.legend.w },
+      lineSpacing: 2,
+    });
+    this.worldMapPointLabels = layout.labels.items.map((item) => this.add.text(item.x, item.y, '', {
+      fontFamily: 'Arial',
+      fontSize: '9px',
+      color: '#f4f1dc',
+    }));
+    this.worldMapRouteMarkerIcons = {};
+    this.worldMapLandmarkIcons = {};
+    if (this.textures.exists(ASSET_KEYS.propClarityRouteMarkerSet)) {
+      for (const id of Object.keys(layout.points)) {
+        this.worldMapRouteMarkerIcons[id] = this.add.image(0, 0, ASSET_KEYS.propClarityRouteMarkerSet)
+          .setDisplaySize(layout.route_marker_sheet.displayW, layout.route_marker_sheet.displayH)
+          .setVisible(false);
+      }
+    }
+    if (this.textures.exists(ASSET_KEYS.propClaritySonoranLandmarkSet)) {
+      for (const id of Object.keys(layout.points)) {
+        this.worldMapLandmarkIcons[id] = this.add.image(0, 0, ASSET_KEYS.propClaritySonoranLandmarkSet)
+          .setDisplaySize(layout.landmark_sheet.displayW, layout.landmark_sheet.displayH)
+          .setVisible(false);
+      }
+    }
+    this.worldMapHud.add([
+      this.worldMapGraphics,
+      ...(this.worldMapVista ? [this.worldMapVista] : []),
+      ...(this.worldMapGpsDevice ? [this.worldMapGpsDevice] : []),
+      ...Object.values(this.worldMapLandmarkIcons),
+      ...Object.values(this.worldMapRouteMarkerIcons),
+      this.worldMapTitle,
+      this.worldMapSubtitle,
+      this.worldMapToggleHint,
+      this.worldMapLegend,
+      ...this.worldMapStatusLabels,
+      ...this.worldMapPointLabels,
+    ]);
+    this.worldMapHitZone = this.add.zone(
+      layout.w / 2,
+      layout.h / 2,
+      layout.w,
+      layout.h,
+    ).setOrigin(0.5, 0.5).setInteractive({ useHandCursor: true });
+    this.worldMapHud.add(this.worldMapHitZone);
+    this.worldMapHitZone.on('pointerdown', () => this.toggleWorldMapHud(true));
+    this.setWorldMapHudExpanded(false);
+  }
+
   update(_time, delta) {
     const movement = this.inputSystem.getMovementVector();
     const speed = 178;
@@ -852,7 +1050,6 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.currentVelocity.x = Phaser.Math.Linear(this.currentVelocity.x, targetX, smoothing);
     this.currentVelocity.y = Phaser.Math.Linear(this.currentVelocity.y, targetY, smoothing);
     this.player.setVelocity(this.currentVelocity.x, this.currentVelocity.y);
-    this.player.setFlipX(this.currentVelocity.x < -4);
     this.updatePlayerAnimation(_time, movement);
 
     const nearest = this.interactions.nearest(this.player);
@@ -878,25 +1075,80 @@ export default class NeighborhoodScene extends Phaser.Scene {
     }
 
     this.registry.set('playerPosition', { x: this.player.x, y: this.player.y });
+    this.publishTestReadiness();
 
     if (this.inputSystem.notebookJustPressed()) {
       this.toggleNotebook();
     }
+    if (this.inputSystem.gpsJustPressed()) {
+      this.toggleWorldMapHud(true);
+    }
     this.updateEvidencePanel();
+  }
+
+  publishTestReadiness() {
+    if (typeof window === 'undefined') return;
+    const captureState = () => {
+      const camera = this.cameras?.main;
+      return {
+        ready: true,
+        sceneKey: this.scene.key,
+        timestamp: Date.now(),
+        playerPosition: this.player ? { x: this.player.x, y: this.player.y } : null,
+        playerFacing: this.playerFacing || null,
+        playerAnimation: this.player?.anims?.currentAnim?.key || null,
+        camera: camera ? {
+          scrollX: camera.scrollX,
+          scrollY: camera.scrollY,
+          zoom: camera.zoom,
+        } : null,
+        world: {
+          width: this.worldWidth,
+          height: this.worldHeight,
+        },
+        loadedTextures: this.textures?.getTextureKeys?.() || [],
+        characterVisuals: this.characterVisuals || null,
+        worldMapHud: {
+          visible: Boolean(this.worldMapHud?.visible),
+          expanded: Boolean(this.worldMapHudExpanded),
+          unlocked: Boolean(this.runtime?.discoveryMapSystem?.widerMapUnlocked),
+          state: this.worldMapHudState || null,
+        },
+      };
+    };
+    window.__bikebrowserRebuildReady = true;
+    window.BIKEBROWSER_READY = true;
+    window.BIKEBROWSER_SCENE_READY = captureState();
+    window.BIKEBROWSER_TEST_BRIDGE = {
+      isReady: () => window.BIKEBROWSER_READY === true,
+      getActiveScene: () => this.scene.key,
+      getSceneState: captureState,
+      getLoadedAssets: () => captureState().loadedTextures,
+      captureRuntimeSummary: captureState,
+    };
   }
 
   updatePlayerAnimation(time, movement) {
     const isMoving = Math.abs(movement.x) > 0.01 || Math.abs(movement.y) > 0.01;
-    const targetAnim = isMoving ? 'zuzu.walk' : 'zuzu.idle';
+    if (isMoving) {
+      if (Math.abs(movement.x) > Math.abs(movement.y)) {
+        this.playerFacing = movement.x < 0 ? 'left' : 'right';
+      } else {
+        this.playerFacing = movement.y < 0 ? 'up' : 'down';
+      }
+    }
+    const targetAnim = `zuzu.${isMoving ? 'walk' : 'idle'}.${this.playerFacing || 'down'}`;
     if (this.anims.exists(targetAnim) && this.player.anims?.currentAnim?.key !== targetAnim) {
       this.player.play(targetAnim);
     }
+    this.player.setFlipX(false);
     const pulse = isMoving ? Math.sin(time / 72) * 0.035 : Math.sin(time / 420) * 0.012;
     this.player.setScale(this.characterVisuals.playerScale, this.characterVisuals.playerScale + pulse);
     this.playerVisualState = {
       textureKey: this.player.texture.key,
       scale: this.characterVisuals.playerScale,
       animation: this.player.anims?.currentAnim?.key || null,
+      facing: this.playerFacing || 'down',
       moving: isMoving,
     };
   }
@@ -908,6 +1160,36 @@ export default class NeighborhoodScene extends Phaser.Scene {
     if (!nextVisible) return;
     this.refreshNotebook();
     this.runtime?.notebookSystem.markSeen();
+  }
+
+  toggleWorldMapHud(userInitiated = false) {
+    this.setWorldMapHudExpanded(!this.worldMapHudExpanded, userInitiated);
+    this.runtime?.audioSystem.playInteractionCue(this.worldMapHudExpanded ? 'notebook_open' : 'notebook_close');
+  }
+
+  setWorldMapHudExpanded(expanded, userInitiated = false) {
+    this.worldMapHudExpanded = Boolean(expanded);
+    if (userInitiated) this.worldMapHudUserPinned = this.worldMapHudExpanded;
+    if (this.worldMapAutoCollapseTimer && !this.worldMapHudExpanded) {
+      this.worldMapAutoCollapseTimer.remove(false);
+      this.worldMapAutoCollapseTimer = null;
+    }
+    const layout = this.layout.world_map_hud;
+    const w = this.worldMapHudExpanded ? layout.w : (layout.collapsedW || 236);
+    const h = this.worldMapHudExpanded ? layout.h : (layout.collapsedH || 58);
+    this.worldMapHud?.setPosition(layout.x, this.worldMapHudExpanded ? (layout.expandedY || layout.y) : layout.y);
+    this.worldMapHitZone?.setSize(w, h);
+    this.worldMapHitZone?.setPosition(w / 2, h / 2);
+    this.worldMapToggleHint?.setText(this.worldMapHudExpanded ? 'G close' : 'G open');
+  }
+
+  temporarilyOpenWorldMapHud(duration = 4200) {
+    if (this.worldMapHudUserPinned) return;
+    this.setWorldMapHudExpanded(true, false);
+    this.worldMapAutoCollapseTimer?.remove(false);
+    this.worldMapAutoCollapseTimer = this.time.delayedCall(duration, () => {
+      if (!this.worldMapHudUserPinned) this.setWorldMapHudExpanded(false, false);
+    });
   }
 
   refreshNotebook() {
@@ -962,6 +1244,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     const clue = state.feedback.last?.message || 'Start with the bike, then follow the wash.';
     const bridge = state.bridge.bridgeReconnected ? 'The crossing is safe again.' : state.bridge.plan ? 'The bridge plan is ready.' : 'The bridge needs tested proof.';
     const map = state.discovery.widerMapUnlocked ? 'A wider map clue is open.' : `${state.discovery.discovered.length} places mapped.`;
+    this.updateWorldMapHud(state);
     const lines = [
       'Current clue',
       clue,
@@ -970,6 +1253,198 @@ export default class NeighborhoodScene extends Phaser.Scene {
     if (latestTest) lines.splice(2, 0, `${latestTest.displayName}: ${latestTest.strengthBand}`, bridge);
     if (!latestTest && !clue.includes(bridge)) lines.splice(2, 0, bridge);
     this.evidencePanel.setText(lines.join('\n'));
+  }
+
+  updateWorldMapHud(state) {
+    if (!this.worldMapGraphics || !state?.discovery || !this.player) return;
+    const layout = this.layout.world_map_hud;
+    const discovered = new Set(state.discovery.discovered || []);
+    const currentLocation = this.nearestMapLocationId();
+    const activeQuestMarker = state.bridge.bridgeReconnected ? 'wider_gate' : discovered.has('dry_wash') ? 'bridge' : 'dry_wash';
+    const locations = this.getWorldMapLocations(state);
+    const lockedDestinations = locations.filter((location) => location.locked).map((location) => location.id);
+    const unlockedDestinations = locations.filter((location) => !location.locked).map((location) => location.id);
+    const knownCount = locations.filter((location) => !location.locked && (discovered.has(location.id) || location.alwaysKnown)).length;
+    const knownUnlocked = locations.filter((location) => !location.locked).length;
+    const nextText = state.discovery.widerMapUnlocked
+      ? 'Next: Salt River and Copper Mine routes are on the horizon.'
+      : `Quest marker: ${this.locationLabel(activeQuestMarker)}. Wider city still locked.`;
+
+    this.worldMapHudState = {
+      visible: this.worldMapHudExpanded,
+      currentLocation,
+      discovered: [...discovered],
+      lockedDestinations,
+      unlockedDestinations,
+      activeQuestMarker,
+      widerMapUnlocked: state.discovery.widerMapUnlocked,
+    };
+    const signature = [
+      currentLocation,
+      activeQuestMarker,
+      state.discovery.widerMapUnlocked ? 'wide' : 'local',
+      [...discovered].sort().join(','),
+    ].join('|');
+    if (!this.worldMapHudSignature) this.worldMapHudSignature = signature;
+    else if (signature !== this.worldMapHudSignature) {
+      this.worldMapHudSignature = signature;
+      this.temporarilyOpenWorldMapHud();
+    }
+
+    const g = this.worldMapGraphics;
+    g.clear();
+    const mapChildren = [
+      this.worldMapVista,
+      this.worldMapLegend,
+      ...this.worldMapStatusLabels,
+      ...this.worldMapPointLabels,
+      ...Object.values(this.worldMapRouteMarkerIcons || {}),
+      ...Object.values(this.worldMapLandmarkIcons || {}),
+    ].filter(Boolean);
+    for (const child of mapChildren) child.setVisible(this.worldMapHudExpanded);
+
+    this.worldMapSubtitle.setText(this.worldMapHudExpanded
+      ? `${knownCount}/${locations.length} known | ${knownUnlocked} unlocked`
+      : `${knownCount}/${locations.length} known • near ${this.locationLabel(currentLocation)}`);
+    this.worldMapToggleHint?.setText(this.worldMapHudExpanded ? 'G close' : 'G open');
+
+    if (!this.worldMapHudExpanded) {
+      const collapsedW = layout.collapsedW || 236;
+      const collapsedH = layout.collapsedH || 58;
+      g.fillStyle(0x16201d, 0.86).fillRoundedRect(0, 0, collapsedW, collapsedH, layout.radius);
+      g.lineStyle(1, 0xd9b36a, 0.74).strokeRoundedRect(0, 0, collapsedW, collapsedH, layout.radius);
+      g.fillStyle(0xf2c46d, 0.95).fillCircle(collapsedW - 32, 20, 4);
+      g.lineStyle(1, 0xfff0c7, 0.84).strokeCircle(collapsedW - 32, 20, 8);
+      g.lineStyle(2, 0x8ed6c9, 0.32).lineBetween(20, 43, collapsedW - 24, 43);
+      g.fillStyle(0x8ed6c9, 0.72).fillCircle(30, 43, 3);
+      g.fillStyle(0xf2c46d, 0.9).fillCircle(collapsedW - 48, 43, 5);
+      return;
+    }
+
+    g.fillStyle(0x16201d, 0.84).fillRoundedRect(0, 0, layout.w, layout.h, layout.radius);
+    g.lineStyle(1, 0xd9b36a, 0.74).strokeRoundedRect(0, 0, layout.w, layout.h, layout.radius);
+    const viewport = layout.viewport;
+    g.fillStyle(0x203029, 0.9).fillRoundedRect(viewport.x, viewport.y, viewport.w, viewport.h, viewport.radius);
+
+    const terrainColors = { desert: 0xd9b36a, city: 0x6f8f88, river: 0x8ed6c9 };
+    for (const band of layout.terrain_bands) {
+      g.fillStyle(terrainColors[band.color] || 0x445450, 0.16).fillRoundedRect(band.x, band.y, band.w, band.h, band.radius);
+    }
+
+    const byId = new Map(locations.map((location) => [location.id, location]));
+    for (const [fromId, toId] of layout.routes) {
+      const from = byId.get(fromId);
+      const to = byId.get(toId);
+      if (!from || !to) continue;
+      const routeLocked = from.locked || to.locked;
+      g.lineStyle(2, routeLocked ? 0x7f8783 : 0x8ed6c9, routeLocked ? 0.22 : 0.34);
+      g.lineBetween(from.mapX, from.mapY, to.mapX, to.mapY);
+    }
+
+    for (const item of layout.status_items) {
+      const color = item.label === 'you' ? 0xf2c46d : item.label === 'quest' ? 0xfff0c7 : 0x7f8783;
+      g.fillStyle(color, item.label === 'locked' ? 0.55 : 0.95).fillCircle(item.dotX, item.dotY, 3);
+      if (item.label === 'quest') g.lineStyle(1, 0xfff0c7, 0.8).strokeCircle(item.dotX, item.dotY, 5);
+      if (item.label === 'locked') {
+        g.lineStyle(1, 0x9aa3a0, 0.65);
+        g.lineBetween(item.dotX - 3, item.dotY - 3, item.dotX + 3, item.dotY + 3);
+      }
+    }
+
+    for (const location of locations) {
+      const discoveredLocation = !location.locked && (discovered.has(location.id) || location.alwaysKnown);
+      const isCurrent = location.id === currentLocation;
+      const isQuest = location.id === activeQuestMarker;
+      const color = location.locked ? 0x6f7a77 : isCurrent ? 0xf2c46d : isQuest ? 0xfff0c7 : discoveredLocation ? 0x8ed6c9 : 0x445450;
+      const alpha = location.locked ? 0.45 : discoveredLocation || isQuest ? 0.95 : 0.52;
+      g.fillStyle(0x16201d, 0.42).fillCircle(location.mapX, location.mapY, isCurrent ? layout.node.currentR + 2 : layout.node.r + 2);
+      if (isQuest) g.lineStyle(2, 0xfff0c7, 0.78).strokeCircle(location.mapX, location.mapY, layout.node.questR);
+      if (isCurrent) g.lineStyle(2, 0xf2c46d, 0.9).strokeCircle(location.mapX, location.mapY, layout.node.questR + 3);
+      const routeIcon = this.worldMapRouteMarkerIcons?.[location.id];
+      if (routeIcon) {
+        const markerFrame = location.locked
+          ? layout.route_marker_sheet.frames.locked
+          : isCurrent
+            ? layout.route_marker_sheet.frames.current
+            : isQuest
+              ? layout.route_marker_sheet.frames.quest
+              : layout.route_marker_sheet.frames.complete;
+        this.setSheetIconFrame(routeIcon, layout.route_marker_sheet, markerFrame);
+        routeIcon.setPosition(location.mapX, location.mapY).setAlpha(alpha).setVisible(true);
+      } else {
+        g.fillStyle(color, alpha).fillCircle(location.mapX, location.mapY, isCurrent ? layout.node.currentR : layout.node.r);
+      }
+      const landmarkIcon = this.worldMapLandmarkIcons?.[location.id];
+      if (landmarkIcon) {
+        const landmarkFrame = layout.landmark_sheet.frames[location.id];
+        this.setSheetIconFrame(landmarkIcon, layout.landmark_sheet, landmarkFrame);
+        landmarkIcon
+          .setPosition(location.mapX + layout.landmark_sheet.offsetX, location.mapY + layout.landmark_sheet.offsetY)
+          .setAlpha(location.locked ? 0.38 : 0.78)
+          .setVisible(true);
+      }
+    }
+
+    layout.labels.items.forEach((item, index) => {
+      const location = byId.get(item.id);
+      if (!location) return;
+      const isVisible = location.alwaysKnown
+        || location.revealedWhenLocked
+        || discovered.has(location.id)
+        || location.id === activeQuestMarker
+        || !location.locked;
+      const label = this.worldMapPointLabels[index];
+      if (label) {
+        label.setText(isVisible ? location.label : '');
+        label.setAlpha(location.locked ? 0.58 : 0.9);
+      }
+      if (!isVisible) return;
+      g.fillStyle(0x16201d, location.locked ? 0.5 : 0.66).fillRoundedRect(item.x - 3, item.y - 1, location.label.length * 5.8 + 6, 12, 4);
+    });
+
+    this.worldMapLegend.setText(`You are near: ${this.locationLabel(currentLocation)}\n${nextText}`);
+  }
+
+  setSheetIconFrame(icon, sheet, frame) {
+    if (frame === undefined) {
+      icon.setVisible(false);
+      return;
+    }
+    icon.setCrop(frame * sheet.frameW, 0, sheet.frameW, sheet.frameH);
+  }
+
+  getWorldMapLocations(state) {
+    const byId = new Map(act1Locations.map((location) => [location.id, location]));
+    const points = this.layout.world_map_hud.points;
+    return Object.entries(points).map(([id, point]) => ({
+      id,
+      label: point.label || byId.get(id)?.displayName || id,
+      mapX: point.x,
+      mapY: point.y,
+      alwaysKnown: Boolean(point.alwaysKnown),
+      revealedWhenLocked: Boolean(point.revealedWhenLocked),
+      locked: Boolean(point.lockedByWiderMap && !state.discovery.widerMapUnlocked),
+    }));
+  }
+
+  nearestMapLocationId() {
+    const mappedDestinationIds = new Set(Object.keys(this.layout.world_map_hud.points));
+    let nearest = { id: 'street', distance: Infinity };
+    for (const location of act1Locations.filter((item) => mappedDestinationIds.has(item.id))) {
+      const distance = Phaser.Math.Distance.Between(this.player.x, this.player.y, location.x, location.y);
+      if (distance < nearest.distance) nearest = { id: location.id, distance };
+    }
+    return nearest.id;
+  }
+
+  locationLabel(id) {
+    const match = act1Locations.find((location) => location.id === id);
+    if (match) return match.displayName;
+    const labels = {
+      salt_river: 'Salt River',
+      copper_mine: 'Copper Mine',
+    };
+    return labels[id] || id;
   }
 
   createBridgeCelebration() {

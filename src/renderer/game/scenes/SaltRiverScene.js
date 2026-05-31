@@ -35,17 +35,7 @@ export default class SaltRiverScene extends BaseSubScene {
     this.layout = loadLayout(this, 'saltRiverLayout');
     const { width, height } = this.getWorldSize();
 
-    // ── Terrain layers ──
-    // Southern bank (grass)
-    this.add.rectangle(this.layout.terrain_south_grass.x, this.layout.terrain_south_grass.y, this.layout.terrain_south_grass.w, this.layout.terrain_south_grass.h, 0x7caa55);
-    // Sandy riverbank
-    this.add.rectangle(this.layout.terrain_sandy_riverbank.x, this.layout.terrain_sandy_riverbank.y, this.layout.terrain_sandy_riverbank.w, this.layout.terrain_sandy_riverbank.h, 0xd4b896);
-    // River (flowing water)
-    this.add.rectangle(this.layout.terrain_river.x, this.layout.terrain_river.y, this.layout.terrain_river.w, this.layout.terrain_river.h, 0x4a90d9);
-    // Northern bank
-    this.add.rectangle(this.layout.terrain_north_grass.x, this.layout.terrain_north_grass.y, this.layout.terrain_north_grass.w, this.layout.terrain_north_grass.h, 0x8bbc6a);
-    // Sandy shore (north)
-    this.add.rectangle(this.layout.terrain_north_sandy_shore.x, this.layout.terrain_north_sandy_shore.y, this.layout.terrain_north_sandy_shore.w, this.layout.terrain_north_sandy_shore.h, 0xd4b896);
+    this._renderCanyonRiverBackground(width, height);
 
     // ── Water animation (ripples) ──
     const waterGraphics = this.add.graphics();
@@ -175,6 +165,64 @@ export default class SaltRiverScene extends BaseSubScene {
       fontSize: '16px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#1e3a5f', stroke: '#dbeafe', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(10).setScrollFactor(0);
+  }
+
+  _renderCanyonRiverBackground(width, height) {
+    this.add.rectangle(width / 2, height / 2, width, height, 0x8bd5f5);
+    this.add.rectangle(width / 2, 92, width, 184, 0x58b7ee).setAlpha(0.42);
+
+    const canyon = this.add.graphics();
+    canyon.fillStyle(0xf07a2e, 0.92);
+    canyon.fillTriangle(0, 260, 110, 120, 245, 300);
+    canyon.fillTriangle(74, 260, 206, 94, 355, 310);
+    canyon.fillStyle(0x813c75, 0.58);
+    canyon.fillTriangle(288, 300, 520, 126, 710, 322);
+    canyon.fillStyle(0xf4a33d, 0.72);
+    canyon.fillTriangle(760, 276, 922, 112, 1100, 300);
+    canyon.fillStyle(0x5b4c8e, 0.44);
+    canyon.fillTriangle(485, 282, 660, 154, 820, 304);
+
+    const shore = this.add.graphics();
+    shore.fillStyle(0xeecb82, 0.9);
+    shore.fillRoundedRect(0, 230, width, 210, 16);
+    shore.fillStyle(0x78a95f, 0.76);
+    shore.fillRoundedRect(0, 440, width, height - 440, 18);
+    shore.fillStyle(0xf49a2f, 0.18);
+    shore.fillEllipse(180, 555, 330, 86);
+    shore.fillEllipse(910, 548, 300, 94);
+
+    const river = this.add.graphics();
+    river.fillStyle(0x118bc5, 0.98);
+    river.beginPath();
+    river.moveTo(0, 356);
+    river.lineTo(170, 320);
+    river.lineTo(340, 338);
+    river.lineTo(500, 306);
+    river.lineTo(695, 344);
+    river.lineTo(width, 316);
+    river.lineTo(width, 500);
+    river.lineTo(790, 522);
+    river.lineTo(600, 490);
+    river.lineTo(410, 538);
+    river.lineTo(210, 498);
+    river.lineTo(0, 526);
+    river.closePath();
+    river.fillPath();
+
+    river.fillStyle(0x21d3e7, 0.46);
+    river.fillEllipse(420, 418, 260, 36);
+    river.fillEllipse(720, 406, 230, 28);
+    river.fillStyle(0xffa32e, 0.34);
+    river.fillEllipse(220, 430, 260, 32);
+    river.fillEllipse(560, 454, 320, 34);
+
+    const brush = this.add.graphics();
+    for (const [x, y, color] of [
+      [86, 492, 0xf2802d], [152, 518, 0x94bf5d], [238, 530, 0xffc042],
+      [830, 510, 0xf2802d], [930, 492, 0xa6c85f], [1004, 526, 0xffc042],
+    ]) {
+      brush.fillStyle(color, 0.82).fillEllipse(x, y, 52, 24);
+    }
   }
 
   setupChallenges() {

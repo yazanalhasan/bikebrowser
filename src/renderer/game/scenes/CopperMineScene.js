@@ -49,13 +49,7 @@ export default class CopperMineScene extends BaseSubScene {
     // does not affect the side-quest `collect_copper_samples`.
     this._mintCopperOreSampleIfNeeded();
 
-    // ── Ground layers ── mine entrance transitions to underground
-    // Surface (top third)
-    this.add.rectangle(this.layout.ground_surface.x, this.layout.ground_surface.y, this.layout.ground_surface.w, this.layout.ground_surface.h, 0xb8956a);
-    // Mine entrance (transition zone)
-    this.add.rectangle(this.layout.ground_entrance.x, this.layout.ground_entrance.y, this.layout.ground_entrance.w, this.layout.ground_entrance.h, 0x6b5b4f);
-    // Underground (bottom two-thirds)
-    this.add.rectangle(this.layout.ground_underground.x, this.layout.ground_underground.y, this.layout.ground_underground.w, this.layout.ground_underground.h, 0x3d3329);
+    this._renderCopperStrataBackground(width, height);
 
     // ── Mine entrance arch ──
     const arch = this.add.graphics();
@@ -158,6 +152,58 @@ export default class CopperMineScene extends BaseSubScene {
       fontSize: '16px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#f5e6c8', stroke: '#3d2b1f', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(10).setScrollFactor(0);
+  }
+
+  _renderCopperStrataBackground(width, height) {
+    this.add.rectangle(width / 2, height / 2, width, height, 0x2f231d);
+
+    const strata = this.add.graphics();
+    const bands = [
+      [0, 0, 0xc8846a, 0.72],
+      [0, 92, 0x8b5b72, 0.64],
+      [0, 176, 0xd06b3f, 0.72],
+      [0, 270, 0x623a34, 0.78],
+      [0, 370, 0x3a2a28, 0.9],
+      [0, 520, 0x261b18, 0.96],
+    ];
+    for (const [x, y, color, alpha] of bands) {
+      strata.fillStyle(color, alpha);
+      strata.beginPath();
+      strata.moveTo(x, y);
+      strata.lineTo(width, y + 34);
+      strata.lineTo(width, y + 180);
+      strata.lineTo(0, y + 132);
+      strata.closePath();
+      strata.fillPath();
+    }
+
+    strata.lineStyle(3, 0xe9a06d, 0.42);
+    for (const [sx, sy, ex, ey] of [
+      [70, 130, 380, 210], [460, 190, 920, 120], [120, 360, 470, 430],
+      [530, 474, 900, 390], [260, 660, 760, 720],
+    ]) {
+      strata.beginPath();
+      strata.moveTo(sx, sy);
+      strata.lineTo((sx + ex) / 2, sy + 36);
+      strata.lineTo(ex, ey);
+      strata.strokePath();
+    }
+
+    strata.lineStyle(2, 0x74c7b8, 0.34);
+    strata.beginPath();
+    strata.moveTo(120, 230);
+    strata.lineTo(260, 252);
+    strata.lineTo(420, 236);
+    strata.strokePath();
+    strata.beginPath();
+    strata.moveTo(620, 320);
+    strata.lineTo(760, 348);
+    strata.lineTo(900, 326);
+    strata.strokePath();
+
+    const light = this.add.graphics();
+    light.fillStyle(0xffbf73, 0.12).fillEllipse(width / 2, 270, 760, 230);
+    light.fillStyle(0x120c0a, 0.32).fillRect(0, 470, width, height - 470);
   }
 
   setupChallenges() {

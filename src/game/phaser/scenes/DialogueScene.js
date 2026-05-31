@@ -56,6 +56,9 @@ export default class DialogueScene extends Phaser.Scene {
     this.panel.setVisible(true);
     this.speaker.setText(line.speaker);
     this.line.setText(line.text);
+    if (line.speechEnabled) {
+      this.registry.get('act1AudioSystem')?.autoSpeakLine(line);
+    }
   }
 
   advance() {
@@ -63,6 +66,7 @@ export default class DialogueScene extends Phaser.Scene {
     const result = this.registry.get('dialogueSystem').advance();
     if (result?.closed) {
       this.panel.setVisible(false);
+      this.registry.get('act1AudioSystem')?.stopSpeech();
       const runtime = this.registry.get('act1Runtime');
       runtime?.applyDialogueEffects(result.dialogueId);
       if (result.completesObjective) {

@@ -1,5 +1,86 @@
 {
   "scene": "NeighborhoodScene",
   "version": 1,
-  "objects": {}
+  "objects": {
+    "world_map_hud": {
+      "x": 18,
+      "y": 604,
+      "expandedY": 400,
+      "w": 370,
+      "h": 232,
+      "collapsedW": 236,
+      "collapsedH": 58,
+      "radius": 8,
+      "title": { "x": 14, "y": 10 },
+      "subtitle": { "x": 14, "y": 29 },
+      "viewport": { "x": 14, "y": 50, "w": 342, "h": 126, "radius": 8 },
+      "gps_device": { "x": 158, "y": 29, "w": 48, "h": 36, "alpha": 0.9 },
+      "vista_backplate": { "x": 185, "y": 113, "w": 326, "h": 88, "alpha": 0.22 },
+      "legend": { "x": 14, "y": 181, "w": 334 },
+      "status": { "x": 220, "y": 10 },
+      "status_items": [
+        { "x": 220, "y": 10, "dotX": 212, "dotY": 17, "label": "you" },
+        { "x": 267, "y": 10, "dotX": 259, "dotY": 17, "label": "quest" },
+        { "x": 220, "y": 27, "dotX": 212, "dotY": 34, "label": "locked" }
+      ],
+      "terrain_bands": [
+        { "x": 30, "y": 66, "w": 130, "h": 28, "radius": 10, "color": "desert" },
+        { "x": 176, "y": 68, "w": 154, "h": 22, "radius": 9, "color": "city" },
+        { "x": 194, "y": 138, "w": 132, "h": 16, "radius": 7, "color": "river" }
+      ],
+      "routes": [
+        ["home", "garage"],
+        ["garage", "street"],
+        ["street", "dry_wash"],
+        ["dry_wash", "bridge"],
+        ["bridge", "wider_gate"],
+        ["wider_gate", "salt_river"],
+        ["wider_gate", "copper_mine"]
+      ],
+      "points": {
+        "home": { "x": 50, "y": 140, "label": "Home", "alwaysKnown": true },
+        "garage": { "x": 112, "y": 105, "label": "Garage", "alwaysKnown": true },
+        "street": { "x": 148, "y": 142, "label": "Street", "alwaysKnown": true },
+        "dry_wash": { "x": 214, "y": 132, "label": "Dry Wash" },
+        "bridge": { "x": 256, "y": 136, "label": "Bridge" },
+        "wider_gate": { "x": 302, "y": 112, "label": "City Gate", "lockedByWiderMap": true, "revealedWhenLocked": true },
+        "salt_river": { "x": 278, "y": 84, "label": "Salt River", "lockedByWiderMap": true, "revealedWhenLocked": true },
+        "copper_mine": { "x": 324, "y": 76, "label": "Copper Mine", "lockedByWiderMap": true, "revealedWhenLocked": true }
+      },
+      "node": { "r": 5, "currentR": 7, "questR": 11, "lockedSlash": 4 },
+      "route_marker_sheet": {
+        "frameW": 48,
+        "frameH": 48,
+        "displayW": 21,
+        "displayH": 21,
+        "frames": { "current": 0, "quest": 1, "locked": 2, "complete": 3 }
+      },
+      "landmark_sheet": {
+        "frameW": 64,
+        "frameH": 64,
+        "displayW": 21,
+        "displayH": 21,
+        "offsetX": 0,
+        "offsetY": -18,
+        "frames": {
+          "dry_wash": 0,
+          "bridge": 1,
+          "salt_river": 2,
+          "copper_mine": 3
+        }
+      },
+      "labels": {
+        "items": [
+          { "id": "home", "x": 34, "y": 152 },
+          { "id": "garage", "x": 90, "y": 80 },
+          { "id": "street", "x": 128, "y": 154 },
+          { "id": "dry_wash", "x": 188, "y": 146 },
+          { "id": "bridge", "x": 236, "y": 151 },
+          { "id": "wider_gate", "x": 276, "y": 123 },
+          { "id": "salt_river", "x": 238, "y": 94 },
+          { "id": "copper_mine", "x": 292, "y": 61 }
+        ]
+      }
+    }
+  }
 }
