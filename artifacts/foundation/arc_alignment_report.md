@@ -58,6 +58,13 @@ shows a feedback panel; suite drives the real marker). The two items are now
 **GUARD** tests driving the entire keyboard path and pass — so bridge design and
 investigation are independently verified player-reachable, not just self-asserted.
 
+A third defect was then fixed: Mrs. Ramirez had two interaction zones stacked at
+her exact coords, so "Thank Mrs. Ramirez" (spanish_trust + trust/Spanish) was
+permanently shadowed. Collapsed into one progression-aware `neighbor` zone and
+promoted that worklist item to a GUARD too. **The strict suite now has zero
+remaining expected-fails: 6 GUARDs green / 1 payoff `fixme` skipped.** Every
+Phase-1 player-facing loop is independently verified reachable by keyboard.
+
 **Fun** (new, objective): does the player get **choice → consequence → payoff**
 through the UI? Not a rating — a yes/no on whether those three are present in play.
 

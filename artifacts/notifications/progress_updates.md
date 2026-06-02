@@ -51,3 +51,7 @@ _Append new milestones below as work proceeds._
 | 2026-06-02 | defect/fix 🔴 | Bridge workbench silently no-op'd with no tested materials → now opens a 'Test materials at the UTM first' feedback panel (no dead-end) |
 | 2026-06-02 | verify ✅✅ | Promoted bridge+investigation to strict-suite GUARDs (full keyboard play, no __GAME__): 6 passed/1 skip/1 expected-fail; dedicated specs 4 passed. Independently verified Player Reachable |
 | 2026-06-02 | commit | `8932592` fix(game): verify bridge + investigation reachability; fix bridge dead-end |
+| 2026-06-02 | defect/fix 🔴 | spanish_neighbor shadowed by `neighbor` (0px) → collapsed into one progression-aware zone; "Thank Mrs. Ramirez" now reachable |
+| 2026-06-02 | verify ✅ | Strict suite fully green: 6 GUARDs / 1 payoff fixme / 0 expected-fail; engine acceptance green (1 prior nav flake, re-ran → pass) |
+| 2026-06-02 | commit | `2525b26` fix(game): resolve spanish_neighbor zone collision; promote to GUARD |
+| 2026-06-02 | milestone 🎯 | **Phase 1 Completion Verification Report** written — all player-facing loops independently verified reachable; 3 defects found+fixed by the gate |
