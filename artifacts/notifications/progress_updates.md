@@ -43,3 +43,5 @@ _Append new milestones below as work proceeds._
 | 2026-06-02 | commit | `45f4ac3` feat(game): player-facing predict-before-test UI (1.9.2) |
 | 2026-06-02 | acceptance ✅✅ | Phase 1.9.2A-C GREEN (engine + reachability 2/2); UTM loop see bend/hold/break, summary+Esc exit, integrity |
 | 2026-06-02 | commit | `dbd5f93` feat(game): finish UTM loop (1.9.2A-C); Fun column added to dashboard |
+| 2026-06-02 | acceptance ✅✅ | Phase 1.9.3 GREEN — PLAYER-REACHABILITY 2/2 (22s, primary) + ENGINE walkthrough (2.7m); bridge designed by keyboard, weak sags red / sound holds green, redesign-on-fail, Esc-exit |
+| 2026-06-02 | commit | `142362b` feat(game): player-facing bridge design UI (1.9.3); dashboard → bridge Player Reachable ✅ + Fun ✅ |
