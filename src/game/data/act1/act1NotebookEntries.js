@@ -10,6 +10,8 @@ export const act1NotebookEntries = [
   { id: 'bridge_plan', category: 'Construction', title: 'Bridge Plan', body: 'The safest plan uses a deck, supports, and triangular braces selected from tested materials.' },
   { id: 'bridge_repaired', category: 'Construction', title: 'Bridge Repaired', body: 'The repaired crossing held because Zuzu tested, compared, planned, and built before asking anyone to cross.' },
   { id: 'desert_plant', category: 'Ecology', title: 'Desert Plant', body: 'Desert plants solve heat, water, and shade problems. Harvesting has limits.' },
+  { id: 'creosote', category: 'Ecology', title: 'Creosote', body: 'Creosote spaces its leaves and roots so it can survive dry soil and open desert heat. Observe only.' },
+  { id: 'saguaro', category: 'Ecology', title: 'Saguaro Landmark', body: 'The saguaro stores water and grows slowly. It is a desert landmark to mark and respect, never to harvest.' },
   { id: 'chemistry_result', category: 'Chemistry', title: 'Chemistry Result', body: 'Mixing, concentration, drying, and heat change whether a repair compound works.' },
   { id: 'spanish_interaction', category: 'Language', title: 'Spanish Interaction', body: 'A neighbor used Spanish naturally while offering help and trust.' },
   { id: 'arabic_interaction', category: 'Language', title: 'Arabic Interaction', body: 'A mentor used Arabic as part of relationship and welcome, not as a quiz.' },

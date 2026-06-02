@@ -165,9 +165,11 @@ export class Act1RuntimeSystem {
       },
       ecology_patch: () => {
         this.inventorySystem.add('mesquite');
-        this.unlockNotebookEntries(['mesquite', 'desert_plant']);
-        this.observeEcology('mesquite');
         this.completeObjective('collect_mesquite');
+        // Observe all three desert plants respectfully: completes the
+        // desert_helper objectives (observe_mesquite/creosote/saguaro) and
+        // unlocks their ecology notebook entries (mesquite/creosote/saguaro).
+        ['mesquite', 'creosote', 'saguaro'].forEach((species) => this.observeEcology(species));
         return { ok: true };
       },
       utm: () => ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].map((id) => this.testMaterial(id)),
@@ -236,7 +238,12 @@ export class Act1RuntimeSystem {
     this.audioSystem.setAmbient('ecology_patch');
     const result = this.ecologySystem.observe(speciesId);
     if (!result.ok) return result;
-    this.unlockNotebookEntries(['desert_plant']);
+    // Unlock the shared desert_plant entry plus the species-specific entry so
+    // each observation is a visible field note (notebook 13/16 -> 16/18 ecology).
+    const notebookBySpecies = { mesquite: 'mesquite', creosote: 'creosote', saguaro: 'saguaro' };
+    const entries = ['desert_plant'];
+    if (notebookBySpecies[speciesId]) entries.push(notebookBySpecies[speciesId]);
+    this.unlockNotebookEntries(entries);
     const objectiveBySpecies = {
       mesquite: 'observe_mesquite',
       creosote: 'observe_creosote',
