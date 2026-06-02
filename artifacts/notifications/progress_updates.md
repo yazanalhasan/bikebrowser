@@ -47,3 +47,7 @@ _Append new milestones below as work proceeds._
 | 2026-06-02 | commit | `142362b` feat(game): player-facing bridge design UI (1.9.3); dashboard → bridge Player Reachable ✅ + Fun ✅ |
 | 2026-06-02 | acceptance ✅✅ | Phase 1.9.4 GREEN — PLAYER-REACHABILITY 2/2 (1.0m, primary) + ENGINE walkthrough (2.4m); investigate washout by keyboard, pick misleading hypothesis → evidence turns it red/"doesn't fit" → conclude corrected, Esc-exit |
 | 2026-06-02 | milestone 🎯 | **Phase 1.9 Player Reachability Sprint COMPLETE** — Predict/Build/Investigate all player-reachable + Fun, each dual-tested; Phase 2 unblocked |
+| 2026-06-02 | audit | Strict suite still listed bridge+investigation as worklist (stale post-1.9.3/4) — ran it as authoritative gate; found 2 real defects |
+| 2026-06-02 | defect/fix 🔴 | Bridge workbench silently no-op'd with no tested materials → now opens a 'Test materials at the UTM first' feedback panel (no dead-end) |
+| 2026-06-02 | verify ✅✅ | Promoted bridge+investigation to strict-suite GUARDs (full keyboard play, no __GAME__): 6 passed/1 skip/1 expected-fail; dedicated specs 4 passed. Independently verified Player Reachable |
+| 2026-06-02 | commit | `8932592` fix(game): verify bridge + investigation reachability; fix bridge dead-end |
