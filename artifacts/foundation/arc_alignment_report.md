@@ -37,7 +37,7 @@ inventory/gating/ecology-basic) are now Implemented+Wired+Playable+Accepted.
 Largest remaining near-term gaps: bridge interactivity (1.6), reasoning grader
 (1.7), Dry Wash region (1.8), then ecology loop / discovery / world map (2.1–2.3).
 
-## Player Reachable (PR) + Fun status — Phase 1.9 (the corrected truth; last: post 1.9.2A-C)
+## Player Reachable (PR) + Fun status — Phase 1.9 (the corrected truth; last: post 1.9.3)
 A QA audit (`qa_audit/player_reachability_audit.md`) proved **Implemented +
 Accepted ≠ Player Reachable**: Phase-1 acceptance drove `window.__GAME__`
 directly, so it validated the *engine*, not *player access*. PR = a real player
@@ -56,13 +56,14 @@ through the UI? Not a rating — a yes/no on whether those three are present in 
 | Movement + walk-up interactions | ✅ | ✅ | ✅ | n/a | keyboard already |
 | UTM material testing | ✅ | ✅ | **✅ (1.9.2)** | **✅** | overlay; per-material |
 | **Predict-before-test** | ✅ | ✅ | **✅ (1.9.2)** | **✅ (1.9.2A-C)** | choice: HOLD/BREAK + how-sure · consequence: beam **holds/bends/breaks** on screen · payoff: ✓/✗ compare + run summary + reasoning credit; gates the UTM (arc.md); Esc-exit, never trapped |
-| **Bridge design (choice)** | ✅ | ✅ | ❌ → 1.9.3 | ❌ → 1.9.3 | `designBridge` only via `__GAME__` |
+| **Bridge design (choice)** | ✅ | ✅ | **✅ (1.9.3)** | **✅ (1.9.3)** | overlay: pick a tested material per structural role (deck/support/brace) · consequence: weak design **sags red on screen**, sound design **holds green** · payoff: bridge stands + plan set + redesign-on-failure loop; gates on tested evidence; Esc-exit, never trapped; dual spec (engine + bridge-reachability) |
 | **Dry Wash investigation** | ✅ | ✅ | ❌ → 1.9.4 | ❌ → 1.9.4 | observe/hypothesize/investigate/conclude only via `__GAME__` |
 | Ecology observation | ✅ | ✅ | ⚠️ | ⚠️ | observe via press-E; no predict/payoff step yet |
 
 **Bottleneck (corrected):** not implementation — **player access to
-implementation.** Phase 2 is paused until Predict/Build/Investigate are
-player-reachable and prediction gates intervention.
+implementation.** Predict (1.9.2) and Build/bridge (1.9.3) are now
+player-reachable + Fun. **Only Dry Wash investigation (1.9.4) remains** before
+Phase 2 unpauses. Prediction gates intervention (arc.md) and holds.
 
 ## Acts
 | Act (arc.md) | Documented | Implemented | Playable | Accepted | Status |

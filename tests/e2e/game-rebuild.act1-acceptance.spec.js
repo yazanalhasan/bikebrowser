@@ -213,16 +213,34 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         y: 454,
         prompt: 'Plan bridge repair',
         file: '08_bridge_plan',
-        // Phase 1.6: prove choice -> consequence. A weak material in a load-
-        // bearing role fails; an all-safe design succeeds.
-        before: async (page) => page.evaluate(() => {
-          const bad = window.__GAME__.designBridge({ deck: 'mesquite', support: 'weak_scrap', brace: 'copper_brace' });
-          const good = window.__GAME__.designBridge({ deck: 'mesquite', support: 'steel', brace: 'copper_brace' });
-          window.__BRIDGE_CHOICE__ = {
-            bad: { ok: bad.ok, outcome: bad.outcome, reason: bad.reason },
-            good: { ok: good.ok, outcome: good.outcome },
+        // Phase 1.9.3: PLAYER designs the bridge via the overlay (real keyboard).
+        // A flawed design (weak support) fails on screen; the player iterates to
+        // a sound design that holds. choice -> consequence -> iterate -> payoff.
+        drive: async (page) => {
+          await page.waitForFunction(() => window.__BRIDGE_DESIGN__ && window.__BRIDGE_DESIGN__.active === true);
+          const pick = async (materialId) => {
+            await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'choose');
+            for (let g = 0; g < 8; g += 1) {
+              const cur = await page.evaluate(() => window.__BRIDGE_DESIGN__.candidateId);
+              if (cur === materialId) break;
+              await page.keyboard.press('ArrowRight');
+            }
+            await page.keyboard.press('KeyE');
           };
-        }),
+          // 1) flawed: weak scrap as the support -> the bridge fails.
+          await pick('mesquite'); await pick('weak_scrap'); await pick('copper_brace');
+          await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result');
+          await page.screenshot({ path: `${captureDir}/08a_bridge_fail.png`, fullPage: true });
+          const failed = await page.evaluate(() => window.__BRIDGE_DESIGN__.outcome);
+          if (failed === 'safe') throw new Error('expected the weak-support design to fail');
+          await page.keyboard.press('KeyE'); // redesign (iterate)
+          // 2) sound: steel support -> the bridge holds.
+          await pick('mesquite'); await pick('steel'); await pick('copper_brace');
+          await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result');
+          await page.screenshot({ path: `${captureDir}/08b_bridge_hold.png`, fullPage: true });
+          await page.keyboard.press('KeyE'); // finish
+          await page.waitForFunction(() => window.__BRIDGE_DESIGN__.active === false);
+        },
         waitFor: () => Boolean(window.__GAME__.getAct1State().bridge.plan),
       },
       {
@@ -263,7 +281,6 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         materialTestCount: state.materialTests.tested.length,
         engineeringLoop: state.engineeringLoop,
         reasoning: state.reasoning,
-        bridgeChoice: window.__BRIDGE_CHOICE__,
         materialVerdicts: state.materialTests.tested.map((t) => ({ id: t.materialId, bridgeSafe: t.bridgeSafe, band: t.strengthBand })),
         prediction: state.prediction,
         inventoryDetails: state.inventory.details.map((d) => ({
@@ -330,9 +347,8 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
     expect(finalState.engineeringLoop).toMatchObject({
       observe: true, predict: true, test: true, build: true, verify: true, complete: true,
     });
-    // Phase 1.6: player bridge design has real consequences.
-    expect(finalState.bridgeChoice.bad).toMatchObject({ ok: false, outcome: 'unsafe', reason: 'mixed_unsafe' });
-    expect(finalState.bridgeChoice.good).toMatchObject({ ok: true, outcome: 'safe' });
+    // Phase 1.9.3: bridge consequence is proven in the bridge_plan drive (a weak
+    // design fails on screen; the player iterates to a sound one that holds).
     // Phase 1.7: reasoning is graded as a learning system. Evidence + correction
     // are rewarded; a WRONG prediction (weak_scrap) does NOT tank the grade
     // because the player tested and corrected — reasoning quality, not correctness.

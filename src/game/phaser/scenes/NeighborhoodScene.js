@@ -1154,6 +1154,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
           // player-facing predict-before-test flow instead of batch-testing.
           const materials = ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].filter((id) => this.runtime?.inventorySystem?.has(id));
           this.registry.events.emit('prediction:start', materials);
+        } else if (nearest.action === 'bridge_plan') {
+          // Phase 1.9.3: the player designs the bridge (choose a material per
+          // role) and sees it hold or fail, instead of an auto-completed plan.
+          this.registry.events.emit('bridgeDesign:start');
         } else if (nearest.action) {
           this.runtime?.handleInteraction(nearest.action);
           this.registry.events.emit('quest:changed');
