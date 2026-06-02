@@ -6,6 +6,16 @@ The intended autonomous execution chain, with each step classified
 reachable from the autonomous loop (`autonomous_completion.py →
 build_execution_package → run_execution_package`, and the langgraph pipeline).
 
+> **UPDATE — Phase 0.8 wiring implementation (2026-06-02):** the previously
+> "Missing wiring" steps are now wired into the real path and proven by
+> `tests/test_operational_wiring.py` (10 tests). Statuses below are updated to
+> **Operational** where a test exercises the wired path; see
+> `operational_wiring_implementation_report.md`. Runner preflight
+> (`brain/execution/governance_hooks.governance_preflight`) now runs mission
+> scoring + tool governance + budget + resource on every package; the
+> autonomous loop now runs the RecoveryGuard + lessons across iterations and
+> defers paid/heavy missions.
+
 ## The flow
 
 ```
@@ -34,19 +44,19 @@ build_execution_package → run_execution_package`, and the langgraph pipeline).
 
 ## Step table
 
-| # | Step | Status | Operational today? | Evidence / gap |
+| # | Step | Status (post-wiring) | Operational? | Evidence |
 |---|---|---|---|---|
-| 1 | Mission | Implemented | ✅ | `brain/missions/`, `package_builder.build_execution_package` |
-| 2 | Mission Scoring | **Missing wiring** | ❌ | `score_mission`/`rank_missions` exist; selection doesn't call them |
-| 3 | Tool Selection | **Partially Wired** | ⚠️ | graph `executor_routing_node` operational; `select_tool` (budget/privilege-aware) unused |
-| 4 | Privileges | Implemented+Wired | ✅ | `enforce_executor_privilege` in 4 executors' `execute()` |
-| 5 | Budget | **Missing wiring** | ❌ | `check_budget_or_block`/`check_resource_or_block` never called in runner/executors |
-| 6 | Execution | Implemented+Wired | ✅ | `run_execution_package`, `execution_node`, real executors |
-| 7 | Recovery | **Missing wiring** | ❌ | `RecoveryGuard` uncalled; only codex-packet ad-hoc retry exists |
-| 8 | Acceptance | Implemented+Wired | ✅ | validation + visual/experience gates; acceptance scores loop the driver |
-| 9 | Asset Promotion | **Missing wiring** | ❌ | `evaluate_promotion` uncalled; old `run_validation_plan` runs instead |
-| 10 | Checkpoint | Implemented+Wired | ✅ | `checkpoint_save_node`, `runtime/resume.py`, `replay.py` |
-| 11 | Lessons Learned | **Missing wiring** | ❌ | `LessonStore` never recorded/retrieved |
+| 1 | Mission | Operational | ✅ | `package_builder.build_execution_package` |
+| 2 | Mission Scoring | **Operational** | ✅ | `governance_hooks.mission_score_for_package` in runner preflight + autonomous loop defers paid/heavy; `test_operational_wiring` (free reaches scoring; paid deferred) |
+| 3 | Tool Selection | **Operational (consulted)** | ✅ | preflight records `select_tool` recommendation; routes need→executor; test routes code→python, art→aseprite. (Advisory: does not yet force an executor swap) |
+| 4 | Privileges | Operational | ✅ | `enforce_executor_privilege` in 4 executors' `execute()` |
+| 5 | Budget / Resource | **Operational** | ✅ | `governance_preflight` calls `check_budget_or_block` + `check_resource_or_block` on every package; paid MiniMax + local_tts blocked (tested) |
+| 6 | Execution | Operational | ✅ | `run_execution_package`, `execution_node`, real executors |
+| 7 | Recovery | **Operational** | ✅ | `iteration_recovery` in the autonomous loop; 2 failures → stop+escalate (`recovery_escalation`); tested |
+| 8 | Acceptance | Operational | ✅ | validation + visual/experience gates; acceptance scores loop the driver |
+| 9 | Asset Promotion | **Wired (callable)** | ⚠️ | `governance_hooks.promote_asset` callable + tested (junk rejected); **not yet auto-triggered** by an asset-producing task path (no asset outputs in current code packages) |
+| 10 | Checkpoint | Operational | ✅ | `checkpoint_save_node`, `runtime/resume.py`, `replay.py` |
+| 11 | Lessons Learned | **Operational** | ✅ | `iteration_recovery` records on escalate; `retrieve_lessons` before each retry; tested |
 
 ## The operational spine (works today)
 ```
