@@ -11,6 +11,7 @@ import { MaterialsLabSystem } from './MaterialsLabSystem.js';
 import { NotebookSystem } from './NotebookSystem.js';
 import { PredictionSystem } from './PredictionSystem.js';
 import { QuestSystem } from './QuestSystem.js';
+import { ReasoningGrader } from './ReasoningGrader.js';
 import { TrustSystem } from './TrustSystem.js';
 import { PLACEHOLDER_ASSET_CONTRACT } from './AssetRegistry.js';
 import { getAssetRegistryState } from './AssetRegistry.js';
@@ -238,11 +239,11 @@ export class Act1RuntimeSystem {
     return result;
   }
 
-  predictMaterial(materialId, willHold, confidence = 'medium') {
+  predictMaterial(materialId, willHold, confidence = 'medium', explanation = '') {
     if (!this.materialsLabSystem.materials.has(materialId)) {
       return { ok: false, reason: 'unknown_material', materialId };
     }
-    const prediction = this.predictionSystem.record(materialId, willHold, confidence);
+    const prediction = this.predictionSystem.record(materialId, willHold, confidence, explanation);
     this.recordFeedback(
       'reasoning',
       `Prediction recorded for ${materialId}: ${prediction.willHold ? 'will hold' : 'will not hold'} (${prediction.confidence}). Now test to check.`,
@@ -368,11 +369,22 @@ export class Act1RuntimeSystem {
       language: this.languageSystem.getState(),
       discovery: this.discoveryMapSystem.getState(),
       engineeringLoop: this.getEngineeringLoop(),
+      reasoning: this.assessReasoning(),
       feedback: {
         last: this.lastFeedback,
         log: this.feedbackLog,
       },
     };
+  }
+
+  // Phase 1.7: grade HOW the player reasoned (prediction, evidence, correction,
+  // calibration, explanation) — a learning assessment, not a correctness score.
+  assessReasoning() {
+    return ReasoningGrader.assess({
+      predictions: this.predictionSystem.getState().predictions,
+      testedCount: this.materialsLabSystem.getState().tested.length,
+      bridgePlan: this.constructionSystem.getState().plan,
+    });
   }
 
   // Phase 1.5: the player-visible engineering loop. Surfaces which step is done
@@ -484,7 +496,8 @@ export class Act1RuntimeSystem {
       loadGame: () => this.loadGame(),
       resetAct1: () => this.resetAct1(),
       testMaterial: (materialId) => this.testMaterial(materialId),
-      predictMaterial: (materialId, willHold, confidence) => this.predictMaterial(materialId, willHold, confidence),
+      predictMaterial: (materialId, willHold, confidence, explanation) => this.predictMaterial(materialId, willHold, confidence, explanation),
+      assessReasoning: () => this.assessReasoning(),
       completeBridgePlan: (planId) => this.completeBridgePlan(planId),
       designBridge: (selection) => this.designBridge(selection),
       observeEcology: (speciesId) => this.observeEcology(speciesId),

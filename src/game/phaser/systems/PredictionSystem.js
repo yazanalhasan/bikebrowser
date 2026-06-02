@@ -15,12 +15,13 @@ export class PredictionSystem {
   }
 
   // willHold: boolean (player predicts the material is safe for bridge load).
-  // confidence: 'low' | 'medium' | 'high'.
-  record(subjectId, willHold, confidence = 'medium') {
+  // confidence: 'low' | 'medium' | 'high'. explanation: optional player reasoning.
+  record(subjectId, willHold, confidence = 'medium', explanation = '') {
     const prediction = {
       subjectId,
       willHold: Boolean(willHold),
       confidence: ['low', 'medium', 'high'].includes(confidence) ? confidence : 'medium',
+      explanation: String(explanation || ''),
       resolved: false,
       actualSafe: null,
       correct: null,

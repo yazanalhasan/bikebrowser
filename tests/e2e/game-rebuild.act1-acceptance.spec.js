@@ -175,9 +175,9 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         // Phase 1.3: predict before testing. Steel -> safe (correct); weak_scrap
         // -> predicted safe but will fail (a recorded learning moment).
         before: async (page) => page.evaluate(() => {
-          window.__GAME__.predictMaterial('steel', true, 'high');
-          window.__GAME__.predictMaterial('mesquite', true, 'low');
-          window.__GAME__.predictMaterial('weak_scrap', true, 'medium');
+          window.__GAME__.predictMaterial('steel', true, 'high', 'Steel is dense, strong metal — it should carry the load.');
+          window.__GAME__.predictMaterial('mesquite', true, 'low', 'Local wood might work but I am not sure.');
+          window.__GAME__.predictMaterial('weak_scrap', true, 'medium', 'It is a metal piece, so maybe it holds.');
         }),
         waitFor: () => window.__GAME__.getAct1State().materialTests.tested.length >= 4,
       },
@@ -236,6 +236,7 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         unlockedNotebookEntries: state.notebook.unlocked,
         materialTestCount: state.materialTests.tested.length,
         engineeringLoop: state.engineeringLoop,
+        reasoning: state.reasoning,
         bridgeChoice: window.__BRIDGE_CHOICE__,
         materialVerdicts: state.materialTests.tested.map((t) => ({ id: t.materialId, bridgeSafe: t.bridgeSafe, band: t.strengthBand })),
         prediction: state.prediction,
@@ -306,6 +307,16 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
     // Phase 1.6: player bridge design has real consequences.
     expect(finalState.bridgeChoice.bad).toMatchObject({ ok: false, outcome: 'unsafe', reason: 'mixed_unsafe' });
     expect(finalState.bridgeChoice.good).toMatchObject({ ok: true, outcome: 'safe' });
+    // Phase 1.7: reasoning is graded as a learning system. Evidence + correction
+    // are rewarded; a WRONG prediction (weak_scrap) does NOT tank the grade
+    // because the player tested and corrected — reasoning quality, not correctness.
+    const weakPredictionWasWrong = finalState.prediction.predictions.find((p) => p.subjectId === 'weak_scrap').correct === false;
+    expect(weakPredictionWasWrong).toBe(true);
+    expect(finalState.reasoning.dimensions.evidence.score).toBe(1);
+    expect(finalState.reasoning.dimensions.correction.score).toBe(1);
+    expect(finalState.reasoning.band).not.toBe('developing');
+    expect(finalState.reasoning.learnings.length).toBeGreaterThan(0);
+    expect(finalState.reasoning.rewardsReasoningNotCorrectness).toBe(true);
     expect(finalState.finalFeedback.message).toContain('Wider map unlocked');
 
     const report = {
