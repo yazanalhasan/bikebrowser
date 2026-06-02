@@ -37,7 +37,7 @@ inventory/gating/ecology-basic) are now Implemented+Wired+Playable+Accepted.
 Largest remaining near-term gaps: bridge interactivity (1.6), reasoning grader
 (1.7), Dry Wash region (1.8), then ecology loop / discovery / world map (2.1–2.3).
 
-## Player Reachable (PR) + Fun status — Phase 1.9 (the corrected truth; last: post 1.9.4 — **Phase 1.9 COMPLETE**)
+## Player Reachable (PR) + Fun status (the corrected truth; last: post **Phase 2.1 Ecology Loop** — Phase 1.9 complete + verified)
 A QA audit (`qa_audit/player_reachability_audit.md`) proved **Implemented +
 Accepted ≠ Player Reachable**: Phase-1 acceptance drove `window.__GAME__`
 directly, so it validated the *engine*, not *player access*. PR = a real player
@@ -76,14 +76,16 @@ through the UI? Not a rating — a yes/no on whether those three are present in 
 | **Predict-before-test** | ✅ | ✅ | **✅ (1.9.2)** | **✅ (1.9.2A-C)** | choice: HOLD/BREAK + how-sure · consequence: beam **holds/bends/breaks** on screen · payoff: ✓/✗ compare + run summary + reasoning credit; gates the UTM (arc.md); Esc-exit, never trapped |
 | **Bridge design (choice)** | ✅ | ✅ | **✅ (1.9.3, verified)** | **✅ (1.9.3)** | overlay: pick a tested material per structural role (deck/support/brace) · consequence: weak design **sags red on screen**, sound design **holds green** · payoff: bridge stands + plan set + redesign-on-failure loop; gates on tested evidence with a **feedback panel** (no silent dead-end); Esc-exit, never trapped; **independently verified** by the strict suite GUARD (full keyboard play: collect→test→design, no `__GAME__`) + dedicated bridge-reachability spec |
 | **Dry Wash investigation** | ✅ | ✅ | **✅ (1.9.4, verified)** | **✅ (1.9.4)** | overlay: walk to washout marker → press E · choice: pick 1 of 2 explanations (misleading one unmarked) · consequence: evidence **turns a wrong guess red + "doesn't fit"** on screen · payoff: real explanation + "you changed your mind with the evidence" + notebook; Esc-exit, never trapped; **independently verified** by the strict suite GUARD (full keyboard play, asserts concluded + corrected) + dedicated investigation-reachability spec |
-| Ecology observation | ✅ | ✅ | ⚠️ | ⚠️ | observe via press-E; no predict/payoff step yet |
+| **Ecology loop (observe→predict→outcome→payoff)** | ✅ | ✅ | **✅ (2.1)** | **✅ (2.1)** | "Plant the desert" marker → **observe** a site (conditions) → **predict** which plant thrives (◀▶ + E) → **outcome**: the plant visibly **grows green (thrives)** or **wilts amber (struggles)** → **payoff**: why it fits + notebook field note; wrong-but-taught (names the plant that fits + why); Esc-exit, never trapped; **triple acceptance** — engine (`ecology-engine`) + player-reachability (`ecology-reachability`) + a strict-suite **Payoff GUARD** (asserts outcome resolved + notebook) |
 
 **Bottleneck (resolved):** the gap was never implementation — it was **player
-access to implementation.** Predict (1.9.2), Build/bridge (1.9.3) and
-Investigate (1.9.4) are now all player-reachable + Fun, each with a dual
-(engine + reachability) spec; prediction gates intervention (arc.md). **Phase
-1.9 is complete** — Phase 2 (Ecology Loop / Discovery / World Map), previously
-paused behind this gap, is now unblocked for reconsideration.
+access to implementation.** Predict (1.9.2), Build/bridge (1.9.3),
+Investigate (1.9.4) and now **Ecology (2.1)** are all player-reachable + Fun;
+prediction gates intervention (arc.md). Phase 1 is verified complete (see
+`phase1/phase1_completion_verification_report.md`). **Phase 2.1 Ecology Loop is
+the first system held to the full three-layer standard — Engine + Player
+Reachability + Payoff** — all green. Remaining Phase 2: 2.2 Discovery Registry,
+2.3 World Map, 2.4 Multi-Biome (still `__GAME__`-only; next targets).
 
 ## Acts
 | Act (arc.md) | Documented | Implemented | Playable | Accepted | Status |

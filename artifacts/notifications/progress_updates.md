@@ -55,3 +55,6 @@ _Append new milestones below as work proceeds._
 | 2026-06-02 | verify ✅ | Strict suite fully green: 6 GUARDs / 1 payoff fixme / 0 expected-fail; engine acceptance green (1 prior nav flake, re-ran → pass) |
 | 2026-06-02 | commit | `2525b26` fix(game): resolve spanish_neighbor zone collision; promote to GUARD |
 | 2026-06-02 | milestone 🎯 | **Phase 1 Completion Verification Report** written — all player-facing loops independently verified reachable; 3 defects found+fixed by the gate |
+| 2026-06-02 | commit | `d90614c` docs: Phase 1 Completion Verification Report + dashboard (suite fully green) |
+| 2026-06-02 | feature 🟣 | **Phase 2.1 Ecology Loop** — EcologyScene overlay: observe site → predict plant → SEE thrive(green)/struggle(amber) → payoff (why + notebook); wrong-but-taught; new "Plant the desert" marker |
+| 2026-06-02 | acceptance ✅✅✅ | Ecology 3-layer GREEN — Engine (1) + Player-Reachability (2/2) + **Payoff GUARD** (strict suite 7 passed/1 skip). Ecology → Reachable ✅ + Fun ✅ |
