@@ -204,12 +204,14 @@ test.describe('player reachability', () => {
     expect(await predictionModalOpen(page), 'pressing E at the UTM opens the prediction (HOLD/BREAK) modal').toBe(true);
   });
 
-  // ---- WORKLIST: known gaps. Expected to FAIL until fixed. ----
-
-  test.fail('WORKLIST: no two interaction zones are geometrically shadowed', async ({ page }) => {
-    // spanish_neighbor sits at the exact coords of neighbor -> nearest() can
-    // never return it, so "Thank Mrs. Ramirez" is unreachable.
+  // PROMOTED 2026-06-02: was WORKLIST (test.fail); fixed by collapsing the two
+  // stacked Mrs. Ramirez zones into one progression-aware `neighbor` zone. Now a
+  // GUARD: no zone is geometrically shadowed, AND the thank-you beat is reachable.
+  test('GUARD: no shadowed zones, and Mrs. Ramirez\'s thank-you beat is reachable', async ({ page }) => {
+    test.setTimeout(90000);
     await bootRebuild(page);
+    // (1) Geometry: no two interaction zones overlap. The old `spanish_neighbor`
+    // zone sat at 0px from `neighbor`, so nearest() could never return it.
     const w = await readWorld(page);
     const dupes = [];
     const zones = w.zones;
@@ -220,6 +222,26 @@ test.describe('player reachability', () => {
       }
     }
     expect(dupes, `overlapping zones shadow each other: ${dupes.join('; ')}`).toEqual([]);
+
+    // (2) Reachable through play: the single neighbor zone yields the wash intro
+    // first (completes talk_neighbor), then the Spanish thank-you (completes
+    // spanish_neighbor + trust/language). Drive it by keyboard only.
+    const nb = await zoneById(page, 'neighbor');
+    expect(nb, 'a Mrs. Ramirez interaction exists').toBeTruthy();
+    await walkTo(page, nb);
+    const done = (obj) => page.evaluate((o) => {
+      try { return window.__GAME__.getAct1State().quests.completedObjectives.includes(o); } catch { return false; }
+    }, obj);
+    await page.keyboard.press('e'); // open the wash intro
+    await page.waitForTimeout(200);
+    // Mash the advance key: closes the intro (-> talk_neighbor); the next
+    // re-trigger opens the thank-you, which closes (-> spanish_neighbor).
+    for (let i = 0; i < 18 && !(await done('spanish_neighbor')); i++) {
+      await page.keyboard.press('Space');
+      await page.waitForTimeout(150);
+    }
+    expect(await done('talk_neighbor'), 'the wash intro is reachable (talk_neighbor)').toBe(true);
+    expect(await done('spanish_neighbor'), 'the Spanish thank-you beat is reachable (spanish_neighbor)').toBe(true);
   });
 
   // PROMOTED 2026-06-02: was WORKLIST (test.fail); fixed by 1.9.2A-C (Escape

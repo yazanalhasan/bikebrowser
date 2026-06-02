@@ -753,14 +753,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
       label: 'Mix, dry, test',
       action: 'chemistry_station',
     });
-    this.interactions.register({
-      id: 'spanish_neighbor',
-      x: neighbor.x,
-      y: neighbor.y,
-      label: 'Thank Mrs. Ramirez',
-      dialogueId: 'spanish_trust',
-      action: 'spanish_neighbor',
-    });
+    // NOTE: Mrs. Ramirez's "thank you" beat (spanish_trust + spanish_neighbor
+    // action) is NOT a separate zone — it was stacked at her exact coords and
+    // permanently shadowed. It is now reached through the progression-aware
+    // `neighbor` zone (see the interaction handler in update()).
     this.interactions.register({
       id: 'arabic_mentor',
       x: auntieMariam.x,
@@ -1174,11 +1170,22 @@ export default class NeighborhoodScene extends Phaser.Scene {
           // Phase 1.9.4: the player runs the washout investigation by hand —
           // choose a hypothesis, see the evidence disprove a wrong guess.
           this.registry.events.emit('investigation:start', 'wash_out_cause');
+        } else if (nearest.id === 'neighbor') {
+          // Mrs. Ramirez is ONE NPC with two beats. Previously a second
+          // `spanish_neighbor` zone was stacked at her exact coords, so
+          // nearest() could never reach it ("Thank Mrs. Ramirez" was dead).
+          // Now this single zone is progression-aware: the wash intro first
+          // (completes talk_neighbor), then the thank-you (spanish_trust, which
+          // on close completes spanish_neighbor + adds trust + unlocks Spanish)
+          // once the intro is done. The dialogue's own effects do the work, so
+          // we route the right one rather than calling handleInteraction twice.
+          const introDone = this.runtime?.questSystem?.isObjectiveComplete('talk_neighbor');
+          this.registry.events.emit('dialogue:start', introDone ? 'spanish_trust' : 'wash_neighbor');
         } else if (nearest.action) {
           this.runtime?.handleInteraction(nearest.action);
           this.registry.events.emit('quest:changed');
         }
-        if (nearest.dialogueId) this.registry.events.emit('dialogue:start', nearest.dialogueId);
+        if (nearest.dialogueId && nearest.id !== 'neighbor') this.registry.events.emit('dialogue:start', nearest.dialogueId);
       }
     } else {
       this.prompt.setVisible(false);
