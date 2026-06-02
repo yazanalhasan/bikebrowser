@@ -77,8 +77,45 @@ changes) and aligns with `acceptance_hardening.md`; Option 1 cleans provenance.
 - Phase 1.2–1.8 follow in order.
 
 ## Next recommended sub-phase
-Phase 1.1 (Ecology-first) — **after** the baseline gate is green via option 1 or
-2 above.
+Phase 1.2 — Real per-material UTM (player can choose poorly/well; visible,
+different outcomes).
+
+---
+
+## Autonomous production session — progress log (append-only)
+
+### Phase 0.1 — Repository Integrity (EB) ✅ `9e227fe0`
+`brain/artifacts/` source package was gitignored by the unanchored `artifacts/`
+rule and untracked → fresh clone failed to import. Fix: anchored `/artifacts/`,
+tracked `brain/artifacts/*.py`, added `tests/test_repo_integrity.py` guard.
+Verified: clean `git archive` checkout imports `brain.cli`. Full suite **440
+passed**.
+
+### Phase 0.2 — Acceptance Recovery (game) ✅ `76fe40e`
+Root cause = layout-drift interaction-zone collision: `materials_table` (905,420)
+and `bridge_plan` (920,438) were ~23px apart (inside the 24px arrival band) → wrong
+prompt won → timeout. Fixed reality (not the test): moved `bridge_plan_workbench`
+→ (1000,452), ~100px clear. Acceptance **GREEN (1 passed)**. Docs in
+`artifacts/acceptance_recovery/`.
+
+### Phase 0.3 — Fresh Green Baseline ✅ `4ed46fc`
+`artifacts/foundation/fresh_green_baseline.md` — game `76fe40e` green, EB
+`9e227fe0` 440 tests + clean-clone import.
+
+### Phase 1.1 — Ecology Observation Completion ✅ `06b8582`
+Wired mesquite+creosote+saguaro observations at the ecology patch; added
+creosote/saguaro Ecology notebook entries (16→18); `desert_helper` completes;
+strengthened acceptance coverage. Acceptance **GREEN (1 passed)**, notebook
+**13→15** unlocked. Report: `artifacts/phase1/phase1_1_ecology_completion.md`.
+
+**Lessons learned (recorded):** verify notebook/quest wiring against code before
+trusting a roadmap count; the 13/16 gap was language/trust, not ecology.
+
+**Blockers:** none. **Deferred:** un-owned working-tree drift (Godot/PNGs/
+generated_assets) left uncommitted for operator review.
+
+**State:** Phase 0 gates GREEN + repo integrity healthy + Phase 1.1 done.
+Continuing sequentially through Phase 1 (1.2 next).
 
 ## Governance note
 This pass used the governance posture correctly: ran a read-only audit + a single
