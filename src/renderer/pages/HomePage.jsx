@@ -22,8 +22,8 @@ function HomePage() {
   const topics = [
     {
       id: 'play-game',
-      title: 'Play BikeBrowserWorld',
-      subtitle: 'Zuzu repairs, tests, and rides',
+      title: 'Play BikeBrowser — Act 1',
+      subtitle: 'Zuzu observes, predicts, tests, builds, and rides',
       emoji: '🚲',
       isGame: true,
       color: 'from-emerald-500 to-sky-600'
@@ -183,7 +183,9 @@ function HomePage() {
                 } else if (topic.isShop) {
                   navigate('/shop');
                 } else if (topic.isGame) {
-                  navigate('/play');
+                  // Canonical playable experience = the Act 1 rebuild (/game-rebuild),
+                  // not the Godot prototype (/play). See player_reachability_audit.md.
+                  navigate('/game-rebuild');
                 } else if (topic.isSpellingTrainer) {
                   navigate('/spelling-trainer');
                 } else {

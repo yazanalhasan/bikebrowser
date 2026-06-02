@@ -37,6 +37,26 @@ inventory/gating/ecology-basic) are now Implemented+Wired+Playable+Accepted.
 Largest remaining near-term gaps: bridge interactivity (1.6), reasoning grader
 (1.7), Dry Wash region (1.8), then ecology loop / discovery / world map (2.1–2.3).
 
+## Player Reachable (PR) status — Phase 1.9 (the corrected truth)
+A QA audit (`qa_audit/player_reachability_audit.md`) proved **Implemented +
+Accepted ≠ Player Reachable**: Phase-1 acceptance drove `window.__GAME__`
+directly, so it validated the *engine*, not *player access*. PR = a real player
+can do it via keyboard/mouse/UI, no debug API.
+
+| System | Impl | Accepted | **Player Reachable** | Note |
+|---|---|---|---|---|
+| Reach canonical build from Home | ✅ | ✅ | **✅ (1.9.1)** | Home Play → /game-rebuild; real-click spec |
+| Movement + walk-up interactions | ✅ | ✅ | ✅ | keyboard already |
+| UTM material testing | ✅ | ✅ | ❌ | batch via press-E; no per-material UI choice |
+| **Predict-before-test** | ✅ | ✅ | ❌ → 1.9.2 | prediction only via `__GAME__`; **not gating intervention (arc.md violation)** |
+| **Bridge design (choice)** | ✅ | ✅ | ❌ → 1.9.3 | `designBridge` only via `__GAME__` |
+| **Dry Wash investigation** | ✅ | ✅ | ❌ → 1.9.4 | observe/hypothesize/investigate/conclude only via `__GAME__` |
+| Ecology observation | ✅ | ✅ | ⚠️ | observe via press-E; no predict step yet |
+
+**Bottleneck (corrected):** not implementation — **player access to
+implementation.** Phase 2 is paused until Predict/Build/Investigate are
+player-reachable and prediction gates intervention.
+
 ## Acts
 | Act (arc.md) | Documented | Implemented | Playable | Accepted | Status |
 |---|---|---|---|---|---|
