@@ -60,14 +60,34 @@ export default class BridgeDesignScene extends Phaser.Scene {
   startFlow() {
     const runtime = this.registry.get('act1Runtime');
     const tested = runtime?.materialsLabSystem?.getState().tested || [];
-    if (!tested.length) return; // must test materials first (gating)
+    this.registry.set('modalActive', true);
+    this.panel.setVisible(true);
+    if (!tested.length) {
+      // Gating with feedback, not silence: the player who hasn't tested any
+      // materials still gets a live modal that explains the prerequisite,
+      // instead of pressing E and seeing nothing happen.
+      this._showBlocked();
+      return;
+    }
     this.candidates = tested.map((t) => ({ id: t.materialId, name: t.displayName, safe: Boolean(t.bridgeSafe), band: t.strengthBand }));
     this.selection = {};
     this.roleIdx = 0;
     this.candIdx = 0;
-    this.registry.set('modalActive', true);
-    this.panel.setVisible(true);
     this._showChoose();
+  }
+
+  _showBlocked() {
+    this.phase = 'blocked';
+    this.candidates = [];
+    this.card.setVisible(false);
+    this.bridge.setVisible(false);
+    this.chosenText.setText('');
+    this.title.setText('Plan the bridge repair');
+    this.roleHint.setText('You need tested materials before you can choose.');
+    this.verdict.setText('Test materials at the UTM first, then come back to design the bridge.');
+    this.verdict.setColor('#ffd27a');
+    this.hint.setText('E or Esc to head back');
+    this._publish();
   }
 
   _showChoose() {
@@ -98,7 +118,9 @@ export default class BridgeDesignScene extends Phaser.Scene {
     if (!this.panel.visible) return;
     const key = (event.key || '').toLowerCase();
     if (event.key === 'Escape') { this._finish(); return; }
-    if (this.phase === 'choose') {
+    if (this.phase === 'blocked') {
+      if (key === 'e' || event.code === 'Space') { this._finish(); }
+    } else if (this.phase === 'choose') {
       if (event.key === 'ArrowLeft' || key === 'a') { this.candIdx = (this.candIdx - 1 + this.candidates.length) % this.candidates.length; this._render(); this._publish(); }
       else if (event.key === 'ArrowRight' || key === 'd') { this.candIdx = (this.candIdx + 1) % this.candidates.length; this._render(); this._publish(); }
       else if (key === 'e' || event.code === 'Space') { this._choose(); }

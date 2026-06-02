@@ -107,6 +107,71 @@ async function zoneById(page, id) {
   const w = await readWorld(page);
   return (w?.zones || []).find((z) => z.id === id) || null;
 }
+function investigationOpen(page) {
+  return page.evaluate(() => Boolean(window.__INVESTIGATION__ && window.__INVESTIGATION__.active === true));
+}
+// Collect at a zone by real input: press E (triggers the pickup + opens its
+// dialogue), then E again to clear the line. Dialogue is not modal, so the
+// player keeps control either way.
+async function collectAt(page, id) {
+  const z = await zoneById(page, id);
+  expect(z, `${id} zone exists`).toBeTruthy();
+  await walkTo(page, z);
+  await page.keyboard.press('e');
+  await page.waitForTimeout(400);
+  await page.keyboard.press('e');
+  await page.waitForTimeout(250);
+}
+// Drive the prediction overlay (already opened by the caller pressing E at the
+// UTM) to completion so every queued material is genuinely predicted + tested,
+// then it closes. E advances every phase (choose->test, result->next, summary->close).
+async function drivePredictionToCompletion(page) {
+  await page.waitForFunction(() => window.__PREDICTION__ && window.__PREDICTION__.active === true, null, { timeout: 8000 });
+  for (let i = 0; i < 40; i++) {
+    if (!(await page.evaluate(() => window.__PREDICTION__.active))) break;
+    await page.keyboard.press('e');
+    await page.waitForTimeout(240);
+  }
+  await page.waitForFunction(() => window.__PREDICTION__.active === false, null, { timeout: 8000 });
+}
+// In the bridge design overlay, cycle the candidate to `materialId` and commit it.
+async function pickBridgeMaterial(page, materialId) {
+  await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'choose');
+  for (let g = 0; g < 10; g++) {
+    if ((await page.evaluate(() => window.__BRIDGE_DESIGN__.candidateId)) === materialId) break;
+    await page.keyboard.press('ArrowRight');
+    await page.waitForTimeout(60);
+  }
+  await page.keyboard.press('e');
+  await page.waitForTimeout(120);
+}
+// Drive the investigation overlay by keyboard: observe -> pick the MISLEADING
+// hypothesis -> reveal every clue -> conclude -> summary -> close.
+async function driveInvestigation(page) {
+  await page.waitForFunction(() => window.__INVESTIGATION__ && window.__INVESTIGATION__.active === true, null, { timeout: 8000 });
+  await page.waitForFunction(() => window.__INVESTIGATION__.phase === 'observe');
+  await page.keyboard.press('e');
+  await page.waitForFunction(() => window.__INVESTIGATION__.phase === 'hypothesis');
+  for (let g = 0; g < 4; g++) {
+    if ((await page.evaluate(() => window.__INVESTIGATION__.hypothesisId)) === 'weak_materials') break;
+    await page.keyboard.press('ArrowDown');
+    await page.waitForTimeout(60);
+  }
+  await page.keyboard.press('e');
+  await page.waitForFunction(() => window.__INVESTIGATION__.phase === 'evidence');
+  for (let g = 0; g < 6; g++) {
+    const s = await page.evaluate(() => window.__INVESTIGATION__);
+    if (s.evidenceShown >= s.evidenceCount) break;
+    await page.keyboard.press('e');
+    await page.waitForTimeout(160);
+  }
+  await page.keyboard.press('e'); // -> conclusion
+  await page.waitForFunction(() => window.__INVESTIGATION__.phase === 'conclusion');
+  await page.keyboard.press('e'); // -> summary
+  await page.waitForTimeout(150);
+  await page.keyboard.press('e'); // -> close
+  await page.waitForFunction(() => window.__INVESTIGATION__.active === false);
+}
 
 test.describe('player reachability', () => {
   test.describe.configure({ timeout: 120000 });
@@ -183,42 +248,63 @@ test.describe('player reachability', () => {
     expect(await predictionModalOpen(page), 'player can exit the UTM (Esc or play-through), regaining control').toBe(false);
   });
 
-  test.fail('WORKLIST: bridge design opens a player-facing choice (not pre-baked)', async ({ page }) => {
-    // bridge_plan currently calls completeBridgePlan('tested_triangle_plan') —
-    // the player never chooses. A BridgeDesignScene exists (1.9.3 in progress)
-    // but is not yet wired to the world interaction. STRICT: require the player
-    // to reach the spot AND the design modal to actually open. (Not the plan id,
-    // which is null-satisfiable when the interaction is missed.)
+  // PROMOTED 2026-06-02: was WORKLIST (test.fail); fixed by 1.9.3 (bridge_plan
+  // now opens BridgeDesignScene) + the gating-feedback fix. STRICT and by REAL
+  // play only: collect + test materials at the UTM by keyboard, then the bridge
+  // workbench must offer a genuine material CHOICE (phase 'choose' with
+  // candidates) and a sound design must visibly hold. No __GAME__ for the action.
+  test('GUARD: a player designs the bridge by hand — real choice, sound design holds', async ({ page }) => {
+    test.setTimeout(120000);
     await bootRebuild(page);
-    const bp = await zoneById(page, 'bridge_plan');
-    expect(bp, 'a bridge-plan interaction exists').toBeTruthy();
-    const reached = await walkTo(page, bp);
-    expect(reached, 'player can walk to the bridge-plan spot').toBe(true);
+    // Real prerequisite, all by keyboard: gather candidate materials + mesquite,
+    // then predict-and-test each at the UTM so the bridge has tested candidates.
+    await collectAt(page, 'materials_table'); // steel, copper_brace, weak_scrap
+    await collectAt(page, 'ecology_patch');   // mesquite
+    await walkTo(page, await zoneById(page, 'utm'));
     await page.keyboard.press('e');
-    await page.waitForTimeout(800);
-    expect(await bridgeDesignOpen(page), 'interacting opens the player-facing bridge DESIGN modal (choose materials)').toBe(true);
+    await drivePredictionToCompletion(page);
+
+    // The bridge workbench now opens a real choice — not a pre-baked plan.
+    await walkTo(page, await zoneById(page, 'bridge_plan'));
+    await page.keyboard.press('e');
+    await page.waitForFunction(() => window.__BRIDGE_DESIGN__ && window.__BRIDGE_DESIGN__.active === true, null, { timeout: 8000 });
+    expect(await bridgeDesignOpen(page), 'pressing E opens the bridge DESIGN modal').toBe(true);
+    await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'choose');
+    expect(await page.evaluate(() => window.__BRIDGE_DESIGN__.candidates.length), 'tested materials are offered as candidates').toBeGreaterThan(0);
+
+    // Choose a sound design (mesquite deck / steel support / copper brace) -> holds.
+    await pickBridgeMaterial(page, 'mesquite');
+    await pickBridgeMaterial(page, 'steel');
+    await pickBridgeMaterial(page, 'copper_brace');
+    await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result', null, { timeout: 8000 });
+    expect(await page.evaluate(() => window.__BRIDGE_DESIGN__.outcome), 'the sound design holds').toBe('safe');
   });
 
-  test.fail('WORKLIST: Dry Wash investigation is reachable through play', async ({ page }) => {
-    // The dry_wash interaction only maps the area; observe/hypothesize/conclude
-    // never run from the world. STRICT: require the player to reach the wash AND
-    // a real per-mystery progress flag (observed/hypothesisId/concluded) to flip
-    // — booleans that are false until a player actually investigates.
+  // PROMOTED 2026-06-02: was WORKLIST (test.fail); fixed by 1.9.4 (the
+  // 'Investigate the washout' marker opens InvestigationScene). STRICT and by
+  // REAL play only: walk to the washout mystery, run observe -> hypothesize ->
+  // gather evidence -> conclude by keyboard, and require the per-mystery
+  // concluded + corrected-by-evidence flags to flip. No __GAME__ for the action.
+  test('GUARD: a player runs the Dry Wash investigation by hand — evidence corrects a wrong guess', async ({ page }) => {
+    test.setTimeout(90000);
     await bootRebuild(page);
-    const dw = await zoneById(page, 'dry_wash');
-    expect(dw, 'a dry-wash interaction exists').toBeTruthy();
-    const reached = await walkTo(page, dw);
-    expect(reached, 'player can walk to the dry wash').toBe(true);
+    const zone = await zoneById(page, 'investigate_wash');
+    expect(zone, 'an "investigate the washout" interaction exists').toBeTruthy();
+    const reached = await walkTo(page, zone);
+    expect(reached, 'player can walk to the washout mystery').toBe(true);
     await page.keyboard.press('e');
-    await page.waitForTimeout(800);
-    const started = await page.evaluate(() => {
-      try {
-        const inv = window.__GAME__.getAct1State().investigation;
-        return Array.isArray(inv?.investigations)
-          && inv.investigations.some((i) => i.observed || i.hypothesisId || i.concluded);
-      } catch { return false; }
+    await page.waitForFunction(() => window.__INVESTIGATION__ && window.__INVESTIGATION__.active === true, null, { timeout: 8000 });
+    expect(await investigationOpen(page), 'pressing E opens the investigation overlay').toBe(true);
+
+    await driveInvestigation(page);
+
+    const verified = await page.evaluate(() => {
+      const inv = window.__GAME__.getAct1State().investigation;
+      const m = (inv?.investigations || []).find((i) => i.id === 'wash_out_cause');
+      return { concluded: Boolean(m?.concluded), corrected: Boolean(m?.updatedFromMisleading) };
     });
-    expect(started, 'interacting with the wash starts the investigation loop (observe/hypothesize/conclude) for the player').toBe(true);
+    expect(verified.concluded, 'the mystery is concluded through play').toBe(true);
+    expect(verified.corrected, 'the misleading guess was corrected by the evidence').toBe(true);
   });
 
   // ---- TRACKED, not yet crisply assertable ----

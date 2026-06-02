@@ -47,6 +47,17 @@ Standard (1.9): every player-facing system has **two** tests — Engine Acceptan
 (`__GAME__` allowed) and **Player Reachability** (real input only, the primary
 criterion). Not complete until a real player can do it.
 
+**Independent verification (reconciliation, 2026-06-02):** the strict
+`player-reachability.suite.spec.js` (the pass/fail gate; never `__GAME__` for the
+action) was reconciled against runtime truth. It had still listed bridge +
+investigation as worklist (`test.fail`) — true at the time it was written, stale
+after 1.9.3/1.9.4. Running it exposed two real defects: the bridge workbench
+**silently no-op'd** when no materials were tested, and the investigation was
+only reachable via a new marker the suite didn't target. Both fixed (gating now
+shows a feedback panel; suite drives the real marker). The two items are now
+**GUARD** tests driving the entire keyboard path and pass — so bridge design and
+investigation are independently verified player-reachable, not just self-asserted.
+
 **Fun** (new, objective): does the player get **choice → consequence → payoff**
 through the UI? Not a rating — a yes/no on whether those three are present in play.
 
@@ -56,8 +67,8 @@ through the UI? Not a rating — a yes/no on whether those three are present in 
 | Movement + walk-up interactions | ✅ | ✅ | ✅ | n/a | keyboard already |
 | UTM material testing | ✅ | ✅ | **✅ (1.9.2)** | **✅** | overlay; per-material |
 | **Predict-before-test** | ✅ | ✅ | **✅ (1.9.2)** | **✅ (1.9.2A-C)** | choice: HOLD/BREAK + how-sure · consequence: beam **holds/bends/breaks** on screen · payoff: ✓/✗ compare + run summary + reasoning credit; gates the UTM (arc.md); Esc-exit, never trapped |
-| **Bridge design (choice)** | ✅ | ✅ | **✅ (1.9.3)** | **✅ (1.9.3)** | overlay: pick a tested material per structural role (deck/support/brace) · consequence: weak design **sags red on screen**, sound design **holds green** · payoff: bridge stands + plan set + redesign-on-failure loop; gates on tested evidence; Esc-exit, never trapped; dual spec (engine + bridge-reachability) |
-| **Dry Wash investigation** | ✅ | ✅ | **✅ (1.9.4)** | **✅ (1.9.4)** | overlay: walk to washout marker → press E · choice: pick 1 of 2 explanations (misleading one unmarked) · consequence: evidence **turns a wrong guess red + "doesn't fit"** on screen · payoff: real explanation + "you changed your mind with the evidence" + notebook; Esc-exit, never trapped; dual spec (engine + investigation-reachability) |
+| **Bridge design (choice)** | ✅ | ✅ | **✅ (1.9.3, verified)** | **✅ (1.9.3)** | overlay: pick a tested material per structural role (deck/support/brace) · consequence: weak design **sags red on screen**, sound design **holds green** · payoff: bridge stands + plan set + redesign-on-failure loop; gates on tested evidence with a **feedback panel** (no silent dead-end); Esc-exit, never trapped; **independently verified** by the strict suite GUARD (full keyboard play: collect→test→design, no `__GAME__`) + dedicated bridge-reachability spec |
+| **Dry Wash investigation** | ✅ | ✅ | **✅ (1.9.4, verified)** | **✅ (1.9.4)** | overlay: walk to washout marker → press E · choice: pick 1 of 2 explanations (misleading one unmarked) · consequence: evidence **turns a wrong guess red + "doesn't fit"** on screen · payoff: real explanation + "you changed your mind with the evidence" + notebook; Esc-exit, never trapped; **independently verified** by the strict suite GUARD (full keyboard play, asserts concluded + corrected) + dedicated investigation-reachability spec |
 | Ecology observation | ✅ | ✅ | ⚠️ | ⚠️ | observe via press-E; no predict/payoff step yet |
 
 **Bottleneck (resolved):** the gap was never implementation — it was **player
