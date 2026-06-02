@@ -209,6 +209,7 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         widerMapUnlocked: state.discovery.widerMapUnlocked,
         unlockedNotebookEntries: state.notebook.unlocked,
         materialTestCount: state.materialTests.tested.length,
+        materialVerdicts: state.materialTests.tested.map((t) => ({ id: t.materialId, bridgeSafe: t.bridgeSafe, band: t.strengthBand })),
         chemistryResults: state.chemistry.completedRecipes,
         ecologyObservations: state.ecology.observations,
         finalFeedback: window.__GAME__.getFeedbackState().last,
@@ -243,6 +244,12 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
       'wider_map_unlocked',
     ]));
     expect(finalState.materialTestCount).toBeGreaterThanOrEqual(4);
+    // Phase 1.2: UTM produces real, differentiated per-material verdicts — a
+    // strong material passes the load test and a poor one visibly fails.
+    const steel = finalState.materialVerdicts.find((v) => v.id === 'steel');
+    const weakScrap = finalState.materialVerdicts.find((v) => v.id === 'weak_scrap');
+    expect(steel).toMatchObject({ bridgeSafe: true, band: 'strong candidate' });
+    expect(weakScrap).toMatchObject({ bridgeSafe: false, band: 'comparison failure' });
     expect(finalState.finalFeedback.message).toContain('Wider map unlocked');
 
     const report = {

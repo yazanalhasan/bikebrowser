@@ -196,7 +196,7 @@ export class Act1RuntimeSystem {
       weak_scrap: 'test_scrap',
     };
     if (objectiveByMaterial[materialId]) this.completeObjective(objectiveByMaterial[materialId]);
-    this.recordFeedback('utm', `${result.result.displayName}: ${result.result.strengthBand}. Evidence added.`, result.result);
+    this.recordFeedback('utm', `${result.result.displayName}: ${result.result.verdict} (${result.result.loadResult}).`, result.result);
     return result;
   }
 

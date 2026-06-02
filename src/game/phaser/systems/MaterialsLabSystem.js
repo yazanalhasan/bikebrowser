@@ -33,6 +33,14 @@ export class MaterialsLabSystem {
       deformation,
       deformationBand: deformation >= 1 ? 'fails visibly' : deformation >= 0.62 ? 'bends visibly' : 'holds shape',
       strengthBand: usefulness >= 0.8 ? 'strong candidate' : usefulness >= 0.55 ? 'useful with limits' : 'comparison failure',
+      // Explicit engineering verdict (Phase 1.2): the player can see a poor
+      // material fail the load test and a good one pass — real differentiated
+      // outcomes, the evidence later phases (predict, bridge) build on.
+      bridgeSafe: usefulness >= 0.5 && deformation < 1,
+      loadResult: deformation >= 1 ? 'failed under load' : usefulness >= 0.8 ? 'carried full load' : 'carried partial load',
+      verdict: (usefulness >= 0.5 && deformation < 1)
+        ? `Safe for bridge load — good for ${material.bestUse}.`
+        : 'Not safe for bridge load — it bends and cracks too early.',
       bridgeUsefulness: usefulness,
       tactileCue,
       comparisonCue: `${material.displayName}: ${material.bestUse}; ${tactileCue}`,
