@@ -24,6 +24,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.scene.start('NeighborhoodScene');
     this.scene.launch('QuestScene');
     this.scene.launch('DialogueScene');
+    this.scene.launch('PredictionScene');
     this.scene.launch('DebugScene');
   }
 }

@@ -92,7 +92,11 @@ async function interactAt(page, step) {
   }, step.prompt);
   await page.keyboard.press('KeyE');
   await page.waitForTimeout(220);
-  await closeDialogue(page);
+  if (step.drive) {
+    await step.drive(page); // multi-step UI driven by real keyboard (no closeDialogue)
+  } else {
+    await closeDialogue(page);
+  }
   if (step.waitFor) await page.waitForFunction(step.waitFor);
   await page.screenshot({ path: `${captureDir}/${step.file}.png`, fullPage: true });
 }
@@ -172,13 +176,30 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         y: 408,
         prompt: 'Run UTM material tests',
         file: '07_utm_tests',
-        // Phase 1.3: predict before testing. Steel -> safe (correct); weak_scrap
-        // -> predicted safe but will fail (a recorded learning moment).
-        before: async (page) => page.evaluate(() => {
-          window.__GAME__.predictMaterial('steel', true, 'high', 'Steel is dense, strong metal — it should carry the load.');
-          window.__GAME__.predictMaterial('mesquite', true, 'low', 'Local wood might work but I am not sure.');
-          window.__GAME__.predictMaterial('weak_scrap', true, 'medium', 'It is a metal piece, so maybe it holds.');
-        }),
+        // Phase 1.9.2: predict-before-test is now PLAYER-REACHABLE. Pressing E at
+        // the UTM opens the prediction flow; the player picks HOLD/BREAK + how-
+        // sure and presses E to test — via REAL keyboard, no __GAME__ predict.
+        drive: async (page) => {
+          await page.waitForFunction(() => window.__PREDICTION__ && window.__PREDICTION__.active === true);
+          for (let i = 0; i < 4; i += 1) {
+            await page.waitForFunction(() => window.__PREDICTION__.phase === 'choose');
+            if (i === 0) await page.screenshot({ path: `${captureDir}/07a_prediction_choose.png`, fullPage: true });
+            await page.keyboard.press('ArrowLeft'); // pick "WILL HOLD" (weak_scrap will be wrong -> learning)
+            await page.keyboard.press('ArrowUp');   // how sure: up
+            await page.keyboard.press('KeyE');       // commit + test
+            await page.waitForFunction(() => window.__PREDICTION__.phase === 'result');
+            if (i === 0) await page.screenshot({ path: `${captureDir}/07b_prediction_result.png`, fullPage: true });
+            await page.keyboard.press('KeyE');       // next material / finish
+            await page.waitForTimeout(120);
+          }
+          // arc.md: prediction precedes intervention — a prediction exists for
+          // every material tested (made via UI, not __GAME__).
+          const gated = await page.evaluate(() => {
+            const s = window.__GAME__.getAct1State();
+            return { made: s.prediction.made, tested: s.materialTests.tested.length };
+          });
+          if (gated.made < gated.tested) throw new Error(`prediction did not gate testing: made=${gated.made} tested=${gated.tested}`);
+        },
         waitFor: () => window.__GAME__.getAct1State().materialTests.tested.length >= 4,
       },
       {

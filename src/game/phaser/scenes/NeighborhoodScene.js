@@ -1120,7 +1120,14 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
-    const movement = this.inputSystem.getMovementVector();
+    // Phase 1.9.2: when a modal overlay (prediction) is open, freeze the player
+    // and ignore world interactions so its keys drive the overlay, not the scene.
+    const modal = Boolean(this.registry.get('modalActive'));
+    // The key that closes a modal must not also re-trigger the world interaction
+    // on the next frame (which would reopen the modal). Consume it.
+    const justClosedModal = this._wasModal && !modal;
+    this._wasModal = modal;
+    const movement = modal ? { x: 0, y: 0 } : this.inputSystem.getMovementVector();
     const speed = 178;
     const length = Math.hypot(movement.x, movement.y) || 1;
     const targetX = (movement.x / length) * speed;
@@ -1141,8 +1148,13 @@ export default class NeighborhoodScene extends Phaser.Scene {
         this.prompt.setAlpha(0.15);
         this.tweens.add({ targets: this.prompt, alpha: 1, duration: 140, ease: 'Sine.easeOut' });
       }
-      if (this.inputSystem.interactionJustPressed()) {
-        if (nearest.action) {
+      if (!modal && !justClosedModal && this.inputSystem.interactionJustPressed()) {
+        if (nearest.action === 'utm') {
+          // Phase 1.9.2: prediction gates testing (arc.md). The UTM opens the
+          // player-facing predict-before-test flow instead of batch-testing.
+          const materials = ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].filter((id) => this.runtime?.inventorySystem?.has(id));
+          this.registry.events.emit('prediction:start', materials);
+        } else if (nearest.action) {
           this.runtime?.handleInteraction(nearest.action);
           this.registry.events.emit('quest:changed');
         }
@@ -1156,10 +1168,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.registry.set('playerPosition', { x: this.player.x, y: this.player.y });
     this.publishTestReadiness();
 
-    if (this.inputSystem.notebookJustPressed()) {
+    if (!modal && this.inputSystem.notebookJustPressed()) {
       this.toggleNotebook();
     }
-    if (this.inputSystem.gpsJustPressed()) {
+    if (!modal && this.inputSystem.gpsJustPressed()) {
       this.toggleWorldMapHud(true);
     }
     this.updateEvidencePanel();
