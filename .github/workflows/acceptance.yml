@@ -1,0 +1,58 @@
+# Three-layer acceptance gate for BikeBrowser.
+#
+#   1. Engine Acceptance         — logic correctness        (BLOCKING)
+#   2. Player Reachability        — a real player can access (BLOCKING)
+#   3. Payoff Acceptance (future) — feature feels rewarding  (informational)
+#
+# A feature is not complete unless Implemented + Accepted (engine) +
+# Player Reachable are all true. The reachability suite stays green while its
+# WORKLIST tests are expected-fail; when the left tab fixes one it becomes an
+# UNEXPECTED PASS and this job goes RED — the signal to promote it to a guard.
+# Source of truth: artifacts/qa_audit/player_reachability_suite.md
+name: acceptance
+
+on:
+  push:
+    branches: [main, '**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      # Layer 1 — Engine Acceptance (logic correctness). BLOCKING.
+      - name: Engine Acceptance
+        run: npm run accept:engine
+
+      # Layer 2 — Player Reachability Acceptance. BLOCKING.
+      # Green while WORKLIST=expected-fail; RED on any UNEXPECTED PASS (=fixed,
+      # promote it) or any GUARD regression (=a feature became unreachable).
+      - name: Player Reachability Acceptance
+        run: npm run accept:reachability
+
+      # Layer 3 — Payoff Acceptance (future). Informational, non-blocking.
+      - name: Payoff Acceptance (future)
+        run: npm run accept:payoff
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

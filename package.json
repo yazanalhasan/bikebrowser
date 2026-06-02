@@ -26,7 +26,11 @@
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test runtime-audit.smoke",
     "test:e2e:playthrough": "playwright test full-game-playthrough.smoke flat-tire-flow.smoke gameplay-report-panel.smoke runtime-audit.smoke",
-    "test:e2e:install": "playwright install chromium"
+    "test:e2e:install": "playwright install chromium",
+    "accept:engine": "playwright test game-rebuild.act1-acceptance full-game-playthrough.smoke",
+    "accept:reachability": "playwright test player-reachability.suite",
+    "accept:payoff": "node scripts/accept-payoff.mjs",
+    "accept": "npm run accept:engine && npm run accept:reachability && npm run accept:payoff"
   },
   "keywords": [
     "electron",
