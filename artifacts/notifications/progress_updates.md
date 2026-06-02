@@ -41,3 +41,5 @@ _Append new milestones below as work proceeds._
 | 2026-06-02 | recovery | 1.9.2 first run failed (close-key re-triggered UTM) → fixed (modal consume) → passed |
 | 2026-06-02 | acceptance ✅✅ | Phase 1.9.2 PLAYER-REACHABILITY GREEN (54s); predict via keyboard, no debug API for the action |
 | 2026-06-02 | commit | `45f4ac3` feat(game): player-facing predict-before-test UI (1.9.2) |
+| 2026-06-02 | acceptance ✅✅ | Phase 1.9.2A-C GREEN (engine + reachability 2/2); UTM loop see bend/hold/break, summary+Esc exit, integrity |
+| 2026-06-02 | commit | `dbd5f93` feat(game): finish UTM loop (1.9.2A-C); Fun column added to dashboard |
