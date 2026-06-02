@@ -1745,6 +1745,37 @@ in-world problems tagged in the reasoning substrate, never as questions.
 
 ---
 
+## 11. Visual & Asset Architecture (summary; see `docs/visual-architecture.md`)
+
+The full visual/asset spec (Visual Architecture v2.0) lives in
+`docs/visual-architecture.md`. Canon highlights:
+
+- **Six asset functions** — every asset must support exploration,
+  interaction, inspection, repair, simulation, education; if it cannot, it
+  should not exist (mirrors §8.3).
+- **RULE 1 — readability beats realism:** ≤3s to answer what/interact/
+  does/why/next. Operationalizes §2 ("understand what to do next").
+- **RULE 2 — everything important is modular:** part-graphs, not single
+  meshes — the visual form of the carry-forward / portability discipline
+  (§4). Vehicles/buildings/biology/ecology all modular.
+- **Stylized realism** (Zelda / Ghibli / No Man's Sky); curious,
+  optimistic, scientific, explorable (no grimdark, §7).
+- **Repair states by shape, not color** (normal/worn/damaged/broken);
+  Inspection → Repair → **Test** closes the loop (prediction precedes
+  intervention, §2).
+- **Three models per organism** — exploration (stylized) / educational
+  (workbench) / data (simulation) — the visual form of the Biology
+  Knowledge Graph node; food-web edges are **visible**.
+- **Creative pipeline, governed by Executive Brain:** ComfyUI (concept) →
+  Blender (production) → Aseprite (UI/overlays) → MiniMax (motion/audio);
+  Meshy/Hunyuan3D feed Blender. Generated media never enters runtime
+  directly (asset registry + playability validation). MiniMax is paid and
+  defaults `plan_only`.
+- **Playability Validation** (EB visual-governance) rejects assets failing
+  readability / function / repairability / educational value / performance.
+
+---
+
 ## Document History
 
 - v1.0 — 2026-04-27 — initial draft
@@ -1904,3 +1935,12 @@ in-world problems tagged in the reasoning substrate, never as questions.
   Mensa-style/gifted and academic-standards content enter only as
   in-world quests tagged in the reasoning substrate, never as questions.
   All prior canon preserved; additive.
+- v2.0 — 2026-06-02 — Visual & Asset Architecture v2.0 added as Section
+  11 (summary) with full spec in `docs/visual-architecture.md`: six asset
+  functions, readability-beats-realism, modular part-graphs, stylized
+  realism, repair-states-by-shape, three-models-per-organism, visible
+  food-web, the ComfyUI→Blender→Aseprite→MiniMax pipeline, and the
+  Executive-Brain Playability Validation gate. MiniMax (paid, motion/
+  audio only) governed in Executive Brain as five plan_only privileges +
+  capability + creative_pipeline_policy + playbooks. Additive; all prior
+  canon preserved.
