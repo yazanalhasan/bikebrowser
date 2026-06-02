@@ -37,18 +37,22 @@ inventory/gating/ecology-basic) are now Implemented+Wired+Playable+Accepted.
 Largest remaining near-term gaps: bridge interactivity (1.6), reasoning grader
 (1.7), Dry Wash region (1.8), then ecology loop / discovery / world map (2.1–2.3).
 
-## Player Reachable (PR) status — Phase 1.9 (the corrected truth)
+## Player Reachable (PR) status — Phase 1.9 (the corrected truth; last: post 1.9.2)
 A QA audit (`qa_audit/player_reachability_audit.md`) proved **Implemented +
 Accepted ≠ Player Reachable**: Phase-1 acceptance drove `window.__GAME__`
 directly, so it validated the *engine*, not *player access*. PR = a real player
 can do it via keyboard/mouse/UI, no debug API.
 
-| System | Impl | Accepted | **Player Reachable** | Note |
+Standard (1.9): every player-facing system has **two** tests — Engine Acceptance
+(`__GAME__` allowed) and **Player Reachability** (real input only, the primary
+criterion). Not complete until a real player can do it.
+
+| System | Impl | Accepted (engine) | **Player Reachable** | Note |
 |---|---|---|---|---|
 | Reach canonical build from Home | ✅ | ✅ | **✅ (1.9.1)** | Home Play → /game-rebuild; real-click spec |
 | Movement + walk-up interactions | ✅ | ✅ | ✅ | keyboard already |
-| UTM material testing | ✅ | ✅ | ❌ | batch via press-E; no per-material UI choice |
-| **Predict-before-test** | ✅ | ✅ | ❌ → 1.9.2 | prediction only via `__GAME__`; **not gating intervention (arc.md violation)** |
+| UTM material testing | ✅ | ✅ | **✅ (1.9.2)** | press-E opens the prediction overlay (gated) |
+| **Predict-before-test** | ✅ | ✅ | **✅ (1.9.2)** | player overlay (← → HOLD/BREAK, ↑ ↓ sure, E test, visual ✓/✗ compare); **gates the UTM (arc.md)**; dual spec (engine + `predict-reachability`) |
 | **Bridge design (choice)** | ✅ | ✅ | ❌ → 1.9.3 | `designBridge` only via `__GAME__` |
 | **Dry Wash investigation** | ✅ | ✅ | ❌ → 1.9.4 | observe/hypothesize/investigate/conclude only via `__GAME__` |
 | Ecology observation | ✅ | ✅ | ⚠️ | observe via press-E; no predict step yet |

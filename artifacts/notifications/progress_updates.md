@@ -37,3 +37,7 @@ _Append new milestones below as work proceeds._
 | 2026-06-02 | audit ⚠️ | QA found Implemented+Accepted ≠ Player Reachable (orphaned build; deep systems __GAME__-only; arc.md violated) |
 | 2026-06-02 | acceptance ✅ | Phase 1.9.1 GREEN; Home→/game-rebuild reachable via REAL mouse click (player-reachable spec) |
 | 2026-06-02 | commit | `30708e4` fix(game): make Phase 1 build reachable from Home (1.9.1) |
+| 2026-06-02 | acceptance ✅ | Phase 1.9.2 ENGINE GREEN; UTM driven via player prediction overlay (real keyboard) |
+| 2026-06-02 | recovery | 1.9.2 first run failed (close-key re-triggered UTM) → fixed (modal consume) → passed |
+| 2026-06-02 | acceptance ✅✅ | Phase 1.9.2 PLAYER-REACHABILITY GREEN (54s); predict via keyboard, no debug API for the action |
+| 2026-06-02 | commit | `45f4ac3` feat(game): player-facing predict-before-test UI (1.9.2) |
