@@ -109,6 +109,14 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
     });
     await page.screenshot({ path: `${captureDir}/00_start.png`, fullPage: true });
 
+    // Phase 1.5: quest gating — a material cannot be tested before it is
+    // collected (no skipping the Observe/Collect step).
+    const gatedBeforeCollect = await page.evaluate(() => {
+      const result = window.__GAME__.testMaterial('steel');
+      return { ok: result.ok, reason: result.reason, testedCount: window.__GAME__.getAct1State().materialTests.tested.length };
+    });
+    expect(gatedBeforeCollect).toMatchObject({ ok: false, reason: 'not_collected', testedCount: 0 });
+
     const steps = [
       {
         id: 'bike_check',
@@ -217,6 +225,7 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         widerMapUnlocked: state.discovery.widerMapUnlocked,
         unlockedNotebookEntries: state.notebook.unlocked,
         materialTestCount: state.materialTests.tested.length,
+        engineeringLoop: state.engineeringLoop,
         materialVerdicts: state.materialTests.tested.map((t) => ({ id: t.materialId, bridgeSafe: t.bridgeSafe, band: t.strengthBand })),
         prediction: state.prediction,
         inventoryDetails: state.inventory.details.map((d) => ({
@@ -279,6 +288,10 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
     expect(steelItem.source).toBeTruthy();
     expect(typeof steelItem.durability).toBe('number');
     expect(mesquiteItem).toMatchObject({ category: 'material', ecologySpecies: 'mesquite' });
+    // Phase 1.5: the full engineering loop is completed in order, end to end.
+    expect(finalState.engineeringLoop).toMatchObject({
+      observe: true, predict: true, test: true, build: true, verify: true, complete: true,
+    });
     expect(finalState.finalFeedback.message).toContain('Wider map unlocked');
 
     const report = {

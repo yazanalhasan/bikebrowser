@@ -186,6 +186,13 @@ export class Act1RuntimeSystem {
   }
 
   testMaterial(materialId) {
+    // Phase 1.5: gate testing on collection — you can't test a material you
+    // haven't gathered. Clear incomplete-state feedback, no skipping.
+    if (!this.inventorySystem.has(materialId)) {
+      const displayName = this.materialsLabSystem.materials.get(materialId)?.displayName || materialId;
+      this.recordFeedback('utm', `Collect ${displayName} before you can test it in the UTM.`, { materialId, gated: 'not_collected' });
+      return { ok: false, reason: 'not_collected', materialId };
+    }
     this.audioSystem.transitionMusic('utm_testing');
     this.audioSystem.setAmbient('garage_testing');
     const result = this.materialsLabSystem.testMaterial(materialId);
@@ -345,11 +352,28 @@ export class Act1RuntimeSystem {
       trust: this.trustSystem.getState(),
       language: this.languageSystem.getState(),
       discovery: this.discoveryMapSystem.getState(),
+      engineeringLoop: this.getEngineeringLoop(),
       feedback: {
         last: this.lastFeedback,
         log: this.feedbackLog,
       },
     };
+  }
+
+  // Phase 1.5: the player-visible engineering loop. Surfaces which step is done
+  // and what is next, so no objective is hidden and incomplete states are clear.
+  getEngineeringLoop() {
+    const unlocked = this.notebookSystem.getState().unlocked || [];
+    const bridge = this.constructionSystem.getState();
+    const steps = {
+      observe: unlocked.includes('desert_plant'),
+      predict: this.predictionSystem.getState().made > 0,
+      test: this.materialsLabSystem.getState().tested.length > 0,
+      build: Boolean(bridge.plan),
+      verify: Boolean(bridge.bridgeReconnected),
+    };
+    const nextStep = Object.entries(steps).find(([, done]) => !done);
+    return { ...steps, complete: !nextStep, nextStep: nextStep ? nextStep[0] : 'complete' };
   }
 
   saveGame = () => saveRebuildState(this.getAct1State());
