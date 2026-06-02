@@ -708,6 +708,18 @@ export default class NeighborhoodScene extends Phaser.Scene {
       label: 'Investigate the washout',
       action: 'investigate_wash',
     });
+    // Phase 2.1 — Ecology Loop: a player-reachable plant-the-desert spot
+    // (observe a site → predict which plant thrives → see it → learn why).
+    // Kept clear of the wash/ecology zones so it never shadows them.
+    const ecologyGarden = { x: 905, y: 700 };
+    this.add.image(ecologyGarden.x, ecologyGarden.y, this.wave1QuestMarkerKey()).setTint(0x9be37a).setDepth(40);
+    this.interactions.register({
+      id: 'ecology_garden',
+      x: ecologyGarden.x,
+      y: ecologyGarden.y,
+      label: 'Plant the desert',
+      action: 'ecology_garden',
+    });
     this.interactions.register({
       id: 'materials_table',
       x: materialTable.interactionX,
@@ -1170,6 +1182,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
           // Phase 1.9.4: the player runs the washout investigation by hand —
           // choose a hypothesis, see the evidence disprove a wrong guess.
           this.registry.events.emit('investigation:start', 'wash_out_cause');
+        } else if (nearest.action === 'ecology_garden') {
+          // Phase 2.1: the player observes a site, predicts which plant thrives,
+          // sees the outcome, and learns why — observe→predict→outcome→payoff.
+          this.registry.events.emit('ecology:start');
         } else if (nearest.id === 'neighbor') {
           // Mrs. Ramirez is ONE NPC with two beats. Previously a second
           // `spanish_neighbor` zone was stacked at her exact coords, so

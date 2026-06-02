@@ -172,6 +172,21 @@ async function driveInvestigation(page) {
   await page.keyboard.press('e'); // -> close
   await page.waitForFunction(() => window.__INVESTIGATION__.active === false);
 }
+// Drive the ecology loop by keyboard: for each site, observe -> pick the FIRST
+// plant option -> see the outcome -> advance; then close the summary. Returns
+// when the overlay closes. The caller asserts the payoff (notebook + outcome).
+async function driveEcology(page) {
+  await page.waitForFunction(() => window.__ECOLOGY__ && window.__ECOLOGY__.active === true, null, { timeout: 8000 });
+  for (let i = 0; i < 30; i++) {
+    const s = await page.evaluate(() => window.__ECOLOGY__);
+    if (!s.active) break;
+    // observe -> predict -> (commit) result -> advance; summary -> close. In
+    // 'predict' just commit the current option. E advances every other phase.
+    await page.keyboard.press('e');
+    await page.waitForTimeout(220);
+  }
+  await page.waitForFunction(() => window.__ECOLOGY__.active === false, null, { timeout: 8000 });
+}
 
 test.describe('player reachability', () => {
   test.describe.configure({ timeout: 120000 });
@@ -329,11 +344,40 @@ test.describe('player reachability', () => {
     expect(verified.corrected, 'the misleading guess was corrected by the evidence').toBe(true);
   });
 
+  // ADDED 2026-06-02 (Phase 2.1): Ecology Loop, the same observe->predict->
+  // outcome->payoff pattern as predict/build/investigate, with an explicit
+  // PAYOFF assertion (the player visibly receives choice -> consequence ->
+  // payoff). Driven by keyboard only; no __GAME__ for the action.
+  test('GUARD: a player runs the ecology loop by hand — outcome shown, payoff delivered', async ({ page }) => {
+    test.setTimeout(60000);
+    await bootRebuild(page);
+    const zone = await zoneById(page, 'ecology_garden');
+    expect(zone, 'an ecology planting interaction exists').toBeTruthy();
+    const reached = await walkTo(page, zone);
+    expect(reached, 'player can walk to the planting spot').toBe(true);
+    await page.keyboard.press('e');
+    await driveEcology(page);
+
+    // PAYOFF: every site resolved to a visible outcome, and the plants the
+    // player reasoned about are now field notes in the notebook.
+    const payoff = await page.evaluate(() => {
+      const eco = window.__GAME__.getAct1State().ecology;
+      const notebook = JSON.stringify(window.__GAME__.getAct1State().notebook).toLowerCase();
+      return {
+        resolved: eco.placementsResolved,
+        count: eco.placementCount,
+        notebookHasPlants: notebook.includes('mesquite') && notebook.includes('creosote'),
+      };
+    });
+    expect(payoff.resolved, 'every site reached a visible outcome through play').toBe(payoff.count);
+    expect(payoff.notebookHasPlants, 'the payoff is recorded as field notes (notebook)').toBe(true);
+  });
+
   // ---- TRACKED, not yet crisply assertable ----
 
-  test.fixme('PAYOFF: pressing "test" shows a visible load test (press/bend/snap), not just text', async () => {
-    // The verdict + tactile-cue data exists in materialTests; the player never
-    // SEES the test happen. Add an assertion once a test-result visual/animation
-    // element is rendered (e.g. a result card testid or a deformation sprite).
+  test.fixme('PAYOFF(UTM): pressing "test" shows a visible load test (press/bend/snap), not just text', async () => {
+    // NOTE: the prediction overlay now animates the beam hold/bend/break (1.9.2A);
+    // this fixme remains only to add a crisp DOM/sprite-level assertion for the
+    // UTM visualizer specifically. Ecology payoff is asserted in the GUARD above.
   });
 });

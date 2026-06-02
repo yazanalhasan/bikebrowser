@@ -308,6 +308,35 @@ export class Act1RuntimeSystem {
     return result;
   }
 
+  // Phase 1.95 — Ecology Reachability (observe -> predict -> outcome -> payoff).
+  // The player reasons about which desert plant fits a site (water/shade/
+  // habitat) and learns from being right OR wrong. Reuses the notebook + the
+  // reasoning-style "wrong-but-corrected still teaches" framing.
+  observeEcologyPlacement(id) {
+    this.audioSystem.transitionMusic('ecology_chemistry');
+    this.audioSystem.setAmbient('ecology_patch');
+    const result = this.ecologySystem.observePlacement(id);
+    if (result.ok) this.recordFeedback('ecology', `Site: ${result.placement.site}`, result.placement);
+    return result;
+  }
+
+  predictEcologyPlacement(id, speciesId) {
+    const result = this.ecologySystem.predictPlacement(id, speciesId);
+    if (result.ok) this.recordFeedback('ecology', `You expect ${this.ecologySystem._speciesName(speciesId)} to thrive here.`, result);
+    return result;
+  }
+
+  resolveEcologyPlacement(id) {
+    const result = this.ecologySystem.resolvePlacement(id);
+    if (!result.ok) {
+      this.recordFeedback('ecology', 'Observe the site and predict a plant before you plant it.', result);
+      return result;
+    }
+    this.unlockNotebookEntries(['desert_plant', result.notebookEntry].filter(Boolean));
+    this.recordFeedback('ecology', `${result.thrives ? 'It thrives.' : 'It struggles.'} ${result.why}`, result);
+    return result;
+  }
+
   runChemistryRecipe(recipeId) {
     this.audioSystem.transitionMusic('ecology_chemistry');
     this.audioSystem.setAmbient('chemistry_station');
@@ -541,6 +570,9 @@ export class Act1RuntimeSystem {
       completeBridgePlan: (planId) => this.completeBridgePlan(planId),
       designBridge: (selection) => this.designBridge(selection),
       observeEcology: (speciesId) => this.observeEcology(speciesId),
+      observeEcologyPlacement: (id) => this.observeEcologyPlacement(id),
+      predictEcologyPlacement: (id, speciesId) => this.predictEcologyPlacement(id, speciesId),
+      resolveEcologyPlacement: (id) => this.resolveEcologyPlacement(id),
       observeMystery: (id) => this.observeMystery(id),
       hypothesizeMystery: (id, hypothesisId) => this.hypothesizeMystery(id, hypothesisId),
       investigateMystery: (id) => this.investigateMystery(id),
