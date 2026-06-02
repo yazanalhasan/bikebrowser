@@ -7,6 +7,7 @@ import QuestScene from './scenes/QuestScene.js';
 import DialogueScene from './scenes/DialogueScene.js';
 import PredictionScene from './scenes/PredictionScene.js';
 import BridgeDesignScene from './scenes/BridgeDesignScene.js';
+import InvestigationScene from './scenes/InvestigationScene.js';
 import DebugScene from './scenes/DebugScene.js';
 
 export function createGame(parent) {
@@ -36,6 +37,7 @@ export function createGame(parent) {
       DialogueScene,
       PredictionScene,
       BridgeDesignScene,
+      InvestigationScene,
       DebugScene,
     ],
     audio: { noAudio: true },

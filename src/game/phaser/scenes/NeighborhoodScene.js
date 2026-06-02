@@ -696,6 +696,18 @@ export default class NeighborhoodScene extends Phaser.Scene {
       dialogueId: 'dry_wash_marker',
       action: 'dry_wash',
     });
+    // Phase 1.9.4 — the washout mystery: a player-reachable investigation
+    // (observe → hypothesize → gather evidence → conclude). Placed down-channel
+    // from the bridge sign so it does not collide with neighbouring zones.
+    const washMystery = { x: 1130, y: 700 };
+    this.add.image(washMystery.x, washMystery.y, this.wave1QuestMarkerKey()).setTint(0xc8a0ff).setDepth(40);
+    this.interactions.register({
+      id: 'investigate_wash',
+      x: washMystery.x,
+      y: washMystery.y,
+      label: 'Investigate the washout',
+      action: 'investigate_wash',
+    });
     this.interactions.register({
       id: 'materials_table',
       x: materialTable.interactionX,
@@ -1158,6 +1170,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
           // Phase 1.9.3: the player designs the bridge (choose a material per
           // role) and sees it hold or fail, instead of an auto-completed plan.
           this.registry.events.emit('bridgeDesign:start');
+        } else if (nearest.action === 'investigate_wash') {
+          // Phase 1.9.4: the player runs the washout investigation by hand —
+          // choose a hypothesis, see the evidence disprove a wrong guess.
+          this.registry.events.emit('investigation:start', 'wash_out_cause');
         } else if (nearest.action) {
           this.runtime?.handleInteraction(nearest.action);
           this.registry.events.emit('quest:changed');
