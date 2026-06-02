@@ -23,5 +23,7 @@ would be sent to Telegram.
 | 2026-06-02 | commit | `b87c4d7` feat(phase1): add predict-before-test loop |
 | 2026-06-02 | acceptance ✅ | Phase 1.4 GREEN; inventory metadata (7 items, category/source/durability/eng/eco) |
 | 2026-06-02 | commit | `8049c4e` feat(phase1): add inventory metadata |
+| 2026-06-02 | acceptance ✅ | Phase 1.5 GREEN; quest gating (test-before-collect blocked; loop observe→verify enforced) |
+| 2026-06-02 | commit | `4144d95` feat(phase1): enforce Act 1 quest gating |
 
 _Append new milestones below as work proceeds._

@@ -7,6 +7,36 @@ accepted / missing / obsolete / deferred. **Runtime wins.** This sets honest
 scope for the Completion Contract: the contract's "complete" = *every documented
 act/chapter is a coherent playable slice*, not full fidelity to this vision.
 
+## Live alignment dashboard (updated each phase transition — last: post Phase 1.5)
+D=Documented, I=Implemented, W=Wired, P=Playable, A=Accepted (acceptance-covered).
+
+| Category | D | I | W | P | A | Notes |
+|---|---|---|---|---|---|---|
+| **Act 1** | ✅ | ✅ | ✅ | ✅ | ✅ | engineering loop now gated + accepted |
+| Acts 2–3 | ✅ | ❌ | ❌ | ❌ | ❌ | deferred design-only |
+| Vehicle chapters (bike) | ✅ | ✅ | ✅ | ✅ | ✅ | bike only; ch.2–7 deferred |
+| Region: Neighborhood | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| Region: Dry Wash | ✅ | ⚠️ | ⚠️ | ⚠️ | — | discovery+bridge; region = Phase 1.8 |
+| Region: Salt River | ✅ | ❌ | ❌ | ❌ | ❌ | Phase 2.4 |
+| **Engineering: UTM/materials** | ✅ | ✅ | ✅ | ✅ | ✅ | per-material verdicts (1.2) |
+| **Engineering: predict-before-test** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.3; accuracy tracked |
+| **Engineering: inventory metadata** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.4 |
+| **Engineering: quest gating / loop** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.5; loop observe→verify enforced |
+| Engineering: bridge construction | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | evidence-gated; interactive choice = 1.6 |
+| Engineering: reasoning grader | ✅ | ❌ | ❌ | ❌ | ❌ | 1.7 |
+| **Ecology** | ✅ | ✅ (basic) | ✅ | ✅ | ✅ | observe 3 plants (1.1); loop = 2.1 |
+| Discovery registry | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | 2.2 |
+| World map | ✅ | ✅ (HUD) | ✅ | ⚠️ | ⚠️ | verify destinations 2.3 |
+| **Language** | ✅ | ⚠️ metadata | ⚠️ | ⚠️ | — | revive 2.7 |
+| **Economy** | ✅ | ❌ | ❌ | ❌ | ❌ | 2.8 |
+| **Voice** | ✅ | ✅ (browser) | ✅ | ✅ | ⚠️ | neural disabled; 2.5/2.6 |
+| Biology substrates / extra rigs | ✅ | ❌ | ❌ | ❌ | ❌ | deferred design-only |
+
+**Doc↔playable gap trend:** shrinking — engineering systems (UTM/predict/
+inventory/gating/ecology-basic) are now Implemented+Wired+Playable+Accepted.
+Largest remaining near-term gaps: bridge interactivity (1.6), reasoning grader
+(1.7), Dry Wash region (1.8), then ecology loop / discovery / world map (2.1–2.3).
+
 ## Acts
 | Act (arc.md) | Documented | Implemented | Playable | Accepted | Status |
 |---|---|---|---|---|---|
