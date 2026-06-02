@@ -8,13 +8,13 @@
       "expandedY": 400,
       "w": 370,
       "h": 232,
-      "collapsedW": 236,
-      "collapsedH": 58,
+      "collapsedW": 292,
+      "collapsedH": 64,
       "radius": 8,
       "title": { "x": 14, "y": 10 },
       "subtitle": { "x": 14, "y": 29 },
       "viewport": { "x": 14, "y": 50, "w": 342, "h": 126, "radius": 8 },
-      "gps_device": { "x": 158, "y": 29, "w": 48, "h": 36, "alpha": 0.9 },
+      "gps_device": { "x": 232, "y": 32, "w": 62, "h": 45, "alpha": 0.96 },
       "vista_backplate": { "x": 185, "y": 113, "w": 326, "h": 88, "alpha": 0.22 },
       "legend": { "x": 14, "y": 181, "w": 334 },
       "status": { "x": 220, "y": 10 },
@@ -51,15 +51,15 @@
       "route_marker_sheet": {
         "frameW": 48,
         "frameH": 48,
-        "displayW": 21,
-        "displayH": 21,
+        "displayW": 24,
+        "displayH": 24,
         "frames": { "current": 0, "quest": 1, "locked": 2, "complete": 3 }
       },
       "landmark_sheet": {
         "frameW": 64,
         "frameH": 64,
-        "displayW": 21,
-        "displayH": 21,
+        "displayW": 24,
+        "displayH": 24,
         "offsetX": 0,
         "offsetY": -18,
         "frames": {
@@ -81,6 +81,116 @@
           { "id": "copper_mine", "x": 292, "y": 61 }
         ]
       }
+    },
+    "map_gate": {
+      "x": 1484,
+      "y": 514,
+      "scale": 1.35
+    },
+    "garage_workbench_prop": {
+      "x": 650,
+      "y": 318,
+      "w": 210,
+      "h": 100,
+      "labelX": 596,
+      "labelY": 372,
+      "questMarkerX": 650,
+      "questMarkerY": 372
+    },
+    "desert_wash": {
+      "x": 1125,
+      "y": 650,
+      "scaleX": 2,
+      "scaleY": 1.35
+    },
+    "bridge_debris": {
+      "x": 1255,
+      "y": 642,
+      "brokenW": 178,
+      "brokenH": 92,
+      "repairedW": 180,
+      "repairedH": 72,
+      "payoffGlowW": 260,
+      "payoffGlowH": 98,
+      "payoffTextX": 1168,
+      "payoffTextY": 582
+    },
+    "dry_wash_path_label": {
+      "x": 1065,
+      "y": 720
+    },
+    "bike_inspection": {
+      "x": 462,
+      "y": 432,
+      "scale": 1.05,
+      "markerX": 470,
+      "markerY": 382,
+      "interactionX": 470,
+      "interactionY": 432
+    },
+    "repair_station": {
+      "x": 650,
+      "y": 430,
+      "scale": 1.1
+    },
+    "utm_rig": {
+      "x": 742,
+      "y": 408,
+      "scale": 1.08
+    },
+    "chemistry_bench": {
+      "x": 820,
+      "y": 444,
+      "w": 118,
+      "h": 82
+    },
+    "bridge_plan_workbench": {
+      "x": 1000,
+      "y": 452,
+      "scale": 1.1
+    },
+    "ecology_patch": {
+      "x": 1030,
+      "y": 760,
+      "scale": 1.25
+    },
+    "material_table": {
+      "x": 905,
+      "y": 400,
+      "w": 112,
+      "h": 76,
+      "interactionX": 905,
+      "interactionY": 420,
+      "labelX": 858,
+      "labelY": 426
+    },
+    "wash_marker": {
+      "x": 1190,
+      "y": 574
+    },
+    "npc_mr_chen": {
+      "x": 246,
+      "y": 438,
+      "labelX": 208,
+      "labelY": 514,
+      "cueX": 246,
+      "cueY": 408
+    },
+    "npc_neighbor": {
+      "x": 420,
+      "y": 438,
+      "labelX": 366,
+      "labelY": 514,
+      "cueX": 420,
+      "cueY": 408
+    },
+    "npc_auntie_mariam": {
+      "x": 590,
+      "y": 438,
+      "labelX": 532,
+      "labelY": 514,
+      "cueX": 590,
+      "cueY": 408
     }
   }
 }
