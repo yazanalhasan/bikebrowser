@@ -18,4 +18,6 @@ export const act1NotebookEntries = [
   { id: 'arabic_interaction', category: 'Language', title: 'Arabic Interaction', body: 'A mentor used Arabic as part of relationship and welcome, not as a quiz.' },
   { id: 'trust_milestone', category: 'Trust', title: 'Trust Milestone', body: 'Neighbors trust Zuzu because observations, testing, and help became visible actions.' },
   { id: 'wider_map_unlocked', category: 'Map', title: 'Wider Map Unlocked', body: 'The repaired crossing reveals the first hint that local systems connect to a much bigger world.' },
+  { id: 'wash_scour', category: 'Investigation', title: 'Wash-Out Cause', body: 'A first guess blamed weak planks, but the evidence — a high water mark and a scour hole under the footings — showed flash-flood water dug out the supports. The real fix is deeper, protected footings.' },
+  { id: 'wash_water', category: 'Investigation', title: 'Hidden Water Highway', body: 'A "dry" wash is not lifeless: dry surface gravel ruled out recent rain, and deep mesquite roots reach subsurface moisture the floods leave behind.' },
 ];

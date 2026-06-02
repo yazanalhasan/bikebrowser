@@ -6,6 +6,7 @@ export { act1InventoryMetadata, inventoryMetadataFor } from './act1Inventory.js'
 export { act1NotebookEntries } from './act1NotebookEntries.js';
 export { act1Dialogue } from './act1Dialogue.js';
 export { act1Ecology } from './act1Ecology.js';
+export { act1DryWash } from './act1DryWash.js';
 export { act1Chemistry } from './act1Chemistry.js';
 export { act1MapRegions } from './act1MapRegions.js';
 export { act1AssetManifest, getAct1AssetManifestState } from './act1AssetManifest.js';

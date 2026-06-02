@@ -319,6 +319,36 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
     expect(finalState.reasoning.rewardsReasoningNotCorrectness).toBe(true);
     expect(finalState.finalFeedback.message).toContain('Wider map unlocked');
 
+    // Phase 1.8: Dry Wash investigation loop (run last so it doesn't clobber the
+    // map-unlock feedback above). Observe -> Hypothesize (a MISLEADING
+    // hypothesis) -> Investigate -> Evidence disproves it -> Conclude with the
+    // better explanation. Proves the educational loop generalizes beyond bridges.
+    const investigation = await page.evaluate(() => {
+      const id = 'wash_out_cause';
+      const observed = window.__GAME__.observeMystery(id).ok;
+      const hyp = window.__GAME__.hypothesizeMystery(id, 'weak_materials'); // misleading
+      const inv = window.__GAME__.investigateMystery(id);
+      const con = window.__GAME__.concludeMystery(id);
+      const st = window.__GAME__.getAct1State().investigation.investigations.find((i) => i.id === id);
+      return {
+        observed,
+        hypothesisMisleading: hyp.misleading,
+        evidenceDisproves: inv.disprovesHypothesis,
+        correctedFromMisleading: con.correctedFromMisleading,
+        conclusionText: con.conclusion.text,
+        state: st,
+        notebook: window.__GAME__.getAct1State().notebook.unlocked,
+      };
+    });
+    expect(investigation.observed).toBe(true);
+    expect(investigation.hypothesisMisleading).toBe(true);
+    expect(investigation.evidenceDisproves).toBe(true);
+    expect(investigation.correctedFromMisleading).toBe(true);
+    expect(investigation.conclusionText).toContain('scoured');
+    expect(investigation.state).toMatchObject({ kind: 'engineering', concluded: true, updatedFromMisleading: true });
+    expect(investigation.notebook).toContain('wash_scour');
+    await page.screenshot({ path: `${captureDir}/12_dry_wash_investigation.png`, fullPage: true });
+
     const report = {
       generatedAt: new Date().toISOString(),
       playerVisibleWalkthrough: true,

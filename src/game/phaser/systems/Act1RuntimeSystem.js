@@ -6,6 +6,7 @@ import { DebugDiagnosticSystem } from './DebugDiagnosticSystem.js';
 import { DiscoveryMapSystem } from './DiscoveryMapSystem.js';
 import { EcologyObservationSystem } from './EcologyObservationSystem.js';
 import { InventorySystem } from './InventorySystem.js';
+import { InvestigationSystem } from './InvestigationSystem.js';
 import { LanguageSystem } from './LanguageSystem.js';
 import { MaterialsLabSystem } from './MaterialsLabSystem.js';
 import { NotebookSystem } from './NotebookSystem.js';
@@ -43,6 +44,7 @@ export class Act1RuntimeSystem {
     this.predictionSystem = new PredictionSystem();
     this.constructionSystem = new ConstructionSystem(this.materialsLabSystem);
     this.ecologySystem = new EcologyObservationSystem();
+    this.investigationSystem = new InvestigationSystem();
     this.chemistrySystem = new ChemistrySystem();
     this.trustSystem = new TrustSystem();
     this.languageSystem = new LanguageSystem();
@@ -364,6 +366,7 @@ export class Act1RuntimeSystem {
       prediction: this.predictionSystem.getState(),
       bridge: this.constructionSystem.getState(),
       ecology: this.ecologySystem.getState(),
+      investigation: this.investigationSystem.getState(),
       chemistry: this.chemistrySystem.getState(),
       trust: this.trustSystem.getState(),
       language: this.languageSystem.getState(),
@@ -385,6 +388,41 @@ export class Act1RuntimeSystem {
       testedCount: this.materialsLabSystem.getState().tested.length,
       bridgePlan: this.constructionSystem.getState().plan,
     });
+  }
+
+  // Phase 1.8 — Dry Wash investigation loop (Observe -> Hypothesize ->
+  // Investigate -> Evidence -> Conclude). Reuses notebook + reasoning style.
+  observeMystery(id) {
+    const result = this.investigationSystem.observe(id);
+    if (result.ok) this.recordFeedback('investigation', `Observation: ${result.observation}`, result);
+    return result;
+  }
+
+  hypothesizeMystery(id, hypothesisId) {
+    const result = this.investigationSystem.hypothesize(id, hypothesisId);
+    if (result.ok) {
+      this.recordFeedback('investigation', `Hypothesis: ${result.hypothesis.text}${result.misleading ? ' — do not assume; investigate it.' : ''}`, result);
+    }
+    return result;
+  }
+
+  investigateMystery(id) {
+    const result = this.investigationSystem.investigate(id);
+    if (result.ok) {
+      this.recordFeedback('investigation', result.disprovesHypothesis ? 'The evidence contradicts your hypothesis.' : 'The evidence fits your hypothesis.', result);
+    }
+    return result;
+  }
+
+  concludeMystery(id) {
+    const result = this.investigationSystem.conclude(id);
+    if (!result.ok) {
+      this.recordFeedback('investigation', 'Gather evidence before you conclude.', result);
+      return result;
+    }
+    if (result.notebookEntry) this.unlockNotebookEntries([result.notebookEntry]);
+    this.recordFeedback('investigation', `${result.correctedFromMisleading ? 'You changed your mind with evidence. ' : ''}Conclusion: ${result.conclusion.text}`, result);
+    return result;
   }
 
   // Phase 1.5: the player-visible engineering loop. Surfaces which step is done
@@ -435,6 +473,7 @@ export class Act1RuntimeSystem {
     this.predictionSystem.loadState(state.prediction);
     this.constructionSystem.loadState(state.bridge);
     this.ecologySystem.loadState(state.ecology);
+    this.investigationSystem.loadState(state.investigation);
     this.chemistrySystem.loadState(state.chemistry);
     this.trustSystem.loadState(state.trust);
     this.languageSystem.loadState(state.language);
@@ -452,6 +491,7 @@ export class Act1RuntimeSystem {
     this.predictionSystem = fresh.predictionSystem;
     this.constructionSystem = fresh.constructionSystem;
     this.ecologySystem = fresh.ecologySystem;
+    this.investigationSystem = fresh.investigationSystem;
     this.chemistrySystem = fresh.chemistrySystem;
     this.trustSystem = fresh.trustSystem;
     this.languageSystem = fresh.languageSystem;
@@ -501,6 +541,10 @@ export class Act1RuntimeSystem {
       completeBridgePlan: (planId) => this.completeBridgePlan(planId),
       designBridge: (selection) => this.designBridge(selection),
       observeEcology: (speciesId) => this.observeEcology(speciesId),
+      observeMystery: (id) => this.observeMystery(id),
+      hypothesizeMystery: (id, hypothesisId) => this.hypothesizeMystery(id, hypothesisId),
+      investigateMystery: (id) => this.investigateMystery(id),
+      concludeMystery: (id) => this.concludeMystery(id),
       runChemistryRecipe: (recipeId) => this.runChemistryRecipe(recipeId),
       recordLanguageInteraction: (interactionId) => this.recordLanguageInteraction(interactionId),
       earnTrust: () => this.earnTrust(),
