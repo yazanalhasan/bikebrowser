@@ -34,3 +34,6 @@ would be sent to Telegram.
 | 2026-06-02 | commit | `85cb421` feat(phase1): add Dry Wash playable region — **Phase 1 COMPLETE (1.1–1.8)** |
 
 _Append new milestones below as work proceeds._
+| 2026-06-02 | audit ⚠️ | QA found Implemented+Accepted ≠ Player Reachable (orphaned build; deep systems __GAME__-only; arc.md violated) |
+| 2026-06-02 | acceptance ✅ | Phase 1.9.1 GREEN; Home→/game-rebuild reachable via REAL mouse click (player-reachable spec) |
+| 2026-06-02 | commit | `30708e4` fix(game): make Phase 1 build reachable from Home (1.9.1) |
