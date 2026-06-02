@@ -83,6 +83,7 @@ async function closeDialogue(page) {
 }
 
 async function interactAt(page, step) {
+  if (step.before) await step.before(page);
   const target = await interactionTarget(page, step);
   await walkTo(page, target);
   await page.waitForFunction((expected) => {
@@ -163,6 +164,13 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         y: 408,
         prompt: 'Run UTM material tests',
         file: '07_utm_tests',
+        // Phase 1.3: predict before testing. Steel -> safe (correct); weak_scrap
+        // -> predicted safe but will fail (a recorded learning moment).
+        before: async (page) => page.evaluate(() => {
+          window.__GAME__.predictMaterial('steel', true, 'high');
+          window.__GAME__.predictMaterial('mesquite', true, 'low');
+          window.__GAME__.predictMaterial('weak_scrap', true, 'medium');
+        }),
         waitFor: () => window.__GAME__.getAct1State().materialTests.tested.length >= 4,
       },
       {
@@ -210,6 +218,7 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         unlockedNotebookEntries: state.notebook.unlocked,
         materialTestCount: state.materialTests.tested.length,
         materialVerdicts: state.materialTests.tested.map((t) => ({ id: t.materialId, bridgeSafe: t.bridgeSafe, band: t.strengthBand })),
+        prediction: state.prediction,
         chemistryResults: state.chemistry.completedRecipes,
         ecologyObservations: state.ecology.observations,
         finalFeedback: window.__GAME__.getFeedbackState().last,
@@ -250,6 +259,13 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
     const weakScrap = finalState.materialVerdicts.find((v) => v.id === 'weak_scrap');
     expect(steel).toMatchObject({ bridgeSafe: true, band: 'strong candidate' });
     expect(weakScrap).toMatchObject({ bridgeSafe: false, band: 'comparison failure' });
+    // Phase 1.3: predict-before-test loop resolved against real verdicts.
+    expect(finalState.prediction.resolved).toBeGreaterThanOrEqual(3);
+    const steelPrediction = finalState.prediction.predictions.find((p) => p.subjectId === 'steel');
+    const weakPrediction = finalState.prediction.predictions.find((p) => p.subjectId === 'weak_scrap');
+    expect(steelPrediction).toMatchObject({ willHold: true, actualSafe: true, correct: true });
+    expect(weakPrediction).toMatchObject({ willHold: true, actualSafe: false, correct: false });
+    expect(finalState.unlockedNotebookEntries).toContain('prediction_log');
     expect(finalState.finalFeedback.message).toContain('Wider map unlocked');
 
     const report = {

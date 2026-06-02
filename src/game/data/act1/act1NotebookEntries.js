@@ -7,6 +7,7 @@ export const act1NotebookEntries = [
   { id: 'copper_brace', category: 'Material', title: 'Copper Brace', body: 'Copper conducts well and can brace small structures, but it is not always the main load-bearing choice.' },
   { id: 'weak_scrap', category: 'Material', title: 'Weak Scrap', body: 'Scrap that bends too easily is useful evidence: not every found material belongs in a bridge.' },
   { id: 'material_test_results', category: 'Test Result', title: 'Material Test Results', body: 'The UTM made differences visible: stiffness, strength, brittleness, and usefulness are not the same thing.' },
+  { id: 'prediction_log', category: 'Reasoning', title: 'Predict, Then Test', body: 'Guessing first and then checking with a real test is how engineers learn. A wrong prediction plus evidence teaches more than a lucky guess.' },
   { id: 'bridge_plan', category: 'Construction', title: 'Bridge Plan', body: 'The safest plan uses a deck, supports, and triangular braces selected from tested materials.' },
   { id: 'bridge_repaired', category: 'Construction', title: 'Bridge Repaired', body: 'The repaired crossing held because Zuzu tested, compared, planned, and built before asking anyone to cross.' },
   { id: 'desert_plant', category: 'Ecology', title: 'Desert Plant', body: 'Desert plants solve heat, water, and shade problems. Harvesting has limits.' },

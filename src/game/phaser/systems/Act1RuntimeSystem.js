@@ -9,6 +9,7 @@ import { InventorySystem } from './InventorySystem.js';
 import { LanguageSystem } from './LanguageSystem.js';
 import { MaterialsLabSystem } from './MaterialsLabSystem.js';
 import { NotebookSystem } from './NotebookSystem.js';
+import { PredictionSystem } from './PredictionSystem.js';
 import { QuestSystem } from './QuestSystem.js';
 import { TrustSystem } from './TrustSystem.js';
 import { PLACEHOLDER_ASSET_CONTRACT } from './AssetRegistry.js';
@@ -38,6 +39,7 @@ export class Act1RuntimeSystem {
     this.inventorySystem = new InventorySystem();
     this.bikeSystem = new BikeSystem();
     this.materialsLabSystem = new MaterialsLabSystem();
+    this.predictionSystem = new PredictionSystem();
     this.constructionSystem = new ConstructionSystem(this.materialsLabSystem);
     this.ecologySystem = new EcologyObservationSystem();
     this.chemistrySystem = new ChemistrySystem();
@@ -197,7 +199,34 @@ export class Act1RuntimeSystem {
     };
     if (objectiveByMaterial[materialId]) this.completeObjective(objectiveByMaterial[materialId]);
     this.recordFeedback('utm', `${result.result.displayName}: ${result.result.verdict} (${result.result.loadResult}).`, result.result);
-    return result;
+    // Phase 1.3: if the player predicted this material before testing, resolve
+    // the prediction against the real verdict and record the reasoning outcome.
+    const predicted = this.predictionSystem.resolve(materialId, result.result.bridgeSafe);
+    if (predicted && predicted.resolved) {
+      this.unlockNotebookEntries(['prediction_log']);
+      const verdictWord = result.result.bridgeSafe ? 'safe' : 'not safe';
+      this.recordFeedback(
+        'reasoning',
+        predicted.correct
+          ? `Prediction checked: you said ${predicted.willHold ? 'safe' : 'not safe'} (${predicted.confidence}) and the test agrees — it is ${verdictWord}.`
+          : `Prediction checked: you said ${predicted.willHold ? 'safe' : 'not safe'} (${predicted.confidence}), but the test shows ${verdictWord}. Evidence beats a guess.`,
+        { ...predicted, materialId }
+      );
+    }
+    return { ...result, prediction: predicted };
+  }
+
+  predictMaterial(materialId, willHold, confidence = 'medium') {
+    if (!this.materialsLabSystem.materials.has(materialId)) {
+      return { ok: false, reason: 'unknown_material', materialId };
+    }
+    const prediction = this.predictionSystem.record(materialId, willHold, confidence);
+    this.recordFeedback(
+      'reasoning',
+      `Prediction recorded for ${materialId}: ${prediction.willHold ? 'will hold' : 'will not hold'} (${prediction.confidence}). Now test to check.`,
+      prediction
+    );
+    return { ok: true, prediction };
   }
 
   completeBridgePlan(planId) {
@@ -309,6 +338,7 @@ export class Act1RuntimeSystem {
       inventory: this.inventorySystem.getState(),
       bike: this.bikeSystem.getState(),
       materialTests: this.materialsLabSystem.getState(),
+      prediction: this.predictionSystem.getState(),
       bridge: this.constructionSystem.getState(),
       ecology: this.ecologySystem.getState(),
       chemistry: this.chemistrySystem.getState(),
@@ -351,6 +381,7 @@ export class Act1RuntimeSystem {
     this.inventorySystem.loadState(state.inventory);
     this.bikeSystem.loadState(state.bike);
     this.materialsLabSystem.loadState(state.materialTests);
+    this.predictionSystem.loadState(state.prediction);
     this.constructionSystem.loadState(state.bridge);
     this.ecologySystem.loadState(state.ecology);
     this.chemistrySystem.loadState(state.chemistry);
@@ -367,6 +398,7 @@ export class Act1RuntimeSystem {
     this.inventorySystem = fresh.inventorySystem;
     this.bikeSystem = fresh.bikeSystem;
     this.materialsLabSystem = fresh.materialsLabSystem;
+    this.predictionSystem = fresh.predictionSystem;
     this.constructionSystem = fresh.constructionSystem;
     this.ecologySystem = fresh.ecologySystem;
     this.chemistrySystem = fresh.chemistrySystem;
@@ -413,6 +445,7 @@ export class Act1RuntimeSystem {
       loadGame: () => this.loadGame(),
       resetAct1: () => this.resetAct1(),
       testMaterial: (materialId) => this.testMaterial(materialId),
+      predictMaterial: (materialId, willHold, confidence) => this.predictMaterial(materialId, willHold, confidence),
       completeBridgePlan: (planId) => this.completeBridgePlan(planId),
       observeEcology: (speciesId) => this.observeEcology(speciesId),
       runChemistryRecipe: (recipeId) => this.runChemistryRecipe(recipeId),
