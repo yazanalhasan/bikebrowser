@@ -27,5 +27,7 @@ would be sent to Telegram.
 | 2026-06-02 | commit | `4144d95` feat(phase1): enforce Act 1 quest gating |
 | 2026-06-02 | acceptance ✅ | Phase 1.6 GREEN; bridge choice→consequence (weak_scrap support fails, steel succeeds) |
 | 2026-06-02 | commit | `c9f45e2` feat(phase1): add bridge construction v1 |
+| 2026-06-02 | acceptance ✅ | Phase 1.7 GREEN; reasoning grader (wrong+corrected = strong 0.97; rewards reasoning not correctness) |
+| 2026-06-02 | commit | `8ef1447` feat(phase1): add reasoning feedback loop |
 
 _Append new milestones below as work proceeds._

@@ -7,7 +7,7 @@ accepted / missing / obsolete / deferred. **Runtime wins.** This sets honest
 scope for the Completion Contract: the contract's "complete" = *every documented
 act/chapter is a coherent playable slice*, not full fidelity to this vision.
 
-## Live alignment dashboard (updated each phase transition — last: post Phase 1.6)
+## Live alignment dashboard (updated each phase transition — last: post Phase 1.7)
 D=Documented, I=Implemented, W=Wired, P=Playable, A=Accepted (acceptance-covered).
 
 | Category | D | I | W | P | A | Notes |
@@ -23,7 +23,7 @@ D=Documented, I=Implemented, W=Wired, P=Playable, A=Accepted (acceptance-covered
 | **Engineering: inventory metadata** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.4 |
 | **Engineering: quest gating / loop** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.5; loop observe→verify enforced |
 | **Engineering: bridge construction** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.6; designBridge choice→consequence (weak fails, safe succeeds) |
-| Engineering: reasoning grader | ✅ | ❌ | ❌ | ❌ | ❌ | 1.7 (next) |
+| **Engineering: reasoning grader** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.7; learning system (rewards reasoning not correctness; wrong+corrected = strong) |
 | **Ecology** | ✅ | ✅ (basic) | ✅ | ✅ | ✅ | observe 3 plants (1.1); loop = 2.1 |
 | Discovery registry | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | 2.2 |
 | World map | ✅ | ✅ (HUD) | ✅ | ⚠️ | ⚠️ | verify destinations 2.3 |
