@@ -80,6 +80,15 @@ becomes pharmacology and ecology, and a local language lesson
 becomes a mechanism for accessing culture, trade, trust, and
 scientific knowledge.
 
+The **mechanical spine** that carries this scaling is a seven-rung
+vehicle progression — **bike → e-bike → motorcycle → car → boat →
+plane → spacecraft** — where every rung the player repairs and then
+builds. Each rung introduces exactly one new engineering domain on
+top of the previous one (mechanical → electrical → combustion →
+systems-integration → fluid dynamics → aerodynamics → vacuum & life
+support) and the vehicle is also the literal key that gates how far
+the player can travel. The full spine is defined in Section 3.
+
 ---
 
 ## 2. Core Premise
@@ -98,6 +107,24 @@ scientific or engineering instrument, simplify it into a visually
 understandable game mechanic, and let the child discover the
 principle by using it to solve an actual problem. **Every other
 system in the game should follow this pattern.**
+
+**Biology is the living equivalent of the Materials Lab.** Where the
+Materials Lab asks *"what are objects made of?"*, biology asks *"what
+are living systems made of, and why do they behave as they do?"*. All
+biological systems follow a canonical educational loop that parallels
+the UTM pattern: **Observe → Test → Model → Predict → Engineer.** The
+player never memorizes biological facts; they discover relationships,
+and they succeed by understanding a system deeply enough to **predict
+its outcome before it happens**. The full biological progression is in
+Section 3 (Biological Progression Spine).
+
+**Canon rule — relationships, not facts.** The game never teaches
+facts; it teaches relationships. This applies equally to engineering,
+ecology, ethnobotany, chemistry, phytochemistry, pharmacology,
+cellular biology, molecular biology, microbiology, systems biology,
+life support, and terraforming. A feature that reduces a domain to
+trivia, a quiz, or an encyclopedia-completion meta is the anti-pattern
+and should halt-and-surface.
 
 The desert-to-space arc works because each environment raises the
 constraints. The Sonoran Desert is local, understandable, and
@@ -140,6 +167,158 @@ deliberate human design.
 ---
 
 ## 3. The Three Acts
+
+### Mechanical Progression Spine — Seven Vehicle Chapters
+
+The game's mechanical/engineering progression is a **seven-rung
+vehicle ladder**. The player **repairs and then builds** each
+vehicle in turn. This spine is the backbone the three acts are
+organized over: each rung adds exactly one new engineering domain
+on top of everything before it, exercises a new UTM-style test rig
+(per Section 2 and Section 4), and acts as the literal
+transportation key that gates map reach (per Section 5). Geography,
+culture, and language (Section 5) are the **supply chain** that
+feeds each vehicle — they answer *where* materials and knowledge
+come from; the vehicle answers *what* the player can build and *how
+far* they can go.
+
+| Ch | Vehicle | New engineering domain (added to all prior) | New UTM-style rig | Reach it unlocks |
+|---|---|---|---|---|
+| 1 | **Bike** | Pure mechanics: structure, gears, chain, brakes, torque, friction | UTM (tension/compression) | Neighborhood / local desert |
+| 2 | **E-bike** | Electrical: battery, motor, controller, circuits, charging, regen braking, energy storage | Circuit + battery rig | Extended local range |
+| 3 | **Motorcycle** | Combustion powertrain: engine, fuel, ignition, transmission, cooling, exhaust | Engine / thermal dyno | First regional roads |
+| 4 | **Car** | Systems integration & scale: chassis, drivetrain, steering geometry, safety/crash, HVAC, load distribution | Crash / load + systems test | Overland cross-country (connected land regions) |
+| 5 | **Boat** | Fluid dynamics & buoyancy: hull, displacement, hydrodynamics, marine propulsion, salt corrosion, ballast/stability | Buoyancy / hydro tank | Ocean & coastal regions |
+| 6 | **Plane** | Aerodynamics & flight: lift/drag/thrust/weight, airfoils, control surfaces, strength-to-weight, fatigue, pressurization | Wind tunnel | Intercontinental / isolated highlands |
+| 7 | **Spacecraft** | Vacuum & extremes: reaction propulsion, re-entry/cryo thermal, life support (→ biology workbench), redundancy, materials certification | Vacuum / re-entry chamber | Leave Earth → alien planet |
+
+A strength-to-weight / safety-factor thread runs through every rung:
+the bike teaches "is this beam strong enough?"; the plane and
+spacecraft teach "is it strong enough *and* light enough *and*
+redundant enough?". Nothing is discarded between rungs — the UTM,
+construction, thermal, chemistry, electrical, fluid, and aero rigs
+are all **portable carry-forward systems** (Section 4) the player
+owns and re-uses on every later vehicle.
+
+**Act grouping by medium.** The seven chapters are grouped into the
+three acts by the medium the vehicle operates in:
+
+- **Act 1 — Ground** — Chapters 1–4 (bike, e-bike, motorcycle, car).
+  Begins in the Sonoran Desert (Chapter 1, the shipped foundation)
+  and expands overland across connected Earth land regions as the
+  ground vehicle improves.
+- **Act 2 — Sea & Air** — Chapters 5–6 (boat, plane). Unlocks the
+  ocean/coastal and intercontinental regions that ground vehicles
+  cannot reach; spacecraft subsystem groundwork begins here.
+- **Act 3 — Space** — Chapter 7 (spacecraft) plus terraforming and
+  life-engineering on the alien planet.
+
+**Reconciliation with the Act prose below (and with prior versions).**
+The detailed Act 1/2/3 descriptions that follow remain canon for
+their **setting, curriculum, geography, language, and carry-forward
+content** — they are now read as layers over this vehicle spine
+rather than as the primary axis. Two specific reconciliations:
+
+1. The earlier "Act 1 = Sonoran Desert only" framing widens: Act 1
+   (Ground) starts in the Sonoran Desert and grows overland through
+   Chapters 2–4. The Sonoran/bike content below is **Chapter 1**.
+2. The earlier "build the spacecraft in Act 2" framing is
+   superseded: spacecraft assembly now spans the upper chapters and
+   completes in Act 3 (Chapter 7). The Act 2 prose below — its
+   per-region resources, the seven committed regions, the modular
+   subsystem list, and the language/culture gating — remains canon
+   as the **supply-chain layer feeding every vehicle chapter**,
+   especially the car, boat, plane, and spacecraft.
+
+Discipline: each new rig (electrical bench, fluid/buoyancy rig,
+aerodynamics rig) is a carry-forward system subject to the Section 4
+discipline and the Section 8 world-model rules — portable,
+data-driven, primitive-declaring, with no per-vehicle scene hacks.
+A vehicle chapter that hard-codes its tooling into one scene, or
+that adds a "for this vehicle only" branch inside a portable system,
+is a halt-and-surface trigger (§8.2).
+
+### Biological Progression Spine — Seven Biological Domains
+
+Running **parallel** to the mechanical/vehicle spine is a biological
+curriculum spine. The two ladders reinforce each other and neither
+replaces the other: the vehicle answers *what the player can build and
+how far they can go*; the biological spine answers *what living systems
+are made of and how they behave*. Biology is the living equivalent of
+the Materials Lab (Section 2), and every domain on this spine follows
+the canonical loop **Observe → Test → Model → Predict → Engineer**.
+
+| Ch | Vehicle | Biological domain | The question the player learns to answer |
+|---|---|---|---|
+| 1 | Bike | **Ecology** | Why does this organism survive here and fail elsewhere? |
+| 2 | E-bike | **Ethnobotany** | How do humans turn a plant into food, fiber, dye, medicine, fuel? |
+| 3 | Motorcycle | **Phytochemistry** | What molecules are inside a plant, and why does extraction method change the outcome? |
+| 4 | Car | **Cellular Biology** | What are living systems made of at the cell scale, and why does this soil/tissue support life? |
+| 5 | Boat | **Microbiology** | Why does fermentation work, and how do microbes change ecosystems? |
+| 6 | Plane | **Molecular Biology** | What mechanism (DNA / RNA / protein / enzyme) explains this observation? |
+| 7 | Spacecraft | **Systems Biology & Life Engineering** | What happens to the whole system if I change one part — and should I? |
+
+The biological spine is **cumulative**, exactly like the vehicle spine:
+ecology is never discarded when phytochemistry arrives; molecular
+biology explains *why* the ethnobotanical remedy from Chapter 2 works.
+The instruments that serve these domains (Extraction Bench, Microscope,
+Growth Chamber, Fermentation Bench, Pharmacology Bench, Ecosystem
+Simulator) are portable carry-forward systems defined in Section 4, and
+the Biology Workbench remains the single central biological instrument
+the player owns and carries across every act (no separate biology
+minigames).
+
+#### The Unified Biological Knowledge Graph
+
+These domains are **not** disconnected subjects — they are **facets of
+one shared entity**. Every biological object in the game participates in
+a single knowledge graph:
+
+```
+Species → Ecology → Culture → Uses → Chemistry → Pharmacology
+        → Cellular Biology → Molecular Biology → Systems Biology → Gameplay
+```
+
+The same `speciesId` carries all facets; each substrate (ecology,
+ethnobotany, phytochemistry, pharmacology, biology workbench) is a
+**lens** on the shared entity, never a parallel copy (single-authority
+discipline, §8.6). Worked example:
+
+> **Willow**
+> - **Ecology:** riparian species (lives at water's edge).
+> - **Culture:** traditional pain remedy (gated cultural content, §2).
+> - **Chemistry:** contains salicin.
+> - **Pharmacology:** modulates an inflammatory pathway (mechanism, not
+>   prescription).
+> - **Cellular:** acts on cell signaling.
+> - **Molecular:** the cyclooxygenase pathway.
+> - **Systems:** a stress-response effect.
+> - **Gameplay:** *"Investigate why willow tea reduces pain"* — the
+>   player follows the chain from observation to mechanism, and never
+>   "takes" or "prescribes" anything.
+
+A player can enter this graph at any facet (find the plant, observe the
+cell, extract the molecule) and the game rewards connecting facets —
+that connection *is* the learning.
+
+#### Universal Dose-Response Principle (canonical cross-cutting theme)
+
+Dose-response is one of the game's universal scientific themes, not a
+medicine-only idea. **Small changes may help; moderate changes may
+optimize; large changes may cause harm.** The same curve appears across
+medicines, nutrients, fertilizers, water, heat, sunlight, oxygen,
+pollutants, and ecosystem interventions — and across engineering,
+chemistry, biology, and terraforming. Any system that introduces a
+quantity the player can increase should expose its dose-response
+behavior (visible benefit, optimum, and overshoot-harm), never a
+monotonic "more is better."
+
+#### Simulation before deployment (canonical rule, reaffirmed)
+
+No organism, ecosystem intervention, or engineered biology is released
+into the live world without being run in the Ecosystem Simulator first
+(Section 4; arc.md §3 Act 3). This is a non-negotiable rule, not a
+late-game convenience.
 
 ### Act 1 — Sonoran Desert / Bike School / Local Systems
 
@@ -445,6 +624,58 @@ concepts, soil and atmosphere analysis, terraforming chemistry.
 Discipline: every recipe teaches a principle. Avoid recipe-list
 gameplay.
 
+### Electrical Bench
+
+Introduced with the **e-bike** (Chapter 2). Today (target): wire a
+battery → controller → motor circuit, see current flow, manage
+charge, observe failure (short, over-discharge, overheating motor).
+
+Scales to: motorcycle ignition/starter electrics, car wiring
+harness and sensors, boat/plane avionics, spacecraft power bus and
+guidance electronics. Shares the battery-chemistry boundary with
+the Chemistry Lab (cells are a chemistry recipe; the pack is an
+electrical system).
+
+Discipline: components and their properties (voltage, capacity,
+resistance, thermal limits) live in data; the bench is one portable
+system, not a per-vehicle minigame. Heat from electrical load is a
+Thermal Rig interaction, not a re-implementation.
+
+### Fluid / Buoyancy Rig
+
+Introduced with the **boat** (Chapter 5). Today (target): test hull
+shapes for displacement, buoyancy, and drag in water; balance
+ballast for stability; observe failure (capsize, swamping,
+cavitation, salt corrosion over time).
+
+Scales to: water channels and irrigation (back-compatible with Act
+1 desert washes), marine propulsion, plane control of a fluid
+(air is a fluid — the rig generalizes toward the Aerodynamics Rig),
+alien-planet liquid handling and terraforming water cycles.
+
+Discipline: fluid is a general medium-interaction system (density,
+viscosity, drag, buoyancy), not a one-off boat hazard. Terrain and
+water availability are consulted via world-model primitives (§8.4),
+not hard-coded per scene.
+
+### Aerodynamics Rig
+
+Introduced with the **plane** (Chapter 6). Today (target): a simple
+wind tunnel — test airfoils and bodies for lift vs drag, place
+control surfaces, trade strength for weight, observe failure (stall,
+flutter, structural overload, loss of control).
+
+Scales to: spacecraft re-entry aerodynamics and control, parachute/
+landing systems, alien-atmosphere flight (different density/gravity
+changes the same equations). Shares the strength-to-weight and
+fatigue concerns with the Materials Lab / UTM rig.
+
+Discipline: the four-forces model (lift, drag, thrust, weight) lives
+in data and a shared solver; do not fork a separate physics model
+per vehicle. Atmosphere density is an environmental primitive, so
+the same rig works on Earth and on the alien planet (§8.2 — no
+act-specific carve-outs).
+
 ### Biology Workbench
 
 Not yet built. Will become one of the most important systems.
@@ -566,6 +797,59 @@ deliberately, not as a side effect of implementation.
   the data model so "where this lives" is a runtime question, not
   a hardcoded scene reference.
 
+### Biology Workbench — observation-scale modes and instruments
+
+The Biology Workbench (above) progresses along **two orthogonal axes**,
+and both are canon:
+
+- **Interaction mode** (existing canon, `biology-substrate.md`):
+  **Recipe → Parametric → Simulation** — how much the player controls
+  and simulates (place known inputs → expose the dials → run an
+  ecosystem in silico).
+- **Observation scale** (this addition): **organism → cell → molecule →
+  system** — how deeply the player zooms. The seven-domain Biological
+  Progression Spine (§3) is this scale axis. The two axes compose: a
+  player working at *cell scale in Parametric mode* tunes a growth
+  chamber on a microbial culture; at *molecule scale in Simulation mode*
+  they model a pathway before acting.
+
+It remains **one workbench** the player owns and carries (Portability
+Principle); the scale modes unlock narratively, the player does not pick
+a branch. The following instruments are the scale axis made playable —
+each is a portable carry-forward system following the UTM pattern and
+the §8 world-model rules (data-driven, primitive-declaring, no
+per-scene/per-vehicle hacks):
+
+- **Extraction Bench** (after the Chemistry Lab; serves Phytochemistry,
+  Ch3+) — water / alcohol / oil / resin extraction and distillation, so
+  the player learns why method changes the compound recovered. The
+  molecule-scale entry point.
+- **Microscope** (Cellular Biology, Ch4) — observe structures (cells,
+  nuclei, membranes, chloroplasts, mitochondria). The biological
+  analog of Materials inspection.
+- **Growth Chamber** (Cellular/Micro, Ch4–5) — control temperature,
+  nutrients, light, water; the biological analog of the Thermal Rig,
+  and the home of dose-response for living systems.
+- **Fermentation Bench** (Microbiology, Ch5) — observe microbial
+  systems and how they change an environment; the biological analog of
+  the Chemistry Lab.
+- **Pharmacology Bench** (Pharmacology, Ch3+) — observe what biological
+  molecules *do* (dose-response, potency, toxicity, adaptation,
+  resistance, receptor signaling, metabolism) as **mechanism**, never
+  prescription. The biological analog of systems testing.
+- **Ecosystem Simulator** (Systems Biology, Ch7, capstone) — predict
+  whole-system outcomes before deployment (introduce a species, change a
+  nutrient, remove a pollinator, raise temperature → feedback loops,
+  resilience, collapse, succession, carrying capacity, network effects).
+  The biological analog of spacecraft simulation; the enforcement point
+  of the "simulation before deployment" rule.
+
+Discipline: these instruments are modes/peripherals of the one Biology
+Workbench, not separate minigames. Living-system parameters, organisms,
+compounds, and cell/molecule data live in data; new biomes and alien
+organisms are data additions, not code. Every instrument supports
+observable, diagnosable failure (arc.md §4 biology discipline).
+
 ### Ecology Substrate (EcologyEntity)
 
 Carry-forward system at `src/renderer/game/systems/ecology/`. Owns
@@ -617,6 +901,132 @@ relational data model).
 
 Detailed system specification: see
 `src/renderer/game/systems/ecology/ecology-substrate.md`.
+
+### Ethnobotany Substrate (PlantUseEntity)
+
+Carry-forward system at `src/renderer/game/systems/ethnobotany/`. Owns
+the relationship between a **plant, a culture, and a use** — the bridge
+that turns the ecology substrate's *living things* into the chemistry
+lab's *inputs*, the materials lab's *samples*, the construction
+system's *parts*, the medicine/dose-response curriculum, and the
+biology workbench's *recipes*. It is the canonical UTM expression for
+plants (arc.md §2): **Observe → Harvest → Test → Process → Build**,
+never plant-identification trivia. Shares the `speciesId` concept with
+the Ecology Substrate (ecology owns the organism's existence;
+ethnobotany owns what is done with it) and feeds the Knowledge State
+System (ethnobotany is one of its richest domains).
+
+Today: data backbone (`data/ethnobotany.js`) curated from open sources
+in three tiers — Tier 1 (Native American Ethnobotany DB, USDA PLANTS,
+Native Seeds/SEARCH) supports Act 1; Tier 2 (BHL, FAO, Open Context)
+adds historical/agricultural depth; Tier 3 (PubChem, ChEBI, NIH herb
+databases) links plant → molecule. Substrate not yet implemented.
+
+Scales **along the seven-chapter vehicle spine (§3)** — the same plant
+deepens as the player's engineering rises: Ch1 direct materials (yucca
+fiber → bike-bag repair; mesquite → trail bread); Ch2 plants-as-chemistry
+(dyes, tannins, oils, bio-adhesives → insulated battery pouch); Ch3
+fuels/lubricants/resins/gums (pine resin, frankincense, mastic, acacia
+gum → engine applications); Ch4 industrial materials (rubber, cellulose,
+composites — "why are cars made from these?"); Ch5 marine ethnobotany
+(canoe woods, rope plants, waterproofing — Swahili, dhow, Andean reed
+boats); Ch6 strength-to-weight (bamboo, balsa, flax, hemp → lightweight
+aircraft member); Ch7 closed-loop life support (which plants make
+oxygen, fix nitrogen, tolerate salt, repair soil, provide medicine and
+calories — feeding Stage-3 Simulation Biology and terraforming).
+
+**Primitive declarations (per §8.1):**
+
+- **Environmental primitives consulted:** biome (via `getBiomeAt()`),
+  terrain (harvest viability, per §8.4), climate/season (harvest ethics).
+- **Progression primitives updated:** observations (`state.observations`);
+  inventory (typed: raw vs tested vs crafted vs biological sample);
+  knowledge state when `knowledge-state-substrate.md` implementation
+  ships (deferred per §8.5; reserved, not consumed today).
+- **Act 1 → Act 3 scaling:** Act 1 = Sonoran backbone deepened across
+  Ch1–4; Act 2 = per-region tables (marine + strength-to-weight species)
+  under the §2 cultural-representation rule; Act 3 = same schema feeds
+  Stage-3 closed-loop simulation. No act-specific carve-outs (§8.2).
+
+**Cultural-content discipline (load-bearing — §2).** Ethnobotany touches
+indigenous, religious, and marginalized cultural knowledge. Every
+culturally-attributed entry (the `cultures.*` and `uses.ceremonial`
+fields, and any region's traditional-use content) **requires a
+human-authored design brief and sourced provenance** — no agent
+generates such content. Registration refuses a cultural/ceremonial use
+lacking human review; traditional-knowledge sourcing follows
+Indigenous-data-governance norms (attribution, consent, CARE
+principles) beyond the source license. Medicinal uses carry mandatory
+dose-response + safety annotations; the game never instructs foraging-
+and-eating or makes efficacy claims.
+
+Detailed system specification: see
+`src/renderer/game/systems/ethnobotany/ethnobotany-substrate.md`.
+
+### Phytochemistry Substrate (CompoundUseEntity)
+
+Carry-forward system at `src/renderer/game/systems/phytochemistry/`.
+The bridge between **Ethnobotany ↔ Chemistry ↔ Pharmacology**: it owns
+*what molecules are inside a plant and how processing changes them*.
+Introduced with the **motorcycle** (Chapter 3, where plants become
+fuels, lubricants, resins, and gums) and central from there on. Follows
+the biology loop **Observe → Test → Model → Predict → Engineer** via the
+Extraction Bench: the player learns by experiment why **boiling**
+(water extraction) yields a different result than **alcohol** or **oil**
+extraction, and meets compound families — **alkaloids, terpenes,
+phenolics, flavonoids, resins, tannins, essential oils** — never as a
+memorized list, always as the answer to a problem (a sealant, a dye, a
+lubricant base, a remedy to investigate).
+
+Today: data backbone links each plant use to compound references in
+chemistry data (Tier-3 sources: PubChem, ChEBI, ChemSpider). Substrate
+not yet implemented. Shares `speciesId` with ecology/ethnobotany and
+`compoundId` with chemistry data — it stores the *link and the
+extraction outcome*, not the molecule definition.
+
+**Primitive declarations (§8.1):** consults biome/season (via the plant
+record) for what is harvestable; updates observations and typed
+inventory (raw extract vs purified compound vs tested compound);
+reserves knowledge-state writes until that system ships (§8.5). Act 1→3
+scaling: Ch3 fuels/resins → Ch6 strength-to-weight bio-composites → Ch7
+life-support chemistry; no act-specific carve-outs (§8.2).
+
+Discipline: extraction outcomes are data + a shared solver, not a
+per-plant minigame. Dose/ratio framing carries the Universal
+Dose-Response Principle (§3). Detailed spec:
+`src/renderer/game/systems/phytochemistry/phytochemistry-substrate.md`.
+
+### Pharmacology Substrate (BioEffectEntity)
+
+Carry-forward system at `src/renderer/game/systems/pharmacology/`.
+Answers **what biological molecules *do*** — as **mechanism**, through
+experiment and simulation on the Pharmacology Bench. Introduced
+alongside phytochemistry (Chapter 3) and deepening through molecular
+biology (Chapter 6). The player investigates **dose-response, potency,
+toxicity, adaptation, resistance, feedback loops, receptor signaling,
+and metabolism** — e.g. *"investigate why willow tea reduces pain"*
+following the chemistry → pathway chain.
+
+**Pharmacology in this game is educational only — never clinical, never
+therapeutic, never diagnostic (LOAD-BEARING discipline).** The player
+investigates mechanisms; the player never prescribes, treats, doses a
+person, or receives medical guidance. Every `effect` entry is framed as
+a studied mechanism with mandatory safety annotations (toxic
+look-alikes, unsafe quantities) and carries the dose-response curve. No
+efficacy claim beyond the sourced evidence (Tier-3: NIH/NCCIH). This
+rule is a halt-and-surface trigger if a feature drifts toward clinical
+advice. The dose-response curriculum is the same one named in §2 and §3.
+
+Today: data backbone links compounds (phytochemistry) to mechanism/
+effect references; substrate not yet implemented. Shares `compoundId`
+with phytochemistry/chemistry and `pathwayId` with molecular-biology
+data (the Biology Workbench molecule scale). **Primitive declarations
+(§8.1):** consults no environmental primitive directly (operates on
+compounds/effects); updates observations + knowledge state (reserved,
+§8.5). Act 1→3 scaling: Ch3 plant-effect investigation → Ch6 molecular
+mechanism → Ch7 organism/ecosystem effects in the simulator; no
+act-specific carve-outs (§8.2). Detailed spec:
+`src/renderer/game/systems/pharmacology/pharmacology-substrate.md`.
 
 ### Foraging / Inventory System
 
@@ -729,7 +1139,11 @@ Regions are unlocked through a combination of:
 - Engineering readiness
 - NPC trust
 - Language/cultural access
-- Transportation upgrades
+- **Transportation upgrades — the vehicle-progression spine (§3) is
+  the primary geographic gate: ground vehicles (bike→car) reach
+  connected land regions, the boat reaches ocean/coastal regions,
+  the plane reaches isolated/intercontinental regions, and the
+  spacecraft leaves Earth.**
 - Map discovery
 
 ### Language as gameplay
@@ -1095,9 +1509,65 @@ above for the systems they cover:
 - `src/renderer/game/systems/ecology/ecology-substrate.md` §6.
 - `src/renderer/game/systems/biology/biology-substrate.md` §6.
 - `src/renderer/game/systems/knowledgeState/knowledge-state-substrate.md` §6.
+- `src/renderer/game/systems/ethnobotany/ethnobotany-substrate.md` §6
+  (design-only; added v1.6).
+- `src/renderer/game/systems/phytochemistry/phytochemistry-substrate.md` §6
+  (design-only; added v1.7).
+- `src/renderer/game/systems/pharmacology/pharmacology-substrate.md` §6
+  (design-only; added v1.7).
 
 Future carry-forward substrate documents must include an equivalent
 "World-model primitive integration" section.
+
+---
+
+## 9. Open Knowledge & Data Sources
+
+These are **substrate references** for building educational systems,
+databases, quests, and world models — **not** content to copy. Evaluate
+every source for ARC compatibility, record provenance and per-item
+license, and **do not blindly import**. The Section 2 cultural-
+representation rule and the substrate cultural/medicinal-safety
+disciplines apply to everything sourced here: traditional knowledge
+requires a human-authored brief and Indigenous-data-governance / CARE
+handling; medicinal data requires dose-response + safety annotation and
+stays educational, never clinical.
+
+**Ethnobotany & plants.** Native American Ethnobotany Database
+(naeb.brit.org), USDA PLANTS (plants.usda.gov), Native Seeds/SEARCH
+(nativeseeds.org), Lady Bird Johnson Wildflower Center (wildflower.org),
+Biodiversity Heritage Library (biodiversitylibrary.org).
+
+**Plant chemistry / phytochemistry.** PubChem
+(pubchem.ncbi.nlm.nih.gov), ChEBI (ebi.ac.uk/chebi), ChemSpider
+(chemspider.com).
+
+**Molecular biology.** NCBI Bookshelf, NCBI Gene (ncbi.nlm.nih.gov),
+Protein Data Bank (rcsb.org), UniProt (uniprot.org), Ensembl
+(ensembl.org).
+
+**Cell biology.** Cell Image Library (cellimagelibrary.org), Allen Cell
+Explorer (allencell.org), Human Protein Atlas (proteinatlas.org).
+
+**Microbiology.** BacDive (bacdive.dsmz.de), MicrobeWiki
+(microbewiki.kenyon.edu).
+
+**Ecology.** GBIF (gbif.org), iNaturalist (inaturalist.org),
+Encyclopedia of Life (eol.org).
+
+**Agriculture.** FAO (fao.org), CGIAR (cgiar.org).
+
+**Open-source repositories worth mining (for ideas, datasets,
+architecture patterns, and visualizations — evaluate, do not blindly
+import):** Biopython, scikit-bio, Cytoscape, CellProfiler,
+OpenTreeOfLife, GBIF API tools, NCBI Datasets tools, RCSB/PDB tooling,
+iNaturalist open-source projects, Allen Institute open resources.
+
+Discipline: a source's permissive software license does **not** grant
+the right to decontextualize traditional knowledge, and a dataset's
+existence does not make its content age-appropriate or ARC-compatible.
+Each substrate's data-build records which source, which license, and
+(for cultural/medicinal content) which human review gate cleared it.
 
 ---
 
@@ -1137,3 +1607,82 @@ Future carry-forward substrate documents must include an equivalent
   their primitive integration per §8.1. Existing arc.md prose is
   preserved verbatim except for these additive references and
   status markers.
+- v1.5 — 2026-06-02 — Mechanical Progression Spine adopted: the
+  seven-rung vehicle ladder (bike → e-bike → motorcycle → car →
+  boat → plane → spacecraft), each repaired then built, becomes the
+  backbone the three acts are organized over. Section 1 names the
+  spine; Section 3 gains a "Mechanical Progression Spine — Seven
+  Vehicle Chapters" subsection (chapter table + act-grouping by
+  medium: Ground Ch1–4 / Sea & Air Ch5–6 / Space Ch7) and
+  reconciliation notes (Act 1 widens from Sonoran-only to overland
+  Earth; the prior "build the spacecraft in Act 2" framing is
+  superseded, with the Act 2 geography/resource/language prose
+  retained as the supply-chain layer). Section 4 adds three
+  portable carry-forward rigs introduced by the new vehicles —
+  Electrical Bench (e-bike), Fluid/Buoyancy Rig (boat), Aerodynamics
+  Rig (plane). Section 5 makes the vehicle tier the primary
+  geographic gate. The vehicle is both the engineering curriculum
+  (one new domain per rung) and the literal transportation key.
+  Existing geography, culture, carry-forward, and world-model prose
+  preserved; changes are additive plus the two §3 reconciliation
+  notes. Open: per-chapter region/material mapping and where the
+  car↔boat and plane↔spacecraft handoffs gate (candidate Section 6
+  entries).
+- v1.6 — 2026-06-02 — Ethnobotany Substrate adopted as a first-class
+  carry-forward system alongside ecology/biology/knowledge-state. New
+  design doc `src/renderer/game/systems/ethnobotany/ethnobotany-substrate.md`
+  (`PlantUseEntity`) owns the plant-culture-use relationship and is the
+  connective tissue between Ecology, Chemistry, Materials, Construction,
+  Medicine, Agriculture, Biology, and Terraforming. Section 4 gains an
+  "Ethnobotany Substrate" subsection; its progression mirrors the
+  Section 3 seven-chapter vehicle spine (Ch1 direct materials through
+  Ch7 closed-loop life support). Data architecture is three open-source
+  tiers (Tier 1: Native American Ethnobotany DB, USDA PLANTS, Native
+  Seeds/SEARCH; Tier 2: BHL, FAO, Open Context; Tier 3: PubChem, ChEBI,
+  NIH herb DBs) with a region-to-source map for the seven committed
+  regions. Section 8's shipped-substrate integration list adds the
+  ethnobotany doc (design-only). The Section 2 cultural-representation
+  rule is made load-bearing for this system: all culturally-attributed
+  and ceremonial content requires a human-authored design brief and
+  sourced provenance (Indigenous-data-governance / CARE principles),
+  registration refuses unreviewed cultural content, and medicinal
+  entries require dose-response + safety annotations. Open: knowledge-
+  state coupling timing, depletion model, chapter-scope gating, the
+  cultural-content review pipeline, compound granularity, and the
+  terraforming-promotion contract (the doc's Section 13).
+- v1.7 — 2026-06-02 — Unified Biological Knowledge Progression adopted.
+  Section 2 gains the canonical biology rule ("Biology is the living
+  equivalent of the Materials Lab"; the loop Observe → Test → Model →
+  Predict → Engineer) and the explicit "relationships, not facts" canon
+  rule. Section 3 gains a "Biological Progression Spine — Seven
+  Biological Domains" subsection mapping each vehicle chapter to a
+  biological domain (bike→Ecology, e-bike→Ethnobotany,
+  motorcycle→Phytochemistry, car→Cellular Biology, boat→Microbiology,
+  plane→Molecular Biology, spacecraft→Systems Biology & Life
+  Engineering), the Unified Biological Knowledge Graph (one shared
+  entity with Ecology/Culture/Uses/Chemistry/Pharmacology/Cellular/
+  Molecular/Systems/Gameplay facets; the Willow worked example), the
+  Universal Dose-Response Principle as a canonical cross-cutting theme,
+  and a reaffirmed "simulation before deployment" rule. Section 4 adds
+  two new carry-forward substrates — Phytochemistry (`CompoundUseEntity`)
+  and Pharmacology (`BioEffectEntity`, educational-only / never clinical)
+  — and a "Biology Workbench — observation-scale modes and instruments"
+  subsection that reconciles the existing interaction-mode stages
+  (Recipe → Parametric → Simulation, preserved verbatim) with the new
+  observation-scale axis (organism → cell → molecule → system) and adds
+  six portable instruments (Extraction Bench, Microscope, Growth
+  Chamber, Fermentation Bench, Pharmacology Bench, Ecosystem Simulator).
+  New design docs: `phytochemistry-substrate.md`,
+  `pharmacology-substrate.md`. New Section 9 "Open Knowledge & Data
+  Sources" curates open databases and repositories as substrate
+  references with a do-not-blindly-import + cultural/medicinal-safety
+  discipline. Section 8's shipped-substrate list adds the two new docs.
+  All prior canon — UTM pattern, vehicle spine, three acts, carry-forward
+  systems, world-model alignment, knowledge state, portability, weird
+  zones, ecology substrate, and the Biology Workbench's existing stages —
+  preserved; changes are additive. Cellular/molecular/microbiology/
+  systems biology are modes/scales of the one Biology Workbench, not
+  separate minigames (no new substrate docs for them). Open: where
+  phytochemistry/pharmacology gate exactly, the two-axis unlock
+  ordering, and the cell/molecule data depth (candidate Section 6
+  entries).
