@@ -1,4 +1,10 @@
-# Biology Substrate Design — Single Workbench, Three Modes
+# Biology Substrate Design — Single Workbench (Interaction Modes × Observation Scales)
+
+> Note (2026-06-02): the workbench now has two orthogonal axes — the
+> original three **interaction modes** (Recipe → Parametric → Simulation,
+> §2) and the added **observation scales** (organism → cell → molecule →
+> system, §13) plus the **Biological Engineering** capstone modes (§14).
+> It remains one portable workbench, never separate minigames.
 
 **Status:** Phase-2 design document. No code is shipped by this document.
 Stage 1 implementation lands first (Act 1). Stages 2 and 3 are
@@ -900,3 +906,149 @@ non-negotiable requirements:
    navigation paradigm, and asset pipeline dependencies. CLEAN.
 
 No drift to resolve.
+
+---
+
+## 13. Observation-scale modes (the second workbench axis)
+
+**Added 2026-06-02 (arc.md v1.7/v1.8).** The workbench progresses along
+**two orthogonal axes**, and both are canon:
+
+- **Interaction mode** (§2, existing): Recipe → Parametric → Simulation —
+  *how much the player controls/simulates.*
+- **Observation scale** (this section): organism → cell → molecule →
+  system — *how deeply the player zooms.*
+
+They compose: e.g. *cell scale in Parametric mode* tunes a growth chamber
+on a microbial culture; *molecule scale in Simulation mode* models a
+pathway before acting. It remains **one workbench**; scale modes unlock
+narratively (the player does not pick a branch). Each scale maps to a
+biological domain of the arc.md §3 Biological Progression Spine and to a
+portable instrument (arc.md §4).
+
+### 13.1 Cellular Biology Mode (car, Ch4) — Microscope
+
+Observe structures: cells, nuclei, membranes, chloroplasts,
+mitochondria. Question: *what are living systems made of at the cell
+scale, and why does this soil/tissue support life?* Instrument:
+Microscope (the biological analog of materials inspection). Data:
+`organism.cellProfile` (cell types, organelles present, adaptations).
+Reasoning: `pattern_recognition`, `causal_reasoning`. Hierarchy:
+Observe → Explain.
+
+### 13.2 Microbiology Mode (boat, Ch5) — Fermentation Bench + Growth Chamber
+
+Observe microbial systems and how they change an environment. Questions:
+*why does fermentation work? why does this soil support growth? why do
+microbes change ecosystems?* Instruments: Fermentation Bench (microbial
+community behavior; the Chemistry-Lab analog) and Growth Chamber (control
+temperature/nutrients/light/water; the Thermal-Rig analog and the home of
+dose-response for living systems). Data: `organism` records of microbe
+type with `nutrientCycle`/`fermentationCurve` fields. Reasoning:
+`causal_reasoning`, `experimental_design`, `systems_thinking`. Hierarchy:
+Explain → Predict.
+
+### 13.3 Molecular Biology Mode (plane, Ch6) — links to Pharmacology/Phytochemistry
+
+Discover DNA, RNA, proteins, enzymes, signaling molecules. Question:
+*what mechanism (DNA/RNA/protein/enzyme) explains this observation?* This
+mode resolves the mechanisms that the Pharmacology Substrate references
+by `pathwayId` and that the Phytochemistry Substrate feeds by
+`compoundId`. The player **models** rather than memorizes. Data:
+`pathway` records (molecule → mechanism), read-only from molecular-biology
+data (UniProt/NCBI/PDB per arc.md §9). Reasoning: `causal_reasoning`,
+`logical_deduction`, `systems_thinking`. Hierarchy: Explain → Predict.
+
+### 13.4 Systems Biology Mode (spacecraft, Ch7) — Ecosystem Simulator
+
+Predict whole-system outcomes before deployment: introduce a species,
+change a nutrient, remove a pollinator, raise temperature → feedback
+loops, resilience, collapse, ecological succession, carrying capacity,
+network effects. Instrument: Ecosystem Simulator (the spacecraft-
+simulation analog; the enforcement point of "simulation before
+deployment"). Consumes Stage-3 Simulation Biology (§2.3) and reads
+`EcologyEntity` via the ecology bridge (§8). Reasoning: `systems_thinking`,
+`optimization`, `causal_reasoning`. Hierarchy: Predict → Engineer.
+
+**Discipline.** Cell/microbe/molecule/pathway data are data additions,
+not code. These are modes of the one workbench, never separate minigames
+(arc.md §8.2). No cellular/molecular/microbiology/systems *substrate*
+doc exists or should — the architecture is deliberately unfragmented.
+
+---
+
+## 14. Biological Engineering modes (Act 3 capstone; genetic engineering, reframed)
+
+**Added 2026-06-02 (arc.md v1.8).** Genetic engineering is included, but
+reframed as **Biological Engineering & Synthetic Biology** — the
+culmination of the whole spine, not a gene-editing minigame. It is gated
+by the **prediction-precedes-intervention** canon rule (arc.md §2): *the
+player may not modify a system until they can accurately predict it.*
+These are engineering modes of the **same** Biology Workbench, unlocked
+after Molecular Biology Mode (§13.3).
+
+### 14.1 The five-stage progression
+
+1. **Selective Breeding** (lowest risk) — combine parent traits (drought
+   tolerance, cold tolerance, food yield). Question: *which parent traits
+   should be combined?* Instrument: **Trait Simulator** (Trait A + Trait
+   B = Outcome C, explored *before* modification).
+2. **Microbial Engineering** — manipulate fermentation communities,
+   nutrient cycles, decomposition (soil microbes, nitrogen fixers,
+   compost). Focus stays on **ecosystems**, not individual genes. Reuses
+   Microbiology Mode (§13.2).
+3. **Synthetic Biology** (in **simulation only**) — what traits are
+   needed (oxygen production, salt/drought tolerance, nutrient
+   efficiency)? what tradeoffs and unintended effects emerge? Instrument:
+   **Genome Simulator** (test ideas safely, in silico).
+4. **Life Support Engineering** — design closed ecological loops (food,
+   oxygen, water recycling, waste recycling) for spacecraft/habitats.
+   Consumes Systems Biology Mode (§13.4).
+5. **Terraforming Biology** (capstone) — *can this ecosystem remain
+   stable?* Success requires **biodiversity, resilience, reversibility,
+   and containment** — never maximum growth.
+
+### 14.2 Instruments
+
+- **Genetics Workbench** (unlocked after Molecular Biology) — visualize
+  information flow **DNA → RNA → Protein → Trait**. The comprehension
+  gate: the player learns *how a trait arises* before any engineering.
+- **Trait Simulator** — explore trait combinations and their tradeoffs
+  before modification (Stages 1, 3).
+- **Population Simulator** — observe evolution, selection, adaptation
+  across generations (Evolutionary Biology domain).
+- **Genome Simulator** (late-game) — test engineering ideas safely in
+  silico (Stage 3).
+
+### 14.3 The mandatory release pipeline (canon)
+
+No organism enters the live game world directly. Every engineered
+organism passes, in order, through:
+
+```
+Simulation → Containment → Small-scale testing → Ecosystem review → Release
+```
+
+This is the biological expression of "prediction precedes intervention"
+and "simulation before deployment." A code path that releases an
+engineered organism without traversing this pipeline is a halt-and-
+surface trigger (it also intersects the §9 consequence model — Model C
+hard-consequence requires the reversibility/containment tooling named
+here).
+
+### 14.4 Educational domains and discipline
+
+Domains introduced: **Genetics** (inheritance, mutation, selection,
+recombination), **Genomics** (genes, regulation, expression),
+**Synthetic Biology** (biological circuits, engineered traits, system
+constraints), **Evolutionary Biology** (adaptation, fitness, drift,
+selection). Sources per arc.md §9 (NCBI Gene, Ensembl, UCSC Genome
+Browser, iGEM, BioBricks, Tree of Life Web Project).
+
+**Critical safety rule (canon).** *Biological Engineering is not a power
+fantasy.* Every intervention has benefits, costs, and unintended
+consequences; the player is rewarded for **stewardship, not domination**.
+Gene/trait/genome data live in data; these are modes of the one
+workbench, never a separate gene-editor minigame; no act-specific
+carve-outs (arc.md §8.2). `understood` (and the right to intervene) is
+earned only by demonstrated prediction.

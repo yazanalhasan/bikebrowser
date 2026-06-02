@@ -126,6 +126,38 @@ life support, and terraforming. A feature that reduces a domain to
 trivia, a quiz, or an encyclopedia-completion meta is the anti-pattern
 and should halt-and-surface.
 
+**Educational Hierarchy (permanent ARC rule).** Every quest, system, and
+curriculum element maps to one of five rising levels: (1) **Observe** —
+notice and record; (2) **Explain** — say *why*; (3) **Predict** — say
+what *will* happen before it does; (4) **Engineer** — change the system
+to a chosen outcome; (5) **Teach** — explain it to someone else well
+enough that they can predict it. The player is almost never asked *"what
+is the answer?"*; they are asked *"what will happen?"* and eventually
+*"can you teach someone else why?"*. The hierarchy overlays the three
+acts as rising cognitive demand: Act 1 is dominated by **Observe**, Act 2
+by **Explain**, Act 3 by **Predict → Engineer** — while every act still
+contains all five levels.
+
+**Prediction precedes intervention (canon rule).** *The player may not
+modify a system until they can accurately predict it.* This applies
+uniformly — bridges, engines, aircraft, spacecraft, ecosystems, cells,
+organisms, and genetic systems. It is the unifying discipline behind
+"test before you trust" (engineering), "simulation before deployment"
+(ecology/terraforming, §3), and the staged Biological Engineering
+progression (§3, §4). A feature that lets the player intervene in a
+system they have not first learned to predict is a halt-and-surface
+trigger.
+
+**Academic-standards posture (canon).** **Arizona Academic Standards are
+the minimum mastery baseline**; advanced frameworks (Massachusetts
+Science, California Mathematics Framework, Virginia STEM, Singapore Math)
+are **enrichment**; gifted frameworks (Beast Academy, Art of Problem
+Solving, Mensa-for-Kids enrichment concepts) are **optional depth**. **No
+enrichment or gifted content may ever be required for progression.**
+Standards and reasoning tagging live in `reasoning-substrate.md`; the
+game never shows school-style questions — it tags quests with reasoning
+domains and hierarchy levels instead.
+
 The desert-to-space arc works because each environment raises the
 constraints. The Sonoran Desert is local, understandable, and
 resource-constrained — bike, forage, repair, build, talk to
@@ -319,6 +351,64 @@ No organism, ecosystem intervention, or engineered biology is released
 into the live world without being run in the Ecosystem Simulator first
 (Section 4; arc.md §3 Act 3). This is a non-negotiable rule, not a
 late-game convenience.
+
+#### Act 3 capstone — Biological Engineering (genetic engineering, reframed)
+
+Genetic engineering is included — but **reframed as Biological
+Engineering & Synthetic Biology**, because a "gene-editing minigame"
+would violate canon already established (simulation before deployment,
+systems thinking, ecology first, stewardship over extraction, no magic
+technology jumps). The player does **not** start by editing genes; they
+start by understanding systems. Biological Engineering is the
+**culmination** of the entire spine:
+
+> Observe a plant → understand the plant → understand the cell →
+> understand the molecule → understand the ecosystem → predict
+> consequences → engineer responsibly.
+
+It is **not** three new vehicle chapters. It is the Act-3 / Chapter-7
+deepening of the biological spine, gated by the **prediction-precedes-
+intervention** rule (§2). The biological ladder, fully extended:
+
+```
+Ecology → Ethnobotany → Phytochemistry → Pharmacology → Cellular Biology
+       → Molecular Biology → Systems Biology
+       → Synthetic Biology → Biological Engineering → Terraforming Ecology
+```
+
+**Biological Engineering progression (Act 3, gated by prediction).** Five
+stages, lowest-risk first — each is an *engineering mode* of the one
+Biology Workbench, detailed in `biology-substrate.md`:
+
+1. **Selective Breeding** — lowest-risk introduction. Combine parent
+   traits (drought tolerance, cold tolerance, food yield). Question:
+   *which parent traits should be combined?*
+2. **Microbial Engineering** — manipulate fermentation communities,
+   nutrient cycles, decomposition (soil microbes, nitrogen fixers,
+   compost). The focus stays on **ecosystems**, not individual genes.
+3. **Synthetic Biology** — in **simulation only**. What traits are
+   needed (oxygen production, salt/drought tolerance, nutrient
+   efficiency)? What tradeoffs and unintended effects emerge?
+4. **Life Support Engineering** — design closed ecological loops (food,
+   oxygen, water recycling, waste recycling) for spacecraft and habitats.
+5. **Terraforming Biology** — capstone. *Can this ecosystem remain
+   stable?* Success requires **biodiversity, resilience, reversibility,
+   and containment** — never maximum growth.
+
+**New educational domains introduced here:** Genetics (inheritance,
+mutation, selection, recombination), Genomics (genes, regulation,
+expression), Synthetic Biology (biological circuits, engineered traits,
+system constraints), and Evolutionary Biology (adaptation, fitness,
+drift, selection).
+
+**Critical safety rule (canon).** *Biological Engineering is not a power
+fantasy.* Every intervention has benefits, costs, and unintended
+consequences. The player is rewarded for **stewardship, not domination**.
+Nothing enters the live world directly — every engineered organism passes
+through **Simulation → Containment → Small-scale testing → Ecosystem
+review → Release** (the Genome/Population/Trait/Ecosystem simulators,
+§4). A feature that ships an engineered organism into the world without
+that chain halts-and-surfaces.
 
 ### Act 1 — Sonoran Desert / Bike School / Local Systems
 
@@ -844,11 +934,29 @@ per-scene/per-vehicle hacks):
   The biological analog of spacecraft simulation; the enforcement point
   of the "simulation before deployment" rule.
 
+**Biological-Engineering instruments (Act 3; unlocked after Molecular
+Biology; gated by prediction-precedes-intervention, §2):**
+
+- **Genetics Workbench** — visualize information flow **DNA → RNA →
+  Protein → Trait**. The player learns *how* a trait arises, not how to
+  "edit" one; this is the comprehension gate before any engineering.
+- **Trait Simulator** — explore **Trait A + Trait B = Outcome C**
+  *before* any modification (selective-breeding and synthetic-biology
+  reasoning). Tradeoffs must be visible.
+- **Population Simulator** — observe evolution, selection, and
+  adaptation across generations (Evolutionary Biology domain).
+- **Genome Simulator** — late-game; test engineering ideas **safely, in
+  silico**. No organism enters the game world from here directly —
+  everything passes through Simulation → Containment → Small-scale
+  testing → Ecosystem review → Release (§3 capstone rule).
+
 Discipline: these instruments are modes/peripherals of the one Biology
 Workbench, not separate minigames. Living-system parameters, organisms,
-compounds, and cell/molecule data live in data; new biomes and alien
+compounds, cell/molecule/gene data live in data; new biomes and alien
 organisms are data additions, not code. Every instrument supports
 observable, diagnosable failure (arc.md §4 biology discipline).
+Biological Engineering is not a power fantasy: prediction precedes
+intervention, and stewardship is the rewarded outcome (§2, §3).
 
 ### Ecology Substrate (EcologyEntity)
 
@@ -1557,6 +1665,13 @@ Encyclopedia of Life (eol.org).
 
 **Agriculture.** FAO (fao.org), CGIAR (cgiar.org).
 
+**Genetics, genomics & synthetic biology.** NCBI Gene, Ensembl, UCSC
+Genome Browser (genome.ucsc.edu); iGEM Foundation (igem.org), BioBricks
+Foundation (biobricks.org).
+
+**Evolution & tree of life.** Tree of Life Web Project (tolweb.org),
+OpenTreeOfLife.
+
 **Open-source repositories worth mining (for ideas, datasets,
 architecture patterns, and visualizations — evaluate, do not blindly
 import):** Biopython, scikit-bio, Cytoscape, CellProfiler,
@@ -1686,3 +1801,29 @@ Each substrate's data-build records which source, which license, and
   phytochemistry/pharmacology gate exactly, the two-axis unlock
   ordering, and the cell/molecule data depth (candidate Section 6
   entries).
+- v1.8 — 2026-06-02 — Educational hierarchy, biological engineering, and
+  standards posture added. Section 2 gains the permanent **Educational
+  Hierarchy** (Observe → Explain → Predict → Engineer → Teach), the
+  **prediction-precedes-intervention** canon rule (the player may not
+  modify a system until they can accurately predict it — bridges through
+  genetic systems), and the **academic-standards posture** (Arizona =
+  minimum mastery; advanced states = enrichment; gifted frameworks =
+  optional depth; no enrichment ever required for progression; tagging
+  lives in `reasoning-substrate.md`, never school-style questions).
+  Section 3's Biological Progression Spine gains an "Act 3 capstone —
+  Biological Engineering (genetic engineering, reframed)" subsection:
+  genetic engineering is included but reframed as Synthetic Biology /
+  Biological Engineering / Terraforming Ecology — the culmination of the
+  whole spine, never a gene-editing minigame — with a five-stage
+  progression (Selective Breeding → Microbial Engineering → Synthetic
+  Biology → Life Support Engineering → Terraforming Biology), new domains
+  (Genetics, Genomics, Synthetic Biology, Evolutionary Biology), and the
+  canon safety rule "Biological Engineering is not a power fantasy"
+  (stewardship over domination; Simulation → Containment → Small-scale →
+  Ecosystem review → Release). Section 4 adds four Biological-Engineering
+  instruments (Genetics Workbench, Trait Simulator, Population Simulator,
+  Genome Simulator), all modes of the one Biology Workbench. Section 9
+  adds genetics/genomics/synthetic-biology and evolution sources. New
+  companion docs this cycle: `reasoning-substrate.md`, and the expanded
+  `biology-substrate.md` cellular/microbiology/molecular/systems +
+  biological-engineering modes. All prior canon preserved; additive.
