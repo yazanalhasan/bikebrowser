@@ -2,6 +2,7 @@ export { act1Quests } from './act1Quests.js';
 export { act1Characters } from './act1Characters.js';
 export { act1Locations } from './act1Locations.js';
 export { act1Materials } from './act1Materials.js';
+export { act1InventoryMetadata, inventoryMetadataFor } from './act1Inventory.js';
 export { act1NotebookEntries } from './act1NotebookEntries.js';
 export { act1Dialogue } from './act1Dialogue.js';
 export { act1Ecology } from './act1Ecology.js';

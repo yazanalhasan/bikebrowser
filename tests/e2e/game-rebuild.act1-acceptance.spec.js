@@ -219,6 +219,11 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         materialTestCount: state.materialTests.tested.length,
         materialVerdicts: state.materialTests.tested.map((t) => ({ id: t.materialId, bridgeSafe: t.bridgeSafe, band: t.strengthBand })),
         prediction: state.prediction,
+        inventoryDetails: state.inventory.details.map((d) => ({
+          id: d.id, category: d.category, source: d.source,
+          durability: d.durability, bridgeSafe: d.engineering ? d.engineering.bridgeSafe : null,
+          ecologySpecies: d.ecology ? d.ecology.species : null,
+        })),
         chemistryResults: state.chemistry.completedRecipes,
         ecologyObservations: state.ecology.observations,
         finalFeedback: window.__GAME__.getFeedbackState().last,
@@ -266,6 +271,14 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
     expect(steelPrediction).toMatchObject({ willHold: true, actualSafe: true, correct: true });
     expect(weakPrediction).toMatchObject({ willHold: true, actualSafe: false, correct: false });
     expect(finalState.unlockedNotebookEntries).toContain('prediction_log');
+    // Phase 1.4: inventory items carry metadata (category/source/durability +
+    // engineering/ecology attributes).
+    const steelItem = finalState.inventoryDetails.find((d) => d.id === 'steel');
+    const mesquiteItem = finalState.inventoryDetails.find((d) => d.id === 'mesquite');
+    expect(steelItem).toMatchObject({ category: 'material', bridgeSafe: true });
+    expect(steelItem.source).toBeTruthy();
+    expect(typeof steelItem.durability).toBe('number');
+    expect(mesquiteItem).toMatchObject({ category: 'material', ecologySpecies: 'mesquite' });
     expect(finalState.finalFeedback.message).toContain('Wider map unlocked');
 
     const report = {
