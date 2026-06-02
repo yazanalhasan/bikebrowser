@@ -45,3 +45,5 @@ _Append new milestones below as work proceeds._
 | 2026-06-02 | commit | `dbd5f93` feat(game): finish UTM loop (1.9.2A-C); Fun column added to dashboard |
 | 2026-06-02 | acceptance ✅✅ | Phase 1.9.3 GREEN — PLAYER-REACHABILITY 2/2 (22s, primary) + ENGINE walkthrough (2.7m); bridge designed by keyboard, weak sags red / sound holds green, redesign-on-fail, Esc-exit |
 | 2026-06-02 | commit | `142362b` feat(game): player-facing bridge design UI (1.9.3); dashboard → bridge Player Reachable ✅ + Fun ✅ |
+| 2026-06-02 | acceptance ✅✅ | Phase 1.9.4 GREEN — PLAYER-REACHABILITY 2/2 (1.0m, primary) + ENGINE walkthrough (2.4m); investigate washout by keyboard, pick misleading hypothesis → evidence turns it red/"doesn't fit" → conclude corrected, Esc-exit |
+| 2026-06-02 | milestone 🎯 | **Phase 1.9 Player Reachability Sprint COMPLETE** — Predict/Build/Investigate all player-reachable + Fun, each dual-tested; Phase 2 unblocked |
