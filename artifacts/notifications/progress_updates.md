@@ -25,5 +25,7 @@ would be sent to Telegram.
 | 2026-06-02 | commit | `8049c4e` feat(phase1): add inventory metadata |
 | 2026-06-02 | acceptance ✅ | Phase 1.5 GREEN; quest gating (test-before-collect blocked; loop observe→verify enforced) |
 | 2026-06-02 | commit | `4144d95` feat(phase1): enforce Act 1 quest gating |
+| 2026-06-02 | acceptance ✅ | Phase 1.6 GREEN; bridge choice→consequence (weak_scrap support fails, steel succeeds) |
+| 2026-06-02 | commit | `c9f45e2` feat(phase1): add bridge construction v1 |
 
 _Append new milestones below as work proceeds._
