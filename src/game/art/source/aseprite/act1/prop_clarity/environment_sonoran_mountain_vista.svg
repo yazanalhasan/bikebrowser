@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="360" viewBox="0 0 1600 360">
+  <defs>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#17221f" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  
+      <rect width="1600" height="360" fill="#79aeb1" opacity="0.42"/>
+      <ellipse cx="260" cy="92" rx="410" ry="94" fill="#ffd17a" opacity="0.24"/>
+      <ellipse cx="1030" cy="84" rx="520" ry="58" fill="#fff0c7" opacity="0.18"/>
+      <path d="M0 302 C116 252 214 196 308 236 C394 272 466 138 566 176 C660 212 748 286 852 238 C956 188 1028 210 1124 150 C1234 82 1320 216 1418 158 C1492 114 1548 126 1600 98 V360 H0 Z" fill="#3f536f" opacity="0.72"/>
+      <path d="M0 326 C118 286 244 238 372 294 C496 348 594 198 718 234 C832 266 914 342 1026 280 C1138 218 1214 252 1320 204 C1432 152 1516 218 1600 180 V360 H0 Z" fill="#9b5b75" opacity="0.58"/>
+      <path d="M0 344 C132 310 242 308 368 324 C520 344 650 286 800 302 C934 316 1020 354 1162 308 C1302 264 1442 310 1600 286 V360 H0 Z" fill="#d47b3d" opacity="0.45"/>
+      <path d="M116 286 l70 -98 l70 98 M492 248 l74 -118 l74 118 M1186 232 l116 -142 l116 142" fill="none" stroke="#ffd17a" stroke-width="8" opacity="0.34" stroke-linejoin="round"/>
+      <rect y="302" width="1600" height="58" fill="#637d4e" opacity="0.42"/>
+      <path d="M0 332 C420 314 740 344 1600 310" fill="none" stroke="#d9b36a" stroke-width="16" opacity="0.18" stroke-linecap="round"/>
+    
+</svg>

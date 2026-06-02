@@ -16,6 +16,7 @@ export const ASSET_KEYS = {
   ecologyPlant: 'placeholder.ecologyPlant',
   chemistryStation: 'placeholder.chemistryStation',
   mapGate: 'placeholder.mapGate',
+  mapGateFinal: 'act1.map_gate',
   garageWorkbench: 'act1.garage_workbench',
   materialSamples: 'act1.material_samples',
   bridgeBroken: 'act1.bridge_broken',
@@ -49,6 +50,18 @@ export const ASSET_KEYS = {
   propClarityWorldScaleVista: 'act1.prop_clarity.world_scale_vista',
   propClarityRouteMarkerSet: 'act1.prop_clarity.route_marker_set',
   propClaritySonoranLandmarkSet: 'act1.prop_clarity.sonoran_landmark_set',
+  propReplacementGarageWorkbench: 'act1.prop_replacement.garage_workbench',
+  propReplacementMaterialTable: 'act1.prop_replacement.material_table',
+  propReplacementChemistryBench: 'act1.prop_replacement.chemistry_bench',
+  propReplacementBridgeDebris: 'act1.prop_replacement.bridge_debris',
+  environmentSonoranMountainVista: 'act1.environment.sonoran_mountain_vista',
+  environmentDesertRoadSystem: 'act1.environment.desert_road_system',
+  environmentVegetationCluster: 'act1.environment.vegetation_cluster',
+  environmentEcologyPatch: 'act1.environment.ecology_patch',
+  uiNpcCueWrench: 'act1.ui.npc_cue_wrench',
+  uiNpcCueHeart: 'act1.ui.npc_cue_heart',
+  uiNpcCueStar: 'act1.ui.npc_cue_star',
+  uiMapFrame: 'act1.ui.map_frame',
 };
 
 export const ACT1_CHARACTER_ANIMATION_SHEETS = [

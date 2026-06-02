@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="260" viewBox="0 0 1600 260">
+  <defs>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="2" flood-color="#17221f" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  
+      <rect width="1600" height="260" fill="none"/>
+      <rect x="0" y="52" width="1600" height="116" fill="#26343b"/>
+      <rect x="0" y="0" width="1600" height="28" fill="#55646d" opacity="0.82"/>
+      <rect x="0" y="196" width="1600" height="28" fill="#55646d" opacity="0.82"/>
+      <rect x="0" y="28" width="1600" height="24" fill="#374851" opacity="0.68"/>
+      <rect x="0" y="168" width="1600" height="28" fill="#374851" opacity="0.68"/>
+      <g stroke="#d8c073" stroke-width="4" opacity="0.58" stroke-linecap="round">
+        <path d="M52 110 h56 M172 110 h56 M292 110 h56 M412 110 h56 M532 110 h56 M652 110 h56 M772 110 h56 M892 110 h56 M1012 110 h56 M1132 110 h56 M1252 110 h56 M1372 110 h56 M1492 110 h56"/>
+      </g>
+      <g stroke="#d3a467" stroke-width="3" opacity="0.28" stroke-linecap="round">
+        <path d="M660 84 l34 8 M678 96 l18 5 M942 88 l34 8 M960 100 l18 5"/>
+      </g>
+      <rect x="0" y="224" width="1600" height="36" fill="#2e4a3d" opacity="0.72"/>
+    
+</svg>

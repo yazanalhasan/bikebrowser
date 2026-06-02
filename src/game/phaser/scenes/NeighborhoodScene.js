@@ -29,6 +29,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.useProvenancedEnvironmentAssets = Boolean(
       USE_PROVENANCED_ENVIRONMENT_ASSETS || window.__USE_PROVENANCED_ENVIRONMENT_ASSETS === true,
     );
+    this.forcePlaceholderPropAssets = Boolean(
+      new URLSearchParams(window.location.search).has('forcePlaceholderProps') ||
+      window.__BIKEBROWSER_FORCE_PLACEHOLDER_PROPS === true,
+    );
     this.characterVisuals = {
       playerScale: 1.6,
       npcScale: 1.52,
@@ -129,43 +133,51 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
   createEnvironment() {
     this.add.rectangle(800, 500, 1600, 1000, 0x2e4a3d);
-    if (this.canUseWave1Asset(ASSET_KEYS.wave1SonoranVistaDraft)) {
+    if (this.canUseFinalPropAsset(ASSET_KEYS.environmentSonoranMountainVista)) {
+      this.add.image(800, 196, ASSET_KEYS.environmentSonoranMountainVista).setDepth(2);
+    } else if (this.canUseWave1Asset(ASSET_KEYS.wave1SonoranVistaDraft)) {
       this.add.image(800, 196, ASSET_KEYS.wave1SonoranVistaDraft).setDepth(2);
     } else {
-      this.add.rectangle(800, 238, 1600, 286, 0x7fb08f).setAlpha(0.22);
-      this.add.rectangle(800, 306, 1600, 178, 0x8a8d57).setAlpha(0.3);
-      this.add.rectangle(800, 128, 1600, 160, 0x7db3b8).setAlpha(0.2);
-      this.drawLegacySonoranVista();
+      this.drawLegacySonoranVistaFallback();
     }
     this.drawNeighborhoodColorLanguage();
 
-    if (this.canUseWave1Asset(ASSET_KEYS.wave1RoadSystemDraft)) {
+    if (this.canUseFinalPropAsset(ASSET_KEYS.environmentDesertRoadSystem)) {
+      this.add.image(800, 486, ASSET_KEYS.environmentDesertRoadSystem).setDepth(8);
+    } else if (this.canUseWave1Asset(ASSET_KEYS.wave1RoadSystemDraft)) {
       this.add.image(800, 486, ASSET_KEYS.wave1RoadSystemDraft).setDepth(8);
     } else {
-      for (let x = 64; x < this.worldWidth; x += 128) {
-        for (let y = 0; y < this.worldHeight; y += 96) {
-          this.add.image(x, y + 48, ASSET_KEYS.street).setAlpha(y > 380 && y < 590 ? 1 : 0);
-        }
-      }
-
-      this.add.rectangle(800, 486, 1600, 116, 0x26343b);
-      this.add.rectangle(800, 400, 1600, 28, 0x55646d).setAlpha(0.82);
-      this.add.rectangle(800, 574, 1600, 28, 0x55646d).setAlpha(0.82);
-      for (let x = 80; x < this.worldWidth; x += 120) {
-        this.add.rectangle(x, 486, 56, 4, 0xd8c073).setAlpha(0.48);
-      }
+      this.drawLegacyRoadSystemFallback();
     }
 
     this.drawSouthwestHomes();
     this.drawGarageWarmth();
     this.drawGarageSanctuaryDetails();
-    this.add.image(650, 312, ASSET_KEYS.garageWorkbench).setScale(1.0);
-    this.add.text(596, 372, 'garage/workbench', labelStyle());
+    const garageWorkbenchProp = this.layout.garage_workbench_prop;
+    this.add.image(
+      garageWorkbenchProp.x,
+      garageWorkbenchProp.y,
+      this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementGarageWorkbench, ASSET_KEYS.garageWorkbench),
+    ).setDisplaySize(garageWorkbenchProp.w, garageWorkbenchProp.h).setDepth(22);
+    this.add.text(garageWorkbenchProp.labelX, garageWorkbenchProp.labelY, 'garage/workbench', labelStyle());
     this.add.image(292, 692, ASSET_KEYS.schoolNode).setScale(1.2);
-    this.add.image(1125, 650, ASSET_KEYS.desertWash).setScale(2.0, 1.35);
-    this.bridgeSprite = this.add.image(1255, 642, ASSET_KEYS.bridgeBroken).setScale(1.12);
-    this.bridgePayoffGlow = this.add.ellipse(1255, 642, 260, 98, 0xf2c46d, 0).setDepth(145);
-    this.bridgePayoffText = this.add.text(1168, 582, 'repaired crossing', {
+    const desertWash = this.layout.desert_wash;
+    this.add.image(desertWash.x, desertWash.y, ASSET_KEYS.desertWash).setScale(desertWash.scaleX, desertWash.scaleY);
+    const bridgeDebris = this.layout.bridge_debris;
+    this.bridgeSprite = this.add.image(
+      bridgeDebris.x,
+      bridgeDebris.y,
+      this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementBridgeDebris, ASSET_KEYS.bridgeBroken),
+    ).setDisplaySize(bridgeDebris.brokenW, bridgeDebris.brokenH);
+    this.bridgePayoffGlow = this.add.ellipse(
+      bridgeDebris.x,
+      bridgeDebris.y,
+      bridgeDebris.payoffGlowW,
+      bridgeDebris.payoffGlowH,
+      0xf2c46d,
+      0,
+    ).setDepth(145);
+    this.bridgePayoffText = this.add.text(bridgeDebris.payoffTextX, bridgeDebris.payoffTextY, 'repaired crossing', {
       fontFamily: 'Arial',
       fontSize: '14px',
       color: '#fff0c7',
@@ -175,7 +187,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.drawBridgePull();
     this.drawBridgeStoryStage();
 
-    this.add.text(1065, 720, 'dry wash path', {
+    const dryWashPathLabel = this.layout.dry_wash_path_label;
+    this.add.text(dryWashPathLabel.x, dryWashPathLabel.y, 'dry wash path', {
       fontFamily: 'Arial',
       fontSize: '15px',
       color: '#f6e6b4',
@@ -250,7 +263,19 @@ export default class NeighborhoodScene extends Phaser.Scene {
       : ASSET_KEYS.questMarker;
   }
 
-  drawLegacySonoranVista() {
+  provenancedTextureOrFallback(provenancedKey, fallbackKey) {
+    if (this.forcePlaceholderPropAssets) return fallbackKey;
+    return this.textures.exists(provenancedKey) ? provenancedKey : fallbackKey;
+  }
+
+  canUseFinalPropAsset(key) {
+    return !this.forcePlaceholderPropAssets && this.textures.exists(key);
+  }
+
+  drawLegacySonoranVistaFallback() {
+    this.add.rectangle(800, 238, 1600, 286, 0x7fb08f).setAlpha(0.22);
+    this.add.rectangle(800, 306, 1600, 178, 0x8a8d57).setAlpha(0.3);
+    this.add.rectangle(800, 128, 1600, 160, 0x7db3b8).setAlpha(0.2);
     const vista = this.add.graphics();
     vista.fillStyle(0x8ed6c9, 0.16).fillRect(0, 0, 1600, 230);
     vista.fillStyle(0xffd17a, 0.28).fillEllipse(282, 118, 680, 176);
@@ -304,6 +329,21 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.drawLegacyBackgroundHome(vista, 356, 296, 'mission');
     this.drawLegacyBackgroundHome(vista, 1110, 302, 'territorial');
     this.drawLegacyBackgroundHome(vista, 1328, 292, 'adobe');
+  }
+
+  drawLegacyRoadSystemFallback() {
+    for (let x = 64; x < this.worldWidth; x += 128) {
+      for (let y = 0; y < this.worldHeight; y += 96) {
+        this.add.image(x, y + 48, ASSET_KEYS.street).setAlpha(y > 380 && y < 590 ? 1 : 0);
+      }
+    }
+
+    this.add.rectangle(800, 486, 1600, 116, 0x26343b);
+    this.add.rectangle(800, 400, 1600, 28, 0x55646d).setAlpha(0.82);
+    this.add.rectangle(800, 574, 1600, 28, 0x55646d).setAlpha(0.82);
+    for (let x = 80; x < this.worldWidth; x += 120) {
+      this.add.rectangle(x, 486, 56, 4, 0xd8c073).setAlpha(0.48);
+    }
   }
 
   drawLegacyMountainRange(graphics, points, color, alpha) {
@@ -463,6 +503,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   drawDesertDetails() {
+    if (this.canUseFinalPropAsset(ASSET_KEYS.environmentVegetationCluster)) {
+      for (const [x, y, scale] of [[1140, 540, 0.9], [1360, 580, 1.0], [980, 705, 1.12], [1420, 728, 0.86]]) {
+        this.add.image(x + 5, y, ASSET_KEYS.environmentVegetationCluster).setScale(scale).setDepth(24);
+      }
+      return;
+    }
     if (this.canUseWave1Asset(ASSET_KEYS.vegetationSaguaroClusterDraft)) {
       for (const [x, y, scale] of [[1140, 540, 0.9], [1360, 580, 1.0], [980, 705, 1.12], [1420, 728, 0.86]]) {
         this.add.image(x + 5, y, ASSET_KEYS.vegetationSaguaroClusterDraft).setScale(scale).setDepth(24);
@@ -506,9 +552,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
   drawStoryDetails() {
     const g = this.add.graphics();
-    g.lineStyle(2, 0xd9b36a, 0.45);
-    for (const [x, y] of [[430, 418], [454, 419], [478, 421], [502, 421], [760, 430], [786, 431], [812, 431]]) {
-      g.strokeEllipse(x, y, 18, 7);
+    if (!this.textures.exists(ASSET_KEYS.propReplacementGarageWorkbench)) {
+      g.lineStyle(2, 0xd9b36a, 0.45);
+      for (const [x, y] of [[430, 418], [454, 419], [478, 421], [502, 421], [760, 430], [786, 431], [812, 431]]) {
+        g.strokeEllipse(x, y, 18, 7);
+      }
     }
     g.lineStyle(2, 0x8ed6c9, 0.6);
     g.lineBetween(1188, 600, 1232, 632);
@@ -538,159 +586,173 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   createInteractions() {
-    this.add.image(462, 432, ASSET_KEYS.bike).setScale(1.05);
-    this.add.image(470, 382, ASSET_KEYS.interactionMarker);
-    this.add.image(650, 430, ASSET_KEYS.repairStation).setScale(1.1);
-    this.add.image(742, 408, ASSET_KEYS.utmRig).setScale(1.08);
+    const bikeInspection = this.layout.bike_inspection;
+    this.add.image(bikeInspection.x, bikeInspection.y, ASSET_KEYS.bike).setScale(bikeInspection.scale);
+    this.add.image(bikeInspection.markerX, bikeInspection.markerY, ASSET_KEYS.interactionMarker);
+    const repairStation = this.layout.repair_station;
+    this.add.image(repairStation.x, repairStation.y, ASSET_KEYS.repairStation).setScale(repairStation.scale);
+    const utmRig = this.layout.utm_rig;
+    this.add.image(utmRig.x, utmRig.y, ASSET_KEYS.utmRig).setScale(utmRig.scale);
     this.createUtmVisualizer();
-    this.add.image(820, 444, ASSET_KEYS.chemistryStation).setScale(1.08);
+    const chemistryBench = this.layout.chemistry_bench;
+    this.add.image(
+      chemistryBench.x,
+      chemistryBench.y,
+      this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementChemistryBench, ASSET_KEYS.chemistryStation),
+    ).setDisplaySize(chemistryBench.w, chemistryBench.h);
     this.createChemistryVisualizer();
-    this.add.image(920, 438, ASSET_KEYS.workbench).setScale(1.1);
-    this.add.image(1030, 760, ASSET_KEYS.ecologyPlant).setScale(1.25);
+    const bridgePlanWorkbench = this.layout.bridge_plan_workbench;
+    this.add.image(bridgePlanWorkbench.x, bridgePlanWorkbench.y, ASSET_KEYS.workbench).setScale(bridgePlanWorkbench.scale);
+    const ecologyPatch = this.layout.ecology_patch;
+    this.add.image(ecologyPatch.x, ecologyPatch.y, ASSET_KEYS.ecologyPlant).setScale(ecologyPatch.scale);
     this.createEcologyVisualizer();
-    this.add.image(1484, 514, ASSET_KEYS.mapGate).setScale(1.2);
-    this.add.image(650, 372, this.wave1QuestMarkerKey());
+    const mapGate = this.layout.map_gate;
+    this.add.image(
+      mapGate.x,
+      mapGate.y,
+      this.provenancedTextureOrFallback(ASSET_KEYS.mapGateFinal, ASSET_KEYS.mapGate),
+    ).setScale(mapGate.scale);
+    const garageWorkbenchProp = this.layout.garage_workbench_prop;
+    this.add.image(garageWorkbenchProp.questMarkerX, garageWorkbenchProp.questMarkerY, this.wave1QuestMarkerKey());
 
+    const mrChen = this.layout.npc_mr_chen;
     this.createAnimatedNpc({
       id: 'mr_chen',
-      x: 282,
-      y: 438,
+      x: mrChen.x,
+      y: mrChen.y,
       sheetKey: ASSET_KEYS.npcGarageMentorTalkSheet,
       fallbackKey: ASSET_KEYS.npcGarageMentor,
       animationKey: 'chen.talk',
-      label: 'Mr. Chen',
-      labelX: 250,
-      cueColor: 0xf2c46d,
-      cueKind: 'wrench',
       dialogueId: 'mr_chen_bridge_intro',
     });
-    this.add.text(250, 514, 'Mr. Chen', npcLabelStyle());
-    this.drawNpcCue(282, 408, 0xf2c46d, 'wrench');
+    this.add.text(mrChen.labelX, mrChen.labelY, 'Mr. Chen', npcLabelStyle());
+    this.drawNpcCue(mrChen.cueX, mrChen.cueY, 0xf2c46d, 'wrench');
 
+    const neighbor = this.layout.npc_neighbor;
     this.createAnimatedNpc({
       id: 'neighbor',
-      x: 398,
-      y: 438,
+      x: neighbor.x,
+      y: neighbor.y,
       sheetKey: ASSET_KEYS.npcNeighborTalkSheet,
       fallbackKey: ASSET_KEYS.npcNeighbor,
       animationKey: 'ramirez.talk',
-      label: 'Mrs. Ramirez',
-      labelX: 348,
-      cueColor: 0xf09d72,
-      cueKind: 'heart',
       dialogueId: 'wash_neighbor',
     });
-    this.add.text(348, 514, 'Mrs. Ramirez', npcLabelStyle());
-    this.drawNpcCue(398, 408, 0xf09d72, 'heart');
+    this.add.text(neighbor.labelX, neighbor.labelY, 'Mrs. Ramirez', npcLabelStyle());
+    this.drawNpcCue(neighbor.cueX, neighbor.cueY, 0xf09d72, 'heart');
 
+    const auntieMariam = this.layout.npc_auntie_mariam;
     this.createAnimatedNpc({
       id: 'auntie_mariam',
-      x: 540,
-      y: 438,
+      x: auntieMariam.x,
+      y: auntieMariam.y,
       sheetKey: ASSET_KEYS.npcArabicMentorTalkSheet,
       fallbackKey: ASSET_KEYS.npcArabicMentor,
       animationKey: 'mariam.talk',
-      label: 'Auntie Mariam',
-      labelX: 492,
-      cueColor: 0xbec8ff,
-      cueKind: 'star',
       dialogueId: 'arabic_welcome',
     });
-    this.add.text(492, 514, 'Auntie Mariam', npcLabelStyle());
-    this.drawNpcCue(540, 408, 0xbec8ff, 'star');
+    this.add.text(auntieMariam.labelX, auntieMariam.labelY, 'Auntie Mariam', npcLabelStyle());
+    this.drawNpcCue(auntieMariam.cueX, auntieMariam.cueY, 0xbec8ff, 'star');
 
-    const trader = this.add.image(905, 394, ASSET_KEYS.materialSamples).setScale(1.05);
-    this.add.text(858, 426, 'materials table', labelStyle());
+    const materialTable = this.layout.material_table;
+    const trader = this.add.image(
+      materialTable.x,
+      materialTable.y,
+      this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementMaterialTable, ASSET_KEYS.materialSamples),
+    ).setDisplaySize(materialTable.w, materialTable.h);
+    this.add.text(materialTable.labelX, materialTable.labelY, 'materials table', labelStyle());
 
-    const washMarker = this.add.image(1190, 574, this.wave1QuestMarkerKey());
+    const washMarkerLayout = this.layout.wash_marker;
+    const washMarker = this.add.image(washMarkerLayout.x, washMarkerLayout.y, this.wave1QuestMarkerKey());
     washMarker.setTint(0x8ed6c9);
 
     this.interactions.register({
       id: 'mr_chen',
-      x: 282,
-      y: 438,
+      x: mrChen.x,
+      y: mrChen.y,
       label: 'Talk to Mr. Chen',
       dialogueId: 'mr_chen_bridge_intro',
     });
     this.interactions.register({
       id: 'neighbor',
-      x: 398,
-      y: 438,
+      x: neighbor.x,
+      y: neighbor.y,
       label: 'Ask Mrs. Ramirez',
       dialogueId: 'wash_neighbor',
     });
     this.interactions.register({
       id: 'bike',
-      x: 470,
-      y: 432,
+      x: bikeInspection.interactionX,
+      y: bikeInspection.interactionY,
       label: 'Inspect the bike',
       dialogueId: 'bike_check_intro',
       action: 'bike_check',
     });
     this.interactions.register({
       id: 'dry_wash',
-      x: 1190,
-      y: 574,
+      x: washMarkerLayout.x,
+      y: washMarkerLayout.y,
       label: 'Read bridge sign',
       dialogueId: 'dry_wash_marker',
       action: 'dry_wash',
     });
     this.interactions.register({
       id: 'materials_table',
-      x: 905,
-      y: 420,
+      x: materialTable.interactionX,
+      y: materialTable.interactionY,
       label: 'Collect candidate materials',
       dialogueId: 'material_trade',
       action: 'collect_materials',
     });
     this.interactions.register({
       id: 'utm',
-      x: 742,
-      y: 408,
+      x: utmRig.x,
+      y: utmRig.y,
       label: 'Run UTM material tests',
       action: 'utm',
     });
     this.interactions.register({
       id: 'bridge_plan',
-      x: 920,
-      y: 438,
+      x: bridgePlanWorkbench.x,
+      y: bridgePlanWorkbench.y,
       label: 'Plan bridge repair',
       action: 'bridge_plan',
     });
+    const bridgeDebris = this.layout.bridge_debris;
     this.interactions.register({
       id: 'bridge_repair',
-      x: 1255,
-      y: 642,
+      x: bridgeDebris.x,
+      y: bridgeDebris.y,
       label: 'Reconnect the crossing',
       action: 'repair_bridge',
     });
     this.interactions.register({
       id: 'ecology_patch',
-      x: 1030,
-      y: 760,
+      x: ecologyPatch.x,
+      y: ecologyPatch.y,
       label: 'Observe desert helpers',
       dialogueId: 'ecology_helper',
       action: 'ecology_patch',
     });
     this.interactions.register({
       id: 'chemistry_station',
-      x: 820,
-      y: 444,
+      x: chemistryBench.x,
+      y: chemistryBench.y,
       label: 'Mix, dry, test',
       action: 'chemistry_station',
     });
     this.interactions.register({
       id: 'spanish_neighbor',
-      x: 398,
-      y: 438,
+      x: neighbor.x,
+      y: neighbor.y,
       label: 'Thank Mrs. Ramirez',
       dialogueId: 'spanish_trust',
       action: 'spanish_neighbor',
     });
     this.interactions.register({
       id: 'arabic_mentor',
-      x: 540,
-      y: 438,
+      x: auntieMariam.x,
+      y: auntieMariam.y,
       label: 'Check in with Auntie Mariam',
       dialogueId: 'arabic_welcome',
       action: 'arabic_mentor',
@@ -874,14 +936,24 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
   createEcologyVisualizer() {
     this.ecologyViz = this.add.container(1030, 760).setDepth(130);
-    this.ecologyShade = this.add.ellipse(-18, -8, 92, 30, 0x17221f, 0.2);
-    this.ecologyWater = this.add.rectangle(18, 26, 54, 4, 0x8ed6c9, 0.48);
+    this.ecologyPatch = this.canUseFinalPropAsset(ASSET_KEYS.environmentEcologyPatch)
+      ? this.add.image(0, -4, ASSET_KEYS.environmentEcologyPatch).setDisplaySize(148, 100)
+      : null;
+    this.ecologyWater = this.add.text(-24, 22, 'water', {
+      fontFamily: 'Arial',
+      fontSize: '9px',
+      color: '#8ed6c9',
+    }).setAlpha(0.58);
     this.ecologyEthic = this.add.text(-58, 34, 'observe first', {
       fontFamily: 'Arial',
       fontSize: '11px',
       color: '#ffe8aa',
     }).setAlpha(0.72);
-    this.ecologyViz.add([this.ecologyShade, this.ecologyWater, this.ecologyEthic]);
+    this.ecologyViz.add([
+      ...(this.ecologyPatch ? [this.ecologyPatch] : []),
+      this.ecologyWater,
+      this.ecologyEthic,
+    ]);
     this.ecologyViz.setAlpha(0.45);
   }
 
@@ -896,23 +968,19 @@ export default class NeighborhoodScene extends Phaser.Scene {
     if (this.ecologyViz) {
       this.ecologyViz.setAlpha(ecologyCount > 0 ? 0.95 : 0.45);
       this.ecologyEthic.setText(ecologyCount >= 3 ? 'habitat mapped' : ecologyCount > 0 ? 'shade + water' : 'observe first');
-      this.ecologyWater.setScale(ecologyCount >= 2 ? 1.25 : 1);
+      this.ecologyWater.setText(ecologyCount >= 2 ? 'water + shade' : 'water');
+      this.ecologyWater.setScale(ecologyCount >= 2 ? 1.08 : 1);
     }
   }
 
   drawNpcCue(x, y, color, kind) {
-    const g = this.add.graphics();
-    g.fillStyle(color, 0.95).fillCircle(x, y, 5);
-    g.lineStyle(2, color, 0.9);
-    if (kind === 'wrench') {
-      g.lineBetween(x - 8, y + 6, x + 7, y - 7);
-      g.strokeCircle(x + 8, y - 8, 3);
-    } else if (kind === 'heart') {
-      g.lineBetween(x - 7, y, x, y + 7);
-      g.lineBetween(x + 7, y, x, y + 7);
-    } else {
-      g.lineBetween(x, y - 9, x, y + 9);
-      g.lineBetween(x - 9, y, x + 9, y);
+    const cueKey = kind === 'wrench'
+      ? ASSET_KEYS.uiNpcCueWrench
+      : kind === 'heart'
+        ? ASSET_KEYS.uiNpcCueHeart
+        : ASSET_KEYS.uiNpcCueStar;
+    if (this.canUseFinalPropAsset(cueKey)) {
+      this.add.image(x, y, cueKey).setDisplaySize(36, 36).setDepth(246);
     }
   }
 
@@ -947,20 +1015,26 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.worldMapHudSignature = '';
     this.worldMapAutoCollapseTimer = null;
     this.worldMapHudState = {
-      visible: false,
+      visible: true,
+      expanded: false,
       currentLocation: 'street',
       discovered: [],
       lockedDestinations: [],
       unlockedDestinations: [],
       activeQuestMarker: 'dry_wash',
     };
-    this.worldMapGraphics = this.add.graphics();
-    this.worldMapVista = this.textures.exists(ASSET_KEYS.propClarityWorldScaleVista)
+    this.worldMapFrame = this.canUseFinalPropAsset(ASSET_KEYS.uiMapFrame)
+      ? this.add.image(layout.w / 2, layout.h / 2, ASSET_KEYS.uiMapFrame)
+        .setDisplaySize(layout.w, layout.h)
+        .setAlpha(0.98)
+      : null;
+    this.worldMapGraphics = this.createWorldMapRouteVisualization();
+    this.worldMapVista = this.canUseFinalPropAsset(ASSET_KEYS.propClarityWorldScaleVista)
       ? this.add.image(layout.vista_backplate.x, layout.vista_backplate.y, ASSET_KEYS.propClarityWorldScaleVista)
         .setDisplaySize(layout.vista_backplate.w, layout.vista_backplate.h)
         .setAlpha(layout.vista_backplate.alpha)
       : null;
-    this.worldMapGpsDevice = this.textures.exists(ASSET_KEYS.propClarityGpsPost)
+    this.worldMapGpsDevice = this.canUseFinalPropAsset(ASSET_KEYS.propClarityGpsPost)
       ? this.add.image(layout.gps_device.x, layout.gps_device.y, ASSET_KEYS.propClarityGpsPost)
         .setDisplaySize(layout.gps_device.w, layout.gps_device.h)
         .setAlpha(layout.gps_device.alpha)
@@ -1002,14 +1076,14 @@ export default class NeighborhoodScene extends Phaser.Scene {
     }));
     this.worldMapRouteMarkerIcons = {};
     this.worldMapLandmarkIcons = {};
-    if (this.textures.exists(ASSET_KEYS.propClarityRouteMarkerSet)) {
+    if (this.canUseFinalPropAsset(ASSET_KEYS.propClarityRouteMarkerSet)) {
       for (const id of Object.keys(layout.points)) {
         this.worldMapRouteMarkerIcons[id] = this.add.image(0, 0, ASSET_KEYS.propClarityRouteMarkerSet)
           .setDisplaySize(layout.route_marker_sheet.displayW, layout.route_marker_sheet.displayH)
           .setVisible(false);
       }
     }
-    if (this.textures.exists(ASSET_KEYS.propClaritySonoranLandmarkSet)) {
+    if (this.canUseFinalPropAsset(ASSET_KEYS.propClaritySonoranLandmarkSet)) {
       for (const id of Object.keys(layout.points)) {
         this.worldMapLandmarkIcons[id] = this.add.image(0, 0, ASSET_KEYS.propClaritySonoranLandmarkSet)
           .setDisplaySize(layout.landmark_sheet.displayW, layout.landmark_sheet.displayH)
@@ -1017,6 +1091,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
       }
     }
     this.worldMapHud.add([
+      ...(this.worldMapFrame ? [this.worldMapFrame] : []),
       this.worldMapGraphics,
       ...(this.worldMapVista ? [this.worldMapVista] : []),
       ...(this.worldMapGpsDevice ? [this.worldMapGpsDevice] : []),
@@ -1038,6 +1113,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.worldMapHud.add(this.worldMapHitZone);
     this.worldMapHitZone.on('pointerdown', () => this.toggleWorldMapHud(true));
     this.setWorldMapHudExpanded(false);
+  }
+
+  createWorldMapRouteVisualization() {
+    return this.add.graphics();
   }
 
   update(_time, delta) {
@@ -1180,6 +1259,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.worldMapHud?.setPosition(layout.x, this.worldMapHudExpanded ? (layout.expandedY || layout.y) : layout.y);
     this.worldMapHitZone?.setSize(w, h);
     this.worldMapHitZone?.setPosition(w / 2, h / 2);
+    this.worldMapFrame
+      ?.setVisible(this.worldMapHudExpanded)
+      .setPosition(layout.w / 2, layout.h / 2)
+      .setDisplaySize(layout.w, layout.h);
     this.worldMapToggleHint?.setText(this.worldMapHudExpanded ? 'G close' : 'G open');
   }
 
@@ -1229,7 +1312,14 @@ export default class NeighborhoodScene extends Phaser.Scene {
     const state = this.runtime?.getAct1State();
     if (!state) return;
     if (this.bridgeSprite) {
-      this.bridgeSprite.setTexture(state.bridge.bridgeReconnected ? ASSET_KEYS.bridgeRepaired : ASSET_KEYS.bridgeBroken);
+      const bridgeDebris = this.layout.bridge_debris;
+      this.bridgeSprite.setTexture(state.bridge.bridgeReconnected
+        ? ASSET_KEYS.bridgeRepaired
+        : this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementBridgeDebris, ASSET_KEYS.bridgeBroken));
+      this.bridgeSprite.setDisplaySize(
+        state.bridge.bridgeReconnected ? bridgeDebris.repairedW : bridgeDebris.brokenW,
+        state.bridge.bridgeReconnected ? bridgeDebris.repairedH : bridgeDebris.brokenH,
+      );
     }
     if (this.bridgePayoffGlow) {
       this.bridgePayoffGlow.setAlpha(state.bridge.bridgeReconnected ? 0.28 : 0);
@@ -1271,7 +1361,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
       : `Quest marker: ${this.locationLabel(activeQuestMarker)}. Wider city still locked.`;
 
     this.worldMapHudState = {
-      visible: this.worldMapHudExpanded,
+      visible: Boolean(this.worldMapHud?.visible),
+      expanded: this.worldMapHudExpanded,
       currentLocation,
       discovered: [...discovered],
       lockedDestinations,
