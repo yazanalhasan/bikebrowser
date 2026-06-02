@@ -16,5 +16,8 @@ would be sent to Telegram.
 | 2026-06-02 | acceptance ✅ | Phase 1.1 acceptance GREEN; notebook 13→15; ecology path complete |
 | 2026-06-02 | commit | `06b8582` feat(phase1): complete ecology observation path |
 | 2026-06-02 | infra | Telegram code-ready but unconfigured; OpenClaw scripts found; using local log |
+| 2026-06-02 | commit | `91ced3d` docs: telegram setup + progress log + arc alignment + doc reconciliation |
+| 2026-06-02 | acceptance ✅ | Phase 1.2 GREEN; per-material UTM verdicts (steel safe/strong, weak_scrap fails) |
+| 2026-06-02 | commit | `a580ec7` feat(phase1): add per-material UTM testing |
 
 _Append new milestones below as work proceeds._
