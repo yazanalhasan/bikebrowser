@@ -223,6 +223,21 @@ export class Act1RuntimeSystem {
     return { ...result, prediction: predicted };
   }
 
+  // Phase 1.6 — player chooses materials for the bridge; the outcome depends on
+  // the choice. A weak material in a load-bearing role fails with a specific
+  // reason; an all-safe design succeeds and creates the plan.
+  designBridge(selection) {
+    const result = this.constructionSystem.designBridge(selection);
+    if (!result.ok) {
+      this.recordFeedback('bridge', result.explanation || 'That bridge design is not safe yet — choose tested, strong materials.', result);
+      return result;
+    }
+    this.unlockNotebookEntries(['bridge_plan']);
+    ['choose_deck', 'choose_support', 'choose_brace'].forEach((id) => this.completeObjective(id));
+    this.recordFeedback('bridge', `Bridge design accepted: ${result.explanation}`, result.plan);
+    return result;
+  }
+
   predictMaterial(materialId, willHold, confidence = 'medium') {
     if (!this.materialsLabSystem.materials.has(materialId)) {
       return { ok: false, reason: 'unknown_material', materialId };
@@ -471,6 +486,7 @@ export class Act1RuntimeSystem {
       testMaterial: (materialId) => this.testMaterial(materialId),
       predictMaterial: (materialId, willHold, confidence) => this.predictMaterial(materialId, willHold, confidence),
       completeBridgePlan: (planId) => this.completeBridgePlan(planId),
+      designBridge: (selection) => this.designBridge(selection),
       observeEcology: (speciesId) => this.observeEcology(speciesId),
       runChemistryRecipe: (recipeId) => this.runChemistryRecipe(recipeId),
       recordLanguageInteraction: (interactionId) => this.recordLanguageInteraction(interactionId),

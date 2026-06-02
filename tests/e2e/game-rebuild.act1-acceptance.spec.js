@@ -187,6 +187,16 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         y: 454,
         prompt: 'Plan bridge repair',
         file: '08_bridge_plan',
+        // Phase 1.6: prove choice -> consequence. A weak material in a load-
+        // bearing role fails; an all-safe design succeeds.
+        before: async (page) => page.evaluate(() => {
+          const bad = window.__GAME__.designBridge({ deck: 'mesquite', support: 'weak_scrap', brace: 'copper_brace' });
+          const good = window.__GAME__.designBridge({ deck: 'mesquite', support: 'steel', brace: 'copper_brace' });
+          window.__BRIDGE_CHOICE__ = {
+            bad: { ok: bad.ok, outcome: bad.outcome, reason: bad.reason },
+            good: { ok: good.ok, outcome: good.outcome },
+          };
+        }),
         waitFor: () => Boolean(window.__GAME__.getAct1State().bridge.plan),
       },
       {
@@ -226,6 +236,7 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         unlockedNotebookEntries: state.notebook.unlocked,
         materialTestCount: state.materialTests.tested.length,
         engineeringLoop: state.engineeringLoop,
+        bridgeChoice: window.__BRIDGE_CHOICE__,
         materialVerdicts: state.materialTests.tested.map((t) => ({ id: t.materialId, bridgeSafe: t.bridgeSafe, band: t.strengthBand })),
         prediction: state.prediction,
         inventoryDetails: state.inventory.details.map((d) => ({
@@ -292,6 +303,9 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
     expect(finalState.engineeringLoop).toMatchObject({
       observe: true, predict: true, test: true, build: true, verify: true, complete: true,
     });
+    // Phase 1.6: player bridge design has real consequences.
+    expect(finalState.bridgeChoice.bad).toMatchObject({ ok: false, outcome: 'unsafe', reason: 'mixed_unsafe' });
+    expect(finalState.bridgeChoice.good).toMatchObject({ ok: true, outcome: 'safe' });
     expect(finalState.finalFeedback.message).toContain('Wider map unlocked');
 
     const report = {

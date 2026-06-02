@@ -37,6 +37,57 @@ export class ConstructionSystem {
     return { ok: true, plan: this.plan };
   }
 
+  // Phase 1.6 — player-chosen bridge design with real consequences.
+  // The player assigns a tested material to each load-bearing role (deck,
+  // support, brace). All bridge-safe -> the bridge holds. Any weak material in a
+  // load-bearing role -> the load path fails (a bridge is only as strong as its
+  // weakest part). The player can be wrong, learn exactly which role failed and
+  // why, and improve by re-choosing.
+  designBridge(selection = {}) {
+    const roles = [
+      ['deck', selection.deck],
+      ['support', selection.support],
+      ['brace', selection.brace],
+    ];
+    const missingRoles = roles.filter(([, materialId]) => !materialId).map(([role]) => role);
+    if (missingRoles.length) {
+      return { ok: false, reason: 'incomplete_selection', missingRoles, explanation: `Choose a material for: ${missingRoles.join(', ')}.` };
+    }
+    const evaluated = roles.map(([role, materialId]) => {
+      const test = this.materialsLab.getTest(materialId);
+      return { role, materialId, tested: Boolean(test), bridgeSafe: Boolean(test && test.bridgeSafe) };
+    });
+    const untested = evaluated.filter((part) => !part.tested);
+    if (untested.length) {
+      return { ok: false, reason: 'untested_materials', untested: untested.map((part) => part.materialId), explanation: 'Test a material in the UTM before trusting it in the bridge.' };
+    }
+    const unsafe = evaluated.filter((part) => !part.bridgeSafe);
+    if (unsafe.length === roles.length) {
+      return { ok: false, reason: 'all_unsafe', outcome: 'collapse', evaluated, explanation: 'Every part uses material that failed the load test — the bridge would collapse.' };
+    }
+    if (unsafe.length > 0) {
+      // Mixed: some good parts, but a weak load-bearing role makes the whole path unsafe.
+      return {
+        ok: false,
+        reason: 'mixed_unsafe',
+        outcome: 'unsafe',
+        evaluated,
+        explanation: `The ${unsafe.map((part) => part.role).join(' and ')} use material that fails under load, so the load path is unsafe. A bridge is only as strong as its weakest part.`,
+      };
+    }
+    // All parts bridge-safe -> a trustworthy load path.
+    this.plan = {
+      id: 'player_designed',
+      deck: selection.deck,
+      supports: selection.support,
+      braces: selection.brace,
+      safe: true,
+      loadPath: ['deck', 'support', 'triangle_brace', 'ground'],
+      lesson: 'Each load-bearing part used a material the test proved safe, so the load path holds.',
+    };
+    return { ok: true, outcome: 'safe', plan: this.plan, evaluated, explanation: 'All parts passed the load test — the bridge has a safe load path.' };
+  }
+
   repairBridge() {
     if (!this.plan) return { ok: false, reason: 'missing_plan' };
     this.bridgeReconnected = true;

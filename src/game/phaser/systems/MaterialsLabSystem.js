@@ -55,6 +55,10 @@ export class MaterialsLabSystem {
     return this.tested.has(materialId);
   }
 
+  getTest(materialId) {
+    return this.tested.get(materialId) || null;
+  }
+
   getState() {
     return {
       tested: [...this.tested.values()],
