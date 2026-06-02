@@ -19,5 +19,9 @@ would be sent to Telegram.
 | 2026-06-02 | commit | `91ced3d` docs: telegram setup + progress log + arc alignment + doc reconciliation |
 | 2026-06-02 | acceptance ✅ | Phase 1.2 GREEN; per-material UTM verdicts (steel safe/strong, weak_scrap fails) |
 | 2026-06-02 | commit | `a580ec7` feat(phase1): add per-material UTM testing |
+| 2026-06-02 | acceptance ✅ | Phase 1.3 GREEN; predict-before-test loop (accuracy 0.67, weak_scrap learning miss) |
+| 2026-06-02 | commit | `b87c4d7` feat(phase1): add predict-before-test loop |
+| 2026-06-02 | acceptance ✅ | Phase 1.4 GREEN; inventory metadata (7 items, category/source/durability/eng/eco) |
+| 2026-06-02 | commit | `8049c4e` feat(phase1): add inventory metadata |
 
 _Append new milestones below as work proceeds._
