@@ -23,20 +23,51 @@ async function hold(page, key, ms = 140) {
   await page.waitForTimeout(40);
 }
 
-async function walkTo(page, x, y) {
-  for (let guard = 0; guard < 120; guard += 1) {
+async function activeInteraction(page) {
+  return page.evaluate(() => {
+    const scene = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+    return scene.interactions.nearest(scene.player)?.id || null;
+  });
+}
+
+async function walkTo(page, target) {
+  const { x, y, id } = target;
+  // Arrival = the target interaction is nearest (active===id) OR within ARRIVE px.
+  // Move whenever further than STEP px. STEP must be < ARRIVE so there is no
+  // dead band where the player neither moves nor arrives (which previously let a
+  // nearby NPC zone stay "nearest" ~24-28px from a closely-spaced target, e.g.
+  // the bike at 470,432 next to a neighbor at 420,438). Finer nudges near the
+  // target make navigation deterministic without changing any acceptance
+  // assertion, step, or coverage.
+  const ARRIVE = 24;
+  const STEP = 6;
+  for (let guard = 0; guard < 200; guard += 1) {
     const pos = await playerPosition(page);
+    if (await activeInteraction(page) === id) return pos;
     const dx = x - pos.x;
     const dy = y - pos.y;
-    if (Math.hypot(dx, dy) < 42) return pos;
-    if (Math.abs(dx) > 28) {
-      await hold(page, dx > 0 ? 'ArrowRight' : 'ArrowLeft', Math.min(220, Math.max(90, Math.abs(dx) * 2.2)));
+    if (Math.hypot(dx, dy) < ARRIVE) return pos;
+    if (Math.abs(dx) > STEP) {
+      await hold(page, dx > 0 ? 'ArrowRight' : 'ArrowLeft', Math.min(220, Math.max(45, Math.abs(dx) * 2.0)));
     }
-    if (Math.abs(dy) > 28) {
-      await hold(page, dy > 0 ? 'ArrowDown' : 'ArrowUp', Math.min(220, Math.max(90, Math.abs(dy) * 2.2)));
+    if (Math.abs(dy) > STEP) {
+      await hold(page, dy > 0 ? 'ArrowDown' : 'ArrowUp', Math.min(220, Math.max(45, Math.abs(dy) * 2.0)));
     }
   }
-  throw new Error(`Could not walk to ${x},${y}; current ${JSON.stringify(await playerPosition(page))}`);
+  throw new Error(`Could not walk to ${id} at ${x},${y}; current ${JSON.stringify(await playerPosition(page))}; active ${await activeInteraction(page)}`);
+}
+
+async function interactionTarget(page, step) {
+  return page.evaluate(({ id, prompt }) => {
+    const scene = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+    const zone = scene.interactions.zones.find((candidate) =>
+      candidate.id === id ||
+      candidate.action === id ||
+      candidate.label.includes(prompt)
+    );
+    if (!zone) throw new Error(`Missing interaction zone for ${id}`);
+    return { id: zone.id, x: zone.x, y: zone.y, label: zone.label };
+  }, { id: step.id, prompt: step.prompt });
 }
 
 async function closeDialogue(page) {
@@ -52,7 +83,8 @@ async function closeDialogue(page) {
 }
 
 async function interactAt(page, step) {
-  await walkTo(page, step.x, step.y);
+  const target = await interactionTarget(page, step);
+  await walkTo(page, target);
   await page.waitForFunction((expected) => {
     const scene = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
     return scene.prompt.visible && scene.prompt.text.includes(expected);
