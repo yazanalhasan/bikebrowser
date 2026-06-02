@@ -53,7 +53,15 @@ reasoning_domains:
   optimization:          # best tradeoff under constraints
   experimental_design:   # variable control, fair tests, evidence
   systems_thinking:      # feedback, interdependence, emergence
+  language_reasoning:    # decode meaning, follow instructions, translate
+                         # across the six language tracks (§5); read signs,
+                         # diagrams, recipes, and NPC dialogue as evidence
 ```
+
+`language_reasoning` ties the Language & Geography layer (arc.md §5) into
+the reasoning system: greetings that unlock trust, region-specific
+technical terms, and reading a diagram or recipe are all reasoning acts,
+never vocabulary quizzes.
 
 These map naturally onto the game's instruments: the UTM rig exercises
 `experimental_design` + `causal_reasoning`; the Construction system

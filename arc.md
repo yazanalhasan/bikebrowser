@@ -1672,17 +1672,76 @@ Foundation (biobricks.org).
 **Evolution & tree of life.** Tree of Life Web Project (tolweb.org),
 OpenTreeOfLife.
 
-**Open-source repositories worth mining (for ideas, datasets,
+**Educational content & STEM curriculum (minimum-competency targets, not
+content to lift; arc.md §2 standards posture).** Khan Academy
+(khanacademy.org), CK-12 Foundation (ck12.org), OpenStax (openstax.org),
+NASA STEM Engagement (nasa.gov/stem — strong for Acts 2–3), Smithsonian
+Learning Lab (learninglab.si.edu — inquiry-based), PhET Interactive
+Simulations (phet.colorado.edu — a model for instrument-as-learning,
+directly aligned with the UTM pattern).
+
+**Open-source repositories worth mining (for ideas, mechanics,
 architecture patterns, and visualizations — evaluate, do not blindly
 import):** Biopython, scikit-bio, Cytoscape, CellProfiler,
 OpenTreeOfLife, GBIF API tools, NCBI Datasets tools, RCSB/PDB tooling,
 iNaturalist open-source projects, Allen Institute open resources.
+**Reasoning & puzzle mechanics:** Simon Tatham's Portable Puzzle
+Collection (bridges, nets, galaxies, flood, pattern puzzles — quest-
+mechanic inspiration), Golly (cellular automata — inspiration for
+ecosystems, emergence, life engineering, terraforming), Cytoscape (graph
+theory for systems-thinking quests), and open Godot educational-math
+examples (interaction patterns, not content).
 
 Discipline: a source's permissive software license does **not** grant
 the right to decontextualize traditional knowledge, and a dataset's
 existence does not make its content age-appropriate or ARC-compatible.
 Each substrate's data-build records which source, which license, and
 (for cultural/medicinal content) which human review gate cleared it.
+
+---
+
+## 10. Design Reference Models
+
+BikeBrowser+ is **not** modeled after one game. Each *layer* is modeled
+after a different classic, and the combination is the design DNA. The
+cleanest statement of the target feel:
+
+> **Sierra-style adventure quests, inside a Zelda-like systemic world,
+> with Kerbal-style engineering tests, and No Man's Sky-style
+> exploration — educationally grounded like Minecraft Education,
+> ecologically framed like Terra Nil, and creatively open like
+> Scribblenauts.**
+
+These map onto canon already established, not bolted on:
+
+| Layer | Reference | What to copy | Canon it serves |
+|---|---|---|---|
+| Quest structure | **Sierra / King's Quest** | NPCs, inventory puzzles, story discovery, item-use quests, local places, humor | Quest Engine; Language & Geography (§5) |
+| World interaction | **Zelda: BotW / TotK** | physics/chemistry sandbox, multiple solutions, environmental problem-solving | Carry-Forward systems; "relationships not facts" (§2) |
+| Engineering | **Kerbal Space Program** | assemble → test → fail safely → improve; unlock parts through experiments, not lectures | Vehicle Spine (§3); UTM pattern; prediction-precedes-intervention (§2) |
+| Exploration | **No Man's Sky** | scanning, cataloging, planetary/regional discovery, resource identity | Map discovery; Unified Biological Knowledge Graph (§3) |
+| Learning | **Minecraft Education** | grade-level STEM integration, build challenges, student agency | Reasoning substrate; standards posture (§2) |
+| Ecology / terraforming | **Terra Nil** | restoration and stewardship, terraforming without conquest, leaving without harm | Act 3; Biological Engineering "not a power fantasy" (§3) |
+| Creative reasoning | **Scribblenauts** | creative problem-solving through object/system combination | weird-zones (§6); systems_thinking reasoning |
+| Cause-effect puzzles | **The Incredible Machine / Opus Magnum / Baba Is You** | clean cause→effect engineering, rule-as-mechanic | UTM instruments; logical_deduction |
+| Travel/discovery | **Oregon Trail / Carmen Sandiego** | travel, geography, resource decisions as learning | §5 geography; estimation reasoning |
+
+**What NOT to copy (these reinforce §7 Out of Scope):** Sierra's dead
+ends / unfair "guess-the-verb" puzzles; Zelda's combat-first
+progression; too much orbital math too early (Kerbal); No Man's Sky's
+repetitive harvesting grind; battle-royale/combat identity
+(Fortnite/UEFN — copy only youth-friendly pacing and polish);
+quiz-format shallowness (Oregon Trail/Carmen Sandiego); and chaos without
+constraint (Scribblenauts). Any feature that imports a "what-not-to-copy"
+trait is a halt-and-surface trigger.
+
+**The load-bearing shared lesson** across Sierra, Zelda, Kerbal,
+Minecraft Education, The Incredible Machine, Portal, Baba Is You, Opus
+Magnum, and Factorio: the best educational games rarely ask *"what is the
+answer?"* — they ask *"can you figure it out?"*. That is exactly the
+Educational Hierarchy (§2): Observe → Explain → Predict → Engineer →
+Teach. Mensa-style / gifted reasoning enters the game **only** as harder
+in-world problems tagged in the reasoning substrate, never as questions.
 
 ---
 
@@ -1827,3 +1886,21 @@ Each substrate's data-build records which source, which license, and
   companion docs this cycle: `reasoning-substrate.md`, and the expanded
   `biology-substrate.md` cellular/microbiology/molecular/systems +
   biological-engineering modes. All prior canon preserved; additive.
+- v1.9 — 2026-06-02 — Design reference models + reasoning/source
+  expansion. New Section 10 "Design Reference Models": the game is
+  modeled per-layer, not after one title — Sierra (quests) / Zelda
+  (systemic world) / Kerbal (engineering test loop) / No Man's Sky
+  (exploration) / Minecraft Education (learning) / Terra Nil (ecology &
+  terraforming) / Scribblenauts (creative reasoning), with a what-to-copy
+  / what-not-to-copy table cross-referenced to §7 and the shared lesson
+  ("can you figure it out?" = the Educational Hierarchy). `reasoning-
+  substrate.md` gains a ninth reasoning domain, `language_reasoning`
+  (ties §5 language/geography into reasoning, never vocabulary quizzes).
+  Section 9 gains an educational-content tier (Khan Academy, CK-12,
+  OpenStax, NASA STEM, Smithsonian Learning Lab, PhET — framed as
+  minimum-competency targets, not content to lift) and reasoning/puzzle
+  repos (Simon Tatham's Portable Puzzle Collection, Golly cellular
+  automata, Cytoscape, Godot educational-math examples). Reaffirms that
+  Mensa-style/gifted and academic-standards content enter only as
+  in-world quests tagged in the reasoning substrate, never as questions.
+  All prior canon preserved; additive.
