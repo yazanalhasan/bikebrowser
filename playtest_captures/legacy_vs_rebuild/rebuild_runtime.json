@@ -1,0 +1,114 @@
+{
+  "booted": true,
+  "scenes": [
+    {
+      "key": "BootScene",
+      "active": false
+    },
+    {
+      "key": "PreloadScene",
+      "active": false
+    },
+    {
+      "key": "WorldMapScene",
+      "active": false
+    },
+    {
+      "key": "NeighborhoodScene",
+      "active": true
+    },
+    {
+      "key": "QuestScene",
+      "active": true
+    },
+    {
+      "key": "DialogueScene",
+      "active": true
+    },
+    {
+      "key": "DebugScene",
+      "active": true
+    }
+  ],
+  "activeScenes": [
+    {
+      "key": "NeighborhoodScene",
+      "childCount": 226,
+      "interactiveCount": 0,
+      "textSamples": [
+        "Zuzu home",
+        "warm tools, shared proof",
+        "garage/workbench",
+        "dry wash path",
+        "flood line",
+        "test first",
+        "Mr. Chen",
+        "Mrs. Ramirez",
+        "Auntie Mariam",
+        "materials table",
+        "compare bend",
+        "repaired crossing",
+        "broken wash",
+        "Current clue\nStart with the bike, then follow the wash.\nThe bridge needs tested ",
+        "WASD / arrows move • E or Space explore • G GPS • N notebook • R replay voice • "
+      ],
+      "hasPlayer": true
+    },
+    {
+      "key": "QuestScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "DialogueScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "DebugScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    }
+  ],
+  "flow": [
+    {
+      "label": "bike_check",
+      "ok": true
+    },
+    {
+      "label": "dry_wash",
+      "ok": true
+    },
+    {
+      "label": "collect_materials",
+      "ok": true
+    },
+    {
+      "label": "test_materials",
+      "ok": true
+    },
+    {
+      "label": "bridge_plan",
+      "ok": true
+    },
+    {
+      "label": "repair_bridge",
+      "ok": true
+    },
+    {
+      "label": "unlock_map",
+      "ok": true
+    },
+    {
+      "label": "open_notebook",
+      "ok": true
+    }
+  ],
+  "consoleErrors": []
+}

@@ -1,0 +1,448 @@
+{
+  "results": [
+    {
+      "key": "OverworldScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "ZuzuGarageScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 39,
+      "interactive": 0,
+      "textSamples": [
+        "🗺️ Neighborhood Map",
+        "Zuzu",
+        "🏠",
+        "Zuzu's Garage",
+        "🏘️",
+        "Zuzu's Street",
+        "🐕",
+        "Dog Park",
+        "🔒",
+        "Lake Edge",
+        "🔒",
+        "Sports Fields"
+      ]
+    },
+    {
+      "key": "WorldMapScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "OverworldScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 16,
+      "interactive": 2,
+      "textSamples": [
+        "🗺️  WORLD MAP  🗺️",
+        "Tap a location to travel there",
+        "← Back to Neighborhood",
+        "🟢 Resource  🔵 Material  🟤 Biology",
+        "🏠",
+        "Neighborhood"
+      ]
+    },
+    {
+      "key": "MaterialLabScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "WorldMapScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 78,
+      "interactive": 10,
+      "textSamples": [
+        "⬅ Back to Garage",
+        "🧪  MATERIALS LAB — UNIVERSAL TESTING MACHINE",
+        "Force: 0 N    Strain: 0.0%    Stress: 0 MPa",
+        "SAMPLES",
+        "Mesquite Wood",
+        "wood",
+        "Structural Steel (A36-like)",
+        "metal",
+        "Copper (Annealed)",
+        "metal",
+        "Run the test",
+        "STRESS vs STRAIN"
+      ]
+    },
+    {
+      "key": "ThermalRigScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "MaterialLabScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 44,
+      "interactive": 4,
+      "textSamples": [
+        "⬅ Back to Garage",
+        "🌡️  THERMAL EXPANSION LAB",
+        "how much does each metal stretch when heated?",
+        "Temperature: 25.0 °C    Length: 100.00 mm    ΔL: +0.00 mm",
+        "SAMPLES",
+        "Steel Rod",
+        "α 12.0 ×10⁻⁶/K",
+        "Copper Rod",
+        "α 17.0 ×10⁻⁶/K",
+        "Aluminum Rod",
+        "α 23.0 ×10⁻⁶/K",
+        "Run the test"
+      ]
+    },
+    {
+      "key": "DryWashScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "ThermalRigScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 39,
+      "interactive": 0,
+      "textSamples": [
+        "🌵",
+        "🌵",
+        "🌿",
+        "🌿",
+        "← World Map",
+        "⚠",
+        "MONSOON",
+        "🔒",
+        "Far Trail",
+        "Zuzu",
+        "🏜️ Dry Wash",
+        "Mr. Chen"
+      ]
+    },
+    {
+      "key": "CopperMineScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "DryWashScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 82,
+      "interactive": 0,
+      "textSamples": [
+        "⛏️ COPPER MINE",
+        "✨",
+        "✨",
+        "✨",
+        "🚃",
+        "🏮",
+        "🏮",
+        "🏮",
+        "🏮",
+        "🏮",
+        "← Return to Map",
+        "🟤"
+      ]
+    },
+    {
+      "key": "DesertForagingScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "CopperMineScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 69,
+      "interactive": 0,
+      "textSamples": [
+        "🪨",
+        "🪨",
+        "🪨",
+        "🪨",
+        "🪨",
+        "🌵",
+        "🌵",
+        "🌵",
+        "🌵",
+        "🌵",
+        "🌵",
+        "🦎"
+      ]
+    },
+    {
+      "key": "MountainScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "DesertForagingScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 73,
+      "interactive": 0,
+      "textSamples": [
+        "🗺️ Descend ⬇",
+        "🪨",
+        "🪨",
+        "🪨",
+        "🪨",
+        "🪨",
+        "🪨",
+        "🪨",
+        "🪨",
+        "🌲",
+        "🌲",
+        "🌲"
+      ]
+    },
+    {
+      "key": "LakeEdgeScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "MountainScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 67,
+      "interactive": 0,
+      "textSamples": [
+        "🗺️ Leave Lake ⬇",
+        "🪨",
+        "🪨",
+        "🪨",
+        "🪨",
+        "🪨",
+        "🌾",
+        "🌾",
+        "🌾",
+        "🌾",
+        "🌾",
+        "🌾"
+      ]
+    },
+    {
+      "key": "CommunityPoolScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "LakeEdgeScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 76,
+      "interactive": 0,
+      "textSamples": [
+        "🗺️ Leave Pool ⬇",
+        "🏖️",
+        "🛝",
+        "⛱️",
+        "⛱️",
+        "📋",
+        "Pool Rules",
+        "🤿",
+        "Diving Board",
+        "🧴",
+        "Towel Rack",
+        "🔧"
+      ]
+    },
+    {
+      "key": "DogParkScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "CommunityPoolScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 91,
+      "interactive": 0,
+      "textSamples": [
+        "🗺️ Leave Park ⬇",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🐕",
+        "🐩",
+        "🐕‍🦺",
+        "Ephedra (Mormon Tea)"
+      ]
+    },
+    {
+      "key": "CognitiveQuestScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "DogParkScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": false,
+      "childCount": 0,
+      "interactive": 0,
+      "textSamples": []
+    },
+    {
+      "key": "DesertTrailScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 80,
+      "interactive": 0,
+      "textSamples": [
+        "🌿",
+        "🌿",
+        "🌿",
+        "🌿",
+        "🌿",
+        "🌿",
+        "🌿",
+        "🌿",
+        "💀",
+        "🗺️ Leave ⬅",
+        "🪨",
+        "🪨"
+      ]
+    },
+    {
+      "key": "SaltRiverScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "DesertTrailScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 96,
+      "interactive": 0,
+      "textSamples": [
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌾",
+        "🌾",
+        "🌾",
+        "🌾",
+        "🌾",
+        "🌾"
+      ]
+    },
+    {
+      "key": "StreetBlockScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "SaltRiverScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 145,
+      "interactive": 0,
+      "textSamples": [
+        "🏠 Garage ⬅",
+        "🗺️ Neighborhood ⬆",
+        "🏠 Zuzu's House",
+        "🏡 Ramirez House",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳"
+      ]
+    },
+    {
+      "key": "SportsFieldsScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "StreetBlockScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": true,
+      "childCount": 55,
+      "interactive": 0,
+      "textSamples": [
+        "🪑🪑🪑🪑🪑",
+        "🗺️ Leave Fields ⬇",
+        "🏀",
+        "🏀",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "🌳",
+        "⚽",
+        "Soccer Ball",
+        "🏁"
+      ]
+    },
+    {
+      "key": "ExplainerScene",
+      "start": {
+        "ok": true,
+        "prevActive": [
+          "SportsFieldsScene",
+          "LayoutEditorOverlayScene"
+        ]
+      },
+      "exists": true,
+      "active": false,
+      "childCount": 0,
+      "interactive": 0,
+      "textSamples": []
+    }
+  ],
+  "consoleErrors": []
+}

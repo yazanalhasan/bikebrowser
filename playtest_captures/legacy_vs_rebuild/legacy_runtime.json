@@ -1,0 +1,238 @@
+{
+  "hasPhaserGame": true,
+  "runtimeAudit": {
+    "errors": [],
+    "warnings": [],
+    "passed": true
+  },
+  "scenes": [
+    {
+      "key": "ZuzuGarageScene",
+      "active": true,
+      "visible": true
+    },
+    {
+      "key": "MaterialLabScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "ThermalRigScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "OverworldScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "StreetBlockScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "DogParkScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "LakeEdgeScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "SportsFieldsScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "CommunityPoolScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "DesertTrailScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "MountainScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "ExplainerScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "CognitiveQuestScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "WorldMapScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "DesertForagingScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "CopperMineScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "SaltRiverScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "DryWashScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "GarageScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "NeighborhoodScene",
+      "active": false,
+      "visible": true
+    },
+    {
+      "key": "LayoutEditorOverlayScene",
+      "active": true,
+      "visible": true
+    }
+  ],
+  "activeScenes": [
+    {
+      "key": "ZuzuGarageScene",
+      "childCount": 70,
+      "interactiveCount": 0,
+      "textSamples": [
+        "⭕",
+        "⭕",
+        "🔩",
+        "🪛",
+        "🧃",
+        "⚙️  🪚  📏  🔩  🪛",
+        "🔧",
+        "🪛",
+        "🧰",
+        "🔩",
+        "🧪",
+        "🌡️",
+        "🚲",
+        "⭐ Zuzu's Bike ⭐",
+        "📓",
+        "✏️",
+        "☀️ Go Outside ⬇",
+        "🔧",
+        "Workbench",
+        "🧪",
+        "Materials Lab",
+        "🌡️",
+        "Thermal Lab",
+        "🚲",
+        "Zuzu's Bike"
+      ],
+      "hasPlayer": true,
+      "playerPos": {
+        "x": null,
+        "y": null
+      }
+    },
+    {
+      "key": "LayoutEditorOverlayScene",
+      "childCount": 0,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false,
+      "playerPos": null
+    }
+  ],
+  "canvasSize": {
+    "w": 1280,
+    "h": 720
+  },
+  "splashText": "🚲\nZuzu's Bike Adventure\n\nFrom Neighborhood to Stars\n\nStart Adventure!\n\nA bike repair learning game",
+  "startedClicked": true,
+  "booted": true,
+  "activeSceneFound": true,
+  "movement": {
+    "before": {
+      "x": null,
+      "y": null,
+      "scene": "ZuzuGarageScene"
+    },
+    "after": {
+      "x": null,
+      "y": null,
+      "scene": "ZuzuGarageScene"
+    },
+    "moved": true
+  },
+  "sceneProbe": [
+    {
+      "key": "OverworldScene",
+      "registered": true
+    },
+    {
+      "key": "WorldMapScene",
+      "registered": true
+    },
+    {
+      "key": "MaterialLabScene",
+      "registered": true
+    },
+    {
+      "key": "DryWashScene",
+      "registered": true
+    },
+    {
+      "key": "CopperMineScene",
+      "registered": true
+    },
+    {
+      "key": "DesertForagingScene",
+      "registered": true
+    },
+    {
+      "key": "MountainScene",
+      "registered": true
+    },
+    {
+      "key": "LakeEdgeScene",
+      "registered": true
+    },
+    {
+      "key": "CommunityPoolScene",
+      "registered": true
+    },
+    {
+      "key": "DogParkScene",
+      "registered": true
+    },
+    {
+      "key": "CognitiveQuestScene",
+      "registered": true
+    },
+    {
+      "key": "DesertTrailScene",
+      "registered": true
+    }
+  ],
+  "consoleErrors": [],
+  "overworldAfterForceStart": {
+    "key": "ZuzuGarageScene",
+    "children": 70
+  }
+}
