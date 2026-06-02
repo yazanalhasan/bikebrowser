@@ -1,10 +1,9 @@
 import Phaser from 'phaser';
 
-// Phase 1.9.2 — player-facing predict-before-test. Feels like gameplay, not a
-// form: a quick visual "will it HOLD or BREAK?" pick (arrows), how-sure dots,
-// then E to test and watch the load bar hold or snap with your guess vs the
-// result side by side. Prediction GATES testing (arc.md: prediction precedes
-// intervention). Reversible before commit; obvious; seconds per material.
+// Phase 1.9.2 / 1.9.2A-C — player-facing predict-before-test that feels like a
+// guess-and-check mini-game. The player SEES the beam hold / bend / break (not
+// just text), the loop always finishes with a summary and closes (never
+// trapped), and every result belongs to the action that made it.
 export default class PredictionScene extends Phaser.Scene {
   constructor() {
     super('PredictionScene');
@@ -13,55 +12,62 @@ export default class PredictionScene extends Phaser.Scene {
   create() {
     this.queue = [];
     this.index = 0;
-    this.phase = 'idle'; // idle | choose | result
-    this.guess = 'hold'; // 'hold' | 'break'
-    this.confidence = 2; // 1..3
+    this.phase = 'idle'; // idle | choose | result | summary
+    this.guess = 'hold';
+    this.confidence = 2;
+    this.results = [];
 
-    const cx = 480;
-    this.panel = this.add.container(cx, 250).setScrollFactor(0).setDepth(1400).setVisible(false);
-    const bg = this.add.rectangle(0, 0, 560, 300, 0x10243a, 0.96).setOrigin(0.5, 0).setStrokeStyle(4, 0x7fd1ff, 1);
-    this.title = this.add.text(0, 22, '', { fontFamily: 'Arial', fontSize: '22px', color: '#eaf6ff', fontStyle: 'bold' }).setOrigin(0.5, 0);
+    this.panel = this.add.container(480, 230).setScrollFactor(0).setDepth(1400).setVisible(false);
+    const bg = this.add.rectangle(0, 0, 580, 330, 0x10243a, 0.97).setOrigin(0.5, 0).setStrokeStyle(4, 0x7fd1ff, 1);
+    this.title = this.add.text(0, 18, '', { fontFamily: 'Arial', fontSize: '22px', color: '#eaf6ff', fontStyle: 'bold' }).setOrigin(0.5, 0);
 
-    // Two big choice chips.
-    this.holdChip = this.add.container(-130, 96);
-    this.holdBg = this.add.rectangle(0, 0, 200, 96, 0x1f7a3a, 1).setStrokeStyle(4, 0x9affb0, 0);
-    this.holdChip.add([this.holdBg, this.add.text(0, -16, '💪', { fontSize: '34px' }).setOrigin(0.5), this.add.text(0, 24, 'WILL HOLD', { fontFamily: 'Arial', fontSize: '16px', color: '#eafff0', fontStyle: 'bold' }).setOrigin(0.5)]);
-    this.breakChip = this.add.container(130, 96);
-    this.breakBg = this.add.rectangle(0, 0, 200, 96, 0x9a2f2f, 1).setStrokeStyle(4, 0xffb0b0, 0);
-    this.breakChip.add([this.breakBg, this.add.text(0, -16, '💥', { fontSize: '34px' }).setOrigin(0.5), this.add.text(0, 24, 'WILL BREAK', { fontFamily: 'Arial', fontSize: '16px', color: '#fff0f0', fontStyle: 'bold' }).setOrigin(0.5)]);
+    // Choice chips.
+    this.chips = this.add.container(0, 86);
+    this.holdBg = this.add.rectangle(-130, 0, 200, 88, 0x1f7a3a, 1).setStrokeStyle(4, 0x9affb0, 0);
+    this.breakBg = this.add.rectangle(130, 0, 200, 88, 0x9a2f2f, 1).setStrokeStyle(4, 0xffb0b0, 0);
+    this.chips.add([
+      this.holdBg, this.add.text(-130, -14, '💪', { fontSize: '32px' }).setOrigin(0.5), this.add.text(-130, 22, 'WILL HOLD', { fontFamily: 'Arial', fontSize: '15px', color: '#eafff0', fontStyle: 'bold' }).setOrigin(0.5),
+      this.breakBg, this.add.text(130, -14, '💥', { fontSize: '32px' }).setOrigin(0.5), this.add.text(130, 22, 'WILL BREAK', { fontFamily: 'Arial', fontSize: '15px', color: '#fff0f0', fontStyle: 'bold' }).setOrigin(0.5),
+    ]);
+    this.sureLabel = this.add.text(0, 148, 'how sure?', { fontFamily: 'Arial', fontSize: '12px', color: '#bcd6ec' }).setOrigin(0.5);
+    this.sureDots = [0, 1, 2].map((i) => this.add.circle(-18 + i * 18, 170, 7, 0x4a6076).setStrokeStyle(2, 0x9fc3e0));
 
-    this.sureLabel = this.add.text(0, 168, 'how sure?', { fontFamily: 'Arial', fontSize: '13px', color: '#bcd6ec' }).setOrigin(0.5);
-    this.sureDots = [0, 1, 2].map((i) => this.add.circle(-18 + i * 18, 192, 7, 0x4a6076).setStrokeStyle(2, 0x9fc3e0));
+    // The beam under load: straight (hold), tilted (bend), or snapped V (break).
+    this.beam = this.add.rectangle(0, 150, 240, 16, 0x9fc3e0).setOrigin(0.5).setVisible(false);
+    this.beamLeft = this.add.rectangle(0, 150, 122, 16, 0xff6b6b).setOrigin(1, 0.5).setVisible(false);
+    this.beamRight = this.add.rectangle(0, 150, 122, 16, 0xff6b6b).setOrigin(0, 0.5).setVisible(false);
+    this.weight = this.add.text(0, 120, '⬇', { fontSize: '22px' }).setOrigin(0.5).setVisible(false);
 
-    // Load bar (animates on test) + result row.
-    this.barTrack = this.add.rectangle(0, 224, 360, 18, 0x2a3c50).setOrigin(0.5);
-    this.barFill = this.add.rectangle(-180, 224, 0, 18, 0x9affb0).setOrigin(0, 0.5);
-    this.verdict = this.add.text(0, 256, '', { fontFamily: 'Arial', fontSize: '18px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
-    this.hint = this.add.text(0, 284, '← → pick    ↑ ↓ how sure    E to test', { fontFamily: 'Arial', fontSize: '13px', color: '#9fc3e0' }).setOrigin(0.5);
+    this.verdict = this.add.text(0, 232, '', { fontFamily: 'Arial', fontSize: '19px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
+    this.explain = this.add.text(0, 262, '', { fontFamily: 'Arial', fontSize: '14px', color: '#cfe6fb', wordWrap: { width: 520 }, align: 'center' }).setOrigin(0.5, 0);
+    this.hint = this.add.text(0, 308, '← → pick    ↑ ↓ how sure    E to test    Esc to leave', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc3e0' }).setOrigin(0.5);
 
-    this.panel.add([bg, this.title, this.holdChip, this.breakChip, this.sureLabel, ...this.sureDots, this.barTrack, this.barFill, this.verdict, this.hint]);
+    this.panel.add([bg, this.title, this.chips, this.sureLabel, ...this.sureDots, this.beam, this.beamLeft, this.beamRight, this.weight, this.verdict, this.explain, this.hint]);
 
     this.registry.events.on('prediction:start', (materialIds) => this.startFlow(materialIds));
-
-    // window keydown for reliable test/keyboard input (mirrors DialogueScene).
     this.keyHandler = (event) => this.onKey(event);
     window.addEventListener('keydown', this.keyHandler);
     this.events.once('shutdown', () => window.removeEventListener('keydown', this.keyHandler));
-
     this._publish();
   }
 
   startFlow(materialIds) {
     const runtime = this.registry.get('act1Runtime');
     const all = Array.isArray(materialIds) && materialIds.length ? materialIds : ['mesquite', 'steel', 'copper_brace', 'weak_scrap'];
-    // Only materials the player has actually collected (gating already enforced
-    // by the runtime; this keeps the flow honest).
     this.queue = all.filter((id) => runtime?.inventorySystem?.has(id));
     if (!this.queue.length) return;
     this.index = 0;
+    this.results = [];
     this.registry.set('modalActive', true);
     this.panel.setVisible(true);
     this._showChoose();
+  }
+
+  _resetBeam() {
+    this.beam.setVisible(true).setAngle(0).setFillStyle(0x9fc3e0);
+    this.beamLeft.setVisible(false).setAngle(0);
+    this.beamRight.setVisible(false).setAngle(0);
+    this.weight.setVisible(false).setY(120);
   }
 
   _showChoose() {
@@ -71,35 +77,38 @@ export default class PredictionScene extends Phaser.Scene {
     const id = this.queue[this.index];
     const runtime = this.registry.get('act1Runtime');
     const name = runtime?.materialsLabSystem?.materials.get(id)?.displayName || id;
-    this.title.setText(`Will ${name} hold the load?`);
-    this.barFill.width = 0;
-    this.barFill.fillColor = 0x9affb0;
+    this.title.setText(`(${this.index + 1}/${this.queue.length})  Will ${name} hold the load?`);
+    this.chips.setVisible(true);
+    this.sureLabel.setVisible(true);
+    this.sureDots.forEach((d) => d.setVisible(true));
+    this._resetBeam();
     this.verdict.setText('');
-    this.hint.setText('← → pick    ↑ ↓ how sure    E to test');
+    this.explain.setText('');
+    this.hint.setText('← → pick    ↑ ↓ how sure    E to test    Esc to leave');
     this._render();
     this._publish();
   }
 
   _render() {
-    // Highlight the chosen chip; show confidence dots.
     this.holdBg.setStrokeStyle(4, 0x9affb0, this.guess === 'hold' ? 1 : 0);
     this.breakBg.setStrokeStyle(4, 0xffb0b0, this.guess === 'break' ? 1 : 0);
-    this.holdChip.setScale(this.guess === 'hold' ? 1.06 : 0.96);
-    this.breakChip.setScale(this.guess === 'break' ? 1.06 : 0.96);
     this.sureDots.forEach((dot, i) => dot.setFillStyle(i < this.confidence ? 0x7fd1ff : 0x4a6076));
   }
 
   onKey(event) {
     if (!this.panel.visible) return;
-    const key = event.key;
+    const key = (event.key || '').toLowerCase();
+    if (event.key === 'Escape') { this._finish(); return; }
     if (this.phase === 'choose') {
-      if (key === 'ArrowLeft' || key?.toLowerCase() === 'a') { this.guess = 'hold'; this._render(); this._publish(); }
-      else if (key === 'ArrowRight' || key?.toLowerCase() === 'd') { this.guess = 'break'; this._render(); this._publish(); }
-      else if (key === 'ArrowUp' || key?.toLowerCase() === 'w') { this.confidence = Math.min(3, this.confidence + 1); this._render(); this._publish(); }
-      else if (key === 'ArrowDown' || key?.toLowerCase() === 's') { this.confidence = Math.max(1, this.confidence - 1); this._render(); this._publish(); }
-      else if (key?.toLowerCase() === 'e' || event.code === 'Space') { this._commitAndTest(); }
+      if (event.key === 'ArrowLeft' || key === 'a') { this.guess = 'hold'; this._render(); this._publish(); }
+      else if (event.key === 'ArrowRight' || key === 'd') { this.guess = 'break'; this._render(); this._publish(); }
+      else if (event.key === 'ArrowUp' || key === 'w') { this.confidence = Math.min(3, this.confidence + 1); this._render(); this._publish(); }
+      else if (event.key === 'ArrowDown' || key === 's') { this.confidence = Math.max(1, this.confidence - 1); this._render(); this._publish(); }
+      else if (key === 'e' || event.code === 'Space') { this._commitAndTest(); }
     } else if (this.phase === 'result') {
-      if (key?.toLowerCase() === 'e' || event.code === 'Space') { this._advance(); }
+      if (key === 'e' || event.code === 'Space') { this._advance(); }
+    } else if (this.phase === 'summary') {
+      if (key === 'e' || event.code === 'Space') { this._finish(); }
     }
   }
 
@@ -110,17 +119,43 @@ export default class PredictionScene extends Phaser.Scene {
     const willHold = this.guess === 'hold';
     runtime.predictMaterial(id, willHold, confidenceWord, `I think it will ${willHold ? 'hold' : 'break'}.`);
     const test = runtime.testMaterial(id);
-    const safe = Boolean(test?.result?.bridgeSafe);
+    const result = test?.result || {};
+    const band = result.strengthBand; // 'strong candidate' | 'useful with limits' | 'comparison failure'
+    const safe = Boolean(result.bridgeSafe);
     const matched = willHold === safe;
-    this.phase = 'result';
-    // Animate the load bar to the material's strength; green holds, red snaps.
-    const strength = Math.max(0.08, Number(test?.result?.bridgeUsefulness || 0));
-    this.barFill.fillColor = safe ? 0x9affb0 : 0xff6b6b;
-    this.tweens.add({ targets: this.barFill, width: 360 * strength, duration: 420, ease: 'Cubic.easeOut' });
-    this.verdict.setText(`${matched ? '✓' : '✗'}  you: ${willHold ? '💪' : '💥'}   real: ${safe ? '💪 held' : '💥 snapped'}`);
+    const name = result.displayName || id;
+    // 1.9.2A — SEE the outcome: hold (straight, green), bend (tilt, amber), break (snap, red).
+    const outcome = band === 'strong candidate' ? 'hold' : band === 'useful with limits' ? 'bend' : 'break';
+    this.chips.setVisible(false);
+    this.weight.setVisible(true);
+    this._animateBeam(outcome);
+    const faces = { hold: '✅ it HELD', bend: '🟡 it BENT, but held', break: '💥 it SNAPPED' };
+    this.verdict.setText(`${matched ? '✓' : '✗'}  you said ${willHold ? '💪 hold' : '💥 break'} — ${faces[outcome]}`);
     this.verdict.setColor(matched ? '#9affb0' : '#ffd27f');
-    this.hint.setText(this.index < this.queue.length - 1 ? 'E for next material' : 'E to finish');
-    this._publish({ matched, safe });
+    // 1.9.2C — the explanation names THIS material + result (no stale carryover).
+    this.explain.setText(`${name}: ${result.verdict || ''}`);
+    this.hint.setText(this.index < this.queue.length - 1 ? 'E for next material    Esc to leave' : 'E for summary    Esc to leave');
+    this.phase = 'result';
+    this.results.push({ id, name, outcome, matched, safe });
+    this._publish({ outcome, matched, materialId: id });
+  }
+
+  _animateBeam(outcome) {
+    this.tweens.add({ targets: this.weight, y: 150, duration: 260, ease: 'Quad.easeIn', yoyo: outcome !== 'break', hold: 40 });
+    if (outcome === 'hold') {
+      this.beam.setFillStyle(0x9affb0);
+      this.tweens.add({ targets: this.beam, y: 156, duration: 200, ease: 'Quad.easeOut', yoyo: true });
+    } else if (outcome === 'bend') {
+      this.beam.setFillStyle(0xffd27f);
+      this.tweens.add({ targets: this.beam, angle: 7, y: 158, duration: 320, ease: 'Sine.easeOut', yoyo: true, hold: 120 });
+    } else {
+      // break: hide the straight beam, snap into a broken V.
+      this.beam.setVisible(false);
+      this.beamLeft.setVisible(true).setPosition(0, 150);
+      this.beamRight.setVisible(true).setPosition(0, 150);
+      this.tweens.add({ targets: this.beamLeft, angle: 24, y: 168, duration: 300, ease: 'Back.easeOut' });
+      this.tweens.add({ targets: this.beamRight, angle: -24, y: 168, duration: 300, ease: 'Back.easeOut' });
+    }
   }
 
   _advance() {
@@ -129,6 +164,28 @@ export default class PredictionScene extends Phaser.Scene {
       this._showChoose();
       return;
     }
+    this._showSummary();
+  }
+
+  // 1.9.2B — exit flow: always finish with a clear summary, then close.
+  _showSummary() {
+    this.phase = 'summary';
+    this.chips.setVisible(false);
+    this.sureLabel.setVisible(false);
+    this.sureDots.forEach((d) => d.setVisible(false));
+    this.beam.setVisible(false); this.beamLeft.setVisible(false); this.beamRight.setVisible(false); this.weight.setVisible(false);
+    const held = this.results.filter((r) => r.outcome !== 'break').length;
+    const broke = this.results.filter((r) => r.outcome === 'break').length;
+    const right = this.results.filter((r) => r.matched).length;
+    this.title.setText('Test bench results');
+    this.verdict.setText(`${held} held · ${broke} snapped · you guessed ${right}/${this.results.length} right`);
+    this.verdict.setColor('#eaf6ff');
+    this.explain.setText('Strong materials carry the load; weak ones snap. Use the evidence when you build.');
+    this.hint.setText('E to close');
+    this._publish();
+  }
+
+  _finish() {
     this.phase = 'idle';
     this.panel.setVisible(false);
     this.registry.set('modalActive', false);
@@ -137,7 +194,6 @@ export default class PredictionScene extends Phaser.Scene {
     this._publish();
   }
 
-  // Expose state so player-reachable acceptance can drive + assert via real keys.
   _publish(extra = {}) {
     window.__PREDICTION__ = {
       active: this.panel.visible,
@@ -147,6 +203,7 @@ export default class PredictionScene extends Phaser.Scene {
       confidence: this.confidence,
       index: this.index,
       total: this.queue.length,
+      results: this.results.map((r) => ({ id: r.id, outcome: r.outcome, matched: r.matched })),
       ...extra,
     };
   }

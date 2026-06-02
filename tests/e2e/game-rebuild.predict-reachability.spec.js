@@ -91,11 +91,14 @@ test.describe('Player reachability — predict-before-test', () => {
       await page.keyboard.press('KeyE');       // test
       await page.waitForFunction(() => window.__PREDICTION__.phase === 'result'); // test ran via UI
       if (i === 0) await page.screenshot({ path: `${captureDir}/02_predict_result.png`, fullPage: true });
-      await page.keyboard.press('KeyE');       // next / finish
+      await page.keyboard.press('KeyE');       // next / (after last) summary
       await page.waitForTimeout(120);
     }
 
-    // Overlay closes after the player finishes.
+    // 1.9.2B exit flow: a summary appears, then the player closes it — never trapped.
+    await page.waitForFunction(() => window.__PREDICTION__.phase === 'summary');
+    await page.screenshot({ path: `${captureDir}/03_predict_summary.png`, fullPage: true });
+    await page.keyboard.press('KeyE');
     await page.waitForFunction(() => window.__PREDICTION__.active === false);
 
     // Observation only: prediction preceded every test (arc.md), via the UI.
@@ -105,5 +108,23 @@ test.describe('Player reachability — predict-before-test', () => {
     });
     expect(state.tested).toBeGreaterThanOrEqual(4);
     expect(state.made).toBeGreaterThanOrEqual(state.tested); // a prediction for every test
+  });
+
+  test('Escape always exits the prediction overlay — the player is never trapped', async ({ page }) => {
+    test.setTimeout(45_000);
+    await ready(page);
+    // Setup: open the overlay. The ACTION under test is the exit (real key).
+    await page.evaluate(() => {
+      window.__GAME__.resetAct1();
+      const game = window.__bikebrowserRebuildGame;
+      game.registry.get('act1Runtime').inventorySystem.addMany(['steel', 'mesquite']);
+      game.registry.events.emit('prediction:start', ['steel', 'mesquite']);
+    });
+    await page.waitForFunction(() => window.__PREDICTION__ && window.__PREDICTION__.active === true);
+    await page.keyboard.press('Escape'); // real input
+    await page.waitForFunction(() => window.__PREDICTION__.active === false);
+    // The world is interactive again (modal released).
+    const modal = await page.evaluate(() => Boolean(window.__bikebrowserRebuildGame.registry.get('modalActive')));
+    expect(modal).toBe(false);
   });
 });

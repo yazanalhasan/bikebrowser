@@ -189,9 +189,14 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
             await page.keyboard.press('KeyE');       // commit + test
             await page.waitForFunction(() => window.__PREDICTION__.phase === 'result');
             if (i === 0) await page.screenshot({ path: `${captureDir}/07b_prediction_result.png`, fullPage: true });
-            await page.keyboard.press('KeyE');       // next material / finish
+            await page.keyboard.press('KeyE');       // next material / (after last) summary
             await page.waitForTimeout(120);
           }
+          // 1.9.2B exit flow: a summary appears, then the overlay closes cleanly.
+          await page.waitForFunction(() => window.__PREDICTION__.phase === 'summary');
+          await page.screenshot({ path: `${captureDir}/07c_prediction_summary.png`, fullPage: true });
+          await page.keyboard.press('KeyE');
+          await page.waitForFunction(() => window.__PREDICTION__.active === false);
           // arc.md: prediction precedes intervention — a prediction exists for
           // every material tested (made via UI, not __GAME__).
           const gated = await page.evaluate(() => {
