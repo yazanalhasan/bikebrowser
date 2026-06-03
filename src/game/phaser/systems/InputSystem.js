@@ -16,6 +16,7 @@ export class InputSystem {
       interact2: 'SPACE',
       notebook: 'N',
       gps: 'G',
+      journal: 'J',
       debug: 'F3',
     });
     this.pointerTarget = null;
@@ -41,5 +42,9 @@ export class InputSystem {
 
   gpsJustPressed() {
     return Phaser.Input.Keyboard.JustDown(this.keys.gps);
+  }
+
+  journalJustPressed() {
+    return Phaser.Input.Keyboard.JustDown(this.keys.journal);
   }
 }

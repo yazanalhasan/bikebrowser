@@ -4,6 +4,7 @@ import { ChemistrySystem } from './ChemistrySystem.js';
 import { ConstructionSystem } from './ConstructionSystem.js';
 import { DebugDiagnosticSystem } from './DebugDiagnosticSystem.js';
 import { DiscoveryMapSystem } from './DiscoveryMapSystem.js';
+import { DiscoveryRegistrySystem } from './DiscoveryRegistrySystem.js';
 import { EcologyObservationSystem } from './EcologyObservationSystem.js';
 import { InventorySystem } from './InventorySystem.js';
 import { InvestigationSystem } from './InvestigationSystem.js';
@@ -49,6 +50,7 @@ export class Act1RuntimeSystem {
     this.trustSystem = new TrustSystem();
     this.languageSystem = new LanguageSystem();
     this.discoveryMapSystem = new DiscoveryMapSystem();
+    this.discoveryRegistry = new DiscoveryRegistrySystem();
     this.debugDiagnosticSystem = new DebugDiagnosticSystem(this);
     this.audioSystem = new Act1AudioSystem();
     this.assetContract = PLACEHOLDER_ASSET_CONTRACT;
@@ -71,6 +73,7 @@ export class Act1RuntimeSystem {
     registry.set('trustSystem', this.trustSystem);
     registry.set('languageSystem', this.languageSystem);
     registry.set('discoveryMapSystem', this.discoveryMapSystem);
+    registry.set('discoveryRegistry', this.discoveryRegistry);
     registry.set('act1AudioSystem', this.audioSystem);
   }
 
@@ -111,6 +114,18 @@ export class Act1RuntimeSystem {
     if (cueByKind[kind]) this.audioSystem.playInteractionCue(cueByKind[kind]);
   }
 
+  // Phase 2.2 — register a discovery. On a genuinely-new discovery, fire the
+  // "NEW DISCOVERY" feedback + event so the player sees it, and the registry
+  // persists it (connecting notebook/ecology/investigation/engineering).
+  registerDiscovery(entry) {
+    const result = this.discoveryRegistry.register(entry);
+    if (result.ok && result.isNew) {
+      this.recordFeedback('discovery', `NEW DISCOVERY — ${result.entry.title}`, result.entry);
+      this.registry?.events?.emit('discovery:new', result.entry);
+    }
+    return result;
+  }
+
   unlockNotebookEntries(entryIds = []) {
     const results = this.notebookSystem.unlockMany(entryIds);
     for (const result of results) {
@@ -135,6 +150,11 @@ export class Act1RuntimeSystem {
         context: dialogueId,
       });
       this.recordFeedback('language', `${entry.speaker}: ${entry.language === 'spanish' ? 'Gracias' : 'Ahlan'} (${entry.language}).`);
+      this.registerDiscovery({ id: `language_${entry.language}`, category: 'language', title: `${entry.language === 'spanish' ? 'Spanish' : 'Arabic'}: ${entry.language === 'spanish' ? 'Gracias' : 'Ahlan'}`, detail: `${entry.speaker} — ${entry.language === 'spanish' ? '"thank you"' : '"welcome"'}.`, source: 'language' });
+    }
+    // Discovery: a fact learned from this person (any dialogue with notebook facts).
+    if ((entry.notebook || []).length || entry.trust) {
+      this.registerDiscovery({ id: `npc_${dialogueId}`, category: 'npc_fact', title: `${entry.speaker}'s account`, detail: (entry.lines && entry.lines[0]) || dialogueId, source: 'dialogue' });
     }
     return { ok: true, dialogueId };
   }
@@ -154,6 +174,8 @@ export class Act1RuntimeSystem {
         this.audioSystem.setAmbient('dry_wash');
         this.discoveryMapSystem.discover('dry_wash');
         this.discoveryMapSystem.discover('bridge');
+        this.registerDiscovery({ id: 'landmark_dry_wash', category: 'landmark', title: 'The Dry Wash', detail: 'A monsoon channel that floods fast and runs dry — the broken crossing is here.', source: 'exploration' });
+        this.registerDiscovery({ id: 'landmark_broken_bridge', category: 'landmark', title: 'The broken crossing', detail: 'The footbridge washed out in a flood — it needs a proven repair.', source: 'exploration' });
         this.unlockNotebookEntries(['broken_wash', 'bridge_problem']);
         this.completeObjective('find_bridge_path');
         this.completeObjective('discover_wash');
@@ -209,6 +231,8 @@ export class Act1RuntimeSystem {
     };
     if (objectiveByMaterial[materialId]) this.completeObjective(objectiveByMaterial[materialId]);
     this.recordFeedback('utm', `${result.result.displayName}: ${result.result.verdict} (${result.result.loadResult}).`, result.result);
+    // Discovery: a tested material (with its strength evidence).
+    this.registerDiscovery({ id: `material_${materialId}`, category: 'material', title: result.result.displayName, detail: `${result.result.verdict} — ${result.result.strengthBand}.`, source: 'utm' });
     // Phase 1.3: if the player predicted this material before testing, resolve
     // the prediction against the real verdict and record the reasoning outcome.
     const predicted = this.predictionSystem.resolve(materialId, result.result.bridgeSafe);
@@ -238,6 +262,8 @@ export class Act1RuntimeSystem {
     this.unlockNotebookEntries(['bridge_plan']);
     ['choose_deck', 'choose_support', 'choose_brace'].forEach((id) => this.completeObjective(id));
     this.recordFeedback('bridge', `Bridge design accepted: ${result.explanation}`, result.plan);
+    // Discovery: an engineering concept — a sound load path from tested parts.
+    this.registerDiscovery({ id: 'concept_safe_load_path', category: 'engineering', title: 'Safe load path', detail: 'A bridge is only as strong as its weakest load-bearing part — choose tested, strong materials per role.', source: 'bridge' });
     return result;
   }
 
@@ -278,6 +304,8 @@ export class Act1RuntimeSystem {
     this.completeObjective('cross_bridge');
     this.discoveryMapSystem.discover('wider_gate');
     this.unlockNotebookEntries(['bridge_repaired']);
+    // Discovery: a landmark — the repaired crossing opens the wider map.
+    this.registerDiscovery({ id: 'landmark_crossing', category: 'landmark', title: 'The repaired crossing', detail: 'The rebuilt bridge reconnects the neighborhood to the wider map.', source: 'engineering' });
     this.audioSystem.transitionMusic('map_unlock');
     this.recordFeedback(
       'bridge',
@@ -305,6 +333,12 @@ export class Act1RuntimeSystem {
     };
     if (objectiveBySpecies[speciesId]) this.completeObjective(objectiveBySpecies[speciesId]);
     this.recordFeedback('ecology', `${result.observation.displayName}: ${result.observation.heat}, ${result.observation.water}.`, result.observation);
+    // Discovery: the plant itself (and the saguaro is also a landmark).
+    const obs = result.observation;
+    this.registerDiscovery({ id: `plant_${speciesId}`, category: 'plant', title: obs.displayName, detail: `${obs.heat}; ${obs.water}; ${obs.habitat}.`, source: 'ecology' });
+    if (speciesId === 'saguaro') {
+      this.registerDiscovery({ id: 'landmark_saguaro', category: 'landmark', title: 'Saguaro landmark', detail: 'A desert landmark — never harvested; used to navigate.', source: 'ecology' });
+    }
     return result;
   }
 
@@ -334,6 +368,9 @@ export class Act1RuntimeSystem {
     }
     this.unlockNotebookEntries(['desert_plant', result.notebookEntry].filter(Boolean));
     this.recordFeedback('ecology', `${result.thrives ? 'It thrives.' : 'It struggles.'} ${result.why}`, result);
+    // Discovery: the ecology concept — which plant fits which site, and why.
+    this.registerDiscovery({ id: `concept_fit_${id}`, category: 'engineering', title: `Right plant, right place: ${result.correctName}`, detail: result.correctWhy, source: 'ecology' });
+    this.registerDiscovery({ id: `plant_${result.correct}`, category: 'plant', title: result.correctName, detail: result.correctWhy, source: 'ecology' });
     return result;
   }
 
@@ -400,6 +437,7 @@ export class Act1RuntimeSystem {
       trust: this.trustSystem.getState(),
       language: this.languageSystem.getState(),
       discovery: this.discoveryMapSystem.getState(),
+      discoveryRegistry: this.discoveryRegistry.getState(),
       engineeringLoop: this.getEngineeringLoop(),
       reasoning: this.assessReasoning(),
       feedback: {
@@ -451,6 +489,12 @@ export class Act1RuntimeSystem {
     }
     if (result.notebookEntry) this.unlockNotebookEntries([result.notebookEntry]);
     this.recordFeedback('investigation', `${result.correctedFromMisleading ? 'You changed your mind with evidence. ' : ''}Conclusion: ${result.conclusion.text}`, result);
+    // Discovery: the solved investigation (engineering/ecology insight), plus
+    // for the wash, the wildlife that uses it (an animal discovery).
+    this.registerDiscovery({ id: `investigation_${id}`, category: 'investigation', title: `Solved: ${id.replace(/_/g, ' ')}`, detail: result.conclusion.text, source: 'investigation' });
+    if (id === 'green_strip' || id === 'wash_out_cause') {
+      this.registerDiscovery({ id: 'animal_wash_paths', category: 'animal', title: 'Wash wildlife paths', detail: 'Animals travel the wash for its subsurface water and cover — keep their paths clear.', source: 'investigation' });
+    }
     return result;
   }
 
@@ -507,6 +551,7 @@ export class Act1RuntimeSystem {
     this.trustSystem.loadState(state.trust);
     this.languageSystem.loadState(state.language);
     this.discoveryMapSystem.loadState(state.discovery);
+    this.discoveryRegistry.loadState(state.discoveryRegistry);
   }
 
   resetAct1 = () => {
@@ -525,6 +570,7 @@ export class Act1RuntimeSystem {
     this.trustSystem = fresh.trustSystem;
     this.languageSystem = fresh.languageSystem;
     this.discoveryMapSystem = fresh.discoveryMapSystem;
+    this.discoveryRegistry = fresh.discoveryRegistry;
     this.audioSystem.stopSpeech();
     this.act1Complete = false;
     this.feedbackLog = [];
@@ -570,6 +616,8 @@ export class Act1RuntimeSystem {
       completeBridgePlan: (planId) => this.completeBridgePlan(planId),
       designBridge: (selection) => this.designBridge(selection),
       observeEcology: (speciesId) => this.observeEcology(speciesId),
+      registerDiscovery: (entry) => this.registerDiscovery(entry),
+      markDiscoveriesSeen: () => this.discoveryRegistry.markSeen(),
       observeEcologyPlacement: (id) => this.observeEcologyPlacement(id),
       predictEcologyPlacement: (id, speciesId) => this.predictEcologyPlacement(id, speciesId),
       resolveEcologyPlacement: (id) => this.resolveEcologyPlacement(id),

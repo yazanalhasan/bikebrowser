@@ -1025,6 +1025,76 @@ export default class NeighborhoodScene extends Phaser.Scene {
     }).setScrollFactor(0).setDepth(940);
 
     this.registry.events.on('act1:feedback', (entry) => this.showFeedback(entry));
+    this.createDiscoveryUi();
+  }
+
+  // Phase 2.2 — Discovery Registry UI: a prominent "NEW DISCOVERY" banner on
+  // each genuinely-new discovery, and a player-openable registry panel ([J]).
+  createDiscoveryUi() {
+    // The NEW DISCOVERY banner (center-top, eye-catching, transient).
+    this.discoveryBanner = this.add.container(480, 96).setScrollFactor(0).setDepth(1300).setVisible(false);
+    const bannerBg = this.add.rectangle(0, 0, 460, 64, 0x1b2a3a, 0.97).setStrokeStyle(3, 0xffd27a, 1);
+    this.discoveryBannerTitle = this.add.text(0, -12, '✨ NEW DISCOVERY', { fontFamily: 'Arial', fontSize: '16px', color: '#ffd27a', fontStyle: 'bold' }).setOrigin(0.5);
+    this.discoveryBannerText = this.add.text(0, 14, '', { fontFamily: 'Arial', fontSize: '14px', color: '#eaf6ff' }).setOrigin(0.5);
+    this.discoveryBanner.add([bannerBg, this.discoveryBannerTitle, this.discoveryBannerText]);
+
+    // The registry panel ([J] to open): discoveries grouped by category.
+    this.discoveryPanel = this.add.container(150, 70).setScrollFactor(0).setDepth(985).setVisible(false);
+    const panelBg = this.add.rectangle(0, 0, 560, 470, 0x12100a, 0.96).setOrigin(0, 0).setStrokeStyle(3, 0xc7e89a, 1);
+    this.discoveryPanelTitle = this.add.text(20, 14, 'Discovery Registry', { fontFamily: 'Arial', fontSize: '20px', color: '#eafbe0', fontStyle: 'bold' });
+    this.discoveryPanelSummary = this.add.text(20, 44, '', { fontFamily: 'Arial', fontSize: '13px', color: '#bcd6ac' });
+    this.discoveryPanelBody = this.add.text(20, 74, '', { fontFamily: 'Arial', fontSize: '13px', color: '#e6f0d8', wordWrap: { width: 520 }, lineSpacing: 4 });
+    this.discoveryPanelHint = this.add.text(20, 444, '[J] close   ·   discoveries persist across save/load', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc27a' });
+    this.discoveryPanel.add([panelBg, this.discoveryPanelTitle, this.discoveryPanelSummary, this.discoveryPanelBody, this.discoveryPanelHint]);
+
+    this.registry.events.on('discovery:new', (entry) => this.showDiscoveryBanner(entry));
+    this.publishDiscoveryState();
+  }
+
+  showDiscoveryBanner(entry) {
+    if (!this.discoveryBanner) return;
+    this.discoveryBannerText.setText(entry.title);
+    this.discoveryBanner.setVisible(true).setAlpha(0);
+    this.tweens.killTweensOf(this.discoveryBanner);
+    this.tweens.add({ targets: this.discoveryBanner, alpha: 1, y: 104, duration: 180, ease: 'Back.easeOut', yoyo: false });
+    this.tweens.add({ targets: this.discoveryBanner, alpha: 0, delay: 2200, duration: 400, onComplete: () => this.discoveryBanner.setVisible(false) });
+    if (this.discoveryPanel?.visible) this.refreshDiscoveryPanel();
+    this.publishDiscoveryState();
+  }
+
+  toggleDiscoveryPanel() {
+    const next = !this.discoveryPanel.visible;
+    this.discoveryPanel.setVisible(next);
+    if (next) {
+      this.refreshDiscoveryPanel();
+      this.runtime?.discoveryRegistry?.markSeen();
+    }
+    this.publishDiscoveryState();
+  }
+
+  refreshDiscoveryPanel() {
+    const state = this.runtime?.discoveryRegistry?.getState();
+    if (!state) return;
+    this.discoveryPanelSummary.setText(`${state.total} discoveries  ·  ` + state.categories.filter((c) => c.count).map((c) => `${c.label} ${c.count}`).join('  ·  '));
+    const lines = [];
+    for (const cat of state.categories) {
+      const items = state.byCategory[cat.category];
+      if (!items.length) continue;
+      lines.push(`▸ ${cat.label}`);
+      for (const it of items) lines.push(`   • ${it.title}${it.isNew ? '  (new)' : ''}`);
+    }
+    this.discoveryPanelBody.setText(lines.join('\n') || 'Nothing discovered yet. Explore, observe, test, and investigate.');
+  }
+
+  publishDiscoveryState() {
+    const state = this.runtime?.discoveryRegistry?.getState() || { total: 0, categories: [], last: null };
+    window.__DISCOVERY__ = {
+      open: Boolean(this.discoveryPanel?.visible),
+      bannerVisible: Boolean(this.discoveryBanner?.visible),
+      total: state.total,
+      categories: state.categories,
+      last: state.last,
+    };
   }
 
   createWorldMapHud() {
@@ -1216,6 +1286,9 @@ export default class NeighborhoodScene extends Phaser.Scene {
     }
     if (!modal && this.inputSystem.gpsJustPressed()) {
       this.toggleWorldMapHud(true);
+    }
+    if (!modal && this.inputSystem.journalJustPressed()) {
+      this.toggleDiscoveryPanel();
     }
     this.updateEvidencePanel();
   }

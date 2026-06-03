@@ -373,6 +373,28 @@ test.describe('player reachability', () => {
     expect(payoff.notebookHasPlants, 'the payoff is recorded as field notes (notebook)').toBe(true);
   });
 
+  // ADDED 2026-06-03 (Phase 2.2): Discovery Registry. By keyboard only, a
+  // discovery through play fires the NEW DISCOVERY banner (immediate payoff) and
+  // the persistent registry view opens with [J] (categorised payoff).
+  test('GUARD: a discovery through play shows NEW DISCOVERY and opens the registry ([J])', async ({ page }) => {
+    test.setTimeout(60000);
+    await bootRebuild(page);
+    const before = await page.evaluate(() => window.__DISCOVERY__?.total ?? 0);
+    const eco = await zoneById(page, 'ecology_patch');
+    expect(eco, 'an ecology observation interaction exists').toBeTruthy();
+    expect(await walkTo(page, eco), 'player can walk to it').toBe(true);
+    await page.keyboard.press('e');
+    await page.waitForFunction((b) => window.__DISCOVERY__ && window.__DISCOVERY__.total > b, before, { timeout: 10000 });
+    // Immediate payoff: the banner.
+    expect(await page.evaluate(() => window.__DISCOVERY__.bannerVisible), 'NEW DISCOVERY banner shows').toBe(true);
+    // Persistent payoff: the registry view opens and is categorised.
+    await page.keyboard.press('j');
+    await page.waitForFunction(() => window.__DISCOVERY__.open === true, null, { timeout: 5000 });
+    const st = await page.evaluate(() => window.__DISCOVERY__);
+    expect(st.total, 'registry holds the discoveries').toBeGreaterThan(0);
+    expect(st.categories.some((c) => c.count > 0), 'discoveries are catalogued by category').toBe(true);
+  });
+
   // ---- TRACKED, not yet crisply assertable ----
 
   test.fixme('PAYOFF(UTM): pressing "test" shows a visible load test (press/bend/snap), not just text', async () => {
