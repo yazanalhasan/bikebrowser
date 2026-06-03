@@ -9,4 +9,5 @@ export { act1Ecology, act1EcologyPlacements } from './act1Ecology.js';
 export { act1DryWash } from './act1DryWash.js';
 export { act1Chemistry } from './act1Chemistry.js';
 export { act1MapRegions } from './act1MapRegions.js';
+export { act1WorldMapPoints } from './act1WorldMap.js';
 export { act1AssetManifest, getAct1AssetManifestState } from './act1AssetManifest.js';

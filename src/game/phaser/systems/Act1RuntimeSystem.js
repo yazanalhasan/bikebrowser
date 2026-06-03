@@ -1,4 +1,4 @@
-import { act1Dialogue } from '../../data/act1/index.js';
+import { act1Dialogue, act1WorldMapPoints } from '../../data/act1/index.js';
 import { BikeSystem } from './BikeSystem.js';
 import { ChemistrySystem } from './ChemistrySystem.js';
 import { ConstructionSystem } from './ConstructionSystem.js';
@@ -438,6 +438,7 @@ export class Act1RuntimeSystem {
       language: this.languageSystem.getState(),
       discovery: this.discoveryMapSystem.getState(),
       discoveryRegistry: this.discoveryRegistry.getState(),
+      worldMap: this.getWorldMap(),
       engineeringLoop: this.getEngineeringLoop(),
       reasoning: this.assessReasoning(),
       feedback: {
@@ -512,6 +513,47 @@ export class Act1RuntimeSystem {
     };
     const nextStep = Object.entries(steps).find(([, done]) => !done);
     return { ...steps, complete: !nextStep, nextStep: nextStep ? nextStep[0] : 'complete' };
+  }
+
+  // Phase 2.3 — World Map. Classifies every real destination into Current /
+  // Reachable / Locked from actual game state (discovery + wider-map unlock).
+  // No fake destinations (catalog = real places) and no dead links (a place is
+  // Reachable only when it is genuinely known and open). `currentLocationId` is
+  // set by the scene from the player's position.
+  setCurrentLocation(id) {
+    if (id) this.currentLocationId = id;
+  }
+
+  getWorldMap() {
+    const discovery = this.discoveryMapSystem.getState();
+    const widerUnlocked = Boolean(discovery.widerMapUnlocked);
+    const discovered = new Set(discovery.discovered || []);
+    const current = this.currentLocationId || 'street';
+    const reachable = [];
+    const locked = [];
+    const undiscovered = [];
+    for (const p of act1WorldMapPoints) {
+      const point = { id: p.id, label: p.label, region: p.region };
+      if (p.lockedByWiderMap) {
+        // The frontier unlocks as a group when the wider map opens; once open,
+        // those destinations are reachable (you can now travel there).
+        if (widerUnlocked) reachable.push({ ...point, current: p.id === current });
+        else locked.push({ ...point, unlocksBy: 'repair the bridge to open the wider map' });
+      } else if (p.alwaysKnown || discovered.has(p.id)) {
+        reachable.push({ ...point, current: p.id === current });
+      } else {
+        undiscovered.push(point); // exists, not yet found — not a dead link, just unseen
+      }
+    }
+    return {
+      current,
+      currentLabel: act1WorldMapPoints.find((p) => p.id === current)?.label || current,
+      reachable,
+      locked,
+      undiscovered,
+      widerMapUnlocked: widerUnlocked,
+      counts: { reachable: reachable.length, locked: locked.length, undiscovered: undiscovered.length, total: act1WorldMapPoints.length },
+    };
   }
 
   saveGame = () => saveRebuildState(this.getAct1State());
@@ -618,6 +660,8 @@ export class Act1RuntimeSystem {
       observeEcology: (speciesId) => this.observeEcology(speciesId),
       registerDiscovery: (entry) => this.registerDiscovery(entry),
       markDiscoveriesSeen: () => this.discoveryRegistry.markSeen(),
+      getWorldMap: () => this.getWorldMap(),
+      setCurrentLocation: (id) => this.setCurrentLocation(id),
       observeEcologyPlacement: (id) => this.observeEcologyPlacement(id),
       predictEcologyPlacement: (id, speciesId) => this.predictEcologyPlacement(id, speciesId),
       resolveEcologyPlacement: (id) => this.resolveEcologyPlacement(id),

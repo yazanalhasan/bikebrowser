@@ -395,6 +395,25 @@ test.describe('player reachability', () => {
     expect(st.categories.some((c) => c.count > 0), 'discoveries are catalogued by category').toBe(true);
   });
 
+  // ADDED 2026-06-03 (Phase 2.3): World Map. The G key opens a FUNCTIONAL map
+  // (current/reachable/locked from real state) and closes again — it previously
+  // double-toggled and read as a dead key. Keyboard only.
+  test('GUARD: G opens a functional world map (current/reachable/locked) and closes', async ({ page }) => {
+    test.setTimeout(45000);
+    await bootRebuild(page);
+    await page.waitForFunction(() => Boolean(window.__WORLDMAP__), null, { timeout: 8000 });
+    expect(await page.evaluate(() => window.__WORLDMAP__.open), 'map starts collapsed').toBe(false);
+    await page.keyboard.press('g');
+    await page.waitForFunction(() => window.__WORLDMAP__.open === true, null, { timeout: 5000 });
+    const m = await page.evaluate(() => window.__WORLDMAP__);
+    expect(m.currentLabel, 'shows current location').toBeTruthy();
+    expect(m.reachable.includes(m.current), 'current is a reachable place (no dead link)').toBe(true);
+    expect(m.reachable, 'neighborhood reachable').toEqual(expect.arrayContaining(['home', 'garage', 'street']));
+    expect(m.locked.length, 'locked frontier shown honestly').toBeGreaterThan(0);
+    await page.keyboard.press('g');
+    await page.waitForFunction(() => window.__WORLDMAP__.open === false, null, { timeout: 5000 });
+  });
+
   // ---- TRACKED, not yet crisply assertable ----
 
   test.fixme('PAYOFF(UTM): pressing "test" shows a visible load test (press/bend/snap), not just text', async () => {

@@ -70,7 +70,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.createWorldMapHud();
     configureNeighborhoodCamera(this, this.player);
 
-    this.helpText = this.add.text(18, 680, 'WASD / arrows move • E or Space explore • G GPS • N notebook • R replay voice • M quiet', {
+    this.helpText = this.add.text(18, 680, 'WASD / arrows move • E or Space explore • G map • N notebook • J discoveries • R replay voice • M quiet', {
       fontFamily: 'Arial',
       fontSize: '14px',
       color: '#ffe8aa',
@@ -84,7 +84,9 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this.runtime?.audioSystem.setSettings({ reducedAudio: !current });
       this.showFeedback({ message: !current ? 'Quiet audio mode on.' : 'Full audio cues on.' });
     });
-    this.input.keyboard.on('keydown-G', () => this.toggleWorldMapHud(true));
+    // NOTE: the world-map toggle is handled once in update() via
+    // gpsJustPressed(); a second keydown-G listener here caused a double-toggle
+    // (open+close in one press) that made the G key appear dead. Removed.
     const unlockAudioOnce = () => this.runtime?.audioSystem.unlockAudio();
     this.input.once('pointerdown', unlockAudioOnce);
     this.input.keyboard.once('keydown', unlockAudioOnce);
@@ -1498,6 +1500,24 @@ export default class NeighborhoodScene extends Phaser.Scene {
       activeQuestMarker,
       widerMapUnlocked: state.discovery.widerMapUnlocked,
     };
+    // Phase 2.3 — publish the functional map state EVERY frame (before any
+    // collapsed/expanded early-returns below), so Current/Reachable/Locked is
+    // always live for the player and for reachability specs.
+    this.runtime?.setCurrentLocation(currentLocation);
+    this._worldMap = this.runtime?.getWorldMap?.();
+    if (this._worldMap) {
+      window.__WORLDMAP__ = {
+        open: Boolean(this.worldMapHud?.visible && this.worldMapHudExpanded),
+        current: this._worldMap.current,
+        currentLabel: this._worldMap.currentLabel,
+        reachable: this._worldMap.reachable.map((l) => l.id),
+        locked: this._worldMap.locked.map((l) => l.id),
+        undiscovered: this._worldMap.undiscovered.map((l) => l.id),
+        widerMapUnlocked: this._worldMap.widerMapUnlocked,
+        counts: this._worldMap.counts,
+      };
+    }
+
     const signature = [
       currentLocation,
       activeQuestMarker,
@@ -1621,7 +1641,19 @@ export default class NeighborhoodScene extends Phaser.Scene {
       g.fillStyle(0x16201d, location.locked ? 0.5 : 0.66).fillRoundedRect(item.x - 3, item.y - 1, location.label.length * 5.8 + 6, 12, 4);
     });
 
-    this.worldMapLegend.setText(`You are near: ${this.locationLabel(currentLocation)}\n${nextText}`);
+    // Phase 2.3 — functional map: surface Current / Reachable / Locked from the
+    // runtime's single source of truth (no fake destinations, no dead links).
+    if (this._worldMap) {
+      const reachLabels = this._worldMap.reachable.map((l) => l.label).join(', ');
+      const lockLabels = this._worldMap.locked.map((l) => l.label).join(', ');
+      this.worldMapLegend.setText(
+        `▸ Current: ${this._worldMap.currentLabel}\n` +
+        `▸ Reachable: ${reachLabels || '—'}\n` +
+        `▸ Locked: ${lockLabels || 'none'}`
+      );
+    } else {
+      this.worldMapLegend.setText(`You are near: ${this.locationLabel(currentLocation)}\n${nextText}`);
+    }
   }
 
   setSheetIconFrame(icon, sheet, frame) {
