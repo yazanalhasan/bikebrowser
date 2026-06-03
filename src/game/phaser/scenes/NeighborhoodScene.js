@@ -791,7 +791,9 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // reachable), but the loop is gated behind the wider map: pressing E before
     // the bridge is repaired opens a clear "locked" panel, not silence.
     const saltRiverExpedition = { x: 1430, y: 566 };
-    this.add.image(saltRiverExpedition.x, saltRiverExpedition.y, this.wave1QuestMarkerKey()).setTint(0x7fd1ff).setDepth(40);
+    // Hidden opportunity: the expedition marker is invisible and inert until the
+    // player DISCOVERS the City Gate by exploring the map edge (Phase 2.2 Fun).
+    this.saltRiverMarker = this.add.image(saltRiverExpedition.x, saltRiverExpedition.y, this.wave1QuestMarkerKey()).setTint(0x7fd1ff).setDepth(40).setVisible(false);
     this.interactions.register({
       id: 'salt_river_expedition',
       x: saltRiverExpedition.x,
@@ -1061,8 +1063,62 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.discoveryPanelHint = this.add.text(20, 444, '[J] close   ·   discoveries persist across save/load', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc27a' });
     this.discoveryPanel.add([panelBg, this.discoveryPanelTitle, this.discoveryPanelSummary, this.discoveryPanelBody, this.discoveryPanelHint]);
 
-    this.registry.events.on('discovery:new', (entry) => this.showDiscoveryBanner(entry));
+    // One-time tutorial so the player learns the registry exists by playing
+    // (not by knowing the J key in advance).
+    this.discoveryTutorial = this.add.text(480, 150, '', {
+      fontFamily: 'Arial', fontSize: '14px', color: '#12100a', backgroundColor: '#c7e89a',
+      padding: { x: 12, y: 8 }, align: 'center',
+    }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(1299).setVisible(false);
+    this._firstDiscoveryShown = false;
+    this._saltRiverRevealed = false;
+
+    // Exploration-triggered discovery: entering a new area logs a discovery by
+    // PROXIMITY (no interaction prompt). The City Gate one matters — it reveals
+    // the hidden Salt River expedition.
+    this._exploredAreas = new Set();
+    this._explorationAreas = [
+      { id: 'landmark_city_gate', x: 1484, y: 514, r: 150, category: 'landmark', title: 'The City Gate', detail: 'The road out of the neighborhood — beyond it, the wider map and the Salt River.' },
+      { id: 'landmark_desert_vista', x: 1030, y: 760, r: 120, category: 'landmark', title: 'Desert vista', detail: 'Open Sonoran desert south of the wash — creosote flats as far as you can see.' },
+    ];
+
+    this.registry.events.on('discovery:new', (entry) => this.onDiscoveryNew(entry));
     this.publishDiscoveryState();
+  }
+
+  // Phase 2.2 (Fun) — handle each new discovery: banner, first-time tutorial,
+  // and any consequence (City Gate reveals the Salt River expedition).
+  onDiscoveryNew(entry) {
+    this.showDiscoveryBanner(entry);
+    if (!this._firstDiscoveryShown) {
+      this._firstDiscoveryShown = true;
+      this.discoveryTutorial.setText('You logged a discovery!  Press [J] to open your field discoveries.').setVisible(true).setAlpha(0);
+      this.tweens.add({ targets: this.discoveryTutorial, alpha: 1, duration: 200 });
+      this.tweens.add({ targets: this.discoveryTutorial, alpha: 0, delay: 5200, duration: 500, onComplete: () => this.discoveryTutorial.setVisible(false) });
+    }
+    if (entry.id === 'landmark_city_gate') this.revealSaltRiverExpedition();
+  }
+
+  revealSaltRiverExpedition() {
+    if (this._saltRiverRevealed) return;
+    this._saltRiverRevealed = true;
+    this.saltRiverMarker?.setVisible(true);
+    if (this.saltRiverMarker) {
+      this.tweens.add({ targets: this.saltRiverMarker, scale: { from: 0.2, to: this.saltRiverMarker.scale }, duration: 320, ease: 'Back.easeOut' });
+    }
+    this.showFeedback({ message: 'A new way opens — the Salt River expedition is on your map.' });
+  }
+
+  // Proximity check: log an exploration discovery when the player first enters
+  // an area. Runs each frame; cheap (a few distance checks).
+  checkExplorationDiscovery() {
+    if (!this.player || !this.runtime) return;
+    for (const area of this._explorationAreas || []) {
+      if (this._exploredAreas.has(area.id)) continue;
+      if (Phaser.Math.Distance.Between(this.player.x, this.player.y, area.x, area.y) <= area.r) {
+        this._exploredAreas.add(area.id);
+        this.runtime.registerDiscovery({ id: area.id, category: area.category, title: area.title, detail: area.detail, source: 'exploration' });
+      }
+    }
   }
 
   showDiscoveryBanner(entry) {
@@ -1242,7 +1298,15 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.player.setVelocity(this.currentVelocity.x, this.currentVelocity.y);
     this.updatePlayerAnimation(_time, movement);
 
-    const nearest = this.interactions.nearest(this.player);
+    // Exploration-triggered discovery (proximity, not a prompt).
+    this.checkExplorationDiscovery();
+
+    let nearest = this.interactions.nearest(this.player);
+    // The Salt River expedition is a hidden opportunity until the City Gate is
+    // discovered — skip it (no prompt, no interaction) while still hidden.
+    if (nearest && nearest.id === 'salt_river_expedition' && !this._saltRiverRevealed) {
+      nearest = null;
+    }
     if (nearest) {
       this.prompt.setVisible(true);
       this.prompt.setText(`[E] ${nearest.label}`);

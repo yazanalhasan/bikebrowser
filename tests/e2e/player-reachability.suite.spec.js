@@ -454,6 +454,27 @@ test.describe('player reachability', () => {
     expect(payoff.discoveries, 'discoveries accrued (payoff is recorded)').toBeGreaterThan(0);
   });
 
+  // ADDED 2026-06-03 (Phase 2.2 Fun): discoveries MATTER. By exploration (no
+  // prompt), discovering the City Gate reveals the otherwise-hidden Salt River
+  // expedition — a discovery that affects progression, not a collectible.
+  test('GUARD: a discovery affects progression — City Gate reveals the Salt River expedition', async ({ page }) => {
+    test.setTimeout(60000);
+    await bootRebuild(page);
+    const scene = (fn) => page.evaluate(`(${fn.toString()})(window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene'))`);
+    expect(await scene((s) => s.saltRiverMarker.visible), 'expedition hidden at start').toBe(false);
+    // Walk toward the City Gate (~1484,514) — exploration discovers it.
+    for (let g = 0; g < 60; g++) {
+      if (await page.evaluate(() => window.__GAME__.getAct1State().discoveryUnlocks.saltRiverRevealed === true)) break;
+      const p = await scene((s) => ({ x: Math.round(s.player.x), y: Math.round(s.player.y) }));
+      const dx = 1484 - p.x, dy = 514 - p.y;
+      if (Math.hypot(dx, dy) < 30) break;
+      if (Math.abs(dx) > 12) { await page.keyboard.down(dx > 0 ? 'ArrowRight' : 'ArrowLeft'); await page.waitForTimeout(120); await page.keyboard.up(dx > 0 ? 'ArrowRight' : 'ArrowLeft'); }
+      if (Math.abs(dy) > 12) { await page.keyboard.down(dy > 0 ? 'ArrowDown' : 'ArrowUp'); await page.waitForTimeout(120); await page.keyboard.up(dy > 0 ? 'ArrowDown' : 'ArrowUp'); }
+    }
+    await page.waitForFunction(() => window.__GAME__.getAct1State().discoveryUnlocks.saltRiverRevealed === true, null, { timeout: 8000 });
+    expect(await scene((s) => s.saltRiverMarker.visible), 'the discovery revealed the expedition').toBe(true);
+  });
+
   // ---- TRACKED, not yet crisply assertable ----
 
   test.fixme('PAYOFF(UTM): pressing "test" shows a visible load test (press/bend/snap), not just text', async () => {

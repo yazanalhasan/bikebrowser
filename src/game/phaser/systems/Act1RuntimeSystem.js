@@ -117,6 +117,17 @@ export class Act1RuntimeSystem {
     if (cueByKind[kind]) this.audioSystem.playInteractionCue(cueByKind[kind]);
   }
 
+  // Phase 2.2 (Fun) — discoveries MATTER: what each discovery unlocks/reveals.
+  // Discovering the City Gate (by exploring to the map edge) reveals the Salt
+  // River expedition, which is hidden until then — a discovery that affects
+  // progression, not a collectible.
+  getDiscoveryUnlocks() {
+    const ids = new Set((this.discoveryRegistry.getState().entries || []).map((e) => e.id));
+    return {
+      saltRiverRevealed: ids.has('landmark_city_gate'),
+    };
+  }
+
   // Phase 2.2 — register a discovery. On a genuinely-new discovery, fire the
   // "NEW DISCOVERY" feedback + event so the player sees it, and the registry
   // persists it (connecting notebook/ecology/investigation/engineering).
@@ -441,6 +452,7 @@ export class Act1RuntimeSystem {
       language: this.languageSystem.getState(),
       discovery: this.discoveryMapSystem.getState(),
       discoveryRegistry: this.discoveryRegistry.getState(),
+      discoveryUnlocks: this.getDiscoveryUnlocks(),
       worldMap: this.getWorldMap(),
       biomes: this.biomeSystem.getState(),
       engineeringLoop: this.getEngineeringLoop(),
