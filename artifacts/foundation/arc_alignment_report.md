@@ -7,7 +7,7 @@ accepted / missing / obsolete / deferred. **Runtime wins.** This sets honest
 scope for the Completion Contract: the contract's "complete" = *every documented
 act/chapter is a coherent playable slice*, not full fidelity to this vision.
 
-## Live alignment dashboard (updated each phase transition — last: post **Phase 2.1 Ecology Loop** — Phase 1 verified complete; Phase 2 in progress)
+## Live alignment dashboard (updated each phase transition — last: post **Phase 2.2 Discovery Registry** — Phase 1 verified complete; Phase 2 in progress)
 D=Documented, I=Implemented, W=Wired, P=Playable, A=Accepted (acceptance-covered).
 
 | Category | D | I | W | P | A | Notes |
@@ -25,7 +25,7 @@ D=Documented, I=Implemented, W=Wired, P=Playable, A=Accepted (acceptance-covered
 | **Engineering: bridge construction** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.6; designBridge choice→consequence (weak fails, safe succeeds) |
 | **Engineering: reasoning grader** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.7; learning system (rewards reasoning not correctness; wrong+corrected = strong) |
 | **Ecology** | ✅ | ✅ | ✅ | ✅ | ✅ | observe 3 plants (1.1) + **Ecology Loop (2.1)** observe→predict→outcome→payoff, player-reachable + Fun, 3-layer accepted |
-| Discovery registry | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | **2.2 in progress** |
+| **Discovery registry** | ✅ | ✅ | ✅ | ✅ | ✅ | **2.2**; persistent across 8 categories (plant/animal/material/engineering/investigation/NPC/language/landmark); **NEW DISCOVERY** banner + **[J]** registry view; connects notebook/ecology/investigation/engineering; persists save/load; 3-layer accepted |
 | World map | ✅ | ✅ (HUD) | ✅ | ⚠️ | ⚠️ | verify destinations 2.3 |
 | **Language** | ✅ | ⚠️ metadata | ⚠️ | ⚠️ | — | revive 2.7 |
 | **Economy** | ✅ | ❌ | ❌ | ❌ | ❌ | 2.8 |
@@ -76,6 +76,7 @@ through the UI? Not a rating — a yes/no on whether those three are present in 
 | **Predict-before-test** | ✅ | ✅ | **✅ (1.9.2)** | **✅ (1.9.2A-C)** | choice: HOLD/BREAK + how-sure · consequence: beam **holds/bends/breaks** on screen · payoff: ✓/✗ compare + run summary + reasoning credit; gates the UTM (arc.md); Esc-exit, never trapped |
 | **Bridge design (choice)** | ✅ | ✅ | **✅ (1.9.3, verified)** | **✅ (1.9.3)** | overlay: pick a tested material per structural role (deck/support/brace) · consequence: weak design **sags red on screen**, sound design **holds green** · payoff: bridge stands + plan set + redesign-on-failure loop; gates on tested evidence with a **feedback panel** (no silent dead-end); Esc-exit, never trapped; **independently verified** by the strict suite GUARD (full keyboard play: collect→test→design, no `__GAME__`) + dedicated bridge-reachability spec |
 | **Dry Wash investigation** | ✅ | ✅ | **✅ (1.9.4, verified)** | **✅ (1.9.4)** | overlay: walk to washout marker → press E · choice: pick 1 of 2 explanations (misleading one unmarked) · consequence: evidence **turns a wrong guess red + "doesn't fit"** on screen · payoff: real explanation + "you changed your mind with the evidence" + notebook; Esc-exit, never trapped; **independently verified** by the strict suite GUARD (full keyboard play, asserts concluded + corrected) + dedicated investigation-reachability spec |
+| **Discovery registry** | ✅ | ✅ | **✅ (2.2)** | **✅ (2.2)** | choice/act: observe/test/investigate/learn through play · consequence: **NEW DISCOVERY** banner on each new find · payoff: persistent **[J]** registry grouped by 8 categories, survives save/load; connects notebook/ecology/investigation/engineering; 3-layer (engine + reachability + payoff GUARD) |
 | **Ecology loop (observe→predict→outcome→payoff)** | ✅ | ✅ | **✅ (2.1)** | **✅ (2.1)** | "Plant the desert" marker → **observe** a site (conditions) → **predict** which plant thrives (◀▶ + E) → **outcome**: the plant visibly **grows green (thrives)** or **wilts amber (struggles)** → **payoff**: why it fits + notebook field note; wrong-but-taught (names the plant that fits + why); Esc-exit, never trapped; **triple acceptance** — engine (`ecology-engine`) + player-reachability (`ecology-reachability`) + a strict-suite **Payoff GUARD** (asserts outcome resolved + notebook) |
 
 **Bottleneck (resolved):** the gap was never implementation — it was **player
@@ -84,8 +85,9 @@ Investigate (1.9.4) and now **Ecology (2.1)** are all player-reachable + Fun;
 prediction gates intervention (arc.md). Phase 1 is verified complete (see
 `phase1/phase1_completion_verification_report.md`). **Phase 2.1 Ecology Loop is
 the first system held to the full three-layer standard — Engine + Player
-Reachability + Payoff** — all green. Remaining Phase 2: 2.2 Discovery Registry,
-2.3 World Map, 2.4 Multi-Biome (still `__GAME__`-only; next targets).
+Reachability + Payoff** — all green. **Phase 2.2 Discovery Registry** is likewise
+delivered to the three-layer standard (persistent, categorised, NEW DISCOVERY +
+[J] view). Remaining Phase 2: **2.3 World Map** (next), then 2.4 Multi-Biome.
 
 ## Acts
 | Act (arc.md) | Documented | Implemented | Playable | Accepted | Status |

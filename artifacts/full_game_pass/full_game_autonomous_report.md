@@ -122,3 +122,25 @@ This pass used the governance posture correctly: ran a read-only audit + a singl
 acceptance probe (free local), did **not** modify un-owned files, did **not**
 weaken the gate, and **stopped** on the repo-drift/ownership stop condition rather
 than forcing progress on a red baseline.
+
+## Phase 2 — autonomous execution (post Phase 1 verification)
+
+Phase 1 verified complete (GUARDS green / WORKLIST zero;
+`artifacts/foundation/phase1_completion_verification.md`). New standard: every
+system gets Engine + Player Reachability + Payoff acceptance. Strict
+`player-reachability.suite.spec.js` is the standing gate.
+
+### Phase 2.1 — Ecology Loop ✅ `da038e8` / `ebeb444`
+"Plant the desert" marker → observe site → predict plant → SEE thrive/struggle →
+payoff (why + notebook). 3-layer green (engine + reachability + payoff GUARD).
+Report: `artifacts/phase2/phase2_1_ecology_loop.md`.
+
+### Phase 2.2 — Discovery Registry ✅ `4e3d7df`
+Persistent, categorised registry (8 categories); NEW DISCOVERY banner + [J]
+registry view; connects notebook/ecology/investigation/engineering; persists
+save/load. 3-layer green (engine 1 + reachability 2 + payoff GUARD); strict suite
+**8 GUARDs / 1 fixme**; engine acceptance green (no regression).
+Report: `artifacts/phase2/phase2_2_discovery_registry.md`.
+
+**State:** continuing autonomously to 2.3 World Map (functional: current/
+reachable/locked; no fake destinations), then 2.4 Multi-Biome.
