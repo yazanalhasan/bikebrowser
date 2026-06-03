@@ -7,7 +7,7 @@ accepted / missing / obsolete / deferred. **Runtime wins.** This sets honest
 scope for the Completion Contract: the contract's "complete" = *every documented
 act/chapter is a coherent playable slice*, not full fidelity to this vision.
 
-## Live alignment dashboard (updated each phase transition — last: post Phase 1.8 — **Phase 1 COMPLETE**)
+## Live alignment dashboard (updated each phase transition — last: post **Phase 2.1 Ecology Loop** — Phase 1 verified complete; Phase 2 in progress)
 D=Documented, I=Implemented, W=Wired, P=Playable, A=Accepted (acceptance-covered).
 
 | Category | D | I | W | P | A | Notes |
@@ -24,8 +24,8 @@ D=Documented, I=Implemented, W=Wired, P=Playable, A=Accepted (acceptance-covered
 | **Engineering: quest gating / loop** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.5; loop observe→verify enforced |
 | **Engineering: bridge construction** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.6; designBridge choice→consequence (weak fails, safe succeeds) |
 | **Engineering: reasoning grader** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.7; learning system (rewards reasoning not correctness; wrong+corrected = strong) |
-| **Ecology** | ✅ | ✅ (basic) | ✅ | ✅ | ✅ | observe 3 plants (1.1); loop = 2.1 |
-| Discovery registry | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | 2.2 |
+| **Ecology** | ✅ | ✅ | ✅ | ✅ | ✅ | observe 3 plants (1.1) + **Ecology Loop (2.1)** observe→predict→outcome→payoff, player-reachable + Fun, 3-layer accepted |
+| Discovery registry | ✅ | ⚠️ | ✅ | ⚠️ | ⚠️ | **2.2 in progress** |
 | World map | ✅ | ✅ (HUD) | ✅ | ⚠️ | ⚠️ | verify destinations 2.3 |
 | **Language** | ✅ | ⚠️ metadata | ⚠️ | ⚠️ | — | revive 2.7 |
 | **Economy** | ✅ | ❌ | ❌ | ❌ | ❌ | 2.8 |
