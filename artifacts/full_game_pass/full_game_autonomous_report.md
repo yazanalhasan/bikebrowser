@@ -144,3 +144,12 @@ Report: `artifacts/phase2/phase2_2_discovery_registry.md`.
 
 **State:** continuing autonomously to 2.3 World Map (functional: current/
 reachable/locked; no fake destinations), then 2.4 Multi-Biome.
+
+### Phase 2.3 — World Map (functional) ✅ `08edb08`
+Made the world map functional: Current/Reachable/Locked from real state (single
+source of truth in act1WorldMapPoints + runtime.getWorldMap); no fake
+destinations, no dead links; locked frontier (Salt River/Copper Mine) unlocks
+when the bridge is repaired. Fixed the "dead G key" (double-toggle from two G
+handlers); added [J]/G to the controls hint. 3-layer green (engine + reachability
+2 + payoff GUARD); strict suite all GUARDs green. One UTM-guard nav flake re-ran
+green. Report: `artifacts/phase2/phase2_3_world_map.md`.
