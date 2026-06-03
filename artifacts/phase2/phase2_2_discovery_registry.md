@@ -56,3 +56,28 @@ Strict suite overall: **8 GUARDs green / 1 `fixme` skipped.** Engine acceptance
 
 **2.3 World Map** — functional (current / reachable / locked locations; no fake
 destinations, no dead links), then 2.4 Multi-Biome.
+
+---
+
+## Addendum — Fun rework (QA verdict accepted, `cb5bc16`)
+
+QA verdict: Implemented ✓ / Accepted ✓ / Reachable ✓ / **Fun ✗** (collectible-only).
+Reworked to satisfy all four requirements:
+
+1. **Discoverability** — the *first* discovery shows a one-time "Press **[J]** to
+   open your field discoveries" tutorial, so the player learns the registry
+   exists by playing (not by knowing the key).
+2. **Exploration-triggered discovery** — entering a new area logs a discovery by
+   **proximity, no interaction prompt** (City Gate at the map edge; Desert vista).
+3. **Discoveries MATTER** — discovering the **City Gate** **reveals the hidden
+   Salt River expedition** (its marker is invisible and its zone inert until
+   then). A discovery now **affects progression / reveals a hidden opportunity**,
+   not a collectible. Exposed as `getAct1State().discoveryUnlocks.saltRiverRevealed`.
+4. **Re-ran Engine + Reachability + Payoff** — `game-rebuild.discovery-fun.spec.js`
+   (3 passed: ENGINE flips the unlock; REACHABILITY logs an exploration discovery +
+   fires the tutorial; MATTERS reveals the expedition) + a new strict-suite GUARD
+   ("a discovery affects progression — City Gate reveals the Salt River
+   expedition"). Full gate green; no regression.
+
+**Status: pending independent QA Fun confirmation.** Not self-marked complete;
+deeper biome expansion is held until QA confirms Fun.

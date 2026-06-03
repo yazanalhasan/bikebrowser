@@ -168,3 +168,13 @@ Ecology Loop, Discovery Registry, World Map, and Multi-Biome are all delivered t
 the three-layer standard (Engine + Player Reachability + Payoff). Strict suite:
 10 GUARDs green / 1 UTM fixme. Engine acceptance green. Per the execution order,
 this is the reassess checkpoint — next targets await owner direction.
+
+### Phase 2.2 — Discovery Registry FUN rework ✅ `cb5bc16`
+QA verdict accepted (Reachable but not Fun). Made it consequential: (1) first-
+discovery [J] tutorial (discoverability); (2) exploration-triggered discoveries
+by proximity, no prompt (City Gate, Desert vista); (3) discoveries MATTER —
+discovering the City Gate reveals the hidden Salt River expedition (affects
+progression). Re-ran 3-layer (discovery-fun.spec 3 passed: engine+reachability+
+matters) + new strict-suite "matters" GUARD; full gate green, no regression.
+**Held for independent QA Fun confirmation before marking complete / resuming
+biome expansion.** Report: artifacts/phase2/phase2_2_discovery_registry.md (addendum).
