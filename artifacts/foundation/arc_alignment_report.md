@@ -7,7 +7,7 @@ accepted / missing / obsolete / deferred. **Runtime wins.** This sets honest
 scope for the Completion Contract: the contract's "complete" = *every documented
 act/chapter is a coherent playable slice*, not full fidelity to this vision.
 
-## Live alignment dashboard (updated each phase transition — last: post **Phase 2.3 World Map** — Phase 1 verified complete; Phase 2 in progress)
+## Live alignment dashboard (updated each phase transition — last: post **Phase 2.4 Multi-Biome (Salt River)** — Phase 1 verified complete; Phase 2 (2.1–2.4) complete)
 D=Documented, I=Implemented, W=Wired, P=Playable, A=Accepted (acceptance-covered).
 
 | Category | D | I | W | P | A | Notes |
@@ -17,7 +17,7 @@ D=Documented, I=Implemented, W=Wired, P=Playable, A=Accepted (acceptance-covered
 | Vehicle chapters (bike) | ✅ | ✅ | ✅ | ✅ | ✅ | bike only; ch.2–7 deferred |
 | Region: Neighborhood | ✅ | ✅ | ✅ | ✅ | ✅ | |
 | **Region: Dry Wash** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.8; first investigation region (observe→hypothesis→evidence→conclusion; misleading hypothesis disproved) |
-| Region: Salt River | ✅ | ❌ | ❌ | ❌ | ❌ | Phase 2.4 |
+| **Region: Salt River** | ✅ | ✅ | ✅ | ✅ | ✅ | **2.4**; first multi-biome region — gated behind the wider map (repair the bridge); full observe→predict→outcome→payoff loop (salt-tolerant plants + corrosion-resistant materials); 3-layer accepted |
 | **Engineering: UTM/materials** | ✅ | ✅ | ✅ | ✅ | ✅ | per-material verdicts (1.2) |
 | **Engineering: predict-before-test** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.3; accuracy tracked |
 | **Engineering: inventory metadata** | ✅ | ✅ | ✅ | ✅ | ✅ | 1.4 |
@@ -78,6 +78,7 @@ through the UI? Not a rating — a yes/no on whether those three are present in 
 | **Dry Wash investigation** | ✅ | ✅ | **✅ (1.9.4, verified)** | **✅ (1.9.4)** | overlay: walk to washout marker → press E · choice: pick 1 of 2 explanations (misleading one unmarked) · consequence: evidence **turns a wrong guess red + "doesn't fit"** on screen · payoff: real explanation + "you changed your mind with the evidence" + notebook; Esc-exit, never trapped; **independently verified** by the strict suite GUARD (full keyboard play, asserts concluded + corrected) + dedicated investigation-reachability spec |
 | **Discovery registry** | ✅ | ✅ | **✅ (2.2)** | **✅ (2.2)** | choice/act: observe/test/investigate/learn through play · consequence: **NEW DISCOVERY** banner on each new find · payoff: persistent **[J]** registry grouped by 8 categories, survives save/load; connects notebook/ecology/investigation/engineering; 3-layer (engine + reachability + payoff GUARD) |
 | **World map** | ✅ | ✅ | **✅ (2.3)** | **✅ (2.3)** | act: press **G** (fixed dead key) to open a functional map · consequence: **Current / Reachable / Locked** from real state (no fake destinations, no dead links) · payoff: the locked frontier (Salt River/Copper Mine) becomes reachable once the bridge is repaired; 3-layer (engine + reachability + payoff GUARD) |
+| **Multi-Biome (Salt River)** | ✅ | ✅ | **✅ (2.4)** | **✅ (2.4)** | act: set out for the Salt River (gated behind the wider map; locked gives a clear panel, not silence) · observe→predict (which plant/material suits the salt biome) →consequence (good fit / poor fit on screen) →payoff: why + a discovery (saltbush, corrosion resistance, Salt River landmark); not an empty area — carries the full loop; 3-layer (engine + reachability + payoff GUARD) |
 | **Ecology loop (observe→predict→outcome→payoff)** | ✅ | ✅ | **✅ (2.1)** | **✅ (2.1)** | "Plant the desert" marker → **observe** a site (conditions) → **predict** which plant thrives (◀▶ + E) → **outcome**: the plant visibly **grows green (thrives)** or **wilts amber (struggles)** → **payoff**: why it fits + notebook field note; wrong-but-taught (names the plant that fits + why); Esc-exit, never trapped; **triple acceptance** — engine (`ecology-engine`) + player-reachability (`ecology-reachability`) + a strict-suite **Payoff GUARD** (asserts outcome resolved + notebook) |
 
 **Bottleneck (resolved):** the gap was never implementation — it was **player
@@ -88,9 +89,12 @@ prediction gates intervention (arc.md). Phase 1 is verified complete (see
 the first system held to the full three-layer standard — Engine + Player
 Reachability + Payoff** — all green. **Phase 2.2 Discovery Registry** is likewise
 delivered to the three-layer standard (persistent, categorised, NEW DISCOVERY +
-[J] view). **Phase 2.3 World Map** is now functional (Current/Reachable/Locked,
-no fake destinations; dead G key fixed). Remaining Phase 2: **2.4 Multi-Biome**
-(next) — each biome must carry observe→predict→outcome→payoff before expansion.
+[J] view). **Phase 2.3 World Map** is functional (Current/Reachable/Locked, no
+fake destinations; dead G key fixed). **Phase 2.4 Multi-Biome (Salt River)** adds
+the first gated biome carrying the full observe→predict→outcome→payoff loop (no
+empty area). **Phase 2 (2.1–2.4) is complete** — all to the three-layer standard.
+Next reassessment targets (arc.md): 2.5/2.6 Voice (neural), 2.7 Language revive,
+2.8 Economy, deeper biology substrates, and Act 2 — pending owner direction.
 
 ## Acts
 | Act (arc.md) | Documented | Implemented | Playable | Accepted | Status |

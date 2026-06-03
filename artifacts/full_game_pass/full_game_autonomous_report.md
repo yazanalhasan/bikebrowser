@@ -153,3 +153,18 @@ when the bridge is repaired. Fixed the "dead G key" (double-toggle from two G
 handlers); added [J]/G to the controls hint. 3-layer green (engine + reachability
 2 + payoff GUARD); strict suite all GUARDs green. One UTM-guard nav flake re-ran
 green. Report: `artifacts/phase2/phase2_3_world_map.md`.
+
+### Phase 2.4 — Multi-Biome: Salt River ✅ `15c2218`
+First gated biome carrying the FULL loop (not an empty area): observe→predict→
+outcome→payoff across salt-tolerant ecology (saltbush) + salt-water engineering
+(copper vs steel corrosion). Locked behind the wider map with a clear panel (no
+silence); registers Salt River landmark + plant + concept discoveries (2.2) and
+shows as a destination once unlocked (2.3). 3-layer green (engine + reachability
+2 + payoff GUARD); full gate **11 passed / 1 fixme**, clean run.
+Report: `artifacts/phase2/phase2_4_multi_biome.md`.
+
+### Phase 2 (2.1–2.4) COMPLETE — reassess point
+Ecology Loop, Discovery Registry, World Map, and Multi-Biome are all delivered to
+the three-layer standard (Engine + Player Reachability + Payoff). Strict suite:
+10 GUARDs green / 1 UTM fixme. Engine acceptance green. Per the execution order,
+this is the reassess checkpoint — next targets await owner direction.
