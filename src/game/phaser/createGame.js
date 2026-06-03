@@ -9,6 +9,7 @@ import PredictionScene from './scenes/PredictionScene.js';
 import BridgeDesignScene from './scenes/BridgeDesignScene.js';
 import InvestigationScene from './scenes/InvestigationScene.js';
 import EcologyScene from './scenes/EcologyScene.js';
+import BiomeScene from './scenes/BiomeScene.js';
 import DebugScene from './scenes/DebugScene.js';
 
 export function createGame(parent) {
@@ -40,6 +41,7 @@ export function createGame(parent) {
       BridgeDesignScene,
       InvestigationScene,
       EcologyScene,
+      BiomeScene,
       DebugScene,
     ],
     audio: { noAudio: true },

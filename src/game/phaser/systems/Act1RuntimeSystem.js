@@ -1,5 +1,6 @@
 import { act1Dialogue, act1WorldMapPoints } from '../../data/act1/index.js';
 import { BikeSystem } from './BikeSystem.js';
+import { BiomeSystem } from './BiomeSystem.js';
 import { ChemistrySystem } from './ChemistrySystem.js';
 import { ConstructionSystem } from './ConstructionSystem.js';
 import { DebugDiagnosticSystem } from './DebugDiagnosticSystem.js';
@@ -51,6 +52,7 @@ export class Act1RuntimeSystem {
     this.languageSystem = new LanguageSystem();
     this.discoveryMapSystem = new DiscoveryMapSystem();
     this.discoveryRegistry = new DiscoveryRegistrySystem();
+    this.biomeSystem = new BiomeSystem();
     this.debugDiagnosticSystem = new DebugDiagnosticSystem(this);
     this.audioSystem = new Act1AudioSystem();
     this.assetContract = PLACEHOLDER_ASSET_CONTRACT;
@@ -74,6 +76,7 @@ export class Act1RuntimeSystem {
     registry.set('languageSystem', this.languageSystem);
     registry.set('discoveryMapSystem', this.discoveryMapSystem);
     registry.set('discoveryRegistry', this.discoveryRegistry);
+    registry.set('biomeSystem', this.biomeSystem);
     registry.set('act1AudioSystem', this.audioSystem);
   }
 
@@ -439,6 +442,7 @@ export class Act1RuntimeSystem {
       discovery: this.discoveryMapSystem.getState(),
       discoveryRegistry: this.discoveryRegistry.getState(),
       worldMap: this.getWorldMap(),
+      biomes: this.biomeSystem.getState(),
       engineeringLoop: this.getEngineeringLoop(),
       reasoning: this.assessReasoning(),
       feedback: {
@@ -556,6 +560,48 @@ export class Act1RuntimeSystem {
     };
   }
 
+  // Phase 2.4 — Multi-Biome. A biome carries the full observe -> predict ->
+  // outcome -> payoff loop and is gated behind the wider map (repair the bridge).
+  biomeUnlocked() {
+    return Boolean(this.discoveryMapSystem.getState().widerMapUnlocked);
+  }
+
+  enterBiome(biomeId) {
+    if (!this.biomeUnlocked()) {
+      this.recordFeedback('map', 'That biome is past the wider map — repair the bridge to open the route first.', { biomeId, locked: true });
+      return { ok: false, reason: 'locked', biomeId };
+    }
+    const result = this.biomeSystem.enter(biomeId);
+    if (!result.ok) return result;
+    const biome = this.biomeSystem.biomes.get(biomeId);
+    if (biome?.landmark) this.registerDiscovery({ ...biome.landmark, category: 'landmark', source: 'biome' });
+    this.recordFeedback('discovery', `Entered ${result.biome.name}. ${result.biome.intro}`, result.biome);
+    return result;
+  }
+
+  observeBiomePlacement(biomeId, placementId) {
+    const result = this.biomeSystem.observe(biomeId, placementId);
+    if (result.ok) this.recordFeedback('ecology', `${result.placement.site}`, result.placement);
+    return result;
+  }
+
+  predictBiomePlacement(biomeId, placementId, optionId) {
+    const result = this.biomeSystem.predict(biomeId, placementId, optionId);
+    if (result.ok) this.recordFeedback('ecology', `You expect ${optionId} to suit this site.`, result);
+    return result;
+  }
+
+  resolveBiomePlacement(biomeId, placementId) {
+    const result = this.biomeSystem.resolve(biomeId, placementId);
+    if (!result.ok) {
+      this.recordFeedback('ecology', 'Observe and predict before you decide.', result);
+      return result;
+    }
+    if (result.discovery) this.registerDiscovery({ ...result.discovery, source: 'biome' });
+    this.recordFeedback('ecology', `${result.thrives ? 'Good fit.' : 'Poor fit.'} ${result.why}`, result);
+    return result;
+  }
+
   saveGame = () => saveRebuildState(this.getAct1State());
 
   loadGame = () => {
@@ -594,6 +640,7 @@ export class Act1RuntimeSystem {
     this.languageSystem.loadState(state.language);
     this.discoveryMapSystem.loadState(state.discovery);
     this.discoveryRegistry.loadState(state.discoveryRegistry);
+    this.biomeSystem.loadState(state.biomes);
   }
 
   resetAct1 = () => {
@@ -613,6 +660,7 @@ export class Act1RuntimeSystem {
     this.languageSystem = fresh.languageSystem;
     this.discoveryMapSystem = fresh.discoveryMapSystem;
     this.discoveryRegistry = fresh.discoveryRegistry;
+    this.biomeSystem = fresh.biomeSystem;
     this.audioSystem.stopSpeech();
     this.act1Complete = false;
     this.feedbackLog = [];
@@ -662,6 +710,10 @@ export class Act1RuntimeSystem {
       markDiscoveriesSeen: () => this.discoveryRegistry.markSeen(),
       getWorldMap: () => this.getWorldMap(),
       setCurrentLocation: (id) => this.setCurrentLocation(id),
+      enterBiome: (biomeId) => this.enterBiome(biomeId),
+      observeBiomePlacement: (biomeId, placementId) => this.observeBiomePlacement(biomeId, placementId),
+      predictBiomePlacement: (biomeId, placementId, optionId) => this.predictBiomePlacement(biomeId, placementId, optionId),
+      resolveBiomePlacement: (biomeId, placementId) => this.resolveBiomePlacement(biomeId, placementId),
       observeEcologyPlacement: (id) => this.observeEcologyPlacement(id),
       predictEcologyPlacement: (id, speciesId) => this.predictEcologyPlacement(id, speciesId),
       resolveEcologyPlacement: (id) => this.resolveEcologyPlacement(id),

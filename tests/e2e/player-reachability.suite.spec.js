@@ -414,6 +414,46 @@ test.describe('player reachability', () => {
     await page.waitForFunction(() => window.__WORLDMAP__.open === false, null, { timeout: 5000 });
   });
 
+  // ADDED 2026-06-03 (Phase 2.4): Multi-Biome (Salt River). Gated behind the
+  // wider map (setup-only unlock), then the player walks there and runs the full
+  // observe->predict->outcome->payoff loop by keyboard. Payoff = biome complete +
+  // discoveries recorded.
+  test('GUARD: a player runs the Salt River biome loop by hand — payoff delivered', async ({ page }) => {
+    test.setTimeout(70000);
+    await bootRebuild(page);
+    // Prerequisite (not the action): open the wider map so the biome unlocks.
+    await page.evaluate(() => {
+      const g = window.__GAME__;
+      g.handleInteraction('collect_materials');
+      g.handleInteraction('ecology_patch');
+      ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => g.testMaterial(id));
+      g.designBridge({ deck: 'mesquite', support: 'steel', brace: 'copper_brace' });
+      g.repairBridge();
+      g.unlockWiderMap();
+    });
+    const zone = await zoneById(page, 'salt_river_expedition');
+    expect(zone, 'a Salt River expedition interaction exists').toBeTruthy();
+    expect(await walkTo(page, zone), 'player can walk to the expedition').toBe(true);
+    await page.keyboard.press('e');
+    await page.waitForFunction(() => window.__BIOME__ && window.__BIOME__.active === true, null, { timeout: 8000 });
+    // Drive intro -> (observe -> predict[first option] -> result) x N -> summary -> close.
+    for (let i = 0; i < 24; i++) {
+      const s = await page.evaluate(() => window.__BIOME__);
+      if (!s.active) break;
+      await page.keyboard.press('e');
+      await page.waitForTimeout(220);
+    }
+    await page.waitForFunction(() => window.__BIOME__.active === false, null, { timeout: 8000 });
+
+    const payoff = await page.evaluate(() => {
+      const s = window.__GAME__.getAct1State();
+      const biome = s.biomes.biomes.find((b) => b.id === 'salt_river');
+      return { complete: biome.complete, discoveries: s.discoveryRegistry.total };
+    });
+    expect(payoff.complete, 'the biome loop completes through play').toBe(true);
+    expect(payoff.discoveries, 'discoveries accrued (payoff is recorded)').toBeGreaterThan(0);
+  });
+
   // ---- TRACKED, not yet crisply assertable ----
 
   test.fixme('PAYOFF(UTM): pressing "test" shows a visible load test (press/bend/snap), not just text', async () => {

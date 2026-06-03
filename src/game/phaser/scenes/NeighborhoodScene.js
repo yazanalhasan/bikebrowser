@@ -787,6 +787,18 @@ export default class NeighborhoodScene extends Phaser.Scene {
       dialogueId: 'wider_gate_clue',
       action: 'wider_gate',
     });
+    // Phase 2.4 — Salt River biome expedition. Always present (so it is
+    // reachable), but the loop is gated behind the wider map: pressing E before
+    // the bridge is repaired opens a clear "locked" panel, not silence.
+    const saltRiverExpedition = { x: 1430, y: 566 };
+    this.add.image(saltRiverExpedition.x, saltRiverExpedition.y, this.wave1QuestMarkerKey()).setTint(0x7fd1ff).setDepth(40);
+    this.interactions.register({
+      id: 'salt_river_expedition',
+      x: saltRiverExpedition.x,
+      y: saltRiverExpedition.y,
+      label: 'Set out for the Salt River',
+      action: 'salt_river_expedition',
+    });
 
     this.drawInteractionHalos();
 
@@ -1258,6 +1270,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
           // Phase 2.1: the player observes a site, predicts which plant thrives,
           // sees the outcome, and learns why — observe→predict→outcome→payoff.
           this.registry.events.emit('ecology:start');
+        } else if (nearest.action === 'salt_river_expedition') {
+          // Phase 2.4: enter the Salt River biome (gated behind the wider map;
+          // the scene shows a locked panel until the bridge is repaired).
+          this.registry.events.emit('biome:start', 'salt_river');
         } else if (nearest.id === 'neighbor') {
           // Mrs. Ramirez is ONE NPC with two beats. Previously a second
           // `spanish_neighbor` zone was stacked at her exact coords, so
