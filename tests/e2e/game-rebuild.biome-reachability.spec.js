@@ -141,5 +141,20 @@ test.describe('Player reachability — Salt River biome', () => {
     expect(payoff.complete, 'biome loop completed through play').toBe(true);
     expect(payoff.saltbush && payoff.cottonwood && payoff.corrosion, 'biome discoveries recorded as payoff').toBe(true);
     expect(payoff.zuzuBucks, 'completing the Salt River loop pays ZuzuBucks').toBeGreaterThan(0);
+
+    // Acceptance evidence for the Brain auditor's biome_depth dimension: proof that
+    // an unlocked biome is a full ecology-quality loop reached by a real player.
+    const { writeFileSync } = await import('node:fs');
+    writeFileSync(`${captureDir}/biome_acceptance_report.json`, JSON.stringify({
+      biome: 'salt_river',
+      reachable: true,
+      playerVisibleWalkthrough: true,
+      siteCount: payoff.resolved,
+      complete: payoff.complete,
+      zuzuBucks: payoff.zuzuBucks,
+      payoffReward: payoff.zuzuBucks > 0,
+      discoveries: { saltbush: payoff.saltbush, cottonwood: payoff.cottonwood, corrosion: payoff.corrosion },
+      generatedAt: new Date().toISOString(),
+    }, null, 2));
   });
 });

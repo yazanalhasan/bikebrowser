@@ -1,0 +1,15 @@
+{
+  "biome": "salt_river",
+  "reachable": true,
+  "playerVisibleWalkthrough": true,
+  "siteCount": 4,
+  "complete": true,
+  "zuzuBucks": 265,
+  "payoffReward": true,
+  "discoveries": {
+    "saltbush": true,
+    "cottonwood": true,
+    "corrosion": true
+  },
+  "generatedAt": "2026-06-04T12:10:05.047Z"
+}
