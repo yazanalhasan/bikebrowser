@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { narratePanel, narrateText } from '../audio/sceneNarration.js';
+import { ASSET_KEYS } from '../systems/AssetRegistry.js';
 
 // Phase 1.9.3 — player-facing bridge design. The player assigns a tested
 // material to each load-bearing role (deck → support → brace), then BUILDS and
@@ -25,6 +26,9 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
     this.panel = this.add.container(480, 220).setScrollFactor(0).setDepth(1400).setVisible(false);
     const bg = this.add.rectangle(0, 0, 600, 340, 0x1a2412, 0.97).setOrigin(0.5, 0).setStrokeStyle(4, 0xc7e89a, 1);
+    this.backdrop = this.add.image(0, 164, ASSET_KEYS.washCrossingBackdrop).setOrigin(0.5, 0).setDisplaySize(548, 112).setVisible(false);
+    this.backdropFrame = this.add.rectangle(0, 164, 552, 116, 0x000000, 0).setOrigin(0.5, 0).setStrokeStyle(3, 0xd9b879, 0.92).setVisible(false);
+    this.textBand = this.add.rectangle(0, 8, 580, 82, 0x1a2412, 0.82).setOrigin(0.5, 0).setVisible(false);
     this.title = this.add.text(0, 16, '', { fontFamily: 'Arial', fontSize: '22px', color: '#eafbe0', fontStyle: 'bold' }).setOrigin(0.5, 0);
     this.roleHint = this.add.text(0, 48, '', { fontFamily: 'Arial', fontSize: '13px', color: '#bcd6ac' }).setOrigin(0.5, 0);
 
@@ -49,7 +53,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
     this.verdict = this.add.text(0, 288, '', { fontFamily: 'Arial', fontSize: '18px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
     this.hint = this.add.text(0, 318, '◀ ▶ pick    E choose    Esc leave', { fontFamily: 'Arial', fontSize: '12px', color: '#bcd6ac' }).setOrigin(0.5);
-    this.panel.add([bg, this.title, this.roleHint, this.card, this.chosenText, this.bridge, this.verdict, this.hint]);
+    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.roleHint, this.card, this.chosenText, this.bridge, this.verdict, this.hint]);
 
     this.registry.events.on('bridgeDesign:start', () => this.startFlow());
     this.keyHandler = (event) => this.onKey(event);
@@ -79,6 +83,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
   _showBlocked() {
     this.phase = 'blocked';
+    this._hideBackdrop();
     this.candidates = [];
     this.card.setVisible(false);
     this.bridge.setVisible(false);
@@ -94,6 +99,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
   _showChoose() {
     this.phase = 'choose';
+    this._setBackdrop(ASSET_KEYS.washCrossingBackdrop);
     this.candIdx = 0;
     this.bridge.setVisible(false);
     this.card.setVisible(true);
@@ -147,6 +153,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     const runtime = this.registry.get('act1Runtime');
     const result = runtime.designBridge(this.selection);
     this.phase = 'result';
+    this._setBackdrop(ASSET_KEYS.washCrossingBackdrop);
     this.card.setVisible(false);
     this.chosenText.setText('');
     this.bridge.setVisible(true);
@@ -191,6 +198,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
   _finish() {
     this.phase = 'idle';
+    this._hideBackdrop();
     this.panel.setVisible(false);
     this.registry.set('modalActive', false);
     this.registry.events.emit('quest:changed');
@@ -204,6 +212,21 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
   _narrateCandidate() {
     narrateText(this, `${this.candName.text}. ${this.candEvidence.text}`);
+  }
+
+  _setBackdrop(key) {
+    if (!key) { this._hideBackdrop(); return; }
+    // Re-apply display size after setTexture: setTexture resizes to the new
+    // texture's native frame, so the scale must be reset or the diorama blows up.
+    this.backdrop.setTexture(key).setOrigin(0.5, 0).setDisplaySize(548, 112).setVisible(true);
+    this.backdropFrame.setVisible(true);
+    this.textBand.setVisible(true);
+  }
+
+  _hideBackdrop() {
+    this.backdrop?.setVisible(false);
+    this.backdropFrame?.setVisible(false);
+    this.textBand?.setVisible(false);
   }
 
   _publish(extra = {}) {

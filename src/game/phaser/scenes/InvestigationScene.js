@@ -1,5 +1,11 @@
 import Phaser from 'phaser';
 import { narratePanel, narrateText } from '../audio/sceneNarration.js';
+import { ASSET_KEYS } from '../systems/AssetRegistry.js';
+
+const BACKDROP_BY_INVESTIGATION = {
+  wash_out_cause: ASSET_KEYS.washScourBackdrop,
+  green_strip: ASSET_KEYS.greenWashBackdrop,
+};
 
 // Phase 1.9.4 — player-facing investigation. The player reads a mystery,
 // CHOOSES a hypothesis (one is misleading), gathers evidence, and SEES the
@@ -22,6 +28,9 @@ export default class InvestigationScene extends Phaser.Scene {
 
     this.panel = this.add.container(480, 200).setScrollFactor(0).setDepth(1400).setVisible(false);
     const bg = this.add.rectangle(0, 0, 620, 392, 0x171f2b, 0.97).setOrigin(0.5, 0).setStrokeStyle(4, 0x9ac7e8, 1);
+    this.backdrop = this.add.image(0, 110, ASSET_KEYS.washScourBackdrop).setOrigin(0.5, 0).setDisplaySize(560, 116).setVisible(false);
+    this.backdropFrame = this.add.rectangle(0, 110, 564, 120, 0x000000, 0).setOrigin(0.5, 0).setStrokeStyle(3, 0x9ac7e8, 0.92).setVisible(false);
+    this.textBand = this.add.rectangle(0, 8, 600, 96, 0x171f2b, 0.82).setOrigin(0.5, 0).setVisible(false);
     this.title = this.add.text(0, 16, '', { fontFamily: 'Arial', fontSize: '21px', color: '#e0f1fb', fontStyle: 'bold' }).setOrigin(0.5, 0);
     this.observation = this.add.text(0, 50, '', { fontFamily: 'Arial', fontSize: '14px', color: '#bccfe0', align: 'center', wordWrap: { width: 560 } }).setOrigin(0.5, 0);
 
@@ -36,7 +45,7 @@ export default class InvestigationScene extends Phaser.Scene {
     this.verdict = this.add.text(0, 326, '', { fontFamily: 'Arial', fontSize: '16px', color: '#ffffff', fontStyle: 'bold', align: 'center', wordWrap: { width: 560 } }).setOrigin(0.5, 0);
     this.hint = this.add.text(0, 370, '', { fontFamily: 'Arial', fontSize: '12px', color: '#bccfe0' }).setOrigin(0.5, 0);
 
-    this.panel.add([bg, this.title, this.observation, this.cardA.container, this.cardB.container, this.evidenceTitle, this.evidenceText, this.verdict, this.hint]);
+    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.observation, this.cardA.container, this.cardB.container, this.evidenceTitle, this.evidenceText, this.verdict, this.hint]);
 
     this.registry.events.on('investigation:start', (id) => this.startFlow(id));
     this.keyHandler = (event) => this.onKey(event);
@@ -72,6 +81,7 @@ export default class InvestigationScene extends Phaser.Scene {
 
   _showObserve(obs) {
     this.phase = 'observe';
+    this._setBackdrop(this.investigationId);
     this.title.setText(obs.title);
     this.observation.setText(`You notice: ${obs.observation}`);
     [this.cardA, this.cardB].forEach((c) => c.container.setVisible(false));
@@ -85,6 +95,7 @@ export default class InvestigationScene extends Phaser.Scene {
 
   _showHypothesis() {
     this.phase = 'hypothesis';
+    this._setBackdrop(this.investigationId);
     this.observation.setText('Which explanation do you think is right? (you can be wrong — the evidence will tell)');
     this.evidenceTitle.setText('');
     this.evidenceText.setText('');
@@ -124,6 +135,7 @@ export default class InvestigationScene extends Phaser.Scene {
 
   _showEvidence() {
     this.phase = 'evidence';
+    this._setBackdrop(this.investigationId);
     this.observation.setText('You go and look. The evidence comes in:');
     // Reveal one more evidence item.
     this.evidenceShown = Math.min(this.evidenceShown + 1, this.evidence.length);
@@ -163,6 +175,7 @@ export default class InvestigationScene extends Phaser.Scene {
 
   _showConclusion() {
     this.phase = 'conclusion';
+    this._setBackdrop(this.investigationId);
     const runtime = this.registry.get('act1Runtime');
     const result = runtime.concludeMystery(this.investigationId);
     if (!result.ok) return;
@@ -182,6 +195,7 @@ export default class InvestigationScene extends Phaser.Scene {
 
   _showSummary() {
     this.phase = 'summary';
+    this._hideBackdrop();
     this.evidenceTitle.setText('Mystery solved');
     this.evidenceTitle.setColor('#9ac7e8');
     this.evidenceText.setText(this.correctedFromMisleading
@@ -219,6 +233,7 @@ export default class InvestigationScene extends Phaser.Scene {
 
   _finish() {
     this.phase = 'idle';
+    this._hideBackdrop();
     this.panel.setVisible(false);
     this.registry.set('modalActive', false);
     this.registry.events.emit('quest:changed');
@@ -229,6 +244,22 @@ export default class InvestigationScene extends Phaser.Scene {
   // Narrator: read the current panel aloud (skips the keyboard-control hint).
   _narrate() {
     narratePanel(this, this.panel, { exclude: [this.hint] });
+  }
+
+  _setBackdrop(investigationId) {
+    const key = BACKDROP_BY_INVESTIGATION[investigationId];
+    if (!key) { this._hideBackdrop(); return; }
+    // Re-apply display size after setTexture: setTexture resizes to the new
+    // texture's native frame, so the scale must be reset or the diorama blows up.
+    this.backdrop.setTexture(key).setOrigin(0.5, 0).setDisplaySize(560, 116).setVisible(true);
+    this.backdropFrame.setVisible(true);
+    this.textBand.setVisible(true);
+  }
+
+  _hideBackdrop() {
+    this.backdrop?.setVisible(false);
+    this.backdropFrame?.setVisible(false);
+    this.textBand?.setVisible(false);
   }
 
   _publish(extra = {}) {

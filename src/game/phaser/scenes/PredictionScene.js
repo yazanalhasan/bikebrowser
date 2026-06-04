@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { narratePanel, narrateText } from '../audio/sceneNarration.js';
+import { ASSET_KEYS } from '../systems/AssetRegistry.js';
 
 // Phase 1.9.2 / 1.9.2A-C — player-facing predict-before-test that feels like a
 // guess-and-check mini-game. The player SEES the beam hold / bend / break (not
@@ -20,6 +21,9 @@ export default class PredictionScene extends Phaser.Scene {
 
     this.panel = this.add.container(480, 230).setScrollFactor(0).setDepth(1400).setVisible(false);
     const bg = this.add.rectangle(0, 0, 580, 330, 0x10243a, 0.97).setOrigin(0.5, 0).setStrokeStyle(4, 0x7fd1ff, 1);
+    this.backdrop = this.add.image(0, 78, ASSET_KEYS.utmRigBackdrop).setOrigin(0.5, 0).setDisplaySize(524, 146).setVisible(false);
+    this.backdropFrame = this.add.rectangle(0, 78, 528, 150, 0x000000, 0).setOrigin(0.5, 0).setStrokeStyle(3, 0x7fd1ff, 0.92).setVisible(false);
+    this.textBand = this.add.rectangle(0, 8, 560, 70, 0x10243a, 0.82).setOrigin(0.5, 0).setVisible(false);
     this.title = this.add.text(0, 18, '', { fontFamily: 'Arial', fontSize: '22px', color: '#eaf6ff', fontStyle: 'bold' }).setOrigin(0.5, 0);
 
     // Choice chips.
@@ -43,7 +47,7 @@ export default class PredictionScene extends Phaser.Scene {
     this.explain = this.add.text(0, 262, '', { fontFamily: 'Arial', fontSize: '14px', color: '#cfe6fb', wordWrap: { width: 520 }, align: 'center' }).setOrigin(0.5, 0);
     this.hint = this.add.text(0, 308, '← → pick    ↑ ↓ how sure    E to test    Esc to leave', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc3e0' }).setOrigin(0.5);
 
-    this.panel.add([bg, this.title, this.chips, this.sureLabel, ...this.sureDots, this.beam, this.beamLeft, this.beamRight, this.weight, this.verdict, this.explain, this.hint]);
+    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.chips, this.sureLabel, ...this.sureDots, this.beam, this.beamLeft, this.beamRight, this.weight, this.verdict, this.explain, this.hint]);
 
     this.registry.events.on('prediction:start', (materialIds) => this.startFlow(materialIds));
     this.keyHandler = (event) => this.onKey(event);
@@ -73,6 +77,7 @@ export default class PredictionScene extends Phaser.Scene {
 
   _showChoose() {
     this.phase = 'choose';
+    this._setBackdrop(ASSET_KEYS.utmRigBackdrop);
     this.guess = 'hold';
     this.confidence = 2;
     const id = this.queue[this.index];
@@ -132,6 +137,7 @@ export default class PredictionScene extends Phaser.Scene {
     this.weight.setVisible(true);
     this._animateBeam(outcome);
     const faces = { hold: '✅ it HELD', bend: '🟡 it BENT, but held', break: '💥 it SNAPPED' };
+    this._setBackdrop(ASSET_KEYS.utmRigBackdrop);
     this.verdict.setText(`${matched ? '✓' : '✗'}  you said ${willHold ? '💪 hold' : '💥 break'} — ${faces[outcome]}`);
     this.verdict.setColor(matched ? '#9affb0' : '#ffd27f');
     // 1.9.2C — the explanation names THIS material + result (no stale carryover).
@@ -173,6 +179,7 @@ export default class PredictionScene extends Phaser.Scene {
   // 1.9.2B — exit flow: always finish with a clear summary, then close.
   _showSummary() {
     this.phase = 'summary';
+    this._hideBackdrop();
     this.chips.setVisible(false);
     this.sureLabel.setVisible(false);
     this.sureDots.forEach((d) => d.setVisible(false));
@@ -191,6 +198,7 @@ export default class PredictionScene extends Phaser.Scene {
 
   _finish() {
     this.phase = 'idle';
+    this._hideBackdrop();
     this.panel.setVisible(false);
     this.registry.set('modalActive', false);
     this.registry.events.emit('quest:changed');
@@ -200,6 +208,21 @@ export default class PredictionScene extends Phaser.Scene {
 
   _narrate() {
     narratePanel(this, this.panel, { exclude: [this.hint] });
+  }
+
+  _setBackdrop(key) {
+    if (!key) { this._hideBackdrop(); return; }
+    // Re-apply display size after setTexture: setTexture resizes to the new
+    // texture's native frame, so the scale must be reset or the diorama blows up.
+    this.backdrop.setTexture(key).setOrigin(0.5, 0).setDisplaySize(524, 146).setVisible(true);
+    this.backdropFrame.setVisible(true);
+    this.textBand.setVisible(true);
+  }
+
+  _hideBackdrop() {
+    this.backdrop?.setVisible(false);
+    this.backdropFrame?.setVisible(false);
+    this.textBand?.setVisible(false);
   }
 
   _publish(extra = {}) {

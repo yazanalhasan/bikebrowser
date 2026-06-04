@@ -66,6 +66,10 @@ export const ASSET_KEYS = {
   freshBankBackdrop: 'act1.biome.backdrop.fresh_bank',
   dryTerraceBackdrop: 'act1.biome.backdrop.dry_terrace',
   saltCrossingBackdrop: 'act1.biome.backdrop.salt_crossing',
+  washScourBackdrop: 'act1.investigation.backdrop.wash_scour',
+  greenWashBackdrop: 'act1.investigation.backdrop.green_wash',
+  utmRigBackdrop: 'act1.prediction.backdrop.utm_rig',
+  washCrossingBackdrop: 'act1.bridge.backdrop.wash_crossing',
   saltbushPlant: 'act1.biome.saltbush.plant',
   cottonwoodPlant: 'act1.biome.cottonwood.plant',
   uiNpcCueWrench: 'act1.ui.npc_cue_wrench',
@@ -188,6 +192,7 @@ export function createPlaceholderTextures(scene) {
   createMapGate(scene);
   createSaltRiverBackground(scene);
   createEnvironmentBackdrops(scene);
+  createSceneContextBackdrops(scene);
   createSaltbushPlant(scene);
   createCottonwoodPlant(scene);
   createNotebook(scene);
@@ -348,6 +353,102 @@ function createEnvironmentBackdrops(scene) {
     g.fillStyle(0xf0b86f, 0.64).fillRoundedRect(530, 178, 44, 10, 5).fillRoundedRect(530, 218, 44, 10, 5);
     g.lineStyle(3, OUTLINE, 0.8).lineBetween(496, 154, 610, 154).lineBetween(490, 194, 618, 194);
     shadow(g, 554, 330, 170, 24);
+  });
+}
+
+function createSceneContextBackdrops(scene) {
+  texture(scene, ASSET_KEYS.washScourBackdrop, 1120, 360, (g) => {
+    drawBackdropFrame(g, 0xf0cf8e, 0xc69058, 0xbb8050, 0x8f5c3b);
+    g.fillStyle(0xffe4a6, 0.9).fillCircle(930, 62, 42);
+    g.fillStyle(0xb77a49, 1).fillTriangle(6, 178, 250, 124, 500, 194);
+    g.fillStyle(0xd7a368, 1).fillTriangle(6, 178, 190, 142, 392, 196);
+    g.fillStyle(0xaa7148, 1).fillTriangle(1114, 180, 862, 132, 612, 196);
+    g.fillStyle(0xd39b61, 1).fillTriangle(1114, 180, 944, 146, 720, 196);
+    g.lineStyle(7, 0x6f462e, 0.8).lineBetween(38, 166, 1062, 154);
+    g.lineStyle(3, 0xf0c47d, 0.85).lineBetween(38, 158, 1062, 146);
+    g.fillStyle(OUTLINE, 0.9).fillRoundedRect(252, 188, 112, 104, 10).fillRoundedRect(756, 188, 112, 104, 10);
+    g.fillStyle(0x8f6d55, 1).fillRoundedRect(260, 196, 96, 88, 8).fillRoundedRect(764, 196, 96, 88, 8);
+    g.fillStyle(0xd4c3a2, 1).fillRoundedRect(260, 196, 96, 22, 8).fillRoundedRect(764, 196, 96, 22, 8);
+    g.fillStyle(OUTLINE, 0.86).fillEllipse(560, 284, 662, 142);
+    g.fillStyle(0x8a5638, 1).fillEllipse(560, 278, 626, 122);
+    g.fillStyle(0xc5905c, 1).fillEllipse(560, 244, 540, 62);
+    g.fillStyle(0x6f432d, 0.82).fillEllipse(560, 290, 430, 64);
+    g.fillStyle(0xe2b477, 1).fillEllipse(560, 228, 440, 34);
+    g.lineStyle(5, OUTLINE, 0.72).lineBetween(224, 220, 374, 226).lineBetween(722, 224, 878, 218);
+    g.lineStyle(3, 0x6f452d, 0.72);
+    for (const [x1, y1, x2, y2, x3, y3] of [[390, 254, 454, 278, 428, 318], [536, 238, 500, 278, 548, 320], [680, 252, 632, 286, 706, 328]]) {
+      g.lineBetween(x1, y1, x2, y2).lineBetween(x2, y2, x3, y3);
+    }
+    for (const p of [[76, 310, 6], [172, 274, 5], [304, 318, 7], [472, 304, 5], [620, 326, 7], [802, 306, 5], [976, 276, 6], [1050, 322, 5]]) pebble(g, ...p, 0xa8754c);
+  });
+
+  texture(scene, ASSET_KEYS.greenWashBackdrop, 1120, 360, (g) => {
+    drawBackdropFrame(g, 0xf2d7a2, 0xc79c64, 0xcc9b64, 0xa87349);
+    g.fillStyle(0xbc8454, 1).fillTriangle(6, 186, 316, 124, 612, 198);
+    g.fillStyle(0xe0b176, 1).fillTriangle(6, 184, 240, 148, 486, 198);
+    g.fillStyle(0xb27848, 1).fillTriangle(1114, 184, 804, 128, 522, 198);
+    g.fillStyle(0xdba66e, 1).fillTriangle(1114, 184, 912, 150, 684, 198);
+    g.fillStyle(0xb88755, 1).fillEllipse(560, 286, 1040, 118);
+    g.fillStyle(0xdfb178, 1).fillEllipse(560, 254, 900, 54);
+    g.fillStyle(OUTLINE, 0.78).fillRoundedRect(104, 226, 908, 76, 36);
+    g.fillStyle(0x3f6936, 1).fillRoundedRect(116, 222, 884, 74, 34);
+    g.fillStyle(0x6fae54, 1).fillRoundedRect(132, 222, 850, 42, 22);
+    g.fillStyle(0xa3d87a, 0.9).fillRoundedRect(162, 228, 760, 16, 8);
+    g.lineStyle(4, 0x2c4b2c, 0.82).lineBetween(110, 282, 1006, 286);
+    for (const [x, y, s] of [[178, 248, 1], [260, 238, 0.86], [420, 252, 1.1], [556, 236, 0.9], [716, 250, 1.05], [860, 240, 0.88], [950, 256, 1]]) {
+      shadow(g, x, y + 42, 52 * s, 12);
+      g.fillStyle(OUTLINE, 1).fillRoundedRect(x - 6 * s, y - 4 * s, 12 * s, 50 * s, 5);
+      g.fillStyle(0x795030, 1).fillRoundedRect(x - 4 * s, y - 2 * s, 8 * s, 46 * s, 4);
+      g.fillStyle(OUTLINE, 1).fillCircle(x, y - 10 * s, 26 * s);
+      g.fillStyle(0x6f9e4f, 1).fillCircle(x, y - 10 * s, 22 * s);
+      g.fillStyle(0xa8d97c, 0.95).fillCircle(x - 8 * s, y - 18 * s, 8 * s);
+    }
+    for (const t of [[94, 286, 0xa58b4b], [320, 270, 0x9bd66a], [614, 278, 0x98d870], [1044, 292, 0xa58b4b], [792, 276, 0x9fdc72]]) grassTuft(g, ...t);
+    for (const p of [[60, 314, 5], [364, 312, 4], [508, 304, 5], [686, 312, 4], [1024, 316, 5]]) pebble(g, ...p, 0xaa764d);
+  });
+
+  texture(scene, ASSET_KEYS.utmRigBackdrop, 1120, 360, (g) => {
+    drawBackdropFrame(g, 0xd6ecf0, 0x9fbfc6, 0xaab8b6, 0x7e8c8a);
+    g.fillStyle(0xcdd6d4, 1).fillRoundedRect(84, 206, 952, 92, 18);
+    g.fillStyle(0xe7eeee, 1).fillRoundedRect(118, 212, 884, 24, 12);
+    g.fillStyle(OUTLINE, 1).fillRoundedRect(224, 72, 86, 238, 12).fillRoundedRect(810, 72, 86, 238, 12);
+    g.fillStyle(0x536e7a, 1).fillRoundedRect(234, 82, 66, 218, 9).fillRoundedRect(820, 82, 66, 218, 9);
+    g.fillStyle(0x9cc4cc, 1).fillRoundedRect(244, 90, 16, 200, 7).fillRoundedRect(830, 90, 16, 200, 7);
+    g.fillStyle(OUTLINE, 1).fillRoundedRect(186, 58, 748, 64, 14);
+    g.fillStyle(0x607d8b, 1).fillRoundedRect(198, 68, 724, 44, 10);
+    g.fillStyle(0xaed4dc, 1).fillRoundedRect(216, 74, 438, 14, 7);
+    g.fillStyle(OUTLINE, 1).fillRoundedRect(414, 124, 292, 46, 10);
+    g.fillStyle(0x455f69, 1).fillRoundedRect(424, 132, 272, 30, 8);
+    g.fillStyle(0x9fb7bd, 1).fillRoundedRect(494, 168, 120, 42, 8);
+    g.fillStyle(OUTLINE, 0.9).fillRoundedRect(360, 256, 400, 56, 12);
+    g.fillStyle(0x546a70, 1).fillRoundedRect(372, 264, 376, 36, 8);
+    g.fillStyle(0xb8c5c4, 1).fillRoundedRect(470, 246, 250, 26, 8);
+    g.fillStyle(0xf0bd62, 0.92).fillRoundedRect(522, 184, 76, 40, 8);
+    g.lineStyle(5, OUTLINE, 0.8).lineBetween(560, 164, 560, 236);
+    g.fillStyle(0xffd77c, 1).fillTriangle(560, 236, 536, 206, 584, 206);
+    g.lineStyle(3, 0xe7f3f4, 0.72).lineBetween(256, 112, 256, 288).lineBetween(856, 112, 856, 288);
+    shadow(g, 560, 320, 620, 32);
+    for (const p of [[170, 318, 5], [930, 318, 5], [1020, 278, 4]]) pebble(g, ...p, 0x87908f);
+  });
+
+  texture(scene, ASSET_KEYS.washCrossingBackdrop, 1120, 360, (g) => {
+    drawBackdropFrame(g, 0xf0d39b, 0xbe8c58, 0xc7975f, 0x8f6040);
+    g.fillStyle(0xffe1a0, 0.9).fillCircle(914, 64, 38);
+    g.fillStyle(0xb87947, 1).fillTriangle(6, 184, 298, 132, 560, 196);
+    g.fillStyle(0xd9a56a, 1).fillTriangle(6, 184, 236, 150, 430, 196);
+    g.fillStyle(0xaa7045, 1).fillTriangle(1114, 184, 816, 132, 560, 196);
+    g.fillStyle(0xd29a61, 1).fillTriangle(1114, 184, 914, 150, 696, 196);
+    g.fillStyle(OUTLINE, 0.86).fillRoundedRect(34, 214, 392, 84, 16).fillRoundedRect(694, 214, 392, 84, 16);
+    g.fillStyle(0xc8945d, 1).fillRoundedRect(42, 208, 386, 82, 14).fillRoundedRect(692, 208, 386, 82, 14);
+    g.fillStyle(0xe5b374, 1).fillRoundedRect(42, 208, 386, 24, 12).fillRoundedRect(692, 208, 386, 24, 12);
+    g.fillStyle(OUTLINE, 0.9).fillEllipse(560, 288, 430, 124);
+    g.fillStyle(0x805139, 1).fillEllipse(560, 286, 400, 112);
+    g.fillStyle(0xb77e4e, 1).fillEllipse(560, 252, 342, 54);
+    g.fillStyle(0x67432f, 0.86).fillEllipse(560, 304, 278, 50);
+    g.lineStyle(5, 0x70482f, 0.78).lineBetween(108, 246, 404, 250).lineBetween(716, 250, 1010, 246);
+    g.lineStyle(3, 0xf0c681, 0.72).lineBetween(76, 226, 390, 226).lineBetween(728, 226, 1040, 224);
+    for (const p of [[118, 306, 6], [256, 270, 5], [418, 314, 5], [518, 286, 5], [636, 294, 5], [746, 314, 5], [930, 272, 5], [1040, 314, 6]]) pebble(g, ...p, 0xa8774f);
+    for (const t of [[78, 252], [382, 248], [730, 248], [1030, 252]]) grassTuft(g, t[0], t[1], 0xa58b4b);
   });
 }
 
