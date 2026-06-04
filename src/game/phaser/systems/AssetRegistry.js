@@ -60,6 +60,12 @@ export const ASSET_KEYS = {
   environmentVegetationCluster: 'act1.environment.vegetation_cluster',
   environmentEcologyPatch: 'act1.environment.ecology_patch',
   saltRiverBackground: 'act1.biome.salt_river.background',
+  washEdgeBackdrop: 'act1.ecology.backdrop.wash_edge',
+  openFlatBackdrop: 'act1.ecology.backdrop.open_flat',
+  saltFlatBackdrop: 'act1.biome.backdrop.salt_flat',
+  freshBankBackdrop: 'act1.biome.backdrop.fresh_bank',
+  dryTerraceBackdrop: 'act1.biome.backdrop.dry_terrace',
+  saltCrossingBackdrop: 'act1.biome.backdrop.salt_crossing',
   saltbushPlant: 'act1.biome.saltbush.plant',
   cottonwoodPlant: 'act1.biome.cottonwood.plant',
   uiNpcCueWrench: 'act1.ui.npc_cue_wrench',
@@ -181,6 +187,7 @@ export function createPlaceholderTextures(scene) {
   createChemistryStation(scene);
   createMapGate(scene);
   createSaltRiverBackground(scene);
+  createEnvironmentBackdrops(scene);
   createSaltbushPlant(scene);
   createCottonwoodPlant(scene);
   createNotebook(scene);
@@ -207,6 +214,141 @@ const OUTLINE = 0x241b14;
 
 function shadow(g, x, y, w, h = null) {
   g.fillStyle(0x000000, 0.18).fillEllipse(x, y, w, h ?? Math.max(5, w * 0.22));
+}
+
+function pebble(g, x, y, r, fill = 0xb68f62) {
+  g.fillStyle(OUTLINE, 0.34).fillEllipse(x + 1, y + 1, r * 2.2, r * 1.25);
+  g.fillStyle(fill, 1).fillEllipse(x, y, r * 2, r * 1.15);
+  g.fillStyle(0xe4c494, 0.7).fillEllipse(x - r * 0.35, y - r * 0.18, r * 0.8, r * 0.35);
+}
+
+function grassTuft(g, x, y, color = 0x8a7d43) {
+  g.lineStyle(3, OUTLINE, 0.75);
+  g.lineBetween(x, y, x - 7, y - 22).lineBetween(x, y, x + 4, y - 26).lineBetween(x, y, x + 11, y - 16);
+  g.lineStyle(1.7, color, 1);
+  g.lineBetween(x, y, x - 7, y - 22).lineBetween(x, y, x + 4, y - 26).lineBetween(x, y, x + 11, y - 16);
+}
+
+function drawBackdropFrame(g, sky, horizon, ground, groundShade) {
+  g.fillStyle(OUTLINE, 1).fillRoundedRect(0, 0, 1120, 360, 18);
+  g.fillStyle(sky, 1).fillRoundedRect(6, 6, 1108, 348, 14);
+  g.fillStyle(horizon, 1).fillRect(6, 118, 1108, 76);
+  g.fillStyle(ground, 1).fillRoundedRect(6, 192, 1108, 162, 10);
+  g.fillStyle(groundShade, 1).fillRect(6, 292, 1108, 62);
+  g.lineStyle(5, OUTLINE, 0.72).lineBetween(6, 288, 1114, 288);
+}
+
+function createEnvironmentBackdrops(scene) {
+  texture(scene, ASSET_KEYS.washEdgeBackdrop, 1120, 360, (g) => {
+    drawBackdropFrame(g, 0xf8d894, 0xd39a5c, 0xc8945d, 0x9b6840);
+    g.fillStyle(0xffefb8, 0.94).fillCircle(932, 64, 46);
+    g.fillStyle(0xf9c878, 0.8).fillCircle(932, 64, 64);
+    g.fillStyle(0xba7a43, 1).fillTriangle(6, 186, 360, 128, 710, 198);
+    g.fillStyle(0xe0ae72, 1).fillTriangle(6, 182, 270, 138, 520, 196);
+    g.fillStyle(OUTLINE, 0.86).fillRoundedRect(698, 202, 416, 92, 8);
+    g.fillStyle(0xaa6f42, 1).fillRoundedRect(706, 206, 406, 80, 8);
+    g.fillStyle(0xd8a069, 1).fillRoundedRect(706, 206, 406, 24, 8);
+    g.fillStyle(0x6f4a30, 0.7).fillRoundedRect(718, 258, 370, 30, 8);
+    g.lineStyle(4, 0x7a5134, 0.72).lineBetween(724, 234, 1072, 252).lineBetween(746, 270, 1064, 278);
+    g.fillStyle(0xd5a06b, 1).fillEllipse(402, 286, 820, 112);
+    g.fillStyle(0xe4bb7e, 1).fillEllipse(376, 260, 720, 54);
+    g.lineStyle(3, 0x7d5537, 0.82);
+    for (const crack of [[132, 284, 214, 304, 176, 326], [312, 278, 402, 300, 438, 332], [586, 282, 650, 308, 630, 344], [812, 292, 870, 318, 948, 320]]) {
+      g.lineBetween(crack[0], crack[1], crack[2], crack[3]).lineBetween(crack[2], crack[3], crack[4], crack[5]);
+    }
+    for (const p of [[70, 300, 7], [238, 258, 5], [520, 312, 8], [760, 270, 6], [1010, 318, 7]]) pebble(g, ...p);
+    for (const t of [[92, 248], [674, 246], [1038, 238], [784, 314]]) grassTuft(g, t[0], t[1], 0xa68d4e);
+  });
+
+  texture(scene, ASSET_KEYS.openFlatBackdrop, 1120, 360, (g) => {
+    drawBackdropFrame(g, 0xf2d99e, 0xcaa56e, 0xd2b07b, 0xb98f5e);
+    g.fillStyle(0xdab67a, 1).fillRect(6, 170, 1108, 36);
+    g.fillStyle(0xb98755, 0.75).fillRoundedRect(92, 150, 238, 28, 16).fillRoundedRect(772, 156, 180, 22, 12);
+    g.lineStyle(3, 0xffedc0, 0.55).lineBetween(42, 220, 1078, 206);
+    g.fillStyle(0xddbc88, 1).fillEllipse(560, 284, 980, 118);
+    g.fillStyle(0xe8cb97, 1).fillEllipse(488, 250, 820, 56);
+    g.fillStyle(0xbf986a, 0.6);
+    for (const [x, y, w] of [[72, 318, 90], [220, 276, 54], [504, 308, 76], [804, 264, 46], [980, 318, 82]]) g.fillEllipse(x, y, w, 14);
+    for (const p of [[102, 292, 5], [184, 316, 4], [356, 260, 3], [486, 292, 5], [642, 322, 4], [778, 284, 4], [918, 306, 5], [1052, 266, 3]]) pebble(g, ...p, 0xa8794c);
+    grassTuft(g, 952, 250, 0x9a8748);
+  });
+
+  texture(scene, ASSET_KEYS.saltFlatBackdrop, 1120, 360, (g) => {
+    drawBackdropFrame(g, 0xdcebbd, 0xb7c894, 0xe8e6cc, 0xc6d5c1);
+    g.fillStyle(0x8fbfc0, 1).fillRoundedRect(4, 198, 1112, 72, 26);
+    g.fillStyle(0x60999d, 1).fillRoundedRect(4, 234, 1112, 38, 18);
+    g.fillStyle(0xbce2db, 0.82).fillRoundedRect(34, 208, 1000, 18, 10);
+    g.fillStyle(0xf8f4df, 1);
+    for (const [x, y, w, h] of [[54, 284, 190, 34], [242, 258, 180, 28], [426, 296, 226, 38], [706, 264, 198, 30], [904, 302, 178, 34]]) {
+      g.fillRoundedRect(x, y, w, h, 12);
+      g.fillStyle(0xd7d0b4, 1).fillRoundedRect(x + w * 0.52, y + h - 8, w * 0.42, 6, 3);
+      g.fillStyle(0xf8f4df, 1);
+    }
+    g.lineStyle(3, 0xb6aa87, 0.75);
+    for (const [x, y, w] of [[72, 302, 130], [286, 274, 108], [472, 316, 156], [758, 282, 118], [936, 320, 118]]) g.lineBetween(x, y, x + w, y + 6);
+    g.fillStyle(0xfefbea, 0.9).fillRoundedRect(100, 242, 160, 8, 4).fillRoundedRect(648, 224, 220, 8, 4);
+    for (const t of [[84, 278], [1038, 284], [978, 236]]) grassTuft(g, t[0], t[1], 0x9aa06d);
+  });
+
+  texture(scene, ASSET_KEYS.freshBankBackdrop, 1120, 360, (g) => {
+    drawBackdropFrame(g, 0xbfe7c8, 0x89b670, 0x7fa05d, 0x5f7b43);
+    g.fillStyle(0x7db7b2, 1).fillRoundedRect(8, 214, 1104, 54, 22);
+    g.fillStyle(0xb7e5de, 0.86).fillRoundedRect(40, 222, 820, 14, 8);
+    g.fillStyle(0x9fc076, 1).fillTriangle(6, 206, 450, 156, 1114, 212);
+    g.fillStyle(0x6e8f50, 1).fillRoundedRect(0, 250, 1120, 52, 16);
+    g.fillStyle(0x486234, 0.9).fillRoundedRect(0, 288, 1120, 66, 8);
+    g.lineStyle(5, OUTLINE, 0.72).lineBetween(6, 286, 1114, 286);
+    for (const [x, h] of [[132, 92], [202, 120], [874, 100], [952, 78]]) {
+      shadow(g, x, 286, 60, 12);
+      g.fillStyle(OUTLINE, 1).fillRoundedRect(x - 10, 144, 22, h, 8);
+      g.fillStyle(0x8a5a38, 1).fillRoundedRect(x - 7, 148, 16, h - 4, 6);
+      g.fillStyle(0xb8845a, 1).fillRoundedRect(x - 5, 150, 5, h - 8, 4);
+      g.fillStyle(OUTLINE, 1).fillCircle(x, 126, 46);
+      g.fillStyle(0x6fae54, 1).fillCircle(x, 126, 41);
+      g.fillStyle(0x9ad57b, 0.9).fillCircle(x - 14, 110, 14);
+    }
+    g.fillStyle(0x9fd080, 1);
+    for (const [x, y] of [[70, 300], [312, 272], [486, 314], [660, 270], [1032, 306]]) g.fillEllipse(x, y, 70, 24);
+    g.fillStyle(0xaedbd1, 0.75).fillRoundedRect(386, 274, 166, 10, 5);
+  });
+
+  texture(scene, ASSET_KEYS.dryTerraceBackdrop, 1120, 360, (g) => {
+    drawBackdropFrame(g, 0xefcf91, 0xc49b65, 0xcda36e, 0x9c714a);
+    g.fillStyle(0xb98a57, 1).fillRoundedRect(6, 184, 1108, 62, 18);
+    g.fillStyle(0xe0ba84, 1).fillRoundedRect(6, 184, 1108, 24, 16);
+    g.fillStyle(OUTLINE, 0.52).fillRoundedRect(42, 238, 1036, 24, 10);
+    g.fillStyle(0x7aa8a0, 0.58).fillRoundedRect(118, 306, 868, 18, 9);
+    g.fillStyle(0x5f7f75, 0.42).fillRoundedRect(258, 326, 520, 12, 6);
+    g.fillStyle(0xd7ad77, 1).fillEllipse(548, 284, 920, 100);
+    g.fillStyle(0xe6c38e, 1).fillEllipse(500, 254, 760, 46);
+    g.lineStyle(3, 0x7f5637, 0.7).lineBetween(82, 250, 1010, 246);
+    g.lineStyle(2, 0xf0d39d, 0.7).lineBetween(120, 218, 1060, 212);
+    for (const p of [[116, 292, 4], [244, 264, 5], [440, 310, 5], [692, 278, 4], [854, 318, 5], [1034, 270, 4]]) pebble(g, ...p, 0xad7d4f);
+    for (const t of [[168, 248], [730, 242], [970, 254]]) grassTuft(g, t[0], t[1], 0xa58b4b);
+  });
+
+  texture(scene, ASSET_KEYS.saltCrossingBackdrop, 1120, 360, (g) => {
+    drawBackdropFrame(g, 0xc4dcc5, 0x9db36c, 0x8b7f58, 0x5d6048);
+    g.fillStyle(0x8aa469, 1).fillRect(6, 152, 1108, 54);
+    g.fillStyle(0x5d8f91, 1).fillRoundedRect(0, 184, 1120, 170, 20);
+    g.fillStyle(0x3f7478, 1).fillRoundedRect(0, 244, 1120, 110, 12);
+    g.fillStyle(0x916d43, 0.38).fillRoundedRect(0, 208, 1120, 36, 18).fillRoundedRect(0, 308, 1120, 28, 14);
+    g.lineStyle(5, 0xb8dad1, 0.86);
+    for (const y of [208, 238, 270, 304]) {
+      g.beginPath();
+      g.moveTo(22, y);
+      for (let x = 90; x < 1100; x += 120) g.lineTo(x, y + (x % 240 === 0 ? -12 : 10));
+      g.strokePath();
+    }
+    g.fillStyle(OUTLINE, 1).fillRoundedRect(514, 118, 80, 214, 10);
+    g.fillStyle(0x8b6f4a, 1).fillRoundedRect(520, 124, 68, 202, 8);
+    g.fillStyle(0xb7955f, 1).fillRoundedRect(520, 124, 68, 36, 8);
+    g.fillStyle(0x5b4935, 1).fillRoundedRect(524, 264, 60, 62, 8);
+    g.fillStyle(0x77c5bd, 0.62).fillRoundedRect(450, 274, 200, 18, 9);
+    g.fillStyle(0xf0b86f, 0.64).fillRoundedRect(530, 178, 44, 10, 5).fillRoundedRect(530, 218, 44, 10, 5);
+    g.lineStyle(3, OUTLINE, 0.8).lineBetween(496, 154, 610, 154).lineBetween(490, 194, 618, 194);
+    shadow(g, 554, 330, 170, 24);
+  });
 }
 
 // A wheel with tire, metal rim, hub and spokes — the BikeBrowser hero detail.

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { narratePanel, narrateText } from '../audio/sceneNarration.js';
+import { ASSET_KEYS } from '../systems/AssetRegistry.js';
 
 // Phase 2.4 — Multi-Biome. A reachable biome (Salt River) that carries the full
 // loop: read the biome's new rules, then for each site OBSERVE -> PREDICT which
@@ -7,6 +8,13 @@ import { narratePanel, narrateText } from '../audio/sceneNarration.js';
 // behind the wider map (repair the bridge); locked entry gives clear feedback,
 // never silence. Same overlay + modal-guard pattern as the other loops.
 const BIOME_ID = 'salt_river';
+
+const BACKDROP_BY_PLACEMENT = {
+  salt_bank_plant: ASSET_KEYS.saltFlatBackdrop,
+  fresh_bank_tree: ASSET_KEYS.freshBankBackdrop,
+  dry_terrace_mesquite: ASSET_KEYS.dryTerraceBackdrop,
+  salt_crossing_material: ASSET_KEYS.saltCrossingBackdrop,
+};
 
 export default class BiomeScene extends Phaser.Scene {
   constructor() {
@@ -24,6 +32,9 @@ export default class BiomeScene extends Phaser.Scene {
 
     this.panel = this.add.container(480, 188).setScrollFactor(0).setDepth(1400).setVisible(false);
     const bg = this.add.rectangle(0, 0, 640, 410, 0x0f1a24, 0.97).setOrigin(0.5, 0).setStrokeStyle(4, 0x7fd1ff, 1);
+    this.backdrop = this.add.image(0, 150, ASSET_KEYS.saltRiverBackground).setOrigin(0.5, 0).setDisplaySize(584, 134).setVisible(false);
+    this.backdropFrame = this.add.rectangle(0, 150, 588, 138, 0x000000, 0).setOrigin(0.5, 0).setStrokeStyle(3, 0x7fd1ff, 0.92).setVisible(false);
+    this.textBand = this.add.rectangle(0, 8, 620, 138, 0x0f1a24, 0.82).setOrigin(0.5, 0).setVisible(false);
     this.title = this.add.text(0, 16, '', { fontFamily: 'Arial', fontSize: '21px', color: '#eaf6ff', fontStyle: 'bold' }).setOrigin(0.5, 0);
     this.body = this.add.text(0, 50, '', { fontFamily: 'Arial', fontSize: '14px', color: '#bcd6ec', align: 'center', wordWrap: { width: 580 } }).setOrigin(0.5, 0);
     this.conditions = this.add.text(0, 120, '', { fontFamily: 'Arial', fontSize: '12px', color: '#8fb8d6', align: 'center', wordWrap: { width: 580 } }).setOrigin(0.5, 0);
@@ -45,7 +56,7 @@ export default class BiomeScene extends Phaser.Scene {
     this.why = this.add.text(0, 332, '', { fontFamily: 'Arial', fontSize: '13px', color: '#cfe6fb', align: 'center', wordWrap: { width: 580 } }).setOrigin(0.5, 0);
     this.hint = this.add.text(0, 384, '', { fontFamily: 'Arial', fontSize: '12px', color: '#8fb8d6' }).setOrigin(0.5, 0);
 
-    this.panel.add([bg, this.title, this.body, this.conditions, this.card, this.plant, this.verdict, this.why, this.hint]);
+    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.body, this.conditions, this.card, this.plant, this.verdict, this.why, this.hint]);
 
     this.registry.events.on('biome:start', (biomeId) => this.startFlow(biomeId));
     this.keyHandler = (event) => this.onKey(event);
@@ -71,6 +82,7 @@ export default class BiomeScene extends Phaser.Scene {
 
   _showBlocked() {
     this.phase = 'blocked';
+    this._hideBackdrop();
     this.card.setVisible(false);
     this.plant.setVisible(false);
     this.title.setText('Salt River — beyond the wider map');
@@ -85,6 +97,7 @@ export default class BiomeScene extends Phaser.Scene {
 
   _showIntro() {
     this.phase = 'intro';
+    this._setBackdrop(ASSET_KEYS.saltRiverBackground);
     this.card.setVisible(false);
     this.plant.setVisible(false);
     this.title.setText(this.biome.name);
@@ -105,6 +118,7 @@ export default class BiomeScene extends Phaser.Scene {
     this.placement = obs.placement;
     this.options = obs.placement.options;
     this.optIdx = 0;
+    this._setBackdrop(BACKDROP_BY_PLACEMENT[obs.placement.id]);
     this.title.setText(`${this.biome.name}  (${this.index + 1}/${this.queue.length})`);
     this.body.setText(`You see: ${obs.placement.site}`);
     this.conditions.setText(`conditions — ${obs.placement.conditions.join(' · ')}`);
@@ -119,6 +133,7 @@ export default class BiomeScene extends Phaser.Scene {
 
   _showPredict() {
     this.phase = 'predict';
+    this._setBackdrop(BACKDROP_BY_PLACEMENT[this.placement?.id]);
     this.card.setVisible(true);
     this.plant.setVisible(false);
     this.body.setText(this.placement.kind === 'engineering' ? 'Which material suits this site? (you can be wrong — you will see)' : 'Which plant suits this site? (you can be wrong — you will see)');
@@ -142,6 +157,7 @@ export default class BiomeScene extends Phaser.Scene {
     const result = runtime.resolveBiomePlacement(this.biomeId, placementId);
     if (!result.ok) return;
     this.phase = 'result';
+    this._setBackdrop(BACKDROP_BY_PLACEMENT[placementId]);
     this.card.setVisible(false);
     this.body.setText('');
     this.plant.setVisible(result.kind === 'ecology');
@@ -169,6 +185,7 @@ export default class BiomeScene extends Phaser.Scene {
 
   _showSummary() {
     this.phase = 'summary';
+    this._hideBackdrop();
     this.card.setVisible(false);
     this.plant.setVisible(false);
     const good = this.results.filter((r) => r.thrives).length;
@@ -203,6 +220,7 @@ export default class BiomeScene extends Phaser.Scene {
 
   _finish() {
     this.phase = 'idle';
+    this._hideBackdrop();
     this.panel.setVisible(false);
     this.registry.set('modalActive', false);
     this.registry.events.emit('quest:changed');
@@ -212,6 +230,23 @@ export default class BiomeScene extends Phaser.Scene {
 
   _narrate() {
     narratePanel(this, this.panel, { exclude: [this.hint] });
+  }
+
+  _setBackdrop(key) {
+    if (!key) { this._hideBackdrop(); return; }
+    // Re-apply display size after setTexture: setTexture resizes to the new
+    // texture's native frame, so the scale must be reset or the diorama blows up
+    // (the intro/default texture and the per-site backdrops differ in native size).
+    this.backdrop.setTexture(key).setOrigin(0.5, 0).setDisplaySize(584, 134).setVisible(true);
+    this.backdropFrame.setVisible(true);
+    this.textBand.setVisible(true);
+    this.plant.setPosition(0, 257);
+  }
+
+  _hideBackdrop() {
+    this.backdrop?.setVisible(false);
+    this.backdropFrame?.setVisible(false);
+    this.textBand?.setVisible(false);
   }
 
   _publish(extra = {}) {

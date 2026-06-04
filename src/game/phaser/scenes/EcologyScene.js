@@ -1,5 +1,11 @@
 import Phaser from 'phaser';
 import { narratePanel, narrateText } from '../audio/sceneNarration.js';
+import { ASSET_KEYS } from '../systems/AssetRegistry.js';
+
+const BACKDROP_BY_PLACEMENT = {
+  wash_edge_shade: ASSET_KEYS.washEdgeBackdrop,
+  open_dry_flat: ASSET_KEYS.openFlatBackdrop,
+};
 
 // Phase 2.1 — Ecology Loop, player-facing. The player OBSERVES a desert site,
 // PREDICTS which plant will thrive there, SEES the outcome (it thrives or
@@ -21,6 +27,9 @@ export default class EcologyScene extends Phaser.Scene {
 
     this.panel = this.add.container(480, 196).setScrollFactor(0).setDepth(1400).setVisible(false);
     const bg = this.add.rectangle(0, 0, 620, 400, 0x14210f, 0.97).setOrigin(0.5, 0).setStrokeStyle(4, 0xbfe39a, 1);
+    this.backdrop = this.add.image(0, 138, ASSET_KEYS.washEdgeBackdrop).setOrigin(0.5, 0).setDisplaySize(566, 146).setVisible(false);
+    this.backdropFrame = this.add.rectangle(0, 138, 570, 150, 0x000000, 0).setOrigin(0.5, 0).setStrokeStyle(3, 0xbfe39a, 0.92).setVisible(false);
+    this.textBand = this.add.rectangle(0, 8, 600, 122, 0x14210f, 0.82).setOrigin(0.5, 0).setVisible(false);
     this.title = this.add.text(0, 16, '', { fontFamily: 'Arial', fontSize: '21px', color: '#eafbe0', fontStyle: 'bold' }).setOrigin(0.5, 0);
     this.site = this.add.text(0, 50, '', { fontFamily: 'Arial', fontSize: '14px', color: '#c8dcb6', align: 'center', wordWrap: { width: 560 } }).setOrigin(0.5, 0);
     this.conditions = this.add.text(0, 104, '', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc27a', align: 'center', wordWrap: { width: 560 } }).setOrigin(0.5, 0);
@@ -45,7 +54,7 @@ export default class EcologyScene extends Phaser.Scene {
     this.why = this.add.text(0, 332, '', { fontFamily: 'Arial', fontSize: '13px', color: '#d6ecc4', align: 'center', wordWrap: { width: 560 } }).setOrigin(0.5, 0);
     this.hint = this.add.text(0, 378, '', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc27a' }).setOrigin(0.5, 0);
 
-    this.panel.add([bg, this.title, this.site, this.conditions, this.card, this.plant, this.verdict, this.why, this.hint]);
+    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.site, this.conditions, this.card, this.plant, this.verdict, this.why, this.hint]);
 
     this.registry.events.on('ecology:start', () => this.startFlow());
     this.keyHandler = (event) => this.onKey(event);
@@ -75,6 +84,7 @@ export default class EcologyScene extends Phaser.Scene {
     this.placement = obs.placement;
     this.options = obs.placement.options;
     this.optIdx = 0;
+    this._setBackdrop(obs.placement.id);
     this.title.setText(`Plant the desert  (${this.index + 1}/${this.queue.length})`);
     this.site.setText(`You see: ${obs.placement.site}`);
     this.conditions.setText(`conditions — ${obs.placement.conditions.join(' · ')}`);
@@ -89,6 +99,7 @@ export default class EcologyScene extends Phaser.Scene {
 
   _showPredict() {
     this.phase = 'predict';
+    this._setBackdrop(this.placement?.id);
     this.card.setVisible(true);
     this.plant.setVisible(false);
     this.site.setText('Which plant will thrive here? (you can be wrong — you will see)');
@@ -112,6 +123,7 @@ export default class EcologyScene extends Phaser.Scene {
     const result = runtime.resolveEcologyPlacement(id);
     if (!result.ok) return;
     this.phase = 'result';
+    this._setBackdrop(id);
     this.card.setVisible(false);
     this.site.setText('');
     this.plant.setVisible(true);
@@ -148,6 +160,7 @@ export default class EcologyScene extends Phaser.Scene {
 
   _showSummary() {
     this.phase = 'summary';
+    this._hideBackdrop();
     this.plant.setVisible(false);
     this.card.setVisible(false);
     const right = this.results.filter((r) => r.matched).length;
@@ -182,6 +195,7 @@ export default class EcologyScene extends Phaser.Scene {
 
   _finish() {
     this.phase = 'idle';
+    this._hideBackdrop();
     this.panel.setVisible(false);
     this.registry.set('modalActive', false);
     this.registry.events.emit('quest:changed');
@@ -191,6 +205,23 @@ export default class EcologyScene extends Phaser.Scene {
 
   _narrate() {
     narratePanel(this, this.panel, { exclude: [this.hint] });
+  }
+
+  _setBackdrop(placementId) {
+    const key = BACKDROP_BY_PLACEMENT[placementId];
+    if (!key) { this._hideBackdrop(); return; }
+    // Re-apply display size after setTexture: setTexture resizes to the new
+    // texture's native frame, so the scale must be reset or the diorama blows up.
+    this.backdrop.setTexture(key).setOrigin(0.5, 0).setDisplaySize(566, 146).setVisible(true);
+    this.backdropFrame.setVisible(true);
+    this.textBand.setVisible(true);
+    this.plant.setPosition(0, 256);
+  }
+
+  _hideBackdrop() {
+    this.backdrop?.setVisible(false);
+    this.backdropFrame?.setVisible(false);
+    this.textBand?.setVisible(false);
   }
 
   _publish(extra = {}) {
