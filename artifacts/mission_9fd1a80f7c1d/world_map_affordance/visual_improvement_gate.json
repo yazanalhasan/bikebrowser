@@ -1,0 +1,25 @@
+{
+  "before_artifacts": [
+    "artifacts/mission_9fd1a80f7c1d/world_map_affordance/before_map_open.png",
+    "artifacts/mission_9fd1a80f7c1d/world_map_affordance/before_failure_fullpage.png"
+  ],
+  "after_artifacts": [
+    "artifacts/mission_9fd1a80f7c1d/world_map_affordance/after_map_open.png"
+  ],
+  "comparison_artifacts": [
+    "artifacts/mission_9fd1a80f7c1d/world_map_affordance/comparison_before_after.png"
+  ],
+  "reference_artifacts": [
+    "public/layouts/neighborhood.layout.json",
+    "src/game/data/act1/act1WorldMap.js"
+  ],
+  "human_facing_rationale": {
+    "summary": "The after runtime capture opens the GPS map as a wider city/world-map overlay rather than a cramped corner panel. Current location, quest marker, known neighborhood places, and locked frontier destinations are more separated and easier to scan.",
+    "child_facing_readability": "improved: a child can identify the current marker, quest destination, and locked frontier labels faster because the map has more spacing and larger route geography.",
+    "visual_hierarchy": "improved: the expanded map has a clearer viewport, larger route span, and less label crowding while leaving the core play scene visible.",
+    "canon_alignment": "improved: the map better communicates that Act 1 sits inside a larger Arizona city with Salt River and Copper Mine frontier destinations beyond the neighborhood.",
+    "runtime_truth": "verified from live Playwright screenshot artifacts captured before and after the change.",
+    "before_after_improvement": "improved: the after screenshot is visibly wider and easier to parse than the before screenshot."
+  },
+  "final_judgment": "improved"
+}

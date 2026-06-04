@@ -26,13 +26,15 @@ export class NotebookSystem {
   }
 
   getState() {
+    const unlockedOrder = [...this.unlocked];
     return {
-      unlocked: [...this.unlocked],
+      unlocked: unlockedOrder,
       newEntries: [...this.newEntries],
       categories: this.getCategories(),
       entries: [...this.entries.values()].map((entry) => ({
         ...entry,
         unlocked: this.unlocked.has(entry.id),
+        unlockedIndex: unlockedOrder.indexOf(entry.id),
         isNew: this.newEntries.has(entry.id),
       })),
     };

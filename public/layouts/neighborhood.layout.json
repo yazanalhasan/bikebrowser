@@ -6,27 +6,31 @@
       "x": 18,
       "y": 604,
       "expandedY": 400,
-      "w": 370,
-      "h": 232,
-      "collapsedW": 292,
+      "w": 620,
+      "h": 350,
+      "collapsedW": 318,
       "collapsedH": 64,
       "radius": 8,
-      "title": { "x": 14, "y": 10 },
-      "subtitle": { "x": 14, "y": 29 },
-      "viewport": { "x": 14, "y": 50, "w": 342, "h": 126, "radius": 8 },
-      "gps_device": { "x": 232, "y": 32, "w": 62, "h": 45, "alpha": 0.96 },
-      "vista_backplate": { "x": 185, "y": 113, "w": 326, "h": 88, "alpha": 0.22 },
-      "legend": { "x": 14, "y": 181, "w": 334 },
-      "status": { "x": 220, "y": 10 },
+      "title": { "x": 18, "y": 12 },
+      "subtitle": { "x": 18, "y": 34 },
+      "viewport": { "x": 18, "y": 64, "w": 584, "h": 204, "radius": 8 },
+      "gps_device": { "x": 506, "y": 35, "w": 78, "h": 56, "alpha": 0.96 },
+      "vista_backplate": { "x": 310, "y": 164, "w": 552, "h": 164, "alpha": 0.24 },
+      "legend": { "x": 18, "y": 278, "w": 574 },
+      "status": { "x": 374, "y": 14 },
       "status_items": [
-        { "x": 220, "y": 10, "dotX": 212, "dotY": 17, "label": "you" },
-        { "x": 267, "y": 10, "dotX": 259, "dotY": 17, "label": "quest" },
-        { "x": 220, "y": 27, "dotX": 212, "dotY": 34, "label": "locked" }
+        { "x": 374, "y": 14, "dotX": 364, "dotY": 21, "label": "you" },
+        { "x": 430, "y": 14, "dotX": 420, "dotY": 21, "label": "quest" },
+        { "x": 374, "y": 35, "dotX": 364, "dotY": 42, "label": "locked" }
       ],
+      "badges": {
+        "current": { "offsetX": 10, "offsetY": -34, "w": 42, "h": 15, "text": "YOU" },
+        "quest": { "offsetX": 10, "offsetY": -16, "w": 54, "h": 15, "text": "QUEST" }
+      },
       "terrain_bands": [
-        { "x": 30, "y": 66, "w": 130, "h": 28, "radius": 10, "color": "desert" },
-        { "x": 176, "y": 68, "w": 154, "h": 22, "radius": 9, "color": "city" },
-        { "x": 194, "y": 138, "w": 132, "h": 16, "radius": 7, "color": "river" }
+        { "x": 42, "y": 96, "w": 220, "h": 54, "radius": 14, "color": "desert" },
+        { "x": 254, "y": 88, "w": 252, "h": 42, "radius": 12, "color": "city" },
+        { "x": 374, "y": 206, "w": 166, "h": 26, "radius": 10, "color": "river" }
       ],
       "routes": [
         ["home", "garage"],
@@ -38,14 +42,14 @@
         ["wider_gate", "copper_mine"]
       ],
       "points": {
-        "home": { "x": 50, "y": 140, "label": "Home", "alwaysKnown": true },
-        "garage": { "x": 112, "y": 105, "label": "Garage", "alwaysKnown": true },
-        "street": { "x": 148, "y": 142, "label": "Street", "alwaysKnown": true },
-        "dry_wash": { "x": 214, "y": 132, "label": "Dry Wash" },
-        "bridge": { "x": 256, "y": 136, "label": "Bridge" },
-        "wider_gate": { "x": 302, "y": 112, "label": "City Gate", "lockedByWiderMap": true, "revealedWhenLocked": true },
-        "salt_river": { "x": 278, "y": 84, "label": "Salt River", "lockedByWiderMap": true, "revealedWhenLocked": true },
-        "copper_mine": { "x": 324, "y": 76, "label": "Copper Mine", "lockedByWiderMap": true, "revealedWhenLocked": true }
+        "home": { "x": 70, "y": 222, "label": "Home", "alwaysKnown": true },
+        "garage": { "x": 158, "y": 168, "label": "Garage", "alwaysKnown": true },
+        "street": { "x": 236, "y": 224, "label": "Street", "alwaysKnown": true },
+        "dry_wash": { "x": 354, "y": 206, "label": "Dry Wash" },
+        "bridge": { "x": 424, "y": 214, "label": "Bridge" },
+        "wider_gate": { "x": 496, "y": 170, "label": "City Gate", "lockedByWiderMap": true, "revealedWhenLocked": true },
+        "salt_river": { "x": 454, "y": 118, "label": "Salt River", "lockedByWiderMap": true, "revealedWhenLocked": true },
+        "copper_mine": { "x": 540, "y": 108, "label": "Copper Mine", "lockedByWiderMap": true, "revealedWhenLocked": true }
       },
       "node": { "r": 5, "currentR": 7, "questR": 11, "lockedSlash": 4 },
       "route_marker_sheet": {
@@ -71,14 +75,14 @@
       },
       "labels": {
         "items": [
-          { "id": "home", "x": 34, "y": 152 },
-          { "id": "garage", "x": 90, "y": 80 },
-          { "id": "street", "x": 128, "y": 154 },
-          { "id": "dry_wash", "x": 188, "y": 146 },
-          { "id": "bridge", "x": 236, "y": 151 },
-          { "id": "wider_gate", "x": 276, "y": 123 },
-          { "id": "salt_river", "x": 238, "y": 94 },
-          { "id": "copper_mine", "x": 292, "y": 61 }
+          { "id": "home", "x": 46, "y": 238 },
+          { "id": "garage", "x": 132, "y": 142 },
+          { "id": "street", "x": 212, "y": 240 },
+          { "id": "dry_wash", "x": 320, "y": 222 },
+          { "id": "bridge", "x": 398, "y": 230 },
+          { "id": "wider_gate", "x": 466, "y": 184 },
+          { "id": "salt_river", "x": 418, "y": 132 },
+          { "id": "copper_mine", "x": 502, "y": 82 }
         ]
       }
     },
@@ -86,6 +90,10 @@
       "x": 2380,
       "y": 600,
       "scale": 1.35
+    },
+    "salt_river_expedition": {
+      "x": 2300,
+      "y": 700
     },
     "garage_workbench_prop": {
       "x": 470,
@@ -167,6 +175,14 @@
     "wash_marker": {
       "x": 1980,
       "y": 700
+    },
+    "wash_mystery": {
+      "x": 1920,
+      "y": 900
+    },
+    "ecology_garden": {
+      "x": 1360,
+      "y": 1320
     },
     "npc_mr_chen": {
       "x": 1140,

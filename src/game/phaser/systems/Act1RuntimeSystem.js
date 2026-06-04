@@ -587,13 +587,14 @@ export class Act1RuntimeSystem {
     const undiscovered = [];
     for (const p of act1WorldMapPoints) {
       const point = { id: p.id, label: p.label, region: p.region };
+      const isCurrent = p.id === current;
       if (p.lockedByWiderMap) {
         // The frontier unlocks as a group when the wider map opens; once open,
         // those destinations are reachable (you can now travel there).
-        if (widerUnlocked) reachable.push({ ...point, current: p.id === current });
+        if (widerUnlocked || isCurrent) reachable.push({ ...point, current: isCurrent });
         else locked.push({ ...point, unlocksBy: 'repair the bridge to open the wider map' });
       } else if (p.alwaysKnown || discovered.has(p.id)) {
-        reachable.push({ ...point, current: p.id === current });
+        reachable.push({ ...point, current: isCurrent });
       } else {
         undiscovered.push(point); // exists, not yet found — not a dead link, just unseen
       }

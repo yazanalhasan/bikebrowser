@@ -14,6 +14,7 @@ test.describe('game graphics reset route', () => {
       window.BIKEBROWSER_READY === true &&
       Boolean(window.BIKEBROWSER_TEST_BRIDGE?.isReady?.())
     );
+    await page.evaluate(() => window.__GAME__.setAudioSettings({ speechEnabled: false }));
 
     const canvasCount = await page.locator('canvas').count();
     expect(canvasCount).toBeGreaterThan(0);
@@ -73,6 +74,7 @@ test.describe('game graphics reset route', () => {
     const unlockedMapHudState = await page.evaluate(() => {
       const game = window.__GAME__;
       game.handleInteraction('collect_materials');
+      game.handleInteraction('ecology_patch');
       ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => game.testMaterial(id));
       game.completeBridgePlan('tested_triangle_plan');
       game.repairBridge();

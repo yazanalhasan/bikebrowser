@@ -1,0 +1,53 @@
+{
+  "mission": "mission_d96d86fa6806",
+  "portfolio": "portfolio_366f0a0c396b",
+  "work_item": "Restore wider map, GPS, and world-scale affordances",
+  "before_artifacts": [
+    "artifacts/mission_d96d86fa6806/world_map_affordance/before_map_open.png"
+  ],
+  "after_artifacts": [
+    "artifacts/mission_d96d86fa6806/world_map_affordance/after_map_open.png"
+  ],
+  "comparison_artifacts": [
+    "artifacts/mission_d96d86fa6806/world_map_affordance/comparison_before_after.png"
+  ],
+  "reference_artifacts": [
+    "src/game/art/final/act1/prop_clarity_world_scale_vista.png",
+    "src/game/art/final/act1/prop_clarity_gps_post.png",
+    "src/game/art/final/act1/prop_clarity_route_marker_set.png",
+    "src/game/art/final/act1/prop_clarity_sonoran_landmark_set.png",
+    "src/game/art/final/act1/ui_map_frame.png"
+  ],
+  "human_facing_rationale": "The Act 1 GPS/world-map affordance now exposes a wider Arizona route map with current location, known places, locked city-scale destinations, and a quest badge in the live runtime. The after screenshot is modestly clearer for a child because the current position and quest destination are labeled directly on the map instead of relying only on small rings and legend inference. The collapsed HUD remains compact and the larger GPS art appears only when the map is open, reducing playfield clutter.",
+  "judgment_dimensions": {
+    "child_facing_readability": "improved: child can identify YOU and QUEST directly on the expanded map",
+    "visual_hierarchy": "improved: current and quest markers become focal points while locked destinations remain secondary",
+    "canon_alignment": "improved: the map frames Act 1 as a neighborhood connected to Salt River, Copper Mine, and a wider Arizona city gate",
+    "runtime_truth": "passed: before and after artifacts are live Playwright screenshots from /game-rebuild",
+    "before_after_improvement": "improved: after screenshot visibly adds readable destination badges without adding clutter"
+  },
+  "experience_gate": {
+    "feature_exists": "passed: G opens a visible GPS/world-map HUD",
+    "runtime_verification": "passed: Playwright world-map reachability test verified open/close and state mirror",
+    "visual_quality": "passed: compact HUD plus expanded map are legible in captured runtime view",
+    "ux_quality": "passed: map communicates current, reachable, locked, and quest destinations",
+    "educational_quality": "passed: map supports systems thinking by showing local and wider routes gated by bridge repair",
+    "canon_alignment": "passed: wider Arizona city affordance is present without changing Act 1 quest flow",
+    "acceptance": "passed: targeted reachability checks passed"
+  },
+  "ux_notes": {
+    "helps_player": true,
+    "reduces_confusion": true,
+    "avoids_clutter": true,
+    "improves_navigation": true,
+    "improves_understanding": true,
+    "notes": "The map shows where Zuzu is, where the quest points, which nearby locations are reachable, and which wider destinations are still locked. The large GPS art is no longer visible while collapsed."
+  },
+  "child_readability_notes": {
+    "object": "A child can identify the GPS map panel by its title and route drawing.",
+    "goal": "The QUEST badge shows the next destination on the map.",
+    "next_step": "The legend lists reachable and locked destinations; the game still points to the bridge proof flow.",
+    "reward": "Locked city-scale destinations imply the reward for repairing the bridge: opening the wider map."
+  },
+  "final_judgment": "improved"
+}

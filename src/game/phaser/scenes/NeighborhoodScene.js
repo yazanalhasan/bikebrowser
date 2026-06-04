@@ -819,7 +819,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // Phase 1.9.4 — the washout mystery: a player-reachable investigation
     // (observe → hypothesize → gather evidence → conclude). Placed down-channel
     // from the bridge sign so it does not collide with neighbouring zones.
-    const washMystery = { x: 1920, y: 900 };
+    const washMystery = this.layout.wash_mystery;
     this._questMarker(washMystery.x, washMystery.y, 0xc8a0ff).setDepth(40);
     this.interactions.register({
       id: 'investigate_wash',
@@ -831,7 +831,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // Phase 2.1 — Ecology Loop: a player-reachable plant-the-desert spot
     // (observe a site → predict which plant thrives → see it → learn why).
     // Kept clear of the wash/ecology zones so it never shadows them.
-    const ecologyGarden = { x: 1360, y: 1320 };
+    const ecologyGarden = this.layout.ecology_garden;
     this._questMarker(ecologyGarden.x, ecologyGarden.y, 0x9be37a).setDepth(40);
     this.interactions.register({
       id: 'ecology_garden',
@@ -899,8 +899,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
     });
     this.interactions.register({
       id: 'wider_gate',
-      x: 2380,
-      y: 600,
+      x: this.layout.map_gate.x,
+      y: this.layout.map_gate.y,
       label: 'Open wider map clue',
       dialogueId: 'wider_gate_clue',
       action: 'wider_gate',
@@ -908,7 +908,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // Phase 2.4 — Salt River biome expedition. Always present (so it is
     // reachable), but the loop is gated behind the wider map: pressing E before
     // the bridge is repaired opens a clear "locked" panel, not silence.
-    const saltRiverExpedition = { x: 2300, y: 700 };
+    const saltRiverExpedition = this.layout.salt_river_expedition;
     // Hidden opportunity: the expedition marker is invisible and inert until the
     // player DISCOVERS the City Gate by exploring the map edge (Phase 2.2 Fun).
     this.saltRiverMarker = this._questMarker(saltRiverExpedition.x, saltRiverExpedition.y, 0x7fd1ff).setDepth(40).setVisible(false);
@@ -1581,6 +1581,22 @@ export default class NeighborhoodScene extends Phaser.Scene {
       fontSize: '9px',
       color: '#e4efea',
     }));
+    this.worldMapCurrentBadge = this.add.text(0, 0, layout.badges.current.text, {
+      fontFamily: 'Arial',
+      fontSize: '9px',
+      color: '#203029',
+      fontStyle: 'bold',
+      backgroundColor: '#f2c46d',
+      padding: { x: 4, y: 2 },
+    }).setVisible(false);
+    this.worldMapQuestBadge = this.add.text(0, 0, layout.badges.quest.text, {
+      fontFamily: 'Arial',
+      fontSize: '9px',
+      color: '#203029',
+      fontStyle: 'bold',
+      backgroundColor: '#fff0c7',
+      padding: { x: 4, y: 2 },
+    }).setVisible(false);
     this.worldMapLegend = this.add.text(layout.legend.x, layout.legend.y, '', {
       fontFamily: 'Arial',
       fontSize: '11px',
@@ -1621,6 +1637,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this.worldMapToggleHint,
       this.worldMapLegend,
       ...this.worldMapStatusLabels,
+      this.worldMapCurrentBadge,
+      this.worldMapQuestBadge,
       ...this.worldMapPointLabels,
     ]);
     this.worldMapHitZone = this.add.zone(
@@ -1845,8 +1863,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // Anchor the map to the BOTTOM-LEFT of the actual screen so it grows upward
     // out of the corner instead of floating over the play area.
     const margin = 14;
-    const anchorY = Math.max(margin, this.scale.height - h - margin);
+    const scale = Math.min(1, (this.scale.width - margin * 2) / w, (this.scale.height - margin * 2) / h);
+    const anchorY = Math.max(margin, this.scale.height - h * scale - margin);
     this.worldMapHud?.setPosition(margin, anchorY);
+    this.worldMapHud?.setScale(scale);
     this.worldMapHitZone?.setSize(w, h);
     this.worldMapHitZone?.setPosition(w / 2, h / 2);
     this.worldMapFrame
@@ -1867,7 +1887,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
   refreshNotebook() {
     const state = this.runtime?.notebookSystem.getState();
-    const entries = state?.entries.filter((entry) => entry.unlocked) || [];
+    const entries = (state?.entries.filter((entry) => entry.unlocked) || [])
+      .sort((a, b) => (a.unlockedIndex ?? 0) - (b.unlockedIndex ?? 0));
     const categoryLine = Object.entries(state?.categories || {})
       .filter(([, counts]) => counts.unlocked > 0)
       .slice(0, 5)
@@ -1994,7 +2015,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
     g.clear();
     const mapChildren = [
       this.worldMapVista,
+      this.worldMapGpsDevice,
       this.worldMapLegend,
+      this.worldMapCurrentBadge,
+      this.worldMapQuestBadge,
       ...this.worldMapStatusLabels,
       ...this.worldMapPointLabels,
       ...Object.values(this.worldMapRouteMarkerIcons || {}),
@@ -2082,6 +2106,16 @@ export default class NeighborhoodScene extends Phaser.Scene {
           .setAlpha(location.locked ? 0.38 : 0.78)
           .setVisible(true);
       }
+      if (isCurrent) {
+        this.worldMapCurrentBadge
+          ?.setPosition(location.mapX + layout.badges.current.offsetX, location.mapY + layout.badges.current.offsetY)
+          .setVisible(true);
+      }
+      if (isQuest) {
+        this.worldMapQuestBadge
+          ?.setPosition(location.mapX + layout.badges.quest.offsetX, location.mapY + layout.badges.quest.offsetY)
+          .setVisible(true);
+      }
     }
 
     layout.labels.items.forEach((item, index) => {
@@ -2107,9 +2141,9 @@ export default class NeighborhoodScene extends Phaser.Scene {
       const reachLabels = this._worldMap.reachable.map((l) => l.label).join(', ');
       const lockLabels = this._worldMap.locked.map((l) => l.label).join(', ');
       this.worldMapLegend.setText(
-        `▸ Current: ${this._worldMap.currentLabel}\n` +
-        `▸ Reachable: ${reachLabels || '—'}\n` +
-        `▸ Locked: ${lockLabels || 'none'}`
+        `Current: ${this._worldMap.currentLabel}\n` +
+        `Reachable: ${reachLabels || 'none'}\n` +
+        `Locked: ${lockLabels || 'none'}`
       );
     } else {
       this.worldMapLegend.setText(`You are near: ${this.locationLabel(currentLocation)}\n${nextText}`);
