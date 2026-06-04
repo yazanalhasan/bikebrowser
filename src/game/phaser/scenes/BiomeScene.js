@@ -35,11 +35,17 @@ export default class BiomeScene extends Phaser.Scene {
       this.add.text(-206, 0, '◀', { fontSize: '20px', color: '#7fd1ff' }).setOrigin(0.5),
       this.add.text(206, 0, '▶', { fontSize: '20px', color: '#7fd1ff' }).setOrigin(0.5)]);
 
-    this.verdict = this.add.text(0, 250, '', { fontFamily: 'Arial', fontSize: '17px', color: '#ffffff', fontStyle: 'bold', align: 'center', wordWrap: { width: 580 } }).setOrigin(0.5, 0);
-    this.why = this.add.text(0, 300, '', { fontFamily: 'Arial', fontSize: '13px', color: '#cfe6fb', align: 'center', wordWrap: { width: 580 } }).setOrigin(0.5, 0);
+    this.plant = this.add.container(0, 250);
+    this.stem = this.add.rectangle(0, 0, 10, 54, 0x6fae54).setOrigin(0.5, 1);
+    this.leafL = this.add.triangle(-12, -34, 0, 0, -26, -8, 0, -18, 0x7cc05f).setOrigin(0.5);
+    this.leafR = this.add.triangle(12, -34, 0, 0, 26, -8, 0, -18, 0x7cc05f).setOrigin(0.5);
+    this.plant.add([this.stem, this.leafL, this.leafR]).setVisible(false);
+
+    this.verdict = this.add.text(0, 292, '', { fontFamily: 'Arial', fontSize: '17px', color: '#ffffff', fontStyle: 'bold', align: 'center', wordWrap: { width: 580 } }).setOrigin(0.5, 0);
+    this.why = this.add.text(0, 332, '', { fontFamily: 'Arial', fontSize: '13px', color: '#cfe6fb', align: 'center', wordWrap: { width: 580 } }).setOrigin(0.5, 0);
     this.hint = this.add.text(0, 384, '', { fontFamily: 'Arial', fontSize: '12px', color: '#8fb8d6' }).setOrigin(0.5, 0);
 
-    this.panel.add([bg, this.title, this.body, this.conditions, this.card, this.verdict, this.why, this.hint]);
+    this.panel.add([bg, this.title, this.body, this.conditions, this.card, this.plant, this.verdict, this.why, this.hint]);
 
     this.registry.events.on('biome:start', (biomeId) => this.startFlow(biomeId));
     this.keyHandler = (event) => this.onKey(event);
@@ -66,6 +72,7 @@ export default class BiomeScene extends Phaser.Scene {
   _showBlocked() {
     this.phase = 'blocked';
     this.card.setVisible(false);
+    this.plant.setVisible(false);
     this.title.setText('Salt River — beyond the wider map');
     this.body.setText('This biome is past the broken crossing. Repair the bridge to open the route, then come back.');
     this.conditions.setText('');
@@ -79,6 +86,7 @@ export default class BiomeScene extends Phaser.Scene {
   _showIntro() {
     this.phase = 'intro';
     this.card.setVisible(false);
+    this.plant.setVisible(false);
     this.title.setText(this.biome.name);
     this.body.setText(this.biome.intro);
     this.conditions.setText('');
@@ -101,6 +109,7 @@ export default class BiomeScene extends Phaser.Scene {
     this.body.setText(`You see: ${obs.placement.site}`);
     this.conditions.setText(`conditions — ${obs.placement.conditions.join(' · ')}`);
     this.card.setVisible(false);
+    this.plant.setVisible(false);
     this.verdict.setText('');
     this.why.setText('');
     this.hint.setText('E to choose    Esc to leave');
@@ -111,6 +120,7 @@ export default class BiomeScene extends Phaser.Scene {
   _showPredict() {
     this.phase = 'predict';
     this.card.setVisible(true);
+    this.plant.setVisible(false);
     this.body.setText(this.placement.kind === 'engineering' ? 'Which material suits this site? (you can be wrong — you will see)' : 'Which plant suits this site? (you can be wrong — you will see)');
     this.verdict.setText('');
     this.why.setText('');
@@ -134,6 +144,15 @@ export default class BiomeScene extends Phaser.Scene {
     this.phase = 'result';
     this.card.setVisible(false);
     this.body.setText('');
+    this.plant.setVisible(result.kind === 'ecology');
+    this.plant.setScale(1).setAngle(0).setAlpha(1);
+    if (result.kind === 'ecology' && result.thrives) {
+      [this.stem, this.leafL, this.leafR].forEach((p) => p.setFillStyle(p === this.stem ? 0x6fae54 : 0x7cc05f));
+      this.tweens.add({ targets: this.plant, scaleY: 1.35, scaleX: 1.15, duration: 420, ease: 'Back.easeOut' });
+    } else if (result.kind === 'ecology') {
+      [this.stem, this.leafL, this.leafR].forEach((p) => p.setFillStyle(0xc9a24a));
+      this.tweens.add({ targets: this.plant, angle: 22, scaleY: 0.6, duration: 480, ease: 'Sine.easeOut' });
+    }
     this.verdict.setText(result.thrives ? `✅ ${result.predictedId} suits the ${this.biome.name}.` : `🥀 ${result.predictedId} does not last here. ${result.correct} is the fit.`);
     this.verdict.setColor(result.thrives ? '#9affb0' : '#ffd27a');
     this.why.setText(result.thrives ? result.why : `${result.why}  Why ${result.correct} fits: ${result.correctWhy}`);
@@ -151,6 +170,7 @@ export default class BiomeScene extends Phaser.Scene {
   _showSummary() {
     this.phase = 'summary';
     this.card.setVisible(false);
+    this.plant.setVisible(false);
     const good = this.results.filter((r) => r.thrives).length;
     this.title.setText(`${this.biome.name} — field notes`);
     this.body.setText('');
@@ -159,6 +179,7 @@ export default class BiomeScene extends Phaser.Scene {
     this.verdict.setColor('#eaf6ff');
     this.why.setText('A new biome has new rules: salt-tolerant life on the banks, corrosion-proof metal in the water. Your notebook remembers them.');
     this.hint.setText('E to close');
+    this.registry.events.emit('biome:complete', { biomeId: this.biomeId, results: this.results.slice() });
     this._publish({ payoff: true });
     this._narrate();
   }

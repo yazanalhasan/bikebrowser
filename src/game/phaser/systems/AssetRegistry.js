@@ -59,6 +59,9 @@ export const ASSET_KEYS = {
   environmentDesertRoadSystem: 'act1.environment.desert_road_system',
   environmentVegetationCluster: 'act1.environment.vegetation_cluster',
   environmentEcologyPatch: 'act1.environment.ecology_patch',
+  saltRiverBackground: 'act1.biome.salt_river.background',
+  saltbushPlant: 'act1.biome.saltbush.plant',
+  cottonwoodPlant: 'act1.biome.cottonwood.plant',
   uiNpcCueWrench: 'act1.ui.npc_cue_wrench',
   uiNpcCueHeart: 'act1.ui.npc_cue_heart',
   uiNpcCueStar: 'act1.ui.npc_cue_star',
@@ -177,6 +180,9 @@ export function createPlaceholderTextures(scene) {
   createEcologyPlant(scene);
   createChemistryStation(scene);
   createMapGate(scene);
+  createSaltRiverBackground(scene);
+  createSaltbushPlant(scene);
+  createCottonwoodPlant(scene);
   createNotebook(scene);
   createSchoolNode(scene);
   createNpc(scene);
@@ -537,6 +543,64 @@ function createMapGate(scene) {
     g.fillStyle(0x6fae9c, 1).fillCircle(45, 46, 13);
     g.fillStyle(0xfff0c7, 1).fillTriangle(38, 52, 52, 52, 45, 38);  // up arrow
     g.fillRect(43, 46, 4, 8);
+  });
+}
+
+function createSaltRiverBackground(scene) {
+  texture(scene, ASSET_KEYS.saltRiverBackground, 256, 128, (g) => {
+    g.fillStyle(0xd7cba5, 1).fillRect(0, 0, 256, 128);             // pale salt-flat light
+    g.fillStyle(0xe9dfbf, 1).fillRect(0, 0, 256, 46);
+    g.fillStyle(0xbdd6d0, 1).fillRoundedRect(-8, 48, 272, 38, 18); // broad river
+    g.fillStyle(0x7fb5b5, 1).fillRoundedRect(-8, 64, 272, 22, 14);
+    g.fillStyle(0xeef1da, 0.9);
+    for (const [x, y, w] of [[18, 92, 48], [76, 104, 62], [154, 92, 56], [210, 110, 42]]) {
+      g.fillEllipse(x, y, w, 8);                                  // salt crust plates
+    }
+    g.lineStyle(2, 0xb8a980, 0.65);
+    for (const y of [92, 101, 111]) g.lineBetween(8, y, 248, y - 9);
+    g.fillStyle(OUTLINE, 0.34).fillRoundedRect(0, 82, 256, 16, 8); // far-bank silhouette
+    for (const [x, h] of [[26, 34], [52, 48], [72, 36], [204, 42], [226, 30]]) {
+      g.fillStyle(OUTLINE, 1).fillRect(x - 2, 36, 6, h + 42);
+      g.fillStyle(0x7aa666, 1).fillRect(x, 38, 2, h + 38);
+      g.fillStyle(OUTLINE, 1).fillCircle(x, 34, 16);
+      g.fillStyle(0x6fae54, 1).fillCircle(x, 34, 13);
+      g.fillStyle(0x8ad19a, 0.85).fillCircle(x - 5, 28, 5);
+    }
+    g.fillStyle(0xf6f1dc, 0.95).fillRoundedRect(20, 92, 42, 4, 2).fillRoundedRect(146, 106, 64, 4, 2);
+  });
+}
+
+function createSaltbushPlant(scene) {
+  texture(scene, ASSET_KEYS.saltbushPlant, 124, 116, (g) => {
+    shadow(g, 62, 106, 86, 12);
+    g.fillStyle(OUTLINE, 1).fillEllipse(62, 96, 82, 26);
+    g.fillStyle(0x8a5a38, 1).fillEllipse(62, 94, 78, 22);
+    g.fillStyle(0xeef1da, 0.85).fillEllipse(38, 90, 30, 6).fillEllipse(78, 100, 34, 6);
+    for (const [x, y] of [[42, 76], [54, 62], [66, 56], [78, 64], [88, 78]]) {
+      g.lineStyle(7, OUTLINE, 1).lineBetween(62, 92, x, y);
+      g.lineStyle(4, 0x4f9c75, 1).lineBetween(62, 92, x, y);
+      g.fillStyle(OUTLINE, 1).fillEllipse(x, y, 28, 16);
+      g.fillStyle(0x67b083, 1).fillEllipse(x, y, 24, 12);
+      g.fillStyle(0xa7d8b3, 0.9).fillEllipse(x - 4, y - 3, 9, 4);
+    }
+    g.fillStyle(0xf6f1dc, 1).fillCircle(50, 68, 2).fillCircle(82, 72, 2).fillCircle(68, 52, 2);
+  });
+}
+
+function createCottonwoodPlant(scene) {
+  texture(scene, ASSET_KEYS.cottonwoodPlant, 132, 164, (g) => {
+    shadow(g, 66, 152, 88, 14);
+    g.fillStyle(OUTLINE, 1).fillRoundedRect(56, 70, 20, 82, 8);
+    g.fillStyle(0x8a5a38, 1).fillRoundedRect(59, 72, 14, 78, 6);
+    g.fillStyle(0xb8845a, 1).fillRoundedRect(60, 74, 5, 72, 4);
+    const crowns = [[48, 60, 36], [76, 54, 42], [62, 34, 38], [42, 92, 32], [90, 88, 34], [68, 94, 42]];
+    for (const [x, y, r] of crowns) {
+      g.fillStyle(OUTLINE, 1).fillCircle(x, y, r + 3);
+      g.fillStyle(0x67b083, 1).fillCircle(x, y, r);
+      g.fillStyle(0x8ad19a, 0.85).fillCircle(x - r * 0.25, y - r * 0.25, Math.max(7, r * 0.28));
+    }
+    g.lineStyle(5, OUTLINE, 1).lineBetween(64, 112, 34, 144).lineBetween(68, 114, 100, 144);
+    g.lineStyle(3, 0x8a5a38, 1).lineBetween(64, 112, 34, 144).lineBetween(68, 114, 100, 144);
   });
 }
 

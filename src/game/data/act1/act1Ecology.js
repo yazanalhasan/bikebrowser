@@ -3,6 +3,8 @@ export const act1Ecology = [
   { id: 'creosote', displayName: 'Creosote', heat: 'spaced leaves', water: 'survives dry soil', habitat: 'open desert', harvestEthic: 'observe only in Act 1' },
   { id: 'saguaro', displayName: 'Saguaro Landmark', heat: 'stored water', water: 'slow growth', habitat: 'desert landmark', harvestEthic: 'landmark, never harvest' },
   { id: 'wash_marker', displayName: 'Wash Ecology Marker', heat: 'monsoon channel', water: 'flash flood path', habitat: 'dry wash', harvestEthic: 'do not block animal paths' },
+  { id: 'saltbush', displayName: 'Saltbush', heat: 'silver leaves', water: 'sheds salt', habitat: 'brackish flat', harvestEthic: 'observe; leave cover for small wildlife' },
+  { id: 'cottonwood', displayName: 'Cottonwood', heat: 'leafy shade', water: 'fresh riverbank roots', habitat: 'higher river bank', harvestEthic: 'protect young trees and bank shade' },
 ];
 
 // Phase 1.95 — Ecology Reachability. Each placement is a small predict loop:

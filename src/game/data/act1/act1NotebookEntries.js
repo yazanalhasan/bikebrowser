@@ -20,4 +20,7 @@ export const act1NotebookEntries = [
   { id: 'wider_map_unlocked', category: 'Map', title: 'Wider Map Unlocked', body: 'The repaired crossing reveals the first hint that local systems connect to a much bigger world.' },
   { id: 'wash_scour', category: 'Investigation', title: 'Wash-Out Cause', body: 'A first guess blamed weak planks, but the evidence — a high water mark and a scour hole under the footings — showed flash-flood water dug out the supports. The real fix is deeper, protected footings.' },
   { id: 'wash_water', category: 'Investigation', title: 'Hidden Water Highway', body: 'A "dry" wash is not lifeless: dry surface gravel ruled out recent rain, and deep mesquite roots reach subsurface moisture the floods leave behind.' },
+  { id: 'saltbush', category: 'Ecology', title: 'Saltbush', body: 'Saltbush tolerates brackish soil by shedding salt through its leaves, so it fits wet, sunny salt flats better than freshwater bank trees.' },
+  { id: 'cottonwood', category: 'Ecology', title: 'Cottonwood', body: 'Cottonwood belongs on moist riverbanks with fresher water. It gives shade and stabilizes banks, but salty crust can burn its roots.' },
+  { id: 'river_mesquite', category: 'Ecology', title: 'River Terrace Mesquite', body: 'Mesquite fits dry terraces near washes and rivers because its deep roots can reach buried moisture while its canopy tolerates full sun.' },
 ];

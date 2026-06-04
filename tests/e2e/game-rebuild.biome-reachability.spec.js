@@ -61,6 +61,9 @@ test.describe('Player reachability — Salt River biome', () => {
   test('locked before the wider map: the expedition gives a clear panel, never silence', async ({ page }) => {
     test.setTimeout(45_000);
     await ready(page);
+    // Prerequisite (not the action): the City Gate discovery reveals the Salt River
+    // expedition on the map. Without it the marker stays hidden by design.
+    await page.evaluate(() => window.__GAME__.registerDiscovery({ id: 'landmark_city_gate', category: 'landmark', title: 'The City Gate', detail: 'The road out of the neighborhood — beyond it, the wider map and the Salt River.', source: 'exploration' }));
     const zone = await zoneById(page, 'salt_river_expedition');
     expect(zone).toBeTruthy();
     await walkTo(page, { ...zone });
@@ -85,6 +88,8 @@ test.describe('Player reachability — Salt River biome', () => {
       g.designBridge({ deck: 'mesquite', support: 'steel', brace: 'copper_brace' });
       g.repairBridge();
       g.unlockWiderMap();
+      // City Gate discovery reveals the Salt River expedition marker (prerequisite).
+      g.registerDiscovery({ id: 'landmark_city_gate', category: 'landmark', title: 'The City Gate', detail: 'The road out of the neighborhood — beyond it, the wider map and the Salt River.', source: 'exploration' });
     });
 
     const zone = await zoneById(page, 'salt_river_expedition');
@@ -95,34 +100,46 @@ test.describe('Player reachability — Salt River biome', () => {
     await page.screenshot({ path: `${captureDir}/01_intro.png`, fullPage: true });
     await page.keyboard.press('KeyE'); // intro -> observe
 
-    // Site 1 (ecology): pick the right plant (saltbush) -> good fit.
-    await page.waitForFunction(() => window.__BIOME__.phase === 'observe');
-    await page.keyboard.press('KeyE'); // observe -> predict
-    await pickBiome(page, 'saltbush');
-    expect(await page.evaluate(() => window.__BIOME__.thrives), 'saltbush fits').toBe(true);
-    await page.screenshot({ path: `${captureDir}/02_good_fit.png`, fullPage: true });
-    await page.keyboard.press('KeyE'); // result -> next observe
-
-    // Site 2 (engineering): pick steel (wrong) -> teaches copper.
-    await page.waitForFunction(() => window.__BIOME__.phase === 'observe');
-    await page.keyboard.press('KeyE'); // observe -> predict
-    await pickBiome(page, 'steel');
-    expect(await page.evaluate(() => window.__BIOME__.thrives), 'steel does not last').toBe(false);
-    await page.keyboard.press('KeyE'); // result -> summary
+    // Full ecology-depth loop by real keyboard: three condition-grounded ecology
+    // sites (right fit thrives) + one engineering site (wrong teaches copper).
+    const sites = [
+      { option: 'saltbush', thrives: true, label: 'saltbush fits the salt flat' },
+      { option: 'cottonwood', thrives: true, label: 'cottonwood fits the moist fresh bank' },
+      { option: 'mesquite', thrives: true, label: 'mesquite fits the dry terrace' },
+      { option: 'steel', thrives: false, label: 'steel does not last in salt water' },
+    ];
+    for (let i = 0; i < sites.length; i += 1) {
+      await page.waitForFunction(() => window.__BIOME__.phase === 'observe');
+      await page.keyboard.press('KeyE'); // observe -> predict
+      await pickBiome(page, sites[i].option);
+      expect(await page.evaluate(() => window.__BIOME__.thrives), sites[i].label).toBe(sites[i].thrives);
+      if (i === 0) await page.screenshot({ path: `${captureDir}/02_good_fit.png`, fullPage: true });
+      await page.keyboard.press('KeyE'); // result -> next observe (or summary on the last site)
+    }
 
     await page.waitForFunction(() => window.__BIOME__.phase === 'summary');
     await page.screenshot({ path: `${captureDir}/03_summary.png`, fullPage: true });
     await page.keyboard.press('KeyE'); // summary -> close
     await page.waitForFunction(() => window.__BIOME__.active === false);
 
-    // PAYOFF (observation): the biome is complete and its discoveries are recorded.
+    // PAYOFF (observation): the biome is complete, discoveries are recorded, and
+    // finishing the loop pays out ZuzuBucks once (the felt reward).
     const payoff = await page.evaluate(() => {
       const s = window.__GAME__.getAct1State();
       const biome = s.biomes.biomes.find((b) => b.id === 'salt_river');
       const disc = JSON.stringify(s.discoveryRegistry.entries).toLowerCase();
-      return { complete: biome.complete, saltbush: disc.includes('saltbush'), corrosion: disc.includes('corrosion') };
+      return {
+        complete: biome.complete,
+        resolved: biome.resolved,
+        saltbush: disc.includes('saltbush'),
+        cottonwood: disc.includes('cottonwood'),
+        corrosion: disc.includes('corrosion'),
+        zuzuBucks: s.zuzuBucks,
+      };
     });
+    expect(payoff.resolved, 'all four sites resolved through play').toBe(4);
     expect(payoff.complete, 'biome loop completed through play').toBe(true);
-    expect(payoff.saltbush && payoff.corrosion, 'biome discoveries recorded as payoff').toBe(true);
+    expect(payoff.saltbush && payoff.cottonwood && payoff.corrosion, 'biome discoveries recorded as payoff').toBe(true);
+    expect(payoff.zuzuBucks, 'completing the Salt River loop pays ZuzuBucks').toBeGreaterThan(0);
   });
 });

@@ -80,6 +80,7 @@ export class BiomeSystem {
       why: matched ? p.why : (p.wrongWhy?.[state.predictedId] || p.why),
       correctWhy: p.why,
       discovery: p.discovery || null,
+      notebookEntry: p.notebookEntry || null,
       landmark: this.biomes.get(biomeId)?.landmark || null,
     };
   }

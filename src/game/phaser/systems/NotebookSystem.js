@@ -21,6 +21,11 @@ export class NotebookSystem {
     return { ok: true, entryId, isNew, entry: this.entries.get(entryId) };
   }
 
+  ensureEntry(entry, defaultCategory = 'Ecology') {
+    if (!entry?.id || this.entries.has(entry.id)) return;
+    this.entries.set(entry.id, { category: defaultCategory, ...entry });
+  }
+
   unlockMany(entryIds = []) {
     return entryIds.map((entryId) => this.unlock(entryId));
   }

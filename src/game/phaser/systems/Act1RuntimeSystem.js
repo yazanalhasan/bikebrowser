@@ -60,6 +60,7 @@ export class Act1RuntimeSystem {
     this.feedbackLog = [];
     this.lastFeedback = null;
     this.zuzuBucks = 0;           // reward currency, earned on first quest/objective completion
+    this.saltRiverComplete = false;
   }
 
   bindRegistry(registry) {
@@ -79,6 +80,14 @@ export class Act1RuntimeSystem {
     registry.set('discoveryRegistry', this.discoveryRegistry);
     registry.set('biomeSystem', this.biomeSystem);
     registry.set('act1AudioSystem', this.audioSystem);
+    if (this._boundBiomeComplete && this._boundBiomeRegistry && this._boundBiomeRegistry !== registry) {
+      this._boundBiomeRegistry.events.off('biome:complete', this._boundBiomeComplete);
+    }
+    if (!this._boundBiomeComplete) this._boundBiomeComplete = (event) => this.completeBiome(event);
+    if (this._boundBiomeRegistry !== registry) {
+      registry.events.on('biome:complete', this._boundBiomeComplete);
+      this._boundBiomeRegistry = registry;
+    }
   }
 
   completeObjective(objectiveId) {
@@ -474,6 +483,7 @@ export class Act1RuntimeSystem {
       schemaVersion: 2,
       sceneReady: this.sceneReady,
       act1Complete: this.act1Complete,
+      saltRiverComplete: this.saltRiverComplete,
       zuzuBucks: this.zuzuBucks,
       quests: this.questSystem.getState(),
       notebook: this.notebookSystem.getState(),
@@ -623,6 +633,8 @@ export class Act1RuntimeSystem {
     }
     const result = this.biomeSystem.enter(biomeId);
     if (!result.ok) return result;
+    this.audioSystem.transitionMusic('ecology_chemistry');
+    this.audioSystem.setAmbient('ecology_patch');
     const biome = this.biomeSystem.biomes.get(biomeId);
     if (biome?.landmark) this.registerDiscovery({ ...biome.landmark, category: 'landmark', source: 'biome' });
     this.recordFeedback('discovery', `Entered ${result.biome.name}. ${result.biome.intro}`, result.biome);
@@ -648,8 +660,19 @@ export class Act1RuntimeSystem {
       return result;
     }
     if (result.discovery) this.registerDiscovery({ ...result.discovery, source: 'biome' });
+    if (result.notebookEntry) {
+      this.notebookSystem.ensureEntry(result.notebookEntry, 'Ecology');
+      this.unlockNotebookEntries([result.notebookEntry.id || result.notebookEntry].filter(Boolean));
+    }
     this.recordFeedback('ecology', `${result.thrives ? 'Good fit.' : 'Poor fit.'} ${result.why}`, result);
     return result;
+  }
+
+  completeBiome(event = {}) {
+    if (event.biomeId !== 'salt_river' || this.saltRiverComplete) return { ok: false, reason: 'already_complete', biomeId: event.biomeId };
+    this.saltRiverComplete = true;
+    const total = this.awardZuzuBucks(25, { kind: 'quest', questId: 'salt_river', questName: 'Salt River field notes' });
+    return { ok: true, biomeId: event.biomeId, total };
   }
 
   saveGame = () => saveRebuildState(this.getAct1State());
@@ -674,6 +697,8 @@ export class Act1RuntimeSystem {
 
   loadState(state = {}) {
     this.act1Complete = Boolean(state.act1Complete);
+    this.saltRiverComplete = Boolean(state.saltRiverComplete);
+    this.zuzuBucks = Number.isFinite(state.zuzuBucks) ? state.zuzuBucks : 0;
     this.feedbackLog = Array.isArray(state.feedback?.log) ? state.feedback.log.slice(-20) : [];
     this.lastFeedback = state.feedback?.last || this.feedbackLog.at(-1) || null;
     this.questSystem.loadState(state.quests);
@@ -713,6 +738,8 @@ export class Act1RuntimeSystem {
     this.biomeSystem = fresh.biomeSystem;
     this.audioSystem.stopSpeech();
     this.act1Complete = false;
+    this.saltRiverComplete = false;
+    this.zuzuBucks = 0;
     this.feedbackLog = [];
     this.lastFeedback = null;
     this.debugDiagnosticSystem = new DebugDiagnosticSystem(this);
@@ -764,6 +791,7 @@ export class Act1RuntimeSystem {
       observeBiomePlacement: (biomeId, placementId) => this.observeBiomePlacement(biomeId, placementId),
       predictBiomePlacement: (biomeId, placementId, optionId) => this.predictBiomePlacement(biomeId, placementId, optionId),
       resolveBiomePlacement: (biomeId, placementId) => this.resolveBiomePlacement(biomeId, placementId),
+      completeBiome: (event) => this.completeBiome(event),
       observeEcologyPlacement: (id) => this.observeEcologyPlacement(id),
       predictEcologyPlacement: (id, speciesId) => this.predictEcologyPlacement(id, speciesId),
       resolveEcologyPlacement: (id) => this.resolveEcologyPlacement(id),
