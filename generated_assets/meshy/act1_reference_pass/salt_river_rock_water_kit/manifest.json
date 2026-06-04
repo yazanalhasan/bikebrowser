@@ -1,0 +1,17 @@
+{
+  "id": "salt_river_rock_water_kit",
+  "createdAt": "2026-05-28T06:55:28.773Z",
+  "previewTaskId": "019e6d5a-09ab-7eeb-b936-d30f647d05fb",
+  "refineTaskId": "019e6d5c-c2e5-7fbb-b874-388f336af15c",
+  "status": "SUCCEEDED",
+  "consumedCredits": {
+    "preview": 20,
+    "refine": 10
+  },
+  "files": {
+    "glb": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\salt_river_rock_water_kit\\salt_river_rock_water_kit.glb",
+    "thumbnail": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\salt_river_rock_water_kit\\salt_river_rock_water_kit.png"
+  },
+  "source": "meshy-text-to-3d",
+  "runtimeUse": "reference_only_until_curated"
+}

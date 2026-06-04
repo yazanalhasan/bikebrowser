@@ -1,0 +1,17 @@
+{
+  "id": "broken_wash_bridge",
+  "createdAt": "2026-05-28T06:50:34.984Z",
+  "previewTaskId": "019e6d57-a148-7e56-8be9-8e3ada506537",
+  "refineTaskId": "019e6d58-5e75-74b7-98c7-aa20ba600674",
+  "status": "SUCCEEDED",
+  "consumedCredits": {
+    "preview": 20,
+    "refine": 10
+  },
+  "files": {
+    "glb": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\broken_wash_bridge\\broken_wash_bridge.glb",
+    "thumbnail": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\broken_wash_bridge\\broken_wash_bridge.png"
+  },
+  "source": "meshy-text-to-3d",
+  "runtimeUse": "reference_only_until_curated"
+}

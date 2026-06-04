@@ -1,0 +1,262 @@
+{
+  "generatedAt": "2026-06-03T02:13:33.539Z",
+  "playerVisibleWalkthrough": true,
+  "backendCompletionShortcutsUsed": false,
+  "setupShortcutsUsed": [
+    "resetAct1 only before play"
+  ],
+  "steps": [
+    {
+      "id": "bike_check",
+      "prompt": "Inspect the bike",
+      "screenshot": "playtest_captures/game_rebuild_act1_acceptance/01_bike_check.png"
+    },
+    {
+      "id": "mr_chen",
+      "prompt": "Talk to Mr. Chen",
+      "screenshot": "playtest_captures/game_rebuild_act1_acceptance/02_mr_chen_dialogue.png"
+    },
+    {
+      "id": "dry_wash",
+      "prompt": "Read bridge sign",
+      "screenshot": "playtest_captures/game_rebuild_act1_acceptance/03_dry_wash_discovery.png"
+    },
+    {
+      "id": "materials_table",
+      "prompt": "Collect candidate materials",
+      "screenshot": "playtest_captures/game_rebuild_act1_acceptance/04_collect_materials.png"
+    },
+    {
+      "id": "ecology_patch",
+      "prompt": "Observe desert helpers",
+      "screenshot": "playtest_captures/game_rebuild_act1_acceptance/05_ecology_observation.png"
+    },
+    {
+      "id": "chemistry_station",
+      "prompt": "Mix, dry, test",
+      "screenshot": "playtest_captures/game_rebuild_act1_acceptance/06_chemistry_station.png"
+    },
+    {
+      "id": "utm",
+      "prompt": "Run UTM material tests",
+      "screenshot": "playtest_captures/game_rebuild_act1_acceptance/07_utm_tests.png"
+    },
+    {
+      "id": "bridge_plan",
+      "prompt": "Plan bridge repair",
+      "screenshot": "playtest_captures/game_rebuild_act1_acceptance/08_bridge_plan.png"
+    },
+    {
+      "id": "bridge_repair",
+      "prompt": "Reconnect the crossing",
+      "screenshot": "playtest_captures/game_rebuild_act1_acceptance/09_bridge_repaired.png"
+    },
+    {
+      "id": "wider_gate",
+      "prompt": "Open wider map clue",
+      "screenshot": "playtest_captures/game_rebuild_act1_acceptance/10_wider_map_unlocked.png"
+    }
+  ],
+  "finalScreenshot": "playtest_captures/game_rebuild_act1_acceptance/11_final_notebook_completion.png",
+  "finalState": {
+    "act1Complete": true,
+    "bridgeReconnected": true,
+    "widerMapUnlocked": true,
+    "unlockedNotebookEntries": [
+      "bike_check",
+      "broken_wash",
+      "bridge_problem",
+      "steel",
+      "copper_brace",
+      "weak_scrap",
+      "desert_plant",
+      "mesquite",
+      "creosote",
+      "saguaro",
+      "chemistry_result",
+      "material_test_results",
+      "prediction_log",
+      "bridge_plan",
+      "bridge_repaired",
+      "wider_map_unlocked"
+    ],
+    "materialTestCount": 4,
+    "engineeringLoop": {
+      "observe": true,
+      "predict": true,
+      "test": true,
+      "build": true,
+      "verify": true,
+      "complete": true,
+      "nextStep": "complete"
+    },
+    "reasoning": {
+      "dimensions": {
+        "prediction": {
+          "score": 1
+        },
+        "evidence": {
+          "score": 1
+        },
+        "correction": {
+          "score": 1
+        },
+        "calibration": {
+          "score": 0.75
+        },
+        "explanation": {
+          "score": 1
+        }
+      },
+      "overall": 0.97,
+      "band": "strong",
+      "learnings": [
+        "You predicted mesquite would hold and the test agreed — your reasoning matched the evidence.",
+        "You predicted steel would hold and the test agreed — your reasoning matched the evidence.",
+        "You predicted copper_brace would hold and the test agreed — your reasoning matched the evidence.",
+        "You predicted weak_scrap would hold, the test proved otherwise, and you did not trust it in the bridge — that is exactly how to learn from evidence."
+      ],
+      "rewardsReasoningNotCorrectness": true
+    },
+    "materialVerdicts": [
+      {
+        "id": "mesquite",
+        "bridgeSafe": true,
+        "band": "useful with limits"
+      },
+      {
+        "id": "steel",
+        "bridgeSafe": true,
+        "band": "strong candidate"
+      },
+      {
+        "id": "copper_brace",
+        "bridgeSafe": true,
+        "band": "useful with limits"
+      },
+      {
+        "id": "weak_scrap",
+        "bridgeSafe": false,
+        "band": "comparison failure"
+      }
+    ],
+    "prediction": {
+      "predictions": [
+        {
+          "subjectId": "mesquite",
+          "willHold": true,
+          "confidence": "high",
+          "explanation": "I think it will hold.",
+          "resolved": true,
+          "actualSafe": true,
+          "correct": true
+        },
+        {
+          "subjectId": "steel",
+          "willHold": true,
+          "confidence": "high",
+          "explanation": "I think it will hold.",
+          "resolved": true,
+          "actualSafe": true,
+          "correct": true
+        },
+        {
+          "subjectId": "copper_brace",
+          "willHold": true,
+          "confidence": "high",
+          "explanation": "I think it will hold.",
+          "resolved": true,
+          "actualSafe": true,
+          "correct": true
+        },
+        {
+          "subjectId": "weak_scrap",
+          "willHold": true,
+          "confidence": "high",
+          "explanation": "I think it will hold.",
+          "resolved": true,
+          "actualSafe": false,
+          "correct": false
+        }
+      ],
+      "made": 4,
+      "resolved": 4,
+      "correct": 3,
+      "accuracy": 0.75
+    },
+    "inventoryDetails": [
+      {
+        "id": "bike",
+        "category": "vehicle",
+        "source": "home",
+        "durability": 0.85,
+        "bridgeSafe": null,
+        "ecologySpecies": null
+      },
+      {
+        "id": "patch_kit",
+        "category": "tool",
+        "source": "starting kit",
+        "durability": 0.8,
+        "bridgeSafe": null,
+        "ecologySpecies": null
+      },
+      {
+        "id": "tire_lever",
+        "category": "tool",
+        "source": "starting kit",
+        "durability": 0.9,
+        "bridgeSafe": null,
+        "ecologySpecies": null
+      },
+      {
+        "id": "steel",
+        "category": "material",
+        "source": "salvage yard",
+        "durability": 0.94,
+        "bridgeSafe": true,
+        "ecologySpecies": null
+      },
+      {
+        "id": "copper_brace",
+        "category": "material",
+        "source": "local trader",
+        "durability": 0.7,
+        "bridgeSafe": true,
+        "ecologySpecies": null
+      },
+      {
+        "id": "weak_scrap",
+        "category": "material",
+        "source": "roadside",
+        "durability": 0.2,
+        "bridgeSafe": false,
+        "ecologySpecies": null
+      },
+      {
+        "id": "mesquite",
+        "category": "material",
+        "source": "desert ecology",
+        "durability": 0.64,
+        "bridgeSafe": true,
+        "ecologySpecies": "mesquite"
+      }
+    ],
+    "finalFeedback": {
+      "id": "1780452811591-20",
+      "kind": "map",
+      "message": "Wider map unlocked. A larger systems mystery is waiting.",
+      "details": {},
+      "createdAt": "2026-06-03T02:13:31.591Z"
+    },
+    "promptText": "[E] Open wider map clue",
+    "audioSummary": {
+      "hookVerified": true,
+      "musicState": null,
+      "musicTransitions": 0,
+      "interactionCues": 0,
+      "speechAttempts": 0,
+      "errors": []
+    }
+  }
+}

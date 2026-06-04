@@ -1,0 +1,47 @@
+{
+  "mission": "mission_462859807d4c",
+  "portfolio": "portfolio_88f6c74c0e32",
+  "project": "bikebrowser",
+  "work_item": "Restore wider map, GPS, and world-scale affordances",
+  "generated_at": "2026-05-31T01:35:00-07:00",
+  "before_artifacts": [
+    "playtest_captures/world_map_affordance/before_runtime.png",
+    "playtest_captures/world_map_affordance/before_start.png",
+    "playtest_captures/world_map_affordance/before_unlocked.png"
+  ],
+  "after_artifacts": [
+    "playtest_captures/world_map_affordance/after_runtime.png",
+    "playtest_captures/world_map_affordance/after_start.png",
+    "playtest_captures/world_map_affordance/after_unlocked_runtime.png",
+    "playtest_captures/world_map_affordance/after_map_state.json"
+  ],
+  "comparison_artifacts": [
+    "playtest_captures/world_map_affordance/before_after_contact_sheet_current.png",
+    "playtest_captures/world_map_affordance/before_after_contact_sheet.png"
+  ],
+  "reference_artifacts": [
+    "docs/game_rebuild/act1_final_art_direction.md",
+    "project_audit/act1_prop_clarity_mission/replacement_package.json"
+  ],
+  "runtime_truth": {
+    "map_state_observed": {
+      "visible": true,
+      "currentLocation": "street",
+      "activeQuestMarker": "dry_wash",
+      "lockedDestinations": ["wider_gate", "salt_river", "copper_mine"],
+      "unlockedDestinations_include": ["home", "garage", "street", "dry_wash", "bridge"]
+    },
+    "asset_registry_path": "src/game/phaser/systems/AssetRegistry.js",
+    "layout_path": "public/layouts/neighborhood.layout.json",
+    "scene_path": "src/game/phaser/scenes/NeighborhoodScene.js"
+  },
+  "required_judgment_dimensions": {
+    "child_facing_readability": "PASS: the HUD now names Zuzu GPS, marks current position, marks the quest destination, and distinguishes locked routes instead of leaving Act 1 as a local-only street view.",
+    "visual_hierarchy": "PASS: the map sits in a bounded lower-left HUD panel, uses compact route lines and markers, and does not cover the core bike, NPC, garage, or bridge quest spaces.",
+    "canon_alignment": "PASS: the route graph exposes a wider Arizona city context with Dry Wash, City Gate, Salt River, and Copper Mine while preserving the Act 1 bridge-gated flow.",
+    "runtime_truth": "PASS: the after runtime state and screenshots show the live Phaser HUD with current, quest, locked, and unlocked destination state.",
+    "before_after_improvement": "PASS: the side-by-side screenshot shows the after state communicates a wider Arizona route network more clearly than the previous local-only GPS affordance."
+  },
+  "human_facing_rationale": "For a child, the after state is easier to understand because the screen now gives an immediate answer to where Zuzu is, where the current quest points, and why future places are not available yet. It makes the neighborhood feel connected to a larger Arizona route network without changing the existing Act 1 quest beats.",
+  "final_judgment": "improved"
+}

@@ -19,9 +19,14 @@ export class QuestSystem {
     if (!quest) {
       return { ok: false, reason: 'unknown_objective' };
     }
+    // Track FIRST completion so rewards (ZuzuBucks, fanfare) fire once, not every
+    // time a mini-game is replayed.
+    const newObjective = !this.completedObjectives.has(objectiveId);
+    const questAlreadyComplete = this.completedQuestIds.has(quest.id);
     this.completedObjectives.add(objectiveId);
     const completedQuest = this.maybeCompleteQuest(quest.id);
-    return { ok: true, objectiveId, questId: quest.id, completedQuest };
+    const newQuest = completedQuest && !questAlreadyComplete ? completedQuest : null;
+    return { ok: true, objectiveId, questId: quest.id, completedQuest, newObjective, newQuest };
   }
 
   findQuestForObjective(objectiveId) {

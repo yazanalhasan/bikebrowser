@@ -1,0 +1,195 @@
+{
+  "mission": "mission_dbb100b325d6",
+  "portfolio": "portfolio_06d1162143c8",
+  "project": "bikebrowser",
+  "scope": "Bounded Act 1 prop clarity audit and preparation package",
+  "approval_state": {
+    "placeholder_art_approved": false,
+    "draft_art_approved": false,
+    "runtime_replacement_performed_by_this_package": false,
+    "approval_boundary_crossed_by_this_package": false
+  },
+  "target_visual_brief": {
+    "source": "docs/game_rebuild/act1_final_art_direction.md",
+    "summary": "Warm top-down Sonoran neighborhood adventure. Interactables should read from silhouette first; wider map/GPS/world-scale affordances should clarify route scale without clutter or debug-like dots."
+  },
+  "current_runtime_note": "The current working tree already includes runtime-integrated prop clarity assets and prior before/after evidence. This imported package does not approve those assets or promote additional art; it records the highest-visibility placeholder/provenance risks, keeps replacement candidates as draft-only AssetRegistry records, and prepares follow-up IDs/specs.",
+  "prop_inventory": [
+    {
+      "prop": "Current wider map gate marker",
+      "current_asset_id": "map_gate",
+      "current_asset_key": "act1.map_gate",
+      "current_status": "runtime-integrated asset present; still requires provenance/approval review for this imported mission",
+      "runtime_location": "NeighborhoodScene wider_gate interaction near map edge",
+      "confusion_risk": "If the sign-board silhouette is not accepted as approved provenance, this remains a high-visibility world-scale gate risk.",
+      "replacement_draft_id": "prop_clarity_wider_map_gate_draft",
+      "explicit_exception_candidate": false
+    },
+    {
+      "prop": "Zuzu GPS HUD object cue",
+      "current_asset_id": "prop_clarity_gps_post",
+      "current_asset_key": "act1.prop_clarity.gps_post",
+      "current_status": "runtime-integrated asset present; not approved by this package",
+      "runtime_location": "NeighborhoodScene world_map_hud layout",
+      "confusion_risk": "The HUD helps navigation, but approval depends on proving it reads as Zuzu's GPS rather than a debug panel.",
+      "replacement_draft_id": "prop_clarity_gps_post_draft",
+      "explicit_exception_candidate": false
+    },
+    {
+      "prop": "World-scale vista affordance",
+      "current_asset_id": "prop_clarity_world_scale_vista / wave1_sonoran_vista_draft",
+      "current_asset_key": "act1.prop_clarity.world_scale_vista / act1.wave1.sonoran_vista.draft",
+      "current_status": "runtime-integrated prop clarity asset present; older wave1 asset remains draft and unapproved",
+      "runtime_location": "GPS/world-map context",
+      "confusion_risk": "The wider Sonoran scale must be recognizable through landmarks and route shape, not only text labels.",
+      "replacement_draft_id": "prop_clarity_world_scale_vista_draft",
+      "explicit_exception_candidate": false
+    },
+    {
+      "prop": "Route marker set",
+      "current_asset_id": "prop_clarity_route_marker_set / generated GPS nodes",
+      "current_asset_key": "act1.prop_clarity.route_marker_set",
+      "current_status": "runtime-integrated asset present; not approved by this package",
+      "runtime_location": "GPS route nodes and quest markers",
+      "confusion_risk": "Current, quest, locked, and complete states must stay distinguishable by shape at gameplay scale.",
+      "replacement_draft_id": "prop_clarity_route_marker_set_draft",
+      "explicit_exception_candidate": false
+    },
+    {
+      "prop": "Sonoran landmark set",
+      "current_asset_id": "prop_clarity_sonoran_landmark_set / vegetation_saguaro_cluster_draft",
+      "current_asset_key": "act1.prop_clarity.sonoran_landmark_set / act1.vegetation.saguaro_cluster.draft",
+      "current_status": "runtime-integrated prop clarity asset present; older wave1 vegetation asset remains draft and unapproved",
+      "runtime_location": "GPS route context",
+      "confusion_risk": "Salt River, Copper Mine, Dry Wash, and Bridge need non-text landmark support so children can understand the map faster.",
+      "replacement_draft_id": "prop_clarity_sonoran_landmark_set_draft",
+      "explicit_exception_candidate": false
+    }
+  ],
+  "draft_asset_ids_only": [
+    {
+      "id": "prop_clarity_gps_post_draft",
+      "finalKey": "act1.prop_clarity.gps_post.draft",
+      "status": "draft",
+      "approved": false,
+      "runtimeUrl": null,
+      "promotion_allowed_in_this_package": false
+    },
+    {
+      "id": "prop_clarity_wider_map_gate_draft",
+      "finalKey": "act1.prop_clarity.wider_map_gate.draft",
+      "status": "draft",
+      "approved": false,
+      "runtimeUrl": null,
+      "promotion_allowed_in_this_package": false
+    },
+    {
+      "id": "prop_clarity_world_scale_vista_draft",
+      "finalKey": "act1.prop_clarity.world_scale_vista.draft",
+      "status": "draft",
+      "approved": false,
+      "runtimeUrl": null,
+      "promotion_allowed_in_this_package": false
+    },
+    {
+      "id": "prop_clarity_route_marker_set_draft",
+      "finalKey": "act1.prop_clarity.route_marker_set.draft",
+      "status": "draft",
+      "approved": false,
+      "runtimeUrl": null,
+      "promotion_allowed_in_this_package": false
+    },
+    {
+      "id": "prop_clarity_sonoran_landmark_set_draft",
+      "finalKey": "act1.prop_clarity.sonoran_landmark_set.draft",
+      "status": "draft",
+      "approved": false,
+      "runtimeUrl": null,
+      "promotion_allowed_in_this_package": false
+    },
+    {
+      "id": "prop_replacement_garage_workbench",
+      "finalKey": "act1.prop_replacement.garage_workbench",
+      "status": "draft",
+      "approved": false,
+      "runtimeUrl": null,
+      "promotion_allowed_in_this_package": false
+    },
+    {
+      "id": "prop_replacement_material_table",
+      "finalKey": "act1.prop_replacement.material_table",
+      "status": "draft",
+      "approved": false,
+      "runtimeUrl": null,
+      "promotion_allowed_in_this_package": false
+    },
+    {
+      "id": "prop_replacement_chemistry_bench",
+      "finalKey": "act1.prop_replacement.chemistry_bench",
+      "status": "draft",
+      "approved": false,
+      "runtimeUrl": null,
+      "promotion_allowed_in_this_package": false
+    },
+    {
+      "id": "prop_replacement_bridge_debris",
+      "finalKey": "act1.prop_replacement.bridge_debris",
+      "status": "draft",
+      "approved": false,
+      "runtimeUrl": null,
+      "promotion_allowed_in_this_package": false
+    }
+  ],
+  "asset_specs": [
+    {
+      "id": "prop_clarity_gps_post_draft",
+      "deliverable": "Aseprite source plus PNG runtime candidate",
+      "target_size": "96x96 or 128x96",
+      "silhouette": "bike-mounted or garage-made GPS cue with antenna/route card, readable without text",
+      "states": ["idle", "quest ping", "wider map unlocked"],
+      "acceptance": "At gameplay scale, a child can identify it as a map/GPS affordance before reading the prompt."
+    },
+    {
+      "id": "prop_clarity_wider_map_gate_draft",
+      "deliverable": "Aseprite source plus PNG runtime candidate",
+      "target_size": "128x96",
+      "silhouette": "small desert trail sign or route board pointing to Salt River and Copper Mine, not a literal locked gate",
+      "states": ["locked curiosity", "unlocked route reveal"],
+      "acceptance": "The approved after screenshot communicates a world opening, not merely a generic interaction marker."
+    },
+    {
+      "id": "prop_clarity_world_scale_vista_draft",
+      "deliverable": "approved background/landmark reference and runtime-safe sliced PNG",
+      "target_size": "wide parallax strip or compact landmark tile set",
+      "silhouette": "distant Sonoran horizon with readable future-route landmarks",
+      "states": ["ambient", "route highlight"],
+      "acceptance": "Supports the canon recommendation to restore wider map, GPS, and world-scale affordances without cluttering Act 1."
+    },
+    {
+      "id": "prop_clarity_route_marker_set_draft",
+      "deliverable": "small icon sheet",
+      "target_size": "32x32 to 48x48 per marker",
+      "silhouette": "current location, quest route, locked future route, and completed route are distinct by shape and color",
+      "states": ["current", "quest", "locked", "complete"],
+      "acceptance": "Shape alone distinguishes current/quest/locked when viewed in the GPS HUD crop."
+    },
+    {
+      "id": "prop_clarity_sonoran_landmark_set_draft",
+      "deliverable": "small icon sheet plus source",
+      "target_size": "48x48 to 64x48 per landmark",
+      "silhouette": "Dry Wash, Bridge, Salt River, Copper Mine, and neighborhood get recognizable non-text landmarks",
+      "states": ["locked dim", "known", "quest highlight"],
+      "acceptance": "Route labels become support text rather than the only way to understand the map."
+    }
+  ],
+  "follow_up_replacement_package": {
+    "recommended_scope": [
+      "Either explicitly except each currently integrated prop clarity asset with provenance evidence, or replace it with approved Aseprite-authored art through AssetRegistry.",
+      "Keep static GPS/HUD anchors in public/layouts/neighborhood.layout.json before scene code references them.",
+      "Preserve current interaction ids, collision, prompts, and Act 1 quest flow.",
+      "Capture true before/after screenshots and only mark final_judgment improved when a child-facing runtime screenshot is visibly clearer."
+    ],
+    "approval_gate": "No draft id may be promoted until approved source exists, runtime screenshots prove it loaded through AssetRegistry, placeholder fallback remains intact, and visual improvement is judged from screenshots.",
+    "validation_tier": "TARGETED"
+  }
+}

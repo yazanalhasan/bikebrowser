@@ -1,0 +1,135 @@
+[gd_scene load_steps=9 format=3 uid="uid://bikebrowser_tire_rig"]
+
+[ext_resource type="Script" path="res://Prototypes/EmbodiedMechanics/TireRig.gd" id="1_tire_rig"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/bike_wheel.png" id="2_bike_wheel"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/inner_tube.png" id="3_inner_tube"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/floor_air_pump.png" id="4_floor_pump"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/tire_patch_kit.png" id="5_patch_kit"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/air_pressure_gauge.png" id="6_gauge"]
+[ext_resource type="Texture2D" path="res://Assets/Props/BikeRepair/tire_lever_set.png" id="7_tire_levers"]
+[ext_resource type="Texture2D" path="res://Assets/Props/BikeRepair/patch_with_glue_tube.png" id="8_patch_glue"]
+
+[node name="TireRig" type="Node2D"]
+script = ExtResource("1_tire_rig")
+wheel_path = NodePath("Wheel")
+tire_shape_path = NodePath("Wheel/TireShape")
+sidewall_path = NodePath("Wheel/TireShape/WheelSprite")
+leak_marker_path = NodePath("Wheel/TireShape/LeakMarker")
+patch_path = NodePath("Wheel/TireShape/Patch")
+pressure_gauge_path = NodePath("PumpAssembly/PressureGauge")
+gauge_needle_path = NodePath("PumpAssembly/PressureGauge/Needle")
+pump_handle_path = NodePath("PumpAssembly/PumpHandle")
+tube_prop_path = NodePath("TubeExposure/TubeProp")
+wheel_ready_glow_path = NodePath("WheelReadyGlow")
+readiness_label_path = NodePath("ReadinessLabel")
+
+[node name="WorkMatShadow" type="Polygon2D" parent="."]
+z_index = -3
+color = Color(0.08, 0.10, 0.13, 0.42)
+polygon = PackedVector2Array(-120, 78, 96, 78, 132, 106, -86, 118)
+
+[node name="WheelReadyGlow" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-6, 2)
+scale = Vector2(0.86, 0.86)
+modulate = Color(0.78, 0.94, 1, 0)
+texture_filter = 1
+texture = ExtResource("2_bike_wheel")
+
+[node name="Wheel" type="Node2D" parent="."]
+position = Vector2(-18, 0)
+
+[node name="TireShape" type="Node2D" parent="Wheel"]
+
+[node name="WheelSprite" type="Sprite2D" parent="Wheel/TireShape"]
+scale = Vector2(0.78, 0.78)
+modulate = Color(0.22, 0.28, 0.34, 0.82)
+texture_filter = 1
+texture = ExtResource("2_bike_wheel")
+
+[node name="LeakMarker" type="Polygon2D" parent="Wheel/TireShape"]
+visible = false
+position = Vector2(48, 24)
+color = Color(0.75, 0.88, 1, 0.72)
+polygon = PackedVector2Array(-7, -5, 7, -3, 11, 2, 4, 8, -6, 6, -10, 0)
+
+[node name="LeakBubbleA" type="Polygon2D" parent="Wheel/TireShape/LeakMarker"]
+position = Vector2(14, -12)
+color = Color(0.82, 0.94, 1, 0.56)
+polygon = PackedVector2Array(3, 0, 2, 2, 0, 3, -2, 2, -3, 0, -2, -2, 0, -3, 2, -2)
+
+[node name="LeakBubbleB" type="Polygon2D" parent="Wheel/TireShape/LeakMarker"]
+position = Vector2(21, -21)
+scale = Vector2(0.72, 0.72)
+color = Color(0.82, 0.94, 1, 0.42)
+polygon = PackedVector2Array(3, 0, 2, 2, 0, 3, -2, 2, -3, 0, -2, -2, 0, -3, 2, -2)
+
+[node name="Patch" type="Sprite2D" parent="Wheel/TireShape"]
+visible = false
+position = Vector2(50, 24)
+scale = Vector2(0.42, 0.42)
+texture_filter = 1
+texture = ExtResource("8_patch_glue")
+
+[node name="TubeExposure" type="Node2D" parent="."]
+z_index = -1
+
+[node name="TubeProp" type="Sprite2D" parent="TubeExposure"]
+visible = false
+position = Vector2(92, 34)
+scale = Vector2(0.62, 0.62)
+modulate = Color(1, 1, 1, 0)
+texture_filter = 1
+texture = ExtResource("3_inner_tube")
+
+[node name="TireLeverSet" type="Sprite2D" parent="TubeExposure"]
+position = Vector2(76, 74)
+scale = Vector2(0.72, 0.72)
+texture_filter = 1
+texture = ExtResource("7_tire_levers")
+
+[node name="PumpAssembly" type="Node2D" parent="."]
+position = Vector2(-128, 28)
+
+[node name="FloorPumpProp" type="Sprite2D" parent="PumpAssembly"]
+scale = Vector2(0.82, 0.82)
+texture_filter = 1
+texture = ExtResource("4_floor_pump")
+
+[node name="PumpHandle" type="Node2D" parent="PumpAssembly"]
+position = Vector2(-2, -18)
+
+[node name="HandleGrip" type="Polygon2D" parent="PumpAssembly/PumpHandle"]
+color = Color(0.08, 0.11, 0.15, 0.92)
+polygon = PackedVector2Array(-25, -5, 25, -5, 28, 0, 25, 5, -25, 5, -28, 0)
+
+[node name="PressureGauge" type="Sprite2D" parent="PumpAssembly"]
+visible = false
+position = Vector2(26, -42)
+scale = Vector2(0.64, 0.64)
+modulate = Color(1, 0.86, 0.66, 0.88)
+texture_filter = 1
+texture = ExtResource("6_gauge")
+
+[node name="Needle" type="Polygon2D" parent="PumpAssembly/PressureGauge"]
+position = Vector2(0, 1)
+color = Color(0.08, 0.10, 0.13, 1)
+polygon = PackedVector2Array(-2, 0, 2, 0, 2, -24, -2, -24)
+
+[node name="PatchKitProp" type="Sprite2D" parent="."]
+position = Vector2(92, 92)
+scale = Vector2(0.78, 0.78)
+texture_filter = 1
+texture = ExtResource("5_patch_kit")
+
+[node name="ReadinessLabel" type="Label" parent="."]
+visible = false
+position = Vector2(-78, 102)
+size = Vector2(164, 24)
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 0.92, 0.72, 1)
+theme_override_colors/font_shadow_color = Color(0.03, 0.04, 0.06, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "wheel ready"
+horizontal_alignment = 1

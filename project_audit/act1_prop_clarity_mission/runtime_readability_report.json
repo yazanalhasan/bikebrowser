@@ -1,0 +1,579 @@
+{
+  "mission": "mission_dbb100b325d6",
+  "portfolio": "portfolio_06d1162143c8",
+  "scope": "Act 1 prop clarity targeted runtime evidence for audit/prep package only",
+  "baseUrl": "http://localhost:5173/game-rebuild",
+  "generatedAt": "2026-06-02T03:25:25.761Z",
+  "contactSheet": "runtime_evidence/act1_prop_clarity_contact_sheet.png",
+  "captures": [
+    {
+      "id": "locked_gps_start",
+      "file": "runtime_evidence/locked_gps_start.png",
+      "notes": "Current runtime before wider-map unlock; GPS shows known/locked city route context.",
+      "runtimeTruth": {
+        "player": {
+          "x": 430,
+          "y": 500
+        },
+        "nearestInteraction": "neighbor",
+        "promptText": "[E] Ask Mrs. Ramirez",
+        "worldMapHud": {
+          "visible": true,
+          "expanded": false,
+          "currentLocation": "street",
+          "discovered": [
+            "home",
+            "garage",
+            "street"
+          ],
+          "lockedDestinations": [
+            "wider_gate",
+            "salt_river",
+            "copper_mine"
+          ],
+          "unlockedDestinations": [
+            "home",
+            "garage",
+            "street",
+            "dry_wash",
+            "bridge"
+          ],
+          "activeQuestMarker": "dry_wash",
+          "widerMapUnlocked": false
+        },
+        "assetRegistry": [
+          {
+            "id": "map_gate",
+            "finalKey": "act1.map_gate",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/map_gate.png"
+          },
+          {
+            "id": "prop_clarity_gps_post",
+            "finalKey": "act1.prop_clarity.gps_post",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_gps_post.png"
+          },
+          {
+            "id": "prop_clarity_world_scale_vista",
+            "finalKey": "act1.prop_clarity.world_scale_vista",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_world_scale_vista.png"
+          },
+          {
+            "id": "prop_clarity_route_marker_set",
+            "finalKey": "act1.prop_clarity.route_marker_set",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_route_marker_set.png"
+          },
+          {
+            "id": "prop_clarity_sonoran_landmark_set",
+            "finalKey": "act1.prop_clarity.sonoran_landmark_set",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_sonoran_landmark_set.png"
+          },
+          {
+            "id": "prop_replacement_garage_workbench",
+            "finalKey": "act1.prop_replacement.garage_workbench",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_replacement_garage_workbench.png"
+          },
+          {
+            "id": "prop_replacement_material_table",
+            "finalKey": "act1.prop_replacement.material_table",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_replacement_material_table.png"
+          },
+          {
+            "id": "prop_replacement_chemistry_bench",
+            "finalKey": "act1.prop_replacement.chemistry_bench",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_replacement_chemistry_bench.png"
+          },
+          {
+            "id": "prop_replacement_bridge_debris",
+            "finalKey": "act1.prop_replacement.bridge_debris",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_replacement_bridge_debris.png"
+          },
+          {
+            "id": "environment_vegetation_cluster",
+            "finalKey": "act1.environment.vegetation_cluster",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/environment_vegetation_cluster.png"
+          },
+          {
+            "id": "ui_map_frame",
+            "finalKey": "act1.ui.map_frame",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/ui_map_frame.png"
+          }
+        ]
+      },
+      "crops": [
+        {
+          "id": "gps_hud",
+          "file": "runtime_evidence/crops/locked_gps_start_gps_hud.png",
+          "crop": {
+            "id": "gps_hud",
+            "left": 0,
+            "top": 385,
+            "width": 410,
+            "height": 335
+          },
+          "scores": {
+            "width": 410,
+            "height": 335,
+            "brightness": 0.253,
+            "contrast": 0.137,
+            "colorSeparation": 0.066,
+            "informationDensity": 0.528,
+            "childFacingReadability": 70
+          }
+        },
+        {
+          "id": "workshop_props",
+          "file": "runtime_evidence/crops/locked_gps_start_workshop_props.png",
+          "crop": {
+            "id": "workshop_props",
+            "left": 440,
+            "top": 130,
+            "width": 520,
+            "height": 420
+          },
+          "scores": {
+            "width": 520,
+            "height": 420,
+            "brightness": 0.329,
+            "contrast": 0.173,
+            "colorSeparation": 0.028,
+            "informationDensity": 0.593,
+            "childFacingReadability": 73
+          }
+        },
+        {
+          "id": "bridge_gate_props",
+          "file": "runtime_evidence/crops/locked_gps_start_bridge_gate_props.png",
+          "crop": {
+            "id": "bridge_gate_props",
+            "left": 900,
+            "top": 205,
+            "width": 380,
+            "height": 500
+          },
+          "scores": {
+            "width": 380,
+            "height": 500,
+            "brightness": 0.337,
+            "contrast": 0.164,
+            "colorSeparation": 0.041,
+            "informationDensity": 0.581,
+            "childFacingReadability": 73
+          }
+        }
+      ]
+    },
+    {
+      "id": "wider_gate_prompt",
+      "file": "runtime_evidence/wider_gate_prompt.png",
+      "notes": "Player standing at the current wider-map gate affordance and prompt.",
+      "runtimeTruth": {
+        "player": {
+          "x": 1484,
+          "y": 514
+        },
+        "nearestInteraction": "wider_gate",
+        "promptText": "[E] Open wider map clue",
+        "worldMapHud": {
+          "visible": true,
+          "expanded": true,
+          "currentLocation": "wider_gate",
+          "discovered": [
+            "home",
+            "garage",
+            "street"
+          ],
+          "lockedDestinations": [
+            "wider_gate",
+            "salt_river",
+            "copper_mine"
+          ],
+          "unlockedDestinations": [
+            "home",
+            "garage",
+            "street",
+            "dry_wash",
+            "bridge"
+          ],
+          "activeQuestMarker": "dry_wash",
+          "widerMapUnlocked": false
+        },
+        "assetRegistry": [
+          {
+            "id": "map_gate",
+            "finalKey": "act1.map_gate",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/map_gate.png"
+          },
+          {
+            "id": "prop_clarity_gps_post",
+            "finalKey": "act1.prop_clarity.gps_post",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_gps_post.png"
+          },
+          {
+            "id": "prop_clarity_world_scale_vista",
+            "finalKey": "act1.prop_clarity.world_scale_vista",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_world_scale_vista.png"
+          },
+          {
+            "id": "prop_clarity_route_marker_set",
+            "finalKey": "act1.prop_clarity.route_marker_set",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_route_marker_set.png"
+          },
+          {
+            "id": "prop_clarity_sonoran_landmark_set",
+            "finalKey": "act1.prop_clarity.sonoran_landmark_set",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_sonoran_landmark_set.png"
+          },
+          {
+            "id": "prop_replacement_garage_workbench",
+            "finalKey": "act1.prop_replacement.garage_workbench",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_replacement_garage_workbench.png"
+          },
+          {
+            "id": "prop_replacement_material_table",
+            "finalKey": "act1.prop_replacement.material_table",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_replacement_material_table.png"
+          },
+          {
+            "id": "prop_replacement_chemistry_bench",
+            "finalKey": "act1.prop_replacement.chemistry_bench",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_replacement_chemistry_bench.png"
+          },
+          {
+            "id": "prop_replacement_bridge_debris",
+            "finalKey": "act1.prop_replacement.bridge_debris",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_replacement_bridge_debris.png"
+          },
+          {
+            "id": "environment_vegetation_cluster",
+            "finalKey": "act1.environment.vegetation_cluster",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/environment_vegetation_cluster.png"
+          },
+          {
+            "id": "ui_map_frame",
+            "finalKey": "act1.ui.map_frame",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/ui_map_frame.png"
+          }
+        ]
+      },
+      "crops": [
+        {
+          "id": "gps_hud",
+          "file": "runtime_evidence/crops/wider_gate_prompt_gps_hud.png",
+          "crop": {
+            "id": "gps_hud",
+            "left": 0,
+            "top": 385,
+            "width": 410,
+            "height": 335
+          },
+          "scores": {
+            "width": 410,
+            "height": 335,
+            "brightness": 0.214,
+            "contrast": 0.13,
+            "colorSeparation": 0.055,
+            "informationDensity": 0.491,
+            "childFacingReadability": 69
+          }
+        },
+        {
+          "id": "workshop_props",
+          "file": "runtime_evidence/crops/wider_gate_prompt_workshop_props.png",
+          "crop": {
+            "id": "workshop_props",
+            "left": 440,
+            "top": 130,
+            "width": 520,
+            "height": 420
+          },
+          "scores": {
+            "width": 520,
+            "height": 420,
+            "brightness": 0.361,
+            "contrast": 0.169,
+            "colorSeparation": 0.04,
+            "informationDensity": 0.594,
+            "childFacingReadability": 73
+          }
+        },
+        {
+          "id": "bridge_gate_props",
+          "file": "runtime_evidence/crops/wider_gate_prompt_bridge_gate_props.png",
+          "crop": {
+            "id": "bridge_gate_props",
+            "left": 900,
+            "top": 205,
+            "width": 380,
+            "height": 500
+          },
+          "scores": {
+            "width": 380,
+            "height": 500,
+            "brightness": 0.312,
+            "contrast": 0.173,
+            "colorSeparation": 0.054,
+            "informationDensity": 0.625,
+            "childFacingReadability": 75
+          }
+        }
+      ]
+    },
+    {
+      "id": "unlocked_gps_payoff",
+      "file": "runtime_evidence/unlocked_gps_payoff.png",
+      "notes": "Current runtime after bridge repair and wider-map unlock.",
+      "runtimeTruth": {
+        "player": {
+          "x": 1484,
+          "y": 514
+        },
+        "nearestInteraction": "wider_gate",
+        "promptText": "[E] Open wider map clue",
+        "worldMapHud": {
+          "visible": true,
+          "expanded": true,
+          "currentLocation": "wider_gate",
+          "discovered": [
+            "home",
+            "garage",
+            "street",
+            "dry_wash",
+            "bridge",
+            "wider_gate"
+          ],
+          "lockedDestinations": [],
+          "unlockedDestinations": [
+            "home",
+            "garage",
+            "street",
+            "dry_wash",
+            "bridge",
+            "wider_gate",
+            "salt_river",
+            "copper_mine"
+          ],
+          "activeQuestMarker": "wider_gate",
+          "widerMapUnlocked": true
+        },
+        "assetRegistry": [
+          {
+            "id": "map_gate",
+            "finalKey": "act1.map_gate",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/map_gate.png"
+          },
+          {
+            "id": "prop_clarity_gps_post",
+            "finalKey": "act1.prop_clarity.gps_post",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_gps_post.png"
+          },
+          {
+            "id": "prop_clarity_world_scale_vista",
+            "finalKey": "act1.prop_clarity.world_scale_vista",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_world_scale_vista.png"
+          },
+          {
+            "id": "prop_clarity_route_marker_set",
+            "finalKey": "act1.prop_clarity.route_marker_set",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_route_marker_set.png"
+          },
+          {
+            "id": "prop_clarity_sonoran_landmark_set",
+            "finalKey": "act1.prop_clarity.sonoran_landmark_set",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_sonoran_landmark_set.png"
+          },
+          {
+            "id": "prop_replacement_garage_workbench",
+            "finalKey": "act1.prop_replacement.garage_workbench",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_replacement_garage_workbench.png"
+          },
+          {
+            "id": "prop_replacement_material_table",
+            "finalKey": "act1.prop_replacement.material_table",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_replacement_material_table.png"
+          },
+          {
+            "id": "prop_replacement_chemistry_bench",
+            "finalKey": "act1.prop_replacement.chemistry_bench",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_replacement_chemistry_bench.png"
+          },
+          {
+            "id": "prop_replacement_bridge_debris",
+            "finalKey": "act1.prop_replacement.bridge_debris",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_replacement_bridge_debris.png"
+          },
+          {
+            "id": "environment_vegetation_cluster",
+            "finalKey": "act1.environment.vegetation_cluster",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/environment_vegetation_cluster.png"
+          },
+          {
+            "id": "ui_map_frame",
+            "finalKey": "act1.ui.map_frame",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/ui_map_frame.png"
+          }
+        ]
+      },
+      "crops": [
+        {
+          "id": "gps_hud",
+          "file": "runtime_evidence/crops/unlocked_gps_payoff_gps_hud.png",
+          "crop": {
+            "id": "gps_hud",
+            "left": 0,
+            "top": 385,
+            "width": 410,
+            "height": 335
+          },
+          "scores": {
+            "width": 410,
+            "height": 335,
+            "brightness": 0.266,
+            "contrast": 0.223,
+            "colorSeparation": 0.044,
+            "informationDensity": 0.774,
+            "childFacingReadability": 82
+          }
+        },
+        {
+          "id": "workshop_props",
+          "file": "runtime_evidence/crops/unlocked_gps_payoff_workshop_props.png",
+          "crop": {
+            "id": "workshop_props",
+            "left": 440,
+            "top": 130,
+            "width": 520,
+            "height": 420
+          },
+          "scores": {
+            "width": 520,
+            "height": 420,
+            "brightness": 0.362,
+            "contrast": 0.173,
+            "colorSeparation": 0.042,
+            "informationDensity": 0.609,
+            "childFacingReadability": 74
+          }
+        },
+        {
+          "id": "bridge_gate_props",
+          "file": "runtime_evidence/crops/unlocked_gps_payoff_bridge_gate_props.png",
+          "crop": {
+            "id": "bridge_gate_props",
+            "left": 900,
+            "top": 205,
+            "width": 380,
+            "height": 500
+          },
+          "scores": {
+            "width": 380,
+            "height": 500,
+            "brightness": 0.315,
+            "contrast": 0.182,
+            "colorSeparation": 0.05,
+            "informationDensity": 0.651,
+            "childFacingReadability": 76
+          }
+        }
+      ]
+    }
+  ]
+}

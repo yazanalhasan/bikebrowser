@@ -1,0 +1,53 @@
+{
+  "before_artifacts": [
+    "project_audit/2026-06-01_npc_spacing/before/01_act1_start_before.png",
+    "project_audit/2026-06-01_npc_spacing/before/07_trust_language_notebook_before.png",
+    "artifacts/act1_acceptance_refresh/2026-06-01T16-03-20-664786Z/evidence_index.json"
+  ],
+  "after_artifacts": [
+    "project_audit/2026-06-01_npc_spacing/after/01_act1_start_after.png",
+    "project_audit/2026-06-01_npc_spacing/after/07_trust_language_notebook_after.png",
+    "artifacts/art_audit/act1_character_visual_audit.json",
+    "artifacts/art_audit/contact_sheet/act1_character_match_sheet.png"
+  ],
+  "comparison_artifacts": [
+    "project_audit/2026-06-01_npc_spacing/comparison/act1_npc_spacing_before_after_contact_sheet.png"
+  ],
+  "reference_artifacts": [
+    "src/game/art/final/act1/characters/mr_chen_talk_sheet.png",
+    "src/game/art/final/act1/characters/mrs_ramirez_talk_sheet.png",
+    "src/game/art/final/act1/characters/auntie_mariam_style_reference_sheet.png",
+    "public/layouts/neighborhood.layout.json"
+  ],
+  "human_facing_rationale": "Act 1 NPCs now occupy wider layout-driven anchors, so children can distinguish Mr. Chen, Mrs. Ramirez, and Auntie Mariam faster. The quest and dialogue IDs are unchanged, the live audit still verifies exact runtime frames against source sheets, and the previous NPC overlap warnings are gone.",
+  "required_judgment_dimensions": {
+    "child_facing_readability": "PASS: mentor silhouettes and labels have more breathing room, making each NPC easier to identify.",
+    "visual_hierarchy": "PASS: the NPC row reads as three separate helpers instead of a compressed cluster.",
+    "canon_alignment": "PASS: the neighborhood mentor group remains present while better supporting the Act 1 guidance flow.",
+    "runtime_truth": "PASS: after evidence comes from live Phaser screenshots and the refreshed character visual audit.",
+    "before_after_improvement": "PASS: side-by-side runtime evidence shows clearer NPC separation after the change."
+  },
+  "experience_gate": {
+    "Feature Exists": "PASS: the three Act 1 NPCs remain in the runtime scene.",
+    "Runtime Verification": "PASS: refreshed live character audit and Playwright visual captures completed.",
+    "Visual Quality": "PASS: NPC overlap warnings were removed.",
+    "UX Quality": "PASS: interaction zones follow the same moved anchors as the visible NPCs.",
+    "Educational Quality": "PASS: mentor identities remain tied to existing dialogue and trust/bridge learning beats.",
+    "Canon Alignment": "PASS: no scenes or quest flow were removed; Act 1 neighborhood guidance remains intact.",
+    "Acceptance": "PASS: targeted runtime audit passes after the visual change."
+  },
+  "ux_notes": {
+    "helps_player": "Yes. The player can more easily tell which mentor is which before interacting.",
+    "reduces_confusion": "Yes. NPC labels, cues, and prompts now align with separated characters.",
+    "avoids_clutter": "Yes. No new props were added; the existing cluster was spaced out.",
+    "improves_navigation": "Yes. Interaction halos and prompts follow the visible NPC anchors.",
+    "improves_understanding": "Yes. Children can connect each mentor to the relevant dialogue beat with less visual ambiguity."
+  },
+  "child_readability_notes": {
+    "object": "A child can identify each NPC as a separate person.",
+    "goal": "A child can see that the mentors are available helpers in the Act 1 neighborhood.",
+    "next_step": "A child can approach a visible mentor and use the prompt without label overlap.",
+    "reward": "The clearer mentor group supports the existing path toward bridge repair and wider-map unlock."
+  },
+  "final_judgment": "improved"
+}

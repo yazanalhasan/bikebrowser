@@ -1,0 +1,65 @@
+{
+  "mission": "mission_3da14d0e7c2c",
+  "imported_source_package_mission": "mission_dbb100b325d6",
+  "portfolio": "portfolio_33301979a894",
+  "project": "bikebrowser",
+  "generated_at": "2026-06-02T03:26:00Z",
+  "status": "runtime_replacement_completed_visual_gate_passed",
+  "source_package": "project_audit/act1_prop_clarity_mission/replacement_package.json",
+  "replaced_runtime_assets": [
+    "prop_replacement_garage_workbench",
+    "prop_replacement_material_table",
+    "prop_replacement_chemistry_bench",
+    "prop_replacement_bridge_debris",
+    "map_gate",
+    "prop_clarity_gps_post",
+    "prop_clarity_world_scale_vista",
+    "prop_clarity_route_marker_set",
+    "prop_clarity_sonoran_landmark_set",
+    "environment_vegetation_cluster",
+    "ui_map_frame"
+  ],
+  "preserved_gameplay": [
+    "interaction ids unchanged",
+    "interaction coordinates preserved through neighborhood layout entries",
+    "collision/player physics unchanged",
+    "save/progression behavior unchanged",
+    "Act 1 quest flow unchanged"
+  ],
+  "evidence": {
+    "before_artifacts": [
+      "project_audit/act1_prop_clarity_mission/runtime_evidence/before/01_act1_start.png",
+      "project_audit/act1_prop_clarity_mission/runtime_evidence/before/03_bridge_discovery.png",
+      "project_audit/act1_prop_clarity_mission/runtime_evidence/before/04_material_testing.png",
+      "project_audit/act1_prop_clarity_mission/runtime_evidence/before/06_chemistry_interaction.png",
+      "project_audit/act1_prop_clarity_mission/runtime_evidence/before/08_bridge_repaired_map_unlock.png"
+    ],
+    "after_artifacts": [
+      "project_audit/act1_prop_clarity_mission/runtime_evidence/after/01_act1_start.png",
+      "project_audit/act1_prop_clarity_mission/runtime_evidence/after/03_bridge_discovery.png",
+      "project_audit/act1_prop_clarity_mission/runtime_evidence/after/04_material_testing.png",
+      "project_audit/act1_prop_clarity_mission/runtime_evidence/after/06_chemistry_interaction.png",
+      "project_audit/act1_prop_clarity_mission/runtime_evidence/after/08_bridge_repaired_map_unlock.png"
+    ],
+    "comparison_contact_sheet": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/act1_prop_replacement_visual_improvement_contact_sheet.png",
+    "visual_improvement_gate": "project_audit/act1_prop_clarity_mission/visual_improvement_gate.json",
+    "runtime_visual_improvement_gate": "project_audit/act1_prop_clarity_mission/runtime_evidence/visual_improvement_gate.json",
+    "runtime_readability_report": "project_audit/act1_prop_clarity_mission/runtime_readability_report.json"
+  },
+  "before_capture_method": "Live runtime capture with ?forcePlaceholderProps=1 to suppress replacement props while preserving the same Act 1 state script.",
+  "after_capture_method": "Live runtime capture without forcePlaceholderProps, using AssetRegistry final-ready replacement props.",
+  "visual_gate_judgment": "improved",
+  "child_facing_judgment": "PASS: a child can identify the workbench, material table, chemistry bench, broken bridge debris, GPS, and wider-map gate faster from the after screenshots.",
+  "validation": {
+    "npm run build": "PASS",
+    "node tools/audit-act1-prop-clarity.mjs": "PASS",
+    "npx playwright test tests/e2e/game-rebuild.smoke.spec.js --project=chromium": "PASS: 1 passed",
+    "npx playwright test tests/e2e/game-rebuild.act1-visual-capture.spec.js --project=chromium": "PASS: 2 passed",
+    "python -m brain.cli assets audit": "PASS: blocked_count 0",
+    "python -m brain.cli assets validate": "PASS: blocked_count 0",
+    "python -m brain.cli reality state --project bikebrowser": "PASS: runtime_evidence_current true",
+    "python -m brain.cli canon score --project bikebrowser": "PASS: canon_alignment_score 72",
+    "python -m brain.cli portfolio latest --project bikebrowser": "PASS: latest portfolio portfolio_a2b8b30ad1ee",
+    "python -m brain.cli decisions next portfolio_33301979a894": "PASS: next includes act1_world_scale_affordance_followup"
+  }
+}

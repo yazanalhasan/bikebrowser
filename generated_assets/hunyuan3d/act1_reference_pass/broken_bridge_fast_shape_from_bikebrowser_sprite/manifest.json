@@ -1,0 +1,46 @@
+{
+  "id": "broken_bridge_fast_shape_from_bikebrowser_sprite",
+  "createdAt": "2026-05-28T07:42:45",
+  "source": "hunyuan3d-2.1-space",
+  "space": "Gemini899/Dream-Hunyuan3D-2.1",
+  "inputImage": "C:\\dev\\bikebrowser\\generated_assets\\hunyuan3d\\inputs\\bridge_broken_square.png",
+  "runtimeUse": "reference_only_until_curated",
+  "parameters": {
+    "steps": 5,
+    "guidance_scale": 4.0,
+    "seed": 4284,
+    "octree_resolution": 128,
+    "check_box_rembg": false,
+    "num_chunks": 4000,
+    "endpoint": "shape_generation"
+  },
+  "meshStats": {
+    "model": {
+      "shapegen": "tencent/Hunyuan3D-2.1/hunyuan3d-dit-v2-1",
+      "texgen": "tencent/Hunyuan3D-2.1"
+    },
+    "params": {
+      "caption": null,
+      "steps": 5,
+      "guidance_scale": 4.0,
+      "seed": 4284,
+      "octree_resolution": 128,
+      "check_box_rembg": false,
+      "num_chunks": 4000
+    },
+    "number_of_faces": 103962,
+    "number_of_vertices": 51965,
+    "time": {
+      "shape generation": 2.875408411026001,
+      "export to trimesh": 0.020203828811645508,
+      "total": 2.8990883827209473
+    }
+  },
+  "rawFileReturn": {
+    "value": "C:\\Users\\admin\\AppData\\Local\\Temp\\gradio\\6b5a2dca8345f9aa202bfb1bec5bb157d9a314728bfa5bc3077548b9db99151b\\white_mesh.glb",
+    "__type__": "update"
+  },
+  "files": {
+    "shape": "C:\\dev\\bikebrowser\\generated_assets\\hunyuan3d\\act1_reference_pass\\broken_bridge_fast_shape_from_bikebrowser_sprite\\broken_bridge_fast_shape_from_bikebrowser_sprite_shape.glb"
+  }
+}

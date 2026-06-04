@@ -59,6 +59,7 @@ export class Act1RuntimeSystem {
     this.act1Complete = false;
     this.feedbackLog = [];
     this.lastFeedback = null;
+    this.zuzuBucks = 0;           // reward currency, earned on first quest/objective completion
   }
 
   bindRegistry(registry) {
@@ -81,7 +82,42 @@ export class Act1RuntimeSystem {
   }
 
   completeObjective(objectiveId) {
-    return this.questSystem.completeObjective(objectiveId);
+    const result = this.questSystem.completeObjective(objectiveId);
+    // Reward FIRST-time completion only (replays of a finished mini-game give no
+    // repeat payout — fixes "redo over and over"). Objective = small payout;
+    // finishing the whole quest = a bonus + fanfare.
+    if (result.ok && result.newObjective) {
+      this.awardZuzuBucks(5, { kind: 'objective', objectiveId });
+    }
+    if (result.ok && result.newQuest) {
+      const quest = this.questSystem.quests.get(result.newQuest);
+      this.awardZuzuBucks(25, { kind: 'quest', questId: result.newQuest, questName: quest?.name });
+    }
+    return result;
+  }
+
+  // Grant ZuzuBucks, play the reward chime, and surface a toast. `meta.kind`
+  // 'quest' triggers the bigger fanfare.
+  awardZuzuBucks(amount, meta = {}) {
+    if (!amount) return this.zuzuBucks;
+    this.zuzuBucks += amount;
+    const isQuest = meta.kind === 'quest';
+    this.audioSystem.playRewardChime(isQuest ? 'quest' : 'objective');
+    this.audioSystem.playInteractionCue(isQuest ? 'map_unlock' : 'trust_gain');
+    const message = isQuest
+      ? `✦ Quest complete: ${meta.questName || 'done'}!  +${amount} ZuzuBucks`
+      : `+${amount} ZuzuBucks`;
+    this.recordFeedback('reward', message, { amount, total: this.zuzuBucks, ...meta });
+    this.registry?.events?.emit('zuzubucks:changed', { total: this.zuzuBucks, delta: amount, meta });
+    if (isQuest) this.registry?.events?.emit('reward:quest', { total: this.zuzuBucks, ...meta });
+    return this.zuzuBucks;
+  }
+
+  spendZuzuBucks(amount) {
+    if (amount > this.zuzuBucks) return { ok: false, reason: 'insufficient', total: this.zuzuBucks };
+    this.zuzuBucks -= amount;
+    this.registry?.events?.emit('zuzubucks:changed', { total: this.zuzuBucks, delta: -amount });
+    return { ok: true, total: this.zuzuBucks };
   }
 
   recordFeedback(kind, message, details = {}) {
@@ -438,6 +474,7 @@ export class Act1RuntimeSystem {
       schemaVersion: 2,
       sceneReady: this.sceneReady,
       act1Complete: this.act1Complete,
+      zuzuBucks: this.zuzuBucks,
       quests: this.questSystem.getState(),
       notebook: this.notebookSystem.getState(),
       inventory: this.inventorySystem.getState(),

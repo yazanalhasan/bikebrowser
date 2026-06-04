@@ -55,12 +55,23 @@ GREEN. 3 guards pass · 3 worklist expected-fail · 1 payoff fixme. Runtime ~1.3
 | GUARD: Home "Play" reaches build | guard ✅ | Orphaned build | reachable (1.9.1) |
 | GUARD: UTM exposes predict choice | guard ✅ | Predict UI | reachable (1.9.2) |
 | GUARD: UTM loop can be exited | guard ✅ | Input trap / no exit | **PROMOTED** (1.9.2A-C) |
+| GUARD: bridge designed by hand | guard ✅ | `bridge_plan` pre-baked | **PROMOTED** (1.9.3) |
+| GUARD: investigation run by hand | guard ✅ | `dry_wash` only mapped | **PROMOTED** (1.9.4) |
 | WORKLIST: no shadowed zones | `test.fail` | `spanish_neighbor` == `neighbor` (0px) | still failing |
-| WORKLIST: bridge design opens a choice | `test.fail` | `bridge_plan` pre-baked; `BridgeDesignScene` exists but unwired (1.9.3 WIP) | still failing |
-| WORKLIST: investigation reachable | `test.fail` | `dry_wash` only maps; loop unwired (1.9.4) | still failing |
 | PAYOFF: visible load test | `test.fixme` | test was invisible | mostly addressed by 1.9.2A beam; assertion TBD |
 
+Status: GREEN — **5 guards** pass · 1 worklist (shadowed zone) · 1 payoff fixme.
+
 ### Promotion log
+- **2026-06-02 — "bridge designed by hand" + "investigation run by hand"** WORKLIST → GUARD.
+  Wired by the left tab (1.9.3 / 1.9.4): `bridge_plan` now opens `BridgeDesignScene`
+  (`__BRIDGE_DESIGN__`), and a new `investigate_wash` zone opens `InvestigationScene`
+  (`__INVESTIGATION__`). **Independently reconciled by player-only walkthrough**
+  (`phase1-reconcile2.spec.js`, screenshots `…/reconcile2/`): from Home, keyboard-only,
+  a player built a safe `player_designed` plan ("The bridge holds!") and concluded the
+  Dry Wash mystery ("You changed your mind with the evidence", `correctedFromMisleading`).
+  Earlier suite snapshots showed these failing — the build advanced after that run;
+  **runtime truth wins.**
 - **2026-06-02 — "UTM loop can be exited"** WORKLIST → GUARD. Fixed by commit
   `dbd5f93` (1.9.2A-C: Escape exit + summary + visible hold/bend/break beam).
   Detected as an unexpected pass after correcting the detector to read the real
@@ -80,7 +91,8 @@ player-facing signal (`__BRIDGE_DESIGN__.active`; per-mystery `observed`/`conclu
 - `window.__GAME__` — Act1 runtime debug API (engine).
 - `window.__bikebrowserRebuildGame` — the Phaser game (scenes, player, zones).
 - `window.__PREDICTION__` — `{active, phase, materialId, results[]}` (UTM modal).
-- `window.__BRIDGE_DESIGN__` — `{active, ...}` (bridge design modal).
+- `window.__BRIDGE_DESIGN__` — `{active, phase, role, candidateId, selection, outcome}` (bridge design modal).
+- `window.__INVESTIGATION__` — `{active, phase, investigationId, hypothesisId, hypotheses[], evidenceShown, evidenceCount, correctedFromMisleading, conclusionText}` (Dry Wash investigation modal).
 
 ---
 

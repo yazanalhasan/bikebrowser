@@ -28,9 +28,15 @@ export class Act1AudioSystem {
       reducedAudio: false,
       subtitleMode: 'always',
       speechRate: 1,
+      useServerVoice: true, // prefer the Executive Brain Piper voice over browser TTS
     };
     this.speechAvailable = typeof window !== 'undefined' && 'speechSynthesis' in window && typeof SpeechSynthesisUtterance !== 'undefined';
     this.currentUtterance = null;
+    // Server (Piper) voice: fetch synthesized WAV from the EB inspector and play
+    // it; fall back to browser Web Speech when the server is unreachable.
+    this.serverVoiceDown = false;
+    this._serverAudio = null;
+    this._ttsBlobCache = new Map();
     this.lastSpoken = null;
     this.lastNormalized = null;
     this.speaking = false;
@@ -159,16 +165,37 @@ export class Act1AudioSystem {
       speechAvailable: this.speechAvailable,
     });
 
-    if (!this.settings.speechEnabled || !this.speechAvailable || !normalized) {
+    const serverEligible = this.settings.useServerVoice && !this.serverVoiceDown && typeof fetch !== 'undefined';
+
+    if (!this.settings.speechEnabled || !normalized || (!this.speechAvailable && !serverEligible)) {
       this.lastSpoken = { text, normalized, voiceId: profile.voiceId, skipped: true };
-      this.recordAudit('speech_skipped', {
-        voiceId: profile.voiceId,
-        reason: this.speechAvailable ? 'speech_disabled' : 'speech_unavailable',
-        normalized,
-      });
-      return { ok: false, reason: this.speechAvailable ? 'speech_disabled' : 'speech_unavailable', normalized, voice: profile };
+      const reason = !this.settings.speechEnabled ? 'speech_disabled' : (!normalized ? 'empty' : 'speech_unavailable');
+      this.recordAudit('speech_skipped', { voiceId: profile.voiceId, reason, normalized });
+      return { ok: false, reason, normalized, voice: profile };
     }
 
+    // Prefer the Executive Brain Piper voice. Falls back to the browser voice
+    // per-line on HTTP error, or globally if the EB server is unreachable.
+    if (serverEligible) {
+      this.lastSpoken = {
+        text, normalized, voiceId: profile.voiceId, via: 'server',
+        language: options.language || profile.language || 'en-US',
+      };
+      this.recordAudit('speech_started', { ...this.lastSpoken });
+      this.speaking = true;
+      this.speakViaServer(normalized, profile, options);
+      return { ok: true, normalized, voice: profile, via: 'server' };
+    }
+
+    return this._speakViaBrowser(text, normalized, profile, options);
+  }
+
+  // Browser Web Speech path (also the fallback when the server voice is down).
+  _speakViaBrowser(text, normalized, profile, options = {}) {
+    if (!this.speechAvailable) {
+      this.lastSpoken = { text, normalized, voiceId: profile.voiceId, skipped: true };
+      return { ok: false, reason: 'speech_unavailable', normalized, voice: profile };
+    }
     this.stopSpeech();
     try {
       const utterance = new SpeechSynthesisUtterance(normalized);
@@ -212,12 +239,73 @@ export class Act1AudioSystem {
     }
   }
 
+  // Base URL of the Executive Brain inspector that serves /inspect/tts.
+  // Override per-deploy with window.__BIKEBROWSER_TTS_BASE__.
+  _ttsBase() {
+    if (typeof window !== 'undefined' && window.__BIKEBROWSER_TTS_BASE__) return window.__BIKEBROWSER_TTS_BASE__;
+    return 'http://localhost:8000';
+  }
+
+  // Fetch a Piper-synthesized WAV from EB and play it. On a network/CORS error
+  // the server is marked down (browser voice from then on); on an HTTP error
+  // (e.g. 409 CARE-gated voice) just this line falls back to the browser voice.
+  async speakViaServer(normalized, profile, options = {}) {
+    const language = options.language || profile.language || 'en-US';
+    const key = `${profile.voiceId}|${language}|${normalized}`;
+    try {
+      let url = this._ttsBlobCache.get(key);
+      if (!url) {
+        const q = `text=${encodeURIComponent(normalized)}&voice=${encodeURIComponent(profile.voiceId)}&language=${encodeURIComponent(language)}`;
+        const resp = await fetch(`${this._ttsBase()}/inspect/tts?${q}`, { method: 'GET' });
+        if (!resp.ok) {
+          // Per-line block (CARE gate / disabled): fall back to browser for this line only.
+          this.recordAudit('server_tts_http', { status: resp.status, voiceId: profile.voiceId });
+          return this._speakViaBrowser(normalized, normalized, profile, options);
+        }
+        const blob = await resp.blob();
+        url = URL.createObjectURL(blob);
+        this._ttsBlobCache.set(key, url);
+      }
+      this.stopSpeech();
+      const audio = new Audio(url);
+      this._serverAudio = audio;
+      this.speaking = true;
+      audio.onended = () => { this.speaking = false; this._serverAudio = null; };
+      audio.onerror = () => { this.speaking = false; this._serverAudio = null; };
+      await audio.play();
+      this.recordAudit('server_tts_played', { voiceId: profile.voiceId, engine: 'piper' });
+      return { ok: true, via: 'server' };
+    } catch (err) {
+      // Network/CORS error -> EB server unreachable; use the browser voice from now on.
+      this.serverVoiceDown = true;
+      this.recordAudit('server_tts_down', { message: String(err && err.message || err) });
+      return this._speakViaBrowser(normalized, normalized, profile, options);
+    }
+  }
+
   autoSpeakLine(line) {
     if (!this.settings.autoSpeak || !line?.text) return { ok: false, reason: 'auto_speak_disabled' };
     return this.speakLine(line.text, line.voiceId || line.speaker, {
       language: line.language,
       emotion: line.emotion,
     });
+  }
+
+  // Narrator: read a scene panel's on-screen text aloud. Quieted by M
+  // (reducedAudio) and re-playable with R (sets lastSpoken). De-duped so a
+  // re-render of the same panel text does not restart the narration.
+  narrate(text, options = {}) {
+    const body = (Array.isArray(text) ? text.filter(Boolean).join('. ') : String(text || '')).trim();
+    if (!body) return { ok: false, reason: 'empty' };
+    if (this.settings.reducedAudio) return { ok: false, reason: 'reduced_audio' };
+    const now = Date.now();
+    if (options.dedupe !== false && body === this._lastNarrated
+      && (this.speaking || now - (this._lastNarrateAt || 0) < 1200)) {
+      return { ok: false, reason: 'duplicate' };
+    }
+    this._lastNarrated = body;
+    this._lastNarrateAt = now;
+    return this.speakLine(body, options.voiceId || 'narrator', { rate: options.rate });
   }
 
   replayLast() {
@@ -232,6 +320,11 @@ export class Act1AudioSystem {
       } catch {
         // ignore browser-specific speech shutdown failures
       }
+    }
+    // Stop the server (Piper) audio element too (M/Esc/quiet must silence it).
+    if (this._serverAudio) {
+      try { this._serverAudio.pause(); this._serverAudio.currentTime = 0; } catch { /* noop */ }
+      this._serverAudio = null;
     }
     this.speaking = false;
     this.currentUtterance = null;
@@ -249,6 +342,42 @@ export class Act1AudioSystem {
     this.ambientState = stateKey;
     this.recordAudit('ambient_changed', { ambientState: stateKey });
     return { ok: true, ambientState: stateKey };
+  }
+
+  // A short ascending arpeggio via Web Audio — the actual "reward" sound on a
+  // quest/objective completion. 'quest' plays a fuller 4-note fanfare. Silenced
+  // by reducedAudio (M) / speech-disabled settings.
+  playRewardChime(kind = 'objective') {
+    if (this.settings.reducedAudio) return { ok: false, reason: 'reduced_audio' };
+    if (typeof window === 'undefined') return { ok: false, reason: 'no_window' };
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return { ok: false, reason: 'no_webaudio' };
+      this._sfxCtx = this._sfxCtx || new AC();
+      const ctx = this._sfxCtx;
+      if (ctx.state === 'suspended') ctx.resume();
+      const now = ctx.currentTime;
+      // C5 E5 G5 (+C6 for quest) — a bright major arpeggio.
+      const notes = kind === 'quest' ? [523.25, 659.25, 783.99, 1046.5] : [659.25, 783.99, 1046.5];
+      const step = 0.10;
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        const t0 = now + i * step;
+        gain.gain.setValueAtTime(0.0001, t0);
+        gain.gain.exponentialRampToValueAtTime(0.18, t0 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.22);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(t0);
+        osc.stop(t0 + 0.24);
+      });
+      this.recordAudit('reward_chime', { kind, notes: notes.length });
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, reason: 'sfx_error', message: error.message };
+    }
   }
 
   playInteractionCue(cueId) {

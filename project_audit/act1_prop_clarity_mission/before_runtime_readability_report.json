@@ -1,0 +1,459 @@
+{
+  "mission": "mission_dbb100b325d6",
+  "portfolio": "portfolio_06d1162143c8",
+  "scope": "Act 1 prop clarity targeted runtime evidence for audit/prep package only",
+  "baseUrl": "http://localhost:5173/game-rebuild",
+  "generatedAt": "2026-06-01T16:25:05.809Z",
+  "contactSheet": "runtime_evidence/act1_prop_clarity_contact_sheet.png",
+  "captures": [
+    {
+      "id": "locked_gps_start",
+      "file": "runtime_evidence/locked_gps_start.png",
+      "notes": "Current runtime before wider-map unlock; GPS shows known/locked city route context.",
+      "runtimeTruth": {
+        "player": {
+          "x": 430,
+          "y": 500
+        },
+        "nearestInteraction": "neighbor",
+        "promptText": "[E] Ask Mrs. Ramirez",
+        "worldMapHud": {
+          "visible": true,
+          "expanded": false,
+          "currentLocation": "street",
+          "discovered": [
+            "home",
+            "garage",
+            "street"
+          ],
+          "lockedDestinations": [
+            "wider_gate",
+            "salt_river",
+            "copper_mine"
+          ],
+          "unlockedDestinations": [
+            "home",
+            "garage",
+            "street",
+            "dry_wash",
+            "bridge"
+          ],
+          "activeQuestMarker": "dry_wash",
+          "widerMapUnlocked": false
+        },
+        "assetRegistry": [
+          {
+            "id": "map_gate",
+            "finalKey": "act1.map_gate",
+            "status": "final_ready",
+            "approved": false,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/map_gate.png"
+          },
+          {
+            "id": "prop_clarity_gps_post",
+            "finalKey": "act1.prop_clarity.gps_post",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_gps_post.png"
+          },
+          {
+            "id": "prop_clarity_world_scale_vista",
+            "finalKey": "act1.prop_clarity.world_scale_vista",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_world_scale_vista.png"
+          },
+          {
+            "id": "prop_clarity_route_marker_set",
+            "finalKey": "act1.prop_clarity.route_marker_set",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_route_marker_set.png"
+          },
+          {
+            "id": "prop_clarity_sonoran_landmark_set",
+            "finalKey": "act1.prop_clarity.sonoran_landmark_set",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_sonoran_landmark_set.png"
+          },
+          {
+            "id": "ui_map_frame",
+            "finalKey": "act1.ui.map_frame",
+            "status": "draft",
+            "approved": false,
+            "usingPlaceholder": true,
+            "runtimeUrl": null
+          }
+        ]
+      },
+      "crops": [
+        {
+          "id": "gps_hud",
+          "file": "runtime_evidence/crops/locked_gps_start_gps_hud.png",
+          "crop": {
+            "id": "gps_hud",
+            "left": 0,
+            "top": 385,
+            "width": 410,
+            "height": 335
+          },
+          "scores": {
+            "width": 410,
+            "height": 335,
+            "brightness": 0.256,
+            "contrast": 0.134,
+            "colorSeparation": 0.068,
+            "informationDensity": 0.52,
+            "childFacingReadability": 70
+          }
+        },
+        {
+          "id": "center_playfield",
+          "file": "runtime_evidence/crops/locked_gps_start_center_playfield.png",
+          "crop": {
+            "id": "center_playfield",
+            "left": 440,
+            "top": 130,
+            "width": 430,
+            "height": 420
+          },
+          "scores": {
+            "width": 430,
+            "height": 420,
+            "brightness": 0.328,
+            "contrast": 0.177,
+            "colorSeparation": 0.028,
+            "informationDensity": 0.606,
+            "childFacingReadability": 74
+          }
+        },
+        {
+          "id": "right_gate_area",
+          "file": "runtime_evidence/crops/locked_gps_start_right_gate_area.png",
+          "crop": {
+            "id": "right_gate_area",
+            "left": 910,
+            "top": 205,
+            "width": 370,
+            "height": 420
+          },
+          "scores": {
+            "width": 370,
+            "height": 420,
+            "brightness": 0.34,
+            "contrast": 0.165,
+            "colorSeparation": 0.034,
+            "informationDensity": 0.574,
+            "childFacingReadability": 72
+          }
+        }
+      ]
+    },
+    {
+      "id": "wider_gate_prompt",
+      "file": "runtime_evidence/wider_gate_prompt.png",
+      "notes": "Player standing at the current wider-map gate affordance and prompt.",
+      "runtimeTruth": {
+        "player": {
+          "x": 1484,
+          "y": 514
+        },
+        "nearestInteraction": "wider_gate",
+        "promptText": "[E] Open wider map clue",
+        "worldMapHud": {
+          "visible": true,
+          "expanded": true,
+          "currentLocation": "wider_gate",
+          "discovered": [
+            "home",
+            "garage",
+            "street"
+          ],
+          "lockedDestinations": [
+            "wider_gate",
+            "salt_river",
+            "copper_mine"
+          ],
+          "unlockedDestinations": [
+            "home",
+            "garage",
+            "street",
+            "dry_wash",
+            "bridge"
+          ],
+          "activeQuestMarker": "dry_wash",
+          "widerMapUnlocked": false
+        },
+        "assetRegistry": [
+          {
+            "id": "map_gate",
+            "finalKey": "act1.map_gate",
+            "status": "final_ready",
+            "approved": false,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/map_gate.png"
+          },
+          {
+            "id": "prop_clarity_gps_post",
+            "finalKey": "act1.prop_clarity.gps_post",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_gps_post.png"
+          },
+          {
+            "id": "prop_clarity_world_scale_vista",
+            "finalKey": "act1.prop_clarity.world_scale_vista",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_world_scale_vista.png"
+          },
+          {
+            "id": "prop_clarity_route_marker_set",
+            "finalKey": "act1.prop_clarity.route_marker_set",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_route_marker_set.png"
+          },
+          {
+            "id": "prop_clarity_sonoran_landmark_set",
+            "finalKey": "act1.prop_clarity.sonoran_landmark_set",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_sonoran_landmark_set.png"
+          },
+          {
+            "id": "ui_map_frame",
+            "finalKey": "act1.ui.map_frame",
+            "status": "draft",
+            "approved": false,
+            "usingPlaceholder": true,
+            "runtimeUrl": null
+          }
+        ]
+      },
+      "crops": [
+        {
+          "id": "gps_hud",
+          "file": "runtime_evidence/crops/wider_gate_prompt_gps_hud.png",
+          "crop": {
+            "id": "gps_hud",
+            "left": 0,
+            "top": 385,
+            "width": 410,
+            "height": 335
+          },
+          "scores": {
+            "width": 410,
+            "height": 335,
+            "brightness": 0.214,
+            "contrast": 0.127,
+            "colorSeparation": 0.058,
+            "informationDensity": 0.484,
+            "childFacingReadability": 68
+          }
+        },
+        {
+          "id": "center_playfield",
+          "file": "runtime_evidence/crops/wider_gate_prompt_center_playfield.png",
+          "crop": {
+            "id": "center_playfield",
+            "left": 440,
+            "top": 130,
+            "width": 430,
+            "height": 420
+          },
+          "scores": {
+            "width": 430,
+            "height": 420,
+            "brightness": 0.353,
+            "contrast": 0.165,
+            "colorSeparation": 0.035,
+            "informationDensity": 0.576,
+            "childFacingReadability": 72
+          }
+        },
+        {
+          "id": "right_gate_area",
+          "file": "runtime_evidence/crops/wider_gate_prompt_right_gate_area.png",
+          "crop": {
+            "id": "right_gate_area",
+            "left": 910,
+            "top": 205,
+            "width": 370,
+            "height": 420
+          },
+          "scores": {
+            "width": 370,
+            "height": 420,
+            "brightness": 0.323,
+            "contrast": 0.174,
+            "colorSeparation": 0.042,
+            "informationDensity": 0.615,
+            "childFacingReadability": 74
+          }
+        }
+      ]
+    },
+    {
+      "id": "unlocked_gps_payoff",
+      "file": "runtime_evidence/unlocked_gps_payoff.png",
+      "notes": "Current runtime after bridge repair and wider-map unlock.",
+      "runtimeTruth": {
+        "player": {
+          "x": 1484,
+          "y": 514
+        },
+        "nearestInteraction": "wider_gate",
+        "promptText": "[E] Open wider map clue",
+        "worldMapHud": {
+          "visible": true,
+          "expanded": true,
+          "currentLocation": "wider_gate",
+          "discovered": [
+            "home",
+            "garage",
+            "street",
+            "dry_wash",
+            "bridge",
+            "wider_gate"
+          ],
+          "lockedDestinations": [],
+          "unlockedDestinations": [
+            "home",
+            "garage",
+            "street",
+            "dry_wash",
+            "bridge",
+            "wider_gate",
+            "salt_river",
+            "copper_mine"
+          ],
+          "activeQuestMarker": "wider_gate",
+          "widerMapUnlocked": true
+        },
+        "assetRegistry": [
+          {
+            "id": "map_gate",
+            "finalKey": "act1.map_gate",
+            "status": "final_ready",
+            "approved": false,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/map_gate.png"
+          },
+          {
+            "id": "prop_clarity_gps_post",
+            "finalKey": "act1.prop_clarity.gps_post",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_gps_post.png"
+          },
+          {
+            "id": "prop_clarity_world_scale_vista",
+            "finalKey": "act1.prop_clarity.world_scale_vista",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_world_scale_vista.png"
+          },
+          {
+            "id": "prop_clarity_route_marker_set",
+            "finalKey": "act1.prop_clarity.route_marker_set",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_route_marker_set.png"
+          },
+          {
+            "id": "prop_clarity_sonoran_landmark_set",
+            "finalKey": "act1.prop_clarity.sonoran_landmark_set",
+            "status": "final_ready",
+            "approved": true,
+            "usingPlaceholder": false,
+            "runtimeUrl": "http://localhost:5173/src/game/art/final/act1/prop_clarity_sonoran_landmark_set.png"
+          },
+          {
+            "id": "ui_map_frame",
+            "finalKey": "act1.ui.map_frame",
+            "status": "draft",
+            "approved": false,
+            "usingPlaceholder": true,
+            "runtimeUrl": null
+          }
+        ]
+      },
+      "crops": [
+        {
+          "id": "gps_hud",
+          "file": "runtime_evidence/crops/unlocked_gps_payoff_gps_hud.png",
+          "crop": {
+            "id": "gps_hud",
+            "left": 0,
+            "top": 385,
+            "width": 410,
+            "height": 335
+          },
+          "scores": {
+            "width": 410,
+            "height": 335,
+            "brightness": 0.268,
+            "contrast": 0.221,
+            "colorSeparation": 0.046,
+            "informationDensity": 0.769,
+            "childFacingReadability": 81
+          }
+        },
+        {
+          "id": "center_playfield",
+          "file": "runtime_evidence/crops/unlocked_gps_payoff_center_playfield.png",
+          "crop": {
+            "id": "center_playfield",
+            "left": 440,
+            "top": 130,
+            "width": 430,
+            "height": 420
+          },
+          "scores": {
+            "width": 430,
+            "height": 420,
+            "brightness": 0.353,
+            "contrast": 0.165,
+            "colorSeparation": 0.035,
+            "informationDensity": 0.576,
+            "childFacingReadability": 72
+          }
+        },
+        {
+          "id": "right_gate_area",
+          "file": "runtime_evidence/crops/unlocked_gps_payoff_right_gate_area.png",
+          "crop": {
+            "id": "right_gate_area",
+            "left": 910,
+            "top": 205,
+            "width": 370,
+            "height": 420
+          },
+          "scores": {
+            "width": 370,
+            "height": 420,
+            "brightness": 0.321,
+            "contrast": 0.175,
+            "colorSeparation": 0.043,
+            "informationDensity": 0.618,
+            "childFacingReadability": 74
+          }
+        }
+      ]
+    }
+  ]
+}

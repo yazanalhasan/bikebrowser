@@ -1,0 +1,22 @@
+{
+  "id": "mrs_ramirez_intro",
+  "speaker": "Mrs. Ramirez",
+  "lines": [
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Zuzu - perfect timing. I was just about to do my pre-ride check. Want to learn how? We'll do it together."
+    },
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Every ride, before I roll out: A, B, C, then a quick check. Air. Brakes. Chain. Then wheels, seat, handlebars. It takes a minute and it saves your day."
+    },
+    {
+      "speaker": "Mrs. Ramirez",
+      "text": "Start with air. Squeeze the tire - should feel firm, not squishy. Front first."
+    }
+  ],
+  "onComplete": {
+    "type": "start_quest",
+    "questId": "act1_pre_ride_check"
+  }
+}

@@ -16,11 +16,14 @@ export function createGame(parent) {
   return new Phaser.Game({
     type: Phaser.AUTO,
     parent,
-    width: parent.clientWidth || 1280,
-    height: parent.clientHeight || 720,
+    // Fixed 1280x720 logical view scaled to FIT the window and centered, so the
+    // game fills the screen (bigger on large monitors) instead of rendering the
+    // world at native size with empty margins. Keeps in-game coords stable.
+    width: 1280,
+    height: 720,
     backgroundColor: '#26322d',
     scale: {
-      mode: Phaser.Scale.RESIZE,
+      mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     physics: {

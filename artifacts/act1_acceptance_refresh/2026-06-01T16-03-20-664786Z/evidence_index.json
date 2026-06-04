@@ -1,0 +1,666 @@
+{
+  "project": "bikebrowser",
+  "mission": "mission_dbb100b325d6",
+  "portfolio": "portfolio_a2b8b30ad1ee",
+  "generated_at": "2026-06-01T16:03:20.667791Z",
+  "run_id": "2026-06-01T16-03-20-664786Z",
+  "selection_policy": {
+    "project": "bikebrowser",
+    "scene": [
+      "act1",
+      "NeighborhoodScene"
+    ],
+    "max_age_hours": 48,
+    "excluded_date_prefixes": [
+      "2026-05-29"
+    ],
+    "required_artifact_types": [
+      "scene_snapshots",
+      "acceptance_walkthrough",
+      "character_source_runtime_correspondence",
+      "prop_geometry_runtime_evidence"
+    ],
+    "tie_break": "newest timestamp wins within matching project, scene, and artifact type"
+  },
+  "candidate_evidence": [
+    {
+      "artifact_type": "scene_snapshots",
+      "project": "bikebrowser",
+      "scene": "act1",
+      "source": "live_runtime_playwright",
+      "path": "playtest_captures/game_rebuild_act1_complete",
+      "timestamp": "2026-06-01T16:01:04.414904Z",
+      "fresh": true,
+      "age_hours": 0.038,
+      "valid": true,
+      "selection_reason": "latest valid Act 1 visual-capture screenshot set by file mtime",
+      "files": [
+        "playtest_captures/game_rebuild_act1_complete/01_act1_start.png",
+        "playtest_captures/game_rebuild_act1_complete/02_bike_repair_notebook.png",
+        "playtest_captures/game_rebuild_act1_complete/03_bridge_discovery.png",
+        "playtest_captures/game_rebuild_act1_complete/04_material_testing.png",
+        "playtest_captures/game_rebuild_act1_complete/05_ecology_interaction.png",
+        "playtest_captures/game_rebuild_act1_complete/06_chemistry_interaction.png",
+        "playtest_captures/game_rebuild_act1_complete/07_trust_language_notebook.png",
+        "playtest_captures/game_rebuild_act1_complete/08_bridge_repaired_map_unlock.png"
+      ],
+      "expected_count": 8,
+      "actual_count": 8,
+      "run_id": "2026-06-01T16-03-20-664786Z"
+    },
+    {
+      "artifact_type": "acceptance_walkthrough",
+      "project": "bikebrowser",
+      "scene": "act1",
+      "source": "live_runtime_playwright",
+      "path": "playtest_captures/game_rebuild_act1_acceptance/act1_player_visible_acceptance_report.json",
+      "timestamp": "2026-06-01T16:02:55.526000Z",
+      "fresh": true,
+      "age_hours": 0.007,
+      "valid": true,
+      "selection_reason": "latest player-visible walkthrough report with Act 1 completion state",
+      "final_state": {
+        "act1Complete": true,
+        "bridgeReconnected": true,
+        "widerMapUnlocked": true,
+        "unlockedNotebookEntries": [
+          "bike_check",
+          "broken_wash",
+          "bridge_problem",
+          "steel",
+          "copper_brace",
+          "weak_scrap",
+          "mesquite",
+          "desert_plant",
+          "chemistry_result",
+          "material_test_results",
+          "bridge_plan",
+          "bridge_repaired",
+          "wider_map_unlocked"
+        ],
+        "materialTestCount": 4,
+        "finalFeedback": {
+          "id": "1780329774099-20",
+          "kind": "map",
+          "message": "Wider map unlocked. A larger systems mystery is waiting.",
+          "details": {},
+          "createdAt": "2026-06-01T16:02:54.099Z"
+        },
+        "promptText": "[E] Open wider map clue",
+        "audioSummary": {
+          "hookVerified": true,
+          "musicState": null,
+          "musicTransitions": 0,
+          "interactionCues": 0,
+          "speechAttempts": 0,
+          "errors": []
+        }
+      },
+      "run_id": "2026-06-01T16-03-20-664786Z"
+    },
+    {
+      "artifact_type": "character_source_runtime_correspondence",
+      "project": "bikebrowser",
+      "scene": "NeighborhoodScene",
+      "source": "live_runtime_art_audit",
+      "path": "artifacts/art_audit/act1_character_visual_audit.json",
+      "timestamp": "2026-06-01T16:01:13.562000Z",
+      "fresh": true,
+      "age_hours": 0.035,
+      "valid": true,
+      "selection_reason": "latest exact runtime frame audit with source crop comparisons",
+      "pass": true,
+      "contact_sheet": "artifacts/art_audit/contact_sheet/act1_character_match_sheet.png",
+      "characters": [
+        {
+          "id": "zuzu",
+          "pass": true,
+          "mae": 17.582215949188452,
+          "changed_opaque_ratio": 0.049929428369795345,
+          "warnings": []
+        },
+        {
+          "id": "mr_chen",
+          "pass": true,
+          "mae": 15.206207554582813,
+          "changed_opaque_ratio": 0.038390301397541675,
+          "warnings": [
+            "Runtime bounds overlap other character(s): neighbor."
+          ]
+        },
+        {
+          "id": "neighbor",
+          "pass": true,
+          "mae": 15.8514869888476,
+          "changed_opaque_ratio": 0.04553903345724907,
+          "warnings": [
+            "Runtime bounds overlap other character(s): mr_chen, auntie_mariam."
+          ]
+        },
+        {
+          "id": "auntie_mariam",
+          "pass": true,
+          "mae": 15.9667836713469,
+          "changed_opaque_ratio": 0.04036661466458658,
+          "warnings": [
+            "Runtime bounds overlap other character(s): neighbor."
+          ]
+        }
+      ],
+      "run_id": "2026-06-01T16-03-20-664786Z"
+    },
+    {
+      "artifact_type": "prop_geometry_runtime_evidence",
+      "project": "bikebrowser",
+      "scene": "NeighborhoodScene",
+      "source": "live_runtime_prop_clarity_audit",
+      "path": "project_audit/act1_prop_clarity_mission/runtime_readability_report.json",
+      "timestamp": "2026-06-01T16:03:11.840000Z",
+      "fresh": true,
+      "age_hours": 0.002,
+      "valid": true,
+      "selection_reason": "latest prop/GPS/gate runtime readability report",
+      "contact_sheet": "project_audit/act1_prop_clarity_mission/runtime_evidence/act1_prop_clarity_contact_sheet.png",
+      "captures": [
+        {
+          "id": "locked_gps_start",
+          "file": "runtime_evidence/locked_gps_start.png",
+          "prompt": "[E] Ask Mrs. Ramirez",
+          "nearest_interaction": "neighbor"
+        },
+        {
+          "id": "wider_gate_prompt",
+          "file": "runtime_evidence/wider_gate_prompt.png",
+          "prompt": "[E] Open wider map clue",
+          "nearest_interaction": "wider_gate"
+        },
+        {
+          "id": "unlocked_gps_payoff",
+          "file": "runtime_evidence/unlocked_gps_payoff.png",
+          "prompt": "[E] Open wider map clue",
+          "nearest_interaction": "wider_gate"
+        }
+      ],
+      "readability_average": 73.0,
+      "run_id": "2026-06-01T16-03-20-664786Z"
+    },
+    {
+      "artifact_type": "scene_snapshots",
+      "project": "bikebrowser",
+      "scene": "act1",
+      "source": "historical_scene_snapshot_report",
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/scene_snapshot_report.json",
+      "timestamp": "2026-05-29T06:02:43.115136Z",
+      "fresh": false,
+      "age_hours": 82.01,
+      "valid": false,
+      "selection_reason": "historical Act 1 scene report candidate",
+      "files": [
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\01_act1_start.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\02_bike_repair_notebook.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\03_bridge_discovery.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\04_material_testing.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\05_ecology_interaction.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\06_chemistry_interaction.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\07_trust_language_notebook.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\08_bridge_repaired_map_unlock.png"
+      ],
+      "expected_count": 8,
+      "actual_count": 8,
+      "run_id": "2026-06-01T16-03-20-664786Z"
+    }
+  ],
+  "selected_evidence": {
+    "scene_snapshots": {
+      "artifact_type": "scene_snapshots",
+      "project": "bikebrowser",
+      "scene": "act1",
+      "source": "live_runtime_playwright",
+      "path": "playtest_captures/game_rebuild_act1_complete",
+      "timestamp": "2026-06-01T16:01:04.414904Z",
+      "fresh": true,
+      "age_hours": 0.038,
+      "valid": true,
+      "selection_reason": "latest valid Act 1 visual-capture screenshot set by file mtime",
+      "files": [
+        "playtest_captures/game_rebuild_act1_complete/01_act1_start.png",
+        "playtest_captures/game_rebuild_act1_complete/02_bike_repair_notebook.png",
+        "playtest_captures/game_rebuild_act1_complete/03_bridge_discovery.png",
+        "playtest_captures/game_rebuild_act1_complete/04_material_testing.png",
+        "playtest_captures/game_rebuild_act1_complete/05_ecology_interaction.png",
+        "playtest_captures/game_rebuild_act1_complete/06_chemistry_interaction.png",
+        "playtest_captures/game_rebuild_act1_complete/07_trust_language_notebook.png",
+        "playtest_captures/game_rebuild_act1_complete/08_bridge_repaired_map_unlock.png"
+      ],
+      "expected_count": 8,
+      "actual_count": 8,
+      "run_id": "2026-06-01T16-03-20-664786Z",
+      "selected_by": "latest valid evidence by timestamp, freshness, project, scene, and artifact type"
+    },
+    "acceptance_walkthrough": {
+      "artifact_type": "acceptance_walkthrough",
+      "project": "bikebrowser",
+      "scene": "act1",
+      "source": "live_runtime_playwright",
+      "path": "playtest_captures/game_rebuild_act1_acceptance/act1_player_visible_acceptance_report.json",
+      "timestamp": "2026-06-01T16:02:55.526000Z",
+      "fresh": true,
+      "age_hours": 0.007,
+      "valid": true,
+      "selection_reason": "latest player-visible walkthrough report with Act 1 completion state",
+      "final_state": {
+        "act1Complete": true,
+        "bridgeReconnected": true,
+        "widerMapUnlocked": true,
+        "unlockedNotebookEntries": [
+          "bike_check",
+          "broken_wash",
+          "bridge_problem",
+          "steel",
+          "copper_brace",
+          "weak_scrap",
+          "mesquite",
+          "desert_plant",
+          "chemistry_result",
+          "material_test_results",
+          "bridge_plan",
+          "bridge_repaired",
+          "wider_map_unlocked"
+        ],
+        "materialTestCount": 4,
+        "finalFeedback": {
+          "id": "1780329774099-20",
+          "kind": "map",
+          "message": "Wider map unlocked. A larger systems mystery is waiting.",
+          "details": {},
+          "createdAt": "2026-06-01T16:02:54.099Z"
+        },
+        "promptText": "[E] Open wider map clue",
+        "audioSummary": {
+          "hookVerified": true,
+          "musicState": null,
+          "musicTransitions": 0,
+          "interactionCues": 0,
+          "speechAttempts": 0,
+          "errors": []
+        }
+      },
+      "run_id": "2026-06-01T16-03-20-664786Z",
+      "selected_by": "latest valid evidence by timestamp, freshness, project, scene, and artifact type"
+    },
+    "character_source_runtime_correspondence": {
+      "artifact_type": "character_source_runtime_correspondence",
+      "project": "bikebrowser",
+      "scene": "NeighborhoodScene",
+      "source": "live_runtime_art_audit",
+      "path": "artifacts/art_audit/act1_character_visual_audit.json",
+      "timestamp": "2026-06-01T16:01:13.562000Z",
+      "fresh": true,
+      "age_hours": 0.035,
+      "valid": true,
+      "selection_reason": "latest exact runtime frame audit with source crop comparisons",
+      "pass": true,
+      "contact_sheet": "artifacts/art_audit/contact_sheet/act1_character_match_sheet.png",
+      "characters": [
+        {
+          "id": "zuzu",
+          "pass": true,
+          "mae": 17.582215949188452,
+          "changed_opaque_ratio": 0.049929428369795345,
+          "warnings": []
+        },
+        {
+          "id": "mr_chen",
+          "pass": true,
+          "mae": 15.206207554582813,
+          "changed_opaque_ratio": 0.038390301397541675,
+          "warnings": [
+            "Runtime bounds overlap other character(s): neighbor."
+          ]
+        },
+        {
+          "id": "neighbor",
+          "pass": true,
+          "mae": 15.8514869888476,
+          "changed_opaque_ratio": 0.04553903345724907,
+          "warnings": [
+            "Runtime bounds overlap other character(s): mr_chen, auntie_mariam."
+          ]
+        },
+        {
+          "id": "auntie_mariam",
+          "pass": true,
+          "mae": 15.9667836713469,
+          "changed_opaque_ratio": 0.04036661466458658,
+          "warnings": [
+            "Runtime bounds overlap other character(s): neighbor."
+          ]
+        }
+      ],
+      "run_id": "2026-06-01T16-03-20-664786Z",
+      "selected_by": "latest valid evidence by timestamp, freshness, project, scene, and artifact type"
+    },
+    "prop_geometry_runtime_evidence": {
+      "artifact_type": "prop_geometry_runtime_evidence",
+      "project": "bikebrowser",
+      "scene": "NeighborhoodScene",
+      "source": "live_runtime_prop_clarity_audit",
+      "path": "project_audit/act1_prop_clarity_mission/runtime_readability_report.json",
+      "timestamp": "2026-06-01T16:03:11.840000Z",
+      "fresh": true,
+      "age_hours": 0.002,
+      "valid": true,
+      "selection_reason": "latest prop/GPS/gate runtime readability report",
+      "contact_sheet": "project_audit/act1_prop_clarity_mission/runtime_evidence/act1_prop_clarity_contact_sheet.png",
+      "captures": [
+        {
+          "id": "locked_gps_start",
+          "file": "runtime_evidence/locked_gps_start.png",
+          "prompt": "[E] Ask Mrs. Ramirez",
+          "nearest_interaction": "neighbor"
+        },
+        {
+          "id": "wider_gate_prompt",
+          "file": "runtime_evidence/wider_gate_prompt.png",
+          "prompt": "[E] Open wider map clue",
+          "nearest_interaction": "wider_gate"
+        },
+        {
+          "id": "unlocked_gps_payoff",
+          "file": "runtime_evidence/unlocked_gps_payoff.png",
+          "prompt": "[E] Open wider map clue",
+          "nearest_interaction": "wider_gate"
+        }
+      ],
+      "readability_average": 73.0,
+      "run_id": "2026-06-01T16-03-20-664786Z",
+      "selected_by": "latest valid evidence by timestamp, freshness, project, scene, and artifact type"
+    }
+  },
+  "rejected_evidence": [
+    {
+      "artifact_type": "scene_snapshots",
+      "project": "bikebrowser",
+      "scene": "act1",
+      "source": "historical_scene_snapshot_report",
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/scene_snapshot_report.json",
+      "timestamp": "2026-05-29T06:02:43.115136Z",
+      "fresh": false,
+      "age_hours": 82.01,
+      "valid": false,
+      "selection_reason": "historical Act 1 scene report candidate",
+      "files": [
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\01_act1_start.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\02_bike_repair_notebook.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\03_bridge_discovery.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\04_material_testing.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\05_ecology_interaction.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\06_chemistry_interaction.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\07_trust_language_notebook.png",
+        "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\08_bridge_repaired_map_unlock.png"
+      ],
+      "expected_count": 8,
+      "actual_count": 8,
+      "run_id": "2026-06-01T16-03-20-664786Z",
+      "reject_reason": "stale 2026-05-29 artifact"
+    }
+  ],
+  "stale_exclusions": [
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_contact_sheet.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_canvas_clean_report.json",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean_contact_sheet.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_contact_sheet.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/scene_snapshot_report.json",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/scene_snapshot_report.md",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/01_act1_start.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/02_bike_repair_notebook.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/03_bridge_discovery.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/04_material_testing.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/05_ecology_interaction.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/06_chemistry_interaction.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/07_trust_language_notebook.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/08_bridge_repaired_map_unlock.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/01_ZuzuGarageScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/02_MaterialLabScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/03_ThermalRigScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/04_OverworldScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/05_StreetBlockScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/06_DogParkScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/07_LakeEdgeScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/08_SportsFieldsScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/09_CommunityPoolScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/10_DesertTrailScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/11_MountainScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/12_WorldMapScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/13_DesertForagingScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/14_CopperMineScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/15_SaltRiverScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/16_DryWashScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/17_GarageScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/18_NeighborhoodScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/01_ZuzuGarageScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/02_MaterialLabScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/03_ThermalRigScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/04_OverworldScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/05_StreetBlockScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/06_DogParkScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/07_LakeEdgeScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/08_SportsFieldsScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/09_CommunityPoolScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/10_DesertTrailScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/11_MountainScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/12_WorldMapScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/13_DesertForagingScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/14_CopperMineScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/15_SaltRiverScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/16_DryWashScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/17_GarageScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/18_NeighborhoodScene.png",
+      "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+      "deleted": false
+    },
+    {
+      "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/scene_snapshot_report.json",
+      "timestamp": "2026-05-29T06-02-20-382Z",
+      "reason": "historical scene snapshot report excluded because timestamp is 2026-05-29",
+      "deleted": false
+    }
+  ]
+}

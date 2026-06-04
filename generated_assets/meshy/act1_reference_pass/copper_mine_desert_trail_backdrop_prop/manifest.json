@@ -1,0 +1,17 @@
+{
+  "id": "copper_mine_desert_trail_backdrop_prop",
+  "createdAt": "2026-05-28T06:59:09.326Z",
+  "previewTaskId": "019e6d5d-e829-77d9-bf61-78ef81a99b86",
+  "refineTaskId": "019e6d60-230b-7801-b395-28dc151fa865",
+  "status": "SUCCEEDED",
+  "consumedCredits": {
+    "preview": 20,
+    "refine": 10
+  },
+  "files": {
+    "glb": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\copper_mine_desert_trail_backdrop_prop\\copper_mine_desert_trail_backdrop_prop.glb",
+    "thumbnail": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\copper_mine_desert_trail_backdrop_prop\\copper_mine_desert_trail_backdrop_prop.png"
+  },
+  "source": "meshy-text-to-3d",
+  "runtimeUse": "reference_only_until_curated"
+}

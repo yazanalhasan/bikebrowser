@@ -46,6 +46,7 @@ var wheel_angle := 0.0
 var active_action := ""
 var patch_base_scale := Vector2.ONE
 var patch_base_position := Vector2.ZERO
+var patch_base_rotation := 0.0
 var tube_base_position := Vector2.ZERO
 var tube_base_scale := Vector2.ONE
 
@@ -69,6 +70,7 @@ func _ready() -> void:
 	if patch is Node2D:
 		patch_base_position = (patch as Node2D).position
 		patch_base_scale = (patch as Node2D).scale
+		patch_base_rotation = (patch as Node2D).rotation
 	if tube_prop is Node2D:
 		tube_base_position = (tube_prop as Node2D).position
 		tube_base_scale = (tube_prop as Node2D).scale
@@ -240,7 +242,7 @@ func _apply_visual_state() -> void:
 		if patch is Node2D:
 			var patch_node := patch as Node2D
 			patch_node.position = patch_base_position
-			patch_node.rotation = -wheel_angle
+			patch_node.rotation = -wheel_angle if patch_node.get_parent() == tire_shape else patch_base_rotation
 			patch_node.scale = patch_base_scale * (0.82 + patch_seal * 0.18)
 	if tube_prop:
 		tube_prop.visible = tube_exposure > 0.04

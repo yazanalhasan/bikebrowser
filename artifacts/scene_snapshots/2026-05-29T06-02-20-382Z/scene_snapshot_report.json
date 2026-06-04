@@ -1,0 +1,141 @@
+{
+  "timestamp": "2026-05-29T06-02-20-382Z",
+  "outRoot": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z",
+  "rebuildDir": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1",
+  "legacyDir": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes",
+  "rebuildSheet": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_contact_sheet.png",
+  "legacySheet": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_contact_sheet.png",
+  "captured": [
+    {
+      "label": "Act 1 start / neighborhood",
+      "group": "game-rebuild",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\01_act1_start.png"
+    },
+    {
+      "label": "Bike repair notebook",
+      "group": "game-rebuild",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\02_bike_repair_notebook.png"
+    },
+    {
+      "label": "Bridge discovery / dry wash",
+      "group": "game-rebuild",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\03_bridge_discovery.png"
+    },
+    {
+      "label": "Material testing / UTM",
+      "group": "game-rebuild",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\04_material_testing.png"
+    },
+    {
+      "label": "Ecology interaction",
+      "group": "game-rebuild",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\05_ecology_interaction.png"
+    },
+    {
+      "label": "Chemistry interaction",
+      "group": "game-rebuild",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\06_chemistry_interaction.png"
+    },
+    {
+      "label": "Trust/language notebook",
+      "group": "game-rebuild",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\07_trust_language_notebook.png"
+    },
+    {
+      "label": "Bridge repaired / map unlock",
+      "group": "game-rebuild",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\game_rebuild_act1\\08_bridge_repaired_map_unlock.png"
+    },
+    {
+      "label": "ZuzuGarageScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\01_ZuzuGarageScene.png"
+    },
+    {
+      "label": "MaterialLabScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\02_MaterialLabScene.png"
+    },
+    {
+      "label": "ThermalRigScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\03_ThermalRigScene.png"
+    },
+    {
+      "label": "OverworldScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\04_OverworldScene.png"
+    },
+    {
+      "label": "StreetBlockScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\05_StreetBlockScene.png"
+    },
+    {
+      "label": "DogParkScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\06_DogParkScene.png"
+    },
+    {
+      "label": "LakeEdgeScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\07_LakeEdgeScene.png"
+    },
+    {
+      "label": "SportsFieldsScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\08_SportsFieldsScene.png"
+    },
+    {
+      "label": "CommunityPoolScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\09_CommunityPoolScene.png"
+    },
+    {
+      "label": "DesertTrailScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\10_DesertTrailScene.png"
+    },
+    {
+      "label": "MountainScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\11_MountainScene.png"
+    },
+    {
+      "label": "WorldMapScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\12_WorldMapScene.png"
+    },
+    {
+      "label": "DesertForagingScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\13_DesertForagingScene.png"
+    },
+    {
+      "label": "CopperMineScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\14_CopperMineScene.png"
+    },
+    {
+      "label": "SaltRiverScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\15_SaltRiverScene.png"
+    },
+    {
+      "label": "DryWashScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\16_DryWashScene.png"
+    },
+    {
+      "label": "GarageScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\17_GarageScene.png"
+    },
+    {
+      "label": "NeighborhoodScene",
+      "group": "legacy-play",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_scenes\\18_NeighborhoodScene.png"
+    }
+  ],
+  "failures": []
+}

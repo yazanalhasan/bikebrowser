@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-06-02T03:17:19.870414Z",
+  "old": {
+    "source": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/scene_snapshot_report.json",
+    "timestamp": "2026-05-29T06-02-20-382Z",
+    "included_in_current_scoring": false,
+    "reason": "stale 2026-05-29 artifact",
+    "estimated_total_score": 62
+  },
+  "new": {
+    "source": "artifacts/act1_acceptance_refresh/2026-06-02T03-17-19-794378Z/acceptance_score.json",
+    "timestamp": "2026-06-02T03:17:19.866415Z",
+    "total_score": 87.43,
+    "included_stale_artifacts": false
+  },
+  "delta": 25.43
+}

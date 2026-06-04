@@ -34,9 +34,24 @@ const states = [
 
 const cropSpecs = [
   { id: 'gps_hud', left: 0, top: 385, width: 410, height: 335 },
-  { id: 'center_playfield', left: 440, top: 130, width: 430, height: 420 },
-  { id: 'right_gate_area', left: 910, top: 205, width: 370, height: 420 },
+  { id: 'workshop_props', left: 440, top: 130, width: 520, height: 420 },
+  { id: 'bridge_gate_props', left: 900, top: 205, width: 380, height: 500 },
 ];
+
+const trackedAssetIds = new Set([
+  'map_gate',
+  'prop_clarity_gps_post',
+  'prop_clarity_world_scale_vista',
+  'prop_clarity_route_marker_set',
+  'prop_clarity_sonoran_landmark_set',
+  'prop_replacement_garage_workbench',
+  'prop_replacement_material_table',
+  'prop_replacement_chemistry_bench',
+  'prop_replacement_bridge_debris',
+  'environment_vegetation_cluster',
+  'ui_map_frame',
+]);
+const trackedAssetIdList = [...trackedAssetIds];
 
 function scoreFromStats(stats, metadata) {
   const channels = stats.channels.slice(0, 3);
@@ -82,7 +97,8 @@ async function captureState(page, state) {
 
   const screenshotPath = path.join(evidenceDir, `${state.id}.png`);
   await page.screenshot({ path: screenshotPath, fullPage: true });
-  const runtimeTruth = await page.evaluate(() => {
+  const runtimeTruth = await page.evaluate((trackedIds) => {
+    const trackedIdSet = new Set(trackedIds);
     const scene = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
     return {
       player: { x: Math.round(scene.player.x), y: Math.round(scene.player.y) },
@@ -90,7 +106,7 @@ async function captureState(page, state) {
       promptText: scene.prompt.visible ? scene.prompt.text : '',
       worldMapHud: scene.worldMapHudState,
       assetRegistry: window.__GAME__.getAssetRegistryState().act1Manifest.assets
-        .filter((asset) => asset.id.includes('map') || asset.id.includes('prop_clarity'))
+        .filter((asset) => trackedIdSet.has(asset.id))
         .map((asset) => ({
           id: asset.id,
           finalKey: asset.finalKey,
@@ -100,7 +116,7 @@ async function captureState(page, state) {
           runtimeUrl: asset.runtimeUrl || null,
         })),
     };
-  });
+  }, trackedAssetIdList);
 
   const crops = [];
   for (const crop of cropSpecs) {
@@ -183,9 +199,9 @@ try {
   }
   const contactSheet = await makeContactSheet(captures);
   const report = {
-    mission: 'mission_efd9949f68b9',
-    portfolio: 'portfolio_d43886624f46',
-    scope: 'Act 1 prop clarity targeted runtime evidence only',
+    mission: 'mission_dbb100b325d6',
+    portfolio: 'portfolio_06d1162143c8',
+    scope: 'Act 1 prop clarity targeted runtime evidence for audit/prep package only',
     baseUrl,
     generatedAt: new Date().toISOString(),
     contactSheet,

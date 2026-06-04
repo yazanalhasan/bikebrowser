@@ -1,0 +1,190 @@
+[gd_scene load_steps=7 format=3 uid="uid://bikebrowser_chainrig_embedded"]
+
+[ext_resource type="Script" path="res://Prototypes/EmbodiedMechanics/ChainRig.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/bike_wheel.png" id="2_wheel"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/cassette_gear_cluster.png" id="3_cassette"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Garage/rear_derailleur_closeup.png" id="4_derailleur"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Repair/loose_bike_chain.png" id="5_chain"]
+[ext_resource type="Texture2D" path="res://Assets/Props/Bike/repair_chain_focus_glow.png" id="6_glow"]
+
+[node name="ChainRig" type="Node2D"]
+position = Vector2(72, 12)
+scale = Vector2(0.48, 0.48)
+script = ExtResource("1_script")
+crank_path = NodePath("Crank")
+chainring_path = NodePath("Chainring")
+chain_path = NodePath("Chain")
+chain_slack_path = NodePath("ChainSlack")
+chain_tension_mark_path = NodePath("ChainTensionMark")
+sprocket_path = NodePath("Sprocket")
+seated_glow_path = NodePath("SeatedGlow")
+rear_wheel_path = NodePath("RearWheel")
+spin_ghost_path = NodePath("SpinGhost")
+verification_label_path = NodePath("VerificationLabel")
+pedal_label_path = NodePath("PedalLabel")
+chain_label_path = NodePath("ChainLabel")
+sprocket_label_path = NodePath("SprocketLabel")
+wheel_label_path = NodePath("WheelLabel")
+
+[node name="SeatedGlow" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(78, -4)
+scale = Vector2(0.78, 0.78)
+modulate = Color(1, 0.86, 0.45, 0.36)
+texture_filter = 1
+texture = ExtResource("6_glow")
+
+[node name="SpinGhost" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(78, -4)
+scale = Vector2(0.46, 0.46)
+modulate = Color(0.85, 0.93, 1, 0.22)
+texture_filter = 1
+texture = ExtResource("2_wheel")
+
+[node name="RearWheel" type="Node2D" parent="."]
+position = Vector2(78, -4)
+
+[node name="WheelSprite" type="Sprite2D" parent="RearWheel"]
+scale = Vector2(0.62, 0.62)
+texture_filter = 1
+texture = ExtResource("2_wheel")
+
+[node name="Sprocket" type="Node2D" parent="."]
+position = Vector2(78, -4)
+
+[node name="CassetteSprite" type="Sprite2D" parent="Sprocket"]
+scale = Vector2(0.76, 0.76)
+texture_filter = 1
+texture = ExtResource("3_cassette")
+
+[node name="DerailleurCloseup" type="Sprite2D" parent="."]
+position = Vector2(98, 20)
+scale = Vector2(0.56, 0.56)
+texture_filter = 1
+texture = ExtResource("4_derailleur")
+
+[node name="Chainring" type="Node2D" parent="."]
+position = Vector2(-84, 22)
+
+[node name="ChainringDisc" type="Polygon2D" parent="Chainring"]
+color = Color(0.48, 0.43, 0.34, 1)
+polygon = PackedVector2Array(32, 0, 27, 12, 18, 26, 4, 33, -10, 31, -24, 22, -33, 7, -31, -9, -21, -24, -6, -33, 10, -31, 24, -22, 33, -7)
+
+[node name="ChainringHub" type="Polygon2D" parent="Chainring"]
+color = Color(0.15, 0.17, 0.21, 1)
+polygon = PackedVector2Array(8, 0, 5.7, 5.7, 0, 8, -5.7, 5.7, -8, 0, -5.7, -5.7, 0, -8, 5.7, -5.7)
+
+[node name="Crank" type="Node2D" parent="."]
+position = Vector2(-84, 22)
+
+[node name="CrankArm" type="Polygon2D" parent="Crank"]
+color = Color(0.18, 0.20, 0.25, 1)
+polygon = PackedVector2Array(-5, -3, 7, -3, 49, 39, 47, 48, 39, 50, 33, 45, -6, 4)
+
+[node name="Pedal" type="Polygon2D" parent="Crank"]
+position = Vector2(43, 43)
+color = Color(0.08, 0.10, 0.14, 1)
+polygon = PackedVector2Array(-13, -5, 13, -5, 16, -1, 16, 3, 11, 7, -12, 7, -16, 2, -16, -2)
+
+[node name="Chain" type="Node2D" parent="."]
+
+[node name="UpperRun" type="Sprite2D" parent="Chain"]
+position = Vector2(-5, -20)
+rotation = 0.153
+scale = Vector2(0.88, 0.23)
+texture_filter = 1
+texture = ExtResource("5_chain")
+
+[node name="LowerRun" type="Sprite2D" parent="Chain"]
+position = Vector2(-5, 20)
+rotation = -0.141
+scale = Vector2(0.88, 0.23)
+texture_filter = 1
+texture = ExtResource("5_chain")
+
+[node name="ChainSlack" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(-68, 58)
+rotation = 0.34
+scale = Vector2(0.46, 0.34)
+modulate = Color(0.68, 0.72, 0.78, 0.62)
+texture_filter = 1
+texture = ExtResource("5_chain")
+
+[node name="ChainTensionMark" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(28, -18)
+scale = Vector2(0.34, 0.34)
+modulate = Color(1, 0.85, 0.42, 0.72)
+texture_filter = 1
+texture = ExtResource("6_glow")
+
+[node name="PedalLabel" type="Label" parent="."]
+offset_left = -154.0
+offset_top = 64.0
+offset_right = -50.0
+offset_bottom = 84.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.98, 0.93, 0.78, 0.92)
+theme_override_colors/font_shadow_color = Color(0.03, 0.04, 0.06, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "Pedal"
+horizontal_alignment = 1
+
+[node name="ChainLabel" type="Label" parent="."]
+visible = false
+offset_left = -46.0
+offset_top = -58.0
+offset_right = 54.0
+offset_bottom = -38.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.98, 0.93, 0.78, 0.92)
+theme_override_colors/font_shadow_color = Color(0.03, 0.04, 0.06, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "chain moves"
+horizontal_alignment = 1
+
+[node name="SprocketLabel" type="Label" parent="."]
+visible = false
+offset_left = 36.0
+offset_top = -74.0
+offset_right = 134.0
+offset_bottom = -54.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.98, 0.93, 0.78, 0.92)
+theme_override_colors/font_shadow_color = Color(0.03, 0.04, 0.06, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "rear gears"
+horizontal_alignment = 1
+
+[node name="WheelLabel" type="Label" parent="."]
+visible = false
+offset_left = 24.0
+offset_top = 70.0
+offset_right = 142.0
+offset_bottom = 90.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.98, 0.93, 0.78, 0.92)
+theme_override_colors/font_shadow_color = Color(0.03, 0.04, 0.06, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "rear wheel"
+horizontal_alignment = 1
+
+[node name="VerificationLabel" type="Label" parent="."]
+visible = false
+offset_left = -94.0
+offset_top = 100.0
+offset_right = 126.0
+offset_bottom = 124.0
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 0.92, 0.72, 1)
+theme_override_colors/font_shadow_color = Color(0.03, 0.04, 0.06, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+text = "Drivetrain clean."
+horizontal_alignment = 1

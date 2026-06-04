@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { narratePanel, narrateText } from '../audio/sceneNarration.js';
 
 // Phase 1.9.2 / 1.9.2A-C — player-facing predict-before-test that feels like a
 // guess-and-check mini-game. The player SEES the beam hold / bend / break (not
@@ -87,6 +88,7 @@ export default class PredictionScene extends Phaser.Scene {
     this.hint.setText('← → pick    ↑ ↓ how sure    E to test    Esc to leave');
     this._render();
     this._publish();
+    this._narrate();
   }
 
   _render() {
@@ -100,8 +102,8 @@ export default class PredictionScene extends Phaser.Scene {
     const key = (event.key || '').toLowerCase();
     if (event.key === 'Escape') { this._finish(); return; }
     if (this.phase === 'choose') {
-      if (event.key === 'ArrowLeft' || key === 'a') { this.guess = 'hold'; this._render(); this._publish(); }
-      else if (event.key === 'ArrowRight' || key === 'd') { this.guess = 'break'; this._render(); this._publish(); }
+      if (event.key === 'ArrowLeft' || key === 'a') { this.guess = 'hold'; this._render(); this._publish(); narrateText(this, 'will hold'); }
+      else if (event.key === 'ArrowRight' || key === 'd') { this.guess = 'break'; this._render(); this._publish(); narrateText(this, 'will break'); }
       else if (event.key === 'ArrowUp' || key === 'w') { this.confidence = Math.min(3, this.confidence + 1); this._render(); this._publish(); }
       else if (event.key === 'ArrowDown' || key === 's') { this.confidence = Math.max(1, this.confidence - 1); this._render(); this._publish(); }
       else if (key === 'e' || event.code === 'Space') { this._commitAndTest(); }
@@ -138,6 +140,7 @@ export default class PredictionScene extends Phaser.Scene {
     this.phase = 'result';
     this.results.push({ id, name, outcome, matched, safe });
     this._publish({ outcome, matched, materialId: id });
+    this._narrate();
   }
 
   _animateBeam(outcome) {
@@ -183,6 +186,7 @@ export default class PredictionScene extends Phaser.Scene {
     this.explain.setText('Strong materials carry the load; weak ones snap. Use the evidence when you build.');
     this.hint.setText('E to close');
     this._publish();
+    this._narrate();
   }
 
   _finish() {
@@ -192,6 +196,10 @@ export default class PredictionScene extends Phaser.Scene {
     this.registry.events.emit('quest:changed');
     this.registry.events.emit('prediction:done');
     this._publish();
+  }
+
+  _narrate() {
+    narratePanel(this, this.panel, { exclude: [this.hint] });
   }
 
   _publish(extra = {}) {

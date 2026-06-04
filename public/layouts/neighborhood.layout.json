@@ -83,114 +83,114 @@
       }
     },
     "map_gate": {
-      "x": 1484,
-      "y": 514,
+      "x": 2380,
+      "y": 600,
       "scale": 1.35
     },
     "garage_workbench_prop": {
-      "x": 650,
-      "y": 318,
+      "x": 470,
+      "y": 600,
       "w": 210,
       "h": 100,
-      "labelX": 596,
-      "labelY": 372,
-      "questMarkerX": 650,
-      "questMarkerY": 372
+      "labelX": 416,
+      "labelY": 656,
+      "questMarkerX": 470,
+      "questMarkerY": 658
     },
     "desert_wash": {
-      "x": 1125,
-      "y": 650,
+      "x": 2080,
+      "y": 820,
       "scaleX": 2,
       "scaleY": 1.35
     },
     "bridge_debris": {
-      "x": 1255,
-      "y": 642,
+      "x": 2200,
+      "y": 740,
       "brokenW": 178,
       "brokenH": 92,
       "repairedW": 180,
       "repairedH": 72,
       "payoffGlowW": 260,
       "payoffGlowH": 98,
-      "payoffTextX": 1168,
-      "payoffTextY": 582
+      "payoffTextX": 2113,
+      "payoffTextY": 680
     },
     "dry_wash_path_label": {
-      "x": 1065,
-      "y": 720
+      "x": 1980,
+      "y": 980
     },
     "bike_inspection": {
-      "x": 462,
-      "y": 432,
-      "scale": 1.05,
-      "markerX": 470,
-      "markerY": 382,
-      "interactionX": 470,
-      "interactionY": 432
+      "x": 320,
+      "y": 760,
+      "scale": 0.525,
+      "markerX": 320,
+      "markerY": 724,
+      "interactionX": 320,
+      "interactionY": 760
     },
     "repair_station": {
-      "x": 650,
-      "y": 430,
-      "scale": 1.1
+      "x": 500,
+      "y": 760,
+      "scale": 0.55
     },
     "utm_rig": {
-      "x": 742,
-      "y": 408,
-      "scale": 1.08
+      "x": 660,
+      "y": 760,
+      "scale": 0.54
     },
     "chemistry_bench": {
-      "x": 820,
-      "y": 444,
+      "x": 560,
+      "y": 930,
       "w": 118,
       "h": 82
     },
     "bridge_plan_workbench": {
-      "x": 1000,
-      "y": 452,
-      "scale": 1.1
+      "x": 2060,
+      "y": 940,
+      "scale": 0.55
     },
     "ecology_patch": {
-      "x": 1030,
-      "y": 760,
-      "scale": 1.25
+      "x": 1200,
+      "y": 1360,
+      "scale": 0.625
     },
     "material_table": {
-      "x": 905,
-      "y": 400,
+      "x": 360,
+      "y": 920,
       "w": 112,
       "h": 76,
-      "interactionX": 905,
-      "interactionY": 420,
-      "labelX": 858,
-      "labelY": 426
+      "interactionX": 360,
+      "interactionY": 940,
+      "labelX": 313,
+      "labelY": 946
     },
     "wash_marker": {
-      "x": 1190,
-      "y": 574
+      "x": 1980,
+      "y": 700
     },
     "npc_mr_chen": {
-      "x": 246,
-      "y": 438,
-      "labelX": 208,
-      "labelY": 514,
-      "cueX": 246,
-      "cueY": 408
+      "x": 1140,
+      "y": 800,
+      "labelX": 1100,
+      "labelY": 876,
+      "cueX": 1140,
+      "cueY": 770
     },
     "npc_neighbor": {
-      "x": 420,
-      "y": 438,
-      "labelX": 366,
-      "labelY": 514,
-      "cueX": 420,
-      "cueY": 408
+      "x": 1280,
+      "y": 820,
+      "labelX": 1226,
+      "labelY": 896,
+      "cueX": 1280,
+      "cueY": 790
     },
     "npc_auntie_mariam": {
-      "x": 590,
-      "y": 438,
-      "labelX": 532,
-      "labelY": 514,
-      "cueX": 590,
-      "cueY": 408
+      "x": 1420,
+      "y": 800,
+      "labelX": 1362,
+      "labelY": 876,
+      "cueX": 1420,
+      "cueY": 770
     }
   }
 }

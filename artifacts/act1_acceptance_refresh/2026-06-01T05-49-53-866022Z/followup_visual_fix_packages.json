@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-06-01T05:49:53.912980Z",
+  "basis": "fresh Act 1 evidence only",
+  "packages": [
+    {
+      "id": "act1_world_scale_affordance_followup",
+      "priority": 1,
+      "bounded_scope": "NeighborhoodScene GPS/wider-map/gate readability only",
+      "evidence": [
+        "playtest_captures/game_rebuild_act1_complete",
+        "playtest_captures/game_rebuild_act1_complete/01_act1_start.png",
+        "playtest_captures/game_rebuild_act1_complete/02_bike_repair_notebook.png",
+        "playtest_captures/game_rebuild_act1_complete/03_bridge_discovery.png",
+        "playtest_captures/game_rebuild_act1_complete/04_material_testing.png",
+        "playtest_captures/game_rebuild_act1_complete/05_ecology_interaction.png",
+        "playtest_captures/game_rebuild_act1_complete/06_chemistry_interaction.png",
+        "playtest_captures/game_rebuild_act1_complete/07_trust_language_notebook.png",
+        "playtest_captures/game_rebuild_act1_complete/08_bridge_repaired_map_unlock.png",
+        "project_audit/act1_prop_clarity_mission/runtime_readability_report.json",
+        "project_audit/act1_prop_clarity_mission/runtime_evidence/act1_prop_clarity_contact_sheet.png"
+      ],
+      "why": "Canon decision asks for wider map, GPS, and world-scale affordances; current evidence should guide the next small visual package.",
+      "acceptance_check": "capture before/after runtime screenshots and mark improved only if child-facing map goal is clearer"
+    },
+    {
+      "id": "act1_character_spacing_followup",
+      "priority": 2,
+      "bounded_scope": "NPC source/runtime visual clarity and spacing only",
+      "evidence": [
+        "artifacts/art_audit/act1_character_visual_audit.json",
+        "artifacts/art_audit/contact_sheet/act1_character_match_sheet.png"
+      ],
+      "why": "Character audit passes source correspondence but records NPC overlap warnings that can reduce child readability.",
+      "acceptance_check": "exact frame audit remains passing and scene screenshot shows less NPC overlap"
+    }
+  ]
+}

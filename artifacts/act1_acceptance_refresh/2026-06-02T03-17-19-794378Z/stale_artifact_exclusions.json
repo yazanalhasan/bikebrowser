@@ -1,0 +1,258 @@
+[
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_contact_sheet.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_canvas_clean_report.json",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean_contact_sheet.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_contact_sheet.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/scene_snapshot_report.json",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/scene_snapshot_report.md",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/01_act1_start.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/02_bike_repair_notebook.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/03_bridge_discovery.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/04_material_testing.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/05_ecology_interaction.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/06_chemistry_interaction.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/07_trust_language_notebook.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/game_rebuild_act1/08_bridge_repaired_map_unlock.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/01_ZuzuGarageScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/02_MaterialLabScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/03_ThermalRigScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/04_OverworldScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/05_StreetBlockScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/06_DogParkScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/07_LakeEdgeScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/08_SportsFieldsScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/09_CommunityPoolScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/10_DesertTrailScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/11_MountainScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/12_WorldMapScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/13_DesertForagingScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/14_CopperMineScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/15_SaltRiverScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/16_DryWashScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/17_GarageScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_canvas_clean/18_NeighborhoodScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/01_ZuzuGarageScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/02_MaterialLabScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/03_ThermalRigScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/04_OverworldScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/05_StreetBlockScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/06_DogParkScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/07_LakeEdgeScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/08_SportsFieldsScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/09_CommunityPoolScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/10_DesertTrailScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/11_MountainScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/12_WorldMapScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/13_DesertForagingScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/14_CopperMineScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/15_SaltRiverScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/16_DryWashScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/17_GarageScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/legacy_play_scenes/18_NeighborhoodScene.png",
+    "reason": "2026-05-29 visual artifact excluded from current Act 1 acceptance scoring",
+    "deleted": false
+  },
+  {
+    "path": "artifacts/scene_snapshots/2026-05-29T06-02-20-382Z/scene_snapshot_report.json",
+    "timestamp": "2026-05-29T06-02-20-382Z",
+    "reason": "historical scene snapshot report excluded because timestamp is 2026-05-29",
+    "deleted": false
+  }
+]

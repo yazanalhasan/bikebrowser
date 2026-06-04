@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { narratePanel, narrateText } from '../audio/sceneNarration.js';
 
 // Phase 1.9.4 — player-facing investigation. The player reads a mystery,
 // CHOOSES a hypothesis (one is misleading), gathers evidence, and SEES the
@@ -79,6 +80,7 @@ export default class InvestigationScene extends Phaser.Scene {
     this.verdict.setText('');
     this.hint.setText('E to weigh the explanations    Esc leave');
     this._publish();
+    this._narrate();
   }
 
   _showHypothesis() {
@@ -90,6 +92,7 @@ export default class InvestigationScene extends Phaser.Scene {
     this.hint.setText('▲ ▼ choose    E investigate it    Esc leave');
     this._renderHypotheses();
     this._publish();
+    this._narrate();
   }
 
   _renderHypotheses() {
@@ -155,6 +158,7 @@ export default class InvestigationScene extends Phaser.Scene {
       this.hint.setText('E to draw your conclusion    Esc leave');
     }
     this._publish();
+    this._narrate();
   }
 
   _showConclusion() {
@@ -173,6 +177,7 @@ export default class InvestigationScene extends Phaser.Scene {
     this.verdict.setColor('#dffbe6');
     this.hint.setText('E to finish    Esc leave');
     this._publish({ concluded: true });
+    this._narrate();
   }
 
   _showSummary() {
@@ -186,6 +191,7 @@ export default class InvestigationScene extends Phaser.Scene {
     this.verdict.setColor('#cfe0f0');
     this.hint.setText('E to close');
     this._publish({ concluded: true });
+    this._narrate();
   }
 
   onKey(event) {
@@ -196,8 +202,8 @@ export default class InvestigationScene extends Phaser.Scene {
     if (this.phase === 'observe') {
       if (advance) this._showHypothesis();
     } else if (this.phase === 'hypothesis') {
-      if (event.key === 'ArrowUp' || event.key === 'ArrowLeft' || key === 'w' || key === 'a') { this.hypIdx = (this.hypIdx - 1 + this.hypotheses.length) % this.hypotheses.length; this._renderHypotheses(); this._publish(); }
-      else if (event.key === 'ArrowDown' || event.key === 'ArrowRight' || key === 's' || key === 'd') { this.hypIdx = (this.hypIdx + 1) % this.hypotheses.length; this._renderHypotheses(); this._publish(); }
+      if (event.key === 'ArrowUp' || event.key === 'ArrowLeft' || key === 'w' || key === 'a') { this.hypIdx = (this.hypIdx - 1 + this.hypotheses.length) % this.hypotheses.length; this._renderHypotheses(); this._publish(); narrateText(this, this.hypotheses[this.hypIdx]?.text); }
+      else if (event.key === 'ArrowDown' || event.key === 'ArrowRight' || key === 's' || key === 'd') { this.hypIdx = (this.hypIdx + 1) % this.hypotheses.length; this._renderHypotheses(); this._publish(); narrateText(this, this.hypotheses[this.hypIdx]?.text); }
       else if (advance) { this._commitHypothesis(); }
     } else if (this.phase === 'evidence') {
       if (advance) {
@@ -218,6 +224,11 @@ export default class InvestigationScene extends Phaser.Scene {
     this.registry.events.emit('quest:changed');
     this.registry.events.emit('investigation:done');
     this._publish();
+  }
+
+  // Narrator: read the current panel aloud (skips the keyboard-control hint).
+  _narrate() {
+    narratePanel(this, this.panel, { exclude: [this.hint] });
   }
 
   _publish(extra = {}) {

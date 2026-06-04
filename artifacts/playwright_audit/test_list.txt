@@ -1,0 +1,40 @@
+Listing tests:
+  [chromium] › all-scenes.snapshot.spec.js:88:7 › all scene snapshots › captures the Phaser rebuild Act 1 runtime states
+  [chromium] › all-scenes.snapshot.spec.js:134:7 › all scene snapshots › captures every registered legacy Phaser scene
+  [chromium] › all-scenes.snapshot.spec.js:150:7 › all scene snapshots › captures canonical Godot and 3D routes
+  [chromium] › flat-tire-flow.smoke.spec.js:52:7 › flat tire repair flow › street bike interaction reaches explainer and cognitive scene boots
+  [chromium] › full-game-playthrough.smoke.spec.js:98:7 › full game playthrough › every shipped quest can be completed in the browser runtime
+  [chromium] › game-rebuild.act1-complete.spec.js:4:7 › Act 1 complete substrate › supports full data-driven Act 1 progression and save resume
+  [chromium] › game-rebuild.act1-polish.spec.js:10:7 › Act 1 polish hardening › movement, prompt, notebook, and evidence feedback stay responsive
+  [chromium] › game-rebuild.act1-polish.spec.js:26:7 › Act 1 polish hardening › normal HUD and notebook read as child-facing surfaces by default
+  [chromium] › game-rebuild.act1-polish.spec.js:66:7 › Act 1 polish hardening › neighborhood characters use larger Aseprite animation sheets
+  [chromium] › game-rebuild.act1-polish.spec.js:140:7 › Act 1 polish hardening › visual language state covers the full Act 1 loop without generated runtime art
+  [chromium] › game-rebuild.act1-polish.spec.js:162:7 › Act 1 polish hardening › bridge planning rejects weak-only plans and accepts tested evidence
+  [chromium] › game-rebuild.act1-polish.spec.js:187:7 › Act 1 polish hardening › UTM tactile cues and bridge payoff are inspectable game state
+  [chromium] › game-rebuild.act1-polish.spec.js:215:7 › Act 1 polish hardening › diagnostics catch structural regressions and save corruption recovers safely
+  [chromium] › game-rebuild.act1-polish.spec.js:231:7 › Act 1 polish hardening › quest architecture remains data-first and scene-light
+  [chromium] › game-rebuild.act1-visual-capture.spec.js:17:7 › Act 1 visual captures › captures major Act 1 runtime states
+  [chromium] › game-rebuild.act1-visual-capture.spec.js:77:7 › Act 1 visual captures › captures mobile bridge payoff and notebook readability
+  [chromium] › game-rebuild.audio.spec.js:10:7 › game-rebuild audio and TTS substrate › normalizes speech for fractions, science terms, units, and engineering text
+  [chromium] › game-rebuild.audio.spec.js:36:7 › game-rebuild audio and TTS substrate › routes speakers to distinct NPC voice profiles
+  [chromium] › game-rebuild.audio.spec.js:60:7 › game-rebuild audio and TTS substrate › speaks dialogue through the audio pipeline without overlap storms
+  [chromium] › game-rebuild.audio.spec.js:89:7 › game-rebuild audio and TTS substrate › tracks music, ambient, interaction cues, accessibility settings, and save/load safety
+  [chromium] › game-rebuild.audio.spec.js:116:7 › game-rebuild audio and TTS substrate › unlocks music from first normal player input
+  [chromium] › game-rebuild.audio.spec.js:130:7 › game-rebuild audio and TTS substrate › surfaces child-facing replay and quiet-audio controls in normal play
+  [chromium] › game-rebuild.audio.spec.js:146:7 › game-rebuild audio and TTS substrate › captures audio-state review screenshots
+  [chromium] › game-rebuild.character-art-audit.spec.js:6:7 › Act 1 character art audit bridge › exposes exact runtime frame and transform metadata for required characters
+  [chromium] › game-rebuild.smoke.spec.js:4:7 › game graphics reset route › loads clean Phaser rebuild scene with quest and dialogue substrate
+  [chromium] › gameplay-report-panel.smoke.spec.js:52:7 › gameplay report panel › saved report stays visible as full selectable text
+  [chromium] › godot-bike-repair-visual.smoke.spec.js:25:7 › Godot bike repair visual correctness › captures close-up chain and tire repair preview states
+  [chromium] › godot-bike-repair-visual.smoke.spec.js:36:7 › Godot bike repair visual correctness › visible Mrs Ramirez prompt accepts keyboard and tap without console errors
+  [chromium] › godot-level-editor.smoke.spec.js:4:7 › Godot level editor › toggles edit mode, selects, nudges, and undoes through /play
+  [chromium] › godot-prototype.smoke.spec.js:4:7 › Godot canonical route › renders the canonical Godot world at /play without diagnostics by default
+  [chromium] › godot-prototype.smoke.spec.js:13:7 › Godot canonical route › keeps diagnostics opt-in and preserves bridge event handling
+  [chromium] › mission-inventory-hud.smoke.spec.js:60:7 › mission and inventory HUD › active mission objective and inventory are visible to the player
+  [chromium] › mission-inventory-hud.smoke.spec.js:77:7 › mission and inventory HUD › blocked forage steps tell the player what to do next
+  [chromium] › route-coherence.smoke.spec.js:4:7 › route coherence › youtube search without a query invites search instead of spinning forever
+  [chromium] › route-coherence.smoke.spec.js:12:7 › route coherence › 3D prototype route does not expose debug controls by default
+  [chromium] › route-coherence.smoke.spec.js:19:7 › route coherence › legacy Phaser route remains available
+  [chromium] › route-coherence.smoke.spec.js:25:7 › route coherence › canonical Godot route loads in a mobile viewport
+  [chromium] › runtime-audit.smoke.spec.js:16:7 › runtime audit smoke › runtime audit reports zero errors at boot
+Total: 38 tests in 16 files

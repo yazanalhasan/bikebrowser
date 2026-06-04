@@ -1,0 +1,434 @@
+{
+  "generatedAt": "2026-05-31T09:00:47.845Z",
+  "hookVerified": true,
+  "bridgeShape": {
+    "exists": true,
+    "methods": [
+      "captureAudioState",
+      "reset",
+      "unlockAudio",
+      "speakLine",
+      "transitionMusic",
+      "playInteractionCue"
+    ]
+  },
+  "summary": {
+    "speechAvailable": true,
+    "musicState": "map_unlock",
+    "voiceLineVoiceId": "garage_mentor",
+    "musicTransitions": 2,
+    "interactionCues": 2,
+    "speechAttempts": 1,
+    "speechStarted": 1,
+    "errors": []
+  },
+  "audit": {
+    "available": true,
+    "installedAt": "2026-05-31T09:00:47.341Z",
+    "speechAvailable": true,
+    "settings": {
+      "speechEnabled": true,
+      "autoSpeak": true,
+      "musicEnabled": true,
+      "ambientEnabled": true,
+      "interactionCuesEnabled": true,
+      "reducedAudio": false,
+      "subtitleMode": "always",
+      "speechRate": 1
+    },
+    "lastSpoken": {
+      "text": "Mr. Chen says the bridge needs tested proof.",
+      "normalized": "Mr. Chen says the bridge needs tested proof.",
+      "voiceId": "garage_mentor",
+      "language": "en-US",
+      "rate": 0.8799999952316284,
+      "pitch": 0.9200000166893005,
+      "selectedVoiceName": "Microsoft David - English (United States)"
+    },
+    "lastNormalized": "Mr. Chen says the bridge needs tested proof.",
+    "voiceAssignments": {
+      "zuzu": {
+        "name": "(browser default)",
+        "lang": "en-US",
+        "default": true
+      },
+      "garage_mentor": {
+        "name": "Microsoft David - English (United States)",
+        "lang": "en-US",
+        "default": true
+      },
+      "neighbor": {
+        "name": "Microsoft Zira - English (United States)",
+        "lang": "en-US",
+        "default": false
+      },
+      "spanish_neighbor": {
+        "name": "Microsoft Zira - English (United States)",
+        "lang": "en-US",
+        "default": false
+      },
+      "arabic_mentor": {
+        "name": "Microsoft Mark - English (United States)",
+        "lang": "en-US",
+        "default": false
+      },
+      "ecology_sign": {
+        "name": "(browser default)",
+        "lang": "en-US",
+        "default": true
+      },
+      "trader": {
+        "name": "Microsoft David - English (United States)",
+        "lang": "en-US",
+        "default": true
+      }
+    },
+    "music": {
+      "unlocked": true,
+      "enabled": true,
+      "reducedAudio": false,
+      "currentState": "map_unlock",
+      "previousState": "garage",
+      "volume": 0.2,
+      "availableStates": {
+        "neighborhood": {
+          "key": "neighborhood",
+          "label": "Neighborhood exploration",
+          "track": "/game/audio/music/neighborhood_hybrid_ride.ogg",
+          "volume": 0.22
+        },
+        "garage": {
+          "key": "garage",
+          "label": "Garage/workbench",
+          "track": "/game/audio/music/garage_warm_oud.ogg",
+          "volume": 0.2
+        },
+        "bridge_problem": {
+          "key": "bridge_problem",
+          "label": "Bridge problem discovery",
+          "track": "/game/audio/music/quest_focus_hybrid.ogg",
+          "volume": 0.18
+        },
+        "utm_testing": {
+          "key": "utm_testing",
+          "label": "UTM testing",
+          "track": "/game/audio/music/quest_focus_hybrid.ogg",
+          "volume": 0.16
+        },
+        "ecology_chemistry": {
+          "key": "ecology_chemistry",
+          "label": "Ecology and chemistry exploration",
+          "track": "/game/audio/music/warm_hands_quiet_gears.mp3",
+          "volume": 0.18
+        },
+        "map_unlock": {
+          "key": "map_unlock",
+          "label": "Wider world tease",
+          "track": "/game/audio/music/qanun_jar_lid.mp3",
+          "volume": 0.2
+        }
+      },
+      "transitionLog": [
+        {
+          "state": "neighborhood",
+          "label": "Neighborhood exploration",
+          "at": "2026-05-31T09:00:47.344Z"
+        },
+        {
+          "state": "garage",
+          "label": "Garage/workbench",
+          "at": "2026-05-31T09:00:47.671Z"
+        },
+        {
+          "state": "map_unlock",
+          "label": "Wider world tease",
+          "at": "2026-05-31T09:00:47.671Z"
+        }
+      ]
+    },
+    "ambient": {
+      "enabled": true,
+      "state": "neighborhood"
+    },
+    "interactionCues": {
+      "enabled": true,
+      "log": [
+        {
+          "cueId": "notebook_open",
+          "label": "Notebook open",
+          "at": "2026-05-31T09:00:47.671Z"
+        },
+        {
+          "cueId": "map_unlock",
+          "label": "Map unlock",
+          "at": "2026-05-31T09:00:47.671Z"
+        }
+      ]
+    },
+    "events": [
+      {
+        "type": "audit_reset",
+        "at": "2026-05-31T09:00:47.671Z",
+        "available": true
+      },
+      {
+        "type": "audio_unlocked",
+        "at": "2026-05-31T09:00:47.671Z",
+        "ok": true,
+        "speechAvailable": true,
+        "music": {
+          "unlocked": true,
+          "enabled": true,
+          "reducedAudio": false,
+          "currentState": "neighborhood",
+          "previousState": null,
+          "volume": 0.22,
+          "availableStates": {
+            "neighborhood": {
+              "key": "neighborhood",
+              "label": "Neighborhood exploration",
+              "track": "/game/audio/music/neighborhood_hybrid_ride.ogg",
+              "volume": 0.22
+            },
+            "garage": {
+              "key": "garage",
+              "label": "Garage/workbench",
+              "track": "/game/audio/music/garage_warm_oud.ogg",
+              "volume": 0.2
+            },
+            "bridge_problem": {
+              "key": "bridge_problem",
+              "label": "Bridge problem discovery",
+              "track": "/game/audio/music/quest_focus_hybrid.ogg",
+              "volume": 0.18
+            },
+            "utm_testing": {
+              "key": "utm_testing",
+              "label": "UTM testing",
+              "track": "/game/audio/music/quest_focus_hybrid.ogg",
+              "volume": 0.16
+            },
+            "ecology_chemistry": {
+              "key": "ecology_chemistry",
+              "label": "Ecology and chemistry exploration",
+              "track": "/game/audio/music/warm_hands_quiet_gears.mp3",
+              "volume": 0.18
+            },
+            "map_unlock": {
+              "key": "map_unlock",
+              "label": "Wider world tease",
+              "track": "/game/audio/music/qanun_jar_lid.mp3",
+              "volume": 0.2
+            }
+          },
+          "transitionLog": [
+            {
+              "state": "neighborhood",
+              "label": "Neighborhood exploration",
+              "at": "2026-05-31T09:00:47.344Z"
+            },
+            {
+              "state": "garage",
+              "label": "Garage/workbench",
+              "at": "2026-05-31T09:00:47.671Z"
+            }
+          ]
+        }
+      },
+      {
+        "type": "music_transition",
+        "at": "2026-05-31T09:00:47.671Z",
+        "requestedState": "garage",
+        "result": {
+          "ok": true,
+          "state": "garage",
+          "label": "Garage/workbench"
+        },
+        "music": {
+          "unlocked": true,
+          "enabled": true,
+          "reducedAudio": false,
+          "currentState": "garage",
+          "previousState": "neighborhood",
+          "volume": 0.2,
+          "availableStates": {
+            "neighborhood": {
+              "key": "neighborhood",
+              "label": "Neighborhood exploration",
+              "track": "/game/audio/music/neighborhood_hybrid_ride.ogg",
+              "volume": 0.22
+            },
+            "garage": {
+              "key": "garage",
+              "label": "Garage/workbench",
+              "track": "/game/audio/music/garage_warm_oud.ogg",
+              "volume": 0.2
+            },
+            "bridge_problem": {
+              "key": "bridge_problem",
+              "label": "Bridge problem discovery",
+              "track": "/game/audio/music/quest_focus_hybrid.ogg",
+              "volume": 0.18
+            },
+            "utm_testing": {
+              "key": "utm_testing",
+              "label": "UTM testing",
+              "track": "/game/audio/music/quest_focus_hybrid.ogg",
+              "volume": 0.16
+            },
+            "ecology_chemistry": {
+              "key": "ecology_chemistry",
+              "label": "Ecology and chemistry exploration",
+              "track": "/game/audio/music/warm_hands_quiet_gears.mp3",
+              "volume": 0.18
+            },
+            "map_unlock": {
+              "key": "map_unlock",
+              "label": "Wider world tease",
+              "track": "/game/audio/music/qanun_jar_lid.mp3",
+              "volume": 0.2
+            }
+          },
+          "transitionLog": [
+            {
+              "state": "neighborhood",
+              "label": "Neighborhood exploration",
+              "at": "2026-05-31T09:00:47.344Z"
+            },
+            {
+              "state": "garage",
+              "label": "Garage/workbench",
+              "at": "2026-05-31T09:00:47.671Z"
+            },
+            {
+              "state": "map_unlock",
+              "label": "Wider world tease",
+              "at": "2026-05-31T09:00:47.671Z"
+            }
+          ]
+        }
+      },
+      {
+        "type": "music_transition",
+        "at": "2026-05-31T09:00:47.671Z",
+        "requestedState": "map_unlock",
+        "result": {
+          "ok": true,
+          "state": "map_unlock",
+          "label": "Wider world tease"
+        },
+        "music": {
+          "unlocked": true,
+          "enabled": true,
+          "reducedAudio": false,
+          "currentState": "map_unlock",
+          "previousState": "garage",
+          "volume": 0.2,
+          "availableStates": {
+            "neighborhood": {
+              "key": "neighborhood",
+              "label": "Neighborhood exploration",
+              "track": "/game/audio/music/neighborhood_hybrid_ride.ogg",
+              "volume": 0.22
+            },
+            "garage": {
+              "key": "garage",
+              "label": "Garage/workbench",
+              "track": "/game/audio/music/garage_warm_oud.ogg",
+              "volume": 0.2
+            },
+            "bridge_problem": {
+              "key": "bridge_problem",
+              "label": "Bridge problem discovery",
+              "track": "/game/audio/music/quest_focus_hybrid.ogg",
+              "volume": 0.18
+            },
+            "utm_testing": {
+              "key": "utm_testing",
+              "label": "UTM testing",
+              "track": "/game/audio/music/quest_focus_hybrid.ogg",
+              "volume": 0.16
+            },
+            "ecology_chemistry": {
+              "key": "ecology_chemistry",
+              "label": "Ecology and chemistry exploration",
+              "track": "/game/audio/music/warm_hands_quiet_gears.mp3",
+              "volume": 0.18
+            },
+            "map_unlock": {
+              "key": "map_unlock",
+              "label": "Wider world tease",
+              "track": "/game/audio/music/qanun_jar_lid.mp3",
+              "volume": 0.2
+            }
+          },
+          "transitionLog": [
+            {
+              "state": "neighborhood",
+              "label": "Neighborhood exploration",
+              "at": "2026-05-31T09:00:47.344Z"
+            },
+            {
+              "state": "garage",
+              "label": "Garage/workbench",
+              "at": "2026-05-31T09:00:47.671Z"
+            },
+            {
+              "state": "map_unlock",
+              "label": "Wider world tease",
+              "at": "2026-05-31T09:00:47.671Z"
+            }
+          ]
+        }
+      },
+      {
+        "type": "interaction_cue",
+        "at": "2026-05-31T09:00:47.671Z",
+        "cueId": "notebook_open",
+        "label": "Notebook open",
+        "skipped": false
+      },
+      {
+        "type": "interaction_cue",
+        "at": "2026-05-31T09:00:47.671Z",
+        "cueId": "map_unlock",
+        "label": "Map unlock",
+        "skipped": false
+      },
+      {
+        "type": "speech_attempt",
+        "at": "2026-05-31T09:00:47.672Z",
+        "voiceId": "garage_mentor",
+        "displayName": "Mr. Chen",
+        "normalized": "Mr. Chen says the bridge needs tested proof.",
+        "speechAvailable": true
+      },
+      {
+        "type": "speech_stopped",
+        "at": "2026-05-31T09:00:47.672Z",
+        "ok": true
+      },
+      {
+        "type": "speech_started",
+        "at": "2026-05-31T09:00:47.672Z",
+        "text": "Mr. Chen says the bridge needs tested proof.",
+        "normalized": "Mr. Chen says the bridge needs tested proof.",
+        "voiceId": "garage_mentor",
+        "language": "en-US",
+        "rate": 0.8799999952316284,
+        "pitch": 0.9200000166893005,
+        "selectedVoiceName": "Microsoft David - English (United States)"
+      }
+    ],
+    "eventCounts": {
+      "audit_reset": 1,
+      "audio_unlocked": 1,
+      "music_transition": 2,
+      "interaction_cue": 2,
+      "speech_attempt": 1,
+      "speech_stopped": 1,
+      "speech_started": 1
+    },
+    "errors": []
+  }
+}

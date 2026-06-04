@@ -1,0 +1,17 @@
+{
+  "id": "sonoran_neighborhood_bridge_diorama",
+  "createdAt": "2026-05-28T07:02:35.873Z",
+  "previewTaskId": "019e6d61-45be-7926-b9c0-30102f74d3bd",
+  "refineTaskId": "019e6d62-cdc8-79c4-ab2f-951b8ab48ecc",
+  "status": "SUCCEEDED",
+  "consumedCredits": {
+    "preview": 20,
+    "refine": 10
+  },
+  "files": {
+    "glb": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\sonoran_neighborhood_bridge_diorama\\sonoran_neighborhood_bridge_diorama.glb",
+    "thumbnail": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\sonoran_neighborhood_bridge_diorama\\sonoran_neighborhood_bridge_diorama.png"
+  },
+  "source": "meshy-text-to-3d",
+  "runtimeUse": "reference_only_until_curated"
+}

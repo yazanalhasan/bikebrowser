@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { narratePanel, narrateText } from '../audio/sceneNarration.js';
 
 // Phase 2.1 — Ecology Loop, player-facing. The player OBSERVES a desert site,
 // PREDICTS which plant will thrive there, SEES the outcome (it thrives or
@@ -83,6 +84,7 @@ export default class EcologyScene extends Phaser.Scene {
     this.why.setText('');
     this.hint.setText('E to choose a plant    Esc to leave');
     this._publish();
+    this._narrate();
   }
 
   _showPredict() {
@@ -95,6 +97,7 @@ export default class EcologyScene extends Phaser.Scene {
     this.hint.setText('◀ ▶ pick a plant    E plant it    Esc to leave');
     this._renderCard();
     this._publish();
+    this._narrate();
   }
 
   _renderCard() {
@@ -131,6 +134,7 @@ export default class EcologyScene extends Phaser.Scene {
     this.hint.setText(this.index < this.queue.length - 1 ? 'E for the next site    Esc to leave' : 'E for your field notes    Esc to leave');
     this.results.push({ id, thrives: result.thrives, matched: result.thrives, predicted: result.predictedId, correct: result.correct });
     this._publish({ thrives: result.thrives, matched: result.thrives, notebookEntry: result.notebookEntry, payoff: true });
+    this._narrate();
   }
 
   _advance() {
@@ -155,6 +159,7 @@ export default class EcologyScene extends Phaser.Scene {
     this.why.setText('Each plant fits a place: deep-rooted shade for the wash edge, dry-tough survivors for the open flat. Your notebook remembers which fits where.');
     this.hint.setText('E to close');
     this._publish({ payoff: true });
+    this._narrate();
   }
 
   onKey(event) {
@@ -165,8 +170,8 @@ export default class EcologyScene extends Phaser.Scene {
     if (this.phase === 'observe') {
       if (advance) this._showPredict();
     } else if (this.phase === 'predict') {
-      if (event.key === 'ArrowLeft' || key === 'a') { this.optIdx = (this.optIdx - 1 + this.options.length) % this.options.length; this._renderCard(); this._publish(); }
-      else if (event.key === 'ArrowRight' || key === 'd') { this.optIdx = (this.optIdx + 1) % this.options.length; this._renderCard(); this._publish(); }
+      if (event.key === 'ArrowLeft' || key === 'a') { this.optIdx = (this.optIdx - 1 + this.options.length) % this.options.length; this._renderCard(); this._publish(); narrateText(this, this.plantName.text); }
+      else if (event.key === 'ArrowRight' || key === 'd') { this.optIdx = (this.optIdx + 1) % this.options.length; this._renderCard(); this._publish(); narrateText(this, this.plantName.text); }
       else if (advance) { this._commit(); }
     } else if (this.phase === 'result') {
       if (advance) this._advance();
@@ -182,6 +187,10 @@ export default class EcologyScene extends Phaser.Scene {
     this.registry.events.emit('quest:changed');
     this.registry.events.emit('ecology:done');
     this._publish();
+  }
+
+  _narrate() {
+    narratePanel(this, this.panel, { exclude: [this.hint] });
   }
 
   _publish(extra = {}) {

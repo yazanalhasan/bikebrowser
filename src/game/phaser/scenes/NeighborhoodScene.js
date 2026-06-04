@@ -1,4 +1,4 @@
-import { ASSET_KEYS } from '../systems/AssetRegistry.js';
+import { ASSET_KEYS, ROUTE_MARKER_FRAME } from '../systems/AssetRegistry.js';
 import { InputSystem } from '../systems/InputSystem.js';
 import { InteractionSystem } from '../systems/InteractionSystem.js';
 import { configureNeighborhoodCamera } from '../systems/CameraSystem.js';
@@ -16,8 +16,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
   create() {
     this.layout = loadLayout(this, 'act1NeighborhoodLayout');
-    this.worldWidth = 1600;
-    this.worldHeight = 1000;
+    // Larger walkable world so the four regions read as distinct PLACES you walk
+    // between — GARAGE (left), HOME (centre), THE WASH (right), ECOLOGY (below).
+    this.worldWidth = 2560;
+    this.worldHeight = 1600;
     this.inputSystem = new InputSystem(this);
     this.interactions = new InteractionSystem();
     this.runtime = this.registry.get('act1Runtime');
@@ -61,7 +63,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
       unresolvedTensions: [],
     };
 
-    this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
+    // Walkable area excludes the Sonoran mountain backdrop band along the top
+    // (drawn ~y 0–350) — Zuzu could previously walk straight up into the peaks.
+    // Camera bounds stay full-world so the mountains remain visible behind play.
+    this.WALKABLE_TOP = 360;
+    this.physics.world.setBounds(0, this.WALKABLE_TOP, this.worldWidth, this.worldHeight - this.WALKABLE_TOP);
     this.createEnvironment();
     this.createCharacterAnimations();
     this.createPlayer();
@@ -70,7 +76,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.createWorldMapHud();
     configureNeighborhoodCamera(this, this.player);
 
-    this.helpText = this.add.text(18, 680, 'WASD / arrows move • E or Space explore • G map • N notebook • J discoveries • R replay voice • M quiet', {
+    this.helpText = this.add.text(18, 680, 'WASD / arrows move • E or Space explore • G map • N notebook • J discoveries • F2 edit • R replay voice • M quiet', {
       fontFamily: 'Arial',
       fontSize: '14px',
       color: '#ffe8aa',
@@ -87,6 +93,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // NOTE: the world-map toggle is handled once in update() via
     // gpsJustPressed(); a second keydown-G listener here caused a double-toggle
     // (open+close in one press) that made the G key appear dead. Removed.
+    // F2 = Edit Mode (drag objects to rearrange, see names, export to EB).
+    this.input.keyboard.on('keydown-F2', () => this.toggleEditMode());
     const unlockAudioOnce = () => this.runtime?.audioSystem.unlockAudio();
     this.input.once('pointerdown', unlockAudioOnce);
     this.input.keyboard.once('keydown', unlockAudioOnce);
@@ -133,44 +141,44 @@ export default class NeighborhoodScene extends Phaser.Scene {
     return true;
   }
 
+  // Region-based neighbourhood: a wide world split into four readable PLACES —
+  // GARAGE (left), HOME (centre), THE WASH (right), ECOLOGY (below) — connected
+  // by paths, under a Sonoran mountain backdrop. (Replaces the old single
+  // horizontal desert strip that crammed every activity into one band.)
   createEnvironment() {
-    this.add.rectangle(800, 500, 1600, 1000, 0x2e4a3d);
-    if (this.canUseFinalPropAsset(ASSET_KEYS.environmentSonoranMountainVista)) {
-      this.add.image(800, 196, ASSET_KEYS.environmentSonoranMountainVista).setDepth(2);
-    } else if (this.canUseWave1Asset(ASSET_KEYS.wave1SonoranVistaDraft)) {
-      this.add.image(800, 196, ASSET_KEYS.wave1SonoranVistaDraft).setDepth(2);
-    } else {
-      this.drawLegacySonoranVistaFallback();
-    }
-    this.drawNeighborhoodColorLanguage();
+    const W = this.worldWidth;
+    const H = this.worldHeight;
+    this.add.rectangle(W / 2, H / 2, W, H, 0x2e4a3d).setDepth(-30);
+    this.add.rectangle(W / 2, H / 2, W, H, 0xcdb389, 0.10).setDepth(-29);
 
-    if (this.canUseFinalPropAsset(ASSET_KEYS.environmentDesertRoadSystem)) {
-      this.add.image(800, 486, ASSET_KEYS.environmentDesertRoadSystem).setDepth(8);
-    } else if (this.canUseWave1Asset(ASSET_KEYS.wave1RoadSystemDraft)) {
-      this.add.image(800, 486, ASSET_KEYS.wave1RoadSystemDraft).setDepth(8);
-    } else {
-      this.drawLegacyRoadSystemFallback();
-    }
+    this.drawMountainBackdrop();
+    this.drawRegionGrounds();
+    this.drawRegionBanners();
 
-    this.drawSouthwestHomes();
-    this.drawGarageWarmth();
-    this.drawGarageSanctuaryDetails();
+    // HOME — Zuzu's house, above the family of NPCs in the central hub.
+    this.drawLegacyPuebloRevivalHome(1130, 470, 300, 150, {
+      body: 0xc88457, trim: 0xf0c997, door: 0xf2c46d, label: 'Zuzu home',
+    });
+
+    // GARAGE — the workbench structure anchors the tools (layout-driven).
     const garageWorkbenchProp = this.layout.garage_workbench_prop;
     this.add.image(
       garageWorkbenchProp.x,
       garageWorkbenchProp.y,
       this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementGarageWorkbench, ASSET_KEYS.garageWorkbench),
     ).setDisplaySize(garageWorkbenchProp.w, garageWorkbenchProp.h).setDepth(22);
-    this.add.text(garageWorkbenchProp.labelX, garageWorkbenchProp.labelY, 'garage/workbench', labelStyle());
-    this.add.image(292, 692, ASSET_KEYS.schoolNode).setScale(1.2);
+    this.add.text(garageWorkbenchProp.labelX, garageWorkbenchProp.labelY, 'garage / workbench', labelStyle());
+
+    // THE WASH — dry wash bed, the broken bridge, and its repaired payoff.
     const desertWash = this.layout.desert_wash;
-    this.add.image(desertWash.x, desertWash.y, ASSET_KEYS.desertWash).setScale(desertWash.scaleX, desertWash.scaleY);
+    this.add.image(desertWash.x, desertWash.y, ASSET_KEYS.desertWash)
+      .setScale(desertWash.scaleX, desertWash.scaleY).setDepth(6);
     const bridgeDebris = this.layout.bridge_debris;
     this.bridgeSprite = this.add.image(
       bridgeDebris.x,
       bridgeDebris.y,
       this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementBridgeDebris, ASSET_KEYS.bridgeBroken),
-    ).setDisplaySize(bridgeDebris.brokenW, bridgeDebris.brokenH);
+    ).setDisplaySize(bridgeDebris.brokenW, bridgeDebris.brokenH).setDepth(20);
     this.bridgePayoffGlow = this.add.ellipse(
       bridgeDebris.x,
       bridgeDebris.y,
@@ -186,8 +194,13 @@ export default class NeighborhoodScene extends Phaser.Scene {
       backgroundColor: 'rgba(32,48,41,0.62)',
       padding: { x: 7, y: 4 },
     }).setDepth(910).setVisible(false);
-    this.drawBridgePull();
-    this.drawBridgeStoryStage();
+    this.bridgeBeforeAfterTag = this.add.text(bridgeDebris.x - 60, bridgeDebris.y - 92, 'broken wash', {
+      fontFamily: 'Arial',
+      fontSize: '12px',
+      color: '#fff0c7',
+      backgroundColor: 'rgba(32,48,41,0.48)',
+      padding: { x: 5, y: 2 },
+    }).setDepth(910);
 
     const dryWashPathLabel = this.layout.dry_wash_path_label;
     this.add.text(dryWashPathLabel.x, dryWashPathLabel.y, 'dry wash path', {
@@ -196,8 +209,102 @@ export default class NeighborhoodScene extends Phaser.Scene {
       color: '#f6e6b4',
     }).setAlpha(0.75);
 
-    this.drawDesertDetails();
-    this.drawStoryDetails();
+    this.drawVegetationAccents();
+  }
+
+  // Layered Sonoran range marching across the whole top of the world.
+  drawMountainBackdrop() {
+    const W = this.worldWidth;
+    const g = this.add.graphics().setDepth(-25);
+    g.fillStyle(0x7db3b8, 0.20).fillRect(0, 0, W, 150);
+    g.fillStyle(0x8ed6c9, 0.12).fillRect(0, 150, W, 100);
+    const ranges = [
+      { base: 300, amp: 150, step: 230, color: 0x3f536f, alpha: 0.58 },
+      { base: 322, amp: 112, step: 270, color: 0x9b5b75, alpha: 0.50 },
+      { base: 344, amp: 82, step: 320, color: 0xd47b3d, alpha: 0.42 },
+    ];
+    for (const r of ranges) {
+      g.fillStyle(r.color, r.alpha);
+      g.beginPath();
+      g.moveTo(0, r.base);
+      let peak = true;
+      for (let x = 0; x <= W; x += r.step) {
+        g.lineTo(x, peak ? r.base - r.amp : r.base - r.amp * 0.42);
+        peak = !peak;
+      }
+      g.lineTo(W, r.base);
+      g.closePath();
+      g.fillPath();
+    }
+    g.fillStyle(0xffd17a, 0.22).fillEllipse(W * 0.22, 96, 720, 150);
+    g.fillStyle(0xfff0c7, 0.15).fillEllipse(W * 0.7, 84, 920, 90);
+  }
+
+  // Four tinted ground platforms (one per region) joined by tan paths.
+  drawRegionGrounds() {
+    const g = this.add.graphics();
+    g.setDepth(-22);
+    // Connecting paths first, so the platform edges sit over their ends.
+    g.fillStyle(0xcfa970, 0.85);
+    g.fillRoundedRect(700, 786, 360, 92, 28);   // garage <-> home
+    g.fillRoundedRect(1560, 786, 360, 92, 28);  // home <-> wash
+    g.fillRoundedRect(1232, 1120, 96, 220, 28); // home <-> ecology
+    g.setDepth(-20);
+    const regions = [
+      { cx: 470, cy: 800, w: 600, h: 580, color: 0x37474a, alpha: 0.55 },  // GARAGE — workshop slate
+      { cx: 1280, cy: 860, w: 700, h: 640, color: 0x6b5535, alpha: 0.48 }, // HOME — warm adobe
+      { cx: 2120, cy: 800, w: 720, h: 600, color: 0x2f5a55, alpha: 0.55 }, // WASH — riverbed teal
+      { cx: 1280, cy: 1350, w: 620, h: 400, color: 0x3a5a3a, alpha: 0.55 }, // ECOLOGY — living green
+    ];
+    for (const r of regions) {
+      g.fillStyle(r.color, r.alpha);
+      g.fillRoundedRect(r.cx - r.w / 2, r.cy - r.h / 2, r.w, r.h, 42);
+      g.lineStyle(3, 0xfff0c7, 0.12);
+      g.strokeRoundedRect(r.cx - r.w / 2, r.cy - r.h / 2, r.w, r.h, 42);
+    }
+  }
+
+  // Big region signage so each place announces itself.
+  drawRegionBanners() {
+    const banners = [
+      { x: 470, y: 540, t: 'GARAGE', s: 'tools · testing · materials', c: '#bfe2ff' },
+      { x: 1280, y: 562, t: 'HOME', s: 'Zuzu · neighbors · mentors', c: '#ffe8aa' },
+      { x: 2120, y: 512, t: 'THE WASH', s: 'flood · bridge · the gate', c: '#bff0e8' },
+      { x: 1280, y: 1162, t: 'ECOLOGY', s: 'plant · observe · restore', c: '#c8f0b0' },
+    ];
+    for (const b of banners) {
+      this.add.text(b.x, b.y, b.t, {
+        fontFamily: 'Arial', fontSize: '26px', fontStyle: 'bold', color: b.c,
+      }).setOrigin(0.5, 0.5).setAlpha(0.92).setDepth(12);
+      this.add.text(b.x, b.y + 23, b.s, {
+        fontFamily: 'Arial', fontSize: '13px', color: b.c,
+      }).setOrigin(0.5, 0.5).setAlpha(0.62).setDepth(12);
+    }
+  }
+
+  // Desert plant life concentrated in the ecology patch and along the wash.
+  drawVegetationAccents() {
+    const spots = [
+      [1180, 1280, 1.0], [1380, 1300, 1.12], [1250, 1438, 0.9], [1430, 1410, 0.86], // ecology
+      [1960, 930, 0.95], [2300, 900, 1.0], [2050, 640, 0.8],                          // wash
+    ];
+    const key = this.canUseFinalPropAsset(ASSET_KEYS.environmentVegetationCluster)
+      ? ASSET_KEYS.environmentVegetationCluster
+      : (this.canUseWave1Asset(ASSET_KEYS.vegetationSaguaroClusterDraft)
+        ? ASSET_KEYS.vegetationSaguaroClusterDraft
+        : null);
+    if (key) {
+      for (const [x, y, s] of spots) this.add.image(x, y, key).setScale(s).setDepth(24);
+      return;
+    }
+    const g = this.add.graphics().setDepth(24);
+    for (const [x, y] of spots) {
+      g.fillStyle(0x4f9c75, 1);
+      g.fillRoundedRect(x, y - 22, 9, 44, 5);
+      g.fillRoundedRect(x - 14, y - 4, 14, 7, 4);
+      g.fillRoundedRect(x + 9, y - 12, 14, 7, 4);
+      g.fillStyle(0x000000, 0.18).fillEllipse(x + 5, y + 25, 34, 8);
+    }
   }
 
   drawNeighborhoodColorLanguage() {
@@ -263,6 +370,17 @@ export default class NeighborhoodScene extends Phaser.Scene {
     return this.canUseWave1Asset(ASSET_KEYS.questMarkerStoryDraft)
       ? ASSET_KEYS.questMarkerStoryDraft
       : ASSET_KEYS.questMarker;
+  }
+
+  // A quest pin using the final route-marker art (gold "quest" diamond), sized to
+  // the world. Falls back to the placeholder marker if the sheet failed to load.
+  _questMarker(x, y, tint = null) {
+    const hasSheet = this.textures.exists(ASSET_KEYS.routeMarkers);
+    const marker = hasSheet
+      ? this.add.image(x, y, ASSET_KEYS.routeMarkers, ROUTE_MARKER_FRAME.quest).setDisplaySize(32, 32)
+      : this.add.image(x, y, this.wave1QuestMarkerKey());
+    if (tint != null) marker.setTint(tint);
+    return marker;
   }
 
   provenancedTextureOrFallback(provenancedKey, fallbackKey) {
@@ -571,7 +689,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
   createPlayer() {
     const animated = this.textures.exists(ASSET_KEYS.zuzuWalkSheet);
-    this.player = this.physics.add.sprite(420, 600, animated ? ASSET_KEYS.zuzuWalkSheet : ASSET_KEYS.zuzu);
+    // Spawn in the HOME hub (world centre), among the NPCs.
+    this.player = this.physics.add.sprite(1280, 1040, animated ? ASSET_KEYS.zuzuWalkSheet : ASSET_KEYS.zuzu);
     this.player.setScale(this.characterVisuals.playerScale).setDepth(260);
     this.player.setCollideWorldBounds(true);
     this.player.body.setSize(animated ? 22 : 24, animated ? 28 : 30);
@@ -615,7 +734,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this.provenancedTextureOrFallback(ASSET_KEYS.mapGateFinal, ASSET_KEYS.mapGate),
     ).setScale(mapGate.scale);
     const garageWorkbenchProp = this.layout.garage_workbench_prop;
-    this.add.image(garageWorkbenchProp.questMarkerX, garageWorkbenchProp.questMarkerY, this.wave1QuestMarkerKey());
+    this._questMarker(garageWorkbenchProp.questMarkerX, garageWorkbenchProp.questMarkerY);
 
     const mrChen = this.layout.npc_mr_chen;
     this.createAnimatedNpc({
@@ -665,8 +784,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.add.text(materialTable.labelX, materialTable.labelY, 'materials table', labelStyle());
 
     const washMarkerLayout = this.layout.wash_marker;
-    const washMarker = this.add.image(washMarkerLayout.x, washMarkerLayout.y, this.wave1QuestMarkerKey());
-    washMarker.setTint(0x8ed6c9);
+    const washMarker = this._questMarker(washMarkerLayout.x, washMarkerLayout.y, 0x8ed6c9);
 
     this.interactions.register({
       id: 'mr_chen',
@@ -701,8 +819,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // Phase 1.9.4 — the washout mystery: a player-reachable investigation
     // (observe → hypothesize → gather evidence → conclude). Placed down-channel
     // from the bridge sign so it does not collide with neighbouring zones.
-    const washMystery = { x: 1130, y: 700 };
-    this.add.image(washMystery.x, washMystery.y, this.wave1QuestMarkerKey()).setTint(0xc8a0ff).setDepth(40);
+    const washMystery = { x: 1920, y: 900 };
+    this._questMarker(washMystery.x, washMystery.y, 0xc8a0ff).setDepth(40);
     this.interactions.register({
       id: 'investigate_wash',
       x: washMystery.x,
@@ -713,8 +831,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // Phase 2.1 — Ecology Loop: a player-reachable plant-the-desert spot
     // (observe a site → predict which plant thrives → see it → learn why).
     // Kept clear of the wash/ecology zones so it never shadows them.
-    const ecologyGarden = { x: 905, y: 700 };
-    this.add.image(ecologyGarden.x, ecologyGarden.y, this.wave1QuestMarkerKey()).setTint(0x9be37a).setDepth(40);
+    const ecologyGarden = { x: 1360, y: 1320 };
+    this._questMarker(ecologyGarden.x, ecologyGarden.y, 0x9be37a).setDepth(40);
     this.interactions.register({
       id: 'ecology_garden',
       x: ecologyGarden.x,
@@ -781,8 +899,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
     });
     this.interactions.register({
       id: 'wider_gate',
-      x: 1484,
-      y: 514,
+      x: 2380,
+      y: 600,
       label: 'Open wider map clue',
       dialogueId: 'wider_gate_clue',
       action: 'wider_gate',
@@ -790,10 +908,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // Phase 2.4 — Salt River biome expedition. Always present (so it is
     // reachable), but the loop is gated behind the wider map: pressing E before
     // the bridge is repaired opens a clear "locked" panel, not silence.
-    const saltRiverExpedition = { x: 1430, y: 566 };
+    const saltRiverExpedition = { x: 2300, y: 700 };
     // Hidden opportunity: the expedition marker is invisible and inert until the
     // player DISCOVERS the City Gate by exploring the map edge (Phase 2.2 Fun).
-    this.saltRiverMarker = this.add.image(saltRiverExpedition.x, saltRiverExpedition.y, this.wave1QuestMarkerKey()).setTint(0x7fd1ff).setDepth(40).setVisible(false);
+    this.saltRiverMarker = this._questMarker(saltRiverExpedition.x, saltRiverExpedition.y, 0x7fd1ff).setDepth(40).setVisible(false);
     this.interactions.register({
       id: 'salt_river_expedition',
       x: saltRiverExpedition.x,
@@ -902,7 +1020,9 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   createUtmVisualizer() {
-    this.utmViz = this.add.container(708, 352).setDepth(150);
+    // Positioned relative to the UTM rig prop so it follows wherever the rig is.
+    const rig = this.layout.utm_rig;
+    this.utmViz = this.add.container(rig.x - 34, rig.y - 56).setDepth(150);
     this.utmVizBase = this.add.rectangle(0, 0, 72, 16, 0x203029, 0.62).setStrokeStyle(1, 0xfff0c7, 0.4);
     this.utmVizSample = this.add.rectangle(0, 0, 44, 7, 0x8ed6c9, 0.95);
     this.utmVizPressure = this.add.rectangle(0, -11, 34, 5, 0xf2c46d, 0.92);
@@ -913,11 +1033,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
     }).setAlpha(0.76);
     this.utmViz.add([this.utmVizBase, this.utmVizSample, this.utmVizPressure, this.utmVizLabel]);
     this.utmComparisonMarks = [
-      this.add.rectangle(684, 390, 24, 5, 0x8ed6c9, 0.5).setDepth(151),
-      this.add.rectangle(714, 390, 24, 5, 0xf2c46d, 0.5).setDepth(151),
-      this.add.rectangle(744, 390, 24, 5, 0xd08b62, 0.5).setDepth(151),
+      this.add.rectangle(rig.x - 58, rig.y - 18, 24, 5, 0x8ed6c9, 0.5).setDepth(151),
+      this.add.rectangle(rig.x - 28, rig.y - 18, 24, 5, 0xf2c46d, 0.5).setDepth(151),
+      this.add.rectangle(rig.x + 2, rig.y - 18, 24, 5, 0xd08b62, 0.5).setDepth(151),
     ];
-    this.add.text(674, 398, 'compare bend', {
+    this.add.text(rig.x - 68, rig.y - 10, 'compare bend', {
       fontFamily: 'Arial',
       fontSize: '10px',
       color: '#ffe8aa',
@@ -954,7 +1074,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   createChemistryVisualizer() {
-    this.chemistryViz = this.add.container(820, 406).setDepth(148);
+    const bench = this.layout.chemistry_bench;
+    this.chemistryViz = this.add.container(bench.x, bench.y - 38).setDepth(148);
     this.chemistrySteam = this.add.graphics();
     this.chemistrySteam.lineStyle(2, 0xfff0c7, 0.48);
     this.chemistrySteam.lineBetween(-16, 0, -10, -12);
@@ -971,7 +1092,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   createEcologyVisualizer() {
-    this.ecologyViz = this.add.container(1030, 760).setDepth(130);
+    const patch = this.layout.ecology_patch;
+    this.ecologyViz = this.add.container(patch.x, patch.y).setDepth(130);
     this.ecologyPatch = this.canUseFinalPropAsset(ASSET_KEYS.environmentEcologyPatch)
       ? this.add.image(0, -4, ASSET_KEYS.environmentEcologyPatch).setDisplaySize(148, 100)
       : null;
@@ -1041,7 +1163,26 @@ export default class NeighborhoodScene extends Phaser.Scene {
     }).setScrollFactor(0).setDepth(940);
 
     this.registry.events.on('act1:feedback', (entry) => this.showFeedback(entry));
+
+    // ZuzuBucks counter (top-right) — earned on first quest/objective completion,
+    // spent on upgrades. Pulses gold when it changes.
+    this.zuzuBucksHud = this.add.text(this.scale.width - 16, 14, '', {
+      fontFamily: 'Arial', fontSize: '18px', fontStyle: 'bold',
+      color: '#2c2119', backgroundColor: '#ffd27a', padding: { x: 12, y: 7 },
+    }).setOrigin(1, 0).setScrollFactor(0).setDepth(965);
+    this._renderZuzuBucks(this.runtime?.zuzuBucks || 0);
+    this.registry.events.on('zuzubucks:changed', ({ total }) => this._renderZuzuBucks(total, true));
+
     this.createDiscoveryUi();
+  }
+
+  _renderZuzuBucks(total, pulse = false) {
+    if (!this.zuzuBucksHud) return;
+    this.zuzuBucksHud.setText(`◈ ${total} ZuzuBucks`).setPosition(this.scale.width - 16, 14);
+    if (pulse) {
+      this.zuzuBucksHud.setScale(1);
+      this.tweens.add({ targets: this.zuzuBucksHud, scale: { from: 1.25, to: 1 }, duration: 320, ease: 'Back.easeOut' });
+    }
   }
 
   // Phase 2.2 — Discovery Registry UI: a prominent "NEW DISCOVERY" banner on
@@ -1106,6 +1247,224 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this.tweens.add({ targets: this.saltRiverMarker, scale: { from: 0.2, to: this.saltRiverMarker.scale }, duration: 320, ease: 'Back.easeOut' });
     }
     this.showFeedback({ message: 'A new way opens — the Salt River expedition is on your map.' });
+  }
+
+  // ---- F2 Edit Mode: drag objects to rearrange, see names, SAVE + send to EB ----
+  toggleEditMode() {
+    if (this.editMode) this.exitEditMode(); else this.enterEditMode();
+  }
+
+  // Images/Sprites in the prop depth band (not background, not HUD), each with a
+  // STABLE id (textureKey#n by display order) so saved positions survive reloads.
+  // Every editable visual (props, NPCs, decor). Props live at the DEFAULT depth
+  // (0) — the same depth as the background terrain grid — so we cannot filter by
+  // a depth band (the old `d < 30` filter excluded every prop and left only the
+  // depth-245 NPCs / depth-40 markers editable, which is why drag "only worked
+  // on the npc"). Instead we exclude the repeated terrain tiles by key and the
+  // HUD/overlays by depth, keeping everything else.
+  _editableVisuals() {
+    const out = [];
+    const counts = {};
+    // The neighbourhood floor is a grid of ~130 identical street tiles — that's
+    // the background, not a movable object. Everything else is fair game.
+    const TERRAIN_KEYS = new Set(['placeholder.street']);
+    for (const c of this.children.list) {
+      const isImg = c instanceof Phaser.GameObjects.Image || c instanceof Phaser.GameObjects.Sprite;
+      if (!isImg) continue;
+      const d = c.depth || 0;
+      if (d >= 900) continue; // HUD / overlays / edit handles
+      const key = c.texture?.key || 'sprite';
+      if (['__MISSING', '__DEFAULT', '__WHITE'].includes(key)) continue;
+      if (TERRAIN_KEYS.has(key)) continue; // background terrain grid
+      const n = counts[key] = (counts[key] || 0) + 1;
+      out.push({ obj: c, id: `${key}#${n}`, name: key });
+    }
+    return out;
+  }
+
+  // World-anchored name/label text (Mr. Chen, "materials table", …). These are
+  // separate Text objects, not Image/Sprites, so they were never linked to a
+  // drag group — that's why the character names did not track when dragged. HUD
+  // text (scrollFactor 0) and overlays (depth >= 900) are excluded.
+  _editableLabels() {
+    const out = [];
+    for (const c of this.children.list) {
+      if (!(c instanceof Phaser.GameObjects.Text)) continue;
+      if ((c.scrollFactorX ?? 1) === 0) continue;
+      if ((c.depth || 0) >= 900) continue;
+      out.push(c);
+    }
+    return out;
+  }
+
+  enterEditMode() {
+    this.editMode = true;
+    this._editHandles = [];
+    this._editChanges = {};
+    this.cameras.main.stopFollow(); // let arrows pan the camera
+
+    const visuals = this._editableVisuals();
+    // Kill idle (bob) tweens so dragged art actually moves and STAYS where dropped.
+    for (const v of visuals) this.tweens.killTweensOf(v.obj);
+    const unassigned = new Set(visuals.map((v) => v.obj));
+
+    // One handle per interaction zone, carrying the zone AND the art on top of it
+    // (so the visible object moves with the handle, not just the label).
+    for (const zone of this.interactions.zones) {
+      const linked = visuals.filter((v) => Math.hypot(v.obj.x - zone.x, v.obj.y - zone.y) <= 55);
+      linked.forEach((v) => unassigned.delete(v.obj));
+      this._makeEditHandle({ id: zone.id, x: zone.x, y: zone.y, zone, visuals: linked.map((v) => v.obj), color: 0x7fd1ff });
+    }
+    // Remaining (decorative) visuals each get their own handle, named by asset.
+    for (const v of visuals) {
+      if (!unassigned.has(v.obj)) continue;
+      this._makeEditHandle({ id: v.id, x: v.obj.x, y: v.obj.y, zone: null, visuals: [v.obj], color: 0xffd27a });
+    }
+
+    // Attach each world-space name/label to the NEAREST group so it travels with
+    // its object (fixes "the names of the characters did not track").
+    const groups = this._editHandles.map((h) => h.handle.getData('editGroup'));
+    for (const t of this._editableLabels()) {
+      let best = null, bestD = 140;
+      for (const g of groups) {
+        const ax = g.zone ? g.zone.x : g.visuals[0]?.x;
+        const ay = g.zone ? g.zone.y : g.visuals[0]?.y;
+        if (ax == null) continue;
+        const d = Math.hypot(t.x - ax, t.y - ay);
+        if (d < bestD) { bestD = d; best = g; }
+      }
+      if (best) best.visuals.push(t);
+    }
+
+    this._editDragStart = (pointer, obj) => {
+      const g = obj.getData('editGroup');
+      if (!g) return;
+      g._sx = obj.x; g._sy = obj.y;
+      g._mem = (g.visuals || []).map((o) => ({ o, x: o.x, y: o.y }));
+      g._zs = g.zone ? { x: g.zone.x, y: g.zone.y } : null;
+    };
+    this._editDrag = (pointer, obj, dragX, dragY) => {
+      if (!this.editMode) return;
+      const g = obj.getData('editGroup');
+      if (!g) return;
+      const dx = dragX - g._sx, dy = dragY - g._sy;
+      obj.x = dragX; obj.y = dragY;
+      for (const m of g._mem || []) { m.o.x = m.x + dx; m.o.y = m.y + dy; }
+      if (g.zone && g._zs) { g.zone.x = g._zs.x + dx; g.zone.y = g._zs.y + dy; }
+      g.label?.setText(`${g.id}\n(${Math.round(dragX)}, ${Math.round(dragY)})`).setPosition(dragX + 16, dragY - 12);
+      this._editChanges[g.id] = { id: g.id, kind: g.zone ? 'zone' : 'prop', x: Math.round(dragX), y: Math.round(dragY) };
+      this._publishEditLayout();
+    };
+    this.input.on('dragstart', this._editDragStart);
+    this.input.on('drag', this._editDrag);
+
+    this.editBanner = this.add.text(this.scale.width / 2, 12,
+      '✎ EDIT MODE — drag to move · arrows pan · [S] save · [X] send to EB · [F2] exit',
+      { fontFamily: 'Arial', fontSize: '14px', color: '#0a0f14', backgroundColor: '#ffd27a', padding: { x: 10, y: 6 } })
+      .setOrigin(0.5, 0).setScrollFactor(0).setDepth(2002);
+    this._editSaveKey = () => this.saveEditLayout();
+    this._editExportKey = () => this.exportEditLayout();
+    this.input.keyboard.on('keydown-S', this._editSaveKey);
+    this.input.keyboard.on('keydown-X', this._editExportKey);
+    this._publishEditLayout();
+    this.showFeedback({ message: `Edit Mode: ${this._editHandles.length} objects. Drag to move · arrows pan · S save · X send to EB.` });
+  }
+
+  _makeEditHandle({ id, x, y, zone, visuals, color }) {
+    const handle = this.add.rectangle(x, y, 26, 26, color, 0.35).setStrokeStyle(2, color, 1).setDepth(2000);
+    const label = this.add.text(x + 16, y - 12, `${id}\n(${Math.round(x)}, ${Math.round(y)})`,
+      { fontFamily: 'Arial', fontSize: '10px', color: '#eaf6ff', backgroundColor: 'rgba(8,16,24,0.8)', padding: { x: 3, y: 2 } }).setDepth(2001);
+    const group = { id, zone, visuals, label };
+    handle.setData('editGroup', group);
+    handle.setInteractive({ useHandCursor: true });
+    this.input.setDraggable(handle);
+    this._editHandles.push({ handle, label });
+  }
+
+  exitEditMode() {
+    this.editMode = false;
+    if (this._editDragStart) this.input.off('dragstart', this._editDragStart);
+    if (this._editDrag) this.input.off('drag', this._editDrag);
+    if (this._editSaveKey) this.input.keyboard.off('keydown-S', this._editSaveKey);
+    if (this._editExportKey) this.input.keyboard.off('keydown-X', this._editExportKey);
+    for (const h of this._editHandles || []) { h.label?.destroy(); h.handle?.destroy(); }
+    this._editHandles = [];
+    this.editBanner?.destroy();
+    this.editBanner = null;
+    if (this.player) this.cameras.main.startFollow(this.player, true, 0.12, 0.12);
+    this.showFeedback({ message: 'Edit Mode off.' });
+  }
+
+  _publishEditLayout() {
+    if (typeof window === 'undefined') return;
+    window.__EDIT_LAYOUT__ = { scene: 'NeighborhoodScene', changes: Object.values(this._editChanges || {}), at: Date.now() };
+  }
+
+  // SAVE: persist edits to localStorage (merged with prior saves) so they survive
+  // a page reload. Applied on the next load by applyLayoutOverrides().
+  saveEditLayout() {
+    const merged = {};
+    try {
+      for (const c of JSON.parse(window.localStorage.getItem('bikebrowser_layout_overrides_v2') || '[]')) merged[c.id] = c;
+    } catch { /* noop */ }
+    for (const c of Object.values(this._editChanges || {})) merged[c.id] = c;
+    const all = Object.values(merged);
+    try {
+      window.localStorage.setItem('bikebrowser_layout_overrides_v2', JSON.stringify(all));
+      this.showFeedback({ message: `Saved ${all.length} placement(s) — they persist across reloads.` });
+    } catch {
+      this.showFeedback({ message: 'Save failed (localStorage unavailable).' });
+    }
+    this._publishEditLayout();
+  }
+
+  // Apply saved placements once on load: move each zone (and the art on it) and
+  // each standalone prop to its saved position.
+  applyLayoutOverrides() {
+    let changes = [];
+    try { changes = JSON.parse(window.localStorage.getItem('bikebrowser_layout_overrides_v2') || '[]'); } catch { return; }
+    if (!Array.isArray(changes) || !changes.length) return;
+    const visuals = this._editableVisuals();
+    const labels = this._editableLabels();
+    const byId = {};
+    for (const v of visuals) byId[v.id] = v.obj;
+    for (const c of changes) {
+      if (c.kind === 'zone') {
+        const zone = this.interactions.zones.find((z) => z.id === c.id);
+        if (!zone) continue;
+        const dx = c.x - zone.x, dy = c.y - zone.y;
+        const linked = visuals.filter((v) => Math.hypot(v.obj.x - zone.x, v.obj.y - zone.y) <= 55);
+        const nearLabels = labels.filter((t) => Math.hypot(t.x - zone.x, t.y - zone.y) <= 140);
+        zone.x = c.x; zone.y = c.y;
+        for (const v of linked) { this.tweens.killTweensOf(v.obj); v.obj.x += dx; v.obj.y += dy; }
+        for (const t of nearLabels) { t.x += dx; t.y += dy; }
+      } else {
+        const obj = byId[c.id];
+        if (obj) {
+          const dx = c.x - obj.x, dy = c.y - obj.y;
+          const nearLabels = labels.filter((t) => Math.hypot(t.x - obj.x, t.y - obj.y) <= 110);
+          this.tweens.killTweensOf(obj); obj.x = c.x; obj.y = c.y;
+          for (const t of nearLabels) { t.x += dx; t.y += dy; }
+        }
+      }
+    }
+  }
+
+  // SEND TO EB: export the current edits (window mirror + clipboard + download).
+  exportEditLayout() {
+    const changes = Object.values(this._editChanges || {});
+    this._publishEditLayout();
+    const json = JSON.stringify({ scene: 'NeighborhoodScene', changes }, null, 2);
+    try { navigator.clipboard?.writeText(json); } catch { /* noop */ }
+    try {
+      const blob = new Blob([json], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'bikebrowser_layout_edits.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch { /* noop */ }
+    this.showFeedback({ message: `Sent ${changes.length} change(s) to EB — window.__EDIT_LAYOUT__ + clipboard + download.` });
   }
 
   // Proximity check: log an exploration discovery when the player first enters
@@ -1273,6 +1632,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.worldMapHud.add(this.worldMapHitZone);
     this.worldMapHitZone.on('pointerdown', () => this.toggleWorldMapHud(true));
     this.setWorldMapHudExpanded(false);
+    // Keep the map anchored to the bottom-left if the window resizes.
+    this.scale.on('resize', () => this.setWorldMapHudExpanded(this.worldMapHudExpanded));
   }
 
   createWorldMapRouteVisualization() {
@@ -1280,9 +1641,24 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
+    // Apply any saved layout placements once, after all objects exist.
+    if (!this._overridesApplied) {
+      this._overridesApplied = true;
+      try { this.applyLayoutOverrides(); } catch { /* noop */ }
+    }
+    // In edit mode the arrows pan the camera (player is frozen) so every object
+    // is reachable for dragging.
+    if (this.editMode) {
+      const pan = this.inputSystem.getMovementVector();
+      const cam = this.cameras.main;
+      cam.scrollX += pan.x * 10;
+      cam.scrollY += pan.y * 10;
+    }
     // Phase 1.9.2: when a modal overlay (prediction) is open, freeze the player
     // and ignore world interactions so its keys drive the overlay, not the scene.
-    const modal = Boolean(this.registry.get('modalActive'));
+    // Edit mode (F2) freezes the player like a modal so dragging objects does
+    // not also move Zuzu or fire interactions.
+    const modal = Boolean(this.registry.get('modalActive')) || this.editMode;
     // The key that closes a modal must not also re-trigger the world interaction
     // on the next frame (which would reopen the modal). Consume it.
     const justClosedModal = this._wasModal && !modal;
@@ -1466,7 +1842,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
     const layout = this.layout.world_map_hud;
     const w = this.worldMapHudExpanded ? layout.w : (layout.collapsedW || 236);
     const h = this.worldMapHudExpanded ? layout.h : (layout.collapsedH || 58);
-    this.worldMapHud?.setPosition(layout.x, this.worldMapHudExpanded ? (layout.expandedY || layout.y) : layout.y);
+    // Anchor the map to the BOTTOM-LEFT of the actual screen so it grows upward
+    // out of the corner instead of floating over the play area.
+    const margin = 14;
+    const anchorY = Math.max(margin, this.scale.height - h - margin);
+    this.worldMapHud?.setPosition(margin, anchorY);
     this.worldMapHitZone?.setSize(w, h);
     this.worldMapHitZone?.setPosition(w / 2, h / 2);
     this.worldMapFrame

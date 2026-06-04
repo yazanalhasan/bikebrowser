@@ -1,0 +1,79 @@
+{
+  "cleanDir": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean",
+  "sheet": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean_contact_sheet.png",
+  "captured": [
+    {
+      "label": "ZuzuGarageScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\01_ZuzuGarageScene.png"
+    },
+    {
+      "label": "MaterialLabScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\02_MaterialLabScene.png"
+    },
+    {
+      "label": "ThermalRigScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\03_ThermalRigScene.png"
+    },
+    {
+      "label": "OverworldScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\04_OverworldScene.png"
+    },
+    {
+      "label": "StreetBlockScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\05_StreetBlockScene.png"
+    },
+    {
+      "label": "DogParkScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\06_DogParkScene.png"
+    },
+    {
+      "label": "LakeEdgeScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\07_LakeEdgeScene.png"
+    },
+    {
+      "label": "SportsFieldsScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\08_SportsFieldsScene.png"
+    },
+    {
+      "label": "CommunityPoolScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\09_CommunityPoolScene.png"
+    },
+    {
+      "label": "DesertTrailScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\10_DesertTrailScene.png"
+    },
+    {
+      "label": "MountainScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\11_MountainScene.png"
+    },
+    {
+      "label": "WorldMapScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\12_WorldMapScene.png"
+    },
+    {
+      "label": "DesertForagingScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\13_DesertForagingScene.png"
+    },
+    {
+      "label": "CopperMineScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\14_CopperMineScene.png"
+    },
+    {
+      "label": "SaltRiverScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\15_SaltRiverScene.png"
+    },
+    {
+      "label": "DryWashScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\16_DryWashScene.png"
+    },
+    {
+      "label": "GarageScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\17_GarageScene.png"
+    },
+    {
+      "label": "NeighborhoodScene",
+      "path": "C:\\dev\\bikebrowser\\artifacts\\scene_snapshots\\2026-05-29T06-02-20-382Z\\legacy_play_canvas_clean\\18_NeighborhoodScene.png"
+    }
+  ],
+  "failures": []
+}

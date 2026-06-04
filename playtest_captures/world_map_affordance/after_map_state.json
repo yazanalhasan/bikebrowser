@@ -1,0 +1,16 @@
+{
+  "visible": true,
+  "currentLocation": "street",
+  "discovered": [
+    "home",
+    "garage",
+    "street"
+  ],
+  "lockedDestinations": [
+    "wider_gate",
+    "salt_river",
+    "copper_mine"
+  ],
+  "activeQuestMarker": "dry_wash",
+  "widerMapUnlocked": false
+}

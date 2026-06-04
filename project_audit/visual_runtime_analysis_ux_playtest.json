@@ -1,0 +1,1757 @@
+{
+  "device": "cuda:0",
+  "cuda_available": true,
+  "gpu_name": "NVIDIA GeForce RTX 5090",
+  "image_count": 50,
+  "metrics": [
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/desktop__godot_diagnostics__run01.png",
+      "width": 1440,
+      "height": 900,
+      "mean_rgb": [
+        0.5032,
+        0.4807,
+        0.322
+      ],
+      "std_rgb": [
+        0.2625,
+        0.2442,
+        0.1563
+      ],
+      "luminance_contrast": 0.2364,
+      "active_pixel_ratio": 0.7734,
+      "active_bbox_ratio": 0.9267,
+      "active_bbox": [
+        0,
+        12,
+        1439,
+        845
+      ],
+      "margins": {
+        "top": 0.0133,
+        "bottom": 0.06,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/desktop__godot_diagnostics__run02.png",
+      "width": 1440,
+      "height": 900,
+      "mean_rgb": [
+        0.5032,
+        0.4807,
+        0.322
+      ],
+      "std_rgb": [
+        0.2625,
+        0.2442,
+        0.1563
+      ],
+      "luminance_contrast": 0.2364,
+      "active_pixel_ratio": 0.7734,
+      "active_bbox_ratio": 0.9267,
+      "active_bbox": [
+        0,
+        12,
+        1439,
+        845
+      ],
+      "margins": {
+        "top": 0.0133,
+        "bottom": 0.06,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/desktop__home__run01.png",
+      "width": 1440,
+      "height": 900,
+      "mean_rgb": [
+        0.7006,
+        0.8431,
+        0.906
+      ],
+      "std_rgb": [
+        0.3677,
+        0.1887,
+        0.1778
+      ],
+      "luminance_contrast": 0.2145,
+      "active_pixel_ratio": 0.3797,
+      "active_bbox_ratio": 0.9822,
+      "active_bbox": [
+        0,
+        16,
+        1439,
+        899
+      ],
+      "margins": {
+        "top": 0.0178,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/desktop__home__run02.png",
+      "width": 1440,
+      "height": 900,
+      "mean_rgb": [
+        0.7006,
+        0.8431,
+        0.906
+      ],
+      "std_rgb": [
+        0.3677,
+        0.1887,
+        0.1778
+      ],
+      "luminance_contrast": 0.2145,
+      "active_pixel_ratio": 0.3797,
+      "active_bbox_ratio": 0.9822,
+      "active_bbox": [
+        0,
+        16,
+        1439,
+        899
+      ],
+      "margins": {
+        "top": 0.0178,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run01.png",
+      "width": 1440,
+      "height": 900,
+      "mean_rgb": [
+        0.5697,
+        0.8304,
+        0.8729
+      ],
+      "std_rgb": [
+        0.248,
+        0.065,
+        0.1436
+      ],
+      "luminance_contrast": 0.091,
+      "active_pixel_ratio": 0.8415,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        1439,
+        899
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run02.png",
+      "width": 1440,
+      "height": 900,
+      "mean_rgb": [
+        0.5697,
+        0.8304,
+        0.8729
+      ],
+      "std_rgb": [
+        0.248,
+        0.065,
+        0.1436
+      ],
+      "luminance_contrast": 0.091,
+      "active_pixel_ratio": 0.8415,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        1439,
+        899
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/desktop__play3d__run01.png",
+      "width": 1440,
+      "height": 900,
+      "mean_rgb": [
+        0.7232,
+        0.6593,
+        0.4969
+      ],
+      "std_rgb": [
+        0.1962,
+        0.2071,
+        0.254
+      ],
+      "luminance_contrast": 0.205,
+      "active_pixel_ratio": 0.3382,
+      "active_bbox_ratio": 0.9644,
+      "active_bbox": [
+        0,
+        0,
+        1439,
+        867
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0356,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/desktop__play3d__run02.png",
+      "width": 1440,
+      "height": 900,
+      "mean_rgb": [
+        0.7232,
+        0.6593,
+        0.4968
+      ],
+      "std_rgb": [
+        0.1961,
+        0.2071,
+        0.254
+      ],
+      "luminance_contrast": 0.2049,
+      "active_pixel_ratio": 0.3383,
+      "active_bbox_ratio": 0.9644,
+      "active_bbox": [
+        0,
+        0,
+        1439,
+        867
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0356,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/desktop__play__run01.png",
+      "width": 1440,
+      "height": 900,
+      "mean_rgb": [
+        0.5674,
+        0.5465,
+        0.3621
+      ],
+      "std_rgb": [
+        0.2157,
+        0.2008,
+        0.125
+      ],
+      "luminance_contrast": 0.191,
+      "active_pixel_ratio": 0.7617,
+      "active_bbox_ratio": 0.9267,
+      "active_bbox": [
+        0,
+        12,
+        1439,
+        845
+      ],
+      "margins": {
+        "top": 0.0133,
+        "bottom": 0.06,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/desktop__play__run02.png",
+      "width": 1440,
+      "height": 900,
+      "mean_rgb": [
+        0.5674,
+        0.5465,
+        0.3621
+      ],
+      "std_rgb": [
+        0.2157,
+        0.2008,
+        0.125
+      ],
+      "luminance_contrast": 0.191,
+      "active_pixel_ratio": 0.7617,
+      "active_bbox_ratio": 0.9267,
+      "active_bbox": [
+        0,
+        12,
+        1439,
+        845
+      ],
+      "margins": {
+        "top": 0.0133,
+        "bottom": 0.06,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/lowres__godot_diagnostics__run01.png",
+      "width": 960,
+      "height": 540,
+      "mean_rgb": [
+        0.4423,
+        0.4168,
+        0.2749
+      ],
+      "std_rgb": [
+        0.2973,
+        0.2822,
+        0.1833
+      ],
+      "luminance_contrast": 0.2741,
+      "active_pixel_ratio": 0.9991,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        959,
+        539
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/lowres__godot_diagnostics__run02.png",
+      "width": 960,
+      "height": 540,
+      "mean_rgb": [
+        0.4423,
+        0.417,
+        0.275
+      ],
+      "std_rgb": [
+        0.2973,
+        0.2822,
+        0.1833
+      ],
+      "luminance_contrast": 0.2741,
+      "active_pixel_ratio": 0.9991,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        959,
+        539
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/lowres__home__run01.png",
+      "width": 960,
+      "height": 540,
+      "mean_rgb": [
+        0.8797,
+        0.9253,
+        0.969
+      ],
+      "std_rgb": [
+        0.2493,
+        0.1413,
+        0.1112
+      ],
+      "luminance_contrast": 0.1569,
+      "active_pixel_ratio": 0.1467,
+      "active_bbox_ratio": 0.9704,
+      "active_bbox": [
+        0,
+        16,
+        959,
+        539
+      ],
+      "margins": {
+        "top": 0.0296,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/lowres__home__run02.png",
+      "width": 960,
+      "height": 540,
+      "mean_rgb": [
+        0.8797,
+        0.9253,
+        0.969
+      ],
+      "std_rgb": [
+        0.2493,
+        0.1413,
+        0.1112
+      ],
+      "luminance_contrast": 0.1569,
+      "active_pixel_ratio": 0.1467,
+      "active_bbox_ratio": 0.9704,
+      "active_bbox": [
+        0,
+        16,
+        959,
+        539
+      ],
+      "margins": {
+        "top": 0.0296,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/lowres__legacy_play__run01.png",
+      "width": 960,
+      "height": 540,
+      "mean_rgb": [
+        0.6075,
+        0.8423,
+        0.8785
+      ],
+      "std_rgb": [
+        0.2628,
+        0.08,
+        0.1481
+      ],
+      "luminance_contrast": 0.1066,
+      "active_pixel_ratio": 0.849,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        959,
+        539
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/lowres__legacy_play__run02.png",
+      "width": 960,
+      "height": 540,
+      "mean_rgb": [
+        0.605,
+        0.8414,
+        0.8783
+      ],
+      "std_rgb": [
+        0.2645,
+        0.0807,
+        0.148
+      ],
+      "luminance_contrast": 0.1074,
+      "active_pixel_ratio": 0.8668,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        959,
+        539
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/lowres__play3d__run01.png",
+      "width": 960,
+      "height": 540,
+      "mean_rgb": [
+        0.7415,
+        0.6841,
+        0.5378
+      ],
+      "std_rgb": [
+        0.208,
+        0.2234,
+        0.2825
+      ],
+      "luminance_contrast": 0.2214,
+      "active_pixel_ratio": 0.4136,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        959,
+        539
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/lowres__play3d__run02.png",
+      "width": 960,
+      "height": 540,
+      "mean_rgb": [
+        0.7415,
+        0.6841,
+        0.5378
+      ],
+      "std_rgb": [
+        0.208,
+        0.2234,
+        0.2825
+      ],
+      "luminance_contrast": 0.2214,
+      "active_pixel_ratio": 0.4136,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        959,
+        539
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/lowres__play__run01.png",
+      "width": 960,
+      "height": 540,
+      "mean_rgb": [
+        0.5956,
+        0.5669,
+        0.3738
+      ],
+      "std_rgb": [
+        0.2037,
+        0.1962,
+        0.1262
+      ],
+      "luminance_contrast": 0.1846,
+      "active_pixel_ratio": 0.9982,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        959,
+        539
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/lowres__play__run02.png",
+      "width": 960,
+      "height": 540,
+      "mean_rgb": [
+        0.5956,
+        0.5669,
+        0.3738
+      ],
+      "std_rgb": [
+        0.2037,
+        0.1962,
+        0.1262
+      ],
+      "luminance_contrast": 0.1846,
+      "active_pixel_ratio": 0.9982,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        959,
+        539
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__godot_diagnostics__run01.png",
+      "width": 844,
+      "height": 390,
+      "mean_rgb": [
+        0.3676,
+        0.3536,
+        0.2404
+      ],
+      "std_rgb": [
+        0.2943,
+        0.2791,
+        0.1851
+      ],
+      "luminance_contrast": 0.272,
+      "active_pixel_ratio": 0.8234,
+      "active_bbox_ratio": 0.9663,
+      "active_bbox": [
+        8,
+        0,
+        831,
+        385
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0103,
+        "left": 0.0095,
+        "right": 0.0142
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__godot_diagnostics__run02.png",
+      "width": 844,
+      "height": 390,
+      "mean_rgb": [
+        0.3676,
+        0.3536,
+        0.2404
+      ],
+      "std_rgb": [
+        0.2943,
+        0.2791,
+        0.1851
+      ],
+      "luminance_contrast": 0.272,
+      "active_pixel_ratio": 0.8234,
+      "active_bbox_ratio": 0.9663,
+      "active_bbox": [
+        8,
+        0,
+        831,
+        385
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0103,
+        "left": 0.0095,
+        "right": 0.0142
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__home__run01.png",
+      "width": 844,
+      "height": 390,
+      "mean_rgb": [
+        0.9241,
+        0.9435,
+        0.9799
+      ],
+      "std_rgb": [
+        0.1628,
+        0.1281,
+        0.0973
+      ],
+      "luminance_contrast": 0.1299,
+      "active_pixel_ratio": 0.1258,
+      "active_bbox_ratio": 0.9282,
+      "active_bbox": [
+        0,
+        16,
+        843,
+        377
+      ],
+      "margins": {
+        "top": 0.041,
+        "bottom": 0.0308,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__home__run02.png",
+      "width": 844,
+      "height": 390,
+      "mean_rgb": [
+        0.9241,
+        0.9435,
+        0.9799
+      ],
+      "std_rgb": [
+        0.1628,
+        0.1281,
+        0.0973
+      ],
+      "luminance_contrast": 0.1299,
+      "active_pixel_ratio": 0.1258,
+      "active_bbox_ratio": 0.9282,
+      "active_bbox": [
+        0,
+        16,
+        843,
+        377
+      ],
+      "margins": {
+        "top": 0.041,
+        "bottom": 0.0308,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__legacy_play__run01.png",
+      "width": 844,
+      "height": 390,
+      "mean_rgb": [
+        0.6259,
+        0.8481,
+        0.8876
+      ],
+      "std_rgb": [
+        0.2848,
+        0.0965,
+        0.1485
+      ],
+      "luminance_contrast": 0.1249,
+      "active_pixel_ratio": 0.877,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        843,
+        389
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__legacy_play__run02.png",
+      "width": 844,
+      "height": 390,
+      "mean_rgb": [
+        0.6259,
+        0.8481,
+        0.8876
+      ],
+      "std_rgb": [
+        0.2848,
+        0.0965,
+        0.1485
+      ],
+      "luminance_contrast": 0.1249,
+      "active_pixel_ratio": 0.877,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        843,
+        389
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__play3d__run01.png",
+      "width": 844,
+      "height": 390,
+      "mean_rgb": [
+        0.753,
+        0.7029,
+        0.5832
+      ],
+      "std_rgb": [
+        0.236,
+        0.2564,
+        0.3147
+      ],
+      "luminance_contrast": 0.2531,
+      "active_pixel_ratio": 0.5218,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        843,
+        389
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__play3d__run02.png",
+      "width": 844,
+      "height": 390,
+      "mean_rgb": [
+        0.7529,
+        0.7029,
+        0.5832
+      ],
+      "std_rgb": [
+        0.2362,
+        0.2564,
+        0.3146
+      ],
+      "luminance_contrast": 0.2532,
+      "active_pixel_ratio": 0.5219,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        843,
+        389
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__play__run01.png",
+      "width": 844,
+      "height": 390,
+      "mean_rgb": [
+        0.5485,
+        0.5325,
+        0.3554
+      ],
+      "std_rgb": [
+        0.2204,
+        0.2012,
+        0.1243
+      ],
+      "luminance_contrast": 0.1928,
+      "active_pixel_ratio": 0.7126,
+      "active_bbox_ratio": 0.9663,
+      "active_bbox": [
+        8,
+        0,
+        831,
+        385
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0103,
+        "left": 0.0095,
+        "right": 0.0142
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__play__run02.png",
+      "width": 844,
+      "height": 390,
+      "mean_rgb": [
+        0.5485,
+        0.5326,
+        0.3554
+      ],
+      "std_rgb": [
+        0.2204,
+        0.2012,
+        0.1243
+      ],
+      "luminance_contrast": 0.1928,
+      "active_pixel_ratio": 0.7127,
+      "active_bbox_ratio": 0.9663,
+      "active_bbox": [
+        8,
+        0,
+        831,
+        385
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0103,
+        "left": 0.0095,
+        "right": 0.0142
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__godot_diagnostics__run01.png",
+      "width": 390,
+      "height": 844,
+      "mean_rgb": [
+        0.2406,
+        0.2499,
+        0.1851
+      ],
+      "std_rgb": [
+        0.2326,
+        0.224,
+        0.1631
+      ],
+      "luminance_contrast": 0.2199,
+      "active_pixel_ratio": 0.6346,
+      "active_bbox_ratio": 0.6623,
+      "active_bbox": [
+        0,
+        5,
+        389,
+        563
+      ],
+      "margins": {
+        "top": 0.0059,
+        "bottom": 0.3318,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__godot_diagnostics__run02.png",
+      "width": 390,
+      "height": 844,
+      "mean_rgb": [
+        0.2406,
+        0.2499,
+        0.1851
+      ],
+      "std_rgb": [
+        0.2326,
+        0.224,
+        0.1631
+      ],
+      "luminance_contrast": 0.2199,
+      "active_pixel_ratio": 0.6346,
+      "active_bbox_ratio": 0.6623,
+      "active_bbox": [
+        0,
+        5,
+        389,
+        563
+      ],
+      "margins": {
+        "top": 0.0059,
+        "bottom": 0.3318,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__home__run01.png",
+      "width": 390,
+      "height": 844,
+      "mean_rgb": [
+        0.7085,
+        0.8528,
+        0.9023
+      ],
+      "std_rgb": [
+        0.399,
+        0.1911,
+        0.1722
+      ],
+      "luminance_contrast": 0.2268,
+      "active_pixel_ratio": 0.3315,
+      "active_bbox_ratio": 0.981,
+      "active_bbox": [
+        0,
+        16,
+        389,
+        843
+      ],
+      "margins": {
+        "top": 0.019,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__home__run02.png",
+      "width": 390,
+      "height": 844,
+      "mean_rgb": [
+        0.7085,
+        0.8528,
+        0.9023
+      ],
+      "std_rgb": [
+        0.399,
+        0.1911,
+        0.1722
+      ],
+      "luminance_contrast": 0.2268,
+      "active_pixel_ratio": 0.3315,
+      "active_bbox_ratio": 0.981,
+      "active_bbox": [
+        0,
+        16,
+        389,
+        843
+      ],
+      "margins": {
+        "top": 0.019,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__legacy_play__run01.png",
+      "width": 390,
+      "height": 844,
+      "mean_rgb": [
+        0.6327,
+        0.8478,
+        0.8747
+      ],
+      "std_rgb": [
+        0.2956,
+        0.0992,
+        0.1506
+      ],
+      "luminance_contrast": 0.1289,
+      "active_pixel_ratio": 0.9708,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        389,
+        843
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__legacy_play__run02.png",
+      "width": 390,
+      "height": 844,
+      "mean_rgb": [
+        0.6332,
+        0.8479,
+        0.8747
+      ],
+      "std_rgb": [
+        0.2948,
+        0.099,
+        0.1506
+      ],
+      "luminance_contrast": 0.1286,
+      "active_pixel_ratio": 0.9708,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        389,
+        843
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__play3d__run01.png",
+      "width": 390,
+      "height": 844,
+      "mean_rgb": [
+        0.7572,
+        0.6822,
+        0.5125
+      ],
+      "std_rgb": [
+        0.1427,
+        0.1808,
+        0.239
+      ],
+      "luminance_contrast": 0.1735,
+      "active_pixel_ratio": 0.2824,
+      "active_bbox_ratio": 0.782,
+      "active_bbox": [
+        0,
+        0,
+        389,
+        659
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.218,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__play3d__run02.png",
+      "width": 390,
+      "height": 844,
+      "mean_rgb": [
+        0.7573,
+        0.6822,
+        0.5125
+      ],
+      "std_rgb": [
+        0.1426,
+        0.181,
+        0.2389
+      ],
+      "luminance_contrast": 0.1737,
+      "active_pixel_ratio": 0.2822,
+      "active_bbox_ratio": 0.782,
+      "active_bbox": [
+        0,
+        0,
+        389,
+        659
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.218,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__play__run01.png",
+      "width": 390,
+      "height": 844,
+      "mean_rgb": [
+        0.3918,
+        0.4115,
+        0.2935
+      ],
+      "std_rgb": [
+        0.1983,
+        0.1645,
+        0.0978
+      ],
+      "luminance_contrast": 0.1627,
+      "active_pixel_ratio": 0.3091,
+      "active_bbox_ratio": 0.6623,
+      "active_bbox": [
+        0,
+        5,
+        389,
+        563
+      ],
+      "margins": {
+        "top": 0.0059,
+        "bottom": 0.3318,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__play__run02.png",
+      "width": 390,
+      "height": 844,
+      "mean_rgb": [
+        0.3918,
+        0.4115,
+        0.2935
+      ],
+      "std_rgb": [
+        0.1983,
+        0.1645,
+        0.0978
+      ],
+      "luminance_contrast": 0.1627,
+      "active_pixel_ratio": 0.3091,
+      "active_bbox_ratio": 0.6623,
+      "active_bbox": [
+        0,
+        5,
+        389,
+        563
+      ],
+      "margins": {
+        "top": 0.0059,
+        "bottom": 0.3318,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__godot_diagnostics__run01.png",
+      "width": 820,
+      "height": 1180,
+      "mean_rgb": [
+        0.3848,
+        0.3879,
+        0.2714
+      ],
+      "std_rgb": [
+        0.2495,
+        0.226,
+        0.1458
+      ],
+      "luminance_contrast": 0.2215,
+      "active_pixel_ratio": 0.5403,
+      "active_bbox_ratio": 0.7263,
+      "active_bbox": [
+        0,
+        10,
+        819,
+        866
+      ],
+      "margins": {
+        "top": 0.0085,
+        "bottom": 0.2653,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__godot_diagnostics__run02.png",
+      "width": 820,
+      "height": 1180,
+      "mean_rgb": [
+        0.3848,
+        0.3879,
+        0.2713
+      ],
+      "std_rgb": [
+        0.2495,
+        0.226,
+        0.1458
+      ],
+      "luminance_contrast": 0.2215,
+      "active_pixel_ratio": 0.5404,
+      "active_bbox_ratio": 0.7263,
+      "active_bbox": [
+        0,
+        10,
+        819,
+        866
+      ],
+      "margins": {
+        "top": 0.0085,
+        "bottom": 0.2653,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__home__run01.png",
+      "width": 820,
+      "height": 1180,
+      "mean_rgb": [
+        0.5943,
+        0.7943,
+        0.8749
+      ],
+      "std_rgb": [
+        0.3877,
+        0.1998,
+        0.1909
+      ],
+      "luminance_contrast": 0.2243,
+      "active_pixel_ratio": 0.5264,
+      "active_bbox_ratio": 0.9847,
+      "active_bbox": [
+        0,
+        16,
+        819,
+        1177
+      ],
+      "margins": {
+        "top": 0.0136,
+        "bottom": 0.0017,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__home__run02.png",
+      "width": 820,
+      "height": 1180,
+      "mean_rgb": [
+        0.5943,
+        0.7943,
+        0.8749
+      ],
+      "std_rgb": [
+        0.3877,
+        0.1998,
+        0.1909
+      ],
+      "luminance_contrast": 0.2243,
+      "active_pixel_ratio": 0.5264,
+      "active_bbox_ratio": 0.9847,
+      "active_bbox": [
+        0,
+        16,
+        819,
+        1177
+      ],
+      "margins": {
+        "top": 0.0136,
+        "bottom": 0.0017,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__legacy_play__run01.png",
+      "width": 820,
+      "height": 1180,
+      "mean_rgb": [
+        0.5775,
+        0.8324,
+        0.8722
+      ],
+      "std_rgb": [
+        0.2552,
+        0.0702,
+        0.144
+      ],
+      "luminance_contrast": 0.0968,
+      "active_pixel_ratio": 0.8713,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        819,
+        1179
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__legacy_play__run02.png",
+      "width": 820,
+      "height": 1180,
+      "mean_rgb": [
+        0.5775,
+        0.8324,
+        0.8722
+      ],
+      "std_rgb": [
+        0.2552,
+        0.0702,
+        0.144
+      ],
+      "luminance_contrast": 0.0968,
+      "active_pixel_ratio": 0.8713,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        819,
+        1179
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__play3d__run01.png",
+      "width": 820,
+      "height": 1180,
+      "mean_rgb": [
+        0.7261,
+        0.6526,
+        0.4837
+      ],
+      "std_rgb": [
+        0.1781,
+        0.2013,
+        0.2443
+      ],
+      "luminance_contrast": 0.1959,
+      "active_pixel_ratio": 0.3111,
+      "active_bbox_ratio": 0.9381,
+      "active_bbox": [
+        0,
+        0,
+        819,
+        1106
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0619,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__play3d__run02.png",
+      "width": 820,
+      "height": 1180,
+      "mean_rgb": [
+        0.7265,
+        0.6529,
+        0.4838
+      ],
+      "std_rgb": [
+        0.1777,
+        0.2012,
+        0.2442
+      ],
+      "luminance_contrast": 0.1957,
+      "active_pixel_ratio": 0.3101,
+      "active_bbox_ratio": 0.9381,
+      "active_bbox": [
+        0,
+        0,
+        819,
+        1106
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0619,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__play__run01.png",
+      "width": 820,
+      "height": 1180,
+      "mean_rgb": [
+        0.4365,
+        0.4448,
+        0.3104
+      ],
+      "std_rgb": [
+        0.2173,
+        0.1836,
+        0.1091
+      ],
+      "luminance_contrast": 0.1803,
+      "active_pixel_ratio": 0.4261,
+      "active_bbox_ratio": 0.7263,
+      "active_bbox": [
+        0,
+        10,
+        819,
+        866
+      ],
+      "margins": {
+        "top": 0.0085,
+        "bottom": 0.2653,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__play__run02.png",
+      "width": 820,
+      "height": 1180,
+      "mean_rgb": [
+        0.4365,
+        0.4448,
+        0.3104
+      ],
+      "std_rgb": [
+        0.2173,
+        0.1837,
+        0.1091
+      ],
+      "luminance_contrast": 0.1803,
+      "active_pixel_ratio": 0.4261,
+      "active_bbox_ratio": 0.7263,
+      "active_bbox": [
+        0,
+        10,
+        819,
+        866
+      ],
+      "margins": {
+        "top": 0.0085,
+        "bottom": 0.2653,
+        "left": 0.0,
+        "right": 0.0
+      }
+    }
+  ],
+  "similar_pairs": [
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__godot_diagnostics__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/desktop__godot_diagnostics__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__home__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/desktop__home__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/lowres__legacy_play__run01.png",
+      "similarity": 0.9896
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/lowres__legacy_play__run02.png",
+      "similarity": 0.9893
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__legacy_play__run01.png",
+      "similarity": 0.9851
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__legacy_play__run02.png",
+      "similarity": 0.9852
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__legacy_play__run01.png",
+      "similarity": 0.9931
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__legacy_play__run02.png",
+      "similarity": 0.9931
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run02.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/lowres__legacy_play__run01.png",
+      "similarity": 0.9896
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run02.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/lowres__legacy_play__run02.png",
+      "similarity": 0.9893
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run02.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__legacy_play__run01.png",
+      "similarity": 0.9851
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run02.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__legacy_play__run02.png",
+      "similarity": 0.9852
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run02.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__legacy_play__run01.png",
+      "similarity": 0.9931
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__legacy_play__run02.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__legacy_play__run02.png",
+      "similarity": 0.9931
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__play3d__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/desktop__play3d__run02.png",
+      "similarity": 0.9999
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/desktop__play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/desktop__play__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/lowres__godot_diagnostics__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/lowres__godot_diagnostics__run02.png",
+      "similarity": 0.999
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/lowres__home__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/lowres__home__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/lowres__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/lowres__legacy_play__run02.png",
+      "similarity": 0.9999
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/lowres__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__legacy_play__run01.png",
+      "similarity": 0.9906
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/lowres__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__legacy_play__run02.png",
+      "similarity": 0.9906
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/lowres__legacy_play__run02.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__legacy_play__run01.png",
+      "similarity": 0.9902
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/lowres__legacy_play__run02.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__legacy_play__run02.png",
+      "similarity": 0.9902
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/lowres__play3d__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/lowres__play3d__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/lowres__play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/lowres__play__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__godot_diagnostics__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__godot_diagnostics__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__home__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__home__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__legacy_play__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__play3d__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__play3d__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_landscape__play__run02.png",
+      "similarity": 0.9999
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__godot_diagnostics__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__godot_diagnostics__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__home__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__home__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__legacy_play__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__play3d__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__play3d__run02.png",
+      "similarity": 0.9985
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__play__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__godot_diagnostics__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__godot_diagnostics__run02.png",
+      "similarity": 0.9998
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__home__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__home__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__legacy_play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__legacy_play__run02.png",
+      "similarity": 1.0
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__play3d__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__play3d__run02.png",
+      "similarity": 0.9993
+    },
+    {
+      "a": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__play__run01.png",
+      "b": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__play__run02.png",
+      "similarity": 0.9996
+    }
+  ],
+  "findings": [
+    {
+      "severity": "medium",
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__godot_diagnostics__run01.png",
+      "issue": "large vertical inactive margin around game content"
+    },
+    {
+      "severity": "medium",
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__godot_diagnostics__run02.png",
+      "issue": "large vertical inactive margin around game content"
+    },
+    {
+      "severity": "medium",
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__play__run01.png",
+      "issue": "large vertical inactive margin around game content"
+    },
+    {
+      "severity": "medium",
+      "file": "project_audit/visual_runtime_screens_ux_playtest/mobile_portrait__play__run02.png",
+      "issue": "large vertical inactive margin around game content"
+    },
+    {
+      "severity": "medium",
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__godot_diagnostics__run01.png",
+      "issue": "large vertical inactive margin around game content"
+    },
+    {
+      "severity": "medium",
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__godot_diagnostics__run02.png",
+      "issue": "large vertical inactive margin around game content"
+    },
+    {
+      "severity": "medium",
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__play__run01.png",
+      "issue": "large vertical inactive margin around game content"
+    },
+    {
+      "severity": "medium",
+      "file": "project_audit/visual_runtime_screens_ux_playtest/tablet_portrait__play__run02.png",
+      "issue": "large vertical inactive margin around game content"
+    }
+  ]
+}

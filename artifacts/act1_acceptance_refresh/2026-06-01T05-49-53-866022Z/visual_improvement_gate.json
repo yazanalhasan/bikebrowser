@@ -1,0 +1,29 @@
+{
+  "before_artifacts": [],
+  "after_artifacts": [],
+  "comparison_artifacts": [],
+  "reference_artifacts": [
+    "playtest_captures/game_rebuild_act1_complete",
+    "playtest_captures/game_rebuild_act1_complete/01_act1_start.png",
+    "playtest_captures/game_rebuild_act1_complete/02_bike_repair_notebook.png",
+    "playtest_captures/game_rebuild_act1_complete/03_bridge_discovery.png",
+    "playtest_captures/game_rebuild_act1_complete/04_material_testing.png",
+    "playtest_captures/game_rebuild_act1_complete/05_ecology_interaction.png",
+    "playtest_captures/game_rebuild_act1_complete/06_chemistry_interaction.png",
+    "playtest_captures/game_rebuild_act1_complete/07_trust_language_notebook.png",
+    "playtest_captures/game_rebuild_act1_complete/08_bridge_repaired_map_unlock.png",
+    "artifacts/art_audit/act1_character_visual_audit.json",
+    "artifacts/art_audit/contact_sheet/act1_character_match_sheet.png",
+    "project_audit/act1_prop_clarity_mission/runtime_readability_report.json",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/act1_prop_clarity_contact_sheet.png"
+  ],
+  "human_facing_rationale": "This package intentionally performs evidence and scoring repair before visual fixes. No visual improvement is claimed.",
+  "required_judgment_dimensions": {
+    "child_facing_readability": "NEEDS_ITERATION: fresh evidence captured, visual fixes deferred.",
+    "visual_hierarchy": "NEEDS_ITERATION: fresh evidence captured, visual fixes deferred.",
+    "canon_alignment": "NEEDS_ITERATION: follow-up package targets wider map/GPS/world-scale affordances.",
+    "runtime_truth": "PASS: score is based on selected current runtime artifacts.",
+    "before_after_improvement": "NOT_APPLICABLE: no visual replacement work performed."
+  },
+  "final_judgment": "needs_iteration"
+}

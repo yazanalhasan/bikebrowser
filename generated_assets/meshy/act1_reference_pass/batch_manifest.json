@@ -1,0 +1,53 @@
+[
+  {
+    "id": "salt_river_rock_water_kit",
+    "createdAt": "2026-05-28T06:55:28.773Z",
+    "previewTaskId": "019e6d5a-09ab-7eeb-b936-d30f647d05fb",
+    "refineTaskId": "019e6d5c-c2e5-7fbb-b874-388f336af15c",
+    "status": "SUCCEEDED",
+    "consumedCredits": {
+      "preview": 20,
+      "refine": 10
+    },
+    "files": {
+      "glb": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\salt_river_rock_water_kit\\salt_river_rock_water_kit.glb",
+      "thumbnail": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\salt_river_rock_water_kit\\salt_river_rock_water_kit.png"
+    },
+    "source": "meshy-text-to-3d",
+    "runtimeUse": "reference_only_until_curated"
+  },
+  {
+    "id": "copper_mine_desert_trail_backdrop_prop",
+    "createdAt": "2026-05-28T06:59:09.326Z",
+    "previewTaskId": "019e6d5d-e829-77d9-bf61-78ef81a99b86",
+    "refineTaskId": "019e6d60-230b-7801-b395-28dc151fa865",
+    "status": "SUCCEEDED",
+    "consumedCredits": {
+      "preview": 20,
+      "refine": 10
+    },
+    "files": {
+      "glb": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\copper_mine_desert_trail_backdrop_prop\\copper_mine_desert_trail_backdrop_prop.glb",
+      "thumbnail": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\copper_mine_desert_trail_backdrop_prop\\copper_mine_desert_trail_backdrop_prop.png"
+    },
+    "source": "meshy-text-to-3d",
+    "runtimeUse": "reference_only_until_curated"
+  },
+  {
+    "id": "sonoran_neighborhood_bridge_diorama",
+    "createdAt": "2026-05-28T07:02:35.873Z",
+    "previewTaskId": "019e6d61-45be-7926-b9c0-30102f74d3bd",
+    "refineTaskId": "019e6d62-cdc8-79c4-ab2f-951b8ab48ecc",
+    "status": "SUCCEEDED",
+    "consumedCredits": {
+      "preview": 20,
+      "refine": 10
+    },
+    "files": {
+      "glb": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\sonoran_neighborhood_bridge_diorama\\sonoran_neighborhood_bridge_diorama.glb",
+      "thumbnail": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\sonoran_neighborhood_bridge_diorama\\sonoran_neighborhood_bridge_diorama.png"
+    },
+    "source": "meshy-text-to-3d",
+    "runtimeUse": "reference_only_until_curated"
+  }
+]

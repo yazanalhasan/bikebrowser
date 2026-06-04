@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { narratePanel, narrateText } from '../audio/sceneNarration.js';
 
 // Phase 2.4 — Multi-Biome. A reachable biome (Salt River) that carries the full
 // loop: read the biome's new rules, then for each site OBSERVE -> PREDICT which
@@ -72,6 +73,7 @@ export default class BiomeScene extends Phaser.Scene {
     this.why.setText('');
     this.hint.setText('E or Esc to head back');
     this._publish();
+    this._narrate();
   }
 
   _showIntro() {
@@ -84,6 +86,7 @@ export default class BiomeScene extends Phaser.Scene {
     this.why.setText('');
     this.hint.setText('E to explore the river    Esc to leave');
     this._publish();
+    this._narrate();
   }
 
   _showObserve() {
@@ -102,6 +105,7 @@ export default class BiomeScene extends Phaser.Scene {
     this.why.setText('');
     this.hint.setText('E to choose    Esc to leave');
     this._publish();
+    this._narrate();
   }
 
   _showPredict() {
@@ -113,6 +117,7 @@ export default class BiomeScene extends Phaser.Scene {
     this.hint.setText('◀ ▶ pick    E decide    Esc leave');
     this._renderCard();
     this._publish();
+    this._narrate();
   }
 
   _renderCard() {
@@ -135,6 +140,7 @@ export default class BiomeScene extends Phaser.Scene {
     this.hint.setText(this.index < this.queue.length - 1 ? 'E for the next site    Esc leave' : 'E for your field notes    Esc leave');
     this.results.push({ id: placementId, thrives: result.thrives });
     this._publish({ thrives: result.thrives, discovery: result.discovery?.id || null, payoff: true });
+    this._narrate();
   }
 
   _advance() {
@@ -154,6 +160,7 @@ export default class BiomeScene extends Phaser.Scene {
     this.why.setText('A new biome has new rules: salt-tolerant life on the banks, corrosion-proof metal in the water. Your notebook remembers them.');
     this.hint.setText('E to close');
     this._publish({ payoff: true });
+    this._narrate();
   }
 
   onKey(event) {
@@ -165,8 +172,8 @@ export default class BiomeScene extends Phaser.Scene {
     else if (this.phase === 'intro') { if (advance) this._showObserve(); }
     else if (this.phase === 'observe') { if (advance) this._showPredict(); }
     else if (this.phase === 'predict') {
-      if (event.key === 'ArrowLeft' || key === 'a') { this.optIdx = (this.optIdx - 1 + this.options.length) % this.options.length; this._renderCard(); this._publish(); }
-      else if (event.key === 'ArrowRight' || key === 'd') { this.optIdx = (this.optIdx + 1) % this.options.length; this._renderCard(); this._publish(); }
+      if (event.key === 'ArrowLeft' || key === 'a') { this.optIdx = (this.optIdx - 1 + this.options.length) % this.options.length; this._renderCard(); this._publish(); narrateText(this, this.optName.text); }
+      else if (event.key === 'ArrowRight' || key === 'd') { this.optIdx = (this.optIdx + 1) % this.options.length; this._renderCard(); this._publish(); narrateText(this, this.optName.text); }
       else if (advance) { this._commit(); }
     }
     else if (this.phase === 'result') { if (advance) this._advance(); }
@@ -180,6 +187,10 @@ export default class BiomeScene extends Phaser.Scene {
     this.registry.events.emit('quest:changed');
     this.registry.events.emit('biome:done');
     this._publish();
+  }
+
+  _narrate() {
+    narratePanel(this, this.panel, { exclude: [this.hint] });
   }
 
   _publish(extra = {}) {

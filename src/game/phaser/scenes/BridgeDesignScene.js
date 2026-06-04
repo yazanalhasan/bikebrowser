@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { narratePanel, narrateText } from '../audio/sceneNarration.js';
 
 // Phase 1.9.3 — player-facing bridge design. The player assigns a tested
 // material to each load-bearing role (deck → support → brace), then BUILDS and
@@ -88,6 +89,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.verdict.setColor('#ffd27a');
     this.hint.setText('E or Esc to head back');
     this._publish();
+    this._narrate();
   }
 
   _showChoose() {
@@ -102,6 +104,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.hint.setText('◀ ▶ pick    E choose    Esc leave');
     this._render();
     this._publish();
+    this._narrate();
   }
 
   _render() {
@@ -121,8 +124,8 @@ export default class BridgeDesignScene extends Phaser.Scene {
     if (this.phase === 'blocked') {
       if (key === 'e' || event.code === 'Space') { this._finish(); }
     } else if (this.phase === 'choose') {
-      if (event.key === 'ArrowLeft' || key === 'a') { this.candIdx = (this.candIdx - 1 + this.candidates.length) % this.candidates.length; this._render(); this._publish(); }
-      else if (event.key === 'ArrowRight' || key === 'd') { this.candIdx = (this.candIdx + 1) % this.candidates.length; this._render(); this._publish(); }
+      if (event.key === 'ArrowLeft' || key === 'a') { this.candIdx = (this.candIdx - 1 + this.candidates.length) % this.candidates.length; this._render(); this._publish(); this._narrateCandidate(); }
+      else if (event.key === 'ArrowRight' || key === 'd') { this.candIdx = (this.candIdx + 1) % this.candidates.length; this._render(); this._publish(); this._narrateCandidate(); }
       else if (key === 'e' || event.code === 'Space') { this._choose(); }
     } else if (this.phase === 'result') {
       if (key === 'e' || event.code === 'Space') { this._afterResult(); }
@@ -170,6 +173,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
       this.success = false;
     }
     this._publish({ outcome: result.ok ? 'safe' : (result.outcome || 'unsafe'), built: true });
+    this._narrate();
   }
 
   _afterResult() {
@@ -192,6 +196,14 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.registry.events.emit('quest:changed');
     this.registry.events.emit('bridgeDesign:done');
     this._publish();
+  }
+
+  _narrate() {
+    narratePanel(this, this.panel, { exclude: [this.hint] });
+  }
+
+  _narrateCandidate() {
+    narrateText(this, `${this.candName.text}. ${this.candEvidence.text}`);
   }
 
   _publish(extra = {}) {

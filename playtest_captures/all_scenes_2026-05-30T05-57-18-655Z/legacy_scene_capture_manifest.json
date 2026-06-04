@@ -1,0 +1,82 @@
+[
+  {
+    "ok": true,
+    "sceneKey": "OverworldScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "ZuzuGarageScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "MaterialLabScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "ThermalRigScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "StreetBlockScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "DogParkScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "LakeEdgeScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "SportsFieldsScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "CommunityPoolScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "DesertTrailScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "MountainScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "ExplainerScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "CognitiveQuestScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "WorldMapScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "DesertForagingScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "CopperMineScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "SaltRiverScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "DryWashScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "GarageScene"
+  },
+  {
+    "ok": true,
+    "sceneKey": "NeighborhoodScene"
+  }
+]

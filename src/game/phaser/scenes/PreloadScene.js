@@ -2,6 +2,7 @@ import {
   createPlaceholderTextures,
   loadAct1CharacterAnimationSheets,
   loadAct1FinalAssets,
+  loadAct1RouteMarkerSheet,
 } from '../systems/AssetRegistry.js';
 import { Act1RuntimeSystem } from '../systems/Act1RuntimeSystem.js';
 
@@ -14,6 +15,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.json('act1NeighborhoodLayout', 'layouts/neighborhood.layout.json');
     loadAct1FinalAssets(this);
     loadAct1CharacterAnimationSheets(this);
+    loadAct1RouteMarkerSheet(this);
   }
 
   create() {

@@ -1,0 +1,135 @@
+{
+  "id": "act1_pre_ride_check",
+  "name": "Mrs. Ramirez's Pre-Ride Check",
+  "description": "Learn A-B-C-Quick with Mrs. Ramirez, repair her slow rear-tube leak, and finish a solo final inspection.",
+  "steps": [
+    {
+      "id": "talk_to_mrs_ramirez",
+      "description": "Talk with Mrs. Ramirez by her bike and learn A-B-C-Quick.",
+      "completed": false
+    },
+    {
+      "id": "abc_page_created",
+      "description": "Write A-B-C-Quick in the notebook.",
+      "completed": false
+    },
+    {
+      "id": "air_front_checked",
+      "description": "A - Air: check the front tire.",
+      "completed": false
+    },
+    {
+      "id": "air_rear_flat_found",
+      "description": "A - Air: discover the slow leak in the rear tire.",
+      "completed": false
+    },
+    {
+      "id": "brakes_front_checked",
+      "description": "B - Brakes: hold the front brake until the pads bite.",
+      "completed": false
+    },
+    {
+      "id": "brakes_rear_checked",
+      "description": "B - Brakes: hold the rear brake until it catches firm.",
+      "completed": false
+    },
+    {
+      "id": "chain_checked",
+      "description": "C - Chain: spin the pedal and watch the chain run clean.",
+      "completed": false
+    },
+    {
+      "id": "quick_wheel_checked",
+      "description": "Quick check: wheel spins true.",
+      "completed": false
+    },
+    {
+      "id": "quick_seat_checked",
+      "description": "Quick check: seat is firm.",
+      "completed": false
+    },
+    {
+      "id": "quick_handlebars_checked",
+      "description": "Quick check: handlebars line up with the front wheel.",
+      "completed": false
+    },
+    {
+      "id": "tube_received",
+      "description": "Take Mrs. Ramirez's flat rear tube to the garage.",
+      "completed": false
+    },
+    {
+      "id": "garage_arrived",
+      "description": "Meet Mr. Chen at the garage tire station.",
+      "completed": false
+    },
+    {
+      "id": "tube_removed",
+      "description": "Ease the tube out for repair.",
+      "completed": false
+    },
+    {
+      "id": "leak_found",
+      "description": "Find the slow leak by listening and looking for bubbles.",
+      "completed": false
+    },
+    {
+      "id": "leak_marked",
+      "description": "Mark the leak on the notebook tube diagram.",
+      "completed": false
+    },
+    {
+      "id": "patch_applied",
+      "description": "Sand, cement, and patch the marked leak.",
+      "completed": false
+    },
+    {
+      "id": "tube_reinflated",
+      "description": "Re-inflate the tube until it firms up.",
+      "completed": false
+    },
+    {
+      "id": "repair_tested",
+      "description": "Test the tube again: no bubbles.",
+      "completed": false
+    },
+    {
+      "id": "tube_returned",
+      "description": "Bring the repaired tube back to Mrs. Ramirez.",
+      "completed": false
+    },
+    {
+      "id": "final_air_checked",
+      "description": "Final inspection: check Air yourself.",
+      "completed": false
+    },
+    {
+      "id": "final_brakes_checked",
+      "description": "Final inspection: check Brakes yourself.",
+      "completed": false
+    },
+    {
+      "id": "final_chain_checked",
+      "description": "Final inspection: check Chain yourself.",
+      "completed": false
+    },
+    {
+      "id": "final_quick_checked",
+      "description": "Final inspection: finish the Quick check yourself.",
+      "completed": false
+    },
+    {
+      "id": "final_report",
+      "description": "Mrs. Ramirez confirms the bike is ready to ride.",
+      "completed": false
+    }
+  ],
+  "success_dialogue": "Perfect. You did that yourself. That's a real pre-ride check, Zuzu. You can do this for any bike, anywhere. Thank you.",
+  "reward_text": "You learned A-B-C-Quick and got Mrs. Ramirez's bike ready to ride.",
+  "reward": {
+    "allowanceAmount": 0.25,
+    "badge": "Safety Star",
+    "reputation": 5,
+    "items": ["mrs_ramirez_bike_ready"]
+  }
+}

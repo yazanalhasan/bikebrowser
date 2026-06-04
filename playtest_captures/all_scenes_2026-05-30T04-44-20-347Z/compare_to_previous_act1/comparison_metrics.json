@@ -1,0 +1,77 @@
+{
+  "beforeDir": "C:/dev/bikebrowser/playtest_captures/game_rebuild_act1_complete",
+  "afterDir": "C:/dev/bikebrowser/playtest_captures/all_scenes_2026-05-30T04-44-20-347Z",
+  "sheet": "C:\\dev\\bikebrowser\\playtest_captures\\all_scenes_2026-05-30T04-44-20-347Z\\compare_to_previous_act1\\act1_before_after_diff_contact_sheet.png",
+  "rows": [
+    {
+      "before": "01_act1_start.png",
+      "after": "01_game_rebuild_start.png",
+      "width": 1280,
+      "height": 720,
+      "normalized_mae": 0.00226,
+      "changed_pct": 0.0114,
+      "max_delta": 223.67,
+      "diff": "C:\\dev\\bikebrowser\\playtest_captures\\all_scenes_2026-05-30T04-44-20-347Z\\compare_to_previous_act1\\diff_01_game_rebuild_start.png"
+    },
+    {
+      "before": "02_bike_repair_notebook.png",
+      "after": "02_game_rebuild_notebook.png",
+      "width": 1280,
+      "height": 720,
+      "normalized_mae": 0.00201,
+      "changed_pct": 0.012,
+      "max_delta": 157,
+      "diff": "C:\\dev\\bikebrowser\\playtest_captures\\all_scenes_2026-05-30T04-44-20-347Z\\compare_to_previous_act1\\diff_02_game_rebuild_notebook.png"
+    },
+    {
+      "before": "03_bridge_discovery.png",
+      "after": "03_game_rebuild_bridge.png",
+      "width": 1280,
+      "height": 720,
+      "normalized_mae": 0.06657,
+      "changed_pct": 0.1456,
+      "max_delta": 233.67,
+      "diff": "C:\\dev\\bikebrowser\\playtest_captures\\all_scenes_2026-05-30T04-44-20-347Z\\compare_to_previous_act1\\diff_03_game_rebuild_bridge.png"
+    },
+    {
+      "before": "04_material_testing.png",
+      "after": "04_game_rebuild_materials.png",
+      "width": 1280,
+      "height": 720,
+      "normalized_mae": 0.05169,
+      "changed_pct": 0.1538,
+      "max_delta": 197.67,
+      "diff": "C:\\dev\\bikebrowser\\playtest_captures\\all_scenes_2026-05-30T04-44-20-347Z\\compare_to_previous_act1\\diff_04_game_rebuild_materials.png"
+    },
+    {
+      "before": "05_ecology_interaction.png",
+      "after": "05_game_rebuild_ecology.png",
+      "width": 1280,
+      "height": 720,
+      "normalized_mae": 0.07191,
+      "changed_pct": 0.145,
+      "max_delta": 178,
+      "diff": "C:\\dev\\bikebrowser\\playtest_captures\\all_scenes_2026-05-30T04-44-20-347Z\\compare_to_previous_act1\\diff_05_game_rebuild_ecology.png"
+    },
+    {
+      "before": "06_chemistry_interaction.png",
+      "after": "06_game_rebuild_chemistry.png",
+      "width": 1280,
+      "height": 720,
+      "normalized_mae": 0.05404,
+      "changed_pct": 0.1559,
+      "max_delta": 211.33,
+      "diff": "C:\\dev\\bikebrowser\\playtest_captures\\all_scenes_2026-05-30T04-44-20-347Z\\compare_to_previous_act1\\diff_06_game_rebuild_chemistry.png"
+    },
+    {
+      "before": "08_bridge_repaired_map_unlock.png",
+      "after": "07_game_rebuild_repaired_map.png",
+      "width": 1280,
+      "height": 720,
+      "normalized_mae": 0.06052,
+      "changed_pct": 0.1468,
+      "max_delta": 218.33,
+      "diff": "C:\\dev\\bikebrowser\\playtest_captures\\all_scenes_2026-05-30T04-44-20-347Z\\compare_to_previous_act1\\diff_07_game_rebuild_repaired_map.png"
+    }
+  ]
+}

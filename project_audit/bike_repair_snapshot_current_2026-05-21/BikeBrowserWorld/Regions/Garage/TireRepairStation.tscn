@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://bikebrowser_tire_repair_station"]
+
+[ext_resource type="Script" path="res://Systems/Interactions/TireRepairStation.gd" id="1_tire"]
+[ext_resource type="PackedScene" path="res://Prototypes/EmbodiedMechanics/TireRig.tscn" id="2_tire_rig"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_station"]
+size = Vector2(210, 150)
+
+[node name="TireRepairStation" type="Area2D"]
+script = ExtResource("1_tire")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_station")
+
+[node name="TireRig" parent="." instance=ExtResource("2_tire_rig")]
+
+[node name="Prompt" type="Label" parent="."]
+position = Vector2(-96, -98)
+size = Vector2(214, 30)
+text = "[Hold E] feel for the leak"
+horizontal_alignment = 1

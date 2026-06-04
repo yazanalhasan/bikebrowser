@@ -1,0 +1,8 @@
+{
+  "project": "bikebrowser",
+  "command": "assets validate",
+  "generated_at": "2026-06-02T03:25:41.675345Z",
+  "manifest_exists": true,
+  "final_asset_file_count": 38,
+  "blocked_count": 0
+}

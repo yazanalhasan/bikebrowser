@@ -1,0 +1,5 @@
+
+Running 38 tests using 1 worker
+
+[1A[2K[1/38] [chromium] › tests\e2e\all-scenes.snapshot.spec.js:88:7 › all scene snapshots › captures the Phaser rebuild Act 1 runtime states
+TIMEOUT after 5s: npx playwright test --reporter=line

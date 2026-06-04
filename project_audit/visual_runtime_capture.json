@@ -1,0 +1,814 @@
+{
+  "startedAt": "2026-05-19T05:59:49.942Z",
+  "finishedAt": "2026-05-19T06:00:06.680Z",
+  "baseUrl": "http://127.0.0.1:5173",
+  "outputDir": "project_audit/visual_runtime_screens",
+  "reportPath": "project_audit/visual_runtime_capture.json",
+  "routeCount": 5,
+  "viewportCount": 5,
+  "repeatCount": 1,
+  "concurrency": 8,
+  "screenshotCount": 25,
+  "results": [
+    {
+      "iteration": 1,
+      "viewport": "desktop",
+      "route": "godot_diagnostics",
+      "path": "/godot-prototype?diagnostics=1",
+      "url": "http://127.0.0.1:5173/godot-prototype?diagnostics=1",
+      "screenshot": "project_audit/visual_runtime_screens/desktop__godot_diagnostics__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "GODOT DIAGNOSTICS\n\nBikeBrowserWorld\n\nLegacy Phaser remains available at /legacy-play.\n\nHide\nExport status\nloaded\n\n/godot/BikeBrowserWorld/index.html\n\nSend Settings\nSend Balance\nBRIDGE EVENTS\n\nNo Godot events received yet.",
+      "iframeInfo": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.wasm",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.pck",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "iteration": 1,
+      "viewport": "desktop",
+      "route": "home",
+      "path": "/",
+      "url": "http://127.0.0.1:5173/",
+      "screenshot": "project_audit/visual_runtime_screens/desktop__home__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🏠\nHome\nSelect Project\nNew Project\n🛒\n🚴 BikeBrowser\n\nStart in Zuzu's neighborhood, then use videos and tools when you need them.\n\nSearch\nTry:\nhow to fix a flat tire\nbuild an electric bike\nBMX tricks\nStart here\n🚲\nPlay BikeBrowserWorld\n\nZuzu repairs, tests, and rides\n\n🏗️\nProject Builder\n\nGuided tutorials & missions\n\n🧭\nBuild Planner\n\nAI checklist + compatibility review\n\n🛒\nShop Materials\n\nKid-safe parts and cart\n\n🔤\nZaydan's Spelling Trainer\n\nPractice spelling and worksheets\n\n🚴\nBikes\n\nLearn about regular bikes\n\n⚡\nE-Bikes\n\nElectric bike building\n\n🏍️\nDirt Bikes\n\nOff-road adventures\n\n⛰️\nMountain Bikes\n\nTrail riding & builds\n\n🛹\nBMX\n\nTricks and repairs\n\n🔧\nBuilding & Parts\n\nBuild your own bike\n\nYour Learning Journey\n\nStart exploring topics below to begin your adventure!\n\n0 videos · 0 quests\n\n🚲\nNew\nParts of a Bike\n\nLearn the names of every part — wheels, frame, handlebars, pedals, chain, and more.\n\n🚲 Bike Basics · beginner\n\n🩹\nNew\nFlat Tires\n\nUnderstand why tires go flat and how to pat",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "desktop",
+      "route": "legacy_play",
+      "path": "/legacy-play",
+      "url": "http://127.0.0.1:5173/legacy-play",
+      "screenshot": "project_audit/visual_runtime_screens/desktop__legacy_play__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🚲\nZuzu's Bike Adventure\n\nFrom Neighborhood to Stars\n\nStart Adventure!\n\nA bike repair learning game",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "desktop",
+      "route": "play",
+      "path": "/play",
+      "url": "http://127.0.0.1:5173/play",
+      "screenshot": "project_audit/visual_runtime_screens/desktop__play__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "",
+      "iframeInfo": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.wasm",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.pck",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "iteration": 1,
+      "viewport": "desktop",
+      "route": "play3d",
+      "path": "/play3d",
+      "url": "http://127.0.0.1:5173/play3d",
+      "screenshot": "project_audit/visual_runtime_screens/desktop__play3d__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🏠\n←\nHome\nSelect Project\nNew Project\n🛒\n\nBikeBrowser - Safe Learning for Kids 🚴",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.Clock: This module has been deprecated. Please use THREE.Timer instead."
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x5a7401f1a400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x5a7401f1a400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x5a7401f1a400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+        },
+        {
+          "type": "warning",
+          "text": "[.WebGL-0x5a7401f1a400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+        },
+        {
+          "type": "warning",
+          "text": "THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "lowres",
+      "route": "godot_diagnostics",
+      "path": "/godot-prototype?diagnostics=1",
+      "url": "http://127.0.0.1:5173/godot-prototype?diagnostics=1",
+      "screenshot": "project_audit/visual_runtime_screens/lowres__godot_diagnostics__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "GODOT DIAGNOSTICS\n\nBikeBrowserWorld\n\nLegacy Phaser remains available at /legacy-play.\n\nHide\nExport status\nloaded\n\n/godot/BikeBrowserWorld/index.html\n\nSend Settings\nSend Balance\nBRIDGE EVENTS\n\nNo Godot events received yet.",
+      "iframeInfo": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.wasm",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.pck",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "iteration": 1,
+      "viewport": "lowres",
+      "route": "home",
+      "path": "/",
+      "url": "http://127.0.0.1:5173/",
+      "screenshot": "project_audit/visual_runtime_screens/lowres__home__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🏠\nHome\n🛒\n🚴 BikeBrowser\n\nStart in Zuzu's neighborhood, then use videos and tools when you need them.\n\nSearch\nTry:\nhow to fix a flat tire\nbuild an electric bike\nBMX tricks\nStart here\n🚲\nPlay BikeBrowserWorld\n\nZuzu repairs, tests, and rides\n\n🏗️\nProject Builder\n\nGuided tutorials & missions\n\n🧭\nBuild Planner\n\nAI checklist + compatibility review\n\n🛒\nShop Materials\n\nKid-safe parts and cart\n\n🔤\nZaydan's Spelling Trainer\n\nPractice spelling and worksheets\n\n🚴\nBikes\n\nLearn about regular bikes\n\n⚡\nE-Bikes\n\nElectric bike building\n\n🏍️\nDirt Bikes\n\nOff-road adventures\n\n⛰️\nMountain Bikes\n\nTrail riding & builds\n\n🛹\nBMX\n\nTricks and repairs\n\n🔧\nBuilding & Parts\n\nBuild your own bike\n\nYour Learning Journey\n\nStart exploring topics below to begin your adventure!\n\n0 videos · 0 quests\n\n🚲\nNew\nParts of a Bike\n\nLearn the names of every part — wheels, frame, handlebars, pedals, chain, and more.\n\n🚲 Bike Basics · beginner\n\n🩹\nNew\nFlat Tires\n\nUnderstand why tires go flat and how to patch or replace an inner tube",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "lowres",
+      "route": "legacy_play",
+      "path": "/legacy-play",
+      "url": "http://127.0.0.1:5173/legacy-play",
+      "screenshot": "project_audit/visual_runtime_screens/lowres__legacy_play__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🚲\nZuzu's Bike Adventure\n\nFrom Neighborhood to Stars\n\nStart Adventure!\n\nA bike repair learning game",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "lowres",
+      "route": "play",
+      "path": "/play",
+      "url": "http://127.0.0.1:5173/play",
+      "screenshot": "project_audit/visual_runtime_screens/lowres__play__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "",
+      "iframeInfo": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.wasm",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.pck",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "iteration": 1,
+      "viewport": "lowres",
+      "route": "play3d",
+      "path": "/play3d",
+      "url": "http://127.0.0.1:5173/play3d",
+      "screenshot": "project_audit/visual_runtime_screens/lowres__play3d__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🏠\n←\nHome\n🛒\n\nBikeBrowser - Safe Learning for Kids 🚴",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.Clock: This module has been deprecated. Please use THREE.Timer instead."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "mobile_landscape",
+      "route": "godot_diagnostics",
+      "path": "/godot-prototype?diagnostics=1",
+      "url": "http://127.0.0.1:5173/godot-prototype?diagnostics=1",
+      "screenshot": "project_audit/visual_runtime_screens/mobile_landscape__godot_diagnostics__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "GODOT DIAGNOSTICS\n\nBikeBrowserWorld\n\nLegacy Phaser remains available at /legacy-play.\n\nHide\nExport status\nloaded\n\n/godot/BikeBrowserWorld/index.html\n\nSend Settings\nSend Balance\nBRIDGE EVENTS\n\nNo Godot events received yet.",
+      "iframeInfo": {
+        "x": 0,
+        "y": 0,
+        "width": 844,
+        "height": 390
+      },
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.wasm",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.pck",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "iteration": 1,
+      "viewport": "mobile_landscape",
+      "route": "home",
+      "path": "/",
+      "url": "http://127.0.0.1:5173/",
+      "screenshot": "project_audit/visual_runtime_screens/mobile_landscape__home__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🏠\nHome\n🛒\n🚴 BikeBrowser\n\nStart in Zuzu's neighborhood, then use videos and tools when you need them.\n\nSearch\nTry:\nhow to fix a flat tire\nbuild an electric bike\nBMX tricks\nStart here\n🚲\nPlay BikeBrowserWorld\n\nZuzu repairs, tests, and rides\n\n🏗️\nProject Builder\n\nGuided tutorials & missions\n\n🧭\nBuild Planner\n\nAI checklist + compatibility review\n\n🛒\nShop Materials\n\nKid-safe parts and cart\n\n🔤\nZaydan's Spelling Trainer\n\nPractice spelling and worksheets\n\n🚴\nBikes\n\nLearn about regular bikes\n\n⚡\nE-Bikes\n\nElectric bike building\n\n🏍️\nDirt Bikes\n\nOff-road adventures\n\n⛰️\nMountain Bikes\n\nTrail riding & builds\n\n🛹\nBMX\n\nTricks and repairs\n\n🔧\nBuilding & Parts\n\nBuild your own bike\n\nYour Learning Journey\n\nStart exploring topics below to begin your adventure!\n\n0 videos · 0 quests\n\n🚲\nNew\nParts of a Bike\n\nLearn the names of every part — wheels, frame, handlebars, pedals, chain, and more.\n\n🚲 Bike Basics · beginner\n\n🩹\nNew\nFlat Tires\n\nUnderstand why tires go flat and how to patch or replace an inner tube",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "mobile_landscape",
+      "route": "legacy_play",
+      "path": "/legacy-play",
+      "url": "http://127.0.0.1:5173/legacy-play",
+      "screenshot": "project_audit/visual_runtime_screens/mobile_landscape__legacy_play__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🚲\nZuzu's Bike Adventure\n\nFrom Neighborhood to Stars\n\nStart Adventure!\n\nA bike repair learning game",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "mobile_landscape",
+      "route": "play",
+      "path": "/play",
+      "url": "http://127.0.0.1:5173/play",
+      "screenshot": "project_audit/visual_runtime_screens/mobile_landscape__play__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "",
+      "iframeInfo": {
+        "x": 0,
+        "y": 0,
+        "width": 844,
+        "height": 390
+      },
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.wasm",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.pck",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "iteration": 1,
+      "viewport": "mobile_landscape",
+      "route": "play3d",
+      "path": "/play3d",
+      "url": "http://127.0.0.1:5173/play3d",
+      "screenshot": "project_audit/visual_runtime_screens/mobile_landscape__play3d__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🏠\n←\nHome\n🛒\n\nBikeBrowser - Safe Learning for Kids 🚴",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.Clock: This module has been deprecated. Please use THREE.Timer instead."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "mobile_portrait",
+      "route": "godot_diagnostics",
+      "path": "/godot-prototype?diagnostics=1",
+      "url": "http://127.0.0.1:5173/godot-prototype?diagnostics=1",
+      "screenshot": "project_audit/visual_runtime_screens/mobile_portrait__godot_diagnostics__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "GODOT DIAGNOSTICS\n\nBikeBrowserWorld\n\nLegacy Phaser remains available at /legacy-play.\n\nHide\nExport status\nloaded\n\n/godot/BikeBrowserWorld/index.html\n\nSend Settings\nSend Balance\nBRIDGE EVENTS\n\nNo Godot events received yet.",
+      "iframeInfo": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844
+      },
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.wasm",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.pck",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "iteration": 1,
+      "viewport": "mobile_portrait",
+      "route": "home",
+      "path": "/",
+      "url": "http://127.0.0.1:5173/",
+      "screenshot": "project_audit/visual_runtime_screens/mobile_portrait__home__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🏠\n🛒\n🚴 BikeBrowser\n\nStart in Zuzu's neighborhood, then use videos and tools when you need them.\n\nSearch\nTry:\nhow to fix a flat tire\nbuild an electric bike\nBMX tricks\nStart here\n🚲\nPlay BikeBrowserWorld\n\nZuzu repairs, tests, and rides\n\n🏗️\nProject Builder\n\nGuided tutorials & missions\n\n🧭\nBuild Planner\n\nAI checklist + compatibility review\n\n🛒\nShop Materials\n\nKid-safe parts and cart\n\n🔤\nZaydan's Spelling Trainer\n\nPractice spelling and worksheets\n\n🚴\nBikes\n\nLearn about regular bikes\n\n⚡\nE-Bikes\n\nElectric bike building\n\n🏍️\nDirt Bikes\n\nOff-road adventures\n\n⛰️\nMountain Bikes\n\nTrail riding & builds\n\n🛹\nBMX\n\nTricks and repairs\n\n🔧\nBuilding & Parts\n\nBuild your own bike\n\nYour Learning Journey\n\nStart exploring topics below to begin your adventure!\n\n0 videos · 0 quests\n\n🚲\nNew\nParts of a Bike\n\nLearn the names of every part — wheels, frame, handlebars, pedals, chain, and more.\n\n🚲 Bike Basics · beginner\n\n🩹\nNew\nFlat Tires\n\nUnderstand why tires go flat and how to patch or replace an inner tube.\n\n🔧",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "mobile_portrait",
+      "route": "legacy_play",
+      "path": "/legacy-play",
+      "url": "http://127.0.0.1:5173/legacy-play",
+      "screenshot": "project_audit/visual_runtime_screens/mobile_portrait__legacy_play__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🚲\nZuzu's Bike Adventure\n\nFrom Neighborhood to Stars\n\nStart Adventure!\n\nA bike repair learning game",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "mobile_portrait",
+      "route": "play",
+      "path": "/play",
+      "url": "http://127.0.0.1:5173/play",
+      "screenshot": "project_audit/visual_runtime_screens/mobile_portrait__play__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "",
+      "iframeInfo": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 844
+      },
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.wasm",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.pck",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "iteration": 1,
+      "viewport": "mobile_portrait",
+      "route": "play3d",
+      "path": "/play3d",
+      "url": "http://127.0.0.1:5173/play3d",
+      "screenshot": "project_audit/visual_runtime_screens/mobile_portrait__play3d__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🏠\n←\n🛒\n\nBikeBrowser - Safe Learning for Kids 🚴",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.Clock: This module has been deprecated. Please use THREE.Timer instead."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "tablet_portrait",
+      "route": "godot_diagnostics",
+      "path": "/godot-prototype?diagnostics=1",
+      "url": "http://127.0.0.1:5173/godot-prototype?diagnostics=1",
+      "screenshot": "project_audit/visual_runtime_screens/tablet_portrait__godot_diagnostics__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "GODOT DIAGNOSTICS\n\nBikeBrowserWorld\n\nLegacy Phaser remains available at /legacy-play.\n\nHide\nExport status\nloaded\n\n/godot/BikeBrowserWorld/index.html\n\nSend Settings\nSend Balance\nBRIDGE EVENTS\n\nNo Godot events received yet.",
+      "iframeInfo": {
+        "x": 0,
+        "y": 0,
+        "width": 820,
+        "height": 1180
+      },
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.wasm",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.pck",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "iteration": 1,
+      "viewport": "tablet_portrait",
+      "route": "home",
+      "path": "/",
+      "url": "http://127.0.0.1:5173/",
+      "screenshot": "project_audit/visual_runtime_screens/tablet_portrait__home__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🏠\nHome\n🛒\n🚴 BikeBrowser\n\nStart in Zuzu's neighborhood, then use videos and tools when you need them.\n\nSearch\nTry:\nhow to fix a flat tire\nbuild an electric bike\nBMX tricks\nStart here\n🚲\nPlay BikeBrowserWorld\n\nZuzu repairs, tests, and rides\n\n🏗️\nProject Builder\n\nGuided tutorials & missions\n\n🧭\nBuild Planner\n\nAI checklist + compatibility review\n\n🛒\nShop Materials\n\nKid-safe parts and cart\n\n🔤\nZaydan's Spelling Trainer\n\nPractice spelling and worksheets\n\n🚴\nBikes\n\nLearn about regular bikes\n\n⚡\nE-Bikes\n\nElectric bike building\n\n🏍️\nDirt Bikes\n\nOff-road adventures\n\n⛰️\nMountain Bikes\n\nTrail riding & builds\n\n🛹\nBMX\n\nTricks and repairs\n\n🔧\nBuilding & Parts\n\nBuild your own bike\n\nYour Learning Journey\n\nStart exploring topics below to begin your adventure!\n\n0 videos · 0 quests\n\n🚲\nNew\nParts of a Bike\n\nLearn the names of every part — wheels, frame, handlebars, pedals, chain, and more.\n\n🚲 Bike Basics · beginner\n\n🩹\nNew\nFlat Tires\n\nUnderstand why tires go flat and how to patch or replace an inner tube",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "tablet_portrait",
+      "route": "legacy_play",
+      "path": "/legacy-play",
+      "url": "http://127.0.0.1:5173/legacy-play",
+      "screenshot": "project_audit/visual_runtime_screens/tablet_portrait__legacy_play__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🚲\nZuzu's Bike Adventure\n\nFrom Neighborhood to Stars\n\nStart Adventure!\n\nA bike repair learning game",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "iteration": 1,
+      "viewport": "tablet_portrait",
+      "route": "play",
+      "path": "/play",
+      "url": "http://127.0.0.1:5173/play",
+      "screenshot": "project_audit/visual_runtime_screens/tablet_portrait__play__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "",
+      "iframeInfo": {
+        "x": 0,
+        "y": 0,
+        "width": 820,
+        "height": 1180
+      },
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        }
+      ],
+      "errors": [],
+      "failedRequests": [
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.wasm",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:5173/godot/BikeBrowserWorld/index.pck",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    {
+      "iteration": 1,
+      "viewport": "tablet_portrait",
+      "route": "play3d",
+      "path": "/play3d",
+      "url": "http://127.0.0.1:5173/play3d",
+      "screenshot": "project_audit/visual_runtime_screens/tablet_portrait__play3d__run01.png",
+      "status": "ok",
+      "title": "BikeBrowser - Kid Cognitive Browser",
+      "bodyText": "🏠\n←\nHome\n🛒\n\nBikeBrowser - Safe Learning for Kids 🚴",
+      "iframeInfo": null,
+      "consoleFailures": [
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition."
+        },
+        {
+          "type": "warning",
+          "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.Clock: This module has been deprecated. Please use THREE.Timer instead."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead."
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    }
+  ]
+}

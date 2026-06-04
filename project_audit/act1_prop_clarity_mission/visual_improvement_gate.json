@@ -1,0 +1,122 @@
+{
+  "mission": "mission_3da14d0e7c2c",
+  "portfolio": "portfolio_33301979a894",
+  "source_package": "project_audit/act1_prop_clarity_mission/replacement_package.json",
+  "before_artifacts": [
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/before/01_act1_start.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/before/04_material_testing.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/before/06_chemistry_interaction.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/before/03_bridge_discovery.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/before/08_bridge_repaired_map_unlock.png"
+  ],
+  "after_artifacts": [
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/after/01_act1_start.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/after/04_material_testing.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/after/06_chemistry_interaction.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/after/03_bridge_discovery.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/after/08_bridge_repaired_map_unlock.png"
+  ],
+  "comparison_artifacts": [
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/gps_hud_comparison.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/workshop_props_comparison.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/material_table_comparison.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/chemistry_bench_comparison.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/bridge_debris_comparison.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/wider_map_gate_comparison.png",
+    "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/act1_prop_replacement_visual_improvement_contact_sheet.png"
+  ],
+  "comparison_crops": [
+    {
+      "id": "gps_hud",
+      "source": "01_act1_start.png",
+      "before_crop": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/gps_hud_before_crop.png",
+      "after_crop": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/gps_hud_after_crop.png",
+      "comparison": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/gps_hud_comparison.png",
+      "rationale": "GPS device, route marker shapes, and landmark icons should read before labels are parsed."
+    },
+    {
+      "id": "workshop_props",
+      "source": "01_act1_start.png",
+      "before_crop": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/workshop_props_before_crop.png",
+      "after_crop": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/workshop_props_after_crop.png",
+      "comparison": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/workshop_props_comparison.png",
+      "rationale": "The garage workbench should read as tools and bike-repair clutter rather than a generic table."
+    },
+    {
+      "id": "material_table",
+      "source": "04_material_testing.png",
+      "before_crop": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/material_table_before_crop.png",
+      "after_crop": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/material_table_after_crop.png",
+      "comparison": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/material_table_comparison.png",
+      "rationale": "Material supplies should support the collect/test/build loop through visible grouped objects."
+    },
+    {
+      "id": "chemistry_bench",
+      "source": "06_chemistry_interaction.png",
+      "before_crop": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/chemistry_bench_before_crop.png",
+      "after_crop": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/chemistry_bench_after_crop.png",
+      "comparison": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/chemistry_bench_comparison.png",
+      "rationale": "The chemistry station should read as a safe maker bench with containers and test surfaces."
+    },
+    {
+      "id": "bridge_debris",
+      "source": "03_bridge_discovery.png",
+      "before_crop": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/bridge_debris_before_crop.png",
+      "after_crop": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/bridge_debris_after_crop.png",
+      "comparison": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/bridge_debris_comparison.png",
+      "rationale": "Broken planks and rocks should read as a blocked crossing rather than a generic blob."
+    },
+    {
+      "id": "wider_map_gate",
+      "source": "08_bridge_repaired_map_unlock.png",
+      "before_crop": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/wider_map_gate_before_crop.png",
+      "after_crop": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/wider_map_gate_after_crop.png",
+      "comparison": "project_audit/act1_prop_clarity_mission/runtime_evidence/comparison/wider_map_gate_comparison.png",
+      "rationale": "Two-way sign arrows should communicate the world opening after the bridge repair."
+    }
+  ],
+  "reference_artifacts": [
+    "src/game/art/final/act1/map_gate.png",
+    "src/game/art/final/act1/prop_clarity_gps_post.png",
+    "src/game/art/final/act1/prop_clarity_world_scale_vista.png",
+    "src/game/art/final/act1/prop_clarity_route_marker_set.png",
+    "src/game/art/final/act1/prop_clarity_sonoran_landmark_set.png",
+    "src/game/art/final/act1/prop_replacement_garage_workbench.png",
+    "src/game/art/final/act1/prop_replacement_material_table.png",
+    "src/game/art/final/act1/prop_replacement_chemistry_bench.png",
+    "src/game/art/final/act1/prop_replacement_bridge_debris.png",
+    "docs/game_rebuild/act1_final_art_direction.md",
+    "project_audit/act1_prop_clarity_mission/replacement_package.json"
+  ],
+  "human_facing_rationale": {
+    "summary": "The slice replaces the lowest-readability Act 1 prop-clarity targets with stronger silhouettes while keeping runtime keys, collision, interactions, save/progression, and quest flow unchanged.",
+    "ux_notes": {
+      "helps_player": true,
+      "reduces_confusion": true,
+      "avoids_clutter": true,
+      "improves_navigation": true,
+      "improves_understanding": true
+    },
+    "child_readability_notes": {
+      "object": "The GPS, workbench, material table, chemistry bench, broken crossing, and route gate have clearer silhouettes and more distinct shapes.",
+      "goal": "The player can more quickly tell where to repair, collect, test, and then follow the bridge/wider-map route.",
+      "next_step": "The props support the existing prompts without adding new instructions or blockers.",
+      "reward": "The repaired bridge and open route are easier to identify in the payoff shot."
+    }
+  },
+  "gate_dimensions": {
+    "feature_exists": "pass",
+    "runtime_verification": "pass",
+    "visual_quality": "pass",
+    "ux_quality": "pass",
+    "educational_quality": "pass",
+    "canon_alignment": "pass",
+    "acceptance": "pass",
+    "child_facing_readability": "pass",
+    "visual_hierarchy": "pass",
+    "runtime_truth": "pass",
+    "before_after_improvement": "pass"
+  },
+  "final_judgment": "improved",
+  "explicit_judgment": "The after-state is visibly better for a child: the workbench, material table, chemistry bench, GPS, bridge debris, and wider-map gate have stronger silhouettes and clearer Act 1 purpose than the before baseline."
+}

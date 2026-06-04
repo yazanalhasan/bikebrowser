@@ -1,0 +1,24 @@
+{
+  "id": "broken_bridge_shape_local",
+  "createdAt": "2026-05-28T08:48:48",
+  "source": "local-hunyuan3d-2.1",
+  "model": "tencent/Hunyuan3D-2.1/hunyuan3d-dit-v2-1",
+  "inputImage": "C:\\dev\\bikebrowser\\generated_assets\\hunyuan3d\\inputs\\bridge_broken_square.png",
+  "runtimeUse": "reference_only_until_curated",
+  "device": "cuda",
+  "torch": "2.11.0+cu128",
+  "parameters": {
+    "num_inference_steps": 5,
+    "guidance_scale": 4.0,
+    "octree_resolution": 128,
+    "num_chunks": 4000
+  },
+  "meshStats": {
+    "vertices": 32766,
+    "faces": 65528
+  },
+  "elapsedSeconds": 16.7,
+  "files": {
+    "shape": "C:\\dev\\bikebrowser\\generated_assets\\hunyuan3d\\local_act1_reference_pass\\broken_bridge_shape_local\\broken_bridge_shape_local.glb"
+  }
+}

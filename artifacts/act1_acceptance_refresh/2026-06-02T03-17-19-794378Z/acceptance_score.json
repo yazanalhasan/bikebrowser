@@ -1,0 +1,24 @@
+{
+  "project": "bikebrowser",
+  "generated_at": "2026-06-02T03:17:19.866415Z",
+  "run_id": "2026-06-02T03-17-19-794378Z",
+  "scoring_policy": "fresh evidence only; stale 2026-05-29 artifacts excluded before scoring",
+  "required_artifact_coverage": 1.0,
+  "dimensions": {
+    "Feature Exists": 100,
+    "Runtime Verification": 100,
+    "Visual Quality": 80,
+    "UX Quality": 78,
+    "Educational Quality": 82,
+    "Canon Alignment": 72,
+    "Acceptance": 100
+  },
+  "total_score": 87.43,
+  "accepted": true,
+  "evidence_artifact_types": [
+    "acceptance_walkthrough",
+    "character_source_runtime_correspondence",
+    "prop_geometry_runtime_evidence",
+    "scene_snapshots"
+  ]
+}

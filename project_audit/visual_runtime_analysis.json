@@ -1,0 +1,221 @@
+{
+  "device": "cuda:0",
+  "cuda_available": true,
+  "gpu_name": "NVIDIA GeForce RTX 5090",
+  "image_count": 6,
+  "metrics": [
+    {
+      "file": "playtest_captures/reference_palette_pass/01_legacy_neighborhood_sonoran_vista.png",
+      "width": 1366,
+      "height": 768,
+      "mean_rgb": [
+        0.5112,
+        0.4815,
+        0.4022
+      ],
+      "std_rgb": [
+        0.1799,
+        0.1665,
+        0.2067
+      ],
+      "luminance_contrast": 0.1681,
+      "active_pixel_ratio": 0.7244,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        1365,
+        767
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "playtest_captures/reference_palette_pass/02_dry_wash_bridge_between_neighborhoods.png",
+      "width": 1366,
+      "height": 768,
+      "mean_rgb": [
+        0.5155,
+        0.4818,
+        0.3985
+      ],
+      "std_rgb": [
+        0.1765,
+        0.1661,
+        0.2099
+      ],
+      "luminance_contrast": 0.1673,
+      "active_pixel_ratio": 0.7254,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        1365,
+        767
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "playtest_captures/reference_palette_pass/03_salt_river_canyon_water.png",
+      "width": 1366,
+      "height": 768,
+      "mean_rgb": [
+        0.5133,
+        0.4816,
+        0.4026
+      ],
+      "std_rgb": [
+        0.1788,
+        0.1658,
+        0.2101
+      ],
+      "luminance_contrast": 0.1671,
+      "active_pixel_ratio": 0.727,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        1365,
+        767
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "playtest_captures/reference_palette_pass/04_desert_trail_sunset_path.png",
+      "width": 1366,
+      "height": 768,
+      "mean_rgb": [
+        0.4925,
+        0.4614,
+        0.383
+      ],
+      "std_rgb": [
+        0.183,
+        0.163,
+        0.2026
+      ],
+      "luminance_contrast": 0.1645,
+      "active_pixel_ratio": 0.7121,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        1365,
+        767
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "playtest_captures/reference_palette_pass/05_copper_mine_strata_background.png",
+      "width": 1366,
+      "height": 768,
+      "mean_rgb": [
+        0.4926,
+        0.4615,
+        0.383
+      ],
+      "std_rgb": [
+        0.183,
+        0.1631,
+        0.2026
+      ],
+      "luminance_contrast": 0.1647,
+      "active_pixel_ratio": 0.7121,
+      "active_bbox_ratio": 1.0,
+      "active_bbox": [
+        0,
+        0,
+        1365,
+        767
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0,
+        "left": 0.0,
+        "right": 0.0
+      }
+    },
+    {
+      "file": "playtest_captures/reference_palette_pass/06_rebuild_neighborhood_sonoran_vista.png",
+      "width": 1366,
+      "height": 768,
+      "mean_rgb": [
+        0.2666,
+        0.3122,
+        0.2818
+      ],
+      "std_rgb": [
+        0.1687,
+        0.1284,
+        0.0964
+      ],
+      "luminance_contrast": 0.1314,
+      "active_pixel_ratio": 0.5239,
+      "active_bbox_ratio": 0.9193,
+      "active_bbox": [
+        0,
+        0,
+        1365,
+        705
+      ],
+      "margins": {
+        "top": 0.0,
+        "bottom": 0.0807,
+        "left": 0.0,
+        "right": 0.0
+      }
+    }
+  ],
+  "similar_pairs": [
+    {
+      "a": "playtest_captures/reference_palette_pass/01_legacy_neighborhood_sonoran_vista.png",
+      "b": "playtest_captures/reference_palette_pass/02_dry_wash_bridge_between_neighborhoods.png",
+      "similarity": 0.9973
+    },
+    {
+      "a": "playtest_captures/reference_palette_pass/01_legacy_neighborhood_sonoran_vista.png",
+      "b": "playtest_captures/reference_palette_pass/03_salt_river_canyon_water.png",
+      "similarity": 0.9957
+    },
+    {
+      "a": "playtest_captures/reference_palette_pass/02_dry_wash_bridge_between_neighborhoods.png",
+      "b": "playtest_captures/reference_palette_pass/03_salt_river_canyon_water.png",
+      "similarity": 0.9983
+    },
+    {
+      "a": "playtest_captures/reference_palette_pass/03_salt_river_canyon_water.png",
+      "b": "playtest_captures/reference_palette_pass/04_desert_trail_sunset_path.png",
+      "similarity": 0.9856
+    },
+    {
+      "a": "playtest_captures/reference_palette_pass/03_salt_river_canyon_water.png",
+      "b": "playtest_captures/reference_palette_pass/05_copper_mine_strata_background.png",
+      "similarity": 0.9856
+    },
+    {
+      "a": "playtest_captures/reference_palette_pass/04_desert_trail_sunset_path.png",
+      "b": "playtest_captures/reference_palette_pass/05_copper_mine_strata_background.png",
+      "similarity": 0.9999
+    }
+  ],
+  "findings": []
+}

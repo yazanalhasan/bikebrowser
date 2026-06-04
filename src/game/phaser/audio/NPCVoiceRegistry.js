@@ -1,4 +1,17 @@
 export const NPC_VOICE_PROFILES = {
+  narrator: {
+    voiceId: 'narrator',
+    displayName: 'Narrator',
+    rate: 0.92,
+    pitch: 1.0,
+    language: 'en-US',
+    tone: 'clear, friendly scene narration',
+    fallbackVoice: 'default',
+    legacyNpcId: 'narrator',
+    gender: 'default',
+    voiceHints: ['natural', 'aria', 'jenny', 'samantha'],
+    accessibilityNotes: 'Reads scene panels aloud; clear, slightly slower pacing.',
+  },
   zuzu: {
     voiceId: 'zuzu',
     displayName: 'Zuzu',
