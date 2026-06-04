@@ -1,0 +1,48 @@
+{
+  "mission": "mission_192a3df5b7a5",
+  "portfolio": "portfolio_4f29ee66a759",
+  "project": "bikebrowser",
+  "work_item": "Restore wider map, GPS, and world-scale affordances",
+  "generated_at": "2026-06-04T15:00:00Z",
+  "before_artifacts": [
+    "project_audit/world_map_affordance_mission_192a3df5b7a5/before_start_collapsed.png",
+    "project_audit/world_map_affordance_mission_192a3df5b7a5/before_start_expanded.png",
+    "project_audit/world_map_affordance_mission_192a3df5b7a5/before_unlocked_expanded.png",
+    "project_audit/world_map_affordance_mission_192a3df5b7a5/before_map_state.json"
+  ],
+  "after_artifacts": [
+    "project_audit/world_map_affordance_mission_192a3df5b7a5/after_start_collapsed.png",
+    "project_audit/world_map_affordance_mission_192a3df5b7a5/after_start_expanded.png",
+    "project_audit/world_map_affordance_mission_192a3df5b7a5/after_unlocked_expanded.png",
+    "project_audit/world_map_affordance_mission_192a3df5b7a5/after_start_map_state.json",
+    "project_audit/world_map_affordance_mission_192a3df5b7a5/after_map_state.json"
+  ],
+  "comparison_artifacts": [
+    "project_audit/world_map_affordance_mission_192a3df5b7a5/before_after_contact_sheet.png"
+  ],
+  "reference_artifacts": [
+    "public/layouts/neighborhood.layout.json",
+    "src/game/phaser/systems/AssetRegistry.js",
+    "src/game/data/act1/act1WorldMap.js"
+  ],
+  "runtime_truth": {
+    "observed_after_map_state": {
+      "current": "street",
+      "quest": "dry_wash",
+      "routeSummary": "You: Street -> Quest: Dry Wash -> 3 locked later",
+      "locked": ["wider_gate", "salt_river", "copper_mine"],
+      "reachable_includes": ["home", "garage", "street"]
+    },
+    "asset_registry_preserved": true,
+    "layout_driven_positions": true
+  },
+  "required_judgment_dimensions": {
+    "child_facing_readability": "PASS: the compact GPS now names where Zuzu is going next, and the expanded map highlights the current-to-quest route.",
+    "visual_hierarchy": "PASS: compact GPS is raised above the help strip, keeps text separate from the mini-route, and the expanded quest path is the clearest route mark.",
+    "canon_alignment": "PASS: the map still shows Arizona-scale destinations including Dry Wash, City Gate, Salt River, and Copper Mine while preserving bridge-gated Act 1 progression.",
+    "runtime_truth": "PASS: after screenshots and after_map_state.json show the live Phaser state with current, quest, reachable, and locked map data.",
+    "before_after_improvement": "PASS: the after screenshots make the route goal and locked wider-world affordance clearer than the before screenshots."
+  },
+  "human_facing_rationale": "The after state is better for a child because the GPS answers the immediate navigation questions: where am I, where is the quest, and which places are locked for later. The full map also draws a visible route from Zuzu's current place to the quest marker, so the wider Arizona city context supports Act 1 instead of distracting from it.",
+  "final_judgment": "improved"
+}

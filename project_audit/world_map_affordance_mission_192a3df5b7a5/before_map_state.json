@@ -1,0 +1,51 @@
+{
+  "map": {
+    "open": true,
+    "current": "street",
+    "currentLabel": "Street",
+    "reachable": [
+      "home",
+      "garage",
+      "street",
+      "wider_gate",
+      "salt_river",
+      "copper_mine"
+    ],
+    "locked": [],
+    "undiscovered": [
+      "dry_wash",
+      "bridge"
+    ],
+    "widerMapUnlocked": true,
+    "counts": {
+      "reachable": 6,
+      "locked": 0,
+      "undiscovered": 2,
+      "total": 8
+    }
+  },
+  "hud": {
+    "visible": true,
+    "expanded": true,
+    "currentLocation": "street",
+    "discovered": [
+      "home",
+      "garage",
+      "street",
+      "wider_gate"
+    ],
+    "lockedDestinations": [],
+    "unlockedDestinations": [
+      "home",
+      "garage",
+      "street",
+      "dry_wash",
+      "bridge",
+      "wider_gate",
+      "salt_river",
+      "copper_mine"
+    ],
+    "activeQuestMarker": "wider_gate",
+    "widerMapUnlocked": true
+  }
+}

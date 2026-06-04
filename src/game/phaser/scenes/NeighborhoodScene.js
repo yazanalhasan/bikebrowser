@@ -1541,6 +1541,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
       lockedDestinations: [],
       unlockedDestinations: [],
       activeQuestMarker: 'dry_wash',
+      routeSummary: 'You: Street -> Quest: Dry Wash -> 3 locked later',
     };
     this.worldMapFrame = this.canUseFinalPropAsset(ASSET_KEYS.uiMapFrame)
       ? this.add.image(layout.w / 2, layout.h / 2, ASSET_KEYS.uiMapFrame)
@@ -1568,8 +1569,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
       fontFamily: 'Arial',
       fontSize: '11px',
       color: '#b8d9d0',
+      wordWrap: { width: layout.subtitle.w },
+      lineSpacing: 1,
     });
-    this.worldMapToggleHint = this.add.text(layout.w - 62, 10, 'G open', {
+    this.worldMapToggleHint = this.add.text(layout.toggle_hint.x, layout.toggle_hint.y, 'G open', {
       fontFamily: 'Arial',
       fontSize: '10px',
       color: '#fff0c7',
@@ -1862,10 +1865,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
     const h = this.worldMapHudExpanded ? layout.h : (layout.collapsedH || 58);
     // Anchor the map to the BOTTOM-LEFT of the actual screen so it grows upward
     // out of the corner instead of floating over the play area.
-    const margin = 14;
-    const scale = Math.min(1, (this.scale.width - margin * 2) / w, (this.scale.height - margin * 2) / h);
-    const anchorY = Math.max(margin, this.scale.height - h * scale - margin);
-    this.worldMapHud?.setPosition(margin, anchorY);
+    const margin = layout.screen_margin;
+    const marginX = margin.x;
+    const marginBottom = this.worldMapHudExpanded ? margin.bottom : margin.collapsedBottom;
+    const scale = Math.min(1, (this.scale.width - marginX * 2) / w, (this.scale.height - marginBottom * 2) / h);
+    const anchorY = Math.max(marginBottom, this.scale.height - h * scale - marginBottom);
+    this.worldMapHud?.setPosition(marginX, anchorY);
     this.worldMapHud?.setScale(scale);
     this.worldMapHitZone?.setSize(w, h);
     this.worldMapHitZone?.setPosition(w / 2, h / 2);
@@ -1966,7 +1971,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     const lockedDestinations = locations.filter((location) => location.locked).map((location) => location.id);
     const unlockedDestinations = locations.filter((location) => !location.locked).map((location) => location.id);
     const knownCount = locations.filter((location) => !location.locked && (discovered.has(location.id) || location.alwaysKnown)).length;
-    const knownUnlocked = locations.filter((location) => !location.locked).length;
+    const routeSummary = this.buildWorldMapRouteSummary(currentLocation, activeQuestMarker, lockedDestinations);
     const nextText = state.discovery.widerMapUnlocked
       ? 'Next: Salt River and Copper Mine routes are on the horizon.'
       : `Quest marker: ${this.locationLabel(activeQuestMarker)}. Wider city still locked.`;
@@ -1980,6 +1985,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
       unlockedDestinations,
       activeQuestMarker,
       widerMapUnlocked: state.discovery.widerMapUnlocked,
+      routeSummary,
     };
     // Phase 2.3 — publish the functional map state EVERY frame (before any
     // collapsed/expanded early-returns below), so Current/Reachable/Locked is
@@ -1994,6 +2000,9 @@ export default class NeighborhoodScene extends Phaser.Scene {
         reachable: this._worldMap.reachable.map((l) => l.id),
         locked: this._worldMap.locked.map((l) => l.id),
         undiscovered: this._worldMap.undiscovered.map((l) => l.id),
+        quest: activeQuestMarker,
+        questLabel: this.locationLabel(activeQuestMarker),
+        routeSummary,
         widerMapUnlocked: this._worldMap.widerMapUnlocked,
         counts: this._worldMap.counts,
       };
@@ -2027,8 +2036,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
     for (const child of mapChildren) child.setVisible(this.worldMapHudExpanded);
 
     this.worldMapSubtitle.setText(this.worldMapHudExpanded
-      ? `${knownCount}/${locations.length} known | ${knownUnlocked} unlocked`
-      : `${knownCount}/${locations.length} known • near ${this.locationLabel(currentLocation)}`);
+      ? routeSummary
+      : `You: ${this.shortLocationLabel(currentLocation)} -> ${this.shortLocationLabel(activeQuestMarker)}\n${knownCount}/${locations.length} known | ${lockedDestinations.length} locked`);
     this.worldMapToggleHint?.setText(this.worldMapHudExpanded ? 'G close' : 'G open');
 
     if (!this.worldMapHudExpanded) {
@@ -2036,11 +2045,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
       const collapsedH = layout.collapsedH || 58;
       g.fillStyle(0x16201d, 0.86).fillRoundedRect(0, 0, collapsedW, collapsedH, layout.radius);
       g.lineStyle(1, 0xd9b36a, 0.74).strokeRoundedRect(0, 0, collapsedW, collapsedH, layout.radius);
-      g.fillStyle(0xf2c46d, 0.95).fillCircle(collapsedW - 32, 20, 4);
-      g.lineStyle(1, 0xfff0c7, 0.84).strokeCircle(collapsedW - 32, 20, 8);
-      g.lineStyle(2, 0x8ed6c9, 0.32).lineBetween(20, 43, collapsedW - 24, 43);
-      g.fillStyle(0x8ed6c9, 0.72).fillCircle(30, 43, 3);
-      g.fillStyle(0xf2c46d, 0.9).fillCircle(collapsedW - 48, 43, 5);
+      const mini = layout.collapsed_route;
+      g.fillStyle(0xf2c46d, 0.95).fillCircle(mini.questX, mini.questBadgeY, mini.nodeR);
+      g.lineStyle(1, 0xfff0c7, 0.84).strokeCircle(mini.questX, mini.questBadgeY, mini.questR);
+      g.lineStyle(2, 0x8ed6c9, 0.32).lineBetween(mini.lineStartX, mini.lineY, mini.lineEndX, mini.lineY);
+      g.fillStyle(0x8ed6c9, 0.72).fillCircle(mini.currentX, mini.lineY, mini.nodeR - 1);
+      g.fillStyle(0xf2c46d, 0.9).fillCircle(mini.questX, mini.lineY, mini.nodeR + 1);
       return;
     }
 
@@ -2063,6 +2073,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
       g.lineStyle(2, routeLocked ? 0x7f8783 : 0x8ed6c9, routeLocked ? 0.22 : 0.34);
       g.lineBetween(from.mapX, from.mapY, to.mapX, to.mapY);
     }
+    this.drawWorldMapQuestPath(g, byId, currentLocation, activeQuestMarker);
 
     for (const item of layout.status_items) {
       const color = item.label === 'you' ? 0xf2c46d : item.label === 'quest' ? 0xfff0c7 : 0x7f8783;
@@ -2158,6 +2169,34 @@ export default class NeighborhoodScene extends Phaser.Scene {
     icon.setCrop(frame * sheet.frameW, 0, sheet.frameW, sheet.frameH);
   }
 
+  drawWorldMapQuestPath(g, byId, currentLocation, activeQuestMarker) {
+    const from = byId.get(currentLocation);
+    const to = byId.get(activeQuestMarker);
+    if (!from || !to || from.id === to.id) return;
+    const path = this.layout.world_map_hud.quest_path;
+    g.lineStyle(path.glowWidth, 0xfff0c7, 0.16);
+    g.lineBetween(from.mapX, from.mapY, to.mapX, to.mapY);
+    g.lineStyle(path.lineWidth, 0xfff0c7, 0.82);
+    g.lineBetween(from.mapX, from.mapY, to.mapX, to.mapY);
+    const angle = Phaser.Math.Angle.Between(from.mapX, from.mapY, to.mapX, to.mapY);
+    g.fillStyle(0xfff0c7, 0.9);
+    g.fillTriangle(
+      to.mapX,
+      to.mapY,
+      to.mapX - Math.cos(angle - 0.55) * path.arrowR,
+      to.mapY - Math.sin(angle - 0.55) * path.arrowR,
+      to.mapX - Math.cos(angle + 0.55) * path.arrowR,
+      to.mapY - Math.sin(angle + 0.55) * path.arrowR,
+    );
+  }
+
+  buildWorldMapRouteSummary(currentLocation, activeQuestMarker, lockedDestinations) {
+    const current = this.shortLocationLabel(currentLocation);
+    const quest = this.shortLocationLabel(activeQuestMarker);
+    const locked = lockedDestinations.length ? `${lockedDestinations.length} locked later` : 'wider routes open';
+    return `You: ${current} -> Quest: ${quest} -> ${locked}`;
+  }
+
   getWorldMapLocations(state) {
     const byId = new Map(act1Locations.map((location) => [location.id, location]));
     const points = this.layout.world_map_hud.points;
@@ -2190,6 +2229,20 @@ export default class NeighborhoodScene extends Phaser.Scene {
       copper_mine: 'Copper Mine',
     };
     return labels[id] || id;
+  }
+
+  shortLocationLabel(id) {
+    const labels = {
+      home: 'Home',
+      garage: 'Garage',
+      street: 'Street',
+      dry_wash: 'Dry Wash',
+      bridge: 'Bridge',
+      wider_gate: 'City Gate',
+      salt_river: 'Salt River',
+      copper_mine: 'Copper Mine',
+    };
+    return labels[id] || this.locationLabel(id);
   }
 
   createBridgeCelebration() {

@@ -1,0 +1,56 @@
+{
+  "map": {
+    "open": true,
+    "current": "street",
+    "currentLabel": "Street",
+    "reachable": [
+      "home",
+      "garage",
+      "street"
+    ],
+    "locked": [
+      "wider_gate",
+      "salt_river",
+      "copper_mine"
+    ],
+    "undiscovered": [
+      "dry_wash",
+      "bridge"
+    ],
+    "quest": "dry_wash",
+    "questLabel": "Dry Wash",
+    "routeSummary": "You: Street -> Quest: Dry Wash -> 3 locked later",
+    "widerMapUnlocked": false,
+    "counts": {
+      "reachable": 3,
+      "locked": 3,
+      "undiscovered": 2,
+      "total": 8
+    }
+  },
+  "hud": {
+    "visible": true,
+    "expanded": true,
+    "currentLocation": "street",
+    "discovered": [
+      "home",
+      "garage",
+      "street"
+    ],
+    "lockedDestinations": [
+      "wider_gate",
+      "salt_river",
+      "copper_mine"
+    ],
+    "unlockedDestinations": [
+      "home",
+      "garage",
+      "street",
+      "dry_wash",
+      "bridge"
+    ],
+    "activeQuestMarker": "dry_wash",
+    "widerMapUnlocked": false,
+    "routeSummary": "You: Street -> Quest: Dry Wash -> 3 locked later"
+  }
+}

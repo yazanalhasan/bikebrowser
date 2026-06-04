@@ -35,6 +35,8 @@ test.describe('Player reachability — world map', () => {
     expect(m.current, 'the player is standing at a reachable place (no dead link)').toBeTruthy();
     expect(m.reachable.includes(m.current), 'current is itself a reachable destination').toBe(true);
     expect(m.locked.length, 'a locked frontier is shown honestly').toBeGreaterThan(0);
+    expect(m.quest, 'the quest marker is published with the map').toBe('dry_wash');
+    expect(m.routeSummary, 'the map names the child-readable next route').toContain('Quest: Dry Wash');
 
     // Press G again -> it closes. The control is live (toggles both ways).
     await page.keyboard.press('KeyG');

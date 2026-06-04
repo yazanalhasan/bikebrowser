@@ -43,6 +43,8 @@ test.describe('game graphics reset route', () => {
     expect(mapHudState.lockedDestinations).toContain('wider_gate');
     expect(mapHudState.lockedDestinations).toContain('salt_river');
     expect(mapHudState.lockedDestinations).toContain('copper_mine');
+    expect(mapHudState.routeSummary).toContain('You: Street');
+    expect(mapHudState.routeSummary).toContain('Quest: Dry Wash');
 
     const assetRegistry = await page.evaluate(() => window.__GAME__.getAssetRegistryState());
     expect(assetRegistry.placeholderContract.generatedArtDirectRuntime).toBe(false);
@@ -93,6 +95,7 @@ test.describe('game graphics reset route', () => {
     );
     expect(readinessMapState.unlocked).toBe(true);
     expect(readinessMapState.state.activeQuestMarker).toBe('wider_gate');
+    expect(readinessMapState.state.routeSummary).toContain('Quest: City Gate');
 
     await page.keyboard.press('F3');
     await page.waitForTimeout(100);
