@@ -103,7 +103,7 @@ async function interactAt(page, step) {
 
 test.describe('Act 1 player-visible acceptance walkthrough', () => {
   test('completes Act 1 through visible movement and interaction prompts', async ({ page }) => {
-    test.setTimeout(120_000);
+    test.setTimeout(240_000); // 8-material UTM predict-flow + Phase-6 crossing cutscene
     mkdirSync(captureDir, { recursive: true });
     await ready(page);
 
@@ -266,6 +266,15 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
 
     for (const step of steps) {
       await interactAt(page, step);
+      if (step.id === 'bridge_plan') {
+        // Phase 3 — a sound design flows into the Load Test (a modal). Step through
+        // it by real keyboard so the next walk isn't blocked by modalActive.
+        await page.waitForFunction(() => window.__LOAD_TEST__ && window.__LOAD_TEST__.active === true, null, { timeout: 8000 }).catch(() => {});
+        for (let i = 0; i < 8 && (await page.evaluate(() => Boolean(window.__LOAD_TEST__ && window.__LOAD_TEST__.active))); i += 1) {
+          await page.keyboard.press('KeyE');
+          await page.waitForTimeout(150);
+        }
+      }
       if (step.id === 'bridge_repair') {
         // Phase 6 — repairing the bridge plays the Community Crossing cutscene
         // (Mr. Chen crosses to meet Mrs. Ramirez). Step through it by real keyboard.
@@ -337,13 +346,13 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
     // Phase 1.2: UTM produces real, differentiated per-material verdicts — a
     // strong material passes the load test and a poor one visibly fails.
     const steel = finalState.materialVerdicts.find((v) => v.id === 'steel');
-    const weakScrap = finalState.materialVerdicts.find((v) => v.id === 'weak_scrap');
+    const weakScrap = finalState.materialVerdicts.find((v) => v.id === 'balsa');
     expect(steel).toMatchObject({ bridgeSafe: true, band: 'strong candidate' });
     expect(weakScrap).toMatchObject({ bridgeSafe: false, band: 'comparison failure' });
     // Phase 1.3: predict-before-test loop resolved against real verdicts.
     expect(finalState.prediction.resolved).toBeGreaterThanOrEqual(3);
     const steelPrediction = finalState.prediction.predictions.find((p) => p.subjectId === 'steel');
-    const weakPrediction = finalState.prediction.predictions.find((p) => p.subjectId === 'weak_scrap');
+    const weakPrediction = finalState.prediction.predictions.find((p) => p.subjectId === 'balsa');
     expect(steelPrediction).toMatchObject({ willHold: true, actualSafe: true, correct: true });
     expect(weakPrediction).toMatchObject({ willHold: true, actualSafe: false, correct: false });
     expect(finalState.unlockedNotebookEntries).toContain('prediction_log');
@@ -364,7 +373,7 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
     // Phase 1.7: reasoning is graded as a learning system. Evidence + correction
     // are rewarded; a WRONG prediction (weak_scrap) does NOT tank the grade
     // because the player tested and corrected — reasoning quality, not correctness.
-    const weakPredictionWasWrong = finalState.prediction.predictions.find((p) => p.subjectId === 'weak_scrap').correct === false;
+    const weakPredictionWasWrong = finalState.prediction.predictions.find((p) => p.subjectId === 'balsa').correct === false;
     expect(weakPredictionWasWrong).toBe(true);
     expect(finalState.reasoning.dimensions.evidence.score).toBe(1);
     expect(finalState.reasoning.dimensions.correction.score).toBe(1);
