@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { narratePanel, narrateText } from '../audio/sceneNarration.js';
 import { ASSET_KEYS } from '../systems/AssetRegistry.js';
+import { act1Ecology } from '../../data/act1/act1Ecology.js';
 
 const BACKDROP_BY_PLACEMENT = {
   wash_edge_shade: ASSET_KEYS.washEdgeBackdrop,
@@ -46,13 +47,16 @@ export default class EcologyScene extends Phaser.Scene {
     this.site = this.add.text(0, 50, '', { fontFamily: 'Arial', fontSize: '14px', color: '#c8dcb6', align: 'center', wordWrap: { width: 560 } }).setOrigin(0.5, 0);
     this.conditions = this.add.text(0, 104, '', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc27a', align: 'center', wordWrap: { width: 560 } }).setOrigin(0.5, 0);
 
-    // The plant card the player is cycling through.
+    // The plant card the player is cycling through — shows the plant's preferred
+    // CONDITIONS so the player can compare them to the site BEFORE choosing
+    // (teach-while-deciding, instead of guessing blind then learning after).
     this.card = this.add.container(0, 168);
-    this.cardBg = this.add.rectangle(0, 0, 360, 56, 0x24331a, 1).setStrokeStyle(3, 0xbfe39a, 1);
-    this.plantName = this.add.text(0, 0, '', { fontFamily: 'Arial', fontSize: '20px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
-    this.card.add([this.cardBg, this.plantName,
-      this.add.text(-196, 0, '◀', { fontSize: '20px', color: '#bfe39a' }).setOrigin(0.5),
-      this.add.text(196, 0, '▶', { fontSize: '20px', color: '#bfe39a' }).setOrigin(0.5)]);
+    this.cardBg = this.add.rectangle(0, 0, 380, 74, 0x24331a, 1).setStrokeStyle(3, 0xbfe39a, 1);
+    this.plantName = this.add.text(0, -12, '', { fontFamily: 'Arial', fontSize: '19px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
+    this.plantConditions = this.add.text(0, 14, '', { fontFamily: 'Arial', fontSize: '12px', color: '#bfe39a', align: 'center' }).setOrigin(0.5);
+    this.card.add([this.cardBg, this.plantName, this.plantConditions,
+      this.add.text(-206, 0, '◀', { fontSize: '20px', color: '#bfe39a' }).setOrigin(0.5),
+      this.add.text(206, 0, '▶', { fontSize: '20px', color: '#bfe39a' }).setOrigin(0.5)]);
 
     // The plant glyph that grows (thrive) or wilts (struggle).
     this.plant = this.add.container(0, 250);
@@ -117,17 +121,22 @@ export default class EcologyScene extends Phaser.Scene {
     this.card.setVisible(true);
     this.plant.setVisible(false);
     this.plantSprite.setVisible(false);
-    this.site.setText('Which plant will thrive here? (you can be wrong — you will see)');
+    this.site.setText('Match a plant to this site — compare each plant\'s needs (on the card) to the conditions above.');
     this.verdict.setText('');
     this.why.setText('');
-    this.hint.setText('◀ ▶ pick a plant    E plant it    Esc to leave');
+    this.hint.setText('◀ ▶ compare plants    E plant it    Esc to leave');
     this._renderCard();
     this._publish();
     this._narrate();
   }
 
   _renderCard() {
-    this.plantName.setText(this.options[this.optIdx]?.displayName || '');
+    const opt = this.options[this.optIdx];
+    this.plantName.setText(opt?.displayName || '');
+    // Teach the plant's preferred conditions so the player can match them to the
+    // site BEFORE planting (rather than guessing then learning after).
+    const species = act1Ecology.find((s) => s.id === opt?.id);
+    this.plantConditions.setText(species ? `${species.heat} · ${species.water} · ${species.habitat}` : '');
   }
 
   _commit() {
