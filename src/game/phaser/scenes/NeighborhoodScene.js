@@ -1767,7 +1767,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
         if (nearest.action === 'utm') {
           // Phase 1.9.2: prediction gates testing (arc.md). The UTM opens the
           // player-facing predict-before-test flow instead of batch-testing.
-          const materials = ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].filter((id) => this.runtime?.inventorySystem?.has(id));
+          const materials = [...(this.runtime?.materialsLabSystem?.materials?.keys?.() || [])].filter((id) => this.runtime?.inventorySystem?.has(id));
           this.registry.events.emit('prediction:start', materials);
         } else if (nearest.action === 'bridge_plan') {
           // Phase 1.9.3: the player designs the bridge (choose a material per
@@ -1799,6 +1799,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
         } else if (nearest.action) {
           this.runtime?.handleInteraction(nearest.action);
           this.registry.events.emit('quest:changed');
+          // Phase 6 — repairing the bridge (player path) plays the Community
+          // Crossing cutscene. Debug repairBridge() (e2e) does not route here.
+          if (nearest.action === 'repair_bridge' && this.runtime?.constructionSystem?.bridgeReconnected) {
+            this.registry.events.emit('crossing:start');
+          }
         }
         if (nearest.dialogueId && nearest.id !== 'neighbor' && !this.registry.get('dialogueActive')) {
           // State-aware NPC dialogue: e.g. Mr. Chen stops saying the bridge is
@@ -2362,3 +2367,4 @@ function tabStyle() {
     fontStyle: 'bold',
   };
 }
+

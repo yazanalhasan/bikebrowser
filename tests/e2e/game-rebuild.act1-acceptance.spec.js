@@ -181,10 +181,13 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         // sure and presses E to test — via REAL keyboard, no __GAME__ predict.
         drive: async (page) => {
           await page.waitForFunction(() => window.__PREDICTION__ && window.__PREDICTION__.active === true);
-          for (let i = 0; i < 4; i += 1) {
+          // Predict for every material the UTM offers — the count is data-driven
+          // (8 materials), so loop until the summary appears rather than a fixed N.
+          for (let i = 0; i < 12; i += 1) {
+            if ((await page.evaluate(() => window.__PREDICTION__.phase)) === 'summary') break;
             await page.waitForFunction(() => window.__PREDICTION__.phase === 'choose');
             if (i === 0) await page.screenshot({ path: `${captureDir}/07a_prediction_choose.png`, fullPage: true });
-            await page.keyboard.press('ArrowLeft'); // pick "WILL HOLD" (weak_scrap will be wrong -> learning)
+            await page.keyboard.press('ArrowLeft'); // pick "WILL HOLD"
             await page.keyboard.press('ArrowUp');   // how sure: up
             await page.keyboard.press('KeyE');       // commit + test
             await page.waitForFunction(() => window.__PREDICTION__.phase === 'result');
@@ -227,15 +230,15 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
             }
             await page.keyboard.press('KeyE');
           };
-          // 1) flawed: weak scrap as the support -> the bridge fails.
-          await pick('mesquite'); await pick('weak_scrap'); await pick('copper_brace');
+          // 1) flawed: weak balsa as the support -> the bridge fails.
+          await pick('bamboo'); await pick('balsa'); await pick('carbon_fiber');
           await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result');
           await page.screenshot({ path: `${captureDir}/08a_bridge_fail.png`, fullPage: true });
           const failed = await page.evaluate(() => window.__BRIDGE_DESIGN__.outcome);
           if (failed === 'safe') throw new Error('expected the weak-support design to fail');
           await page.keyboard.press('KeyE'); // redesign (iterate)
           // 2) sound: steel support -> the bridge holds.
-          await pick('mesquite'); await pick('steel'); await pick('copper_brace');
+          await pick('bamboo'); await pick('steel'); await pick('carbon_fiber');
           await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result');
           await page.screenshot({ path: `${captureDir}/08b_bridge_hold.png`, fullPage: true });
           await page.keyboard.press('KeyE'); // finish
@@ -263,6 +266,15 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
 
     for (const step of steps) {
       await interactAt(page, step);
+      if (step.id === 'bridge_repair') {
+        // Phase 6 — repairing the bridge plays the Community Crossing cutscene
+        // (Mr. Chen crosses to meet Mrs. Ramirez). Step through it by real keyboard.
+        await page.waitForFunction(() => window.__CROSSING__ && window.__CROSSING__.active === true, null, { timeout: 8000 }).catch(() => {});
+        for (let i = 0; i < 8 && (await page.evaluate(() => Boolean(window.__CROSSING__ && window.__CROSSING__.active))); i += 1) {
+          await page.keyboard.press('KeyE');
+          await page.waitForTimeout(150);
+        }
+      }
     }
 
     await page.keyboard.press('KeyN');

@@ -65,6 +65,8 @@ export class Act1RuntimeSystem {
     this.lastFeedback = null;
     this.zuzuBucks = 0;           // reward currency, earned on first quest/objective completion
     this.saltRiverComplete = false;
+    this.leonardoBadge = false;       // Phase 6 — earned on the Community Crossing payoff
+    this.crossingComplete = false;
   }
 
   bindRegistry(registry) {
@@ -125,6 +127,17 @@ export class Act1RuntimeSystem {
     this.registry?.events?.emit('zuzubucks:changed', { total: this.zuzuBucks, delta: amount, meta });
     if (isQuest) this.registry?.events?.emit('reward:quest', { total: this.zuzuBucks, ...meta });
     return this.zuzuBucks;
+  }
+
+  // Phase 6 — Community Crossing payoff: the marquee reward, granted once when the
+  // player watches Mr. Chen cross to meet Mrs. Ramirez. Idempotent.
+  awardCrossingReward() {
+    if (this.crossingComplete) return { ok: true, alreadyAwarded: true, zuzuBucks: this.zuzuBucks };
+    this.crossingComplete = true;
+    this.leonardoBadge = true;
+    this.awardZuzuBucks(250, { kind: 'quest', questName: 'Mr. Chen’s Crossing', badge: 'leonardo_builder' });
+    this.unlockNotebookEntries(['bridge_repaired']);
+    return { ok: true, zuzuBucks: this.zuzuBucks, leonardoBadge: true };
   }
 
   spendZuzuBucks(amount) {
@@ -496,6 +509,8 @@ export class Act1RuntimeSystem {
       act1Complete: this.act1Complete,
       saltRiverComplete: this.saltRiverComplete,
       zuzuBucks: this.zuzuBucks,
+      leonardoBadge: this.leonardoBadge,
+      crossingComplete: this.crossingComplete,
       quests: this.questSystem.getState(),
       notebook: this.notebookSystem.getState(),
       inventory: this.inventorySystem.getState(),

@@ -8,6 +8,7 @@ import DialogueScene from './scenes/DialogueScene.js';
 import PredictionScene from './scenes/PredictionScene.js';
 import BridgeDesignScene from './scenes/BridgeDesignScene.js';
 import LoadTestScene from './scenes/LoadTestScene.js';
+import CrossingScene from './scenes/CrossingScene.js';
 import InvestigationScene from './scenes/InvestigationScene.js';
 import EcologyScene from './scenes/EcologyScene.js';
 import BiomeScene from './scenes/BiomeScene.js';
@@ -44,6 +45,7 @@ export function createGame(parent) {
       PredictionScene,
       BridgeDesignScene,
       LoadTestScene,
+      CrossingScene,
       InvestigationScene,
       EcologyScene,
       BiomeScene,
