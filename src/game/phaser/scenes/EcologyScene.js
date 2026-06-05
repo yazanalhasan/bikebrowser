@@ -7,6 +7,18 @@ const BACKDROP_BY_PLACEMENT = {
   open_dry_flat: ASSET_KEYS.openFlatBackdrop,
 };
 
+const PLANT_TEXTURE_BY_SPECIES = {
+  mesquite: ASSET_KEYS.mesquitePlant,
+  creosote: ASSET_KEYS.creosotePlant,
+  saguaro: ASSET_KEYS.saguaroPlant,
+  saltbush: ASSET_KEYS.saltbushPlant,
+  cottonwood: ASSET_KEYS.cottonwoodPlant,
+};
+
+function plantTextureFor(speciesId) {
+  return PLANT_TEXTURE_BY_SPECIES[speciesId] || ASSET_KEYS.ecologyPlant;
+}
+
 // Phase 2.1 — Ecology Loop, player-facing. The player OBSERVES a desert site,
 // PREDICTS which plant will thrive there, SEES the outcome (it thrives or
 // struggles, on screen), and gets the PAYOFF (why that plant fits + a notebook
@@ -49,12 +61,13 @@ export default class EcologyScene extends Phaser.Scene {
     this.leafR = this.add.triangle(12, -34, 0, 0, 26, -8, 0, -18, 0x7cc05f).setOrigin(0.5);
     this.plant.add([this.stem, this.leafL, this.leafR]);
     this.plant.setVisible(false);
+    this.plantSprite = this.add.image(0, 256, ASSET_KEYS.ecologyPlant).setOrigin(0.5, 1).setScale(0.72).setVisible(false);
 
     this.verdict = this.add.text(0, 300, '', { fontFamily: 'Arial', fontSize: '17px', color: '#ffffff', fontStyle: 'bold', align: 'center', wordWrap: { width: 560 } }).setOrigin(0.5, 0);
     this.why = this.add.text(0, 332, '', { fontFamily: 'Arial', fontSize: '13px', color: '#d6ecc4', align: 'center', wordWrap: { width: 560 } }).setOrigin(0.5, 0);
     this.hint = this.add.text(0, 378, '', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc27a' }).setOrigin(0.5, 0);
 
-    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.site, this.conditions, this.card, this.plant, this.verdict, this.why, this.hint]);
+    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.site, this.conditions, this.card, this.plant, this.plantSprite, this.verdict, this.why, this.hint]);
 
     this.registry.events.on('ecology:start', () => this.startFlow());
     this.keyHandler = (event) => this.onKey(event);
@@ -90,6 +103,7 @@ export default class EcologyScene extends Phaser.Scene {
     this.conditions.setText(`conditions — ${obs.placement.conditions.join(' · ')}`);
     this.card.setVisible(false);
     this.plant.setVisible(false);
+    this.plantSprite.setVisible(false);
     this.verdict.setText('');
     this.why.setText('');
     this.hint.setText('E to choose a plant    Esc to leave');
@@ -102,6 +116,7 @@ export default class EcologyScene extends Phaser.Scene {
     this._setBackdrop(this.placement?.id);
     this.card.setVisible(true);
     this.plant.setVisible(false);
+    this.plantSprite.setVisible(false);
     this.site.setText('Which plant will thrive here? (you can be wrong — you will see)');
     this.verdict.setText('');
     this.why.setText('');
@@ -126,18 +141,24 @@ export default class EcologyScene extends Phaser.Scene {
     this._setBackdrop(id);
     this.card.setVisible(false);
     this.site.setText('');
-    this.plant.setVisible(true);
-    this.plant.setScale(1).setAngle(0).setAlpha(1);
+    this.plant.setVisible(false);
+    this.plantSprite
+      .setTexture(plantTextureFor(speciesId))
+      .setOrigin(0.5, 1)
+      .setScale(0.72)
+      .setAngle(0)
+      .setAlpha(1)
+      .clearTint()
+      .setVisible(true);
     if (result.thrives) {
-      // SEE it thrive: the plant grows, green and upright.
-      [this.stem, this.leafL, this.leafR].forEach((p) => p.setFillStyle(p === this.stem ? 0x6fae54 : 0x7cc05f));
-      this.tweens.add({ targets: this.plant, scaleY: 1.35, scaleX: 1.15, duration: 420, ease: 'Back.easeOut' });
+      // SEE it thrive: the predicted plant grows upright in full color.
+      this.tweens.add({ targets: this.plantSprite, scaleY: 0.94, scaleX: 0.82, duration: 420, ease: 'Back.easeOut' });
       this.verdict.setText(`✅ ${result.predictedName} thrives here.`);
       this.verdict.setColor('#9affb0');
     } else {
-      // SEE it struggle: the plant wilts, amber and drooping.
-      [this.stem, this.leafL, this.leafR].forEach((p) => p.setFillStyle(0xc9a24a));
-      this.tweens.add({ targets: this.plant, angle: 22, scaleY: 0.6, duration: 480, ease: 'Sine.easeOut' });
+      // SEE it struggle: the predicted plant wilts, amber and drooping.
+      this.plantSprite.setTint(0xc9a24a);
+      this.tweens.add({ targets: this.plantSprite, angle: 18, scaleY: 0.5, duration: 480, ease: 'Sine.easeOut' });
       this.verdict.setText(`🥀 ${result.predictedName} struggles here. ${result.correctName} fits this site.`);
       this.verdict.setColor('#ffd27a');
     }
@@ -162,6 +183,7 @@ export default class EcologyScene extends Phaser.Scene {
     this.phase = 'summary';
     this._hideBackdrop();
     this.plant.setVisible(false);
+    this.plantSprite.setVisible(false);
     this.card.setVisible(false);
     const right = this.results.filter((r) => r.matched).length;
     this.title.setText('Field notes — desert planting');
@@ -216,6 +238,7 @@ export default class EcologyScene extends Phaser.Scene {
     this.backdropFrame.setVisible(true);
     this.textBand.setVisible(true);
     this.plant.setPosition(0, 256);
+    this.plantSprite.setPosition(0, 256);
   }
 
   _hideBackdrop() {

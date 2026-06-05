@@ -66,7 +66,15 @@ test.describe('Player reachability — Salt River biome', () => {
     await page.evaluate(() => window.__GAME__.registerDiscovery({ id: 'landmark_city_gate', category: 'landmark', title: 'The City Gate', detail: 'The road out of the neighborhood — beyond it, the wider map and the Salt River.', source: 'exploration' }));
     const zone = await zoneById(page, 'salt_river_expedition');
     expect(zone).toBeTruthy();
-    await walkTo(page, { ...zone });
+    // The expedition is ACROSS the wash, which is now impassable until the bridge
+    // is built (see the wash-barrier spec). This test verifies the locked PANEL is
+    // clear/never-silent, so place the player at the marker rather than walking
+    // across the (correctly) blocked wash.
+    await page.evaluate((z) => {
+      const s = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+      s.player.setPosition(z.x, z.y);
+    }, zone);
+    await page.waitForTimeout(120);
     await page.keyboard.press('KeyE');
     await page.waitForFunction(() => window.__BIOME__ && window.__BIOME__.active === true, null, { timeout: 10_000 });
     expect(await page.evaluate(() => window.__BIOME__.phase), 'locked entry shows a clear panel').toBe('blocked');

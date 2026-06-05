@@ -70,6 +70,9 @@ export const ASSET_KEYS = {
   greenWashBackdrop: 'act1.investigation.backdrop.green_wash',
   utmRigBackdrop: 'act1.prediction.backdrop.utm_rig',
   washCrossingBackdrop: 'act1.bridge.backdrop.wash_crossing',
+  mesquitePlant: 'act1.ecology.mesquite.plant',
+  creosotePlant: 'act1.ecology.creosote.plant',
+  saguaroPlant: 'act1.ecology.saguaro.plant',
   saltbushPlant: 'act1.biome.saltbush.plant',
   cottonwoodPlant: 'act1.biome.cottonwood.plant',
   uiNpcCueWrench: 'act1.ui.npc_cue_wrench',
@@ -193,6 +196,9 @@ export function createPlaceholderTextures(scene) {
   createSaltRiverBackground(scene);
   createEnvironmentBackdrops(scene);
   createSceneContextBackdrops(scene);
+  createMesquitePlant(scene);
+  createCreosotePlant(scene);
+  createSaguaroPlant(scene);
   createSaltbushPlant(scene);
   createCottonwoodPlant(scene);
   createNotebook(scene);
@@ -810,6 +816,109 @@ function createSaltRiverBackground(scene) {
       g.fillStyle(0x8ad19a, 0.85).fillCircle(x - 5, 28, 5);
     }
     g.fillStyle(0xf6f1dc, 0.95).fillRoundedRect(20, 92, 42, 4, 2).fillRoundedRect(146, 106, 64, 4, 2);
+  });
+}
+
+function createMesquitePlant(scene) {
+  texture(scene, ASSET_KEYS.mesquitePlant, 150, 142, (g) => {
+    shadow(g, 75, 132, 116, 14);
+    g.fillStyle(OUTLINE, 0.82).fillEllipse(75, 120, 74, 20);
+    g.fillStyle(0x6b432b, 1).fillEllipse(75, 118, 68, 16);
+    g.fillStyle(0xd8aa74, 0.72).fillEllipse(56, 114, 24, 5);
+
+    g.lineStyle(6, OUTLINE, 0.95);
+    g.lineBetween(76, 120, 56, 136).lineBetween(76, 120, 95, 136);
+    g.lineBetween(75, 118, 42, 138).lineBetween(75, 118, 112, 138);
+    g.lineStyle(3, 0x6b432b, 0.95);
+    g.lineBetween(76, 120, 56, 136).lineBetween(76, 120, 95, 136);
+    g.lineBetween(75, 118, 42, 138).lineBetween(75, 118, 112, 138);
+
+    g.fillStyle(OUTLINE, 1).fillRoundedRect(64, 66, 24, 56, 8);
+    g.fillStyle(0x5b3828, 1).fillRoundedRect(68, 68, 17, 52, 6);
+    g.fillStyle(0x9a6842, 1).fillRoundedRect(69, 70, 5, 46, 4);
+    g.lineStyle(6, OUTLINE, 1)
+      .lineBetween(73, 76, 38, 58)
+      .lineBetween(80, 76, 113, 56)
+      .lineBetween(74, 88, 49, 92)
+      .lineBetween(82, 88, 108, 88);
+    g.lineStyle(3, 0x6b432b, 1)
+      .lineBetween(73, 76, 38, 58)
+      .lineBetween(80, 76, 113, 56)
+      .lineBetween(74, 88, 49, 92)
+      .lineBetween(82, 88, 108, 88);
+
+    const crowns = [
+      [44, 54, 32, 20], [70, 42, 38, 24], [104, 52, 34, 22],
+      [34, 78, 34, 20], [66, 76, 44, 24], [106, 78, 40, 22],
+      [80, 62, 54, 24],
+    ];
+    for (const [x, y, w, h] of crowns) {
+      g.fillStyle(OUTLINE, 1).fillEllipse(x, y, w + 7, h + 7);
+      g.fillStyle(0x335f35, 1).fillEllipse(x, y, w, h);
+      g.fillStyle(0x4f8a45, 0.9).fillEllipse(x - w * 0.2, y - h * 0.2, w * 0.35, h * 0.35);
+      g.fillStyle(0x233f2a, 0.65).fillEllipse(x + w * 0.18, y + h * 0.18, w * 0.32, h * 0.28);
+    }
+    g.fillStyle(0xded48a, 0.9).fillCircle(36, 70, 2).fillCircle(88, 48, 2).fillCircle(118, 70, 2);
+  });
+}
+
+function createCreosotePlant(scene) {
+  texture(scene, ASSET_KEYS.creosotePlant, 132, 126, (g) => {
+    shadow(g, 66, 116, 92, 12);
+    g.fillStyle(OUTLINE, 0.82).fillEllipse(66, 108, 72, 20);
+    g.fillStyle(0x8a5a38, 1).fillEllipse(66, 106, 68, 16);
+    g.fillStyle(0xd4a468, 0.72).fillEllipse(48, 102, 24, 5);
+
+    const stems = [
+      [64, 106, 28, 58], [66, 106, 42, 36], [66, 106, 54, 66],
+      [68, 106, 74, 44], [68, 106, 88, 62], [66, 106, 102, 76],
+      [64, 106, 20, 86], [66, 106, 66, 28],
+    ];
+    g.lineStyle(5, OUTLINE, 0.95);
+    for (const [x1, y1, x2, y2] of stems) g.lineBetween(x1, y1, x2, y2);
+    g.lineStyle(2.4, 0x5e6f38, 1);
+    for (const [x1, y1, x2, y2] of stems) g.lineBetween(x1, y1, x2, y2);
+
+    const leaflets = [
+      [26, 58], [34, 70], [43, 37], [52, 63], [57, 76],
+      [65, 31], [72, 45], [76, 70], [86, 54], [94, 66],
+      [102, 76], [108, 88], [22, 88], [38, 91],
+    ];
+    for (const [x, y] of leaflets) {
+      g.fillStyle(OUTLINE, 1).fillEllipse(x, y, 16, 9);
+      g.fillStyle(0x7f8d43, 1).fillEllipse(x, y, 12, 6);
+      g.fillStyle(0xb2bd62, 0.85).fillEllipse(x - 2, y - 1, 4, 2);
+    }
+    g.fillStyle(0xf2c46d, 1).fillCircle(48, 54, 2).fillCircle(90, 82, 2).fillCircle(70, 58, 1.8);
+  });
+}
+
+function createSaguaroPlant(scene) {
+  texture(scene, ASSET_KEYS.saguaroPlant, 118, 150, (g) => {
+    shadow(g, 59, 140, 76, 12);
+    g.fillStyle(OUTLINE, 0.85).fillEllipse(59, 130, 62, 18);
+    g.fillStyle(0x8a5a38, 1).fillEllipse(59, 128, 58, 14);
+
+    g.fillStyle(OUTLINE, 1).fillRoundedRect(48, 20, 24, 112, 12);
+    g.fillStyle(0x3f8a57, 1).fillRoundedRect(52, 24, 16, 106, 8);
+    g.fillStyle(0x62b26b, 1).fillRoundedRect(54, 26, 4, 100, 4);
+    g.fillStyle(0x2f6f49, 1).fillRoundedRect(64, 26, 4, 100, 4);
+
+    g.lineStyle(14, OUTLINE, 1);
+    g.lineBetween(50, 78, 30, 78).lineBetween(30, 78, 30, 48);
+    g.lineBetween(70, 92, 92, 92).lineBetween(92, 92, 92, 58);
+    g.lineStyle(8, 0x3f8a57, 1);
+    g.lineBetween(50, 78, 30, 78).lineBetween(30, 78, 30, 48);
+    g.lineBetween(70, 92, 92, 92).lineBetween(92, 92, 92, 58);
+    g.fillStyle(0x62b26b, 1).fillCircle(30, 48, 4).fillCircle(92, 58, 4);
+
+    g.lineStyle(2, 0x21513b, 0.72);
+    for (const x of [56, 61, 66]) g.lineBetween(x, 30, x, 124);
+    g.lineStyle(1.5, 0xf6f1dc, 0.95);
+    for (const [x, y, dx] of [[52, 42, -5], [70, 54, 5], [52, 72, -5], [70, 90, 5], [52, 112, -5], [30, 60, -5], [92, 72, 5], [92, 104, 5]]) {
+      g.lineBetween(x, y, x + dx, y - 2);
+    }
+    g.fillStyle(0xf6f1dc, 1).fillCircle(60, 18, 3).fillCircle(30, 44, 2).fillCircle(92, 54, 2);
   });
 }
 
