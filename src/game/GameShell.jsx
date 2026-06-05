@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { createGame } from './phaser/createGame.js';
 import { initFeedbackOverlay } from './feedback/feedbackOverlay.js';
 import { initAnnotationOverlay } from './feedback/annotationOverlay.js';
+import { initVoiceFeedback } from './feedback/voiceFeedback.js';
 import './game-shell.css';
 
 export default function GameShell() {
@@ -12,11 +13,13 @@ export default function GameShell() {
 
     const game = createGame(hostRef.current);
     window.__bikebrowserRebuildGame = game;
-    // Primary human -> Executive Brain channel (F10 feedback, Shift+F10 annotation).
+    // Primary human -> Executive Brain channel: F10 feedback, Shift+F10 annotation, F9 voice.
     const teardownFeedback = initFeedbackOverlay();
     const teardownAnnotation = initAnnotationOverlay();
+    const teardownVoice = initVoiceFeedback();
 
     return () => {
+      teardownVoice();
       teardownAnnotation();
       teardownFeedback();
       delete window.__bikebrowserRebuildGame;
