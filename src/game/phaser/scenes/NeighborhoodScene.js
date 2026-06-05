@@ -173,6 +173,20 @@ export default class NeighborhoodScene extends Phaser.Scene {
     const desertWash = this.layout.desert_wash;
     this.add.image(desertWash.x, desertWash.y, ASSET_KEYS.desertWash)
       .setScale(desertWash.scaleX, desertWash.scaleY).setDepth(6);
+    // The wash is IMPASSABLE until the bridge is built — you cannot just walk
+    // across it (that made the whole repair pointless). An invisible static
+    // barrier east of the wash bed blocks crossing; updateEvidencePanel() removes
+    // it once the bridge is reconnected. Everything east (salt river, gate) is
+    // gated behind repair anyway, so blocking the channel is safe pre-repair.
+    this.washBarrier = this.add.rectangle(
+      desertWash.x + 80,
+      (this.WALKABLE_TOP + this.worldHeight) / 2,
+      40,
+      this.worldHeight - this.WALKABLE_TOP,
+      0x000000,
+      0,
+    ).setDepth(5);
+    this.physics.add.existing(this.washBarrier, true);
     const bridgeDebris = this.layout.bridge_debris;
     this.bridgeSprite = this.add.image(
       bridgeDebris.x,
@@ -693,6 +707,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.player = this.physics.add.sprite(1280, 1040, animated ? ASSET_KEYS.zuzuWalkSheet : ASSET_KEYS.zuzu);
     this.player.setScale(this.characterVisuals.playerScale).setDepth(260);
     this.player.setCollideWorldBounds(true);
+    if (this.washBarrier) {
+      this.washCollider = this.physics.add.collider(this.player, this.washBarrier);
+      // Honor a loaded/already-repaired state immediately.
+      this._setWashBarrier(!this.runtime?.constructionSystem?.bridgeReconnected);
+    }
     this.player.body.setSize(animated ? 22 : 24, animated ? 28 : 30);
     this.player.body.setOffset(animated ? 37 : 8, animated ? 54 : 20);
     this.playerFacing = 'down';
@@ -1932,9 +1951,23 @@ export default class NeighborhoodScene extends Phaser.Scene {
     if (this.notebookPanel.visible) this.refreshNotebook();
   }
 
+  _setWashBarrier(blocking) {
+    if (blocking) {
+      if (this.washCollider) this.washCollider.active = true;
+      if (this.washBarrier?.body) this.washBarrier.body.enable = true;
+      return;
+    }
+    // Crossable: remove the collider + barrier outright (the bridge never
+    // un-repairs, and removeCollider is the reliable way to drop arcade collision).
+    if (this.washCollider) { this.physics.world.removeCollider(this.washCollider); this.washCollider = null; }
+    if (this.washBarrier) { this.washBarrier.destroy(); this.washBarrier = null; }
+  }
+
   updateEvidencePanel() {
     const state = this.runtime?.getAct1State();
     if (!state) return;
+    // The wash becomes crossable only once the bridge is reconnected.
+    this._setWashBarrier(!state.bridge.bridgeReconnected);
     if (this.bridgeSprite) {
       const bridgeDebris = this.layout.bridge_debris;
       this.bridgeSprite.setTexture(state.bridge.bridgeReconnected
@@ -2016,12 +2049,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
       };
     }
 
-    const signature = [
-      currentLocation,
-      activeQuestMarker,
-      state.discovery.widerMapUnlocked ? 'wide' : 'local',
-      [...discovered].sort().join(','),
-    ].join('|');
+    // Only auto-open the map for a genuinely map-worthy event — the wider map
+    // unlocking — NOT on every region crossing (that popped the HUD constantly as
+    // the player simply walked between areas). Crossing/quest/discovery changes no
+    // longer force the map open; the player opens it with G when they want it.
+    const signature = state.discovery.widerMapUnlocked ? 'wide' : 'local';
     if (!this.worldMapHudSignature) this.worldMapHudSignature = signature;
     else if (signature !== this.worldMapHudSignature) {
       this.worldMapHudSignature = signature;
