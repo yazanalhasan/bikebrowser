@@ -16,7 +16,7 @@ const PRIORITIES = ['critical', 'high', 'medium', 'low'];
 
 // ---- context capture --------------------------------------------------------
 
-function detectSceneContext() {
+export function detectSceneContext() {
   const w = window;
   if (w.__BIOME__?.active) return { scene: 'BiomeScene', object: w.__BIOME__.placementId || 'salt_river' };
   if (w.__ECOLOGY__?.active) return { scene: 'EcologyScene', object: w.__ECOLOGY__.placementId || null };
@@ -32,7 +32,7 @@ function detectSceneContext() {
   return { scene: 'NeighborhoodScene', object };
 }
 
-function gameStateSlice() {
+export function gameStateSlice() {
   try {
     const st = window.__GAME__?.getAct1State?.() || {};
     const quests = st.quests || {};
@@ -49,7 +49,7 @@ function gameStateSlice() {
 }
 
 // Capture the game canvas (WebGL needs renderer.snapshot, not canvas.toDataURL).
-function captureScreenshot() {
+export function captureScreenshot() {
   return new Promise((resolve) => {
     const game = window.__bikebrowserRebuildGame;
     if (!game?.renderer?.snapshot) { resolve(null); return; }
@@ -66,7 +66,7 @@ function captureScreenshot() {
   });
 }
 
-async function postFeedback(payload) {
+export async function postFeedback(payload) {
   const resp = await fetch(`${EB_BASE}/inspect/feedback`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

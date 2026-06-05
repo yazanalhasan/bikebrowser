@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { createGame } from './phaser/createGame.js';
 import { initFeedbackOverlay } from './feedback/feedbackOverlay.js';
+import { initAnnotationOverlay } from './feedback/annotationOverlay.js';
 import './game-shell.css';
 
 export default function GameShell() {
@@ -11,10 +12,12 @@ export default function GameShell() {
 
     const game = createGame(hostRef.current);
     window.__bikebrowserRebuildGame = game;
-    // Primary human -> Executive Brain channel (F10 feedback overlay).
+    // Primary human -> Executive Brain channel (F10 feedback, Shift+F10 annotation).
     const teardownFeedback = initFeedbackOverlay();
+    const teardownAnnotation = initAnnotationOverlay();
 
     return () => {
+      teardownAnnotation();
       teardownFeedback();
       delete window.__bikebrowserRebuildGame;
       game.destroy(true);
