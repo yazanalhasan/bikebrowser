@@ -29,8 +29,8 @@ test.describe('Engine acceptance — world map', () => {
       // Real progression: build + repair the bridge, which opens the wider map.
       g.handleInteraction('collect_materials'); // steel, copper_brace, weak_scrap
       g.handleInteraction('ecology_patch');     // mesquite
-      ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => g.testMaterial(id));
-      g.designBridge({ deck: 'mesquite', support: 'steel', brace: 'copper_brace' });
+      ['bamboo', 'steel', 'carbon_fiber'].forEach((id) => g.testMaterial(id));
+      g.designBridge({ deck: 'bamboo', support: 'steel', brace: 'carbon_fiber' });
       g.repairBridge();      // sets bridgeReconnected
       g.unlockWiderMap();    // now succeeds -> wider map opens
       const afterUnlock = g.getWorldMap();

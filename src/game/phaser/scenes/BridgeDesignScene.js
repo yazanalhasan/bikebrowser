@@ -203,6 +203,11 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.registry.set('modalActive', false);
     this.registry.events.emit('quest:changed');
     this.registry.events.emit('bridgeDesign:done');
+    // Phase 3 — a sound design flows into the load test: the player watches the
+    // bridge carry escalating loads before trusting the crossing.
+    if (this.success) {
+      this.registry.events.emit('loadTest:start', { ...this.selection });
+    }
     this._publish();
   }
 

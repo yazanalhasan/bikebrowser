@@ -94,14 +94,14 @@ test('Phase 1 playthrough — experience capture', async ({ page }) => {
   const pred = {};
   pred.predict_steel = await call(page, 'predictMaterial', 'steel', true, 'high', 'Steel is metal so it should be very strong.');
   pred.predict_steel_fb = await lastFeedback(page);
-  pred.predict_scrap = await call(page, 'predictMaterial', 'weak_scrap', true, 'low', 'Not sure, guessing it holds.');
+  pred.predict_scrap = await call(page, 'predictMaterial', 'balsa', true, 'low', 'Not sure, guessing it holds.');
   pred.predict_scrap_fb = await lastFeedback(page);
   rec('prediction', pred);
   await shot(page, '21-prediction');
 
   // UTM material tests (resolves predictions made above)
   const utm = {};
-  for (const m of ['steel', 'weak_scrap', 'mesquite', 'copper_brace']) {
+  for (const m of ['steel', 'balsa', 'bamboo', 'carbon_fiber']) {
     utm[m] = await call(page, 'testMaterial', m);
     utm[m + '_fb'] = await lastFeedback(page);
   }
@@ -110,9 +110,9 @@ test('Phase 1 playthrough — experience capture', async ({ page }) => {
 
   // BRIDGE (Phase 1.6 choice -> consequence): weak design fails, safe succeeds
   const bridge = {};
-  bridge.design_weak = await call(page, 'designBridge', { deck: 'weak_scrap', support: 'steel', brace: 'copper_brace' });
+  bridge.design_weak = await call(page, 'designBridge', { deck: 'balsa', support: 'steel', brace: 'carbon_fiber' });
   bridge.design_weak_fb = await lastFeedback(page);
-  bridge.design_safe = await call(page, 'designBridge', { deck: 'steel', support: 'steel', brace: 'copper_brace' });
+  bridge.design_safe = await call(page, 'designBridge', { deck: 'steel', support: 'steel', brace: 'carbon_fiber' });
   bridge.design_safe_fb = await lastFeedback(page);
   bridge.repair = await call(page, 'repairBridge');
   bridge.repair_fb = await lastFeedback(page);

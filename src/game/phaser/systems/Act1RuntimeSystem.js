@@ -1,4 +1,4 @@
-import { act1Dialogue, act1WorldMapPoints } from '../../data/act1/index.js';
+import { act1Dialogue, act1Materials, act1WorldMapPoints } from '../../data/act1/index.js';
 import { BikeSystem } from './BikeSystem.js';
 import { BiomeSystem } from './BiomeSystem.js';
 import { ChemistrySystem } from './ChemistrySystem.js';
@@ -10,6 +10,7 @@ import { EcologyObservationSystem } from './EcologyObservationSystem.js';
 import { InventorySystem } from './InventorySystem.js';
 import { InvestigationSystem } from './InvestigationSystem.js';
 import { LanguageSystem } from './LanguageSystem.js';
+import { LoadTestSystem } from './LoadTestSystem.js';
 import { MaterialsLabSystem } from './MaterialsLabSystem.js';
 import { NotebookSystem } from './NotebookSystem.js';
 import { PredictionSystem } from './PredictionSystem.js';
@@ -20,6 +21,8 @@ import { PLACEHOLDER_ASSET_CONTRACT } from './AssetRegistry.js';
 import { getAssetRegistryState } from './AssetRegistry.js';
 import { clearRebuildState, loadRebuildState, saveRebuildState } from './SaveSystem.js';
 import { Act1AudioSystem } from '../audio/Act1AudioSystem.js';
+
+const UTM_MATERIAL_IDS = act1Materials.map((material) => material.id);
 
 export class Act1RuntimeSystem {
   constructor(game = null) {
@@ -45,6 +48,7 @@ export class Act1RuntimeSystem {
     this.materialsLabSystem = new MaterialsLabSystem();
     this.predictionSystem = new PredictionSystem();
     this.constructionSystem = new ConstructionSystem(this.materialsLabSystem);
+    this.loadTestSystem = new LoadTestSystem();
     this.ecologySystem = new EcologyObservationSystem();
     this.investigationSystem = new InvestigationSystem();
     this.chemistrySystem = new ChemistrySystem();
@@ -72,6 +76,7 @@ export class Act1RuntimeSystem {
     registry.set('bikeSystem', this.bikeSystem);
     registry.set('materialsLabSystem', this.materialsLabSystem);
     registry.set('constructionSystem', this.constructionSystem);
+    registry.set('loadTestSystem', this.loadTestSystem);
     registry.set('ecologySystem', this.ecologySystem);
     registry.set('chemistrySystem', this.chemistrySystem);
     registry.set('trustSystem', this.trustSystem);
@@ -243,10 +248,10 @@ export class Act1RuntimeSystem {
         return { ok: true };
       },
       collect_materials: () => {
-        this.inventorySystem.addMany(['steel', 'copper_brace', 'weak_scrap']);
-        this.unlockNotebookEntries(['steel', 'copper_brace', 'weak_scrap']);
-        ['collect_steel', 'collect_copper', 'collect_scrap'].forEach((id) => this.completeObjective(id));
-        this.recordFeedback('inventory', 'Candidate materials collected: steel, copper brace, weak scrap.');
+        this.inventorySystem.addMany(UTM_MATERIAL_IDS);
+        this.unlockNotebookEntries(UTM_MATERIAL_IDS);
+        UTM_MATERIAL_IDS.forEach((id) => this.completeObjective(`collect_${id}`));
+        this.recordFeedback('inventory', 'Mr. Chen material catalog collected: balsa, pine, bamboo, brick, concrete, iron, steel, carbon fiber.');
         return { ok: true };
       },
       ecology_patch: () => {
@@ -258,7 +263,7 @@ export class Act1RuntimeSystem {
         ['mesquite', 'creosote', 'saguaro'].forEach((species) => this.observeEcology(species));
         return { ok: true };
       },
-      utm: () => ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].map((id) => this.testMaterial(id)),
+      utm: () => UTM_MATERIAL_IDS.map((id) => this.testMaterial(id)),
       bridge_plan: () => this.completeBridgePlan('tested_triangle_plan'),
       repair_bridge: () => this.repairBridge(),
       chemistry_station: () => this.runChemistryRecipe('sealant_patch'),
@@ -281,13 +286,8 @@ export class Act1RuntimeSystem {
     this.audioSystem.setAmbient('garage_testing');
     const result = this.materialsLabSystem.testMaterial(materialId);
     if (!result.ok) return result;
-    this.unlockNotebookEntries(['material_test_results']);
-    const objectiveByMaterial = {
-      mesquite: 'test_mesquite',
-      steel: 'test_steel',
-      copper_brace: 'test_copper',
-      weak_scrap: 'test_scrap',
-    };
+    this.unlockNotebookEntries(['material_test_results', 'compression_vs_tension', 'utm_stress_strain_curve', materialId === 'concrete' ? 'concrete_tension_outlier' : null].filter(Boolean));
+    const objectiveByMaterial = Object.fromEntries(UTM_MATERIAL_IDS.map((id) => [id, `test_${id}`]));
     if (objectiveByMaterial[materialId]) this.completeObjective(objectiveByMaterial[materialId]);
     this.recordFeedback('utm', `${result.result.displayName}: ${result.result.verdict} (${result.result.loadResult}).`, result.result);
     // Discovery: a tested material (with its strength evidence).
@@ -323,7 +323,18 @@ export class Act1RuntimeSystem {
     this.recordFeedback('bridge', `Bridge design accepted: ${result.explanation}`, result.plan);
     // Discovery: an engineering concept — a sound load path from tested parts.
     this.registerDiscovery({ id: 'concept_safe_load_path', category: 'engineering', title: 'Safe load path', detail: 'A bridge is only as strong as its weakest load-bearing part — choose tested, strong materials per role.', source: 'bridge' });
+    // Phase 3 — populate the load-test simulation for the chosen design so the
+    // LoadTestScene can show the bridge holding/failing under escalating loads.
+    // Pure: only touches loadTestSystem state (no quest/discovery side effects).
+    this.runLoadTest(selection);
     return result;
+  }
+
+  // Phase 3 — run the structural load-test simulation for a bridge design across
+  // all scenarios (person → monsoon flood). Returns { ok, failedAt?, result, history }.
+  runLoadTest(planOrSelection) {
+    const plan = planOrSelection || this.constructionSystem.getState().plan || {};
+    return this.loadTestSystem.runAll(plan);
   }
 
   predictMaterial(materialId, willHold, confidence = 'medium', explanation = '') {
@@ -475,7 +486,7 @@ export class Act1RuntimeSystem {
   }
 
   canCompleteAct1() {
-    return ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].every((id) => this.materialsLabSystem.materials.has(id));
+    return UTM_MATERIAL_IDS.every((id) => this.materialsLabSystem.materials.has(id));
   }
 
   getAct1State() {
@@ -492,6 +503,7 @@ export class Act1RuntimeSystem {
       materialTests: this.materialsLabSystem.getState(),
       prediction: this.predictionSystem.getState(),
       bridge: this.constructionSystem.getState(),
+      loadTest: this.loadTestSystem.getState(),
       ecology: this.ecologySystem.getState(),
       investigation: this.investigationSystem.getState(),
       chemistry: this.chemistrySystem.getState(),
@@ -708,6 +720,7 @@ export class Act1RuntimeSystem {
     this.materialsLabSystem.loadState(state.materialTests);
     this.predictionSystem.loadState(state.prediction);
     this.constructionSystem.loadState(state.bridge);
+    this.loadTestSystem.loadState(state.loadTest);
     this.ecologySystem.loadState(state.ecology);
     this.investigationSystem.loadState(state.investigation);
     this.chemistrySystem.loadState(state.chemistry);
@@ -804,8 +817,10 @@ export class Act1RuntimeSystem {
       earnTrust: () => this.earnTrust(),
       handleInteraction: (action) => this.handleInteraction(action),
       repairBridge: () => this.repairBridge(),
+      runLoadTest: (planOrSelection) => this.runLoadTest(planOrSelection),
       unlockWiderMap: () => this.unlockWiderMap(),
       recordFeedback: (kind, message, details) => this.recordFeedback(kind, message, details),
     };
   }
 }
+

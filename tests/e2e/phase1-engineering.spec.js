@@ -32,20 +32,20 @@ test('Phase 1 engineering loop — success path', async ({ page }) => {
 
   // Predict before testing (engineering loop step: predict)
   rec('predict_steel', await call(page, 'predictMaterial', 'steel', true, 'high', 'Steel is metal, should hold.'));
-  rec('predict_scrap', await call(page, 'predictMaterial', 'weak_scrap', false, 'medium', 'Scrap looks brittle, probably fails.'));
+  rec('predict_scrap', await call(page, 'predictMaterial', 'balsa', false, 'medium', 'Balsa looks light and weak, probably fails.'));
 
   // Test in UTM (resolves predictions)
   const utm = {};
-  for (const m of ['steel', 'weak_scrap', 'mesquite', 'copper_brace']) {
+  for (const m of ['steel', 'balsa', 'bamboo', 'carbon_fiber']) {
     utm[m] = await call(page, 'testMaterial', m); utm[m + '_fb'] = await fb(page);
   }
   rec('utm', utm);
   await page.screenshot({ path: `${SHOT}/30-utm-success.png` });
 
   // Design bridge — first a weak deck (should be rejected), then all-safe.
-  rec('design_weak', await call(page, 'designBridge', { deck: 'weak_scrap', support: 'steel', brace: 'copper_brace' }));
+  rec('design_weak', await call(page, 'designBridge', { deck: 'balsa', support: 'steel', brace: 'carbon_fiber' }));
   rec('design_weak_fb', await fb(page));
-  rec('design_safe', await call(page, 'designBridge', { deck: 'steel', support: 'steel', brace: 'copper_brace' }));
+  rec('design_safe', await call(page, 'designBridge', { deck: 'steel', support: 'steel', brace: 'carbon_fiber' }));
   rec('design_safe_fb', await fb(page));
   await page.screenshot({ path: `${SHOT}/31-bridge-design.png` });
 

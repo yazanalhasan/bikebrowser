@@ -92,8 +92,8 @@ test.describe('Player reachability — Salt River biome', () => {
       const g = window.__GAME__;
       g.handleInteraction('collect_materials');
       g.handleInteraction('ecology_patch');
-      ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => g.testMaterial(id));
-      g.designBridge({ deck: 'mesquite', support: 'steel', brace: 'copper_brace' });
+      ['bamboo', 'steel', 'carbon_fiber'].forEach((id) => g.testMaterial(id));
+      g.designBridge({ deck: 'bamboo', support: 'steel', brace: 'carbon_fiber' });
       g.repairBridge();
       g.unlockWiderMap();
       // City Gate discovery reveals the Salt River expedition marker (prerequisite).

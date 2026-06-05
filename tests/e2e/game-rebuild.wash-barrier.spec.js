@@ -33,8 +33,8 @@ test('wash blocks crossing until the bridge is repaired', async ({ page }) => {
     const g = window.__GAME__;
     g.handleInteraction('collect_materials');
     g.handleInteraction('ecology_patch'); // collect mesquite so it can be tested
-    ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => g.testMaterial(id));
-    g.designBridge({ deck: 'mesquite', support: 'steel', brace: 'copper_brace' });
+    ['bamboo', 'steel', 'carbon_fiber'].forEach((id) => g.testMaterial(id));
+    g.designBridge({ deck: 'bamboo', support: 'steel', brace: 'carbon_fiber' });
     g.repairBridge();
     window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene').updateEvidencePanel();
   });
