@@ -84,6 +84,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
       padding: { x: 8, y: 5 },
     }).setScrollFactor(0).setDepth(950);
 
+    // Scroll the Discovery Registry list (it clips to the panel; arrows scroll it
+    // while it is open — movement is frozen then).
+    this.input.keyboard.on('keydown-UP', () => this._scrollDiscovery(-44));
+    this.input.keyboard.on('keydown-DOWN', () => this._scrollDiscovery(44));
     this.input.keyboard.on('keydown-R', () => this.runtime?.audioSystem.replayLast());
     this.input.keyboard.on('keydown-M', () => {
       const current = this.runtime?.audioSystem.getState().settings.reducedAudio;
@@ -1220,8 +1224,19 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.discoveryPanelTitle = this.add.text(20, 14, 'Discovery Registry', { fontFamily: 'Arial', fontSize: '20px', color: '#eafbe0', fontStyle: 'bold' });
     this.discoveryPanelSummary = this.add.text(20, 44, '', { fontFamily: 'Arial', fontSize: '13px', color: '#bcd6ac' });
     this.discoveryPanelBody = this.add.text(20, 74, '', { fontFamily: 'Arial', fontSize: '13px', color: '#e6f0d8', wordWrap: { width: 520 }, lineSpacing: 4 });
-    this.discoveryPanelHint = this.add.text(20, 444, '[J] close   ·   discoveries persist across save/load', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc27a' });
+    this.discoveryPanelHint = this.add.text(20, 444, '[↑↓] scroll   ·   [J] close   ·   discoveries persist', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc27a' });
     this.discoveryPanel.add([panelBg, this.discoveryPanelTitle, this.discoveryPanelSummary, this.discoveryPanelBody, this.discoveryPanelHint]);
+    // Clip the growing list to the panel content area (screen space) so a long
+    // list can't spill out below the panel into the world; scroll with up/down.
+    this._discoveryBodyTop = 74;
+    this._discoveryViewH = 435 - 74;        // visible height of the list region
+    this._discoveryScroll = 0;
+    const maskG = this.make.graphics({ x: 0, y: 0, add: false });
+    maskG.fillStyle(0xffffff).fillRect(150 + 12, 70 + this._discoveryBodyTop, 560 - 24, this._discoveryViewH);
+    this.discoveryPanelBody.setMask(maskG.createGeometryMask());
+    // The panel is screen-fixed (scrollFactor 0) but the mask lives in world
+    // space, so it must track the camera each frame to stay aligned.
+    this.discoveryBodyMask = maskG;
 
     // One-time tutorial so the player learns the registry exists by playing
     // (not by knowing the J key in advance).
@@ -1532,6 +1547,15 @@ export default class NeighborhoodScene extends Phaser.Scene {
       for (const it of items) lines.push(`   • ${it.title}${it.isNew ? '  (new)' : ''}`);
     }
     this.discoveryPanelBody.setText(lines.join('\n') || 'Nothing discovered yet. Explore, observe, test, and investigate.');
+    this._discoveryScroll = 0;
+    this.discoveryPanelBody.y = this._discoveryBodyTop;
+  }
+
+  _scrollDiscovery(delta) {
+    if (!this.discoveryPanel?.visible || !this.discoveryPanelBody) return;
+    const overflow = Math.max(0, this.discoveryPanelBody.height - this._discoveryViewH);
+    this._discoveryScroll = Phaser.Math.Clamp(this._discoveryScroll + delta, 0, overflow);
+    this.discoveryPanelBody.y = this._discoveryBodyTop - this._discoveryScroll;
   }
 
   publishDiscoveryState() {
@@ -1681,6 +1705,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   update(_time, delta) {
+    // Keep the discovery-list clip mask aligned with the screen-fixed panel.
+    if (this.discoveryBodyMask) {
+      this.discoveryBodyMask.x = this.cameras.main.scrollX;
+      this.discoveryBodyMask.y = this.cameras.main.scrollY;
+    }
     // Apply any saved layout placements once, after all objects exist.
     if (!this._overridesApplied) {
       this._overridesApplied = true;
@@ -1703,7 +1732,9 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // on the next frame (which would reopen the modal). Consume it.
     const justClosedModal = this._wasModal && !modal;
     this._wasModal = modal;
-    const movement = modal ? { x: 0, y: 0 } : this.inputSystem.getMovementVector();
+    // Freeze movement while the discovery list is open (so up/down scroll it
+    // instead of walking), but DON'T gate input as modal — J must still close it.
+    const movement = (modal || this.discoveryPanel?.visible) ? { x: 0, y: 0 } : this.inputSystem.getMovementVector();
     const speed = 178;
     const length = Math.hypot(movement.x, movement.y) || 1;
     const targetX = (movement.x / length) * speed;
