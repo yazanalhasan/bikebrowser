@@ -1745,12 +1745,20 @@ export default class NeighborhoodScene extends Phaser.Scene {
           // once the intro is done. The dialogue's own effects do the work, so
           // we route the right one rather than calling handleInteraction twice.
           const introDone = this.runtime?.questSystem?.isObjectiveComplete('talk_neighbor');
-          this.registry.events.emit('dialogue:start', introDone ? 'spanish_trust' : 'wash_neighbor');
+          if (!this.registry.get('dialogueActive')) this.registry.events.emit('dialogue:start', introDone ? 'spanish_trust' : 'wash_neighbor');
         } else if (nearest.action) {
           this.runtime?.handleInteraction(nearest.action);
           this.registry.events.emit('quest:changed');
         }
-        if (nearest.dialogueId && nearest.id !== 'neighbor') this.registry.events.emit('dialogue:start', nearest.dialogueId);
+        if (nearest.dialogueId && nearest.id !== 'neighbor' && !this.registry.get('dialogueActive')) {
+          // State-aware NPC dialogue: e.g. Mr. Chen stops saying the bridge is
+          // closed once it is repaired. Resolve the line at interaction time.
+          let dialogueId = nearest.dialogueId;
+          if (nearest.id === 'mr_chen' && this.runtime?.constructionSystem?.bridgeReconnected) {
+            dialogueId = 'mr_chen_bridge_repaired';
+          }
+          this.registry.events.emit('dialogue:start', dialogueId);
+        }
       }
     } else {
       this.prompt.setVisible(false);

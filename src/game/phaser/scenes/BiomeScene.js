@@ -229,7 +229,7 @@ export default class BiomeScene extends Phaser.Scene {
   }
 
   _narrate() {
-    narratePanel(this, this.panel, { exclude: [this.hint] });
+    narratePanel(this, this.panel, { exclude: [this.hint, this.title] });
   }
 
   _setBackdrop(key) {

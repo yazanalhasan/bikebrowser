@@ -99,7 +99,9 @@ export function initAnnotationOverlay() {
   form.append(chips(CATEGORIES, () => state.category, (v) => { state.category = v; }), chips(PRIORITIES, () => state.priority, (v) => { state.priority = v; }), msg, status, actions);
 
   root.append(header, contextLine, bar, canvas, form);
-  document.body.appendChild(root);
+  // Append lazily on first open: keeping the annotation <canvas> out of the DOM
+  // while idle avoids it matching a bare locator('canvas') in unrelated tests/tools.
+  const ensureMounted = () => { if (!root.isConnected) document.body.appendChild(root); };
 
   // toast
   const toast = document.createElement('div');
@@ -158,6 +160,7 @@ export function initAnnotationOverlay() {
     img.src = dataUrl;
     msg.value = ''; status.textContent = '';
     contextLine.textContent = `scene: ${state.context.scene}` + (state.context.object ? `  ·  object: ${state.context.object}` : '') + '   —   drag to draw arrows/circles, then add a note';
+    ensureMounted();
     root.style.display = 'flex';
     setTimeout(() => msg.focus(), 30);
     window.addEventListener('keydown', keyGuard, true);

@@ -243,7 +243,7 @@ export default class InvestigationScene extends Phaser.Scene {
 
   // Narrator: read the current panel aloud (skips the keyboard-control hint).
   _narrate() {
-    narratePanel(this, this.panel, { exclude: [this.hint] });
+    narratePanel(this, this.panel, { exclude: [this.hint, this.title] });
   }
 
   _setBackdrop(investigationId) {

@@ -67,6 +67,9 @@ export default class DialogueScene extends Phaser.Scene {
   showLine(line) {
     if (!line) return;
     this.panel.setVisible(true);
+    // Mark a dialogue as active so the world interaction does not re-fire
+    // dialogue:start on the next E (which restarted the conversation from line 0).
+    this.registry.set('dialogueActive', true);
     this.speaker.setText(line.speaker);
     this.line.setText(line.text);
     // Narrator: read every NPC line aloud (gated only by the global autoSpeak /
@@ -80,6 +83,7 @@ export default class DialogueScene extends Phaser.Scene {
     const result = this.registry.get('dialogueSystem').advance();
     if (result?.closed) {
       this.panel.setVisible(false);
+      this.registry.set('dialogueActive', false);
       this.registry.get('act1AudioSystem')?.stopSpeech();
       const runtime = this.registry.get('act1Runtime');
       runtime?.applyDialogueEffects(result.dialogueId);
