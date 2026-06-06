@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { narratePanel } from '../audio/sceneNarration.js';
 import { LOAD_SCENARIOS, StructuralModel, STRESS_COLORS } from '../systems/StructuralModel.js';
+import { ASSET_KEYS } from '../systems/AssetRegistry.js';
 
 // Phase 3 — Load Testing & Stress Visualization. After the player designs a
 // bridge, they watch it carry escalating loads (person → monsoon flood). Each
@@ -21,13 +22,13 @@ export default class LoadTestScene extends Phaser.Scene {
     this.done = false;
 
     this.panel = this.add.container(480, 210).setScrollFactor(0).setDepth(1400).setVisible(false);
-    const bg = this.add.rectangle(0, 0, 600, 360, 0x111c16, 0.97).setOrigin(0.5, 0).setStrokeStyle(4, 0x9fe0c0, 1);
-    this.title = this.add.text(0, 14, '', { fontFamily: 'Arial', fontSize: '22px', color: '#eafef4', fontStyle: 'bold' }).setOrigin(0.5, 0);
-    this.scenarioLabel = this.add.text(0, 46, '', { fontFamily: 'Arial', fontSize: '14px', color: '#bfe6d4' }).setOrigin(0.5, 0);
+    const bg = this.add.image(0, 0, ASSET_KEYS.leonardoNotebookBackdrop).setOrigin(0.5, 0).setDisplaySize(600, 380);
+    this.title = this.add.text(0, 16, '', { fontFamily: 'Georgia, serif', fontSize: '22px', color: '#3a2a18', fontStyle: 'bold' }).setOrigin(0.5, 0);
+    this.scenarioLabel = this.add.text(0, 48, '', { fontFamily: 'Georgia, serif', fontSize: '14px', color: '#5a3d22' }).setOrigin(0.5, 0);
     this.bridgeGfx = this.add.graphics();
-    this.verdict = this.add.text(0, 300, '', { fontFamily: 'Arial', fontSize: '17px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5, 0);
-    this.teaching = this.add.text(0, 326, '', { fontFamily: 'Arial', fontSize: '12px', color: '#cfe6dc', wordWrap: { width: 540 }, align: 'center' }).setOrigin(0.5, 0);
-    this.hint = this.add.text(0, 360, '', { fontFamily: 'Arial', fontSize: '12px', color: '#bcd6cc' }).setOrigin(0.5, 0);
+    this.verdict = this.add.text(0, 300, '', { fontFamily: 'Georgia, serif', fontSize: '17px', color: '#3a2a18', fontStyle: 'bold' }).setOrigin(0.5, 0);
+    this.teaching = this.add.text(0, 326, '', { fontFamily: 'Georgia, serif', fontSize: '12px', color: '#5a3d22', wordWrap: { width: 540 }, align: 'center' }).setOrigin(0.5, 0);
+    this.hint = this.add.text(0, 360, '', { fontFamily: 'Georgia, serif', fontSize: '12px', color: '#6f5430' }).setOrigin(0.5, 0);
     this.panel.add([bg, this.title, this.scenarioLabel, this.bridgeGfx, this.verdict, this.teaching, this.hint]);
 
     this.registry.events.on('loadTest:start', (plan) => this.startFlow(plan));
@@ -57,11 +58,11 @@ export default class LoadTestScene extends Phaser.Scene {
     this._drawBridge(result.members);
     if (result.verdict === 'hold') {
       this.verdict.setText(`✅ Holds the ${scenario.label} — max stress ${(result.maxStress * 100).toFixed(0)}%`);
-      this.verdict.setColor('#9affc6');
+      this.verdict.setColor('#2f6b2a');
     } else {
       const f = result.failedMember;
       this.verdict.setText(`💥 ${f ? f.label : 'A member'} fails (${f ? f.forceType : ''}) under the ${scenario.label}`);
-      this.verdict.setColor('#ffb3b3');
+      this.verdict.setColor('#9a2f1a');
     }
     // The teaching line: compression vs tension, concrete vs steel.
     const tm = result.teachingMoment;

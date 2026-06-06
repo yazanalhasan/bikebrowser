@@ -70,6 +70,7 @@ export const ASSET_KEYS = {
   greenWashBackdrop: 'act1.investigation.backdrop.green_wash',
   utmRigBackdrop: 'act1.prediction.backdrop.utm_rig',
   washCrossingBackdrop: 'act1.bridge.backdrop.wash_crossing',
+  leonardoNotebookBackdrop: 'act1.bridge.backdrop.leonardo_notebook',
   mesquitePlant: 'act1.ecology.mesquite.plant',
   creosotePlant: 'act1.ecology.creosote.plant',
   saguaroPlant: 'act1.ecology.saguaro.plant',
@@ -363,6 +364,39 @@ function createEnvironmentBackdrops(scene) {
 }
 
 function createSceneContextBackdrops(scene) {
+  // Phase 4 — Leonardo's notebook page for the load-test / engineering scenes:
+  // aged parchment, cross-hatch shading, a sepia truss sketch, and compression/
+  // tension force annotations. Drawn procedurally to match the game's art style.
+  texture(scene, ASSET_KEYS.leonardoNotebookBackdrop, 600, 380, (g) => {
+    g.fillStyle(0xe7d6ac, 1).fillRect(0, 0, 600, 380);            // parchment
+    g.fillStyle(0xceb47e, 0.5).fillRect(0, 0, 600, 18);
+    g.fillStyle(0xceb47e, 0.45).fillRect(0, 362, 600, 18);
+    for (const [x, y, r] of [[64, 70, 16], [524, 300, 20], [300, 34, 12], [486, 86, 11], [110, 332, 15], [358, 322, 9]]) {
+      g.fillStyle(0xcdb079, 0.38).fillCircle(x, y, r);            // foxing stains
+    }
+    g.lineStyle(1, 0x9a7b46, 0.16);                              // cross-hatch (two directions)
+    for (let x = -400; x < 600; x += 13) g.lineBetween(x, 0, x + 400, 380);
+    g.lineStyle(1, 0x9a7b46, 0.09);
+    for (let x = 0; x < 1000; x += 16) g.lineBetween(x, 0, x - 400, 380);
+    const ink = 0x5a3d22;
+    g.lineStyle(2.5, ink, 0.62);                                 // truss sketch
+    g.lineBetween(96, 196, 504, 196);                            // deck
+    g.lineBetween(168, 196, 168, 290).lineBetween(432, 196, 432, 290); // supports
+    g.lineBetween(168, 290, 432, 290);                           // bottom tie
+    g.lineBetween(168, 290, 300, 196).lineBetween(432, 290, 300, 196); // braces
+    g.fillStyle(ink, 0.7);
+    for (const [x, y] of [[96, 196], [504, 196], [168, 196], [432, 196], [300, 196], [168, 290], [432, 290]]) g.fillCircle(x, y, 3);
+    g.lineStyle(2, 0x7a2f1a, 0.7);                               // compression arrows on a support (-> <-)
+    g.lineBetween(150, 240, 166, 240).lineBetween(186, 240, 170, 240);
+    g.fillStyle(0x7a2f1a, 0.7).fillTriangle(166, 235, 166, 245, 173, 240).fillTriangle(170, 235, 170, 245, 163, 240);
+    g.lineStyle(2, 0x2f5a2a, 0.6);                               // tension arrows on the tie (<- ->)
+    g.lineBetween(250, 290, 234, 290).lineBetween(350, 290, 366, 290);
+    g.lineStyle(1.5, ink, 0.32);                                 // mirror-script annotation marks
+    for (const [x, y] of [[110, 150], [110, 158], [110, 166], [468, 150], [468, 158]]) g.lineBetween(x, y, x + 22, y);
+    g.lineStyle(3, 0x8a6a3c, 0.6).strokeRect(7, 7, 586, 366);    // aged border
+    g.lineStyle(1, 0x8a6a3c, 0.4).strokeRect(13, 13, 574, 354);
+  });
+
   texture(scene, ASSET_KEYS.washScourBackdrop, 1120, 360, (g) => {
     drawBackdropFrame(g, 0xf0cf8e, 0xc69058, 0xbb8050, 0x8f5c3b);
     g.fillStyle(0xffe4a6, 0.9).fillCircle(930, 62, 42);
