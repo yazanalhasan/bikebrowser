@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { narratePanel, narrateText } from '../audio/sceneNarration.js';
 import { ASSET_KEYS } from '../systems/AssetRegistry.js';
+import { act1Materials } from '../../data/act1/index.js';
 
 // Phase 1.9.3 — player-facing bridge design. The player assigns a tested
 // material to each load-bearing role (deck → support → brace), then BUILDS and
@@ -34,6 +35,19 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.title = this.add.text(0, 16, '', { fontFamily: 'Georgia, serif', fontSize: '22px', color: '#3a2a18', fontStyle: 'bold' }).setOrigin(0.5, 0);
     this.roleHint = this.add.text(0, 48, '', { fontFamily: 'Georgia, serif', fontSize: '13px', color: '#5a3d22' }).setOrigin(0.5, 0);
 
+    // Phase 2 — live engineering meters computed from the chosen materials, so the
+    // player sees the trade-offs (strength/weight/stability/flood-proofing/cost) build up.
+    this.matById = new Map(act1Materials.map((m) => [m.id, m]));
+    this.meterDefs = [
+      { key: 'strength', label: 'Strength', good: true },
+      { key: 'weight', label: 'Weight', good: false },
+      { key: 'stability', label: 'Stable', good: true },
+      { key: 'flood', label: 'Flood', good: true },
+      { key: 'cost', label: 'Cost', good: false },
+    ];
+    this.meterGfx = this.add.graphics();
+    this.meterLabels = this.meterDefs.map((d, i) => this.add.text(-286, 100 + i * 28, d.label, { fontFamily: 'Georgia, serif', fontSize: '10px', color: '#6f5430' }).setOrigin(0, 0).setVisible(false));
+
     // The candidate material card the player is cycling through.
     this.card = this.add.container(0, 104);
     this.cardBg = this.add.rectangle(0, 0, 320, 70, 0xddc89a, 1).setStrokeStyle(3, 0x8a6a3c, 1);
@@ -55,7 +69,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
     this.verdict = this.add.text(0, 288, '', { fontFamily: 'Georgia, serif', fontSize: '18px', color: '#3a2a18', fontStyle: 'bold' }).setOrigin(0.5);
     this.hint = this.add.text(0, 318, '◀ ▶ pick    E choose    Esc leave', { fontFamily: 'Georgia, serif', fontSize: '12px', color: '#6f5430' }).setOrigin(0.5);
-    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.roleHint, this.card, this.chosenText, this.bridge, this.verdict, this.hint]);
+    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.roleHint, this.meterGfx, ...this.meterLabels, this.card, this.chosenText, this.bridge, this.verdict, this.hint]);
 
     this.registry.events.on('bridgeDesign:start', () => this.startFlow());
     this.keyHandler = (event) => this.onKey(event);
@@ -85,6 +99,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
   _showBlocked() {
     this.phase = 'blocked';
+    this.meterLabels.forEach((l) => l.setVisible(false)); this.meterGfx.clear();
     this._hideBackdrop();
     this.candidates = [];
     this.card.setVisible(false);
@@ -101,6 +116,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
   _showChoose() {
     this.phase = 'choose';
+    this.meterLabels.forEach((l) => l.setVisible(true));
     this._setBackdrop(ASSET_KEYS.washCrossingBackdrop);
     this.candIdx = 0;
     this.bridge.setVisible(false);
@@ -123,6 +139,38 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.candEvidence.setColor(c.safe ? '#2f6b2a' : '#9a2f1a');
     const picks = ROLES.slice(0, this.roleIdx).map((r) => `${r.label}: ${this.candidates.find((x) => x.id === this.selection[r.key])?.name || '?'}`);
     this.chosenText.setText(picks.join('    '));
+    this._drawMeters();
+  }
+
+  // Engineering meters from the materials chosen so far (0..1 each).
+  _meterValues() {
+    const FLOOD = { balsa: 2, pine: 3, bamboo: 4, brick: 7, concrete: 9, iron: 6, steel: 8, carbon_fiber: 8 };
+    const COST = { balsa: 2, pine: 3, bamboo: 3, brick: 4, concrete: 5, iron: 6, steel: 8, carbon_fiber: 10 };
+    const mats = Object.values(this.selection).filter(Boolean).map((id) => this.matById.get(id)).filter(Boolean);
+    if (!mats.length) return { strength: 0, weight: 0, stability: 0, flood: 0, cost: 0 };
+    const avg = (f) => mats.reduce((s, m) => s + f(m), 0) / mats.length;
+    return {
+      strength: Math.min(...mats.map((m) => m.strength || 0)) / 10, // weakest link
+      weight: avg((m) => m.weight || 0) / 10,
+      stability: avg((m) => m.stiffness || 0) / 10,
+      flood: avg((m) => FLOOD[m.id] ?? 5) / 10,
+      cost: avg((m) => COST[m.id] ?? 5) / 10,
+    };
+  }
+
+  _drawMeters() {
+    const v = this._meterValues();
+    const g = this.meterGfx;
+    g.clear();
+    this.meterDefs.forEach((d, i) => {
+      const x = -286; const y = 112 + i * 28; const w = 84; const h = 6;
+      const val = Math.max(0, Math.min(1, v[d.key] || 0));
+      const score = d.good ? val : 1 - val; // higher score reads "better" (greener)
+      const color = score > 0.6 ? 0x4e8a3a : score > 0.34 ? 0xb0892a : 0x9a4a2a;
+      g.fillStyle(0xcdb079, 0.55).fillRoundedRect(x, y, w, h, 3);
+      g.fillStyle(color, 0.95).fillRoundedRect(x, y, Math.max(2, w * val), h, 3);
+      g.lineStyle(1, 0x8a6a3c, 0.45).strokeRoundedRect(x, y, w, h, 3);
+    });
   }
 
   onKey(event) {
@@ -155,6 +203,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     const runtime = this.registry.get('act1Runtime');
     const result = runtime.designBridge(this.selection);
     this.phase = 'result';
+    this.meterLabels.forEach((l) => l.setVisible(false)); this.meterGfx.clear();
     this._setBackdrop(ASSET_KEYS.washCrossingBackdrop);
     this.card.setVisible(false);
     this.chosenText.setText('');
