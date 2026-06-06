@@ -25,22 +25,22 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.selection = {};
 
     this.panel = this.add.container(480, 220).setScrollFactor(0).setDepth(1400).setVisible(false);
-    const bg = this.add.rectangle(0, 0, 600, 340, 0x1a2412, 0.97).setOrigin(0.5, 0).setStrokeStyle(4, 0xc7e89a, 1);
+    const bg = this.add.image(0, 0, ASSET_KEYS.leonardoNotebookBackdrop).setOrigin(0.5, 0).setDisplaySize(600, 350);
     this.backdrop = this.add.image(0, 164, ASSET_KEYS.washCrossingBackdrop).setOrigin(0.5, 0).setDisplaySize(548, 112).setVisible(false);
     this.backdropFrame = this.add.rectangle(0, 164, 552, 116, 0x000000, 0).setOrigin(0.5, 0).setStrokeStyle(3, 0xd9b879, 0.92).setVisible(false);
-    this.textBand = this.add.rectangle(0, 8, 580, 82, 0x1a2412, 0.82).setOrigin(0.5, 0).setVisible(false);
-    this.title = this.add.text(0, 16, '', { fontFamily: 'Arial', fontSize: '22px', color: '#eafbe0', fontStyle: 'bold' }).setOrigin(0.5, 0);
-    this.roleHint = this.add.text(0, 48, '', { fontFamily: 'Arial', fontSize: '13px', color: '#bcd6ac' }).setOrigin(0.5, 0);
+    this.textBand = this.add.rectangle(0, 8, 580, 82, 0xe7d6ac, 0.72).setOrigin(0.5, 0).setVisible(false);
+    this.title = this.add.text(0, 16, '', { fontFamily: 'Georgia, serif', fontSize: '22px', color: '#3a2a18', fontStyle: 'bold' }).setOrigin(0.5, 0);
+    this.roleHint = this.add.text(0, 48, '', { fontFamily: 'Georgia, serif', fontSize: '13px', color: '#5a3d22' }).setOrigin(0.5, 0);
 
     // The candidate material card the player is cycling through.
     this.card = this.add.container(0, 104);
-    this.cardBg = this.add.rectangle(0, 0, 320, 70, 0x2d3a22, 1).setStrokeStyle(3, 0xc7e89a, 1);
-    this.candName = this.add.text(0, -12, '', { fontFamily: 'Arial', fontSize: '20px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
-    this.candEvidence = this.add.text(0, 16, '', { fontFamily: 'Arial', fontSize: '13px', color: '#cfe6b8' }).setOrigin(0.5);
-    this.card.add([this.cardBg, this.candName, this.candEvidence, this.add.text(-176, 0, '◀', { fontSize: '20px', color: '#c7e89a' }).setOrigin(0.5), this.add.text(176, 0, '▶', { fontSize: '20px', color: '#c7e89a' }).setOrigin(0.5)]);
+    this.cardBg = this.add.rectangle(0, 0, 320, 70, 0xddc89a, 1).setStrokeStyle(3, 0x8a6a3c, 1);
+    this.candName = this.add.text(0, -12, '', { fontFamily: 'Georgia, serif', fontSize: '20px', color: '#3a2a18', fontStyle: 'bold' }).setOrigin(0.5);
+    this.candEvidence = this.add.text(0, 16, '', { fontFamily: 'Georgia, serif', fontSize: '13px', color: '#5a3d22' }).setOrigin(0.5);
+    this.card.add([this.cardBg, this.candName, this.candEvidence, this.add.text(-176, 0, '◀', { fontSize: '20px', color: '#7a5a32' }).setOrigin(0.5), this.add.text(176, 0, '▶', { fontSize: '20px', color: '#7a5a32' }).setOrigin(0.5)]);
 
     // Chosen-so-far row.
-    this.chosenText = this.add.text(0, 158, '', { fontFamily: 'Arial', fontSize: '13px', color: '#bcd6ac' }).setOrigin(0.5);
+    this.chosenText = this.add.text(0, 158, '', { fontFamily: 'Georgia, serif', fontSize: '13px', color: '#5a3d22' }).setOrigin(0.5);
 
     // The bridge visual (deck + two supports + brace) over a gap.
     this.bridge = this.add.container(0, 232);
@@ -51,8 +51,8 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.bridge.add([this.brace, this.deck, this.supL, this.supR]);
     this.bridge.setVisible(false);
 
-    this.verdict = this.add.text(0, 288, '', { fontFamily: 'Arial', fontSize: '18px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
-    this.hint = this.add.text(0, 318, '◀ ▶ pick    E choose    Esc leave', { fontFamily: 'Arial', fontSize: '12px', color: '#bcd6ac' }).setOrigin(0.5);
+    this.verdict = this.add.text(0, 288, '', { fontFamily: 'Georgia, serif', fontSize: '18px', color: '#3a2a18', fontStyle: 'bold' }).setOrigin(0.5);
+    this.hint = this.add.text(0, 318, '◀ ▶ pick    E choose    Esc leave', { fontFamily: 'Georgia, serif', fontSize: '12px', color: '#6f5430' }).setOrigin(0.5);
     this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.roleHint, this.card, this.chosenText, this.bridge, this.verdict, this.hint]);
 
     this.registry.events.on('bridgeDesign:start', () => this.startFlow());
@@ -91,7 +91,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.title.setText('Plan the bridge repair');
     this.roleHint.setText('You need tested materials before you can choose.');
     this.verdict.setText('Test materials at the UTM first, then come back to design the bridge.');
-    this.verdict.setColor('#ffd27a');
+    this.verdict.setColor('#8a5a1a');
     this.hint.setText('E or Esc to head back');
     this._publish();
     this._narrate();
@@ -118,7 +118,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.candName.setText(c.name);
     // The evidence the player gathered at the UTM (their memory made visible).
     this.candEvidence.setText(c.safe ? `test: held the load (${c.band})` : 'test: snapped under load');
-    this.candEvidence.setColor(c.safe ? '#9affb0' : '#ff9b9b');
+    this.candEvidence.setColor(c.safe ? '#2f6b2a' : '#9a2f1a');
     const picks = ROLES.slice(0, this.roleIdx).map((r) => `${r.label}: ${this.candidates.find((x) => x.id === this.selection[r.key])?.name || '?'}`);
     this.chosenText.setText(picks.join('    '));
   }
@@ -163,7 +163,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
       this.supL.setFillStyle(0x86c06a); this.supR.setFillStyle(0x86c06a);
       this.tweens.add({ targets: this.bridge, y: 236, duration: 160, yoyo: true });
       this.verdict.setText('✅ The bridge holds! Strong parts carry the load.');
-      this.verdict.setColor('#9affb0');
+      this.verdict.setColor('#2f6b2a');
       this.hint.setText('E to finish');
       this.success = true;
     } else {
@@ -175,7 +175,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
       this.tweens.add({ targets: this.deck, angle: 10, y: 16, duration: 360, ease: 'Bounce.easeOut' });
       this.tweens.add({ targets: [this.supL], angle: 18, duration: 360 });
       this.verdict.setText(`💥 The ${weakRole?.role || 'bridge'} failed — ${result.explanation || 'weak material under load.'}`);
-      this.verdict.setColor('#ffb3b3');
+      this.verdict.setColor('#9a2f1a');
       this.hint.setText('E to redesign');
       this.success = false;
     }
