@@ -17,7 +17,9 @@ export class DebugDiagnosticSystem {
       .filter((quest) => quest.next && !state.quests.quests.some((candidate) => candidate.id === quest.next))
       .map((quest) => quest.id);
     const missingInteractionActions = sceneZones.filter((zone) => !zone.dialogueId && !zone.action).map((zone) => zone.id);
-    const unreachableInteractionZones = sceneZones.filter((zone) => zone.x < 0 || zone.y < 0 || zone.x > 1600 || zone.y > 1000).map((zone) => zone.id);
+    // Bounds match the NeighborhoodScene world (2560x1600); the wider-map + biome
+    // zones legitimately sit past the old 1600x1000 bound, so it must not flag them.
+    const unreachableInteractionZones = sceneZones.filter((zone) => zone.x < 0 || zone.y < 0 || zone.x > 2560 || zone.y > 1600).map((zone) => zone.id);
     const bridgeCorruption = state.bridge.bridgeReconnected && !state.bridge.plan;
     const audioState = this.runtime.audioSystem?.getState?.();
     const assetRegistryState = window.__GAME__?.getAssetRegistryState?.();

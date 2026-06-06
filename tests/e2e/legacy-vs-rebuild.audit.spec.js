@@ -256,7 +256,7 @@ test('REBUILD /game-rebuild runtime audit', async ({ page }) => {
   await page.screenshot({ path: `${DIR}/rebuild_02_dry_wash.png`, fullPage: true });
   await step('collect_materials', () => page.evaluate(() => window.__GAME__.handleInteraction('collect_materials')));
   await step('test_materials', () => page.evaluate(() =>
-    ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => window.__GAME__.testMaterial(id))));
+    ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => window.__GAME__.testMaterial(id))));
   await page.screenshot({ path: `${DIR}/rebuild_03_material_tests.png`, fullPage: true });
   await step('bridge_plan', () => page.evaluate(() => window.__GAME__.completeBridgePlan('tested_triangle_plan')));
   await step('repair_bridge', () => page.evaluate(() => window.__GAME__.repairBridge()));

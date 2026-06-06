@@ -173,7 +173,7 @@ test.describe('Act 1 polish hardening', () => {
 
     await page.evaluate(() => {
       window.__GAME__.handleInteraction('collect_materials');
-      ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => window.__GAME__.testMaterial(id));
+      ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => window.__GAME__.testMaterial(id));
     });
     const accepted = await page.evaluate(() => window.__GAME__.completeBridgePlan('tested_triangle_plan'));
     expect(accepted.ok).toBe(true);
@@ -190,19 +190,23 @@ test.describe('Act 1 polish hardening', () => {
 
     await page.evaluate(() => {
       window.__GAME__.handleInteraction('collect_materials');
-      ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => window.__GAME__.testMaterial(id));
+      ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => window.__GAME__.testMaterial(id));
       window.__GAME__.completeBridgePlan('tested_triangle_plan');
       window.__GAME__.repairBridge();
     });
 
     const state = await page.evaluate(() => window.__GAME__.getAct1State());
     expect(state.materialTests.tactileSummary.map((entry) => entry.materialId)).toEqual([
-      'mesquite',
+      'balsa',
+      'pine',
+      'bamboo',
+      'brick',
+      'concrete',
+      'iron',
       'steel',
-      'copper_brace',
-      'weak_scrap',
+      'carbon_fiber',
     ]);
-    expect(state.materialTests.tested.find((entry) => entry.materialId === 'weak_scrap').tactileCue).toContain('fails early');
+    expect(state.materialTests.tested.find((entry) => entry.materialId === 'balsa').tactileCue).toContain('fails too early');
     expect(state.bridge.repairMoment.childSummary).toContain('evidence');
     expect(state.bridge.crossingMoment.unlockHint).toContain('safe again');
     expect(state.notebook.unlocked).toContain('bridge_repaired');

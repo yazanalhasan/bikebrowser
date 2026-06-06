@@ -77,7 +77,7 @@ test.describe('game graphics reset route', () => {
       const game = window.__GAME__;
       game.handleInteraction('collect_materials');
       game.handleInteraction('ecology_patch');
-      ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => game.testMaterial(id));
+      ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => game.testMaterial(id));
       game.completeBridgePlan('tested_triangle_plan');
       game.repairBridge();
       game.unlockWiderMap();

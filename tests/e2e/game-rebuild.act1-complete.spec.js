@@ -16,10 +16,7 @@ test.describe('Act 1 complete substrate', () => {
       game.handleInteraction('bike_check');
       game.handleInteraction('dry_wash');
       game.handleInteraction('collect_materials');
-      game.testMaterial('mesquite');
-      game.testMaterial('steel');
-      game.testMaterial('copper_brace');
-      game.testMaterial('weak_scrap');
+      ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => game.testMaterial(id));
       game.completeBridgePlan('tested_triangle_plan');
       game.repairBridge();
       game.observeEcology('mesquite');

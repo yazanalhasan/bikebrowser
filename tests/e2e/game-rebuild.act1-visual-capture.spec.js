@@ -39,7 +39,7 @@ test.describe('Act 1 visual captures', () => {
     await page.evaluate(() => {
       window.__GAME__.handleInteraction('collect_materials');
       window.__GAME__.handleInteraction('ecology_patch');
-      ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => window.__GAME__.testMaterial(id));
+      ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => window.__GAME__.testMaterial(id));
     });
     await frame(page, 742, 408);
     await page.screenshot({ path: `${captureDir}/04_material_testing.png`, fullPage: true });
@@ -93,7 +93,7 @@ test.describe('Act 1 visual captures', () => {
       game.handleInteraction('bike_check');
       game.handleInteraction('collect_materials');
       game.handleInteraction('ecology_patch');
-      ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => game.testMaterial(id));
+      ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => game.testMaterial(id));
       game.completeBridgePlan('tested_triangle_plan');
       game.repairBridge();
       window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene').toggleNotebook();
