@@ -10,6 +10,8 @@ const ROLES = [
   { key: 'deck', label: 'DECK', hint: 'the part you ride across' },
   { key: 'support', label: 'SUPPORTS', hint: 'the legs that carry the load' },
   { key: 'brace', label: 'BRACE', hint: 'the triangle that stiffens it' },
+  { key: 'cable', label: 'CABLES', hint: 'the lines that pull the deck up — they work in tension' },
+  { key: 'foundation', label: 'FOUNDATIONS', hint: 'the anchors pressed into the ground — they work in compression' },
 ];
 
 export default class BridgeDesignScene extends Phaser.Scene {

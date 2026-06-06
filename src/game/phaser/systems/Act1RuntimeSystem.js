@@ -333,6 +333,8 @@ export class Act1RuntimeSystem {
     }
     this.unlockNotebookEntries(['bridge_plan']);
     ['choose_deck', 'choose_support', 'choose_brace'].forEach((id) => this.completeObjective(id));
+    if (selection.cable) this.completeObjective('choose_cable');
+    if (selection.foundation) this.completeObjective('choose_foundation');
     this.recordFeedback('bridge', `Bridge design accepted: ${result.explanation}`, result.plan);
     // Discovery: an engineering concept — a sound load path from tested parts.
     this.registerDiscovery({ id: 'concept_safe_load_path', category: 'engineering', title: 'Safe load path', detail: 'A bridge is only as strong as its weakest load-bearing part — choose tested, strong materials per role.', source: 'bridge' });

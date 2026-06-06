@@ -22,16 +22,16 @@ export class ConstructionSystem {
         explanation: 'Weak scrap alone bends too much and does not create a trustworthy load path.',
       };
     }
-    const requiredTests = ['mesquite', 'steel', 'copper_brace', 'weak_scrap'];
+    const requiredTests = ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'];
     const missingTests = requiredTests.filter((materialId) => !this.materialsLab.hasTested(materialId));
     if (missingTests.length) return { ok: false, reason: 'missing_tests', missingTests };
     this.plan = {
       id: planId,
-      deck: 'mesquite',
+      deck: 'bamboo',
       supports: 'steel',
-      braces: 'copper_brace',
-      rejects: ['weak_scrap'],
-      lesson: 'A deck, supports, and triangular braces carry load better than weak scrap alone.',
+      braces: 'carbon_fiber',
+      rejects: ['balsa', 'brick', 'concrete'],
+      lesson: 'A deck, supports, and triangular braces carry load better when the UTM proves they can handle tension and compression.',
       loadPath: ['deck', 'support', 'triangle_brace', 'ground'],
     };
     return { ok: true, plan: this.plan };
@@ -44,11 +44,16 @@ export class ConstructionSystem {
   // weakest part). The player can be wrong, learn exactly which role failed and
   // why, and improve by re-choosing.
   designBridge(selection = {}) {
+    // Phase 2 — Leonardo's 5-role builder. deck/supports/braces are always load-
+    // bearing; cables (tension) and foundations (compression) are added when the
+    // player fills those slots. Optional so existing 3-role debug designs still work.
     const roles = [
       ['deck', selection.deck],
       ['support', selection.support],
       ['brace', selection.brace],
     ];
+    if (selection.cable) roles.push(['cable', selection.cable]);
+    if (selection.foundation) roles.push(['foundation', selection.foundation]);
     const missingRoles = roles.filter(([, materialId]) => !materialId).map(([role]) => role);
     if (missingRoles.length) {
       return { ok: false, reason: 'incomplete_selection', missingRoles, explanation: `Choose a material for: ${missingRoles.join(', ')}.` };
@@ -81,8 +86,10 @@ export class ConstructionSystem {
       deck: selection.deck,
       supports: selection.support,
       braces: selection.brace,
+      cables: selection.cable,
+      foundations: selection.foundation,
       safe: true,
-      loadPath: ['deck', 'support', 'triangle_brace', 'ground'],
+      loadPath: ['deck', 'support', 'triangle_brace', 'cable', 'foundation', 'ground'],
       lesson: 'Each load-bearing part used a material the test proved safe, so the load path holds.',
     };
     return { ok: true, outcome: 'safe', plan: this.plan, evaluated, explanation: 'All parts passed the load test — the bridge has a safe load path.' };
@@ -130,3 +137,4 @@ export class ConstructionSystem {
     this.crossingMoment = state.crossingMoment || null;
   }
 }
+

@@ -19,6 +19,8 @@ const DEFAULT_SELECTION = {
   deck: 'bamboo',
   support: 'steel',
   brace: 'carbon_fiber',
+  cable: 'steel',
+  foundation: 'iron',
 };
 
 const MEMBER_TEMPLATES = [
@@ -29,6 +31,12 @@ const MEMBER_TEMPLATES = [
   { id: 'brace_left', role: 'brace', label: 'left tension brace', forceType: 'tension', x1: -112, y1: 78, x2: 0, y2: 0, loadFactor: 0.82, lateralFactor: 0.55, deflectionFactor: 0.72 },
   { id: 'brace_right', role: 'brace', label: 'right compression brace', forceType: 'compression', x1: 112, y1: 78, x2: 0, y2: 0, loadFactor: 0.74, lateralFactor: 0.9, deflectionFactor: 0.62 },
   { id: 'cross_tie', role: 'brace', label: 'lower tension tie', forceType: 'tension', x1: -112, y1: 78, x2: 112, y2: 78, loadFactor: 0.5, lateralFactor: 0.75, deflectionFactor: 0.5 },
+  // Phase 2 — Leonardo's cables (tension, lift the deck) and foundations (compression,
+  // anchor into the ground). Included only when the player fills those slots.
+  { id: 'cable_left', role: 'cable', label: 'left suspension cable', forceType: 'tension', x1: -150, y1: -2, x2: -60, y2: -56, loadFactor: 0.46, lateralFactor: 0.35, deflectionFactor: 0.55 },
+  { id: 'cable_right', role: 'cable', label: 'right suspension cable', forceType: 'tension', x1: 150, y1: -2, x2: 60, y2: -56, loadFactor: 0.46, lateralFactor: 0.35, deflectionFactor: 0.55 },
+  { id: 'foundation_left', role: 'foundation', label: 'left foundation', forceType: 'compression', x1: -112, y1: 82, x2: -112, y2: 112, loadFactor: 0.66, deflectionFactor: 0.18 },
+  { id: 'foundation_right', role: 'foundation', label: 'right foundation', forceType: 'compression', x1: 112, y1: 82, x2: 112, y2: 112, loadFactor: 0.66, deflectionFactor: 0.18 },
 ];
 
 function normalizeSelection(planOrSelection = {}) {
@@ -37,6 +45,8 @@ function normalizeSelection(planOrSelection = {}) {
     deck: source.deck || DEFAULT_SELECTION.deck,
     support: source.support || source.supports || DEFAULT_SELECTION.support,
     brace: source.brace || source.braces || DEFAULT_SELECTION.brace,
+    cable: source.cable || source.cables || null,
+    foundation: source.foundation || source.foundations || null,
   };
 }
 
@@ -74,7 +84,9 @@ export class StructuralModel {
 
   createMembers(planOrSelection = {}) {
     const selection = normalizeSelection(planOrSelection);
-    return MEMBER_TEMPLATES.map((template) => {
+    const templates = MEMBER_TEMPLATES.filter((t) =>
+      (t.role !== 'cable' || selection.cable) && (t.role !== 'foundation' || selection.foundation));
+    return templates.map((template) => {
       const materialId = selection[template.role] || DEFAULT_SELECTION[template.role];
       const material = this.materials.get(materialId) || this.materials.get(DEFAULT_SELECTION[template.role]);
       return {

@@ -68,6 +68,8 @@ export const act1Quests = [
       { id: 'choose_deck', label: 'Choose a deck material.', hook: 'bridge_plan' },
       { id: 'choose_support', label: 'Choose supports.', hook: 'bridge_plan' },
       { id: 'choose_brace', label: 'Choose triangular braces.', hook: 'bridge_plan' },
+      { id: 'choose_cable', label: 'Choose cables (they pull in tension).', hook: 'bridge_plan' },
+      { id: 'choose_foundation', label: 'Choose foundations (they press in compression).', hook: 'bridge_plan' },
     ],
     next: 'reconnect_crossing',
   },

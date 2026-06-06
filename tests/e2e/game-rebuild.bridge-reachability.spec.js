@@ -56,8 +56,8 @@ test.describe('Player reachability — bridge design', () => {
     await page.evaluate(() => {
       window.__GAME__.resetAct1();
       const runtime = window.__bikebrowserRebuildGame.registry.get('act1Runtime');
-      runtime.inventorySystem.addMany(['balsa', 'bamboo', 'steel', 'carbon_fiber']);
-      ['balsa', 'bamboo', 'steel', 'carbon_fiber'].forEach((id) => runtime.testMaterial(id));
+      runtime.inventorySystem.addMany(['balsa', 'bamboo', 'steel', 'carbon_fiber', 'iron']);
+      ['balsa', 'bamboo', 'steel', 'carbon_fiber', 'iron'].forEach((id) => runtime.testMaterial(id));
     });
 
     // Walk to the bridge workbench and press E to open the design overlay.
@@ -77,8 +77,8 @@ test.describe('Player reachability — bridge design', () => {
       await page.keyboard.press('KeyE');
     };
 
-    // Flawed design: weak balsa support -> it must fail visibly.
-    await pick('bamboo'); await pick('balsa'); await pick('carbon_fiber');
+    // Flawed design: weak balsa support -> it must fail visibly (5-role builder).
+    await pick('bamboo'); await pick('balsa'); await pick('carbon_fiber'); await pick('steel'); await pick('iron');
     await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result');
     await page.screenshot({ path: `${captureDir}/01_bridge_fail.png`, fullPage: true });
     const failOutcome = await page.evaluate(() => window.__BRIDGE_DESIGN__.outcome);
@@ -86,7 +86,7 @@ test.describe('Player reachability — bridge design', () => {
 
     // Iterate to a sound design: steel support -> it holds.
     await page.keyboard.press('KeyE'); // redesign
-    await pick('bamboo'); await pick('steel'); await pick('carbon_fiber');
+    await pick('bamboo'); await pick('steel'); await pick('carbon_fiber'); await pick('steel'); await pick('iron');
     await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result');
     await page.screenshot({ path: `${captureDir}/02_bridge_hold.png`, fullPage: true });
     expect(await page.evaluate(() => window.__BRIDGE_DESIGN__.outcome)).toBe('safe');

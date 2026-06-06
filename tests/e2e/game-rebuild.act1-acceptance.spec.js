@@ -230,15 +230,15 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
             }
             await page.keyboard.press('KeyE');
           };
-          // 1) flawed: weak balsa as the support -> the bridge fails.
-          await pick('bamboo'); await pick('balsa'); await pick('carbon_fiber');
+          // 1) flawed: weak balsa as the support -> the bridge fails (5-role builder).
+          await pick('bamboo'); await pick('balsa'); await pick('carbon_fiber'); await pick('steel'); await pick('iron');
           await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result');
           await page.screenshot({ path: `${captureDir}/08a_bridge_fail.png`, fullPage: true });
           const failed = await page.evaluate(() => window.__BRIDGE_DESIGN__.outcome);
           if (failed === 'safe') throw new Error('expected the weak-support design to fail');
           await page.keyboard.press('KeyE'); // redesign (iterate)
-          // 2) sound: steel support -> the bridge holds.
-          await pick('bamboo'); await pick('steel'); await pick('carbon_fiber');
+          // 2) sound: all-strong, steel cable (tension) + iron foundation (compression) -> holds.
+          await pick('bamboo'); await pick('steel'); await pick('carbon_fiber'); await pick('steel'); await pick('iron');
           await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result');
           await page.screenshot({ path: `${captureDir}/08b_bridge_hold.png`, fullPage: true });
           await page.keyboard.press('KeyE'); // finish
