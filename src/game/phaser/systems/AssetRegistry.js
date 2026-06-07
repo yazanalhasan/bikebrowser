@@ -71,6 +71,11 @@ export const ASSET_KEYS = {
   utmRigBackdrop: 'act1.prediction.backdrop.utm_rig',
   washCrossingBackdrop: 'act1.bridge.backdrop.wash_crossing',
   leonardoNotebookBackdrop: 'act1.bridge.backdrop.leonardo_notebook',
+  // Phase 4 — authored-in-Aseprite Leonardo page (raster). Preferred over the
+  // procedural backdrop above, which stays as a graceful fallback.
+  leonardoNotebookArt: 'act1.bridge.leonardo_notebook',
+  // Phase 4 — Leonardo "beam study" sketches, one per material (8-frame sheet).
+  materialParts: 'act1.bridge.material_parts.sheet',
   mesquitePlant: 'act1.ecology.mesquite.plant',
   creosotePlant: 'act1.ecology.creosote.plant',
   saguaroPlant: 'act1.ecology.saguaro.plant',
@@ -169,6 +174,22 @@ export function loadAct1RouteMarkerSheet(scene) {
 }
 
 export const ROUTE_MARKER_FRAME = { current: 0, quest: 1, locked: 2, complete: 3 };
+
+// Phase 4 — material "beam study" sketches authored in Aseprite
+// (scripts/art/gen_material_parts.lua). 8 frames, 128x48, used by the bridge
+// assembly tray in place of flat colored rectangles. Frame order is fixed.
+export const MATERIAL_PART_FRAME = {
+  balsa: 0, pine: 1, bamboo: 2, brick: 3, concrete: 4, iron: 5, steel: 6, carbon_fiber: 7,
+};
+
+export function loadAct1MaterialPartsSheet(scene) {
+  if (scene.textures.exists(ASSET_KEYS.materialParts)) return;
+  scene.load.spritesheet(
+    ASSET_KEYS.materialParts,
+    new URL('../../art/final/act1/material_parts.png', import.meta.url).href,
+    { frameWidth: 128, frameHeight: 48 },
+  );
+}
 
 export function loadAct1CharacterAnimationSheets(scene) {
   for (const sheet of ACT1_CHARACTER_ANIMATION_SHEETS) {

@@ -22,7 +22,9 @@ export default class LoadTestScene extends Phaser.Scene {
     this.done = false;
 
     this.panel = this.add.container(480, 210).setScrollFactor(0).setDepth(1400).setVisible(false);
-    const bg = this.add.image(0, 0, ASSET_KEYS.leonardoNotebookBackdrop).setOrigin(0.5, 0).setDisplaySize(600, 380);
+    // Phase 4 — prefer the Aseprite-authored Leonardo page, procedural fallback.
+    const leoKey = this.textures.exists(ASSET_KEYS.leonardoNotebookArt) ? ASSET_KEYS.leonardoNotebookArt : ASSET_KEYS.leonardoNotebookBackdrop;
+    const bg = this.add.image(0, 0, leoKey).setOrigin(0.5, 0).setDisplaySize(600, 380);
     this.title = this.add.text(0, 16, '', { fontFamily: 'Georgia, serif', fontSize: '22px', color: '#3a2a18', fontStyle: 'bold' }).setOrigin(0.5, 0);
     this.scenarioLabel = this.add.text(0, 48, '', { fontFamily: 'Georgia, serif', fontSize: '14px', color: '#5a3d22' }).setOrigin(0.5, 0);
     this.bridgeGfx = this.add.graphics();

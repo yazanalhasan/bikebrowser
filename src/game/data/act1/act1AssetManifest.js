@@ -429,6 +429,21 @@ export const act1AssetManifest = [
     sourceTool: 'UNKNOWN_DRAFT',
     approved: false,
   },
+  {
+    // Phase 4 — Leonardo's notebook page, authored headless in Aseprite
+    // (scripts/art/gen_leonardo_notebook.lua). Backs the bridge design /
+    // load-test scenes; the procedural backdrop remains a fallback.
+    id: 'leonardo_notebook',
+    placeholderKey: null,
+    finalKey: 'act1.bridge.leonardo_notebook',
+    finalPath: 'src/game/art/final/act1/leonardo_notebook.png',
+    sourcePath: 'src/game/art/source/aseprite/act1/leonardo_notebook.aseprite',
+    runtimeUrl: new URL('../../art/final/act1/leonardo_notebook.png', import.meta.url).href,
+    requiredForObservedExpected: false,
+    status: 'final_ready',
+    sourceTool: 'ASEPRITE_AUTHORED',
+    approved: true,
+  },
 ];
 
 export function getAct1AssetManifestState() {

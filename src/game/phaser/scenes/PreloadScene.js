@@ -2,6 +2,7 @@ import {
   createPlaceholderTextures,
   loadAct1CharacterAnimationSheets,
   loadAct1FinalAssets,
+  loadAct1MaterialPartsSheet,
   loadAct1RouteMarkerSheet,
 } from '../systems/AssetRegistry.js';
 import { Act1RuntimeSystem } from '../systems/Act1RuntimeSystem.js';
@@ -16,6 +17,7 @@ export default class PreloadScene extends Phaser.Scene {
     loadAct1FinalAssets(this);
     loadAct1CharacterAnimationSheets(this);
     loadAct1RouteMarkerSheet(this);
+    loadAct1MaterialPartsSheet(this);
   }
 
   create() {
