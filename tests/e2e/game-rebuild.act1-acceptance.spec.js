@@ -221,6 +221,14 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         // a sound design that holds. choice -> consequence -> iterate -> payoff.
         drive: async (page) => {
           await page.waitForFunction(() => window.__BRIDGE_DESIGN__ && window.__BRIDGE_DESIGN__.active === true);
+          // Choose the Truss family (deck/support/brace/cable/foundation build).
+          await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'family');
+          for (let g = 0; g < 8; g += 1) {
+            const cur = await page.evaluate(() => window.__BRIDGE_DESIGN__.families[window.__BRIDGE_DESIGN__.familyIndex].key);
+            if (cur === 'truss') break;
+            await page.keyboard.press('ArrowDown');
+          }
+          await page.keyboard.press('KeyE');
           const pick = async (materialId) => {
             await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'choose');
             for (let g = 0; g < 8; g += 1) {
@@ -228,17 +236,24 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
               if (cur === materialId) break;
               await page.keyboard.press('ArrowRight');
             }
-            await page.keyboard.press('KeyE');
+            await page.keyboard.press('KeyE'); // drop the held part into the active slot
+          };
+          // After every slot is filled the scene waits on the "Test Bridge" button.
+          const testBridge = async () => {
+            await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'ready');
+            await page.keyboard.press('KeyE'); // press Test Bridge -> runs the load solver
           };
           // 1) flawed: weak balsa as the support -> the bridge fails (5-role builder).
           await pick('bamboo'); await pick('balsa'); await pick('carbon_fiber'); await pick('steel'); await pick('iron');
+          await testBridge();
           await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result');
           await page.screenshot({ path: `${captureDir}/08a_bridge_fail.png`, fullPage: true });
           const failed = await page.evaluate(() => window.__BRIDGE_DESIGN__.outcome);
           if (failed === 'safe') throw new Error('expected the weak-support design to fail');
-          await page.keyboard.press('KeyE'); // redesign (iterate)
+          await page.keyboard.press('KeyE'); // rebuild (iterate)
           // 2) sound: all-strong, steel cable (tension) + iron foundation (compression) -> holds.
           await pick('bamboo'); await pick('steel'); await pick('carbon_fiber'); await pick('steel'); await pick('iron');
+          await testBridge();
           await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result');
           await page.screenshot({ path: `${captureDir}/08b_bridge_hold.png`, fullPage: true });
           await page.keyboard.press('KeyE'); // finish

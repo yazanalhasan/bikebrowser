@@ -67,6 +67,18 @@ test.describe('Player reachability — bridge design', () => {
     await page.keyboard.press('KeyE');
     await page.waitForFunction(() => window.__BRIDGE_DESIGN__ && window.__BRIDGE_DESIGN__.active === true, null, { timeout: 10_000 });
 
+    // Choose a bridge family first; the Truss is the deck/support/brace/cable/foundation build.
+    const chooseFamily = async (key) => {
+      await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'family');
+      for (let g = 0; g < 8; g += 1) {
+        const cur = await page.evaluate(() => window.__BRIDGE_DESIGN__.families[window.__BRIDGE_DESIGN__.familyIndex].key);
+        if (cur === key) break;
+        await page.keyboard.press('ArrowDown');
+      }
+      await page.keyboard.press('KeyE');
+    };
+    await chooseFamily('truss');
+
     const pick = async (materialId) => {
       await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'choose');
       for (let g = 0; g < 8; g += 1) {
@@ -74,19 +86,26 @@ test.describe('Player reachability — bridge design', () => {
         if (cur === materialId) break;
         await page.keyboard.press('ArrowRight');
       }
-      await page.keyboard.press('KeyE');
+      await page.keyboard.press('KeyE'); // drop the held part into the active slot
+    };
+    // Once every slot is filled the scene waits on the "Test Bridge" button.
+    const testBridge = async () => {
+      await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'ready');
+      await page.keyboard.press('KeyE'); // press Test Bridge -> runs the load solver
     };
 
     // Flawed design: weak balsa support -> it must fail visibly (5-role builder).
     await pick('bamboo'); await pick('balsa'); await pick('carbon_fiber'); await pick('steel'); await pick('iron');
+    await testBridge();
     await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result');
     await page.screenshot({ path: `${captureDir}/01_bridge_fail.png`, fullPage: true });
     const failOutcome = await page.evaluate(() => window.__BRIDGE_DESIGN__.outcome);
     expect(failOutcome).not.toBe('safe');
 
     // Iterate to a sound design: steel support -> it holds.
-    await page.keyboard.press('KeyE'); // redesign
+    await page.keyboard.press('KeyE'); // rebuild
     await pick('bamboo'); await pick('steel'); await pick('carbon_fiber'); await pick('steel'); await pick('iron');
+    await testBridge();
     await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result');
     await page.screenshot({ path: `${captureDir}/02_bridge_hold.png`, fullPage: true });
     expect(await page.evaluate(() => window.__BRIDGE_DESIGN__.outcome)).toBe('safe');

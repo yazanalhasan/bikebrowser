@@ -47,6 +47,10 @@ export class ConstructionSystem {
     // Phase 2 — Leonardo's 5-role builder. deck/supports/braces are always load-
     // bearing; cables (tension) and foundations (compression) are added when the
     // player fills those slots. Optional so existing 3-role debug designs still work.
+    // Phase (bridge families) — `bridgeType` is carried through to the plan so the
+    // payoff/notebook can name the family. The solver stays material-driven; the UI
+    // owns geometry (e.g. the Da Vinci arch validates its interlock before calling).
+    const bridgeType = selection.bridgeType || 'truss';
     const roles = [
       ['deck', selection.deck],
       ['support', selection.support],
@@ -83,6 +87,7 @@ export class ConstructionSystem {
     // All parts bridge-safe -> a trustworthy load path.
     this.plan = {
       id: 'player_designed',
+      bridgeType,
       deck: selection.deck,
       supports: selection.support,
       braces: selection.brace,

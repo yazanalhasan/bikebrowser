@@ -7,7 +7,10 @@ export const INTERACTION_CUES = {
   notebook_close: { label: 'Notebook close', volume: 0.12 },
   material_test: { label: 'Material test', volume: 0.18 },
   bridge_confirm: { label: 'Bridge confirmation', volume: 0.2 },
-  bridge_error: { label: 'Bridge not ready', volume: 0.1 },
+  bridge_error: { label: 'Bridge not ready', volume: 0.12, tone: { type: 'square', notes: [150], dur: 0.13 } },
+  // Phase (bridge families) — audible construction cues (Web Audio; Phaser audio off).
+  bridge_snap: { label: 'Part snaps in', volume: 0.18, tone: { type: 'triangle', notes: [330], dur: 0.09 } },
+  bridge_lock: { label: 'Locked / confirmed', volume: 0.2, tone: { type: 'triangle', notes: [440, 660], dur: 0.1 } },
   trust_gain: { label: 'Trust gain', volume: 0.16 },
   map_unlock: { label: 'Map unlock', volume: 0.22 },
   chemistry_success: { label: 'Chemistry success', volume: 0.16 },
@@ -380,10 +383,40 @@ export class Act1AudioSystem {
     }
   }
 
+  // A short synthesized blip for an interaction cue (Web Audio — works even with
+  // Phaser's audio module disabled). Only cues that declare a `tone` make sound.
+  _playCueTone(cue) {
+    if (typeof window === 'undefined' || !cue?.tone) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      this._sfxCtx = this._sfxCtx || new AC();
+      const ctx = this._sfxCtx;
+      if (ctx.state === 'suspended') ctx.resume();
+      const now = ctx.currentTime;
+      const { type = 'triangle', notes = [330], dur = 0.09 } = cue.tone;
+      const peak = Math.max(0.02, cue.volume ?? 0.15);
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        const t0 = now + i * (dur * 0.7);
+        gain.gain.setValueAtTime(0.0001, t0);
+        gain.gain.exponentialRampToValueAtTime(peak, t0 + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(t0);
+        osc.stop(t0 + dur + 0.02);
+      });
+    } catch { /* audio is best-effort */ }
+  }
+
   playInteractionCue(cueId) {
     const cue = INTERACTION_CUES[cueId] || { label: cueId, volume: 0.1 };
     if (this.settings.interactionCuesEnabled && !this.settings.reducedAudio) {
       this.cueLog.push({ cueId, label: cue.label, at: new Date().toISOString() });
+      this._playCueTone(cue);
     } else {
       this.cueLog.push({ cueId, label: cue.label, skipped: true, at: new Date().toISOString() });
     }
