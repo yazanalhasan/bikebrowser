@@ -1794,8 +1794,22 @@ export default class NeighborhoodScene extends Phaser.Scene {
           // on close completes spanish_neighbor + adds trust + unlocks Spanish)
           // once the intro is done. The dialogue's own effects do the work, so
           // we route the right one rather than calling handleInteraction twice.
+          // Congruence: the thank-you names the repair ("helped us trust the
+          // repair"), so it must wait for the crossing to actually hold — not
+          // merely for the wash intro. Before the repair she stays in concern.
           const introDone = this.runtime?.questSystem?.isObjectiveComplete('talk_neighbor');
-          if (!this.registry.get('dialogueActive')) this.registry.events.emit('dialogue:start', introDone ? 'spanish_trust' : 'wash_neighbor');
+          const bridgeRepaired = Boolean(this.runtime?.constructionSystem?.bridgeReconnected);
+          if (!this.registry.get('dialogueActive')) this.registry.events.emit('dialogue:start', introDone && bridgeRepaired ? 'spanish_trust' : 'wash_neighbor');
+        } else if (nearest.id === 'arabic_mentor') {
+          // Auntie Mariam: a warm welcome before the repair; the "you brought
+          // proof" gratitude (which completes arabic_mentor + adds trust) only
+          // once the crossing holds — otherwise she praises work not yet done.
+          const bridgeRepaired = Boolean(this.runtime?.constructionSystem?.bridgeReconnected);
+          if (bridgeRepaired) {
+            this.runtime?.handleInteraction('arabic_mentor');
+            this.registry.events.emit('quest:changed');
+          }
+          if (!this.registry.get('dialogueActive')) this.registry.events.emit('dialogue:start', bridgeRepaired ? 'arabic_welcome' : 'arabic_intro');
         } else if (nearest.action) {
           this.runtime?.handleInteraction(nearest.action);
           this.registry.events.emit('quest:changed');
@@ -1805,7 +1819,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
             this.registry.events.emit('crossing:start');
           }
         }
-        if (nearest.dialogueId && nearest.id !== 'neighbor' && !this.registry.get('dialogueActive')) {
+        if (nearest.dialogueId && nearest.id !== 'neighbor' && nearest.id !== 'arabic_mentor' && !this.registry.get('dialogueActive')) {
           // State-aware NPC dialogue: e.g. Mr. Chen stops saying the bridge is
           // closed once it is repaired. Resolve the line at interaction time.
           let dialogueId = nearest.dialogueId;
