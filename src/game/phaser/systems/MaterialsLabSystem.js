@@ -16,39 +16,58 @@ export class MaterialsLabSystem {
   testMaterial(materialId) {
     const material = this.materials.get(materialId);
     if (!material) return { ok: false, reason: 'unknown_material', materialId };
-    const score = Number(((material.tensileStrength + material.compressiveStrength + material.elasticity - material.brittleness + material.bridgeUsefulness) / 5).toFixed(2));
-    const deformation = Number((1 - material.elasticity + material.brittleness).toFixed(2));
+    const score = Number(((material.strength + material.stiffness + (11 - material.weight)) / 3).toFixed(2));
+    const brittle = material.curve.strainAtFailure <= 0.06;
+    const deformation = Number(Math.max(0.05, material.curve.strainAtFailure * (11 - material.stiffness)).toFixed(2));
     const usefulness = material.bridgeUsefulness;
-    const tactileCue = usefulness >= 0.8
-      ? 'The sample flexes slightly, then holds its shape under the press.'
-      : usefulness >= 0.55
-        ? 'The sample bends enough to notice, so Zuzu marks it as useful with limits.'
-        : 'The sample twists and fails early, which is useful evidence too.';
+    const bridgeSafe = usefulness >= 0.55;
+    const loadResult = bridgeSafe
+      ? usefulness >= 0.85 ? 'carried full load' : 'carried partial load'
+      : brittle ? 'cracked suddenly under load' : 'failed under load';
+    const tactileCue = bridgeSafe
+      ? brittle
+        ? 'The sample carries the load, but the curve warns that failure would come suddenly.'
+        : 'The sample flexes, then keeps carrying load with visible warning.'
+      : material.id === 'concrete'
+        ? 'The sample resists squeezing, but tension cracks open on the pulled side.'
+        : 'The sample fails too early, which is useful evidence too.';
     if (!this.tested.has(materialId)) this.testOrder.push(materialId);
     const result = {
       materialId,
-      displayName: material.displayName,
+      displayName: material.displayName || material.name,
+      name: material.name || material.displayName,
       score,
       testIndex: this.testOrder.indexOf(materialId) + 1,
       deformation,
-      deformationBand: deformation >= 1 ? 'fails visibly' : deformation >= 0.62 ? 'bends visibly' : 'holds shape',
-      strengthBand: usefulness >= 0.8 ? 'strong candidate' : usefulness >= 0.55 ? 'useful with limits' : 'comparison failure',
-      // Explicit engineering verdict (Phase 1.2): the player can see a poor
-      // material fail the load test and a good one pass — real differentiated
-      // outcomes, the evidence later phases (predict, bridge) build on.
-      bridgeSafe: usefulness >= 0.5 && deformation < 1,
-      loadResult: deformation >= 1 ? 'failed under load' : usefulness >= 0.8 ? 'carried full load' : 'carried partial load',
-      verdict: (usefulness >= 0.5 && deformation < 1)
-        ? `Safe for bridge load — good for ${material.bestUse}.`
-        : 'Not safe for bridge load — it bends and cracks too early.',
+      deformationBand: brittle ? 'brittle snap' : deformation >= 0.62 ? 'bends visibly' : 'holds shape',
+      strengthBand: bridgeSafe ? usefulness >= 0.85 ? 'strong candidate' : 'useful with limits' : 'comparison failure',
+      bridgeSafe,
+      loadResult,
+      verdict: bridgeSafe
+        ? `Safe for bridge load - good for ${material.bestUse}.`
+        : `Not safe for bridge load - ${material.failureMode}`,
       bridgeUsefulness: usefulness,
       tactileCue,
-      comparisonCue: `${material.displayName}: ${material.bestUse}; ${tactileCue}`,
+      comparisonCue: `${material.displayName || material.name}: ${material.bestUse}; ${tactileCue}`,
       explanation: material.childReadableDescription,
       bestUse: material.bestUse,
+      strength: material.strength,
+      stiffness: material.stiffness,
+      weight: material.weight,
+      failureMode: material.failureMode,
+      curve: { ...material.curve },
+      notes: { ...material.notes },
+      curveLesson: this._curveLesson(material),
     };
     this.tested.set(materialId, result);
     return { ok: true, result };
+  }
+
+  _curveLesson(material) {
+    const steep = material.stiffness >= 7 ? 'steep' : material.stiffness >= 4 ? 'moderate' : 'shallow';
+    const strain = material.curve.strainAtFailure <= 0.06 ? 'short' : material.curve.strainAtFailure >= 0.18 ? 'long' : 'medium';
+    if (material.id === 'concrete') return 'Concrete is high in compression but short in tension, so the curve drops after a small stretch.';
+    return `The curve is ${steep} and ${strain}: stiffness, strength, and warning before failure are separate clues.`;
   }
 
   hasTested(materialId) {
@@ -72,6 +91,7 @@ export class MaterialsLabSystem {
           deformationBand: result.deformationBand,
           strengthBand: result.strengthBand,
           bestUse: result.bestUse,
+          curve: result.curve,
         })),
     };
   }

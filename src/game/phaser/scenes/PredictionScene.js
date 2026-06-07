@@ -1,11 +1,13 @@
 import Phaser from 'phaser';
+import { act1Materials } from '../../data/act1/index.js';
 import { narratePanel, narrateText } from '../audio/sceneNarration.js';
 import { ASSET_KEYS } from '../systems/AssetRegistry.js';
 
-// Phase 1.9.2 / 1.9.2A-C — player-facing predict-before-test that feels like a
-// guess-and-check mini-game. The player SEES the beam hold / bend / break (not
-// just text), the loop always finishes with a summary and closes (never
-// trapped), and every result belongs to the action that made it.
+const UTM_MATERIAL_IDS = act1Materials.map((material) => material.id);
+
+// Player-facing predict-before-test UTM loop. Each tested material now draws its
+// stress-strain curve from the material catalog so strength, stiffness, and
+// brittle/ductile failure are visible evidence, not just text.
 export default class PredictionScene extends Phaser.Scene {
   constructor() {
     super('PredictionScene');
@@ -19,35 +21,37 @@ export default class PredictionScene extends Phaser.Scene {
     this.confidence = 2;
     this.results = [];
 
-    this.panel = this.add.container(480, 230).setScrollFactor(0).setDepth(1400).setVisible(false);
-    const bg = this.add.rectangle(0, 0, 580, 330, 0x10243a, 0.97).setOrigin(0.5, 0).setStrokeStyle(4, 0x7fd1ff, 1);
-    this.backdrop = this.add.image(0, 78, ASSET_KEYS.utmRigBackdrop).setOrigin(0.5, 0).setDisplaySize(524, 146).setVisible(false);
-    this.backdropFrame = this.add.rectangle(0, 78, 528, 150, 0x000000, 0).setOrigin(0.5, 0).setStrokeStyle(3, 0x7fd1ff, 0.92).setVisible(false);
-    this.textBand = this.add.rectangle(0, 8, 560, 70, 0x10243a, 0.82).setOrigin(0.5, 0).setVisible(false);
+    this.panel = this.add.container(480, 210).setScrollFactor(0).setDepth(1400).setVisible(false);
+    const bg = this.add.rectangle(0, 0, 600, 382, 0x10243a, 0.97).setOrigin(0.5, 0).setStrokeStyle(4, 0x7fd1ff, 1);
+    this.backdrop = this.add.image(0, 82, ASSET_KEYS.utmRigBackdrop).setOrigin(0.5, 0).setDisplaySize(538, 126).setVisible(false);
+    this.backdropFrame = this.add.rectangle(0, 82, 542, 130, 0x000000, 0).setOrigin(0.5, 0).setStrokeStyle(3, 0x7fd1ff, 0.92).setVisible(false);
+    this.textBand = this.add.rectangle(0, 8, 580, 72, 0x10243a, 0.82).setOrigin(0.5, 0).setVisible(false);
     this.title = this.add.text(0, 18, '', { fontFamily: 'Arial', fontSize: '22px', color: '#eaf6ff', fontStyle: 'bold' }).setOrigin(0.5, 0);
 
-    // Choice chips.
-    this.chips = this.add.container(0, 86);
-    this.holdBg = this.add.rectangle(-130, 0, 200, 88, 0x1f7a3a, 1).setStrokeStyle(4, 0x9affb0, 0);
-    this.breakBg = this.add.rectangle(130, 0, 200, 88, 0x9a2f2f, 1).setStrokeStyle(4, 0xffb0b0, 0);
+    this.chips = this.add.container(0, 96);
+    this.holdBg = this.add.rectangle(-130, 0, 200, 84, 0x1f7a3a, 1).setStrokeStyle(4, 0x9affb0, 0);
+    this.breakBg = this.add.rectangle(130, 0, 200, 84, 0x9a2f2f, 1).setStrokeStyle(4, 0xffb0b0, 0);
     this.chips.add([
-      this.holdBg, this.add.text(-130, -14, '💪', { fontSize: '32px' }).setOrigin(0.5), this.add.text(-130, 22, 'WILL HOLD', { fontFamily: 'Arial', fontSize: '15px', color: '#eafff0', fontStyle: 'bold' }).setOrigin(0.5),
-      this.breakBg, this.add.text(130, -14, '💥', { fontSize: '32px' }).setOrigin(0.5), this.add.text(130, 22, 'WILL BREAK', { fontFamily: 'Arial', fontSize: '15px', color: '#fff0f0', fontStyle: 'bold' }).setOrigin(0.5),
+      this.holdBg, this.add.text(-130, -8, 'HOLD', { fontFamily: 'Arial', fontSize: '24px', color: '#eafff0', fontStyle: 'bold' }).setOrigin(0.5), this.add.text(-130, 24, 'carries load', { fontFamily: 'Arial', fontSize: '13px', color: '#c8ffd6' }).setOrigin(0.5),
+      this.breakBg, this.add.text(130, -8, 'BREAK', { fontFamily: 'Arial', fontSize: '24px', color: '#fff0f0', fontStyle: 'bold' }).setOrigin(0.5), this.add.text(130, 24, 'fails early', { fontFamily: 'Arial', fontSize: '13px', color: '#ffd2d2' }).setOrigin(0.5),
     ]);
-    this.sureLabel = this.add.text(0, 148, 'how sure?', { fontFamily: 'Arial', fontSize: '12px', color: '#bcd6ec' }).setOrigin(0.5);
-    this.sureDots = [0, 1, 2].map((i) => this.add.circle(-18 + i * 18, 170, 7, 0x4a6076).setStrokeStyle(2, 0x9fc3e0));
+    this.sureLabel = this.add.text(0, 158, 'how sure?', { fontFamily: 'Arial', fontSize: '12px', color: '#bcd6ec' }).setOrigin(0.5);
+    this.sureDots = [0, 1, 2].map((i) => this.add.circle(-18 + i * 18, 180, 7, 0x4a6076).setStrokeStyle(2, 0x9fc3e0));
 
-    // The beam under load: straight (hold), tilted (bend), or snapped V (break).
-    this.beam = this.add.rectangle(0, 150, 240, 16, 0x9fc3e0).setOrigin(0.5).setVisible(false);
-    this.beamLeft = this.add.rectangle(0, 150, 122, 16, 0xff6b6b).setOrigin(1, 0.5).setVisible(false);
-    this.beamRight = this.add.rectangle(0, 150, 122, 16, 0xff6b6b).setOrigin(0, 0.5).setVisible(false);
-    this.weight = this.add.text(0, 120, '⬇', { fontSize: '22px' }).setOrigin(0.5).setVisible(false);
+    this.beam = this.add.rectangle(0, 160, 240, 16, 0x9fc3e0).setOrigin(0.5).setVisible(false);
+    this.beamLeft = this.add.rectangle(0, 160, 122, 16, 0xff6b6b).setOrigin(1, 0.5).setVisible(false);
+    this.beamRight = this.add.rectangle(0, 160, 122, 16, 0xff6b6b).setOrigin(0, 0.5).setVisible(false);
+    this.weight = this.add.text(0, 130, 'LOAD', { fontFamily: 'Arial', fontSize: '14px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5).setVisible(false);
 
-    this.verdict = this.add.text(0, 232, '', { fontFamily: 'Arial', fontSize: '19px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
-    this.explain = this.add.text(0, 262, '', { fontFamily: 'Arial', fontSize: '14px', color: '#cfe6fb', wordWrap: { width: 520 }, align: 'center' }).setOrigin(0.5, 0);
-    this.hint = this.add.text(0, 308, '← → pick    ↑ ↓ how sure    E to test    Esc to leave', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc3e0' }).setOrigin(0.5);
+    this.curveGraphics = this.add.graphics({ x: -250, y: 216 }).setVisible(false);
+    this.curveTitle = this.add.text(-250, 218, '', { fontFamily: 'Arial', fontSize: '12px', color: '#d8ecff', fontStyle: 'bold' }).setOrigin(0, 0).setVisible(false);
+    this.curveCaption = this.add.text(0, 332, '', { fontFamily: 'Arial', fontSize: '12px', color: '#cfe6fb', wordWrap: { width: 520 }, align: 'center' }).setOrigin(0.5, 0).setVisible(false);
 
-    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.chips, this.sureLabel, ...this.sureDots, this.beam, this.beamLeft, this.beamRight, this.weight, this.verdict, this.explain, this.hint]);
+    this.verdict = this.add.text(0, 268, '', { fontFamily: 'Arial', fontSize: '18px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
+    this.explain = this.add.text(0, 294, '', { fontFamily: 'Arial', fontSize: '13px', color: '#cfe6fb', wordWrap: { width: 520 }, align: 'center' }).setOrigin(0.5, 0);
+    this.hint = this.add.text(0, 364, 'Left/Right pick    Up/Down confidence    E test    Esc leave', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc3e0' }).setOrigin(0.5);
+
+    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.chips, this.sureLabel, ...this.sureDots, this.beam, this.beamLeft, this.beamRight, this.weight, this.curveGraphics, this.curveTitle, this.curveCaption, this.verdict, this.explain, this.hint]);
 
     this.registry.events.on('prediction:start', (materialIds) => this.startFlow(materialIds));
     this.keyHandler = (event) => this.onKey(event);
@@ -58,7 +62,7 @@ export default class PredictionScene extends Phaser.Scene {
 
   startFlow(materialIds) {
     const runtime = this.registry.get('act1Runtime');
-    const all = Array.isArray(materialIds) && materialIds.length ? materialIds : ['mesquite', 'steel', 'copper_brace', 'weak_scrap'];
+    const all = Array.isArray(materialIds) && materialIds.length ? materialIds : UTM_MATERIAL_IDS;
     this.queue = all.filter((id) => runtime?.inventorySystem?.has(id));
     if (!this.queue.length) return;
     this.index = 0;
@@ -69,28 +73,30 @@ export default class PredictionScene extends Phaser.Scene {
   }
 
   _resetBeam() {
-    this.beam.setVisible(true).setAngle(0).setFillStyle(0x9fc3e0);
-    this.beamLeft.setVisible(false).setAngle(0);
-    this.beamRight.setVisible(false).setAngle(0);
-    this.weight.setVisible(false).setY(120);
+    this.beam.setVisible(true).setPosition(0, 160).setAngle(0).setFillStyle(0x9fc3e0);
+    this.beamLeft.setVisible(false).setPosition(0, 160).setAngle(0);
+    this.beamRight.setVisible(false).setPosition(0, 160).setAngle(0);
+    this.weight.setVisible(false).setY(130);
   }
 
   _showChoose() {
     this.phase = 'choose';
     this._setBackdrop(ASSET_KEYS.utmRigBackdrop);
+    this._clearCurve();
     this.guess = 'hold';
     this.confidence = 2;
     const id = this.queue[this.index];
     const runtime = this.registry.get('act1Runtime');
-    const name = runtime?.materialsLabSystem?.materials.get(id)?.displayName || id;
-    this.title.setText(`(${this.index + 1}/${this.queue.length})  Will ${name} hold the load?`);
+    const material = runtime?.materialsLabSystem?.materials.get(id);
+    const name = material?.displayName || material?.name || id;
+    this.title.setText(`(${this.index + 1}/${this.queue.length}) Will ${name} hold the load?`);
     this.chips.setVisible(true);
     this.sureLabel.setVisible(true);
     this.sureDots.forEach((d) => d.setVisible(true));
     this._resetBeam();
     this.verdict.setText('');
     this.explain.setText('');
-    this.hint.setText('← → pick    ↑ ↓ how sure    E to test    Esc to leave');
+    this.hint.setText('Left/Right pick    Up/Down confidence    E test    Esc leave');
     this._render();
     this._publish();
     this._narrate();
@@ -127,44 +133,98 @@ export default class PredictionScene extends Phaser.Scene {
     runtime.predictMaterial(id, willHold, confidenceWord, `I think it will ${willHold ? 'hold' : 'break'}.`);
     const test = runtime.testMaterial(id);
     const result = test?.result || {};
-    const band = result.strengthBand; // 'strong candidate' | 'useful with limits' | 'comparison failure'
+    const band = result.strengthBand;
     const safe = Boolean(result.bridgeSafe);
     const matched = willHold === safe;
     const name = result.displayName || id;
-    // 1.9.2A — SEE the outcome: hold (straight, green), bend (tilt, amber), break (snap, red).
     const outcome = band === 'strong candidate' ? 'hold' : band === 'useful with limits' ? 'bend' : 'break';
     this.chips.setVisible(false);
+    this.sureLabel.setVisible(false);
+    this.sureDots.forEach((d) => d.setVisible(false));
     this.weight.setVisible(true);
     this._animateBeam(outcome);
-    const faces = { hold: '✅ it HELD', bend: '🟡 it BENT, but held', break: '💥 it SNAPPED' };
     this._setBackdrop(ASSET_KEYS.utmRigBackdrop);
-    this.verdict.setText(`${matched ? '✓' : '✗'}  you said ${willHold ? '💪 hold' : '💥 break'} — ${faces[outcome]}`);
+    this._drawCurve(result);
+    const faces = { hold: 'it held', bend: 'it bent, but held', break: 'it failed' };
+    this.verdict.setText(`${matched ? 'match' : 'revise'}: you said ${willHold ? 'hold' : 'break'} - ${faces[outcome]}`);
     this.verdict.setColor(matched ? '#9affb0' : '#ffd27f');
-    // 1.9.2C — the explanation names THIS material + result (no stale carryover).
     this.explain.setText(`${name}: ${result.verdict || ''}`);
-    this.hint.setText(this.index < this.queue.length - 1 ? 'E for next material    Esc to leave' : 'E for summary    Esc to leave');
+    this.hint.setText(this.index < this.queue.length - 1 ? 'E next material    Esc leave' : 'E summary    Esc leave');
     this.phase = 'result';
-    this.results.push({ id, name, outcome, matched, safe });
-    this._publish({ outcome, matched, materialId: id });
+    this.results.push({ id, name, outcome, matched, safe, curve: result.curve });
+    this._publish({ outcome, matched, materialId: id, curve: result.curve });
     this._narrate();
   }
 
   _animateBeam(outcome) {
-    this.tweens.add({ targets: this.weight, y: 150, duration: 260, ease: 'Quad.easeIn', yoyo: outcome !== 'break', hold: 40 });
+    this.tweens.add({ targets: this.weight, y: 160, duration: 260, ease: 'Quad.easeIn', yoyo: outcome !== 'break', hold: 40 });
     if (outcome === 'hold') {
       this.beam.setFillStyle(0x9affb0);
-      this.tweens.add({ targets: this.beam, y: 156, duration: 200, ease: 'Quad.easeOut', yoyo: true });
+      this.tweens.add({ targets: this.beam, y: 166, duration: 200, ease: 'Quad.easeOut', yoyo: true });
     } else if (outcome === 'bend') {
       this.beam.setFillStyle(0xffd27f);
-      this.tweens.add({ targets: this.beam, angle: 7, y: 158, duration: 320, ease: 'Sine.easeOut', yoyo: true, hold: 120 });
+      this.tweens.add({ targets: this.beam, angle: 7, y: 168, duration: 320, ease: 'Sine.easeOut', yoyo: true, hold: 120 });
     } else {
-      // break: hide the straight beam, snap into a broken V.
       this.beam.setVisible(false);
-      this.beamLeft.setVisible(true).setPosition(0, 150);
-      this.beamRight.setVisible(true).setPosition(0, 150);
-      this.tweens.add({ targets: this.beamLeft, angle: 24, y: 168, duration: 300, ease: 'Back.easeOut' });
-      this.tweens.add({ targets: this.beamRight, angle: -24, y: 168, duration: 300, ease: 'Back.easeOut' });
+      this.beamLeft.setVisible(true).setPosition(0, 160);
+      this.beamRight.setVisible(true).setPosition(0, 160);
+      this.tweens.add({ targets: this.beamLeft, angle: 24, y: 178, duration: 300, ease: 'Back.easeOut' });
+      this.tweens.add({ targets: this.beamRight, angle: -24, y: 178, duration: 300, ease: 'Back.easeOut' });
     }
+  }
+
+  _drawCurve(result = {}) {
+    const curve = result.curve;
+    this.curveGraphics.clear();
+    if (!curve) { this._clearCurve(); return; }
+    this.curveGraphics.setVisible(true);
+    this.curveTitle.setVisible(true).setText('stress-strain curve');
+    this.curveCaption.setVisible(true).setText(`${result.curveLesson || ''} Compression: ${result.notes?.compression || ''} Tension: ${result.notes?.tension || ''}`);
+
+    const w = 500;
+    const h = 92;
+    const pad = 12;
+    const x0 = pad;
+    const y0 = h - pad;
+    const xMax = w - pad;
+    const yMax = pad;
+    const maxStress = 10;
+    const maxStrain = 0.24;
+    const toX = (strain) => x0 + Math.min(strain / maxStrain, 1) * (xMax - x0);
+    const toY = (stress) => y0 - Math.min(stress / maxStress, 1) * (y0 - yMax);
+    const elasticX = toX(curve.elasticLimit);
+    const elasticY = toY(Math.min(curve.ultimateStress * 0.72, curve.ultimateStress));
+    const ultimateX = toX(curve.strainAtFailure * 0.82);
+    const ultimateY = toY(curve.ultimateStress);
+    const failureX = toX(curve.strainAtFailure);
+    const failureY = toY(Math.max(curve.ultimateStress * 0.18, 0.4));
+
+    this.curveGraphics.fillStyle(0x071524, 0.84).fillRoundedRect(0, 0, w, h, 6);
+    this.curveGraphics.lineStyle(2, 0x9fc3e0, 0.75).lineBetween(x0, yMax, x0, y0).lineBetween(x0, y0, xMax, y0);
+    this.curveGraphics.lineStyle(1, 0x31516c, 0.7);
+    for (let i = 1; i <= 4; i += 1) {
+      const gx = x0 + ((xMax - x0) * i) / 4;
+      const gy = y0 - ((y0 - yMax) * i) / 4;
+      this.curveGraphics.lineBetween(gx, yMax, gx, y0).lineBetween(x0, gy, xMax, gy);
+    }
+    this.curveGraphics.lineStyle(4, result.bridgeSafe ? 0x9affb0 : 0xff9b9b, 1);
+    this.curveGraphics.beginPath();
+    this.curveGraphics.moveTo(x0, y0);
+    this.curveGraphics.lineTo(elasticX, elasticY);
+    this.curveGraphics.lineTo(ultimateX, ultimateY);
+    this.curveGraphics.lineTo(failureX, failureY);
+    this.curveGraphics.strokePath();
+    this.curveGraphics.fillStyle(0xffd27f, 1).fillCircle(elasticX, elasticY, 4);
+    this.curveGraphics.fillStyle(0xffffff, 1).fillCircle(ultimateX, ultimateY, 4);
+    this.curveGraphics.fillStyle(0xff6b6b, 1).fillCircle(failureX, failureY, 4);
+    this.curveGraphics.fillStyle(0xcfe6fb, 1);
+    this.curveGraphics.fillRect(32, h - 8, 58, 2);
+  }
+
+  _clearCurve() {
+    this.curveGraphics.clear().setVisible(false);
+    this.curveTitle.setVisible(false).setText('');
+    this.curveCaption.setVisible(false).setText('');
   }
 
   _advance() {
@@ -176,21 +236,21 @@ export default class PredictionScene extends Phaser.Scene {
     this._showSummary();
   }
 
-  // 1.9.2B — exit flow: always finish with a clear summary, then close.
   _showSummary() {
     this.phase = 'summary';
     this._hideBackdrop();
+    this._clearCurve();
     this.chips.setVisible(false);
     this.sureLabel.setVisible(false);
     this.sureDots.forEach((d) => d.setVisible(false));
     this.beam.setVisible(false); this.beamLeft.setVisible(false); this.beamRight.setVisible(false); this.weight.setVisible(false);
     const held = this.results.filter((r) => r.outcome !== 'break').length;
-    const broke = this.results.filter((r) => r.outcome === 'break').length;
+    const failed = this.results.filter((r) => r.outcome === 'break').length;
     const right = this.results.filter((r) => r.matched).length;
-    this.title.setText('Test bench results');
-    this.verdict.setText(`${held} held · ${broke} snapped · you guessed ${right}/${this.results.length} right`);
+    this.title.setText('UTM material results');
+    this.verdict.setText(`${held} carried load - ${failed} failed - predictions ${right}/${this.results.length}`);
     this.verdict.setColor('#eaf6ff');
-    this.explain.setText('Strong materials carry the load; weak ones snap. Use the evidence when you build.');
+    this.explain.setText('Compression squeezes. Tension pulls. Strong materials are not always light, stiff materials are not always tough, and concrete needs tension help.');
     this.hint.setText('E to close');
     this._publish();
     this._narrate();
@@ -199,6 +259,7 @@ export default class PredictionScene extends Phaser.Scene {
   _finish() {
     this.phase = 'idle';
     this._hideBackdrop();
+    this._clearCurve();
     this.panel.setVisible(false);
     this.registry.set('modalActive', false);
     this.registry.events.emit('quest:changed');
@@ -212,9 +273,7 @@ export default class PredictionScene extends Phaser.Scene {
 
   _setBackdrop(key) {
     if (!key) { this._hideBackdrop(); return; }
-    // Re-apply display size after setTexture: setTexture resizes to the new
-    // texture's native frame, so the scale must be reset or the diorama blows up.
-    this.backdrop.setTexture(key).setOrigin(0.5, 0).setDisplaySize(524, 146).setVisible(true);
+    this.backdrop.setTexture(key).setOrigin(0.5, 0).setDisplaySize(538, 126).setVisible(true);
     this.backdropFrame.setVisible(true);
     this.textBand.setVisible(true);
   }
@@ -234,7 +293,7 @@ export default class PredictionScene extends Phaser.Scene {
       confidence: this.confidence,
       index: this.index,
       total: this.queue.length,
-      results: this.results.map((r) => ({ id: r.id, outcome: r.outcome, matched: r.matched })),
+      results: this.results.map((r) => ({ id: r.id, outcome: r.outcome, matched: r.matched, curve: r.curve })),
       ...extra,
     };
   }
