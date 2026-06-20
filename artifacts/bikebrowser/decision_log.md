@@ -26,6 +26,8 @@ Append-only record of material decisions and their rationale (arc.md-evaluated).
 | 18 | Created **art replacement proposals** (Dex sprite, Crossing backdrop, live SVG props) — proposals only, no swaps | live-asset replacement is human-gated (no local multimodal critique) | art_replacement_proposals/ |
 | 19 | Added **automated asset audit** script (objective checks only) | repeatable facts (dims/alpha/naming/manifest); flagged 8 dangling draft entries | scripts/art/asset_audit.mjs |
 | 20 | **FREEZE Act 1 scope** after playtest package | per directive; only bug fixes / text polish / art proposals / validated asset replacements / pacing / a11y until feedback | this turn |
+| 21 | **Act 1 readiness audit** (8 docs) under final_readiness/ | new-player lens; #1 finding: emotional setups are optional → payoffs vary by engagement | final_readiness/ |
+| 22 | **GO — release Act 1 for external playtest now** (option A) | stable + complete + emotionally legible; the open questions are playtest questions (engagement, payoff) that polishing can't answer; no Critical art or blockers | act1_go_no_go.md |
 
 ## Standing rules
 - arc.md wins all conflicts. Every change passes the decision test (deepen emotion +
