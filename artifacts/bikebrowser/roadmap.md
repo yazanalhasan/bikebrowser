@@ -3,6 +3,11 @@
 Anchored to arc.md. **Near-term axis = ship a memorable Act 1 / Chapter 1 (Sonoran
 bike) demo.** Everything beyond is arc.md roadmap, not current scope.
 
+> **🔒 ACT 1 SCOPE FROZEN (post playtest package).** Until external playtest feedback
+> returns, **do NOT add** new major quests, characters, mechanics, biomes, or
+> engines. **Allowed:** bug fixes, text polish, art replacement proposals, validated
+> asset replacements (human-gated), pacing improvements, accessibility fixes.
+
 ## Now — Act 1 polish to shippable + memorable (active)
 1. **Memorable moments (priority):** community-crossing payoff beat (Mateo crosses
    safely; the block reacts); more Zuzu reflections; small character callbacks.

@@ -21,8 +21,13 @@ Target: a polished, memorable, completable **Act 1 / Chapter 1** demo.
 
 ## Art
 - [x] DRAFT/watermarked assets purged from runtime + build (P0).
-- [ ] Art part B: live SVG placeholder props replaced via proposals (human review).
-- [ ] Unique Dex sprite (currently tinted placeholder).
+- [x] Automated asset audit script + report (`scripts/art/asset_audit.mjs` →
+      `asset_audit_latest.md`).
+- [x] Art replacement **proposals** written (Dex sprite, Crossing backdrop, live SVG
+      props) — `art_replacement_proposals/` (human-gated; not yet executed).
+- [x] Visual review pack captured (`visual_review_pack/`).
+- [ ] Art part B EXECUTED: live SVG props replaced via approved proposals.
+- [ ] Unique Dex sprite (currently tinted placeholder — proposal ready).
 - [ ] One scale/style enforced; chromatic-fringe frames cleaned.
 
 ## Hygiene / repo

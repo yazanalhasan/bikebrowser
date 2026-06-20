@@ -803,16 +803,16 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // attitude make him distinct. State-aware dialogue is resolved at interaction.
     const dexNpc = this.createAnimatedNpc({
       id: 'dex',
-      x: 1130,
-      y: 840,
+      x: 960,
+      y: 940,
       sheetKey: ASSET_KEYS.zuzuWalkSheet,
       fallbackKey: ASSET_KEYS.zuzu,
       animationKey: 'zuzu.idle',
       dialogueId: 'dex_intro',
     });
     dexNpc.setTint(0x5fc6d8);
-    this.add.text(1086, 916, 'Dex', npcLabelStyle());
-    this.drawNpcCue(1130, 810, 0x5fc6d8, 'star');
+    this.add.text(916, 1016, 'Dex', npcLabelStyle());
+    this.drawNpcCue(960, 910, 0x5fc6d8, 'star');
 
     const materialTable = this.layout.material_table;
     const trader = this.add.image(
@@ -841,8 +841,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
     });
     this.interactions.register({
       id: 'dex',
-      x: 1130,
-      y: 840,
+      x: 960,
+      y: 940,
       label: 'Talk to Dex',
       dialogueId: 'dex_intro',
     });

@@ -21,6 +21,11 @@ Append-only record of material decisions and their rationale (arc.md-evaluated).
 | 15 | Built the **Community Crossing Sequence** by expanding the existing CrossingScene BEATS engine (no new system) | the emotional climax of Act 1: show *why* the bridge mattered (people, not wood/steel); 6 scenes (Mateo crosses, Ramirez relief, Mariam's seeds, Dex's visible care, Chen's wordless pride, Zuzu reflection) | this turn |
 | 15a | Zuzu crossing line: selected "I thought I was fixing a bridge. Maybe I was building a way for people to come back to each other." (+ fuller notebook zuzu_crossing) | drafted 4 candidates (A directive-tone, B test-vs-people, C measured-vs-didn't, D selected); D is tight + memorable, notebook body fuses both north stars (evidence + community) | this turn |
 | 15b | Mr. Chen's scene has **no speech** (just pride) | directive + "show, don't tell"; the player *infers* his trust — stronger than exposition | this turn |
+| 16 | **Pushed** 4 local commits (2308e65, c5f98a3, 9aff628, dd00e10) + opened **PR #8** (base main) | user-authorized; Act-1 recovery → review | PR #8 |
+| 17 | Repositioned **Dex** (1130,840)→(960,940) | his sprite overlapped Mr. Chen (1140,800); low-risk presentation fix, verified via screenshot | this turn |
+| 18 | Created **art replacement proposals** (Dex sprite, Crossing backdrop, live SVG props) — proposals only, no swaps | live-asset replacement is human-gated (no local multimodal critique) | art_replacement_proposals/ |
+| 19 | Added **automated asset audit** script (objective checks only) | repeatable facts (dims/alpha/naming/manifest); flagged 8 dangling draft entries | scripts/art/asset_audit.mjs |
+| 20 | **FREEZE Act 1 scope** after playtest package | per directive; only bug fixes / text polish / art proposals / validated asset replacements / pacing / a11y until feedback | this turn |
 
 ## Standing rules
 - arc.md wins all conflicts. Every change passes the decision test (deepen emotion +

@@ -26,9 +26,22 @@ STEM-adventure. **Branch:** `eb/p0-defect-sweep`.
 - Optional: quest de-pad; push local commits; open PR.
 
 ## Local vs remote
-Pushed: P0, P1, branching-engine, branching-NPCs, Dex. **Local-only:** side quests
-(2308e65), heart-beats (c5f98a3). Ownership-memory docs (this turn) uncommitted.
-Pushes/commits need user approval (project governance).
+**All content pushed.** Branch `eb/p0-defect-sweep` (P0 → … → side quests →
+heart-beats → Community Crossing → ownership bibles) is on origin. **PR #8** open
+(base `main`): "BikeBrowser Act 1 Recovery, Narrative Depth, and Executive Brain
+Ownership" — not auto-merged. (A Dex-reposition + playtest-prep commit is the only
+post-push local change.)
+
+## Playtest readiness (Act 1)
+- Validation: build clean; smoke + act1-complete (save/resume) + bridge-reachability
+  + content drivers (side quests, Community Crossing) all green. See
+  `validation_report.md`.
+- Art part B (Dex sprite, Crossing backdrop, live SVG props) = **proposals written,
+  human-gated**; not done.
+- **Act 1 scope is FROZEN** (post playtest package): only fixes / polish / art
+  proposals / validated swaps / a11y until feedback.
+- Remaining before merge: full e2e suite + visual-snapshot reconciliation for the
+  added Dex NPC; remove 8 dangling draft manifest entries.
 
 ## Success criteria (arc.md-aligned)
 A player finishes Act 1 and **remembers Zuzu, Dex, Mr. Chen, Mrs. Ramirez, Auntie
