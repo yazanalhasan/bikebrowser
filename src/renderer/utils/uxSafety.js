@@ -29,9 +29,7 @@ export const UX_RULES = {
 // exempted. To exempt a new route, add an entry below and document the
 // AppLayout (or equivalent) line that bypasses the chrome.
 export const ROUTE_EXEMPTIONS = {
-  '/play': ['MUST_HAVE_HOME_BUTTON', 'MUST_HAVE_HEADER', 'MUST_HAVE_NAV_CONTAINER', 'NO_EMPTY_SCREEN'],
-  '/legacy-play': ['MUST_HAVE_HOME_BUTTON', 'MUST_HAVE_HEADER', 'MUST_HAVE_NAV_CONTAINER', 'NO_EMPTY_SCREEN'],
-  '/godot-prototype': ['MUST_HAVE_HOME_BUTTON', 'MUST_HAVE_HEADER', 'MUST_HAVE_NAV_CONTAINER', 'NO_EMPTY_SCREEN'],
+  // /play, /legacy-play, /godot-prototype quarantined (routes removed).
   '/game-rebuild': ['MUST_HAVE_HOME_BUTTON', 'MUST_HAVE_HEADER', 'MUST_HAVE_NAV_CONTAINER', 'NO_EMPTY_SCREEN'],
 };
 

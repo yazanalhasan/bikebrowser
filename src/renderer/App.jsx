@@ -17,10 +17,11 @@ const SafeSearchPage = lazy(() => import('./pages/SafeSearchPage'));
 const ShoppingPage = lazy(() => import('./pages/ShoppingPage'));
 const BuildPlannerPage = lazy(() => import('./pages/BuildPlannerPage'));
 const AllProjectNotesPage = lazy(() => import('./pages/AllProjectNotesPage'));
-const GamePage = lazy(() => import('./pages/GamePage'));
 const GameRebuildPage = lazy(() => import('./pages/GameRebuildPage'));
-const Game3DPage = lazy(() => import('./pages/Game3DPage'));
-const GodotPrototypePage = lazy(() => import('./pages/GodotPrototypePage'));
+// QUARANTINED abandoned parallel game implementations (kept on disk, not routed
+// or bundled): GamePage (legacy Phaser /legacy-play), Game3DPage (Three.js
+// prototype /play3d), GodotPrototypePage (Godot iframe /play, /godot-prototype).
+// The canonical playable experience is GameRebuildPage at /game-rebuild.
 const SpellingTrainerApp = lazy(() => import('./spellingTrainer/SpellingTrainerApp'));
 
 const VERSION_STORAGE_KEY = 'bikebrowser_cached_version';
@@ -76,11 +77,11 @@ function AppContent() {
           <Route path="/saved-notes" element={<AllProjectNotesPage />} />
           <Route path="/shop" element={<ShoppingPage />} />
           <Route path="/safe-search" element={<SafeSearchPage />} />
-          <Route path="/play" element={<GodotPrototypePage />} />
           <Route path="/game-rebuild" element={<GameRebuildPage />} />
-          <Route path="/legacy-play" element={<GamePage />} />
-          <Route path="/godot-prototype" element={<GodotPrototypePage />} />
-          <Route path="/play3d" element={<Game3DPage />} />
+          {/* Quarantined: /play, /legacy-play, /godot-prototype, /play3d removed.
+              The abandoned legacy-Phaser, Godot, and Three.js game prototypes are
+              kept on disk but no longer routed or bundled. /game-rebuild is the
+              single canonical playable experience. */}
           <Route path="/spelling-trainer" element={<SpellingTrainerApp />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

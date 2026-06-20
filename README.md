@@ -1,242 +1,68 @@
-# BikeBrowser - Kid Cognitive Browser
+# BikeBrowser — Educational STEM Adventure Game
 
-A specialized web browser designed for a 9-year-old with interests in bikes, e-bikes, dirt bikes, and engineering. Features AI-powered explanations, local bike shop finding, and curated marketplace browsing.
+BikeBrowser is a 2D educational adventure game. A child repairs bikes in the
+Sonoran Desert and learns real engineering and science by doing: testing
+materials on a Universal Testing Machine, designing a bridge against a real
+structural-stress model, and observing desert ecology — built around an
+**Observe → Predict → Engineer** pedagogy.
 
-## ✨ Features
+The authoritative design/vision document is [`arc.md`](./arc.md). This README is
+the practical entry point and reflects the **actual code** (verify against the
+source, not older docs).
 
-### Core Features (MVP)
-- 🎥 YouTube content ranking and filtering
-- 📚 Educational content prioritization
-- ✅ Channel trust system
-- 🎨 Child-friendly interface
-- 🛡️ Safety-first content scoring
+> **Doc status note:** Several legacy root docs (`STATUS.md`, `NEXT_STEPS.md`,
+> `DOCS_INDEX.md`, the `API_*`/`OPTIMIZATION_*`/`UX_*` files) describe an earlier,
+> now-secondary product (a kids' YouTube-ranking browser). They are stale. Trust
+> `arc.md` (vision), `docs/BACKLOG.md` (most accurate status), and this README.
 
-### AI-Powered Features (Phase 2)
-- 🧠 **OpenAI Integration** - Child-friendly explanations and content analysis
-- 📍 **Local Business Search** - Find bike shops and repair shops nearby (Google Places)
-- 🏍️ **Marketplace Browsing** - Discover bikes for sale safely (Marketcheck)
+## Tech stack
+- **Game engine:** Phaser 3 (2D) — `src/game/phaser/`
+- **Shell/UI:** React 18 + React Router, bundled by **Vite 5**
+- **Desktop:** optional Electron wrapper
+- **Art:** pixel-JRPG style (see `docs/game_rebuild/visual_bible.md`); Aseprite
+  source under `src/game/art/source/`
 
-## 🚀 Quick Start
+## The canonical game
+The single playable experience is the **Act 1 rebuild** at route **`/game-rebuild`**
+(`src/renderer/pages/GameRebuildPage.jsx` → `src/game/GameShell.jsx` →
+`src/game/phaser/createGame.js`). Act 1 is a completable ~30-minute slice:
+bike check → discover the broken wash crossing → collect & test materials →
+design and load-test a bridge → repair and cross → earn neighborhood trust →
+unlock the wider map.
 
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
+> Three earlier game prototypes (a legacy Phaser tree, a Three.js/R3F 3D
+> prototype, and a Godot iframe build) have been **quarantined** — kept on disk
+> but no longer routed or bundled. `/game-rebuild` is canonical.
 
-### Installation
-
-1. **Clone the repository**
-```bash
-cd bikebrowser
-```
-
-2. **Install dependencies**
+## Quick start
 ```bash
 npm install
+npm run dev:react        # Vite dev server (http://localhost:5173)
+# open http://localhost:5173/game-rebuild
 ```
 
-3. **Set up API keys** (optional but recommended)
-
-Create a `.env` file in the project root:
-
+Build a production bundle:
 ```bash
-OPENAI_API_KEY=sk-proj-your-openai-key-here
-GOOGLE_MAPS_API_KEY=AIzaSy-your-google-maps-key-here
-MARKETCHECK_API_KEY=your-marketcheck-key-here
+npm run build            # outputs to build/
 ```
 
-**Note:** The app works without API keys, but enhanced features (AI explanations, shop finder, marketplace) require them.
-
-4. **Run in development mode**
+## Tests
+End-to-end tests use Playwright against a **dedicated** dev server on port 5219
+(so they never collide with other apps that grab the default 5173):
 ```bash
-npm run dev
+npx playwright test                              # all e2e
+npx playwright test game-rebuild.smoke.spec.js   # boot smoke test
+# override the port if needed: BIKEBROWSER_E2E_PORT=5300 npx playwright test
 ```
 
-5. **Build for production**
-```bash
-npm run build
-npm run build:electron
-```
+## BikeBrowser+ pillars (context)
+The wider "BikeBrowser+" concept has additional learning pillars (a safe-search
+browser, a build planner, a shopping view, a spelling trainer). They exist under
+their own routes but the **game is the active development focus**; see `arc.md`.
 
-## 🔐 API Setup (Optional)
-
-To enable all features, you'll need API keys:
-
-1. **OpenAI (for AI explanations)**
-   - Sign up at https://platform.openai.com
-   - Create API key
-   - Add to `.env` as `OPENAI_API_KEY`
-
-2. **Google Maps Places (for local shop search)**
-   - Go to https://console.cloud.google.com
-   - Enable Places API
-   - Create API key
-   - Add to `.env` as `GOOGLE_MAPS_API_KEY`
-
-3. **Marketcheck (for bike listings)**
-   - Sign up at https://www.marketcheck.com
-   - Get API key
-   - Add to `.env` as `MARKETCHECK_API_KEY`
-
-**See `API_INTEGRATION.md` for detailed setup instructions.**
-
-## 📁 Project Structure
-
-```
-bikebrowser/
-├── src/
-│   ├── main/              # Electron main process
-│   │   └── main.js        # App entry, IPC handlers, API integration
-│   ├── preload/           # Preload scripts for IPC security
-│   │   └── preload.js     # Secure API bridge
-│   ├── renderer/          # React UI components
-│   │   ├── pages/         # Page components
-│   │   ├── components/    # Reusable UI components
-│   │   │   └── APIComponents.jsx  # NEW: API-powered components
-│   │   └── examples/      # Usage examples
-│   │       └── APIExamples.jsx    # NEW: API integration examples
-│   └── services/          # Backend services
-│       ├── rankingEngine.js       # YouTube ranking logic
-│       ├── youtubeScraper.js      # YouTube HTML parsing
-│       ├── fastRules.js           # Quick content scoring
-│       ├── featureExtractor.js    # Advanced feature analysis
-│       ├── db.js                  # SQLite database wrapper
-│       ├── aiService.js           # NEW: OpenAI integration
-│       ├── googlePlacesService.js # NEW: Google Places integration
-│       └── marketService.js       # NEW: Marketcheck integration
-├── data/                  # SQLite database
-├── .env                   # API keys (create this, NEVER commit!)
-├── .env.example           # Template for .env
-├── README.md              # This file
-├── PLANNING.md            # Full project roadmap
-├── DEVELOPMENT.md         # Developer documentation
-├── API_INTEGRATION.md     # Complete API guide
-└── API_QUICK_REFERENCE.md # Quick API reference
-```
-
-## 🛠️ Tech Stack
-
-### Core
-- **Electron 28** - Desktop app framework
-- **React 18** - UI framework
-- **Tailwind CSS 3** - Styling
-- **SQLite (better-sqlite3)** - Local database
-- **Vite 5** - Build tool
-
-### External APIs
-- **OpenAI API (GPT-4)** - AI explanations and content analysis
-- **Google Maps Places API** - Local business search
-- **Marketcheck API** - Vehicle/bike marketplace listings
-
-### Security
-- Context isolation enabled
-- Secure IPC bridge (contextBridge)
-- API keys isolated in main process
-- No Node.js access from renderer
-
-## 📖 Documentation
-
-- **[PLANNING.md](PLANNING.md)** - Complete project roadmap and vision
-- **[DEVELOPMENT.md](DEVELOPMENT.md)** - Developer guide and technical details
-- **[API_INTEGRATION.md](API_INTEGRATION.md)** - Complete API integration guide
-- **[API_QUICK_REFERENCE.md](API_QUICK_REFERENCE.md)** - Quick API reference
-- **[NEXT_STEPS.md](NEXT_STEPS.md)** - What to do next
-
-## 🎯 Usage Examples
-
-### Using AI Explanations
-```javascript
-// In any React component:
-const result = await window.api.ai.explain("how does a dirt bike engine work");
-console.log(result.explanation); // Kid-friendly explanation
-```
-
-### Finding Bike Shops
-```javascript
-const result = await window.api.places.findBikeShops("85255");
-result.shops.forEach(shop => {
-  console.log(shop.name, shop.address, shop.rating);
-});
-```
-
-### Browsing Bike Marketplace
-```javascript
-const result = await window.api.market.searchDirtBikes({
-  priceMax: 5000,
-  yearMin: 2018,
-  zip: "85255"
-});
-console.log(result.listings); // Array of bikes for sale
-```
-
-See [API_INTEGRATION.md](API_INTEGRATION.md) for complete examples and React components.
-
-## 🧪 Testing
-
-### Manual Testing
-```bash
-npm run dev
-```
-
-Then test each feature:
-1. Search for "bike repair" on home page
-2. Verify trusted channels appear with green badges
-3. Click "Explain This" on a video (requires OpenAI key)
-4. Navigate to marketplace (requires Marketcheck key)
-
-### Browser Console Testing
-```javascript
-// Test APIs directly
-window.api.ai.explain("how bikes work").then(console.log);
-window.api.places.findBikeShops("Phoenix AZ").then(console.log);
-window.api.market.searchDirtBikes({rows: 5}).then(console.log);
-```
-
-## 🚧 Current Status
-
-**✅ Completed:**
-- Full MVP implementation (Phase 1)
-- YouTube ranking and filtering
-- Trust list system
-- React UI with video playback
-- External API integration (OpenAI, Google Places, Marketcheck)
-- API security architecture
-- Comprehensive documentation
-
-**🔜 Next Steps:**
-- npm install and dependency setup
-- API testing with real keys
-- Frontend integration of API components
-- Enhanced UI polish
-- Parent dashboard (Phase 3)
-
-## 🤝 Contributing
-
-This is a personal project for a specific use case, but contributions are welcome!
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📝 License
-
-MIT License - See LICENSE file for details
-
-## ⚠️ Important Notes
-
-- **API keys are required** for enhanced features (explanations, shop finder, marketplace)
-- Never commit `.env` file to version control
-- The YouTube scraper may break if YouTube changes their HTML structure
-- This is an educational project - parental supervision recommended
-- API costs can add up - monitor usage and set billing alerts
-
-## 🙏 Acknowledgments
-
-- Built for a young bike enthusiast
-- Inspired by the need for safe, educational browsing
-- Thanks to the open-source community for the amazing tools
-
----
-
-**For detailed setup instructions, see [NEXT_STEPS.md](NEXT_STEPS.md)**
+## Key paths
+- Vision: `arc.md`
+- Canonical game: `src/game/phaser/createGame.js` + `src/game/phaser/systems/`
+- Entry: `src/game/GameShell.jsx` (route `/game-rebuild`)
+- Art bible: `docs/game_rebuild/visual_bible.md`
+- Status backlog: `docs/BACKLOG.md`

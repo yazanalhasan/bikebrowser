@@ -1,3 +1,7 @@
+> ⚠️ **STALE / ARCHIVED.** Describes the earlier YouTube-browser product (API
+> keys etc.), not the current game. For running/building/testing the game see
+> `README.md`; for vision see `arc.md`.
+
 # 🎯 Next Steps - BikeBrowser Setup
 
 ## Current Status ✅

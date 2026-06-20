@@ -1,3 +1,8 @@
+> ⚠️ **STALE / ARCHIVED.** This document describes an earlier product (a kids'
+> YouTube-ranking browser), not the current game. BikeBrowser is now an
+> educational STEM adventure game (Phaser). See `README.md` and `arc.md` for
+> current status; `docs/BACKLOG.md` for the live backlog.
+
 # BikeBrowser Project - Implementation Complete! 🎉
 
 ## What Was Built

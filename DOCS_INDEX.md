@@ -1,3 +1,7 @@
+> ⚠️ **STALE / ARCHIVED INDEX.** Indexes the earlier browser-era docs. Current
+> entry points: `README.md` (practical), `arc.md` (vision), `docs/BACKLOG.md`
+> (status).
+
 # 📚 BikeBrowser Documentation Index
 
 Welcome to BikeBrowser! This index will help you find the right documentation for your needs.
