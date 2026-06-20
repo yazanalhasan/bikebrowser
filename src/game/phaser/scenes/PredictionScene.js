@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { act1Materials } from '../../data/act1/index.js';
 import { narratePanel, narrateText } from '../audio/sceneNarration.js';
 import { ASSET_KEYS } from '../systems/AssetRegistry.js';
+import { materialVis, drawMaterialTexture } from '../systems/materialVisuals.js';
 
 const UTM_MATERIAL_IDS = act1Materials.map((material) => material.id);
 
@@ -38,7 +39,12 @@ export default class PredictionScene extends Phaser.Scene {
     this.sureLabel = this.add.text(0, 158, 'how sure?', { fontFamily: 'Arial', fontSize: '12px', color: '#bcd6ec' }).setOrigin(0.5);
     this.sureDots = [0, 1, 2].map((i) => this.add.circle(-18 + i * 18, 180, 7, 0x4a6076).setStrokeStyle(2, 0x9fc3e0));
 
+    // The sample under test. Its fill now carries MATERIAL IDENTITY (family
+    // colour + a texture in beamGrain) instead of a generic blue bar; the verdict
+    // rides on the outline + the stress-strain curve + the text. beamGrain shares
+    // the beam's tween targets so the grain bends/droops with it under load.
     this.beam = this.add.rectangle(0, 160, 240, 16, 0x9fc3e0).setOrigin(0.5).setVisible(false);
+    this.beamGrain = this.add.graphics({ x: 0, y: 160 }).setVisible(false);
     this.beamLeft = this.add.rectangle(0, 160, 122, 16, 0xff6b6b).setOrigin(1, 0.5).setVisible(false);
     this.beamRight = this.add.rectangle(0, 160, 122, 16, 0xff6b6b).setOrigin(0, 0.5).setVisible(false);
     this.weight = this.add.text(0, 130, 'LOAD', { fontFamily: 'Arial', fontSize: '14px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5).setVisible(false);
@@ -51,7 +57,7 @@ export default class PredictionScene extends Phaser.Scene {
     this.explain = this.add.text(0, 294, '', { fontFamily: 'Arial', fontSize: '13px', color: '#cfe6fb', wordWrap: { width: 520 }, align: 'center' }).setOrigin(0.5, 0);
     this.hint = this.add.text(0, 364, 'Left/Right pick    Up/Down confidence    E test    Esc leave', { fontFamily: 'Arial', fontSize: '12px', color: '#9fc3e0' }).setOrigin(0.5);
 
-    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.chips, this.sureLabel, ...this.sureDots, this.beam, this.beamLeft, this.beamRight, this.weight, this.curveGraphics, this.curveTitle, this.curveCaption, this.verdict, this.explain, this.hint]);
+    this.panel.add([bg, this.backdrop, this.backdropFrame, this.textBand, this.title, this.chips, this.sureLabel, ...this.sureDots, this.beam, this.beamGrain, this.beamLeft, this.beamRight, this.weight, this.curveGraphics, this.curveTitle, this.curveCaption, this.verdict, this.explain, this.hint]);
 
     this.registry.events.on('prediction:start', (materialIds) => this.startFlow(materialIds));
     this.keyHandler = (event) => this.onKey(event);
@@ -73,10 +79,21 @@ export default class PredictionScene extends Phaser.Scene {
   }
 
   _resetBeam() {
-    this.beam.setVisible(true).setPosition(0, 160).setAngle(0).setFillStyle(0x9fc3e0);
+    this.beam.setVisible(true).setPosition(0, 160).setAngle(0).setFillStyle(0x9fc3e0).setStrokeStyle();
     this.beamLeft.setVisible(false).setPosition(0, 160).setAngle(0);
     this.beamRight.setVisible(false).setPosition(0, 160).setAngle(0);
     this.weight.setVisible(false).setY(130);
+    if (this.beamGrain) this.beamGrain.setVisible(false).clear().setPosition(0, 160).setAngle(0);
+  }
+
+  // Paint the current material onto the beam: family fill + procedural texture,
+  // so the player sees WHAT they are about to test, not a generic bar.
+  _dressBeam(materialId) {
+    const vis = materialVis(materialId);
+    this._beamVis = vis;
+    this.beam.setFillStyle(vis.base).setStrokeStyle(3, 0x10243a, 0.55);
+    this.beamGrain.setVisible(true).setPosition(0, 160).setAngle(0);
+    drawMaterialTexture(this.beamGrain, vis, 116, 6, false);
   }
 
   _showChoose() {
@@ -94,6 +111,7 @@ export default class PredictionScene extends Phaser.Scene {
     this.sureLabel.setVisible(true);
     this.sureDots.forEach((d) => d.setVisible(true));
     this._resetBeam();
+    this._dressBeam(id);
     this.verdict.setText('');
     this.explain.setText('');
     this.hint.setText('Left/Right pick    Up/Down confidence    E test    Esc leave');
@@ -157,17 +175,23 @@ export default class PredictionScene extends Phaser.Scene {
   }
 
   _animateBeam(outcome) {
+    // Fill stays the material's colour throughout — the verdict is the outline:
+    // green (held), amber (bent but held), or the snapped red-edged halves.
+    const vis = this._beamVis || materialVis(this.queue[this.index]);
     this.tweens.add({ targets: this.weight, y: 160, duration: 260, ease: 'Quad.easeIn', yoyo: outcome !== 'break', hold: 40 });
     if (outcome === 'hold') {
-      this.beam.setFillStyle(0x9affb0);
-      this.tweens.add({ targets: this.beam, y: 166, duration: 200, ease: 'Quad.easeOut', yoyo: true });
+      this.beam.setStrokeStyle(4, 0x9affb0, 1);
+      this.tweens.add({ targets: [this.beam, this.beamGrain], y: 166, duration: 200, ease: 'Quad.easeOut', yoyo: true });
     } else if (outcome === 'bend') {
-      this.beam.setFillStyle(0xffd27f);
-      this.tweens.add({ targets: this.beam, angle: 7, y: 168, duration: 320, ease: 'Sine.easeOut', yoyo: true, hold: 120 });
+      this.beam.setStrokeStyle(4, 0xffd27f, 1);
+      this.tweens.add({ targets: [this.beam, this.beamGrain], angle: 7, y: 168, duration: 320, ease: 'Sine.easeOut', yoyo: true, hold: 120 });
     } else {
       this.beam.setVisible(false);
-      this.beamLeft.setVisible(true).setPosition(0, 160);
-      this.beamRight.setVisible(true).setPosition(0, 160);
+      this.beamGrain.setVisible(false);
+      // The sample snaps — the broken halves keep the material colour with a raw
+      // red fracture edge, so the player sees WHAT failed, not just a red bar.
+      this.beamLeft.setVisible(true).setPosition(0, 160).setFillStyle(vis.base).setStrokeStyle(3, 0x9a2f1a, 1);
+      this.beamRight.setVisible(true).setPosition(0, 160).setFillStyle(vis.base).setStrokeStyle(3, 0x9a2f1a, 1);
       this.tweens.add({ targets: this.beamLeft, angle: 24, y: 178, duration: 300, ease: 'Back.easeOut' });
       this.tweens.add({ targets: this.beamRight, angle: -24, y: 178, duration: 300, ease: 'Back.easeOut' });
     }
@@ -243,7 +267,7 @@ export default class PredictionScene extends Phaser.Scene {
     this.chips.setVisible(false);
     this.sureLabel.setVisible(false);
     this.sureDots.forEach((d) => d.setVisible(false));
-    this.beam.setVisible(false); this.beamLeft.setVisible(false); this.beamRight.setVisible(false); this.weight.setVisible(false);
+    this.beam.setVisible(false); this.beamGrain.setVisible(false); this.beamLeft.setVisible(false); this.beamRight.setVisible(false); this.weight.setVisible(false);
     const held = this.results.filter((r) => r.outcome !== 'break').length;
     const failed = this.results.filter((r) => r.outcome === 'break').length;
     const right = this.results.filter((r) => r.matched).length;

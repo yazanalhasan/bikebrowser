@@ -5,27 +5,10 @@ import { configureNeighborhoodCamera } from '../systems/CameraSystem.js';
 import { installCharacterArtAuditBridge } from '../systems/CharacterArtAuditBridge.js';
 import { act1Locations } from '../../data/act1/index.js';
 import { loadLayout } from '../../../renderer/game/utils/loadLayout.js';
+import { MATERIAL_VIS, drawMaterialTexture } from '../systems/materialVisuals.js';
 
 const USE_PROVENANCED_ENVIRONMENT_ASSETS =
   import.meta.env?.VITE_USE_PROVENANCED_ENVIRONMENT_ASSETS === 'true';
-
-// Per-material look for the UTM (load-testing machine) sample. Previously every
-// material rendered as the same flat teal bar tinted only by pass/fail — steel
-// and balsa were indistinguishable. Each material now reads as its own family
-// (warm pixel palette) with a simple texture, so the *identity* is visible while
-// the verdict still rides on the sample outline + comparison marks. `pattern` is
-// drawn procedurally (no painted asset), so this is a freeze-safe clarity edit.
-const MATERIAL_VIS = {
-  balsa: { base: 0xe7d6a2, detail: 0xc8b173, pattern: 'grain' },
-  pine: { base: 0xd2a062, detail: 0xa06a33, pattern: 'grain' },
-  bamboo: { base: 0xc4cf72, detail: 0x88a23e, pattern: 'segments' },
-  brick: { base: 0xb15538, detail: 0x7c3320, pattern: 'courses' },
-  concrete: { base: 0xb3ac9c, detail: 0x827b6b, pattern: 'speckle' },
-  iron: { base: 0x8a8c92, detail: 0x585b61, pattern: 'sheen' },
-  steel: { base: 0xc1c7d0, detail: 0x8b929c, pattern: 'sheen' },
-  carbon_fiber: { base: 0x33373d, detail: 0x6b7078, pattern: 'weave' },
-  _default: { base: 0xb9c7bf, detail: 0x6f8079, pattern: 'grain' },
-};
 
 export default class NeighborhoodScene extends Phaser.Scene {
   constructor() {
@@ -1147,41 +1130,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
   // brittle) onto the grain overlay, in the sample's local space (46x12,
   // centred). Kept to a few primitives so it reads at the in-world zoom.
   _drawMaterialTexture(vis, cracked) {
-    const g = this.utmVizGrain;
-    if (!g) return;
-    g.clear();
-    const w = 20; const h = 4; // inset half-extents within the 46x12 sample
-    g.lineStyle(1, vis.detail, 0.9);
-    switch (vis.pattern) {
-      case 'segments': // bamboo — node bands across the culm
-        [-10, 4].forEach((x) => g.lineBetween(x, -h, x, h));
-        break;
-      case 'courses': // brick — mortar joints, offset top/bottom courses
-        g.lineBetween(-w, 0, w, 0);
-        [-12, 0, 12].forEach((x) => g.lineBetween(x, -h, x, 0));
-        [-6, 6].forEach((x) => g.lineBetween(x, 0, x, h));
-        break;
-      case 'speckle': // concrete — aggregate flecks
-        g.fillStyle(vis.detail, 0.85);
-        [[-12, -1], [-4, 2], [5, -2], [12, 1], [0, -2]].forEach(([x, y]) => g.fillCircle(x, y, 1));
-        break;
-      case 'sheen': // metal — bright highlight band over a darker base line
-        g.lineStyle(2, 0xffffff, 0.45); g.lineBetween(-w, -h * 0.5, w, -h * 0.5);
-        g.lineStyle(1, vis.detail, 0.8); g.lineBetween(-w, h * 0.6, w, h * 0.6);
-        break;
-      case 'weave': // carbon fibre — fine parallel tows
-        for (let x = -w; x <= w; x += 5) g.lineBetween(x, -h, x, h);
-        break;
-      default: // grain — wood fibres run lengthwise
-        g.lineBetween(-w, -h * 0.4, w, -h * 0.4);
-        g.lineBetween(-w, h * 0.5, w, h * 0.5);
-    }
-    if (cracked) { // jagged fracture — the brittle-snap teaching beat
-      g.lineStyle(1.6, 0x9a2f1a, 1);
-      g.beginPath();
-      g.moveTo(0, -h - 2); g.lineTo(-3, -1); g.lineTo(3, 2); g.lineTo(-1, h + 2);
-      g.strokePath();
-    }
+    drawMaterialTexture(this.utmVizGrain, vis, 20, 4, cracked);
   }
 
   resetUtmVisualizer() {
