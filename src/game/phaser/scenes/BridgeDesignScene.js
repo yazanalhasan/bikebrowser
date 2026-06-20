@@ -54,6 +54,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.heldIdx = null;   // null = nothing picked up yet; E will NOT place until a material is chosen
     this._dragStarted = false; // distinguishes a click-to-select from a drag-to-place
     this.heldRot = 0;
+    this._lastActiveKey = null; // tracks slot changes so each slot defaults to its ideal orientation
     this.selection = {};
     this.placed = {};
     this.trayPieces = [];
@@ -234,8 +235,13 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.testBtn.setVisible(false);
     this.verdict.setText('');
     this.title.setText('Assemble the truss bridge');
-    this.trayLabel.setText('Tested parts — pick one (◀ ▶ or click/drag), then place it');
-    this.hint.setText('1) ◀ ▶ choose material   2) E place into slot   ·   R rotate   ⌫ remove   Esc leave');
+    this.trayLabel.setText('Tested parts — the label is what your UTM test found. Pick one (◀ ▶ / click / drag), then place.');
+    this.hint.setText('1) ◀ ▶ choose material   2) E place into slot   ·   R angle (brace = triangle)   ⌫ remove   Esc leave');
+    // Each slot starts at its ideal orientation (deck flat, support upright, brace
+    // a diagonal triangle) so the straightforward placement is already sound; R lets
+    // the player change it (and learn that a flat brace — a rectangle — deforms).
+    const az = this._activeZone();
+    if (az && az.key !== this._lastActiveKey) { this.heldRot = az.ideal; this._lastActiveKey = az.key; }
     this._refreshSubtitle();
     this._highlightHeld();
     this._drawMeters();
@@ -254,11 +260,16 @@ export default class BridgeDesignScene extends Phaser.Scene {
       return;
     }
     const req = ROLE_REQUIREMENTS[z.key];
+    // Brace teaches geometry too: a diagonal is a triangle (resists); flat/upright
+    // is a rectangle (deforms). Show the current shape so R has visible meaning.
+    const braceNote = z.key === 'brace'
+      ? (this._rotIsTriangle(this.heldRot) ? '  Shape: triangle ✓ (R to change)' : '  ⚠ Shape: rectangle — R to angle a triangle')
+      : '';
     if (this.heldIdx === null) {
       // Empty-handed: name WHAT this slot needs (the property), then ask the
       // player to choose — so the decision is "match the property to the job".
       const need = req ? `  Needs ${req.needs}.` : '';
-      this.subtitle.setText(`Slot: ${z.label} — ${z.hint}.${need}   Pick a material:  ◀ ▶  (or click / drag a part).`);
+      this.subtitle.setText(`Slot: ${z.label} — ${z.hint}.${need}${braceNote}   Pick a material:  ◀ ▶  (or click / drag).`);
       return;
     }
     const held = this.candidates[this.heldIdx];
@@ -267,7 +278,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     // Role-aware coaching: does THIS material suit THIS job, and why?
     const judge = req ? (fit.fits ? `✓ ${req.good}` : `⚠ ${req.bad}`) : '';
     const lead = req ? `${z.label} needs ${req.needs}. ` : '';
-    this.subtitle.setText(`${lead}${held ? held.name : '—'}: ${judge}.   E place  ·  ◀ ▶ change.`);
+    this.subtitle.setText(`${lead}${held ? held.name : '—'}: ${judge}.${braceNote}   E place  ·  ◀ ▶ change.`);
   }
 
   _drawGhost() {
@@ -333,14 +344,30 @@ export default class BridgeDesignScene extends Phaser.Scene {
     }
     const dark = matId === 'carbon_fiber' || matId === 'iron';
     const name = this.add.text(0, -1, cand.name || matId, { fontFamily: 'Georgia, serif', fontSize: '12px', color: dark ? '#f4eccf' : '#2a1d10', fontStyle: 'bold', stroke: dark ? '#1a1d24' : '#f0e6c8', strokeThickness: 3 }).setOrigin(0.5);
-    const verdict = this.add.text(0, h / 2 + 1, cand.safe ? '✓ held' : '✗ snapped', { fontFamily: 'Georgia, serif', fontSize: '9px', color: cand.safe ? '#2f6b2a' : '#9a2f1a' }).setOrigin(0.5, 0);
+    // Phase 2b — de-leak: instead of a ✓held / ✗snapped *answer*, show the EVIDENCE
+    // the player's UTM test found (what the material is good at). They must infer
+    // which role it suits (squeezing→support/foundation, pulling→cable, stiff→deck).
+    const evidence = this.add.text(0, h / 2 + 1, this._evidenceTag(matId), { fontFamily: 'Georgia, serif', fontSize: '9px', color: dark ? '#d9cfae' : '#5a4a30' }).setOrigin(0.5, 0);
     const ring = this.add.rectangle(0, 0, w + 8, h + 8, 0x000000, 0).setStrokeStyle(3, 0xe0a93a, 0).setName('ring');
-    const warn = this.add.text(w / 2 - 2, -h / 2 - 2, cand.safe ? '' : '⚠', { fontSize: '13px', color: '#c4471f' }).setOrigin(1, 1);
-    c.add([base, ring, name, verdict, warn]);
+    c.add([base, ring, name, evidence]);
     c.setData('matId', matId);
     c.setData('safe', cand.safe);
     c.setData('base', base);
     return c;
+  }
+
+  // A short, honest evidence line from the UTM measurements — the material's
+  // standout property (or that it's weak/light), NOT a bridge pass/fail verdict.
+  _evidenceTag(matId) {
+    const m = this.matById.get(matId);
+    if (!m) return 'tested';
+    const C = m.compressiveStrength ?? 0; const T = m.tensileStrength ?? 0; const S = m.elasticity ?? 0;
+    // All-rounders (steel/carbon/iron) read honestly, not as one-trick "squeezing".
+    if (C >= 0.7 && T >= 0.7 && S >= 0.7) return 'strong all-round';
+    const [topName, topV] = [['squeezing', C], ['pulling', T], ['stiffness', S]].sort((a, b) => b[1] - a[1])[0];
+    if (topV >= 0.7) return `strong: ${topName}`;   // e.g. concrete/brick -> squeezing
+    if (topV >= 0.5) return `ok: ${topName}`;
+    return (m.weight ?? 5) <= 2 ? 'very light, weak' : 'weak under load';
   }
 
   _paintPiece(piece, mode) {
@@ -459,9 +486,20 @@ export default class BridgeDesignScene extends Phaser.Scene {
   _rotateHeld() {
     this.heldRot = (this.heldRot + ROT_STEP) % 180;
     this._highlightHeld();
-    const z = this._activeZone();
-    if (z) this.subtitle.setText(`Holding ${this.candidates[this.heldIdx]?.name} at ${this.heldRot}°. ${z.label} likes ${z.ideal}° — ${z.tip}.`);
+    this._refreshSubtitle(); // reflects the brace triangle/rectangle shape note
     this._publish();
+  }
+
+  // A diagonal (45° or 135°) is a triangle; flat (0°) / upright (90°) is a rectangle.
+  _rotIsTriangle(rot) {
+    const a = (((Math.round(rot) % 180) + 180) % 180);
+    return a === 45 || a === 135;
+  }
+
+  _braceIsTriangle() {
+    const p = this.placed.brace;
+    if (!p) return true; // not placed yet -> not a geometry failure
+    return this._rotIsTriangle(p.angle);
   }
 
   // ========================================================================
@@ -815,6 +853,21 @@ export default class BridgeDesignScene extends Phaser.Scene {
   // ========================================================================
   _testBridge() {
     if (this.bridgeType === 'davinci') { this._testDavinci(); return; }
+    // Geometry gate (UI-owned, like Da Vinci): a flat / upright brace is a
+    // rectangle and racks under load. The triangle lesson runs before the material
+    // solver. (Each slot defaults to a triangle, so this only fires if the player
+    // deliberately rotated the brace flat.)
+    if (this.placed.brace && !this._braceIsTriangle()) {
+      this._enterResult();
+      this.trayPieces.forEach((p) => p.setVisible(false));
+      const part = this.placed.brace;
+      this._paintPiece(part, 'fail');
+      this.tweens.add({ targets: part, x: { from: part.x, to: part.x + 10 }, duration: 90, yoyo: true, repeat: 3 });
+      this._failVerdict('💥 A flat brace makes a rectangle, and rectangles rack and deform. Angle the brace into a diagonal triangle (press R) — triangles resist the load.');
+      this._publish({ outcome: 'unsafe', built: true, failedRole: 'brace', failedReason: 'geometry' });
+      narrateText(this, this.verdict.text);
+      return;
+    }
     const runtime = this.registry.get('act1Runtime');
     const result = runtime.designBridge({ bridgeType: 'truss', ...this.selection });
     this._enterResult();
@@ -959,6 +1012,8 @@ export default class BridgeDesignScene extends Phaser.Scene {
       candidateIndex: this.heldIdx,
       candidates: this.candidates.map((c) => c.id),
       heldRotation: this.heldRot,
+      braceRot: this.placed.brace ? (((Math.round(this.placed.brace.angle) % 180) + 180) % 180) : null,
+      braceIsTriangle: this._braceIsTriangle(),
       selection: { ...this.selection },
       // family selector
       families: BRIDGE_FAMILIES.map((f) => ({ key: f.key, status: f.status })),
