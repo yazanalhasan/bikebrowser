@@ -20,9 +20,22 @@ STEM-adventure. **Branch:** `eb/p0-defect-sweep`.
 | Emotional heart-beats (5 characters) | ✅ |
 | Ownership memory (bibles, analysis, this set) | ✅ (this turn) |
 
+## Voice & audio identity (2026-06-20)
+- **Root-cause fix:** XTTS `CHARACTER_VOICES` (`brain/voice/config.py`) was keyed by
+  legacy npc-ids; the game sends runtime voiceIds, so only narrator/trader resolved —
+  the **whole emotional cast was on browser TTS**. Re-keyed to voiceIds; all five
+  leads now resolve to a studio speaker. **Dex → Andrew Chipper** (provisional).
+- **Strategy:** XTTS = sufficient for Act-1 **playtest** (local/free/now cast-complete);
+  **production = pre-rendered audio off a commercial engine** (ElevenLabs/Azure) —
+  XTTS-v2 weights are CPML non-commercial, dev-only.
+- **Open:** GPU **audition** to lock Dex/Zuzu/Mariam speakers; verify EB inspector
+  voiceId→character wiring + Arabic routing; (later) pre-render pipeline.
+- Full set: `artifacts/bikebrowser/audio/voice_system_audit.md` (+8 docs).
+
 ## In progress / next
 - Memorable-moments content (community crossing payoff; more Zuzu reflections).
 - Art part B (replacement proposals; human-gated).
+- **Voice audition** of provisional XTTS speakers on the GPU box (highest-impact audio).
 - Optional: quest de-pad; push local commits; open PR.
 
 ## Local vs remote

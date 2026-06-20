@@ -7,7 +7,9 @@ heart-beats shipped through commit c5f98a3.
 
 Voice profiles live in `src/game/phaser/audio/NPCVoiceRegistry.js`. Dialogue lives
 in `src/game/data/act1/act1Dialogue.js`. Notebook reflections in
-`act1NotebookEntries.js`.
+`act1NotebookEntries.js`. **How each character should *sound* is canon in
+`artifacts/bikebrowser/audio/voice_direction_bible.md`** (XTTS speaker assignments +
+must/must-not per character).
 
 ---
 
@@ -32,8 +34,11 @@ in `src/game/data/act1/act1Dialogue.js`. Notebook reflections in
 
 ## Dex — the recurring rival
 - **Identity:** cocky "just send it" BMX kid. Foil to test-before-trust. Voice fast,
-  bright, brash but **never mean** (rate 1.06, pitch 1.12). Reuses the kid sprite +
-  teal tint (placeholder; unique sprite is an art part-B item).
+  bright, brash but **never mean** (browser-fallback tuning rate 1.16, pitch 1.34;
+  XTTS speaker **Andrew Chipper**, provisional — audition pending, see
+  `audio/dex_voice_evaluation.md`). The voice MUST be able to **crack into sincerity**
+  for `dex_heart_kind` / the Crossing — a flat brash read fails his arc. Reuses the kid
+  sprite + teal tint (placeholder; unique sprite is an art part-B item).
 - **Goals:** to look fearless and fast; secretly, to be taken seriously.
 - **Fears:** humiliation. Being laughed at.
 - **Why he acts reckless (core):** he once measured carefully and it **still broke**,

@@ -10,6 +10,9 @@ Records which AI/specialist handles which task and why. Routing policy:
 | Large-scale code iteration / experiments | Codex | breadth | DeepSeek (API; not local) |
 | Art generation (pixel/concept) | **ComfyUI + SDXL (local GPU)** + Aseprite | egress-free, on-prem | Meshy/Hunyuan (3D only) |
 | Art *quality judgment* | **Human** | no local multimodal critique | hosted vision model |
+| Voice / TTS (dev + playtest) | **XTTS v2 (local GPU)** via EB `/inspect/tts` | expressive, egress-free, free | browser Web Speech (safety net) |
+| Voice *audition / quality judgment* | **Human (GPU box)** | no local audio critique here; speaker timbre must be heard | — |
+| Voice / TTS (production) | **Pre-rendered ElevenLabs / Azure** (baked assets) | commercial license + expressiveness; XTTS-v2 is CPML non-commercial | Piper (free, lower expressiveness) |
 | E2E validation / browser automation | **Playwright** | deterministic runtime checks | — |
 | Local LLM drafting (egress-free) | **Ollama qwen2.5 32B/72B** (dual RTX 5090) | private, free | — |
 
@@ -19,6 +22,7 @@ Records which AI/specialist handles which task and why. Routing policy:
 | This session | All P0/P1/Item-7 dialogue, quests, characters, heart-beats, bibles | Claude (direct edits) | shipped + validated (build+smoke) |
 | This session | Build/smoke validation | Playwright + vite | green throughout |
 | (Available, unused) | Real-executor code mutation | Codex via EB governed registry | not needed; edits direct + reviewable |
+| 2026-06-20 | Voice & Audio Identity mission (audit, direction bible, Dex eval, prod strategy, pre-render design, playtest Qs) + XTTS cast mapping fix | Claude (direct) | shipped; config parses + cast resolves; speaker picks provisional pending **human GPU audition** |
 
 ## Policy notes
 - BikeBrowser is a governed EB project (codex/openclaw/playwright/visual_analysis

@@ -44,11 +44,28 @@ RESOURCE_BUDGET: dict = {
 # --- Character -> built-in XTTS studio speaker mapping ---
 # Validated 2026-06-05. Replace a value with a path to reference audio to clone
 # a real voice instead of using a built-in speaker (see synthesize.synthesize).
+#
+# 2026-06-20: keyed by the *runtime voiceId the game sends* (NPCVoiceRegistry
+# profile.voiceId), not just the legacy npc id. Before this, only `narrator` and
+# `trader` resolved on the XTTS path — the whole main cast (zuzu, dex,
+# garage_mentor, neighbor, arabic_mentor, ...) raised KeyError and silently fell
+# back to browser Web Speech. Legacy keys are retained for the `say` CLI. The
+# newly-mapped speaker picks are PROVISIONAL — audition them on the GPU box before
+# treating them as final (see artifacts/bikebrowser/audio/dex_voice_evaluation.md).
 CHARACTER_VOICES: dict[str, str] = {
+    # --- runtime voiceIds (what Act1AudioSystem sends as ?voice=) ---
     "narrator": "Royston Min",
+    "zuzu": "Daisy Studious",            # provisional: bright, youthful, never baby-talk
+    "dex": "Andrew Chipper",             # provisional: youthful, energetic, brash — see dex_voice_evaluation.md
+    "garage_mentor": "Kazuhiko Atallah",  # Mr. Chen — calm, grounded mentor
+    "neighbor": "Ana Florence",          # Mrs. Ramirez — warm, maternal
+    "spanish_neighbor": "Ana Florence",   # same person, Spanish-context lines
+    "arabic_mentor": "Suad Qasim",       # provisional: Auntie Mariam — warm, MENA-appropriate (Arabic)
+    "ecology_sign": "Royston Min",       # field-guide narration
+    "trader": "Craig Gutsy",
+    # --- legacy npc-id keys (kept for the `python -m brain.voice say` CLI) ---
     "mr_chen": "Kazuhiko Atallah",
     "mrs_ramirez": "Ana Florence",
-    "trader": "Craig Gutsy",
 }
 
 
