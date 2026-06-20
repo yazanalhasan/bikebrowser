@@ -11,6 +11,24 @@ export function cleanForSpeech(text) {
   return String(text || '').replace(SYMBOL_GLYPHS, ' ').replace(/\s+/g, ' ').trim();
 }
 
+// Storyteller filter: a child-oriented narrator should read story + educational
+// content, not screen-reader chrome. Strips control/button hints ("Press Space",
+// "Press Test Bridge to load it", "click", "tap to continue") that the player can
+// already see and never needs spoken. Story dialogue and explanations pass through
+// untouched; speaker labels are excluded at the panel/dialogue level, never spoken.
+const CONTROL_HINT_SENTENCE = /(^|[.!?]\s*)(press|tap|click|hit)\b[^.!?]*[.!?]?/gi;
+const TRAILING_CONTROL_CLAUSE = /\s*[-—,]?\s*\b(press|tap|click|hit)\b[^.!?]*$/i;
+const CHROME_ONLY = /^(continue|next|back|map|notebook|discoveries|menu|inventory|close|ok|done)\.?$/i;
+
+export function filterNarration(text) {
+  let s = String(text || '');
+  s = s.replace(CONTROL_HINT_SENTENCE, '$1');     // drop whole "Press X ..." sentences
+  s = s.replace(TRAILING_CONTROL_CLAUSE, '');      // drop a trailing "press X" clause
+  s = s.replace(/\s+([.!?])/g, '$1').replace(/\s+/g, ' ').trim();
+  if (CHROME_ONLY.test(s)) return '';              // pure UI label -> not spoken
+  return s;
+}
+
 function collect(obj, out, ox, oy, exclude) {
   if (!obj || obj.visible === false) return;
   const x = ox + (obj.x || 0);
@@ -34,13 +52,13 @@ export function narratePanel(scene, container, options = {}) {
   const parts = [];
   collect(container, parts, 0, 0, exclude);
   parts.sort((a, b) => (a.y - b.y) || (a.x - b.x));
-  const text = parts.map((p) => p.t).join('. ');
+  const text = filterNarration(parts.map((p) => p.t).join('. '));
   if (text) audio.narrate(text, options);
 }
 
 // Read a single short string (e.g. the focused option as the player cycles).
 export function narrateText(scene, text, options = {}) {
   const audio = scene.registry?.get('act1AudioSystem');
-  const body = cleanForSpeech(text);
+  const body = filterNarration(cleanForSpeech(text));
   if (audio && body) audio.narrate(body, options);
 }

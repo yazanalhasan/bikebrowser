@@ -104,7 +104,9 @@ export default class CrossingScene extends Phaser.Scene {
       this.registry.get('act1Runtime')?.awardCrossingReward?.();
     }
     this._publish();
-    narratePanel(this, this.panel, { exclude: [this.hint, this.title] });
+    // Storyteller narration: read the line itself, not the speaker label, the
+    // title, or the "E to continue" hint.
+    narratePanel(this, this.panel, { exclude: [this.hint, this.title, this.speaker] });
   }
 
   onKey(event) {

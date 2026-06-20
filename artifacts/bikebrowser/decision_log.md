@@ -28,6 +28,7 @@ Append-only record of material decisions and their rationale (arc.md-evaluated).
 | 20 | **FREEZE Act 1 scope** after playtest package | per directive; only bug fixes / text polish / art proposals / validated asset replacements / pacing / a11y until feedback | this turn |
 | 21 | **Act 1 readiness audit** (8 docs) under final_readiness/ | new-player lens; #1 finding: emotional setups are optional → payoffs vary by engagement | final_readiness/ |
 | 22 | **GO — release Act 1 for external playtest now** (option A) | stable + complete + emotionally legible; the open questions are playtest questions (engagement, payoff) that polishing can't answer; no Critical art or blockers | act1_go_no_go.md |
+| 23 | **Narration = storyteller, not screen reader** | added `filterNarration()` (strips control/button hints + chrome from panel/scene narration) + excluded the speaker label in the Community Crossing; preserves the child-literacy read-aloud (dialogue + educational content untouched). Freeze-safe accessibility/pacing improvement. ~20%/string redundancy removed, 0% story loss | narration_audit.md |
 
 ## Standing rules
 - arc.md wins all conflicts. Every change passes the decision test (deepen emotion +
