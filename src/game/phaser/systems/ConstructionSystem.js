@@ -1,3 +1,5 @@
+import { ROLE_REQUIREMENTS, roleFit } from '../../data/act1/bridgeRoles.js';
+
 export class ConstructionSystem {
   static carryForward = {
     environmentalPrimitives: ['span_distance', 'load_path', 'terrain_gap'],
@@ -62,29 +64,40 @@ export class ConstructionSystem {
     if (missingRoles.length) {
       return { ok: false, reason: 'incomplete_selection', missingRoles, explanation: `Choose a material for: ${missingRoles.join(', ')}.` };
     }
+    // Phase 2A — ROLE-BASED material logic. Each role is judged by the ONE measured
+    // property it needs (deck=stiffness, support/foundation=compression, brace=
+    // strength, cable=tension), not a single overall bridgeSafe flag. This is what
+    // teaches WHY a material fits a job — e.g. concrete is a great foundation
+    // (compression) but a terrible cable (tension). The material must still be
+    // UTM-tested first (Observe → Test). bridgeSafe is kept for info only.
     const evaluated = roles.map(([role, materialId]) => {
       const test = this.materialsLab.getTest(materialId);
-      return { role, materialId, tested: Boolean(test), bridgeSafe: Boolean(test && test.bridgeSafe) };
+      const material = this.materialsLab.materials?.get?.(materialId) || null;
+      const fit = roleFit(material, role);
+      return {
+        role, materialId,
+        displayName: material?.displayName || material?.name || materialId,
+        tested: Boolean(test),
+        bridgeSafe: Boolean(test && test.bridgeSafe),
+        fits: Boolean(fit.fits),
+        value: fit.value,
+        needs: ROLE_REQUIREMENTS[role]?.needs,
+      };
     });
     const untested = evaluated.filter((part) => !part.tested);
     if (untested.length) {
       return { ok: false, reason: 'untested_materials', untested: untested.map((part) => part.materialId), explanation: 'Test a material in the UTM before trusting it in the bridge.' };
     }
-    const unsafe = evaluated.filter((part) => !part.bridgeSafe);
-    if (unsafe.length === roles.length) {
-      return { ok: false, reason: 'all_unsafe', outcome: 'collapse', evaluated, explanation: 'Every part uses material that failed the load test — the bridge would collapse.' };
+    const misfit = evaluated.filter((part) => !part.fits);
+    const reason = (p) => { const r = ROLE_REQUIREMENTS[p.role]; return `The ${p.role} used ${p.displayName}, which ${r.bad}. ${r.why}`; };
+    if (misfit.length === roles.length) {
+      return { ok: false, reason: 'all_misfit', outcome: 'collapse', evaluated, failedRole: misfit[0].role, explanation: `Every part is wrong for its job — the bridge would collapse. ${reason(misfit[0])}` };
     }
-    if (unsafe.length > 0) {
-      // Mixed: some good parts, but a weak load-bearing role makes the whole path unsafe.
-      return {
-        ok: false,
-        reason: 'mixed_unsafe',
-        outcome: 'unsafe',
-        evaluated,
-        explanation: `The ${unsafe.map((part) => part.role).join(' and ')} use material that fails under load, so the load path is unsafe. A bridge is only as strong as its weakest part.`,
-      };
+    if (misfit.length > 0) {
+      const more = misfit.length > 1 ? ` (the ${misfit.slice(1).map((p) => p.role).join(' and ')} also need a better-suited material.)` : '';
+      return { ok: false, reason: 'role_misfit', outcome: 'unsafe', evaluated, failedRole: misfit[0].role, explanation: `${reason(misfit[0])}${more}` };
     }
-    // All parts bridge-safe -> a trustworthy load path.
+    // Every role fits its job -> a trustworthy load path.
     this.plan = {
       id: 'player_designed',
       bridgeType,
@@ -95,9 +108,9 @@ export class ConstructionSystem {
       foundations: selection.foundation,
       safe: true,
       loadPath: ['deck', 'support', 'triangle_brace', 'cable', 'foundation', 'ground'],
-      lesson: 'Each load-bearing part used a material the test proved safe, so the load path holds.',
+      lesson: 'Each part fits its job: a stiff deck, supports and a foundation strong in compression, and (if used) a cable strong in tension — so the load has a clear path to the ground.',
     };
-    return { ok: true, outcome: 'safe', plan: this.plan, evaluated, explanation: 'All parts passed the load test — the bridge has a safe load path.' };
+    return { ok: true, outcome: 'safe', plan: this.plan, evaluated, explanation: 'Every part fits its job — a stiff deck, compression-strong supports and foundation, and a tension-strong cable. The load has a safe path to the ground.' };
   }
 
   repairBridge() {

@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { narrateText } from '../audio/sceneNarration.js';
 import { ASSET_KEYS, MATERIAL_PART_FRAME } from '../systems/AssetRegistry.js';
 import { act1Materials, BRIDGE_FAMILIES, DAVINCI_SLOTS, DAVINCI_WOODS } from '../../data/act1/index.js';
+import { ROLE_REQUIREMENTS, roleFit } from '../../data/act1/bridgeRoles.js';
 
 // HANDS-ON bridge construction. The player first chooses a BRIDGE FAMILY, then
 // physically assembles it:
@@ -252,14 +253,21 @@ export default class BridgeDesignScene extends Phaser.Scene {
       this.subtitle.setText('Every slot is filled. Press TEST BRIDGE when you are ready.');
       return;
     }
+    const req = ROLE_REQUIREMENTS[z.key];
     if (this.heldIdx === null) {
-      // Empty-handed: tell the player to CHOOSE first — E alone will not place.
-      this.subtitle.setText(`Slot: ${z.label} — ${z.hint}.   Pick a material:  ◀ ▶  (or click / drag a part).`);
+      // Empty-handed: name WHAT this slot needs (the property), then ask the
+      // player to choose — so the decision is "match the property to the job".
+      const need = req ? `  Needs ${req.needs}.` : '';
+      this.subtitle.setText(`Slot: ${z.label} — ${z.hint}.${need}   Pick a material:  ◀ ▶  (or click / drag a part).`);
       return;
     }
     const held = this.candidates[this.heldIdx];
-    const warn = held && !held.safe ? '   ⚠ it snapped at the UTM — likely to fail' : '';
-    this.subtitle.setText(`Holding ${held ? held.name : '—'}${warn}.   Press E to place it into ${z.label}.  ◀ ▶ to change.`);
+    const mat = held && this.matById.get(held.id);
+    const fit = roleFit(mat, z.key);
+    // Role-aware coaching: does THIS material suit THIS job, and why?
+    const judge = req ? (fit.fits ? `✓ ${req.good}` : `⚠ ${req.bad}`) : '';
+    const lead = req ? `${z.label} needs ${req.needs}. ` : '';
+    this.subtitle.setText(`${lead}${held ? held.name : '—'}: ${judge}.   E place  ·  ◀ ▶ change.`);
   }
 
   _drawGhost() {
@@ -366,10 +374,15 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.chrome.add(piece);
     this.placed[zone.key] = piece;
     const snug = ((this.heldRot % 180) === (zone.ideal % 180));
-    this._snapFlash(zone, cand.safe, snug);
-    this._cue(cand.safe ? 'bridge_snap' : 'bridge_error');
+    // Role-aware feedback: a part is "good" here if it suits THIS job, not by a
+    // single overall flag (concrete is great in a foundation, wrong in a cable).
+    const fit = roleFit(this.matById.get(cand.id), zone.key);
+    const req = ROLE_REQUIREMENTS[zone.key];
+    this._snapFlash(zone, fit.fits, snug);
+    this._cue(fit.fits ? 'bridge_snap' : 'bridge_error');
     this.tweens.add({ targets: piece, scale: { from: 1.25, to: 1 }, duration: 200, ease: 'Back.easeOut' });
-    narrateText(this, `${cand.name} into the ${zone.label}.` + (cand.safe ? '' : ' But it failed the load test.'));
+    if (!fit.fits && req) this.subtitle.setText(`⚠ ${cand.name} ${req.bad}. The ${zone.label} needs ${req.needs}.`);
+    narrateText(this, `${cand.name} into the ${zone.label}.` + (fit.fits ? '' : ` But a ${zone.label.toLowerCase()} needs ${req ? req.needs : 'a better-suited material'}.`));
     // Empty the player's hands after every placement: the next slot needs a fresh,
     // intentional choice. This is what stops repeated E from auto-building the bridge.
     this.heldIdx = null;
@@ -809,12 +822,13 @@ export default class BridgeDesignScene extends Phaser.Scene {
     if (result.ok) {
       Object.values(this.placed).forEach((p) => this._paintPiece(p, 'hold'));
       this.tweens.add({ targets: Object.values(this.placed), y: '-=6', duration: 160, yoyo: true });
-      this._holdVerdict('✅ The bridge holds! Every part carried the load.');
+      this._holdVerdict(`✅ The bridge holds! ${result.explanation || 'Every part fits its job.'}`);
     } else {
-      const weak = (result.evaluated || []).find((e) => !e.bridgeSafe);
-      const part = weak && this.placed[weak.role];
+      // Highlight the role whose material did not fit its job (Phase 2A).
+      const weak = (result.evaluated || []).find((e) => !e.fits) || (result.evaluated || []).find((e) => !e.bridgeSafe);
+      const part = (weak && this.placed[weak.role]) || (result.failedRole && this.placed[result.failedRole]);
       if (part) { this._paintPiece(part, 'fail'); this.tweens.add({ targets: part, angle: (part.angle || 0) + 16, y: part.y + 14, duration: 380, ease: 'Bounce.easeOut' }); }
-      this._failVerdict(`💥 The ${weak?.role || 'bridge'} failed — ${result.explanation || 'weak material under load.'}`);
+      this._failVerdict(`💥 ${result.explanation || 'A part was wrong for its job.'}`);
     }
     this._publish({ outcome: result.ok ? 'safe' : (result.outcome || 'unsafe'), built: true });
     narrateText(this, this.verdict.text);
