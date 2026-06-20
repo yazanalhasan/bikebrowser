@@ -218,6 +218,14 @@ export class Act1RuntimeSystem {
     this.inventorySystem.addMany(entry.inventory || []);
     for (const objectiveId of entry.completes || []) this.completeObjective(objectiveId);
     for (const [characterId, amount] of Object.entries(entry.trust || {})) this.trustSystem.addTrust(characterId, amount, dialogueId);
+    // Quest "Neighborhood Trust": the earn_trust objective ("Show evidence of
+    // the repair") completes once BOTH neighbors trust the proven repair — the
+    // Spanish-speaking neighbor and the Arabic-speaking mentor. Their thank-you
+    // dialogues (post-repair) each grant trust; when both are earned the
+    // objective auto-completes, unblocking the First Wider Map quest.
+    if (this.trustSystem.hasTrust('neighbor') && this.trustSystem.hasTrust('arabic_mentor')) {
+      this.completeObjective('earn_trust');
+    }
     if (entry.language) {
       this.languageSystem.record(`${entry.language}_${dialogueId}`, {
         language: entry.language,

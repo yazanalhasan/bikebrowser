@@ -150,7 +150,10 @@ export function getAssetRegistryState() {
 export function loadAct1FinalAssets(scene) {
   const loadedPlaceholderKeys = new Set();
   for (const asset of act1AssetManifest) {
-    if (!['final_ready', 'draft'].includes(asset.status) || !asset.runtimeUrl) continue;
+    // Only approved, final art reaches the runtime. Draft/unapproved assets
+    // (e.g. the watermarked SVG-stub "generated_drafts") are never loaded —
+    // their own manifest declares runtime promotion forbidden. (P0 sweep.)
+    if (asset.status !== 'final_ready' || !asset.runtimeUrl) continue;
     if (asset.placeholderKey && !loadedPlaceholderKeys.has(asset.placeholderKey) && !scene.textures.exists(asset.placeholderKey)) {
       scene.load.image(asset.placeholderKey, asset.runtimeUrl);
       loadedPlaceholderKeys.add(asset.placeholderKey);

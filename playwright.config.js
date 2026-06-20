@@ -1,12 +1,17 @@
 // Playwright config for BikeBrowser E2E smoke tests.
 //
-// Runs against the Vite dev server in chromium. The dev server is auto-
-// started via the webServer config below; if a server is already running
-// on :5173 it is reused.
+// Runs against a DEDICATED BikeBrowser Vite dev server on port 5219. We do NOT
+// reuse an existing server: the default Vite port (5173) is frequently occupied
+// by other local apps (e.g. a Dockerized chatbot), and reusing it silently ran
+// the BikeBrowser tests against the wrong app. reuseExistingServer:false +
+// strictPort guarantees the suite always tests BikeBrowser.
 //
 // See tests/README.md for usage.
 
 import { defineConfig, devices } from 'playwright/test';
+
+const E2E_PORT = process.env.BIKEBROWSER_E2E_PORT || '5219';
+const E2E_URL = `http://localhost:${E2E_PORT}`;
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -19,7 +24,7 @@ export default defineConfig({
   workers: 1,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:5173',
+    baseURL: E2E_URL,
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
     screenshot: 'only-on-failure',
@@ -31,9 +36,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev:react',
-    url: 'http://localhost:5173',
-    reuseExistingServer: true,
+    command: `npm run dev:react -- --port ${E2E_PORT} --strictPort`,
+    url: E2E_URL,
+    reuseExistingServer: false,
     timeout: 60_000,
     stdout: 'pipe',
     stderr: 'pipe',

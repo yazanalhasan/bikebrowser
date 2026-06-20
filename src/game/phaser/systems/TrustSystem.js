@@ -21,6 +21,10 @@ export class TrustSystem {
     return { ok: true, characterId, trust: next, reason, milestone: next >= 1 ? `${characterId}_trust` : null };
   }
 
+  hasTrust(characterId, threshold = 1) {
+    return (this.trust.get(characterId) || 0) >= threshold;
+  }
+
   getState() {
     return {
       trust: Object.fromEntries(this.trust),
