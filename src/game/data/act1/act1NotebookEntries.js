@@ -33,4 +33,10 @@ export const act1NotebookEntries = [
   { id: 'saltbush', category: 'Ecology', title: 'Saltbush', body: 'Saltbush tolerates brackish soil by shedding salt through its leaves, so it fits wet, sunny salt flats better than freshwater bank trees.' },
   { id: 'cottonwood', category: 'Ecology', title: 'Cottonwood', body: 'Cottonwood belongs on moist riverbanks with fresher water. It gives shade and stabilizes banks, but salty crust can burn its roots.' },
   { id: 'river_mesquite', category: 'Ecology', title: 'River Terrace Mesquite', body: 'Mesquite fits dry terraces near washes and rivers because its deep roots can reach buried moisture while its canopy tolerates full sun.' },
+  // Side quest unlocks (Prediction Duel with Dex; Mariam's Garden).
+  { id: 'prediction_duel', category: 'Construction', title: 'Prediction Duel', body: 'Predicting first, then testing, beats guessing. A deck BENDS, so brick (strong squeezed, weak pulled) cracks while steel carries both tension and compression.' },
+  { id: 'evidence_over_bravado', category: 'Engineering', title: 'Evidence over Bravado', body: 'Letting the test decide settles an argument better than confidence does. The measurement, not the loudest voice, is the referee.' },
+  { id: 'garden_shade', category: 'Ecology', title: 'Garden Shade', body: 'A creosote screen on the west side cuts the harsh afternoon sun for young desert plants, the way a good roof manages load.' },
+  { id: 'garden_terrace', category: 'Construction', title: 'Garden Terrace', body: 'A small terrace wall holds soil against slow flood water, resisting the push the way a foundation resists compression.' },
+  { id: 'observe_first', category: 'Observation', title: 'Observe First', body: 'Watching through a full day reveals causes a single glance misses: the sun moves, the soil shifts, and the real problem shows itself.' },
 ];

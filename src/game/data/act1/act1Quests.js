@@ -129,5 +129,31 @@ export const act1Quests = [
     ],
     completionState: { act1Complete: true },
   },
+  // --- Optional side quests (not in the main chain; driven by branching
+  // dialogue, completed through choices, rewarding knowledge & relationships). ---
+  {
+    id: 'prediction_duel',
+    name: 'The Prediction Duel',
+    sideQuest: true,
+    systemsUsed: ['MaterialsLabSystem', 'NotebookSystem'],
+    notebookUnlocks: ['prediction_duel'],
+    objectives: [
+      { id: 'duel_accept', label: "Take Dex's prediction dare.", hook: 'dex' },
+      { id: 'duel_predict', label: 'Predict which material truly wins under load.', hook: 'dex' },
+      { id: 'duel_win', label: 'Settle it with the evidence.', hook: 'dex' },
+    ],
+  },
+  {
+    id: 'mariam_garden',
+    name: "Mariam's Garden",
+    sideQuest: true,
+    systemsUsed: ['EcologyObservationSystem', 'NotebookSystem'],
+    notebookUnlocks: ['garden_shade', 'garden_terrace'],
+    objectives: [
+      { id: 'garden_listen', label: "Hear Auntie Mariam's garden worry.", hook: 'auntie_mariam' },
+      { id: 'garden_observe', label: 'Observe what the young plants need.', hook: 'auntie_mariam' },
+      { id: 'garden_help', label: 'Propose an evidence-based fix.', hook: 'auntie_mariam' },
+    ],
+  },
 ];
 
