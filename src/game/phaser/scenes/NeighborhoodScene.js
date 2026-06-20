@@ -1785,7 +1785,9 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // and ignore world interactions so its keys drive the overlay, not the scene.
     // Edit mode (F2) freezes the player like a modal so dragging objects does
     // not also move Zuzu or fire interactions.
-    const modal = Boolean(this.registry.get('modalActive')) || this.editMode;
+    // Freeze the player while a dialogue OR any modal is open, so arrow keys drive
+    // the dialogue choices (or scroll a panel) instead of also walking Zuzu.
+    const modal = Boolean(this.registry.get('modalActive')) || Boolean(this.registry.get('dialogueActive')) || this.editMode;
     // The key that closes a modal must not also re-trigger the world interaction
     // on the next frame (which would reopen the modal). Consume it.
     const justClosedModal = this._wasModal && !modal;

@@ -50,9 +50,11 @@ export default class DialogueScene extends Phaser.Scene {
     });
     this.registry.events.on('dialogue:advance', () => this.advance());
 
-    const onKey = (event) => this._onKey(event);
-    this.input.keyboard.on('keydown', onKey);
-    this.windowKeyHandler = onKey;
+    // Single key handler. Previously this was registered on BOTH the Phaser
+    // keyboard AND window, so one physical keypress fired _onKey twice — a single
+    // ArrowDown jumped the choice selection by two (to the bottom with 3 choices).
+    // One window listener fires once per press and works regardless of canvas focus.
+    this.windowKeyHandler = (event) => this._onKey(event);
     window.addEventListener('keydown', this.windowKeyHandler);
     this.events.once('shutdown', () => window.removeEventListener('keydown', this.windowKeyHandler));
     this.input.on('pointerdown', () => { if (!this.choices) this.advance(); });
