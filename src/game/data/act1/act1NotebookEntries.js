@@ -39,4 +39,12 @@ export const act1NotebookEntries = [
   { id: 'garden_shade', category: 'Ecology', title: 'Garden Shade', body: 'A creosote screen on the west side cuts the harsh afternoon sun for young desert plants, the way a good roof manages load.' },
   { id: 'garden_terrace', category: 'Construction', title: 'Garden Terrace', body: 'A small terrace wall holds soil against slow flood water, resisting the push the way a foundation resists compression.' },
   { id: 'observe_first', category: 'Observation', title: 'Observe First', body: 'Watching through a full day reveals causes a single glance misses: the sun moves, the soil shifts, and the real problem shows itself.' },
+  // Heart beats — why these people care; trust is earned by evidence, with people too.
+  { id: 'chen_why', category: 'Trust', title: "Mr. Chen's Reason", body: 'He once told a family a beam was safe without testing it. It held for them, then cracked later. He tests now not from doubt, but because he cares what happens after he says "it\'s safe."' },
+  { id: 'dex_armor', category: 'Trust', title: "Dex's Armor", body: 'Dex "just sends it" because the one time he measured carefully it still broke and everyone laughed. The bravado is armor. He breaks things first, laughing, so no one can laugh at him.' },
+  { id: 'ramirez_mateo', category: 'Trust', title: 'Mateo Crosses Here', body: "Mrs. Ramirez's grandson Mateo, seven, crosses to school every morning. Since the bridge broke he takes the long highway road, and she doesn't breathe right until he's home." },
+  { id: 'mariam_seeds', category: 'Ecology', title: 'Seeds From Home', body: 'Auntie Mariam carried her garden seeds across an ocean in a tin box. When they grow here, a little of home grows too. The young saguaro is the slowest — and the bravest.' },
+  { id: 'zuzu_fear', category: "Zuzu's Notes", title: 'On Being Scared', body: "I was scared Dex was right — that the bridge would fall. Testing didn't make the fear go away. It gave me a reason not to listen to it." },
+  { id: 'zuzu_trust', category: "Zuzu's Notes", title: 'On Trust', body: "Test before you trust works with people too. You don't trust a bridge because someone's sure — you trust it because it held. Maybe that's how Dex started trusting me." },
+  { id: 'zuzu_home', category: "Zuzu's Notes", title: 'What I\'m Really Holding', body: "Mariam carried seeds across an ocean. Mrs. Ramirez waits up for Mateo. I'm not just fixing a bridge. I'm holding a piece of everyone's day in my hands." },
 ];
