@@ -47,4 +47,5 @@ export const act1NotebookEntries = [
   { id: 'zuzu_fear', category: "Zuzu's Notes", title: 'On Being Scared', body: "I was scared Dex was right — that the bridge would fall. Testing didn't make the fear go away. It gave me a reason not to listen to it." },
   { id: 'zuzu_trust', category: "Zuzu's Notes", title: 'On Trust', body: "Test before you trust works with people too. You don't trust a bridge because someone's sure — you trust it because it held. Maybe that's how Dex started trusting me." },
   { id: 'zuzu_home', category: "Zuzu's Notes", title: 'What I\'m Really Holding', body: "Mariam carried seeds across an ocean. Mrs. Ramirez waits up for Mateo. I'm not just fixing a bridge. I'm holding a piece of everyone's day in my hands." },
+  { id: 'zuzu_crossing', category: "Zuzu's Notes", title: 'The Crossing', body: "You can put a plank on a machine and read the truth in a number. People are harder — you can't test them; you just show up, do the work well, and wait to be trusted. Today the whole block crossed back and forth over something I built, and I understood: the bridge was never the point. The crossing was." },
 ];
