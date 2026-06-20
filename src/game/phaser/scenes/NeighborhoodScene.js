@@ -798,6 +798,22 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.add.text(auntieMariam.labelX, auntieMariam.labelY, 'Auntie Mariam', npcLabelStyle());
     this.drawNpcCue(auntieMariam.cueX, auntieMariam.cueY, 0xbec8ff, 'star');
 
+    // Dex — recurring rival. Reuses the kid sprite with a teal tint as a
+    // placeholder (a unique sprite is an art part-B item); his label, voice and
+    // attitude make him distinct. State-aware dialogue is resolved at interaction.
+    const dexNpc = this.createAnimatedNpc({
+      id: 'dex',
+      x: 1130,
+      y: 840,
+      sheetKey: ASSET_KEYS.zuzuWalkSheet,
+      fallbackKey: ASSET_KEYS.zuzu,
+      animationKey: 'zuzu.idle',
+      dialogueId: 'dex_intro',
+    });
+    dexNpc.setTint(0x5fc6d8);
+    this.add.text(1086, 916, 'Dex', npcLabelStyle());
+    this.drawNpcCue(1130, 810, 0x5fc6d8, 'star');
+
     const materialTable = this.layout.material_table;
     const trader = this.add.image(
       materialTable.x,
@@ -822,6 +838,13 @@ export default class NeighborhoodScene extends Phaser.Scene {
       y: neighbor.y,
       label: 'Ask Mrs. Ramirez',
       dialogueId: 'wash_neighbor',
+    });
+    this.interactions.register({
+      id: 'dex',
+      x: 1130,
+      y: 840,
+      label: 'Talk to Dex',
+      dialogueId: 'dex_intro',
     });
     this.interactions.register({
       id: 'bike',
@@ -1604,13 +1627,13 @@ export default class NeighborhoodScene extends Phaser.Scene {
       : null;
     this.worldMapTitle = this.add.text(layout.title.x, layout.title.y, 'Zuzu GPS', {
       fontFamily: 'Arial',
-      fontSize: '13px',
+      fontSize: `${layout.fonts?.title || 13}px`,
       color: '#ffe8aa',
       fontStyle: 'bold',
     });
     this.worldMapSubtitle = this.add.text(layout.subtitle.x, layout.subtitle.y, 'Arizona city routes', {
       fontFamily: 'Arial',
-      fontSize: '11px',
+      fontSize: `${layout.fonts?.subtitle || 11}px`,
       color: '#b8d9d0',
       wordWrap: { width: layout.subtitle.w },
       lineSpacing: 1,
@@ -1624,12 +1647,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
     });
     this.worldMapStatusLabels = layout.status_items.map((item) => this.add.text(item.x, item.y, item.label, {
       fontFamily: 'Arial',
-      fontSize: '9px',
+      fontSize: `${layout.fonts?.status || 9}px`,
       color: '#e4efea',
     }));
     this.worldMapCurrentBadge = this.add.text(0, 0, layout.badges.current.text, {
       fontFamily: 'Arial',
-      fontSize: '9px',
+      fontSize: `${layout.fonts?.badge || 9}px`,
       color: '#203029',
       fontStyle: 'bold',
       backgroundColor: '#f2c46d',
@@ -1637,7 +1660,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     }).setVisible(false);
     this.worldMapQuestBadge = this.add.text(0, 0, layout.badges.quest.text, {
       fontFamily: 'Arial',
-      fontSize: '9px',
+      fontSize: `${layout.fonts?.badge || 9}px`,
       color: '#203029',
       fontStyle: 'bold',
       backgroundColor: '#fff0c7',
@@ -1645,14 +1668,44 @@ export default class NeighborhoodScene extends Phaser.Scene {
     }).setVisible(false);
     this.worldMapLegend = this.add.text(layout.legend.x, layout.legend.y, '', {
       fontFamily: 'Arial',
-      fontSize: '11px',
+      fontSize: `${layout.fonts?.legend || 11}px`,
       color: '#f6e6b4',
       wordWrap: { width: layout.legend.w },
       lineSpacing: 2,
     });
+    this.worldMapDestinationTitle = this.add.text(layout.destination_chip.title.x, layout.destination_chip.title.y, 'NEXT RIDE', {
+      fontFamily: 'Arial',
+      fontSize: `${layout.fonts?.chipTitle || 10}px`,
+      color: '#f2c46d',
+      fontStyle: 'bold',
+    });
+    this.worldMapDestinationText = this.add.text(layout.destination_chip.target.x, layout.destination_chip.target.y, '', {
+      fontFamily: 'Arial',
+      fontSize: `${layout.fonts?.chipTarget || 14}px`,
+      color: '#fff6dc',
+      fontStyle: 'bold',
+      wordWrap: { width: layout.destination_chip.target.w },
+    });
+    this.worldMapFrontierText = this.add.text(layout.frontier_chip.text.x, layout.frontier_chip.text.y, '', {
+      fontFamily: 'Arial',
+      fontSize: `${layout.fonts?.frontier || 10}px`,
+      color: '#d7e8e0',
+      wordWrap: { width: layout.frontier_chip.text.w },
+    });
+    this.worldMapScaleText = this.add.text(layout.scale_bar.label.x, layout.scale_bar.label.y, layout.scale_bar.label.text, {
+      fontFamily: 'Arial',
+      fontSize: `${layout.fonts?.scale || 9}px`,
+      color: '#b8d9d0',
+    });
+    this.worldMapRegionLabels = (layout.region_labels || []).map((item) => this.add.text(item.x, item.y, item.text, {
+      fontFamily: 'Arial',
+      fontSize: `${layout.fonts?.region || 9}px`,
+      color: '#d7e8e0',
+      fontStyle: 'bold',
+    }));
     this.worldMapPointLabels = layout.labels.items.map((item) => this.add.text(item.x, item.y, '', {
       fontFamily: 'Arial',
-      fontSize: '9px',
+      fontSize: `${layout.fonts?.pointLabel || 9}px`,
       color: '#f4f1dc',
     }));
     this.worldMapRouteMarkerIcons = {};
@@ -1682,6 +1735,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this.worldMapSubtitle,
       this.worldMapToggleHint,
       this.worldMapLegend,
+      this.worldMapDestinationTitle,
+      this.worldMapDestinationText,
+      this.worldMapFrontierText,
+      this.worldMapScaleText,
+      ...this.worldMapRegionLabels,
       ...this.worldMapStatusLabels,
       this.worldMapCurrentBadge,
       this.worldMapQuestBadge,
@@ -1825,6 +1883,17 @@ export default class NeighborhoodScene extends Phaser.Scene {
           let dialogueId = nearest.dialogueId;
           if (nearest.id === 'mr_chen' && this.runtime?.constructionSystem?.bridgeReconnected) {
             dialogueId = 'mr_chen_bridge_repaired';
+          }
+          if (nearest.id === 'dex') {
+            // Rival arc: bravado -> skepticism (once materials are gathered) ->
+            // respect (once the tested bridge holds).
+            if (this.runtime?.constructionSystem?.bridgeReconnected) {
+              dialogueId = 'dex_respect';
+            } else if (this.runtime?.inventorySystem?.has?.('balsa') || this.runtime?.inventorySystem?.has?.('steel')) {
+              dialogueId = 'dex_bridge';
+            } else {
+              dialogueId = 'dex_intro';
+            }
           }
           this.registry.events.emit('dialogue:start', dialogueId);
         }
@@ -2116,14 +2185,28 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this.worldMapVista,
       this.worldMapGpsDevice,
       this.worldMapLegend,
+      this.worldMapFrontierText,
+      this.worldMapScaleText,
       this.worldMapCurrentBadge,
       this.worldMapQuestBadge,
+      ...this.worldMapRegionLabels,
       ...this.worldMapStatusLabels,
       ...this.worldMapPointLabels,
       ...Object.values(this.worldMapRouteMarkerIcons || {}),
       ...Object.values(this.worldMapLandmarkIcons || {}),
     ].filter(Boolean);
     for (const child of mapChildren) child.setVisible(this.worldMapHudExpanded);
+
+    this.worldMapDestinationTitle?.setVisible(true);
+    this.worldMapDestinationText?.setVisible(true);
+    this.worldMapDestinationText?.setText(
+      this.worldMapHudExpanded
+        ? `${this.locationLabel(activeQuestMarker)}`
+        : `Go to ${this.shortLocationLabel(activeQuestMarker)}`
+    );
+    this.worldMapFrontierText?.setText(state.discovery.widerMapUnlocked
+      ? 'Unlocked: Salt River and Copper Mine are now real routes.'
+      : 'Locked: repair the bridge to open the city gate.');
 
     this.worldMapSubtitle.setText(this.worldMapHudExpanded
       ? routeSummary
@@ -2133,8 +2216,26 @@ export default class NeighborhoodScene extends Phaser.Scene {
     if (!this.worldMapHudExpanded) {
       const collapsedW = layout.collapsedW || 236;
       const collapsedH = layout.collapsedH || 58;
+      const chip = layout.collapsed_destination_chip;
       g.fillStyle(0x16201d, 0.86).fillRoundedRect(0, 0, collapsedW, collapsedH, layout.radius);
       g.lineStyle(1, 0xd9b36a, 0.74).strokeRoundedRect(0, 0, collapsedW, collapsedH, layout.radius);
+      g.fillStyle(0x2a3b34, 0.92).fillRoundedRect(
+        chip.x,
+        chip.y,
+        chip.w,
+        chip.h,
+        chip.radius,
+      );
+      g.lineStyle(1, 0xfff0c7, 0.4).strokeRoundedRect(
+        chip.x,
+        chip.y,
+        chip.w,
+        chip.h,
+        chip.radius,
+      );
+      this.worldMapDestinationTitle?.setPosition(chip.title.x, chip.title.y);
+      this.worldMapDestinationText?.setPosition(chip.target.x, chip.target.y);
+      this.worldMapDestinationText?.setWordWrapWidth(chip.target.w);
       const mini = layout.collapsed_route;
       g.fillStyle(0xf2c46d, 0.95).fillCircle(mini.questX, mini.questBadgeY, mini.nodeR);
       g.lineStyle(1, 0xfff0c7, 0.84).strokeCircle(mini.questX, mini.questBadgeY, mini.questR);
@@ -2144,6 +2245,9 @@ export default class NeighborhoodScene extends Phaser.Scene {
       return;
     }
 
+    this.worldMapDestinationTitle?.setPosition(layout.destination_chip.title.x, layout.destination_chip.title.y);
+    this.worldMapDestinationText?.setPosition(layout.destination_chip.target.x, layout.destination_chip.target.y);
+    this.worldMapDestinationText?.setWordWrapWidth(layout.destination_chip.target.w);
     g.fillStyle(0x16201d, 0.84).fillRoundedRect(0, 0, layout.w, layout.h, layout.radius);
     g.lineStyle(1, 0xd9b36a, 0.74).strokeRoundedRect(0, 0, layout.w, layout.h, layout.radius);
     const viewport = layout.viewport;
@@ -2153,6 +2257,9 @@ export default class NeighborhoodScene extends Phaser.Scene {
     for (const band of layout.terrain_bands) {
       g.fillStyle(terrainColors[band.color] || 0x445450, 0.16).fillRoundedRect(band.x, band.y, band.w, band.h, band.radius);
     }
+    g.fillStyle(0xfff0c7, 0.78).fillRect(layout.scale_bar.x, layout.scale_bar.y, layout.scale_bar.w, 2);
+    g.fillRect(layout.scale_bar.x, layout.scale_bar.y - layout.scale_bar.tickH / 2, 2, layout.scale_bar.tickH);
+    g.fillRect(layout.scale_bar.x + layout.scale_bar.w, layout.scale_bar.y - layout.scale_bar.tickH / 2, 2, layout.scale_bar.tickH);
 
     const byId = new Map(locations.map((location) => [location.id, location]));
     for (const [fromId, toId] of layout.routes) {
@@ -2198,6 +2305,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
       } else {
         g.fillStyle(color, alpha).fillCircle(location.mapX, location.mapY, isCurrent ? layout.node.currentR : layout.node.r);
       }
+      if (location.locked) {
+        const slash = layout.node.lockedSlash;
+        g.lineStyle(2, 0xd9b36a, 0.75);
+        g.lineBetween(location.mapX - slash, location.mapY - slash, location.mapX + slash, location.mapY + slash);
+        g.lineBetween(location.mapX + slash, location.mapY - slash, location.mapX - slash, location.mapY + slash);
+      }
       const landmarkIcon = this.worldMapLandmarkIcons?.[location.id];
       if (landmarkIcon) {
         const landmarkFrame = layout.landmark_sheet.frames[location.id];
@@ -2229,12 +2342,44 @@ export default class NeighborhoodScene extends Phaser.Scene {
         || !location.locked;
       const label = this.worldMapPointLabels[index];
       if (label) {
-        label.setText(isVisible ? location.label : '');
+        let labelText = location.label;
+        if (location.id === currentLocation) labelText = `YOU: ${location.label}`;
+        else if (location.locked) labelText = `LOCKED: ${location.label}`;
+        label.setText(isVisible ? labelText : '');
         label.setAlpha(location.locked ? 0.58 : 0.9);
       }
       if (!isVisible) return;
-      g.fillStyle(0x16201d, location.locked ? 0.5 : 0.66).fillRoundedRect(item.x - 3, item.y - 1, location.label.length * 5.8 + 6, 12, 4);
+      const fontSize = layout.fonts?.pointLabel || 9;
+      g.fillStyle(0x16201d, location.locked ? 0.56 : 0.7).fillRoundedRect(
+        item.x - 4,
+        item.y - 2,
+        label.text.length * fontSize * 0.64 + 8,
+        fontSize + 5,
+        4,
+      );
     });
+
+    g.fillStyle(0x2a3b34, 0.9).fillRoundedRect(
+      layout.destination_chip.x,
+      layout.destination_chip.y,
+      layout.destination_chip.w,
+      layout.destination_chip.h,
+      layout.destination_chip.radius,
+    );
+    g.lineStyle(1, 0xfff0c7, 0.38).strokeRoundedRect(
+      layout.destination_chip.x,
+      layout.destination_chip.y,
+      layout.destination_chip.w,
+      layout.destination_chip.h,
+      layout.destination_chip.radius,
+    );
+    g.fillStyle(0x203029, 0.78).fillRoundedRect(
+      layout.frontier_chip.x,
+      layout.frontier_chip.y,
+      layout.frontier_chip.w,
+      layout.frontier_chip.h,
+      layout.frontier_chip.radius,
+    );
 
     // Phase 2.3 — functional map: surface Current / Reachable / Locked from the
     // runtime's single source of truth (no fake destinations, no dead links).
@@ -2381,4 +2526,3 @@ function tabStyle() {
     fontStyle: 'bold',
   };
 }
-
