@@ -50,7 +50,8 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.familyIdx = 0;
     // truss state
     this.candidates = [];
-    this.heldIdx = 0;
+    this.heldIdx = null;   // null = nothing picked up yet; E will NOT place until a material is chosen
+    this._dragStarted = false; // distinguishes a click-to-select from a drag-to-place
     this.heldRot = 0;
     this.selection = {};
     this.placed = {};
@@ -217,7 +218,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.selection = {};
     Object.values(this.placed).forEach((p) => p.destroy());
     this.placed = {};
-    this.heldIdx = 0;
+    this.heldIdx = null; // start empty-handed — the player must pick a material per slot
     this.heldRot = 0;
     this.success = false;
     this.verdict.setText('');
@@ -232,8 +233,8 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.testBtn.setVisible(false);
     this.verdict.setText('');
     this.title.setText('Assemble the truss bridge');
-    this.trayLabel.setText('Tested parts — drag onto a glowing slot, or ◀ ▶ then E');
-    this.hint.setText('◀ ▶ pick   R rotate   E place   ⌫ remove   Esc leave');
+    this.trayLabel.setText('Tested parts — pick one (◀ ▶ or click/drag), then place it');
+    this.hint.setText('1) ◀ ▶ choose material   2) E place into slot   ·   R rotate   ⌫ remove   Esc leave');
     this._refreshSubtitle();
     this._highlightHeld();
     this._drawMeters();
@@ -247,12 +248,18 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
   _refreshSubtitle() {
     const z = this._activeZone();
-    if (z) {
-      const held = this.candidates[this.heldIdx];
-      this.subtitle.setText(`Next slot: ${z.label} — ${z.hint}.   Holding: ${held ? held.name : '—'}`);
-    } else {
+    if (!z) {
       this.subtitle.setText('Every slot is filled. Press TEST BRIDGE when you are ready.');
+      return;
     }
+    if (this.heldIdx === null) {
+      // Empty-handed: tell the player to CHOOSE first — E alone will not place.
+      this.subtitle.setText(`Slot: ${z.label} — ${z.hint}.   Pick a material:  ◀ ▶  (or click / drag a part).`);
+      return;
+    }
+    const held = this.candidates[this.heldIdx];
+    const warn = held && !held.safe ? '   ⚠ it snapped at the UTM — likely to fail' : '';
+    this.subtitle.setText(`Holding ${held ? held.name : '—'}${warn}.   Press E to place it into ${z.label}.  ◀ ▶ to change.`);
   }
 
   _drawGhost() {
@@ -291,6 +298,15 @@ export default class BridgeDesignScene extends Phaser.Scene {
       piece.setData('home', { x, y: 636 });
       piece.setSize(96, 34).setInteractive({ useHandCursor: true });
       this.input.setDraggable(piece);
+      // Click (not drag) a tray part to pick it up; then E or drag-to-slot places it.
+      piece.on('pointerup', () => {
+        if (this._dragStarted) { this._dragStarted = false; return; } // this was a drag, already handled
+        if (this.phase !== 'choose') return;
+        this.heldIdx = i;
+        this._highlightHeld();
+        this._refreshSubtitle();
+        this._publish();
+      });
       this.chrome.add(piece);
       this.trayPieces.push(piece);
     });
@@ -354,6 +370,9 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this._cue(cand.safe ? 'bridge_snap' : 'bridge_error');
     this.tweens.add({ targets: piece, scale: { from: 1.25, to: 1 }, duration: 200, ease: 'Back.easeOut' });
     narrateText(this, `${cand.name} into the ${zone.label}.` + (cand.safe ? '' : ' But it failed the load test.'));
+    // Empty the player's hands after every placement: the next slot needs a fresh,
+    // intentional choice. This is what stops repeated E from auto-building the bridge.
+    this.heldIdx = null;
     const next = this._activeZone();
     if (!next) { this._showReady(); } else { this._showChoose(); }
   }
@@ -402,13 +421,26 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
   _cycleHeld(dir) {
     if (!this.candidates.length) return;
-    this.heldIdx = (this.heldIdx + dir + this.candidates.length) % this.candidates.length;
+    // From empty-handed, the first ◀/▶ picks up the first/last material.
+    if (this.heldIdx === null) this.heldIdx = dir > 0 ? 0 : this.candidates.length - 1;
+    else this.heldIdx = (this.heldIdx + dir + this.candidates.length) % this.candidates.length;
     this._highlightHeld();
     this._refreshSubtitle();
     if (this.phase !== 'choose') this._showChoose();
     this._publish();
     const c = this.candidates[this.heldIdx];
     narrateText(this, `${c.name}. ${c.safe ? 'held the load' : 'snapped under load'}.`);
+  }
+
+  // Empty-handed feedback: E (or R) with nothing chosen explains the next step
+  // instead of silently advancing — this is what prevents reflex auto-building.
+  _promptPickFirst(z) {
+    this._cue('bridge_error');
+    const zone = z || this._activeZone();
+    this.subtitle.setText(`Choose a material first: ◀ ▶ (or click / drag a part), then E to place it into ${zone ? zone.label : 'the slot'}.`);
+    this.tweens.add({ targets: this.trayLabel, alpha: { from: 0.35, to: 1 }, duration: 160, yoyo: true });
+    this._publish();
+    narrateText(this, 'Choose a material first, then place it.');
   }
 
   _rotateHeld() {
@@ -675,6 +707,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     }
     if (this.phase !== 'choose') return;
     this.dragging = obj;
+    this._dragStarted = true; // so the trailing pointerup is treated as a drag, not a click-select
     this.heldIdx = obj.getData('matIdx');
     obj.setDepth(1490).setScale(1.12).setAngle(this.heldRot);
     this._refreshSubtitle();
@@ -731,9 +764,16 @@ export default class BridgeDesignScene extends Phaser.Scene {
     } else if (this.phase === 'choose') {
       if (event.key === 'ArrowLeft' || key === 'a') { this._cycleHeld(-1); }
       else if (event.key === 'ArrowRight' || key === 'd') { this._cycleHeld(1); }
-      else if (key === 'r') { this._rotateHeld(); }
+      else if (key === 'r') { if (this.heldIdx === null) this._promptPickFirst(); else this._rotateHeld(); }
       else if (remove) { this._removeActiveTruss(); }
-      else if (key === 'e' || event.code === 'Space') { const z = this._activeZone(); if (z) this._place(z.key, this.heldIdx); }
+      else if (key === 'e' || event.code === 'Space') {
+        const z = this._activeZone();
+        if (!z) return;
+        // The core fix: a bare E with nothing chosen does NOT place — it asks the
+        // player to pick a material first. Repeated E can never auto-build a bridge.
+        if (this.heldIdx === null) { this._promptPickFirst(z); return; }
+        this._place(z.key, this.heldIdx);
+      }
     } else if (this.phase === 'ready') {
       if (event.key === 'ArrowLeft' || key === 'a') { this.phase = 'choose'; this._cycleHeld(-1); }
       else if (event.key === 'ArrowRight' || key === 'd') { this.phase = 'choose'; this._cycleHeld(1); }
