@@ -38,23 +38,41 @@ export default class DialogueScene extends Phaser.Scene {
     this._anchorPanel();
     this.scale.on('resize', () => this._anchorPanel());
 
+    // Player-choice branching UI (own container, anchored above the box).
+    this.choices = null;
+    this.choiceIndex = 0;
+    this.choiceTexts = [];
+    this.choiceBox = this.add.container(0, 0).setScrollFactor(0).setDepth(1300).setVisible(false);
+
     this.registry.events.on('dialogue:start', (id) => {
-      const line = dialogueSystem.start(id);
-      this.showLine(line);
+      this._clearChoices();
+      this.showLine(dialogueSystem.start(id));
     });
     this.registry.events.on('dialogue:advance', () => this.advance());
 
-    this.input.keyboard.on('keydown', (event) => {
-      if (event.key?.toLowerCase() === 'e' || event.code === 'Space') {
-        this.advance();
-      }
-    });
-    this.windowKeyHandler = (event) => {
-      if (event.key?.toLowerCase() === 'e' || event.code === 'Space') this.advance();
-    };
+    const onKey = (event) => this._onKey(event);
+    this.input.keyboard.on('keydown', onKey);
+    this.windowKeyHandler = onKey;
     window.addEventListener('keydown', this.windowKeyHandler);
     this.events.once('shutdown', () => window.removeEventListener('keydown', this.windowKeyHandler));
-    this.input.on('pointerdown', () => this.advance());
+    this.input.on('pointerdown', () => { if (!this.choices) this.advance(); });
+  }
+
+  _onKey(event) {
+    if (this.choices) {
+      const key = event.key?.toLowerCase();
+      if (key === 'arrowdown' || key === 's') { this._moveChoice(1); return; }
+      if (key === 'arrowup' || key === 'w') { this._moveChoice(-1); return; }
+      const num = parseInt(event.key, 10);
+      if (Number.isInteger(num) && num >= 1 && num <= this.choices.length) {
+        this.chooseDialogue(this.choices[num - 1].id); return;
+      }
+      if (key === 'e' || event.code === 'Space' || key === 'enter') {
+        this.chooseDialogue(this.choices[this.choiceIndex].id);
+      }
+      return;
+    }
+    if (event.key?.toLowerCase() === 'e' || event.code === 'Space') this.advance();
   }
 
   _anchorPanel() {
@@ -62,6 +80,7 @@ export default class DialogueScene extends Phaser.Scene {
     const x = Math.round((this.scale.width - this._boxW) / 2);
     const y = Math.round(this.scale.height - this._boxH - 28);
     this.panel.setPosition(Math.max(8, x), Math.max(8, y));
+    if (this.choiceBox && this.choiceBox.visible) this._positionChoiceBox();
   }
 
   showLine(line) {
@@ -79,24 +98,93 @@ export default class DialogueScene extends Phaser.Scene {
   }
 
   advance() {
-    if (!this.panel.visible) return;
+    if (!this.panel.visible || this.choices) return;
     const result = this.registry.get('dialogueSystem').advance();
+    if (result?.choicesPending) { this.showChoices(result.choices); return; }
     if (result?.closed) {
-      this.panel.setVisible(false);
-      this.registry.set('dialogueActive', false);
-      this.registry.get('act1AudioSystem')?.stopSpeech();
-      const runtime = this.registry.get('act1Runtime');
-      runtime?.applyDialogueEffects(result.dialogueId);
-      if (result.completesObjective) {
-        const questSystem = this.registry.get('questSystem');
-        questSystem?.completeObjective(result.completesObjective);
-      }
-      for (const objectiveId of result.completes || []) {
-        this.registry.get('questSystem')?.completeObjective(objectiveId);
-      }
-      this.registry.events.emit('quest:changed');
+      this._closeConversation(result.dialogueId, result.completesObjective, result.completes);
       return;
     }
     this.showLine(result);
+  }
+
+  _closeConversation(dialogueId, completesObjective, completes = []) {
+    this.panel.setVisible(false);
+    this.registry.set('dialogueActive', false);
+    this.registry.get('act1AudioSystem')?.stopSpeech();
+    if (dialogueId) this.registry.get('act1Runtime')?.applyDialogueEffects(dialogueId);
+    const questSystem = this.registry.get('questSystem');
+    if (completesObjective) questSystem?.completeObjective(completesObjective);
+    for (const objectiveId of completes || []) questSystem?.completeObjective(objectiveId);
+    this.registry.events.emit('quest:changed');
+  }
+
+  // --- player-choice branching -------------------------------------------
+  showChoices(choices) {
+    this.choices = choices;
+    this.choiceIndex = 0;
+    this.hint.setText('↑/↓ + E');
+    this.choiceTexts.forEach((t) => t.destroy());
+    this.choiceTexts = [];
+    this.choiceBox.removeAll(true);
+    const rowH = 30;
+    const h = choices.length * rowH + 14;
+    const bg = this.add.rectangle(0, 0, this._boxW, h, 0xfff0c7, 0.97)
+      .setOrigin(0, 0).setStrokeStyle(3, 0x6b4a33, 1);
+    this.choiceBox.add(bg);
+    choices.forEach((c, i) => {
+      const t = this.add.text(30, 9 + i * rowH, `  ${i + 1}. ${c.label}`, {
+        fontFamily: 'Arial', fontSize: '16px', color: '#2f261d',
+        wordWrap: { width: this._boxW - 60 },
+      }).setInteractive({ useHandCursor: true });
+      t.on('pointerdown', (_p, _x, _y, e) => { e?.stopPropagation?.(); this.chooseDialogue(c.id); });
+      this.choiceBox.add(t);
+      this.choiceTexts.push(t);
+    });
+    this._choiceBoxH = h;
+    this._positionChoiceBox();
+    this.choiceBox.setVisible(true);
+    this._highlightChoice();
+  }
+
+  _positionChoiceBox() {
+    const x = Math.round((this.scale.width - this._boxW) / 2);
+    const y = Math.round(this.scale.height - this._boxH - 28 - (this._choiceBoxH || 0) - 10);
+    this.choiceBox.setPosition(Math.max(8, x), Math.max(8, y));
+  }
+
+  _moveChoice(d) {
+    this.choiceIndex = (this.choiceIndex + d + this.choices.length) % this.choices.length;
+    this._highlightChoice();
+  }
+
+  _highlightChoice() {
+    this.choiceTexts.forEach((t, i) => {
+      const sel = i === this.choiceIndex;
+      t.setColor(sel ? '#7a2f1a' : '#2f261d');
+      t.setText(`${sel ? '▸' : ' '} ${i + 1}. ${this.choices[i].label}`);
+    });
+  }
+
+  chooseDialogue(choiceId) {
+    const res = this.registry.get('dialogueSystem').choose(choiceId);
+    this._clearChoices();
+    if (!res) return;
+    if (res.baseDialogueId) this.registry.get('act1Runtime')?.applyDialogueEffects(res.baseDialogueId);
+    const questSystem = this.registry.get('questSystem');
+    for (const objectiveId of res.choiceCompletes || []) questSystem?.completeObjective(objectiveId);
+    this.registry.events.emit('quest:changed');
+    if (res.branched) { this.showLine(res.line); return; }
+    this.panel.setVisible(false);
+    this.registry.set('dialogueActive', false);
+    this.registry.get('act1AudioSystem')?.stopSpeech();
+  }
+
+  _clearChoices() {
+    this.choices = null;
+    this.choiceIndex = 0;
+    if (this.choiceTexts) { this.choiceTexts.forEach((t) => t.destroy()); this.choiceTexts = []; }
+    if (this.choiceBox) { this.choiceBox.removeAll(true); this.choiceBox.setVisible(false); }
+    if (this.hint) this.hint.setText('E / click');
   }
 }

@@ -64,8 +64,13 @@ test.describe('game graphics reset route', () => {
       window.__bikebrowserRebuildGame.registry.events.emit('dialogue:start', 'mr_chen_bridge_intro');
     });
     await expect(page.locator('canvas')).toBeVisible();
-    await page.keyboard.press('KeyE');
-    await page.keyboard.press('KeyE');
+    // Mr. Chen's intro now offers player choices (branching dialogue). Advance
+    // through his lines and confirm a choice; committing to any choice applies
+    // the conversation's effects (completing talk_to_mr_chen).
+    for (let i = 0; i < 4; i += 1) {
+      await page.keyboard.press('KeyE');
+      await page.waitForTimeout(60);
+    }
 
     const questAfterDialogue = await page.evaluate(() => {
       const summary = window.__bikebrowserRebuildGame.registry.get('questSystem').getSummary();

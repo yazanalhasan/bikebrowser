@@ -40,11 +40,30 @@ export class DialogueSystem {
     };
   }
 
+  // Player-choice branching (optional, backward compatible): a dialogue entry
+  // may carry `choices: [{ id, label, goto?, completes? }]`. When present, the
+  // conversation pauses at its last line for the player to choose instead of
+  // closing. `goto` branches into another dialogue; otherwise the choice closes
+  // the conversation. Entries without `choices` behave exactly as before.
+  currentChoices() {
+    if (!this.active) return null;
+    const lines = this._lines();
+    const atEnd = this.index >= lines.length - 1;
+    if (atEnd && Array.isArray(this.active.choices) && this.active.choices.length) {
+      return this.active.choices.map((c, i) => ({ id: c.id || `choice_${i}`, label: c.label }));
+    }
+    return null;
+  }
+
   advance() {
     if (!this.active) return null;
     if (this.index < this._lines().length - 1) {
       this.index += 1;
       return this.currentLine();
+    }
+    const choices = this.currentChoices();
+    if (choices) {
+      return { choicesPending: true, choices, dialogueId: this.active.id };
     }
     const completed = this.active.completesObjective || null;
     const completedMany = this.active.completes || [];
@@ -52,5 +71,20 @@ export class DialogueSystem {
     this.active = null;
     this.index = 0;
     return { closed: true, dialogueId, completesObjective: completed, completes: completedMany };
+  }
+
+  choose(choiceId) {
+    if (!this.active || !Array.isArray(this.active.choices)) return null;
+    const choice = this.active.choices.find((c, i) => (c.id || `choice_${i}`) === choiceId);
+    if (!choice) return null;
+    const baseDialogueId = this.active.id;
+    const choiceCompletes = choice.completes || [];
+    if (choice.goto) {
+      const line = this.start(choice.goto); // branch into another dialogue
+      return { branched: true, line, baseDialogueId, choiceCompletes };
+    }
+    this.active = null;
+    this.index = 0;
+    return { closed: true, baseDialogueId, choiceCompletes };
   }
 }
