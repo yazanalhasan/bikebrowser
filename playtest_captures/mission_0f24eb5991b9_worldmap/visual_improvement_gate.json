@@ -1,0 +1,41 @@
+{
+  "mission": "mission_0f24eb5991b9",
+  "project": "bikebrowser",
+  "feature": "Act 1 wider GPS/world-map affordance",
+  "before_artifacts": [
+    "playtest_captures/mission_0f24eb5991b9_worldmap/before_01_collapsed.png",
+    "playtest_captures/mission_0f24eb5991b9_worldmap/before_02_map_open.png",
+    "playtest_captures/mission_0f24eb5991b9_worldmap/before_runtime_state.json"
+  ],
+  "after_artifacts": [
+    "playtest_captures/mission_0f24eb5991b9_worldmap/after_01_collapsed.png",
+    "playtest_captures/mission_0f24eb5991b9_worldmap/after_02_map_open.png",
+    "playtest_captures/mission_0f24eb5991b9_worldmap/after_runtime_state.json"
+  ],
+  "comparison_artifacts": [
+    "playtest_captures/mission_0f24eb5991b9_worldmap/comparison_01_before_after_map_open.png"
+  ],
+  "reference_artifacts": [
+    "public/layouts/neighborhood.layout.json",
+    "src/game/phaser/scenes/NeighborhoodScene.js",
+    "src/game/data/act1/act1WorldMap.js"
+  ],
+  "human_facing_rationale": {
+    "summary": "The after-state keeps the same Act 1 quest route but presents it as a wider GPS/world map. The map surface is larger, labels are easier to read, the current and quest markers have more separation, and locked destinations now have visible X marks instead of relying only on dim opacity.",
+    "feature_exists": true,
+    "runtime_verification": "Captured live at /game-rebuild with window.__WORLDMAP__ reporting current=street, quest=dry_wash, reachable local destinations, and locked wider destinations.",
+    "visual_quality": "The after screenshot is wider and less compressed; route, current, quest, and locked states are more distinct at desktop viewing size.",
+    "ux_quality": "The feature helps the player understand where they are, where to go next, and which city-scale destinations are not open yet without changing the quest flow.",
+    "educational_quality": "The map reinforces systems thinking by connecting the local dry-wash bridge problem to wider Arizona places such as City Gate, Salt River, and Copper Mine.",
+    "canon_alignment": "The result better expresses the Act 1 canon that a repaired neighborhood crossing reveals a larger Arizona city/world beyond the local wash.",
+    "acceptance": "Accepted for this bounded slice because the runtime after-state is visibly clearer and the targeted smoke/build/visual checks pass."
+  },
+  "required_judgment_dimensions": {
+    "child_facing_readability": "improved",
+    "visual_hierarchy": "improved",
+    "canon_alignment": "improved",
+    "runtime_truth": "passed",
+    "before_after_improvement": "improved"
+  },
+  "final_judgment": "improved"
+}

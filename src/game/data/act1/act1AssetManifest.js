@@ -457,7 +457,8 @@ export function getAct1AssetManifestState() {
   return {
     assets,
     requiredCount: assets.filter((asset) => asset.requiredForObservedExpected).length,
-    finalReadyCount: assets.filter((asset) => asset.status === 'final_ready').length,
+    finalReadyCount: assets.filter((asset) => asset.requiredForObservedExpected && asset.status === 'final_ready').length,
+    totalFinalReadyCount: assets.filter((asset) => asset.status === 'final_ready').length,
     missingFinal: assets.filter((asset) => asset.requiredForObservedExpected && asset.status !== 'final_ready').map((asset) => asset.id),
     generatedRuntimeArt: false,
   };

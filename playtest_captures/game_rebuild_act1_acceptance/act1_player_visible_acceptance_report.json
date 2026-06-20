@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-03T02:13:33.539Z",
+  "generatedAt": "2026-06-06T15:11:05.302Z",
   "playerVisibleWalkthrough": true,
   "backendCompletionShortcutsUsed": false,
   "setupShortcutsUsed": [
@@ -66,21 +66,29 @@
       "bike_check",
       "broken_wash",
       "bridge_problem",
+      "balsa",
+      "pine",
+      "bamboo",
+      "brick",
+      "concrete",
+      "iron",
       "steel",
-      "copper_brace",
-      "weak_scrap",
+      "carbon_fiber",
+      "compression_vs_tension",
       "desert_plant",
       "mesquite",
       "creosote",
       "saguaro",
       "chemistry_result",
       "material_test_results",
+      "utm_stress_strain_curve",
       "prediction_log",
+      "concrete_tension_outlier",
       "bridge_plan",
       "bridge_repaired",
       "wider_map_unlocked"
     ],
-    "materialTestCount": 4,
+    "materialTestCount": 8,
     "engineeringLoop": {
       "observe": true,
       "predict": true,
@@ -102,25 +110,54 @@
           "score": 1
         },
         "calibration": {
-          "score": 0.75
+          "score": 0.63
         },
         "explanation": {
           "score": 1
         }
       },
-      "overall": 0.97,
+      "overall": 0.96,
       "band": "strong",
       "learnings": [
-        "You predicted mesquite would hold and the test agreed — your reasoning matched the evidence.",
+        "You predicted pine would hold and the test agreed — your reasoning matched the evidence.",
+        "You predicted bamboo would hold and the test agreed — your reasoning matched the evidence.",
+        "You predicted iron would hold and the test agreed — your reasoning matched the evidence.",
         "You predicted steel would hold and the test agreed — your reasoning matched the evidence.",
-        "You predicted copper_brace would hold and the test agreed — your reasoning matched the evidence.",
-        "You predicted weak_scrap would hold, the test proved otherwise, and you did not trust it in the bridge — that is exactly how to learn from evidence."
+        "You predicted carbon_fiber would hold and the test agreed — your reasoning matched the evidence.",
+        "You predicted balsa would hold, the test proved otherwise, and you did not trust it in the bridge — that is exactly how to learn from evidence.",
+        "You predicted brick would hold, the test proved otherwise, and you did not trust it in the bridge — that is exactly how to learn from evidence.",
+        "You predicted concrete would hold, the test proved otherwise, and you did not trust it in the bridge — that is exactly how to learn from evidence."
       ],
       "rewardsReasoningNotCorrectness": true
     },
     "materialVerdicts": [
       {
-        "id": "mesquite",
+        "id": "balsa",
+        "bridgeSafe": false,
+        "band": "comparison failure"
+      },
+      {
+        "id": "pine",
+        "bridgeSafe": true,
+        "band": "useful with limits"
+      },
+      {
+        "id": "bamboo",
+        "bridgeSafe": true,
+        "band": "useful with limits"
+      },
+      {
+        "id": "brick",
+        "bridgeSafe": false,
+        "band": "comparison failure"
+      },
+      {
+        "id": "concrete",
+        "bridgeSafe": false,
+        "band": "comparison failure"
+      },
+      {
+        "id": "iron",
         "bridgeSafe": true,
         "band": "useful with limits"
       },
@@ -130,20 +167,60 @@
         "band": "strong candidate"
       },
       {
-        "id": "copper_brace",
+        "id": "carbon_fiber",
         "bridgeSafe": true,
-        "band": "useful with limits"
-      },
-      {
-        "id": "weak_scrap",
-        "bridgeSafe": false,
-        "band": "comparison failure"
+        "band": "strong candidate"
       }
     ],
     "prediction": {
       "predictions": [
         {
-          "subjectId": "mesquite",
+          "subjectId": "balsa",
+          "willHold": true,
+          "confidence": "high",
+          "explanation": "I think it will hold.",
+          "resolved": true,
+          "actualSafe": false,
+          "correct": false
+        },
+        {
+          "subjectId": "pine",
+          "willHold": true,
+          "confidence": "high",
+          "explanation": "I think it will hold.",
+          "resolved": true,
+          "actualSafe": true,
+          "correct": true
+        },
+        {
+          "subjectId": "bamboo",
+          "willHold": true,
+          "confidence": "high",
+          "explanation": "I think it will hold.",
+          "resolved": true,
+          "actualSafe": true,
+          "correct": true
+        },
+        {
+          "subjectId": "brick",
+          "willHold": true,
+          "confidence": "high",
+          "explanation": "I think it will hold.",
+          "resolved": true,
+          "actualSafe": false,
+          "correct": false
+        },
+        {
+          "subjectId": "concrete",
+          "willHold": true,
+          "confidence": "high",
+          "explanation": "I think it will hold.",
+          "resolved": true,
+          "actualSafe": false,
+          "correct": false
+        },
+        {
+          "subjectId": "iron",
           "willHold": true,
           "confidence": "high",
           "explanation": "I think it will hold.",
@@ -161,28 +238,19 @@
           "correct": true
         },
         {
-          "subjectId": "copper_brace",
+          "subjectId": "carbon_fiber",
           "willHold": true,
           "confidence": "high",
           "explanation": "I think it will hold.",
           "resolved": true,
           "actualSafe": true,
           "correct": true
-        },
-        {
-          "subjectId": "weak_scrap",
-          "willHold": true,
-          "confidence": "high",
-          "explanation": "I think it will hold.",
-          "resolved": true,
-          "actualSafe": false,
-          "correct": false
         }
       ],
-      "made": 4,
-      "resolved": 4,
-      "correct": 3,
-      "accuracy": 0.75
+      "made": 8,
+      "resolved": 8,
+      "correct": 5,
+      "accuracy": 0.63
     },
     "inventoryDetails": [
       {
@@ -210,6 +278,54 @@
         "ecologySpecies": null
       },
       {
+        "id": "balsa",
+        "category": "material",
+        "source": "Mr. Chen material tray",
+        "durability": 0.2,
+        "bridgeSafe": false,
+        "ecologySpecies": null
+      },
+      {
+        "id": "pine",
+        "category": "material",
+        "source": "Mr. Chen material tray",
+        "durability": 0.4,
+        "bridgeSafe": true,
+        "ecologySpecies": null
+      },
+      {
+        "id": "bamboo",
+        "category": "material",
+        "source": "Mr. Chen material tray",
+        "durability": 0.6,
+        "bridgeSafe": true,
+        "ecologySpecies": null
+      },
+      {
+        "id": "brick",
+        "category": "material",
+        "source": "Mr. Chen material tray",
+        "durability": 0.5,
+        "bridgeSafe": false,
+        "ecologySpecies": null
+      },
+      {
+        "id": "concrete",
+        "category": "material",
+        "source": "Mr. Chen material tray",
+        "durability": 0.6,
+        "bridgeSafe": false,
+        "ecologySpecies": null
+      },
+      {
+        "id": "iron",
+        "category": "material",
+        "source": "Mr. Chen material tray",
+        "durability": 0.7,
+        "bridgeSafe": true,
+        "ecologySpecies": null
+      },
+      {
         "id": "steel",
         "category": "material",
         "source": "salvage yard",
@@ -218,19 +334,11 @@
         "ecologySpecies": null
       },
       {
-        "id": "copper_brace",
+        "id": "carbon_fiber",
         "category": "material",
-        "source": "local trader",
-        "durability": 0.7,
+        "source": "Mr. Chen material tray",
+        "durability": 0.9,
         "bridgeSafe": true,
-        "ecologySpecies": null
-      },
-      {
-        "id": "weak_scrap",
-        "category": "material",
-        "source": "roadside",
-        "durability": 0.2,
-        "bridgeSafe": false,
         "ecologySpecies": null
       },
       {
@@ -243,11 +351,11 @@
       }
     ],
     "finalFeedback": {
-      "id": "1780452811591-20",
+      "id": "1780758663928-20",
       "kind": "map",
       "message": "Wider map unlocked. A larger systems mystery is waiting.",
       "details": {},
-      "createdAt": "2026-06-03T02:13:31.591Z"
+      "createdAt": "2026-06-06T15:11:03.928Z"
     },
     "promptText": "[E] Open wider map clue",
     "audioSummary": {

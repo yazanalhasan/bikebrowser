@@ -73,6 +73,21 @@ export class DialogueSystem {
     return { closed: true, dialogueId, completesObjective: completed, completes: completedMany };
   }
 
+  // Leave the conversation immediately, from ANY point (mid-line or at a choice
+  // menu). The player has engaged the NPC, so the active dialogue's base
+  // completions still apply — backing out of a quest-critical talk does not lose
+  // progress or softlock; the player simply doesn't commit a branch choice.
+  // Returns the same shape as a natural close, or null if nothing is active.
+  leave() {
+    if (!this.active) return null;
+    const dialogueId = this.active.id;
+    const completesObjective = this.active.completesObjective || null;
+    const completes = this.active.completes || [];
+    this.active = null;
+    this.index = 0;
+    return { closed: true, dialogueId, completesObjective, completes };
+  }
+
   choose(choiceId) {
     if (!this.active || !Array.isArray(this.active.choices)) return null;
     const choice = this.active.choices.find((c, i) => (c.id || `choice_${i}`) === choiceId);

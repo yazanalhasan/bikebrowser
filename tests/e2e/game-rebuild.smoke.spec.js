@@ -79,6 +79,33 @@ test.describe('game graphics reset route', () => {
     });
     expect(questAfterDialogue).toBe(true);
 
+    // Esc leaves any conversation from any state — never trapped, never frozen.
+    // Open a branching dialogue, advance to its choice menu, then press Escape:
+    // the panel hides, dialogueActive clears (so the player can move again), and
+    // the player is not softlocked.
+    await page.evaluate(() => {
+      window.__bikebrowserRebuildGame.registry.events.emit('dialogue:start', 'mr_chen_bridge_intro');
+    });
+    for (let i = 0; i < 6; i += 1) {
+      await page.keyboard.press('KeyE');
+      await page.waitForTimeout(60);
+    }
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(120);
+    const afterEscape = await page.evaluate(() => ({
+      dialogueActive: Boolean(window.__bikebrowserRebuildGame.registry.get('dialogueActive')),
+      panelVisible: Boolean(window.__bikebrowserRebuildGame.scene.getScene('DialogueScene')?.panel?.visible),
+    }));
+    expect(afterEscape.dialogueActive).toBe(false);
+    expect(afterEscape.panelVisible).toBe(false);
+    // ...and movement works again after leaving.
+    const beforeEsc = await page.evaluate(() => window.__bikebrowserRebuildGame.registry.get('playerPosition'));
+    await page.keyboard.down('ArrowRight');
+    await page.waitForTimeout(300);
+    await page.keyboard.up('ArrowRight');
+    const afterEsc = await page.evaluate(() => window.__bikebrowserRebuildGame.registry.get('playerPosition'));
+    expect(afterEsc.x).toBeGreaterThan(beforeEsc.x);
+
     const unlockedMapHudState = await page.evaluate(() => {
       const game = window.__GAME__;
       game.handleInteraction('collect_materials');

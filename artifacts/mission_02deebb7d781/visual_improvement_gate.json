@@ -1,0 +1,57 @@
+{
+  "mission": "mission_02deebb7d781",
+  "project": "bikebrowser",
+  "portfolio": "portfolio_e76f0ee6a085",
+  "work_item": "Restore wider map, GPS, and world-scale affordances",
+  "before_artifacts": [
+    "artifacts/mission_02deebb7d781/before/worldmap_open_before.png",
+    "playtest_captures/game_rebuild_worldmap_reachability/01_map_open_before_labels.png"
+  ],
+  "after_artifacts": [
+    "artifacts/mission_02deebb7d781/after/worldmap_open_after.png",
+    "playtest_captures/game_rebuild_worldmap_reachability/01_map_open.png",
+    "playtest_captures/game_rebuild_act1_complete/08_bridge_repaired_map_unlock.png"
+  ],
+  "comparison_artifacts": [
+    "artifacts/mission_02deebb7d781/comparison/worldmap_before_after_contact_sheet.png",
+    "playtest_captures/mission_6cb47ada3fac_worldmap/worldmap_before_after_contact_sheet.png"
+  ],
+  "reference_artifacts": [
+    "src/game/data/act1/act1WorldMap.js",
+    "public/layouts/neighborhood.layout.json",
+    "tests/e2e/game-rebuild.worldmap-reachability.spec.js",
+    "tests/e2e/game-rebuild.act1-visual-capture.spec.js"
+  ],
+  "human_facing_rationale": "The after runtime map is wider and more readable for Act 1 navigation. It keeps the player in the same quest flow while making the map function visible: current location is labeled with YOU, the quest destination is called out as NEXT RIDE, locked frontier destinations are labeled directly, and the city-scale/region labels make the neighborhood feel connected to a larger Arizona setting.",
+  "judgment_dimensions": {
+    "child_facing_readability": "improved: a child can identify where they are, where to go next, and which places are locked without reading only the legend.",
+    "visual_hierarchy": "improved: the next ride chip and YOU/QUEST markers create clearer focal points; extra labels are contained inside the GPS map panel and do not cover the playfield objective card.",
+    "canon_alignment": "improved: the map now names Arizona city routes, Sonoran edge, city gate, Salt River, and Copper Mine while preserving the bridge-gated Act 1 progression.",
+    "runtime_truth": "passed: Playwright screenshots show the live runtime panel with the claimed current, locked, quest, and scale affordances.",
+    "before_after_improvement": "improved: the after screenshot visibly explains locked destinations and next destination better than the before screenshot."
+  },
+  "experience_gate": {
+    "feature_exists": "passed: G opens/closes the GPS map and publishes window.__WORLDMAP__ state.",
+    "runtime_verification": "passed: targeted Playwright world-map, smoke, and visual capture checks passed.",
+    "visual_quality": "passed: the overlay is larger but remains bounded and readable, with clear labels and no broad scene removal.",
+    "ux_quality": "passed: the feature reduces navigation confusion by showing current place, quest destination, known locations, locked locations, and unlock context.",
+    "educational_quality": "passed: map language reinforces place, route, gate, scale, and bridge-unlock cause/effect.",
+    "canon_alignment": "passed: supports the Act 1 repaired-bridge-to-wider-map canon and wider Arizona city affordance.",
+    "acceptance": "passed: current validation did not find a regression in the targeted Act 1 smoke or visual capture flow."
+  },
+  "ux_notes": {
+    "helps_player": true,
+    "reduces_confusion": true,
+    "avoids_clutter": true,
+    "improves_navigation": true,
+    "improves_understanding": true,
+    "notes": "The player can press G, read NEXT RIDE, see YOU on the route, and understand that Salt River/Copper Mine are not available until the bridge/city gate unlock."
+  },
+  "child_readability_notes": {
+    "object": "The GPS/world map is visually framed and titled Zuzu GPS.",
+    "goal": "NEXT RIDE names Dry Wash during the early Act 1 quest.",
+    "next_step": "The route line and QUEST marker point from YOU to the destination.",
+    "reward": "Locked labels and frontier text explain that repairing the bridge opens wider routes."
+  },
+  "final_judgment": "improved"
+}

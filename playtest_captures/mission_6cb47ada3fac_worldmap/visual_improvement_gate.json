@@ -1,0 +1,47 @@
+{
+  "mission": "mission_6cb47ada3fac",
+  "portfolio": "portfolio_27a455ca3967",
+  "work_item": "Restore wider map, GPS, and world-scale affordances",
+  "before_artifacts": [
+    "playtest_captures/mission_6cb47ada3fac_worldmap/before_worldmap_open.png",
+    "playtest_captures/game_rebuild_worldmap_reachability/01_map_open_before_labels.png"
+  ],
+  "after_artifacts": [
+    "playtest_captures/mission_6cb47ada3fac_worldmap/after_worldmap_open.png",
+    "playtest_captures/game_rebuild_worldmap_reachability/01_map_open.png"
+  ],
+  "comparison_artifacts": [
+    "playtest_captures/mission_6cb47ada3fac_worldmap/worldmap_before_after_contact_sheet.png"
+  ],
+  "reference_artifacts": [
+    "public/layouts/neighborhood.layout.json",
+    "src/game/data/act1/act1WorldMap.js",
+    "tests/e2e/game-rebuild.worldmap-reachability.spec.js"
+  ],
+  "human_facing_rationale": {
+    "summary": "The restored Act 1 GPS/world-map HUD is visible from the live runtime, opens with G, marks the player's current location, marks the active quest destination, lists reachable destinations, and shows locked wider Arizona destinations. The after-state adds explicit LOCKED labels on the map itself, a NEXT RIDE chip for the quest destination, and a short city-scale cue so a child does not have to infer map meaning only from the legend.",
+    "ux_notes": {
+      "helps_player": true,
+      "reduces_confusion": true,
+      "avoids_clutter": true,
+      "improves_navigation": true,
+      "improves_understanding": true,
+      "notes": "The map remains a bounded HUD overlay rather than a new flow-breaking scene. It clarifies the next destination while preserving the bridge quest flow."
+    },
+    "child_readability_notes": {
+      "object_identifiable": true,
+      "goal_identifiable": true,
+      "next_step_identifiable": true,
+      "reward_identifiable": true,
+      "notes": "A child can identify the GPS/map, see YOU near Street, see QUEST/NEXT RIDE for Dry Wash, and see City Gate/Salt River/Copper Mine as LOCKED until the bridge opens the wider map."
+    },
+    "required_judgment_dimensions": {
+      "child_facing_readability": "improved",
+      "visual_hierarchy": "improved",
+      "canon_alignment": "improved",
+      "runtime_truth": "passed",
+      "before_after_improvement": "improved"
+    }
+  },
+  "final_judgment": "improved"
+}

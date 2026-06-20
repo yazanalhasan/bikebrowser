@@ -26,6 +26,34 @@
       "active": true
     },
     {
+      "key": "PredictionScene",
+      "active": true
+    },
+    {
+      "key": "BridgeDesignScene",
+      "active": true
+    },
+    {
+      "key": "LoadTestScene",
+      "active": true
+    },
+    {
+      "key": "CrossingScene",
+      "active": true
+    },
+    {
+      "key": "InvestigationScene",
+      "active": true
+    },
+    {
+      "key": "EcologyScene",
+      "active": true
+    },
+    {
+      "key": "BiomeScene",
+      "active": true
+    },
+    {
       "key": "DebugScene",
       "active": true
     }
@@ -33,24 +61,30 @@
   "activeScenes": [
     {
       "key": "NeighborhoodScene",
-      "childCount": 226,
+      "childCount": 84,
       "interactiveCount": 0,
       "textSamples": [
         "Zuzu home",
-        "warm tools, shared proof",
-        "garage/workbench",
+        "garage / workbench",
         "dry wash path",
-        "flood line",
-        "test first",
         "Mr. Chen",
         "Mrs. Ramirez",
         "Auntie Mariam",
         "materials table",
+        "GARAGE",
+        "tools · testing · materials",
+        "HOME",
+        "Zuzu · neighbors · mentors",
+        "THE WASH",
+        "flood · bridge · the gate",
+        "ECOLOGY",
+        "plant · observe · restore",
         "compare bend",
         "repaired crossing",
         "broken wash",
         "Current clue\nStart with the bike, then follow the wash.\nThe bridge needs tested ",
-        "WASD / arrows move • E or Space explore • G GPS • N notebook • R replay voice • "
+        "WASD / arrows move • E or Space explore • G map • N notebook • J discoveries • F",
+        "◈ 0 ZuzuBucks"
       ],
       "hasPlayer": true
     },
@@ -63,6 +97,55 @@
     },
     {
       "key": "DialogueScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "PredictionScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "BridgeDesignScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "LoadTestScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "CrossingScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": true
+    },
+    {
+      "key": "InvestigationScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "EcologyScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "BiomeScene",
       "childCount": 1,
       "interactiveCount": 0,
       "textSamples": [],

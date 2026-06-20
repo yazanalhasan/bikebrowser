@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-31T09:00:47.845Z",
+  "generatedAt": "2026-06-20T04:41:05.335Z",
   "hookVerified": true,
   "bridgeShape": {
     "exists": true,
@@ -24,7 +24,7 @@
   },
   "audit": {
     "available": true,
-    "installedAt": "2026-05-31T09:00:47.341Z",
+    "installedAt": "2026-06-20T04:41:04.884Z",
     "speechAvailable": true,
     "settings": {
       "speechEnabled": true,
@@ -34,20 +34,29 @@
       "interactionCuesEnabled": true,
       "reducedAudio": false,
       "subtitleMode": "always",
-      "speechRate": 1
+      "speechRate": 1,
+      "useServerVoice": true
     },
     "lastSpoken": {
       "text": "Mr. Chen says the bridge needs tested proof.",
       "normalized": "Mr. Chen says the bridge needs tested proof.",
       "voiceId": "garage_mentor",
-      "language": "en-US",
-      "rate": 0.8799999952316284,
-      "pitch": 0.9200000166893005,
-      "selectedVoiceName": "Microsoft David - English (United States)"
+      "via": "server",
+      "language": "en-US"
     },
     "lastNormalized": "Mr. Chen says the bridge needs tested proof.",
     "voiceAssignments": {
+      "narrator": {
+        "name": "(browser default)",
+        "lang": "en-US",
+        "default": true
+      },
       "zuzu": {
+        "name": "(browser default)",
+        "lang": "en-US",
+        "default": true
+      },
+      "dex": {
         "name": "(browser default)",
         "lang": "en-US",
         "default": true
@@ -132,17 +141,17 @@
         {
           "state": "neighborhood",
           "label": "Neighborhood exploration",
-          "at": "2026-05-31T09:00:47.344Z"
+          "at": "2026-06-20T04:41:04.886Z"
         },
         {
           "state": "garage",
           "label": "Garage/workbench",
-          "at": "2026-05-31T09:00:47.671Z"
+          "at": "2026-06-20T04:41:05.160Z"
         },
         {
           "state": "map_unlock",
           "label": "Wider world tease",
-          "at": "2026-05-31T09:00:47.671Z"
+          "at": "2026-06-20T04:41:05.160Z"
         }
       ]
     },
@@ -156,24 +165,24 @@
         {
           "cueId": "notebook_open",
           "label": "Notebook open",
-          "at": "2026-05-31T09:00:47.671Z"
+          "at": "2026-06-20T04:41:05.160Z"
         },
         {
           "cueId": "map_unlock",
           "label": "Map unlock",
-          "at": "2026-05-31T09:00:47.671Z"
+          "at": "2026-06-20T04:41:05.160Z"
         }
       ]
     },
     "events": [
       {
         "type": "audit_reset",
-        "at": "2026-05-31T09:00:47.671Z",
+        "at": "2026-06-20T04:41:05.159Z",
         "available": true
       },
       {
         "type": "audio_unlocked",
-        "at": "2026-05-31T09:00:47.671Z",
+        "at": "2026-06-20T04:41:05.160Z",
         "ok": true,
         "speechAvailable": true,
         "music": {
@@ -225,19 +234,19 @@
             {
               "state": "neighborhood",
               "label": "Neighborhood exploration",
-              "at": "2026-05-31T09:00:47.344Z"
+              "at": "2026-06-20T04:41:04.886Z"
             },
             {
               "state": "garage",
               "label": "Garage/workbench",
-              "at": "2026-05-31T09:00:47.671Z"
+              "at": "2026-06-20T04:41:05.160Z"
             }
           ]
         }
       },
       {
         "type": "music_transition",
-        "at": "2026-05-31T09:00:47.671Z",
+        "at": "2026-06-20T04:41:05.160Z",
         "requestedState": "garage",
         "result": {
           "ok": true,
@@ -293,24 +302,24 @@
             {
               "state": "neighborhood",
               "label": "Neighborhood exploration",
-              "at": "2026-05-31T09:00:47.344Z"
+              "at": "2026-06-20T04:41:04.886Z"
             },
             {
               "state": "garage",
               "label": "Garage/workbench",
-              "at": "2026-05-31T09:00:47.671Z"
+              "at": "2026-06-20T04:41:05.160Z"
             },
             {
               "state": "map_unlock",
               "label": "Wider world tease",
-              "at": "2026-05-31T09:00:47.671Z"
+              "at": "2026-06-20T04:41:05.160Z"
             }
           ]
         }
       },
       {
         "type": "music_transition",
-        "at": "2026-05-31T09:00:47.671Z",
+        "at": "2026-06-20T04:41:05.160Z",
         "requestedState": "map_unlock",
         "result": {
           "ok": true,
@@ -366,58 +375,51 @@
             {
               "state": "neighborhood",
               "label": "Neighborhood exploration",
-              "at": "2026-05-31T09:00:47.344Z"
+              "at": "2026-06-20T04:41:04.886Z"
             },
             {
               "state": "garage",
               "label": "Garage/workbench",
-              "at": "2026-05-31T09:00:47.671Z"
+              "at": "2026-06-20T04:41:05.160Z"
             },
             {
               "state": "map_unlock",
               "label": "Wider world tease",
-              "at": "2026-05-31T09:00:47.671Z"
+              "at": "2026-06-20T04:41:05.160Z"
             }
           ]
         }
       },
       {
         "type": "interaction_cue",
-        "at": "2026-05-31T09:00:47.671Z",
+        "at": "2026-06-20T04:41:05.160Z",
         "cueId": "notebook_open",
         "label": "Notebook open",
         "skipped": false
       },
       {
         "type": "interaction_cue",
-        "at": "2026-05-31T09:00:47.671Z",
+        "at": "2026-06-20T04:41:05.160Z",
         "cueId": "map_unlock",
         "label": "Map unlock",
         "skipped": false
       },
       {
         "type": "speech_attempt",
-        "at": "2026-05-31T09:00:47.672Z",
+        "at": "2026-06-20T04:41:05.160Z",
         "voiceId": "garage_mentor",
         "displayName": "Mr. Chen",
         "normalized": "Mr. Chen says the bridge needs tested proof.",
         "speechAvailable": true
       },
       {
-        "type": "speech_stopped",
-        "at": "2026-05-31T09:00:47.672Z",
-        "ok": true
-      },
-      {
         "type": "speech_started",
-        "at": "2026-05-31T09:00:47.672Z",
+        "at": "2026-06-20T04:41:05.160Z",
         "text": "Mr. Chen says the bridge needs tested proof.",
         "normalized": "Mr. Chen says the bridge needs tested proof.",
         "voiceId": "garage_mentor",
-        "language": "en-US",
-        "rate": 0.8799999952316284,
-        "pitch": 0.9200000166893005,
-        "selectedVoiceName": "Microsoft David - English (United States)"
+        "via": "server",
+        "language": "en-US"
       }
     ],
     "eventCounts": {
@@ -426,7 +428,6 @@
       "music_transition": 2,
       "interaction_cue": 2,
       "speech_attempt": 1,
-      "speech_stopped": 1,
       "speech_started": 1
     },
     "errors": []

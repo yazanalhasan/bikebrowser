@@ -29,12 +29,23 @@ export default class DialogueScene extends Phaser.Scene {
       color: '#2f261d',
       wordWrap: { width: this._boxW - 48 },
     });
-    this.hint = this.add.text(this._boxW - 78, 92, 'E / click', {
+    this.hint = this.add.text(this._boxW - 132, 92, 'E / click  ·  Esc leaves', {
       fontFamily: 'Arial',
       fontSize: '13px',
       color: '#6b4a33',
     });
-    this.panel.add([bg, this.speaker, this.line, this.hint]);
+    // Always-visible exit affordance: a mouse-reachable ✕ so the player is never
+    // trapped without having to discover the Esc key (kids don't read hints).
+    this.closeButton = this.add.text(this._boxW - 28, 8, '✕', {
+      fontFamily: 'Arial',
+      fontSize: '18px',
+      color: '#6b4a33',
+      fontStyle: 'bold',
+    }).setInteractive({ useHandCursor: true });
+    this.closeButton.on('pointerover', () => this.closeButton.setColor('#a83218'));
+    this.closeButton.on('pointerout', () => this.closeButton.setColor('#6b4a33'));
+    this.closeButton.on('pointerdown', (_p, _x, _y, e) => { e?.stopPropagation?.(); this._leaveDialogue(); });
+    this.panel.add([bg, this.speaker, this.line, this.hint, this.closeButton]);
     this._anchorPanel();
     this.scale.on('resize', () => this._anchorPanel());
 
@@ -61,6 +72,12 @@ export default class DialogueScene extends Phaser.Scene {
   }
 
   _onKey(event) {
+    // Universal exit — works mid-line OR at a choice menu, so the player is
+    // never trapped (and, since dialogue now freezes movement, never frozen).
+    if (event.key === 'Escape') {
+      if (this.panel.visible || this.choices) this._leaveDialogue();
+      return;
+    }
     if (this.choices) {
       const key = event.key?.toLowerCase();
       if (key === 'arrowdown' || key === 's') { this._moveChoice(1); return; }
@@ -110,6 +127,24 @@ export default class DialogueScene extends Phaser.Scene {
     this.showLine(result);
   }
 
+  // Graceful leave from any state. Clears any choice menu, force-closes the
+  // active dialogue (applying its base completions so a quest-critical talk is
+  // never abandoned half-done), hides the box, unfreezes the player, and stops
+  // speech. Reachable via Esc or the ✕ button. Idempotent and safe to re-fire.
+  _leaveDialogue() {
+    if (!this.panel.visible && !this.choices) return;
+    this._clearChoices();
+    const res = this.registry.get('dialogueSystem')?.leave();
+    if (res) {
+      this._closeConversation(res.dialogueId, res.completesObjective, res.completes);
+      return;
+    }
+    this.panel.setVisible(false);
+    this.registry.set('dialogueActive', false);
+    this.registry.get('act1AudioSystem')?.stopSpeech();
+    this.registry.events.emit('quest:changed');
+  }
+
   _closeConversation(dialogueId, completesObjective, completes = []) {
     this.panel.setVisible(false);
     this.registry.set('dialogueActive', false);
@@ -125,7 +160,7 @@ export default class DialogueScene extends Phaser.Scene {
   showChoices(choices) {
     this.choices = choices;
     this.choiceIndex = 0;
-    this.hint.setText('↑/↓ + E');
+    this.hint.setText('↑/↓ + E  ·  Esc leaves');
     this.choiceTexts.forEach((t) => t.destroy());
     this.choiceTexts = [];
     this.choiceBox.removeAll(true);
@@ -187,6 +222,6 @@ export default class DialogueScene extends Phaser.Scene {
     this.choiceIndex = 0;
     if (this.choiceTexts) { this.choiceTexts.forEach((t) => t.destroy()); this.choiceTexts = []; }
     if (this.choiceBox) { this.choiceBox.removeAll(true); this.choiceBox.setVisible(false); }
-    if (this.hint) this.hint.setText('E / click');
+    if (this.hint) this.hint.setText('E / click  ·  Esc leaves');
   }
 }

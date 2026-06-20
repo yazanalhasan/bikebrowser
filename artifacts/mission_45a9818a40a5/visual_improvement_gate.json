@@ -1,0 +1,40 @@
+{
+  "mission": "mission_45a9818a40a5",
+  "portfolio": "portfolio_12a233b96d50",
+  "work_item": "Restore wider map, GPS, and world-scale affordances",
+  "before_artifacts": [
+    "artifacts/mission_45a9818a40a5/before/01_act1_start.png",
+    "artifacts/mission_45a9818a40a5/before/08_bridge_repaired_map_unlock.png"
+  ],
+  "after_artifacts": [
+    "artifacts/mission_45a9818a40a5/after/01_act1_start.png",
+    "artifacts/mission_45a9818a40a5/after/08_bridge_repaired_map_unlock.png"
+  ],
+  "comparison_artifacts": [
+    "artifacts/mission_45a9818a40a5/comparison/start_collapsed_gps.png",
+    "artifacts/mission_45a9818a40a5/comparison/bridge_repaired_map_unlock.png",
+    "artifacts/mission_45a9818a40a5/comparison/navigation_map_before_after_contact_sheet.png"
+  ],
+  "reference_artifacts": [
+    "public/layouts/neighborhood.layout.json",
+    "src/game/data/act1/act1WorldMap.js"
+  ],
+  "human_facing_rationale": {
+    "summary": "The restored GPS affordance now names the next ride directly in collapsed mode, while the expanded world map keeps current location, quest destination, reachable routes, and locked Arizona destinations visible from the existing Act 1 runtime state.",
+    "child_facing_readability": "Improved. A child can see 'Go to Dry Wash' without opening the map, and the expanded map still marks YOU, QUEST, locked destinations, and the city-scale frontier.",
+    "visual_hierarchy": "Improved. The destination chip gives the next step a clear focal point without covering the player or main quest props.",
+    "canon_alignment": "Improved. The UI reinforces a larger Arizona city with Sonoran edge, city, river route, Salt River, Copper Mine, and City Gate cues while preserving the dry-wash bridge quest flow.",
+    "runtime_truth": "Passed. After screenshots are live Playwright runtime captures from /game-rebuild, not asset-only evidence.",
+    "before_after_improvement": "Improved in the collapsed GPS start state; the map-unlock state remains stable and readable with the added destination/frontier cue."
+  },
+  "experience_gate": {
+    "feature_exists": "pass",
+    "runtime_verification": "pass",
+    "visual_quality": "pass",
+    "ux_quality": "pass",
+    "educational_quality": "pass",
+    "canon_alignment": "pass",
+    "acceptance": "pass_targeted"
+  },
+  "final_judgment": "improved"
+}
