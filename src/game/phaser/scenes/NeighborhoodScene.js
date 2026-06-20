@@ -9,6 +9,24 @@ import { loadLayout } from '../../../renderer/game/utils/loadLayout.js';
 const USE_PROVENANCED_ENVIRONMENT_ASSETS =
   import.meta.env?.VITE_USE_PROVENANCED_ENVIRONMENT_ASSETS === 'true';
 
+// Per-material look for the UTM (load-testing machine) sample. Previously every
+// material rendered as the same flat teal bar tinted only by pass/fail — steel
+// and balsa were indistinguishable. Each material now reads as its own family
+// (warm pixel palette) with a simple texture, so the *identity* is visible while
+// the verdict still rides on the sample outline + comparison marks. `pattern` is
+// drawn procedurally (no painted asset), so this is a freeze-safe clarity edit.
+const MATERIAL_VIS = {
+  balsa: { base: 0xe7d6a2, detail: 0xc8b173, pattern: 'grain' },
+  pine: { base: 0xd2a062, detail: 0xa06a33, pattern: 'grain' },
+  bamboo: { base: 0xc4cf72, detail: 0x88a23e, pattern: 'segments' },
+  brick: { base: 0xb15538, detail: 0x7c3320, pattern: 'courses' },
+  concrete: { base: 0xb3ac9c, detail: 0x827b6b, pattern: 'speckle' },
+  iron: { base: 0x8a8c92, detail: 0x585b61, pattern: 'sheen' },
+  steel: { base: 0xc1c7d0, detail: 0x8b929c, pattern: 'sheen' },
+  carbon_fiber: { base: 0x33373d, detail: 0x6b7078, pattern: 'weave' },
+  _default: { base: 0xb9c7bf, detail: 0x6f8079, pattern: 'grain' },
+};
+
 export default class NeighborhoodScene extends Phaser.Scene {
   constructor() {
     super('NeighborhoodScene');
@@ -1069,15 +1087,20 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // Positioned relative to the UTM rig prop so it follows wherever the rig is.
     const rig = this.layout.utm_rig;
     this.utmViz = this.add.container(rig.x - 34, rig.y - 56).setDepth(150);
-    this.utmVizBase = this.add.rectangle(0, 0, 72, 16, 0x203029, 0.62).setStrokeStyle(1, 0xfff0c7, 0.4);
-    this.utmVizSample = this.add.rectangle(0, 0, 44, 7, 0x8ed6c9, 0.95);
-    this.utmVizPressure = this.add.rectangle(0, -11, 34, 5, 0xf2c46d, 0.92);
-    this.utmVizLabel = this.add.text(-34, 16, 'test load', {
+    this.utmVizBase = this.add.rectangle(0, 0, 74, 18, 0x203029, 0.62).setStrokeStyle(1, 0xfff0c7, 0.4);
+    // The sample under test. Taller now so the per-material texture reads; its
+    // fill = material family, its outline = pass/fail verdict.
+    this.utmVizSample = this.add.rectangle(0, 0, 46, 12, 0x8ed6c9, 0.95).setStrokeStyle(1.5, 0x2a221a, 0.6);
+    // Texture + failure (crack/neck) overlay, redrawn per test. Shares the
+    // sample's squish/rotation so grain bends with the bar.
+    this.utmVizGrain = this.add.graphics();
+    this.utmVizPressure = this.add.rectangle(0, -13, 34, 5, 0xf2c46d, 0.92);
+    this.utmVizLabel = this.add.text(-34, 17, 'test load', {
       fontFamily: 'Arial',
       fontSize: '10px',
       color: '#ffe8aa',
     }).setAlpha(0.76);
-    this.utmViz.add([this.utmVizBase, this.utmVizSample, this.utmVizPressure, this.utmVizLabel]);
+    this.utmViz.add([this.utmVizBase, this.utmVizSample, this.utmVizGrain, this.utmVizPressure, this.utmVizLabel]);
     this.utmComparisonMarks = [
       this.add.rectangle(rig.x - 58, rig.y - 18, 24, 5, 0x8ed6c9, 0.5).setDepth(151),
       this.add.rectangle(rig.x - 28, rig.y - 18, 24, 5, 0xf2c46d, 0.5).setDepth(151),
@@ -1092,13 +1115,24 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
   updateUtmVisualizer(latestTest) {
     if (!this.utmVizSample || !latestTest) return;
+    const vis = MATERIAL_VIS[latestTest.materialId] || MATERIAL_VIS._default;
     const usefulness = latestTest.bridgeUsefulness ?? 0.4;
     const deformation = Phaser.Math.Clamp(latestTest.deformation ?? 0.5, 0, 1.2);
-    const color = usefulness >= 0.8 ? 0x8ed6c9 : usefulness >= 0.55 ? 0xf2c46d : 0xd08b62;
-    this.utmVizSample.setFillStyle(color, 0.95);
-    this.utmVizSample.setScale(1, Phaser.Math.Clamp(1 - deformation * 0.36, 0.48, 1));
-    this.utmVizSample.setRotation((deformation - 0.35) * 0.12);
-    this.utmVizPressure.setY(-11 + deformation * 5);
+    // Verdict band kept — but moved to the OUTLINE, freeing the fill to carry
+    // material identity (green safe / amber limited / orange comparison-failure).
+    const band = usefulness >= 0.8 ? 0x6fc36a : usefulness >= 0.55 ? 0xe7b24a : 0xcf6a3a;
+    const brittle = latestTest.deformationBand === 'brittle snap';
+    const cracked = brittle && !latestTest.bridgeSafe; // brittle AND it gave way
+    this.utmVizSample.setFillStyle(vis.base, 0.98);
+    this.utmVizSample.setStrokeStyle(2, band, 1);
+    // Ductile materials bend (rotate) under load; brittle ones stay rigid, then
+    // crack — so the deformation itself teaches the failure mode, not just color.
+    const squish = Phaser.Math.Clamp(1 - deformation * 0.4, 0.42, 1);
+    const rot = brittle ? 0 : (deformation - 0.35) * 0.16;
+    this.utmVizSample.setScale(1, squish).setRotation(rot);
+    this.utmVizGrain.setScale(1, squish).setRotation(rot);
+    this._drawMaterialTexture(vis, cracked);
+    this.utmVizPressure.setY(-13 + deformation * 5);
     this.utmVizLabel.setText(usefulness >= 0.8 ? 'holds shape' : usefulness >= 0.55 ? 'bends some' : 'fails test');
     this.utmComparisonMarks?.forEach((mark, index) => {
       const active = index === 0 && usefulness >= 0.8
@@ -1109,12 +1143,54 @@ export default class NeighborhoodScene extends Phaser.Scene {
     });
   }
 
+  // Draw the current material's surface texture (and a crack if it failed
+  // brittle) onto the grain overlay, in the sample's local space (46x12,
+  // centred). Kept to a few primitives so it reads at the in-world zoom.
+  _drawMaterialTexture(vis, cracked) {
+    const g = this.utmVizGrain;
+    if (!g) return;
+    g.clear();
+    const w = 20; const h = 4; // inset half-extents within the 46x12 sample
+    g.lineStyle(1, vis.detail, 0.9);
+    switch (vis.pattern) {
+      case 'segments': // bamboo — node bands across the culm
+        [-10, 4].forEach((x) => g.lineBetween(x, -h, x, h));
+        break;
+      case 'courses': // brick — mortar joints, offset top/bottom courses
+        g.lineBetween(-w, 0, w, 0);
+        [-12, 0, 12].forEach((x) => g.lineBetween(x, -h, x, 0));
+        [-6, 6].forEach((x) => g.lineBetween(x, 0, x, h));
+        break;
+      case 'speckle': // concrete — aggregate flecks
+        g.fillStyle(vis.detail, 0.85);
+        [[-12, -1], [-4, 2], [5, -2], [12, 1], [0, -2]].forEach(([x, y]) => g.fillCircle(x, y, 1));
+        break;
+      case 'sheen': // metal — bright highlight band over a darker base line
+        g.lineStyle(2, 0xffffff, 0.45); g.lineBetween(-w, -h * 0.5, w, -h * 0.5);
+        g.lineStyle(1, vis.detail, 0.8); g.lineBetween(-w, h * 0.6, w, h * 0.6);
+        break;
+      case 'weave': // carbon fibre — fine parallel tows
+        for (let x = -w; x <= w; x += 5) g.lineBetween(x, -h, x, h);
+        break;
+      default: // grain — wood fibres run lengthwise
+        g.lineBetween(-w, -h * 0.4, w, -h * 0.4);
+        g.lineBetween(-w, h * 0.5, w, h * 0.5);
+    }
+    if (cracked) { // jagged fracture — the brittle-snap teaching beat
+      g.lineStyle(1.6, 0x9a2f1a, 1);
+      g.beginPath();
+      g.moveTo(0, -h - 2); g.lineTo(-3, -1); g.lineTo(3, 2); g.lineTo(-1, h + 2);
+      g.strokePath();
+    }
+  }
+
   resetUtmVisualizer() {
     if (!this.utmVizSample) return;
-    this.utmVizSample.setFillStyle(0x8ed6c9, 0.7);
+    this.utmVizSample.setFillStyle(0x8ed6c9, 0.7).setStrokeStyle(1.5, 0x2a221a, 0.6);
     this.utmVizSample.setScale(1, 1);
     this.utmVizSample.setRotation(0);
-    this.utmVizPressure.setY(-11);
+    if (this.utmVizGrain) { this.utmVizGrain.clear(); this.utmVizGrain.setScale(1, 1).setRotation(0); }
+    this.utmVizPressure.setY(-13);
     this.utmVizLabel.setText('test load');
     this.utmComparisonMarks?.forEach((mark) => mark.setAlpha(0.5).setScale(1, 1));
   }
