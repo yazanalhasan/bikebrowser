@@ -130,7 +130,7 @@ export const CHAPTERS = [
   {
     num: 6,
     actId: 'act2',
-    status: 'locked',
+    status: 'scaffold',
     vehicle: 'Plane',
     engineeringDomain: 'Aerodynamics & flight: lift/drag/thrust/weight, airfoils, control surfaces, strength-to-weight, fatigue, pressurization',
     rig: 'Wind tunnel',
@@ -139,7 +139,8 @@ export const CHAPTERS = [
     region: 'Intercontinental / isolated highlands',
     reach: 'Intercontinental / isolated highlands',
     summary: 'Fly. The wind tunnel teaches strength-to-weight; molecular biology explains the mechanism behind the remedies of earlier chapters.',
-    entry: { type: 'preview', event: null, target: null },
+    // First playable slice: the Wind Tunnel. Enterable once Chapter 5 is complete.
+    entry: { type: 'scene', event: 'plane:start', target: 'PlaneTunnelScene', demo: 'Wind Tunnel' },
   },
   {
     num: 7,

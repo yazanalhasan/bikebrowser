@@ -1310,6 +1310,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
       else if (num === 3) this.showFeedback({ message: 'Chapter 3 — Motorcycle. Tune the engine on the dyno.' });
       else if (num === 4) this.showFeedback({ message: 'Chapter 4 — Car. Pass the crash & load test.' });
       else if (num === 5) this.showFeedback({ message: 'Chapter 5 — Boat. Float it in the hydro tank.' });
+      else if (num === 6) this.showFeedback({ message: 'Chapter 6 — Plane. Make it fly in the wind tunnel.' });
+    });
+    this.registry.events.on('plane:built', () => {
+      this._markChapterComplete(6);
+      this.showFeedback({ message: 'It flies — Chapter 6 underway.' });
     });
     this.registry.events.on('boat:built', () => {
       this._markChapterComplete(5);

@@ -19,6 +19,7 @@ import ExtractionBenchScene from './scenes/ExtractionBenchScene.js';
 import EngineDynoScene from './scenes/EngineDynoScene.js';
 import CrashTestScene from './scenes/CrashTestScene.js';
 import BoatTankScene from './scenes/BoatTankScene.js';
+import PlaneTunnelScene from './scenes/PlaneTunnelScene.js';
 import DebugScene from './scenes/DebugScene.js';
 
 export function createGame(parent) {
@@ -63,6 +64,7 @@ export function createGame(parent) {
       EngineDynoScene,
       CrashTestScene,
       BoatTankScene,
+      PlaneTunnelScene,
       DebugScene,
     ],
     audio: { noAudio: true },
