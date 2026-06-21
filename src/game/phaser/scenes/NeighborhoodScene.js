@@ -154,7 +154,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
     const W = this.worldWidth;
     const H = this.worldHeight;
     this.add.rectangle(W / 2, H / 2, W, H, 0x2e4a3d).setDepth(-30);
-    this.add.rectangle(W / 2, H / 2, W, H, 0xcdb389, 0.10).setDepth(-29);
+    // Anime painted desert ground (GPU art) over the flat base, if present.
+    if (this.textures.exists('bg_ground')) {
+      this.add.image(W / 2, H / 2, 'bg_ground').setDisplaySize(W, H).setDepth(-29).setAlpha(0.96);
+    } else {
+      this.add.rectangle(W / 2, H / 2, W, H, 0xcdb389, 0.10).setDepth(-29);
+    }
 
     this.drawMountainBackdrop();
     this.drawRegionGrounds();
