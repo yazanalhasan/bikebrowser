@@ -1235,6 +1235,13 @@ export default class NeighborhoodScene extends Phaser.Scene {
 
     this.registry.events.on('act1:feedback', (entry) => this.showFeedback(entry));
 
+    // After the player builds a bridge and it PASSES the full load test, place it
+    // over the wash automatically: repairBridge() lifts the wash barrier, swaps the
+    // sprite to the repaired span, completes the repair/cross objectives and opens
+    // the wider map; then the Community Crossing plays as the payoff. Without this,
+    // building succeeded but the wash stayed broken until a separate manual step.
+    this.registry.events.on('loadTest:done', (result) => this._onBridgeLoadTestDone(result));
+
     // ZuzuBucks counter (top-right) — earned on first quest/objective completion,
     // spent on upgrades. Pulses gold when it changes.
     this.zuzuBucksHud = this.add.text(this.scale.width - 16, 14, '', {
@@ -1896,12 +1903,18 @@ export default class NeighborhoodScene extends Phaser.Scene {
           }
           if (!this.registry.get('dialogueActive')) this.registry.events.emit('dialogue:start', bridgeRepaired ? 'arabic_welcome' : 'arabic_intro');
         } else if (nearest.action) {
-          this.runtime?.handleInteraction(nearest.action);
-          this.registry.events.emit('quest:changed');
-          // Phase 6 — repairing the bridge (player path) plays the Community
-          // Crossing cutscene. Debug repairBridge() (e2e) does not route here.
-          if (nearest.action === 'repair_bridge' && this.runtime?.constructionSystem?.bridgeReconnected) {
-            this.registry.events.emit('crossing:start');
+          // The bridge is auto-placed when its load test passes; if it is already
+          // reconnected, the wash zone must not repair again (repairBridge is
+          // non-idempotent — it re-upgrades the bike) or replay the crossing.
+          const alreadyPlaced = nearest.action === 'repair_bridge' && this.runtime?.constructionSystem?.bridgeReconnected;
+          if (!alreadyPlaced) {
+            this.runtime?.handleInteraction(nearest.action);
+            this.registry.events.emit('quest:changed');
+            // Manual fallback path (e.g. a design that never went through the load
+            // test): repairing here plays the Community Crossing cutscene.
+            if (nearest.action === 'repair_bridge' && this.runtime?.constructionSystem?.bridgeReconnected) {
+              this.registry.events.emit('crossing:start');
+            }
           }
         }
         if (nearest.dialogueId && nearest.id !== 'neighbor' && nearest.id !== 'arabic_mentor' && !this.registry.get('dialogueActive')) {
@@ -2107,6 +2120,22 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // un-repairs, and removeCollider is the reliable way to drop arcade collision).
     if (this.washCollider) { this.physics.world.removeCollider(this.washCollider); this.washCollider = null; }
     if (this.washBarrier) { this.washBarrier.destroy(); this.washBarrier = null; }
+  }
+
+  // Bridge passed its load test -> place it over the wash now (no separate manual
+  // step). repairBridge() needs a tested plan, which a successful design set; it
+  // lifts the wash barrier, swaps the sprite, completes objectives and opens the
+  // wider map. Then the Community Crossing plays as the payoff. Guarded so it only
+  // runs once and the manual "Reconnect the crossing" zone won't double-fire it.
+  _onBridgeLoadTestDone(result) {
+    if (!result || !result.ok) return;              // only when the bridge held through every load
+    const cs = this.runtime?.constructionSystem;
+    if (!cs || cs.bridgeReconnected || !cs.plan) return; // already placed, or no built design
+    const repaired = this.runtime.repairBridge();
+    if (!repaired || repaired.ok === false) return;
+    this.registry.events.emit('quest:changed');
+    this.updateEvidencePanel();                     // immediate: drop barrier + swap to the repaired span
+    this.registry.events.emit('crossing:start');    // the Community Crossing climax
   }
 
   updateEvidencePanel() {
