@@ -742,6 +742,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this.player.body.setOffset(animated ? 37 : 8, animated ? 54 : 20);
     }
     this.playerFacing = 'down';
+    if (this._animeChars) {
+      // Soft ground shadow so the cutout sits on the terrain instead of floating.
+      this.playerShadow = this.add.ellipse(this.player.x, this.player.y + 2, 34, 11, 0x1a1208, 0.26).setDepth(259);
+    }
     if (animated) this.player.play('zuzu.idle.down');
     this.playerVisualState = {
       textureKey: this.player.texture.key,
@@ -1077,6 +1081,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
       baseScale = this.characterVisuals.npcScale;
     }
     npc.setScale(baseScale).setDepth(245);
+    if (useAnime) this.add.ellipse(x, y + 2, 32, 10, 0x1a1208, 0.24).setDepth(244);
     npc.setData('dialogueId', dialogueId);
     npc.setData('characterId', id);
     if (animated && this.anims.exists(animationKey)) {
@@ -2073,6 +2078,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
       const bob = isMoving ? Math.sin(time / 90) : Math.sin(time / 520) * 0.4;
       this.player.setScale(base * (1 - bob * 0.03), base * (1 + bob * 0.05));
       this.player.setAngle(isMoving ? bob * 2.5 : 0);
+      if (this.playerShadow) {
+        this.playerShadow.setPosition(this.player.x, this.player.y + 2);
+        this.playerShadow.setScale(isMoving ? 1 - Math.abs(bob) * 0.12 : 1);
+      }
     } else {
       const targetAnim = `zuzu.${isMoving ? 'walk' : 'idle'}.${this.playerFacing || 'down'}`;
       if (this.anims.exists(targetAnim) && this.player.anims?.currentAnim?.key !== targetAnim) {
