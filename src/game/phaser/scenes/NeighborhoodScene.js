@@ -1355,6 +1355,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.registry.events.on('cell:built', () => {
       this.showFeedback({ message: 'Cellular biology: you can see the cells — the shared building blocks of all life.' });
     });
+    // Chapter 5 biology pillar — fermenting sugar to alcohol with microbes.
+    this.registry.events.on('ferment:built', () => {
+      this.showFeedback({ message: 'Microbiology: yeast fermented your sugar to alcohol — microbes transform matter.' });
+    });
 
     // ZuzuBucks counter (top-right) — earned on first quest/objective completion,
     // spent on upgrades. Pulses gold when it changes.

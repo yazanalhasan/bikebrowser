@@ -28,4 +28,19 @@ export default class BoatTankScene extends KnobBenchScene {
       meter: (r) => `Displaces ${r.displacement}  ·  weighs ${r.totalWeight}  ·  reserve ${r.reserve}  ·  righting ${r.stability}`,
     });
   }
+
+  // The Hydro Tank is the Chapter-5 hub: add a link to the biology pillar (the
+  // Fermentation Bench) after the base renders, mirroring the earlier hubs.
+  render() {
+    super.render();
+    if (!this.open) return;
+    const btn = this.add.rectangle(1128, 64, 230, 30, 0x2a2417, 1)
+      .setStrokeStyle(1, 0xd8c69a, 0.5).setScrollFactor(0)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => { this.hide(); this.registry.events.emit('ferment:start'); });
+    const txt = this.add.text(1128, 64, '🫙 Fermentation Bench →', {
+      fontFamily: 'Arial', fontSize: '12px', color: '#d8c69a', fontStyle: 'bold',
+    }).setOrigin(0.5).setScrollFactor(0);
+    this.controlLayer.add([btn, txt]);
+  }
 }
