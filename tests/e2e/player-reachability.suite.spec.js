@@ -63,7 +63,28 @@ function predictionModalOpen(page) {
     return Boolean(s?.registry?.get?.('modalActive'));
   });
 }
-async function walkTo(page, t, maxSteps = 80) {
+async function holdKey(page, key, ms) {
+  await page.keyboard.down(key);
+  await page.waitForTimeout(ms);
+  await page.keyboard.up(key);
+  await page.waitForTimeout(30);
+}
+// The nearest interaction zone to the player — arrival doesn't need an exact
+// position, just close enough to interact (matches a real player and the proven
+// bridge-reachability walk).
+async function nearestId(page) {
+  return page.evaluate(() => {
+    const g = window.__bikebrowserRebuildGame;
+    const s = g.scene.scenes.find((x) => x.interactions?.zones?.length && x.player);
+    return s?.interactions?.nearest?.(s.player)?.id ?? null;
+  });
+}
+// Walk the player to a target zone. Holds each axis PROPORTIONAL to its remaining
+// distance (the player moves ~160px/s, so the old fixed 130ms micro-steps spent
+// almost all their wall-clock in readWorld round-trips and timed out on far
+// targets). Sequential X-then-Y holds + a nearest()-based arrival = the proven
+// approach from game-rebuild.bridge-reachability.
+async function walkTo(page, t, maxSteps = 110) {
   if (!t) return false;
   let last = null;
   let stuck = 0;
@@ -72,23 +93,22 @@ async function walkTo(page, t, maxSteps = 80) {
     if (!w) return false;
     const dx = t.x - w.player.x;
     const dy = t.y - w.player.y;
-    if (Math.hypot(dx, dy) < 50) return true;
-    if (last && Math.hypot(w.player.x - last.x, w.player.y - last.y) < 4) stuck += 1; else stuck = 0;
+    if (Math.hypot(dx, dy) < 48) return true;
+    if (t.id && (await nearestId(page)) === t.id) return true;
+    if (last && Math.hypot(w.player.x - last.x, w.player.y - last.y) < 5) stuck += 1; else stuck = 0;
     last = w.player;
-    const ks = [];
     if (stuck >= 4) {
       // Hard stuck: cycle a single direction to slide off the obstacle.
-      ks.push(['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'][i % 4]);
-    } else if (stuck >= 2) {
-      // Soft stuck: commit to the smaller axis to round a corner.
-      ks.push(Math.abs(dx) <= Math.abs(dy) ? (dx >= 0 ? 'ArrowRight' : 'ArrowLeft') : (dy >= 0 ? 'ArrowDown' : 'ArrowUp'));
-    } else {
-      if (Math.abs(dx) > 22) ks.push(dx > 0 ? 'ArrowRight' : 'ArrowLeft');
-      if (Math.abs(dy) > 22) ks.push(dy > 0 ? 'ArrowDown' : 'ArrowUp');
+      await holdKey(page, ['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'][i % 4], 200);
+      continue;
     }
-    for (const k of ks) await page.keyboard.down(k);
-    await page.waitForTimeout(130);
-    for (const k of ks) await page.keyboard.up(k);
+    if (stuck >= 2) {
+      // Soft stuck: commit fully to the smaller axis to round a corner.
+      await holdKey(page, Math.abs(dx) <= Math.abs(dy) ? (dx >= 0 ? 'ArrowRight' : 'ArrowLeft') : (dy >= 0 ? 'ArrowDown' : 'ArrowUp'), 220);
+      continue;
+    }
+    if (Math.abs(dx) > 22) await holdKey(page, dx > 0 ? 'ArrowRight' : 'ArrowLeft', Math.min(240, Math.max(55, Math.abs(dx) * 1.9)));
+    if (Math.abs(dy) > 22) await holdKey(page, dy > 0 ? 'ArrowDown' : 'ArrowUp', Math.min(240, Math.max(55, Math.abs(dy) * 1.9)));
   }
   const w = await readWorld(page);
   return w ? Math.hypot(t.x - w.player.x, t.y - w.player.y) < 70 : false;

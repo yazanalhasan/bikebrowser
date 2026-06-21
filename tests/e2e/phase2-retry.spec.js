@@ -14,7 +14,25 @@ const promptText = (p) => p.evaluate(() => { const s = (window.__bikebrowserRebu
 const feedback = (p) => p.evaluate(() => { try { const f = window.__GAME__.getFeedbackState(); return f?.last ? { kind: f.last.kind, message: f.last.message } : null; } catch { return null; } });
 const eco = (p) => p.evaluate(() => window.__ECOLOGY__ || null);
 const discovery = (p) => p.evaluate(() => { try { const d = window.__GAME__.getAct1State().discovery; return { count: d.discovered.length, known: d.discovered }; } catch { return null; } });
-async function walkTo(p, t, maxSteps = 110) { if (!t) return false; let last = null, stuck = 0; for (let i = 0; i < maxSteps; i++) { const w = await readWorld(p); if (!w) return false; const dx = t.x - w.player.x, dy = t.y - w.player.y; if (Math.hypot(dx, dy) < 44) return true; if (last && Math.hypot(w.player.x - last.x, w.player.y - last.y) < 4) stuck++; else stuck = 0; last = w.player; const ks = []; if (stuck >= 4) ks.push(['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'][i % 4]); else if (stuck >= 2) ks.push(Math.abs(dx) <= Math.abs(dy) ? (dx >= 0 ? 'ArrowRight' : 'ArrowLeft') : (dy >= 0 ? 'ArrowDown' : 'ArrowUp')); else { if (Math.abs(dx) > 18) ks.push(dx > 0 ? 'ArrowRight' : 'ArrowLeft'); if (Math.abs(dy) > 18) ks.push(dy > 0 ? 'ArrowDown' : 'ArrowUp'); } for (const k of ks) await p.keyboard.down(k); await p.waitForTimeout(115); for (const k of ks) await p.keyboard.up(k); } const w = await readWorld(p); return w ? Math.hypot(t.x - w.player.x, t.y - w.player.y) < 66 : false; }
+async function holdKey(p, key, ms) { await p.keyboard.down(key); await p.waitForTimeout(ms); await p.keyboard.up(key); await p.waitForTimeout(30); }
+async function nearestId(p) { return p.evaluate(() => { const g = window.__bikebrowserRebuildGame; const s = g?.scene?.scenes?.find((x) => x.interactions?.zones?.length && x.player); return s?.interactions?.nearest?.(s.player)?.id ?? null; }); }
+// Holds each axis PROPORTIONAL to distance (the player moves ~160px/s; fixed
+// micro-steps spent all their wall-clock in readWorld round-trips and timed out).
+async function walkTo(p, t, maxSteps = 110) {
+  if (!t) return false; let last = null, stuck = 0;
+  for (let i = 0; i < maxSteps; i++) {
+    const w = await readWorld(p); if (!w) return false;
+    const dx = t.x - w.player.x, dy = t.y - w.player.y;
+    if (Math.hypot(dx, dy) < 44) return true;
+    if (t.id && (await nearestId(p)) === t.id) return true;
+    if (last && Math.hypot(w.player.x - last.x, w.player.y - last.y) < 5) stuck++; else stuck = 0; last = w.player;
+    if (stuck >= 4) { await holdKey(p, ['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'][i % 4], 200); continue; }
+    if (stuck >= 2) { await holdKey(p, Math.abs(dx) <= Math.abs(dy) ? (dx >= 0 ? 'ArrowRight' : 'ArrowLeft') : (dy >= 0 ? 'ArrowDown' : 'ArrowUp'), 220); continue; }
+    if (Math.abs(dx) > 18) await holdKey(p, dx > 0 ? 'ArrowRight' : 'ArrowLeft', Math.min(240, Math.max(55, Math.abs(dx) * 1.9)));
+    if (Math.abs(dy) > 18) await holdKey(p, dy > 0 ? 'ArrowDown' : 'ArrowUp', Math.min(240, Math.max(55, Math.abs(dy) * 1.9)));
+  }
+  const w = await readWorld(p); return w ? Math.hypot(t.x - w.player.x, t.y - w.player.y) < 66 : false;
+}
 
 test('phase2 retry: ecology, discovery, map', async ({ page }) => {
   const errors = [];
