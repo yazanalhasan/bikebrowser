@@ -63,7 +63,12 @@ test.describe('Act 1 polish hardening', () => {
     expect(notebook.hint).toContain('New clues');
   });
 
-  test('neighborhood characters use larger Aseprite animation sheets', async ({ page }) => {
+  // SKIPPED 2026-06-21: this asserts the OLD aseprite sprite-sheet pipeline
+  // (act1.zuzu.walk.sheet, *.talk.sheet, walk/idle animations). That pipeline was
+  // replaced by the approved anime cutout art (zuzu_front/back; commits
+  // 6273cb3/18d3c96), which is static-directional, not sheet-animated. Re-author
+  // these assertions against the shipped anime art once it's finalized.
+  test.skip('neighborhood characters use larger Aseprite animation sheets', async ({ page }) => {
     await ready(page);
 
     const visuals = await page.evaluate(async () => {
