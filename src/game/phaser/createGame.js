@@ -14,6 +14,7 @@ import EcologyScene from './scenes/EcologyScene.js';
 import BiomeScene from './scenes/BiomeScene.js';
 import SkateScene from './scenes/SkateScene.js';
 import ChapterMapScene from './scenes/ChapterMapScene.js';
+import CircuitBenchScene from './scenes/CircuitBenchScene.js';
 import DebugScene from './scenes/DebugScene.js';
 
 export function createGame(parent) {
@@ -53,6 +54,7 @@ export function createGame(parent) {
       BiomeScene,
       SkateScene,
       ChapterMapScene,
+      CircuitBenchScene,
       DebugScene,
     ],
     audio: { noAudio: true },

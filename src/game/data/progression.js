@@ -74,7 +74,10 @@ export const CHAPTERS = [
     region: 'Extended local desert & first town',
     reach: 'Extended local range',
     summary: 'Electrify the bike. The new Circuit Bench joins the carry-forward toolset; the Extraction Bench opens the biology workbench to human plant-use.',
-    entry: { type: 'preview', event: null, target: null },
+    // First playable slice: the Circuit Bench (electrical rig). Region, ride and
+    // the Extraction Bench are still to come, so the chapter stays 'scaffold' —
+    // but this entry is live and enterable from the Vehicle Ladder.
+    entry: { type: 'scene', event: 'circuit:start', target: 'CircuitBenchScene', demo: 'Circuit Bench' },
   },
   {
     num: 3,

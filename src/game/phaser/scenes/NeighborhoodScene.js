@@ -1295,12 +1295,23 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // sprite to the repaired span, completes the repair/cross objectives and opens
     // the wider map; then the Community Crossing plays as the payoff. Without this,
     // building succeeded but the wash stayed broken until a separate manual step.
-    this.registry.events.on('loadTest:done', (result) => this._onBridgeLoadTestDone(result));
-    // Selecting Chapter 1 in the Vehicle Ladder returns here (this IS Chapter 1's
-    // world). Higher chapters are previews; entering them is a no-op until their
-    // content ships.
+    this.registry.events.on('loadTest:done', (result) => {
+      this._onBridgeLoadTestDone(result);
+      // Reconnecting the wash completes Chapter 1 — which unlocks Chapter 2
+      // (E-bike) in the Vehicle Ladder (carry-forward unlock, progression.js).
+      this._markChapterComplete(1);
+    });
+    // Selecting a chapter in the Vehicle Ladder. Chapter 1's world IS the
+    // neighborhood; Chapter 2 launches its Circuit Bench demo (via the ladder's
+    // entry event); higher chapters are read-only previews.
     this.registry.events.on('chapter:enter', ({ num }) => {
       if (num === 1) this.showFeedback({ message: 'Chapter 1 — Bike. Ride on.' });
+      else if (num === 2) this.showFeedback({ message: 'Chapter 2 — E-bike. Wire the Circuit Bench.' });
+    });
+    // Building the e-bike circuit completes Chapter 2's first slice.
+    this.registry.events.on('circuit:built', () => {
+      this._markChapterComplete(2);
+      this.showFeedback({ message: 'E-bike powered — circuit built! Chapter 2 underway.' });
     });
 
     // ZuzuBucks counter (top-right) — earned on first quest/objective completion,
@@ -1313,6 +1324,18 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.registry.events.on('zuzubucks:changed', ({ total }) => this._renderZuzuBucks(total, true));
 
     this.createDiscoveryUi();
+  }
+
+  // Record a chapter as complete in the shared `progression` registry value the
+  // Vehicle Ladder + ChapterProgressionSystem read. Merge-and-dedupe so unlocks
+  // accumulate across chapters (carry-forward, progression.js).
+  _markChapterComplete(num) {
+    const prev = this.registry.get('progression') || {};
+    const set = new Set(prev.chaptersComplete || []);
+    if (set.has(num)) return;
+    set.add(num);
+    this.registry.set('progression', { ...prev, chaptersComplete: [...set].sort((a, b) => a - b) });
+    this.registry.events.emit('progression:changed', { chaptersComplete: [...set] });
   }
 
   _renderZuzuBucks(total, pulse = false) {

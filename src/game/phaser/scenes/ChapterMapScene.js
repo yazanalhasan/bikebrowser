@@ -125,13 +125,23 @@ export default class ChapterMapScene extends Phaser.Scene {
     const els = [card, title, badge, eng, bio];
     this.cardLayer.add(els);
 
-    // Chapter 1 (playable/complete) is enterable — selecting it returns to the
-    // neighborhood. Previews are read-only here.
-    if (ch.runtimeStatus === 'playable' || ch.runtimeStatus === 'complete') {
+    // A chapter is enterable if it's playable/complete, OR it's a preview that
+    // exposes a live demo entry (e.g. Chapter 2's Circuit Bench). Locked chapters
+    // stay read-only.
+    const hasLiveEntry = ch.entry && ch.entry.type === 'scene' && ch.entry.event;
+    const enterable = ch.runtimeStatus === 'playable' || ch.runtimeStatus === 'complete'
+      || (ch.runtimeStatus === 'preview' && hasLiveEntry);
+    if (enterable) {
       card.setInteractive({ useHandCursor: true })
         .on('pointerover', () => card.setStrokeStyle(2, 0xffe7a8, 0.9))
         .on('pointerout', () => card.setStrokeStyle(1, 0xffffff, 0.22))
         .on('pointerdown', () => this.enterChapter(ch));
+      if (hasLiveEntry && ch.runtimeStatus === 'preview') {
+        const demo = this.add.text(x + w - 12, y + h - 16, `▶ PLAY DEMO: ${ch.entry.demo || 'open'}`, {
+          fontFamily: 'Arial', fontSize: '11px', color: '#ffe7a8', fontStyle: 'bold',
+        }).setOrigin(1, 1).setScrollFactor(0);
+        this.cardLayer.add(demo);
+      }
     }
     return h + 10;
   }
@@ -140,6 +150,9 @@ export default class ChapterMapScene extends Phaser.Scene {
     if (ch.entry && ch.entry.type === 'scene') {
       this.hide();
       this.registry.events.emit('chapter:enter', { num: ch.num });
+      // A chapter with a live entry event launches its scene (e.g. Chapter 2 →
+      // the Circuit Bench). Chapter 1's world is already the neighborhood.
+      if (ch.entry.event) this.registry.events.emit(ch.entry.event, { chapter: ch.num });
     }
   }
 }

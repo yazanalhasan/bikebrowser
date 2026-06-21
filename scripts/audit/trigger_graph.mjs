@@ -37,6 +37,10 @@ const ALLOW = {
     // notifications; the navigable action is `chapter:enter` (which IS listened).
     // Reviewed 2026-06-21 as benign.
     'chapters:done', 'chapters:opened',
+    // Chapter 2 Circuit Bench pings — `circuit:start` (ladder→bench) and
+    // `circuit:built` (bench→neighborhood, marks Ch2 complete) ARE listened;
+    // these are fire-and-forget notifications. Reviewed 2026-06-21.
+    'circuit:done', 'circuit:opened', 'circuit:solved', 'progression:changed',
     // unused hook for a special quest-reward flourish; the reward still applies
     // via zuzubucks:changed + recordFeedback. Reviewed 2026-06-21 as benign.
     'reward:quest',
@@ -44,6 +48,12 @@ const ALLOW = {
   deadListeners: new Set([
     // legacy advance-by-event path; advancing is keyboard/pointer-driven.
     'dialogue:advance',
+    // Emitted DYNAMICALLY by the Vehicle Ladder via the data-driven
+    // `chapter.entry.event` (progression.js), so the static scan can't see the
+    // literal emit. The path is real: ChapterMapScene.enterChapter →
+    // registry.emit(ch.entry.event) → CircuitBenchScene listens. Verified by the
+    // chapter-ladder + circuit-bench e2e. Reviewed 2026-06-21.
+    'circuit:start',
   ]),
   // runtime handlers the scene intentionally supersedes with a richer flow
   // (utm→prediction, bridge_plan→design UI) — kept for debug/tests.
