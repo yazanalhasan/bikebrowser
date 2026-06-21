@@ -18,6 +18,8 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.json('skateparkLevel1', 'layouts/skatepark.level1.json');
     // Anime character portraits (GPU-generated; shown when a character speaks).
     ['zuzu', 'dex', 'chen', 'ramirez', 'mariam'].forEach((c) => this.load.image(`portrait_${c}`, `portraits/${c}.png`));
+    // Anime WORLD sprites (clean front cutouts) — the walking/moving characters.
+    ['zuzu', 'dex', 'chen', 'ramirez', 'mariam'].forEach((c) => this.load.image(`${c}_front`, `sprites/${c}_front.png`));
     loadAct1FinalAssets(this);
     loadAct1CharacterAnimationSheets(this);
     loadAct1RouteMarkerSheet(this);

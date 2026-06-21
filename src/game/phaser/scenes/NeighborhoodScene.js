@@ -707,18 +707,35 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   createPlayer() {
-    const animated = this.textures.exists(ASSET_KEYS.zuzuWalkSheet);
+    // Anime cutout sprite (GPU-generated front/back) takes priority; falls back to
+    // the old walk spritesheet, then a static image. The anime path drives facing +
+    // a procedural walk in updatePlayerAnimation (front/back texture, flip, bob).
+    this._animeChars = this.textures.exists('zuzu_front');
+    const animated = !this._animeChars && this.textures.exists(ASSET_KEYS.zuzuWalkSheet);
+    const startKey = this._animeChars ? 'zuzu_front' : (animated ? ASSET_KEYS.zuzuWalkSheet : ASSET_KEYS.zuzu);
     // Spawn in the HOME hub (world centre), among the NPCs.
-    this.player = this.physics.add.sprite(1280, 1040, animated ? ASSET_KEYS.zuzuWalkSheet : ASSET_KEYS.zuzu);
-    this.player.setScale(this.characterVisuals.playerScale).setDepth(260);
+    this.player = this.physics.add.sprite(1280, 1040, startKey);
+    if (this._animeChars) {
+      this._animePlayerScale = 88 / this.player.height; // ~88px tall on screen
+      this.player.setOrigin(0.5, 0.92).setScale(this._animePlayerScale).setDepth(260);
+    } else {
+      this.player.setScale(this.characterVisuals.playerScale).setDepth(260);
+    }
     this.player.setCollideWorldBounds(true);
     if (this.washBarrier) {
       this.washCollider = this.physics.add.collider(this.player, this.washBarrier);
       // Honor a loaded/already-repaired state immediately.
       this._setWashBarrier(!this.runtime?.constructionSystem?.bridgeReconnected);
     }
-    this.player.body.setSize(animated ? 22 : 24, animated ? 28 : 30);
-    this.player.body.setOffset(animated ? 37 : 8, animated ? 54 : 20);
+    if (this._animeChars) {
+      // collision box at the feet (texture-space; scales with the sprite)
+      const tw = this.player.width; const bw = Math.min(tw, 64);
+      this.player.body.setSize(bw, 56);
+      this.player.body.setOffset((tw - bw) / 2, this.player.height - 64);
+    } else {
+      this.player.body.setSize(animated ? 22 : 24, animated ? 28 : 30);
+      this.player.body.setOffset(animated ? 37 : 8, animated ? 54 : 20);
+    }
     this.playerFacing = 'down';
     if (animated) this.player.play('zuzu.idle.down');
     this.playerVisualState = {
@@ -1039,22 +1056,33 @@ export default class NeighborhoodScene extends Phaser.Scene {
   }
 
   createAnimatedNpc({ id, x, y, sheetKey, fallbackKey, animationKey, dialogueId }) {
-    const animated = this.textures.exists(sheetKey);
-    const npc = animated
-      ? this.add.sprite(x, y, sheetKey, 0)
-      : this.add.image(x, y, fallbackKey);
-    npc.setScale(this.characterVisuals.npcScale).setDepth(245);
+    // Prefer the anime cutout (GPU-generated, transparent); fall back to the old
+    // talk spritesheet, then a static image. Anime NPCs use a gentle idle bob.
+    const ANIME_NPC = { mr_chen: 'chen_front', neighbor: 'ramirez_front', auntie_mariam: 'mariam_front', dex: 'dex_front' };
+    const animeKey = ANIME_NPC[id];
+    const useAnime = Boolean(animeKey) && this.textures.exists(animeKey);
+    const animated = !useAnime && this.textures.exists(sheetKey);
+    let npc;
+    let baseScale;
+    if (useAnime) {
+      npc = this.add.image(x, y, animeKey).setOrigin(0.5, 0.92);
+      baseScale = 80 / npc.height;
+    } else {
+      npc = animated ? this.add.sprite(x, y, sheetKey, 0) : this.add.image(x, y, fallbackKey);
+      baseScale = this.characterVisuals.npcScale;
+    }
+    npc.setScale(baseScale).setDepth(245);
     npc.setData('dialogueId', dialogueId);
     npc.setData('characterId', id);
     if (animated && this.anims.exists(animationKey)) {
       npc.play({ key: animationKey, repeat: -1, delay: Phaser.Math.Between(0, 220) });
     }
     npc.setData('usesAsepriteRuntimeSheet', animated);
-    npc.setData('runtimeSource', animated ? sheetKey : fallbackKey);
+    npc.setData('runtimeSource', useAnime ? animeKey : (animated ? sheetKey : fallbackKey));
     this.tweens.add({
       targets: npc,
       y: y - 3,
-      scaleY: this.characterVisuals.npcScale * 1.018,
+      scaleY: baseScale * 1.02,
       duration: 1450 + Phaser.Math.Between(0, 260),
       ease: 'Sine.easeInOut',
       yoyo: true,
@@ -2028,13 +2056,25 @@ export default class NeighborhoodScene extends Phaser.Scene {
         this.playerFacing = movement.y < 0 ? 'up' : 'down';
       }
     }
-    const targetAnim = `zuzu.${isMoving ? 'walk' : 'idle'}.${this.playerFacing || 'down'}`;
-    if (this.anims.exists(targetAnim) && this.player.anims?.currentAnim?.key !== targetAnim) {
-      this.player.play(targetAnim);
+    if (this._animeChars) {
+      // Anime walk: the clean front cutout for all facing (flip for left); a livelier
+      // bob (squash/stretch + tiny lean) while moving so it reads as walking.
+      const facing = this.playerFacing || 'down';
+      if (this.player.texture.key !== 'zuzu_front') this.player.setTexture('zuzu_front');
+      this.player.setFlipX(facing === 'left');
+      const base = this._animePlayerScale;
+      const bob = isMoving ? Math.sin(time / 90) : Math.sin(time / 520) * 0.4;
+      this.player.setScale(base * (1 - bob * 0.03), base * (1 + bob * 0.05));
+      this.player.setAngle(isMoving ? bob * 2.5 : 0);
+    } else {
+      const targetAnim = `zuzu.${isMoving ? 'walk' : 'idle'}.${this.playerFacing || 'down'}`;
+      if (this.anims.exists(targetAnim) && this.player.anims?.currentAnim?.key !== targetAnim) {
+        this.player.play(targetAnim);
+      }
+      this.player.setFlipX(false);
+      const pulse = isMoving ? Math.sin(time / 72) * 0.035 : Math.sin(time / 420) * 0.012;
+      this.player.setScale(this.characterVisuals.playerScale, this.characterVisuals.playerScale + pulse);
     }
-    this.player.setFlipX(false);
-    const pulse = isMoving ? Math.sin(time / 72) * 0.035 : Math.sin(time / 420) * 0.012;
-    this.player.setScale(this.characterVisuals.playerScale, this.characterVisuals.playerScale + pulse);
     this.playerVisualState = {
       textureKey: this.player.texture.key,
       scale: this.characterVisuals.playerScale,
