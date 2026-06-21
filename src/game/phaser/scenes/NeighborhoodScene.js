@@ -155,6 +155,31 @@ export default class NeighborhoodScene extends Phaser.Scene {
   // GARAGE (left), HOME (centre), THE WASH (right), ECOLOGY (below) — connected
   // by paths, under a Sonoran mountain backdrop. (Replaces the old single
   // horizontal desert strip that crammed every activity into one band.)
+  // The neighbours' homes as GPU-painted anime cutouts, in a row along the back of
+  // the neighbourhood so the common street reads as a place people live. Returns
+  // true if the anime art was available (so the procedural fallback can be skipped).
+  _drawAnimeHomes() {
+    const homes = [
+      { key: 'home_zuzu', x: 300, y: 565, label: 'Zuzu home' },
+      { key: 'home_dex', x: 660, y: 575, label: "Dex's place" },
+      { key: 'home_chen', x: 1090, y: 548, label: "Mr. Chen's" },
+      { key: 'home_ramirez', x: 1350, y: 565, label: "Mrs. Ramirez's" },
+      { key: 'home_mariam', x: 1640, y: 548, label: "Auntie Mariam's" },
+    ];
+    if (!homes.some((h) => this.textures.exists(h.key))) return false;
+    const targetH = 340;
+    for (const h of homes) {
+      if (!this.textures.exists(h.key)) continue;
+      const src = this.textures.get(h.key).getSourceImage();
+      const w = targetH * (src.width / src.height);
+      // soft contact shadow so the home sits on the ground
+      this.add.ellipse(h.x, h.y - 6, w * 0.66, 26, 0x241708, 0.20).setDepth(9);
+      this.add.image(h.x, h.y, h.key).setOrigin(0.5, 1).setDisplaySize(w, targetH).setDepth(10);
+      this.add.text(h.x, h.y + 4, h.label, labelStyle()).setOrigin(0.5, 0).setDepth(30);
+    }
+    return true;
+  }
+
   createEnvironment() {
     const W = this.worldWidth;
     const H = this.worldHeight;
@@ -170,18 +195,26 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.drawRegionGrounds();
     this.drawRegionBanners();
 
-    // HOME — Zuzu's house, above the family of NPCs in the central hub.
-    this.drawLegacyPuebloRevivalHome(1130, 470, 300, 150, {
-      body: 0xc88457, trim: 0xf0c997, door: 0xf2c46d, label: 'Zuzu home',
-    });
+    // Anime neighbourhood HOMES (GPU art) — the neighbours' houses framing the
+    // common street, so this reads as a lived-in neighbourhood, not open desert.
+    const drewAnimeHomes = this._drawAnimeHomes();
+
+    // HOME — Zuzu's house, above the family of NPCs in the central hub. Only the
+    // procedural fallback if the anime homes aren't available.
+    if (!drewAnimeHomes) {
+      this.drawLegacyPuebloRevivalHome(1130, 470, 300, 150, {
+        body: 0xc88457, trim: 0xf0c997, door: 0xf2c46d, label: 'Zuzu home',
+      });
+    }
 
     // GARAGE — the workbench structure anchors the tools (layout-driven).
     const garageWorkbenchProp = this.layout.garage_workbench_prop;
-    this.add.image(
-      garageWorkbenchProp.x,
-      garageWorkbenchProp.y,
-      this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementGarageWorkbench, ASSET_KEYS.garageWorkbench),
-    ).setDisplaySize(garageWorkbenchProp.w, garageWorkbenchProp.h).setDepth(22);
+    const garageWorkbenchKey = this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementGarageWorkbench, ASSET_KEYS.garageWorkbench);
+    this._sizeProp(
+      this.add.image(garageWorkbenchProp.x, garageWorkbenchProp.y, garageWorkbenchKey).setDepth(22),
+      garageWorkbenchProp,
+      garageWorkbenchKey === ASSET_KEYS.propReplacementGarageWorkbench,
+    );
     this.add.text(garageWorkbenchProp.labelX, garageWorkbenchProp.labelY, 'garage / workbench', labelStyle());
 
     // THE WASH — dry wash bed, the broken bridge, and its repaired payoff.
@@ -415,6 +448,18 @@ export default class NeighborhoodScene extends Phaser.Scene {
   provenancedTextureOrFallback(provenancedKey, fallbackKey) {
     if (this.forcePlaceholderPropAssets) return fallbackKey;
     return this.textures.exists(provenancedKey) ? provenancedKey : fallbackKey;
+  }
+
+  // Size a prop image to its authored footprint. The procedural placeholders are
+  // drawn to the exact layout w×h; the anime art has different (taller) painted
+  // proportions, so when it's active we preserve its aspect ratio anchored to the
+  // layout height — scaled up modestly, since the painted props are fuller objects
+  // than the flat placeholders they replace.
+  _sizeProp(image, layout, usingArt) {
+    if (!usingArt) return image.setDisplaySize(layout.w, layout.h);
+    const src = image.texture.getSourceImage();
+    const targetH = layout.h * 1.7;
+    return image.setDisplaySize(targetH * (src.width / src.height), targetH);
   }
 
   canUseFinalPropAsset(key) {
@@ -771,11 +816,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.add.image(utmRig.x, utmRig.y, ASSET_KEYS.utmRig).setScale(utmRig.scale);
     this.createUtmVisualizer();
     const chemistryBench = this.layout.chemistry_bench;
-    this.add.image(
-      chemistryBench.x,
-      chemistryBench.y,
-      this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementChemistryBench, ASSET_KEYS.chemistryStation),
-    ).setDisplaySize(chemistryBench.w, chemistryBench.h);
+    const chemistryBenchKey = this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementChemistryBench, ASSET_KEYS.chemistryStation);
+    this._sizeProp(
+      this.add.image(chemistryBench.x, chemistryBench.y, chemistryBenchKey),
+      chemistryBench,
+      chemistryBenchKey === ASSET_KEYS.propReplacementChemistryBench,
+    );
     this.createChemistryVisualizer();
     const bridgePlanWorkbench = this.layout.bridge_plan_workbench;
     this.add.image(bridgePlanWorkbench.x, bridgePlanWorkbench.y, ASSET_KEYS.workbench).setScale(bridgePlanWorkbench.scale);
@@ -847,11 +893,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.drawNpcCue(960, 910, 0x5fc6d8, 'star');
 
     const materialTable = this.layout.material_table;
-    const trader = this.add.image(
-      materialTable.x,
-      materialTable.y,
-      this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementMaterialTable, ASSET_KEYS.materialSamples),
-    ).setDisplaySize(materialTable.w, materialTable.h);
+    const materialTableKey = this.provenancedTextureOrFallback(ASSET_KEYS.propReplacementMaterialTable, ASSET_KEYS.materialSamples);
+    const trader = this._sizeProp(
+      this.add.image(materialTable.x, materialTable.y, materialTableKey),
+      materialTable,
+      materialTableKey === ASSET_KEYS.propReplacementMaterialTable,
+    );
     this.add.text(materialTable.labelX, materialTable.labelY, 'materials table', labelStyle());
 
     const washMarkerLayout = this.layout.wash_marker;
