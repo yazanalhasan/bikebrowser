@@ -41,7 +41,12 @@ export default class CrossingScene extends Phaser.Scene {
     this.idx = 0;
     this.panel = this.add.container(480, 200).setScrollFactor(0).setDepth(1500).setVisible(false);
     const bg = this.add.rectangle(0, 0, 620, 360, 0x14110c, 0.98).setOrigin(0.5, 0).setStrokeStyle(4, 0xe2c98a, 1);
-    this.backdrop = this.add.image(0, 14, ASSET_KEYS.washCrossingBackdrop).setOrigin(0.5, 0).setDisplaySize(560, 150).setVisible(false);
+    // Anime painted backdrop (GPU art) filling the panel; else the old strip.
+    const crossKey = this.textures.exists('bg_crossing') ? 'bg_crossing' : ASSET_KEYS.washCrossingBackdrop;
+    this.backdrop = this.add.image(0, 2, crossKey).setOrigin(0.5, 0).setDisplaySize(612, 356).setVisible(false);
+    // Scrim behind the lower text band so the light dialogue stays readable.
+    this.textScrim = this.add.rectangle(0, 200, 612, 158, 0x140f08, 0.66).setOrigin(0.5, 0);
+    this.titleScrim = this.add.rectangle(0, 168, 360, 34, 0x140f08, 0.5).setOrigin(0.5, 0);
     this.title = this.add.text(0, 176, 'The Community Crossing', { fontFamily: 'Arial', fontSize: '20px', color: '#ffe9bf', fontStyle: 'bold' }).setOrigin(0.5, 0);
 
     // Simple figures on the bridge: player/Zuzu (teal), Mr. Chen (brown),
@@ -59,7 +64,7 @@ export default class CrossingScene extends Phaser.Scene {
     this.speaker = this.add.text(0, 214, '', { fontFamily: 'Arial', fontSize: '14px', color: '#ffd27a', fontStyle: 'bold' }).setOrigin(0.5, 0);
     this.body = this.add.text(0, 238, '', { fontFamily: 'Arial', fontSize: '15px', color: '#f3ead8', wordWrap: { width: 560 }, align: 'center' }).setOrigin(0.5, 0);
     this.hint = this.add.text(0, 326, 'E to continue', { fontFamily: 'Arial', fontSize: '12px', color: '#cbb98f' }).setOrigin(0.5, 0);
-    this.panel.add([bg, this.backdrop, this.title, this.deck, this.player, this.chen, this.ramirez, this.mateo, this.mariam, this.dex, this.speaker, this.body, this.hint]);
+    this.panel.add([bg, this.backdrop, this.deck, this.player, this.chen, this.ramirez, this.mateo, this.mariam, this.dex, this.titleScrim, this.title, this.textScrim, this.speaker, this.body, this.hint]);
 
     this.registry.events.on('crossing:start', () => this.startFlow());
     this.keyHandler = (event) => this.onKey(event);

@@ -20,6 +20,8 @@ export default class PreloadScene extends Phaser.Scene {
     ['zuzu', 'dex', 'chen', 'ramirez', 'mariam'].forEach((c) => this.load.image(`portrait_${c}`, `portraits/${c}.png`));
     // Anime WORLD sprites (clean front cutouts) — the walking/moving characters.
     ['zuzu', 'dex', 'chen', 'ramirez', 'mariam'].forEach((c) => this.load.image(`${c}_front`, `sprites/${c}_front.png`));
+    // Anime painted backdrops (GPU-generated scenery).
+    ['crossing', 'skatepark'].forEach((b) => this.load.image(`bg_${b}`, `backdrops/${b}.png`));
     loadAct1FinalAssets(this);
     loadAct1CharacterAnimationSheets(this);
     loadAct1RouteMarkerSheet(this);

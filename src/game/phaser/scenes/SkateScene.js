@@ -41,9 +41,14 @@ export default class SkateScene extends Phaser.Scene {
     this.physics.world.gravity.y = GRAVITY;
     this.physics.world.setBounds(0, 0, this.worldWidth, 720);
 
-    // Opaque sky so the top-down neighborhood behind is fully hidden when riding.
-    this.sky = this.add.rectangle(0, 0, 1280, 720, 0x9fd6e6, 1).setOrigin(0, 0).setScrollFactor(0).setDepth(0).setVisible(false);
-    this.glow = this.add.rectangle(0, 330, 1280, 390, 0xe9c98a, 0.22).setOrigin(0, 0).setScrollFactor(0).setDepth(0).setVisible(false);
+    // Anime painted desert backdrop (GPU art) if present, else a flat sky. Fixed to
+    // the camera so it reads as a distant horizon while the world scrolls past.
+    if (this.textures.exists('bg_skatepark')) {
+      this.sky = this.add.image(0, 0, 'bg_skatepark').setOrigin(0, 0).setDisplaySize(1280, 720).setScrollFactor(0).setDepth(0).setVisible(false);
+    } else {
+      this.sky = this.add.rectangle(0, 0, 1280, 720, 0x9fd6e6, 1).setOrigin(0, 0).setScrollFactor(0).setDepth(0).setVisible(false);
+    }
+    this.glow = this.add.rectangle(0, 330, 1280, 390, 0xe9c98a, 0.10).setOrigin(0, 0).setScrollFactor(0).setDepth(0).setVisible(false);
 
     this.worldLayer = this.add.container(0, 0).setVisible(false);
     this.gogglesGfx = this.add.graphics().setDepth(900).setVisible(false);
