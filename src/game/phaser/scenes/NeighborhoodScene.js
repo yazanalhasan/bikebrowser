@@ -95,10 +95,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this.runtime?.audioSystem.setSettings({ reducedAudio: !current });
       this.showFeedback({ message: !current ? 'Quiet audio mode on.' : 'Full audio cues on.' });
     });
-    // J = open the Vehicle Ladder (chapter/act map, arc.md §3). A modal overlay
+    // V = open the Vehicle Ladder (chapter/act map, arc.md §3). A modal overlay
     // that makes the whole game shape navigable; Chapter 1 (here) is playable,
-    // 2–7 are canonical previews.
-    this.input.keyboard.on('keydown-J', () => this.registry.events.emit('chapters:start'));
+    // 2–7 are canonical previews. (J is already the Discovery Journal — see
+    // InputSystem.journal — so the ladder uses V for Vehicle.)
+    this.input.keyboard.on('keydown-V', () => this.registry.events.emit('chapters:start'));
     // NOTE: the world-map toggle is handled once in update() via
     // gpsJustPressed(); a second keydown-G listener here caused a double-toggle
     // (open+close in one press) that made the G key appear dead. Removed.
@@ -1376,6 +1377,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
     }).setOrigin(1, 0).setScrollFactor(0).setDepth(965);
     this._renderZuzuBucks(this.runtime?.zuzuBucks || 0);
     this.registry.events.on('zuzubucks:changed', ({ total }) => this._renderZuzuBucks(total, true));
+
+    // Discoverability: tell the player how to open the Vehicle Ladder (the
+    // chapter/act map). Screen-fixed, unobtrusive, bottom-right.
+    this.vehicleLadderHint = this.add.text(this.scale.width - 12, this.scale.height - 10, '[V] Vehicle Ladder', {
+      fontFamily: 'Arial', fontSize: '11px', color: '#fff0c7', backgroundColor: 'rgba(22,32,29,0.45)', padding: { x: 6, y: 3 },
+    }).setOrigin(1, 1).setScrollFactor(0).setDepth(965);
 
     this.createDiscoveryUi();
   }
