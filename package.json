@@ -27,6 +27,8 @@
     "test:e2e:smoke": "playwright test runtime-audit.smoke",
     "test:e2e:playthrough": "playwright test full-game-playthrough.smoke flat-tire-flow.smoke gameplay-report-panel.smoke runtime-audit.smoke",
     "test:e2e:install": "playwright install chromium",
+    "audit:triggers": "node scripts/audit/trigger_graph.mjs",
+    "audit:triggers:strict": "node scripts/audit/trigger_graph.mjs --strict",
     "accept:engine": "playwright test game-rebuild.act1-acceptance full-game-playthrough.smoke",
     "accept:reachability": "playwright test player-reachability.suite",
     "accept:payoff": "node scripts/accept-payoff.mjs",
