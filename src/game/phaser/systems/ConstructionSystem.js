@@ -1,4 +1,5 @@
 import { ROLE_REQUIREMENTS, roleFit } from '../../data/act1/bridgeRoles.js';
+import { StructuralModel, LOAD_SCENARIOS } from './StructuralModel.js';
 
 export class ConstructionSystem {
   static carryForward = {
@@ -97,7 +98,37 @@ export class ConstructionSystem {
       const more = misfit.length > 1 ? ` (the ${misfit.slice(1).map((p) => p.role).join(' and ')} also need a better-suited material.)` : '';
       return { ok: false, reason: 'role_misfit', outcome: 'unsafe', evaluated, failedRole: misfit[0].role, explanation: `${reason(misfit[0])}${more}` };
     }
-    // Every role fits its job -> a trustworthy load path.
+    // FINAL ARBITER (truss): run the actual load test the LoadTestScene will run.
+    // The per-role check passes a material that fits its job's *primary* property,
+    // but a member can still fail a load-dependent force — e.g. a brace strong
+    // enough by "strength" is modelled as a TENSION member and snaps under the herd
+    // if its tension capacity is low. Gating here makes "design accepted" GUARANTEE
+    // the bridge survives the load test, so the two never contradict (no soft-lock).
+    // Da Vinci is a compression arch with its own geometry gate — not truss members.
+    if (bridgeType !== 'davinci') {
+      const structural = new StructuralModel();
+      for (const scenario of LOAD_SCENARIOS) {
+        const sim = structural.solve(selection, scenario.id);
+        if (sim.ok) continue;
+        const m = sim.failedMember;
+        const ft = m?.forceType || 'load';
+        const advice = ft === 'tension'
+          ? 'it is pulled apart (tension) — choose a material with more TENSION strength'
+          : ft === 'compression'
+            ? 'it is crushed (compression) — choose a material with more COMPRESSION strength'
+            : 'it is overloaded — choose a stronger material';
+        return {
+          ok: false,
+          reason: 'load_test_fail',
+          outcome: 'unsafe',
+          evaluated,
+          failedRole: m?.role || 'brace',
+          failedScenario: scenario.id,
+          explanation: `The ${m?.label || 'structure'} fails under the ${scenario.label} load: ${advice} for the ${m?.role || 'member'}, then test again.`,
+        };
+      }
+    }
+    // Every role fits its job AND the structure survives every load -> safe.
     this.plan = {
       id: 'player_designed',
       bridgeType,
