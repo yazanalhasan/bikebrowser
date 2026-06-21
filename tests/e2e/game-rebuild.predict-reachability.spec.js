@@ -38,14 +38,18 @@ async function zoneById(page, id) {
 }
 async function walkTo(page, target) {
   const { x, y, id } = target;
-  const ARRIVE = 24, STEP = 6;
-  for (let guard = 0; guard < 200; guard += 1) {
+  // Arrive when the target is the nearest interaction (in range to press E) OR
+  // within ARRIVE px. ARRIVE is generous (interaction range) so a tight 24px that
+  // a collision/prop prevents can't spin; the guard bound stays under the test
+  // timeout so a genuinely-blocked target fails fast instead of hanging.
+  const ARRIVE = 56, STEP = 6;
+  for (let guard = 0; guard < 90; guard += 1) {
     const pos = await playerPosition(page);
     if (await activeInteraction(page) === id) return;
     const dx = x - pos.x, dy = y - pos.y;
     if (Math.hypot(dx, dy) < ARRIVE) return;
-    if (Math.abs(dx) > STEP) await hold(page, dx > 0 ? 'ArrowRight' : 'ArrowLeft', Math.min(220, Math.max(45, Math.abs(dx) * 2.0)));
-    if (Math.abs(dy) > STEP) await hold(page, dy > 0 ? 'ArrowDown' : 'ArrowUp', Math.min(220, Math.max(45, Math.abs(dy) * 2.0)));
+    if (Math.abs(dx) > STEP) await hold(page, dx > 0 ? 'ArrowRight' : 'ArrowLeft', Math.min(240, Math.max(55, Math.abs(dx) * 1.9)));
+    if (Math.abs(dy) > STEP) await hold(page, dy > 0 ? 'ArrowDown' : 'ArrowUp', Math.min(240, Math.max(55, Math.abs(dy) * 1.9)));
   }
   throw new Error(`Could not walk to ${id}`);
 }
@@ -55,6 +59,14 @@ async function walkPressE(page, id) {
   await walkTo(page, { ...target });
   await page.keyboard.press('KeyE');
   await page.waitForTimeout(220);
+  // Collecting can leave a dialogue/feedback overlay up, which FREEZES the player
+  // (movement is gated on !modalActive && !dialogueActive). Dismiss it so the next
+  // walk can actually move.
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => {
+    const g = window.__bikebrowserRebuildGame;
+    return !g.registry.get('modalActive') && !g.registry.get('dialogueActive');
+  }, null, { timeout: 4000 }).catch(() => {});
 }
 
 test.describe('Player reachability — predict-before-test', () => {
@@ -67,8 +79,10 @@ test.describe('Player reachability — predict-before-test', () => {
     await page.evaluate(() => window.__GAME__.resetAct1());
 
     // Collect materials by walking + pressing E (real player input).
-    await walkPressE(page, 'materials_table'); // steel / copper_brace / weak_scrap
-    await walkPressE(page, 'ecology_patch');   // mesquite (+ ecology)
+    await walkPressE(page, 'materials_table'); // collect_materials adds the full UTM set
+    // (Collecting mesquite at ecology_patch is incidental — it is NOT a UTM material,
+    // so it never enters the prediction queue. Dropped: this test is about predicting
+    // before the UTM tests, and ecology collection is covered by ecology-reachability.)
 
     // Walk to the UTM and press E — this opens the prediction overlay (gating).
     const utm = await zoneById(page, 'utm');
