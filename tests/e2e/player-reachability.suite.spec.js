@@ -86,6 +86,16 @@ async function nearestId(page) {
 // approach from game-rebuild.bridge-reachability.
 async function walkTo(page, t, maxSteps = 110) {
   if (!t) return false;
+  // A dialogue/feedback overlay left by a previous interaction (e.g. collecting at
+  // materials_table) FREEZES the player — movement is gated on
+  // !modalActive && !dialogueActive. Over a long serial suite it can linger and
+  // stall the next walk (the E then lands at the wrong spot). Dismiss it first;
+  // walkTo only runs for MOVEMENT, so there is never a modal we need to keep open.
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => {
+    const g = window.__bikebrowserRebuildGame;
+    return !g.registry.get('modalActive') && !g.registry.get('dialogueActive');
+  }, null, { timeout: 3000 }).catch(() => {});
   let last = null;
   let stuck = 0;
   for (let i = 0; i < maxSteps; i++) {
