@@ -458,7 +458,9 @@ flavoring).
 workbench, inventory and foraging, basic materials lab, UTM rig,
 thermal rig, construction system (bridge-focused), quest engine
 and NPC dialogue, region discovery / fog-of-war map, language
-interaction layer.
+interaction layer, and — unlocked **after the bridge repair** — the
+**Skate Park** (the first large modifiable destination and construction
+sandbox; BMX → scooter → skateboard; see §4 *Skate Park System*).
 
 **What carries forward:** bike + upgrade history; garage as
 conceptual home base; materials testing paradigm; tools-can-be-
@@ -674,6 +676,89 @@ Discipline: separate construction logic from scene art. Bridge,
 spacecraft truss, and habitat frame all use the same underlying
 concepts: connection points, material properties, load paths,
 supports, failure conditions, validation.
+
+### Skate Park System
+
+Today: not yet built. **Planned canon** (additive). Unlocks after the
+Act 1 / Chapter 1 bridge repair — repairing the bridge reconnects the
+neighborhood, and the Skate Park becomes accessible as the first large
+neighborhood *destination* the player can ride and reshape. It arrives
+partially damaged, incomplete, with limited obstacles, and grows with
+the player.
+
+Scales to: BMX parks, motorcycle tracks, vehicle ramps, boat launches,
+aircraft runways, spacecraft launch infrastructure, obstacle courses,
+and vehicle testing grounds — the same modular-construction + applied-
+physics pattern at larger scale.
+
+Purpose: the player learns physics **by riding**, not by lecture —
+momentum, velocity, gravity, friction, center of mass, balance, and
+trajectory through play; structural engineering and materials science
+through building the obstacles they ride. It is the player's first
+large-scale *modifiable* environment and their first construction
+sandbox — the bridge was a guided build; the park is open design.
+
+**Modular, data-driven park.** Every obstacle is an object — quarter
+pipe, half pipe, launch ramp, fun box, rail, grind box, manual pad,
+bowl section, stair set, spine ramp, wall ride, pump-track segment. No
+hardcoded layouts. Park layouts are data and live in `public/layouts/`
+alongside every other scene layout (the same data-first architecture
+used elsewhere in this document).
+
+**Construction loop.** The player may place, move, rotate, remove,
+save, and load obstacles — the same construction philosophy as the
+bridge and every other carry-forward system. Each obstacle exposes the
+physics parameters that drive gameplay: height, angle, radius, surface
+type, friction, and material. These are the same fields the Materials
+Lab and Construction System already speak, so a ramp's material behaves
+under the same schema as a bridge member — the carry-forward contract.
+
+**Human-powered core; vehicles introduced in order.** BMX is the
+primary vehicle (introduced first), then Scooter (after BMX basics),
+then Skateboard (after the neighborhood expansion). An e-bike stunt
+area and a motorcycle stunt-training area are *future, separate
+sections*; the core park stays human-powered.
+
+**Five-level progression** (community + engineering, not just bigger
+ramps):
+1. Basic neighborhood park — small ramps, simple rails, beginner lines.
+2. Expanded park — larger transitions, bowls, advanced rails.
+3. Community-funded upgrades — NPCs contribute materials; the player
+   helps design expansions.
+4. Engineering park — the player constructs custom obstacles and meets
+   structural limits.
+5. Regional showcase park — can host challenges and competitions.
+
+**Reasoning quests** (the park is a reasoning lab): prediction (which
+ramp produces the longest jump?), optimization (complete a line using
+only three obstacles), experimental design (what changes if the launch
+angle changes?), and systems thinking (how does placement affect rider
+flow?).
+
+**Community layer.** NPCs use the park; the player teaches tricks,
+hosts events, completes repair/safety quests, and redesigns sections —
+a living neighborhood hub, not a side minigame.
+
+**Educational hierarchy made visible.** The park is one of the first
+places all five levels appear together: Observe (watch riders) →
+Explain (why a trick works) → Predict (estimate the landing) →
+Engineer (build a better obstacle) → Teach (help another rider clear a
+challenge).
+
+Discipline: the park is a **carry-forward construction + applied-
+physics system, not scene-attached content** (per the Portability
+Principle). Obstacles, their physics fields, and saved layouts are
+data; scene code hosts the park but does not own its state. The layout
+format must be generic enough to later power BMX parks, motorcycle
+tracks, obstacle courses, and vehicle testing grounds without a
+separate architecture. Future expansion: player-created, downloadable,
+challenge, and educational-physics-scenario layouts — all the same
+layout system.
+
+**Scope note (status):** this is *future* canon. It unlocks at the end
+of Act 1 / Chapter 1, which sits behind the current Act-1 playtest
+scope freeze — recorded here so the carry-forward physics/construction
+contract is fixed before implementation, not built yet.
 
 ### Materials Lab / UTM Rig
 
@@ -1944,3 +2029,21 @@ The full visual/asset spec (Visual Architecture v2.0) lives in
   audio only) governed in Executive Brain as five plan_only privileges +
   capability + creative_pipeline_policy + playbooks. Additive; all prior
   canon preserved.
+- v2.1 — 2026-06-21 — Skate Park System adopted as future canon. Section 4
+  gains a "Skate Park System" subsection (placed after Construction
+  System): a modular, data-driven, player-modifiable park unlocked after
+  the Act 1 / Chapter 1 bridge repair — the player's first large-scale
+  construction sandbox and applied-physics lab (learn momentum, friction,
+  trajectory, center of mass, structural limits by riding/building, not by
+  lecture). Human-powered core (BMX → scooter → skateboard; e-bike/moto
+  stunt areas are future separate sections); five-level progression
+  (neighborhood → expanded → community-funded → engineering → regional
+  showcase); obstacles expose height/angle/radius/surface/friction/material
+  (same schema as the Materials Lab + Construction System); layouts live in
+  `public/layouts/`; reasoning quests + community layer + the five
+  educational levels (Observe→Explain→Predict→Engineer→Teach) made visible;
+  carry-forward to vehicle/aircraft/spacecraft + future BMX-park/moto-track/
+  obstacle-course/testing-ground layouts on one generic layout system.
+  Section 3 (Act 1) notes the post-bridge unlock in "Systems introduced."
+  Recorded as future canon behind the current Act-1 playtest scope freeze —
+  contract fixed, not yet built. Additive; all prior canon preserved.
