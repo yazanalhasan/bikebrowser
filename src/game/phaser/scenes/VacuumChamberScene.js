@@ -31,4 +31,19 @@ export default class VacuumChamberScene extends KnobBenchScene {
       meter: (r) => `vacuum ${r.vacuumCapable ? 'ok' : 'NO'}  ·  shield ${r.shieldProtection}/${r.reentryHeat}  ·  life ${r.lifeCapacity}  ·  fault-tolerance ${r.failTolerance}`,
     });
   }
+
+  // The Vacuum Chamber is the Chapter-7 hub: link to the biology capstone (the
+  // systems-biology Life-Engineering bench).
+  render() {
+    super.render();
+    if (!this.open) return;
+    const btn = this.add.rectangle(1124, 64, 240, 30, 0x14301f, 1)
+      .setStrokeStyle(1, 0x9fd6b0, 0.5).setScrollFactor(0)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => { this.hide(); this.registry.events.emit('eco:start'); });
+    const txt = this.add.text(1124, 64, '🌍 Life-Engineering →', {
+      fontFamily: 'Arial', fontSize: '12px', color: '#9fd6b0', fontStyle: 'bold',
+    }).setOrigin(0.5).setScrollFactor(0);
+    this.controlLayer.add([btn, txt]);
+  }
 }

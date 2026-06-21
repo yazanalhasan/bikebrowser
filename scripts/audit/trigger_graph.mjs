@@ -72,6 +72,9 @@ const ALLOW = {
     'ferment:start',
     // Chapter 6 Mechanism Bench (molecular) — same pattern (PlaneTunnelScene hub).
     'mech:start',
+    // Chapter 7 Life-Engineering bench (systems biology) — same pattern
+    // (VacuumChamberScene hub). Covered by chapter7-ecosystem e2e.
+    'eco:start',
     // unused hook for a special quest-reward flourish; the reward still applies
     // via zuzubucks:changed + recordFeedback. Reviewed 2026-06-21 as benign.
     'reward:quest',
@@ -103,7 +106,7 @@ const ALLOW = {
     'boat:built', 'plane:built', 'space:built',
     // phyto:built — dynamic base emit (cfg.builtEvent), listened literally in
     // NeighborhoodScene. Wiring covered by the chapter3-phyto e2e.
-    'phyto:built', 'cell:built', 'ferment:built', 'mech:built',
+    'phyto:built', 'cell:built', 'ferment:built', 'mech:built', 'eco:built',
   ]),
   // runtime handlers the scene intentionally supersedes with a richer flow
   // (utm→prediction, bridge_plan→design UI) — kept for debug/tests.

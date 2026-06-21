@@ -1363,6 +1363,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.registry.events.on('mech:built', () => {
       this.showFeedback({ message: 'Molecular biology: salicylic acid inhibits the COX enzyme — the willow mechanism, explained.' });
     });
+    // Chapter 7 biology capstone — engineering a stable, responsible ecosystem.
+    this.registry.events.on('eco:built', () => {
+      this.showFeedback({ message: 'Systems biology: a self-sustaining ecosystem — engineered responsibly. Not just "can I?" but "should I?".' });
+    });
 
     // ZuzuBucks counter (top-right) — earned on first quest/objective completion,
     // spent on upgrades. Pulses gold when it changes.
