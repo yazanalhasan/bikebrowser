@@ -1313,6 +1313,13 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this._markChapterComplete(2);
       this.showFeedback({ message: 'E-bike powered — circuit built! Chapter 2 underway.' });
     });
+    // Chapter 2 biology pillar — leaving the Extraction Bench reports what the
+    // player learned to make from desert plants.
+    this.registry.events.on('extraction:done', ({ discovered }) => {
+      if (discovered && discovered.length) {
+        this.showFeedback({ message: `Ethnobotany: you can now make ${discovered.length} thing(s) from desert plants.` });
+      }
+    });
 
     // ZuzuBucks counter (top-right) — earned on first quest/objective completion,
     // spent on upgrades. Pulses gold when it changes.

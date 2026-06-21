@@ -41,6 +41,10 @@ const ALLOW = {
     // `circuit:built` (bench→neighborhood, marks Ch2 complete) ARE listened;
     // these are fire-and-forget notifications. Reviewed 2026-06-21.
     'circuit:done', 'circuit:opened', 'circuit:solved', 'progression:changed',
+    // Chapter 2 Extraction Bench (ethnobotany) pings — `extraction:start`
+    // (circuit hub→bench) and `extraction:done` ARE listened; these are
+    // fire-and-forget notifications. Reviewed 2026-06-21.
+    'extraction:opened', 'extraction:yield',
     // unused hook for a special quest-reward flourish; the reward still applies
     // via zuzubucks:changed + recordFeedback. Reviewed 2026-06-21 as benign.
     'reward:quest',
