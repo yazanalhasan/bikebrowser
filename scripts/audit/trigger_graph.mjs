@@ -33,6 +33,10 @@ const ALLOW = {
     // quest:changed (which IS listened). Reviewed 2026-06-21 as fire-and-forget.
     'biome:done', 'ecology:done', 'investigation:done', 'prediction:done',
     'bridgeDesign:done', 'crossing:done', 'skate:done',
+    // Vehicle Ladder (chapter map, §3) open/close pings — fire-and-forget
+    // notifications; the navigable action is `chapter:enter` (which IS listened).
+    // Reviewed 2026-06-21 as benign.
+    'chapters:done', 'chapters:opened',
     // unused hook for a special quest-reward flourish; the reward still applies
     // via zuzubucks:changed + recordFeedback. Reviewed 2026-06-21 as benign.
     'reward:quest',

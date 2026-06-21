@@ -95,6 +95,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this.runtime?.audioSystem.setSettings({ reducedAudio: !current });
       this.showFeedback({ message: !current ? 'Quiet audio mode on.' : 'Full audio cues on.' });
     });
+    // J = open the Vehicle Ladder (chapter/act map, arc.md §3). A modal overlay
+    // that makes the whole game shape navigable; Chapter 1 (here) is playable,
+    // 2–7 are canonical previews.
+    this.input.keyboard.on('keydown-J', () => this.registry.events.emit('chapters:start'));
     // NOTE: the world-map toggle is handled once in update() via
     // gpsJustPressed(); a second keydown-G listener here caused a double-toggle
     // (open+close in one press) that made the G key appear dead. Removed.
@@ -1292,6 +1296,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // the wider map; then the Community Crossing plays as the payoff. Without this,
     // building succeeded but the wash stayed broken until a separate manual step.
     this.registry.events.on('loadTest:done', (result) => this._onBridgeLoadTestDone(result));
+    // Selecting Chapter 1 in the Vehicle Ladder returns here (this IS Chapter 1's
+    // world). Higher chapters are previews; entering them is a no-op until their
+    // content ships.
+    this.registry.events.on('chapter:enter', ({ num }) => {
+      if (num === 1) this.showFeedback({ message: 'Chapter 1 — Bike. Ride on.' });
+    });
 
     // ZuzuBucks counter (top-right) — earned on first quest/objective completion,
     // spent on upgrades. Pulses gold when it changes.
