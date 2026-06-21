@@ -1,6 +1,18 @@
 import Phaser from 'phaser';
 import { DialogueSystem } from '../systems/DialogueSystem.js';
 
+// Anime character portrait shown when a character speaks (GPU-generated key art).
+// Maps the dialogue speaker label to a preloaded portrait texture; speakers not
+// listed (Narrator, signs) simply show no portrait.
+const PORTRAIT_BY_SPEAKER = {
+  Zuzu: 'portrait_zuzu',
+  Dex: 'portrait_dex',
+  'Mr. Chen': 'portrait_chen',
+  'Mrs. Ramirez': 'portrait_ramirez',
+  'Auntie Mariam': 'portrait_mariam',
+  'Spanish-speaking NPC': 'portrait_ramirez',
+};
+
 export default class DialogueScene extends Phaser.Scene {
   constructor() {
     super('DialogueScene');
@@ -45,7 +57,15 @@ export default class DialogueScene extends Phaser.Scene {
     this.closeButton.on('pointerover', () => this.closeButton.setColor('#a83218'));
     this.closeButton.on('pointerout', () => this.closeButton.setColor('#6b4a33'));
     this.closeButton.on('pointerdown', (_p, _x, _y, e) => { e?.stopPropagation?.(); this._leaveDialogue(); });
-    this.panel.add([bg, this.speaker, this.line, this.hint, this.closeButton]);
+    // Anime character portrait, framed just left of the box, rising above it.
+    // Shown when the speaker has a portrait (GPU-generated key art); hidden for the
+    // narrator / signage. Lives in the panel container so it moves + hides with it.
+    this.portraitFrame = this.add.rectangle(-86, 120, 156, 218, 0x2a1d10, 0.98)
+      .setOrigin(0.5, 1).setStrokeStyle(3, 0x6b4a33, 1).setVisible(false);
+    this.portrait = this.add.image(-86, 117, 'portrait_zuzu')
+      .setOrigin(0.5, 1).setVisible(false);
+    this.portrait.setDisplaySize(148, 210);
+    this.panel.add([this.portraitFrame, this.portrait, bg, this.speaker, this.line, this.hint, this.closeButton]);
     this._anchorPanel();
     this.scale.on('resize', () => this._anchorPanel());
 
@@ -110,10 +130,19 @@ export default class DialogueScene extends Phaser.Scene {
     this.registry.set('dialogueActive', true);
     this.speaker.setText(line.speaker);
     this.line.setText(line.text);
+    this._setPortrait(line.speaker);
     // Narrator: read every NPC line aloud (gated only by the global autoSpeak /
     // reducedAudio settings — M quiets it, R replays). Was previously limited to
     // lines flagged speechEnabled, so most dialogue stayed silent.
     this.registry.get('act1AudioSystem')?.autoSpeakLine(line);
+  }
+
+  _setPortrait(speaker) {
+    const key = PORTRAIT_BY_SPEAKER[speaker];
+    const show = Boolean(key) && this.textures.exists(key);
+    if (show) { this.portrait.setTexture(key).setDisplaySize(148, 210); }
+    this.portrait.setVisible(show);
+    this.portraitFrame.setVisible(show);
   }
 
   advance() {
