@@ -756,11 +756,13 @@ challenge, and educational-physics-scenario layouts — all the same
 layout system.
 
 **Scope note (status):** unlocks at the end of Act 1 / Chapter 1.
-*Implementation status (2026-06-21):* **Phase 2 shipped** — the obstacle
+*Implementation status (2026-06-21):* **Phases 2–3 shipped** — the obstacle
 data model (`skateparkObstacles.js`), the data-driven Level-1 layout
-(`public/layouts/skatepark.level1.json`), the `SkateParkSystem`, and the
-post-bridge unlock are built and validated in the live game; the BMX
-riding scene + Physics Goggles are the next phase. Built gated behind the
+(`public/layouts/skatepark.level1.json`), the `SkateParkSystem`, the
+post-bridge unlock, AND the side-view BMX riding scene (`SkateScene.js`:
+ride/jump/ramp-launch/safe-bail) with the **Physics Goggles** (velocity
+vector + predicted trajectory + landing marker) are built and validated in
+the live game. Next: flow/metrics + reasoning quests (Phase 4). Built gated behind the
 unlock so the frozen Act-1 critical path is unaffected. See
 `artifacts/bikebrowser/skatepark_{audit,visual_bible,architecture,implementation_report}.md`.
 

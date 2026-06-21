@@ -12,6 +12,7 @@ import CrossingScene from './scenes/CrossingScene.js';
 import InvestigationScene from './scenes/InvestigationScene.js';
 import EcologyScene from './scenes/EcologyScene.js';
 import BiomeScene from './scenes/BiomeScene.js';
+import SkateScene from './scenes/SkateScene.js';
 import DebugScene from './scenes/DebugScene.js';
 
 export function createGame(parent) {
@@ -49,6 +50,7 @@ export function createGame(parent) {
       InvestigationScene,
       EcologyScene,
       BiomeScene,
+      SkateScene,
       DebugScene,
     ],
     audio: { noAudio: true },

@@ -967,6 +967,19 @@ export default class NeighborhoodScene extends Phaser.Scene {
       action: 'salt_river_expedition',
     });
 
+    // Skate Park (arc.md §4) — east of the wash, so it is only reachable once the
+    // bridge repair drops the wash barrier. Entering it opens the side-view ride.
+    const skatePark = act1Locations.find((location) => location.id === 'skate_park');
+    if (skatePark) {
+      this.interactions.register({
+        id: 'skate_park',
+        x: skatePark.x,
+        y: skatePark.y,
+        label: 'Ride the Skate Park',
+        action: 'skate_park',
+      });
+    }
+
     this.drawInteractionHalos();
 
     this.prompt = this.add.text(0, 0, '', {
@@ -1865,6 +1878,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
           // Phase 1.9.3: the player designs the bridge (choose a material per
           // role) and sees it hold or fail, instead of an auto-completed plan.
           this.registry.events.emit('bridgeDesign:start');
+        } else if (nearest.action === 'skate_park') {
+          // Skate Park (arc.md §4): opens the side-view BMX ride. Gated on the
+          // bridge repair (also physically east of the wash barrier).
+          if (this.runtime?.constructionSystem?.bridgeReconnected) {
+            this.registry.events.emit('skate:start');
+          }
         } else if (nearest.action === 'investigate_wash') {
           // Phase 1.9.4: the player runs the washout investigation by hand —
           // choose a hypothesis, see the evidence disprove a wrong guess.

@@ -35,22 +35,40 @@ Goggles) is next, per the agreed "smallest-useful-first" pacing.
 - **worldmap-engine** — pass (touched `getWorldMapLocations`).
 - **`npm run audit:triggers --strict`** — clean (no orphaned events introduced).
 
+## Shipped — Phase 3 (BMX riding prototype + Physics Goggles)
+| File | What |
+|---|---|
+| `src/game/phaser/scenes/SkateScene.js` | **new** side-view arcade-physics ride: ground + obstacles built from the L1 layout; ride/accelerate/brake/jump; ramps convert speed → a launch (trajectory); pump = momentum boost; safe bail + respawn (no death) |
+| `createGame.js` + `PreloadScene.js` | SkateScene registered + launched (overlay-scene pattern) |
+| `NeighborhoodScene.js` | gated `skate_park` interaction → emits `skate:start` only when `bridgeReconnected` |
+| `scripts/audit/trigger_graph.mjs` | `skate:done` allowlisted (fire-and-forget, like the other scene `:done`) |
+
+- **Physics Goggles** (toggle G): velocity vector, predicted **trajectory arc** +
+  landing marker (projectile sim under gravity), live speed/velocity/momentum/grip
+  readout — "see the concept before reading it."
+- Each obstacle renders in its **material colour** with its `material` label and uses
+  its `surfaceFriction` (steel rail = low grip, concrete = high) — the carry-forward
+  schema is visible while riding. L1 "damage" shows (temporary ramp, cracked
+  quarter-pipe, "(missing rail)" footprint).
+- `skate:start` is emitted (neighborhood, gated) **and** listened (SkateScene) — the
+  trigger-graph audit stays clean (no orphan).
+
 ## Definition-of-Done status
 | DoD item | Status |
 |---|---|
 | Skate Park unlocks after bridge repair | ✅ (Phase 2) |
 | Modular obstacles exist | ✅ catalog of 6 (Phase 2) |
 | Layouts are data-driven | ✅ `public/layouts/` (Phase 2) |
+| **BMX riding works** | ✅ (Phase 3) |
+| **Physics visualization (Goggles)** | ✅ (Phase 3) |
 | Visual bible exists | ✅ (Phase 1) |
 | Existing ARC systems reused | ✅ materials/layout/unlock/portability |
 | Build/tests run successfully | ✅ |
-| BMX riding works | ⏳ Phase 3 |
-| Physics visualization (Goggles) | ⏳ Phase 3 |
-| Flow system | ⏳ Phase 3/4 |
+| Flow system | ⏳ Phase 4 |
 | ≥3 reasoning quests | ⏳ Phase 4 |
-| Visual Truth Agent review passes | ⏳ **human** review of Visual Bible (no local multimodal critique) |
+| Visual Truth Agent review passes | ⏳ **human** review (no local multimodal critique); riding shapes are procedural placeholders, production art human-gated |
 
-**Not yet "done"** by the directive's bar (a memorable, ridable, iconic park) — that
-requires Phase 3 (riding + goggles) and human-gated production art. Phase 2 lays the
-data/unlock foundation those build on. Next turn: `SkateScene` BMX prototype +
-Physics Goggles on the Level-1 layout.
+**Status:** the park now **unlocks, is ridable, and visualizes physics** — a real,
+testable BMX prototype. Still ahead of the directive's "iconic/memorable" bar:
+flow_score + metrics + community sim + ≥3 reasoning quests (Phase 4) and human-gated
+production art. Next: Phase 4 (flow/metrics + reasoning quests).

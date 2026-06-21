@@ -32,7 +32,7 @@ const ALLOW = {
     // scene completion pings; each scene applies its own effects + emits
     // quest:changed (which IS listened). Reviewed 2026-06-21 as fire-and-forget.
     'biome:done', 'ecology:done', 'investigation:done', 'prediction:done',
-    'bridgeDesign:done', 'crossing:done',
+    'bridgeDesign:done', 'crossing:done', 'skate:done',
     // unused hook for a special quest-reward flourish; the reward still applies
     // via zuzubucks:changed + recordFeedback. Reviewed 2026-06-21 as benign.
     'reward:quest',
