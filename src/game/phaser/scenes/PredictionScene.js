@@ -297,7 +297,7 @@ export default class PredictionScene extends Phaser.Scene {
 
   _setBackdrop(key) {
     if (!key) { this._hideBackdrop(); return; }
-    this.backdrop.setTexture(key).setOrigin(0.5, 0).setDisplaySize(538, 126).setVisible(true);
+    this.backdrop.setTexture(this.textures.exists('bg_utm') ? 'bg_utm' : key).setOrigin(0.5, 0).setDisplaySize(538, 126).setVisible(true);
     this.backdropFrame.setVisible(true);
     this.textBand.setVisible(true);
   }

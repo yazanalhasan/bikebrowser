@@ -24,7 +24,7 @@ export default class PreloadScene extends Phaser.Scene {
       this.load.image(`${c}_back`, `sprites/${c}_back.png`);
     });
     // Anime painted backdrops (GPU-generated scenery).
-    ['crossing', 'skatepark', 'ground'].forEach((b) => this.load.image(`bg_${b}`, `backdrops/${b}.png`));
+    ['crossing', 'skatepark', 'ground', 'utm', 'ecology', 'investigation', 'biome'].forEach((b) => this.load.image(`bg_${b}`, `backdrops/${b}.png`));
     loadAct1FinalAssets(this);
     loadAct1CharacterAnimationSheets(this);
     loadAct1RouteMarkerSheet(this);

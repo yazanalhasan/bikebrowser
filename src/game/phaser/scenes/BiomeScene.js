@@ -263,7 +263,7 @@ export default class BiomeScene extends Phaser.Scene {
     // Re-apply display size after setTexture: setTexture resizes to the new
     // texture's native frame, so the scale must be reset or the diorama blows up
     // (the intro/default texture and the per-site backdrops differ in native size).
-    this.backdrop.setTexture(key).setOrigin(0.5, 0).setDisplaySize(584, 134).setVisible(true);
+    this.backdrop.setTexture(this.textures.exists('bg_biome') ? 'bg_biome' : key).setOrigin(0.5, 0).setDisplaySize(584, 134).setVisible(true);
     this.backdropFrame.setVisible(true);
     this.textBand.setVisible(true);
     this.plant.setPosition(0, 257);

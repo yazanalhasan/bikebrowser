@@ -243,7 +243,7 @@ export default class EcologyScene extends Phaser.Scene {
     if (!key) { this._hideBackdrop(); return; }
     // Re-apply display size after setTexture: setTexture resizes to the new
     // texture's native frame, so the scale must be reset or the diorama blows up.
-    this.backdrop.setTexture(key).setOrigin(0.5, 0).setDisplaySize(566, 146).setVisible(true);
+    this.backdrop.setTexture(this.textures.exists('bg_ecology') ? 'bg_ecology' : key).setOrigin(0.5, 0).setDisplaySize(566, 146).setVisible(true);
     this.backdropFrame.setVisible(true);
     this.textBand.setVisible(true);
     this.plant.setPosition(0, 256);
