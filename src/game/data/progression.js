@@ -114,7 +114,7 @@ export const CHAPTERS = [
   {
     num: 5,
     actId: 'act2',
-    status: 'locked',
+    status: 'scaffold',
     vehicle: 'Boat',
     engineeringDomain: 'Fluid dynamics & buoyancy: hull, displacement, hydrodynamics, marine propulsion, salt corrosion, ballast/stability',
     rig: 'Buoyancy / hydro tank',
@@ -123,7 +123,9 @@ export const CHAPTERS = [
     region: 'Ocean & coastal regions',
     reach: 'Ocean & coastal regions',
     summary: 'Cross water. The buoyancy/hydro tank joins the rigs; the Fermentation Bench opens microbiology and how microbes reshape ecosystems.',
-    entry: { type: 'preview', event: null, target: null },
+    // First playable slice: the Buoyancy / Hydro Tank. Opens Act 2; enterable once
+    // Chapter 4 is complete.
+    entry: { type: 'scene', event: 'boat:start', target: 'BoatTankScene', demo: 'Hydro Tank' },
   },
   {
     num: 6,

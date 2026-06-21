@@ -52,6 +52,8 @@ const ALLOW = {
     // Chapter 4 Crash Test pings — `crash:start`/`crash:built` ARE wired; these
     // are fire-and-forget. Reviewed 2026-06-21.
     'crash:done', 'crash:opened', 'crash:passed',
+    // Chapter 5 Hydro Tank pings — `boat:start`/`boat:built` ARE wired.
+    'boat:done', 'boat:opened', 'boat:floated',
     // unused hook for a special quest-reward flourish; the reward still applies
     // via zuzubucks:changed + recordFeedback. Reviewed 2026-06-21 as benign.
     'reward:quest',
@@ -70,6 +72,13 @@ const ALLOW = {
     'engine:start',
     // Chapter 4 ladder entry → Crash & Load Test. Same dynamic emit.
     'crash:start',
+    // Chapter 5 ladder entry → Buoyancy / Hydro Tank. Same dynamic emit.
+    'boat:start',
+    // `*:built` events for chapters built on the shared KnobBenchScene base emit
+    // DYNAMICALLY via `cfg.builtEvent`, so the static scan can't see the literal
+    // emit even though NeighborhoodScene listens. The wiring is covered by each
+    // chapter's e2e (build → markChapterComplete). Reviewed 2026-06-21.
+    'boat:built',
   ]),
   // runtime handlers the scene intentionally supersedes with a richer flow
   // (utm→prediction, bridge_plan→design UI) — kept for debug/tests.
