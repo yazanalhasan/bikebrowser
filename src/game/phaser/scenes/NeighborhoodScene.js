@@ -1359,6 +1359,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.registry.events.on('ferment:built', () => {
       this.showFeedback({ message: 'Microbiology: yeast fermented your sugar to alcohol — microbes transform matter.' });
     });
+    // Chapter 6 biology pillar — explaining the willow remedy at the molecular level.
+    this.registry.events.on('mech:built', () => {
+      this.showFeedback({ message: 'Molecular biology: salicylic acid inhibits the COX enzyme — the willow mechanism, explained.' });
+    });
 
     // ZuzuBucks counter (top-right) — earned on first quest/objective completion,
     // spent on upgrades. Pulses gold when it changes.

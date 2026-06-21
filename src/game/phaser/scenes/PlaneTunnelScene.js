@@ -30,4 +30,19 @@ export default class PlaneTunnelScene extends KnobBenchScene {
       meter: (r) => `Lift ${r.lift} vs weight ${r.weight}  ·  thrust ${r.thrust} vs drag ${r.drag}  ·  wing load ${r.wingLoad}`,
     });
   }
+
+  // The Wind Tunnel is the Chapter-6 hub: link to the biology pillar (the
+  // molecular Mechanism Bench).
+  render() {
+    super.render();
+    if (!this.open) return;
+    const btn = this.add.rectangle(1128, 64, 230, 30, 0x251d35, 1)
+      .setStrokeStyle(1, 0xcdb8e8, 0.5).setScrollFactor(0)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => { this.hide(); this.registry.events.emit('mech:start'); });
+    const txt = this.add.text(1128, 64, '🧬 Mechanism Bench →', {
+      fontFamily: 'Arial', fontSize: '12px', color: '#cdb8e8', fontStyle: 'bold',
+    }).setOrigin(0.5).setScrollFactor(0);
+    this.controlLayer.add([btn, txt]);
+  }
 }

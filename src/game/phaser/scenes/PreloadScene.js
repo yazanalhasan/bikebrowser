@@ -58,6 +58,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.scene.launch('PhytoLabScene');
     this.scene.launch('MicroscopeScene');
     this.scene.launch('FermentBenchScene');
+    this.scene.launch('MechanismScene');
     this.scene.launch('DebugScene');
   }
 }

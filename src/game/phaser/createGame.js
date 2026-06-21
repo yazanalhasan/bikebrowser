@@ -24,6 +24,7 @@ import VacuumChamberScene from './scenes/VacuumChamberScene.js';
 import PhytoLabScene from './scenes/PhytoLabScene.js';
 import MicroscopeScene from './scenes/MicroscopeScene.js';
 import FermentBenchScene from './scenes/FermentBenchScene.js';
+import MechanismScene from './scenes/MechanismScene.js';
 import DebugScene from './scenes/DebugScene.js';
 
 export function createGame(parent) {
@@ -73,6 +74,7 @@ export function createGame(parent) {
       PhytoLabScene,
       MicroscopeScene,
       FermentBenchScene,
+      MechanismScene,
       DebugScene,
     ],
     audio: { noAudio: true },
