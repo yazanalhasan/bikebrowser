@@ -145,7 +145,7 @@ export const CHAPTERS = [
   {
     num: 7,
     actId: 'act3',
-    status: 'locked',
+    status: 'scaffold',
     vehicle: 'Spacecraft',
     engineeringDomain: 'Vacuum & extremes: reaction propulsion, re-entry/cryo thermal, life support, redundancy, materials certification',
     rig: 'Vacuum / re-entry chamber',
@@ -154,7 +154,9 @@ export const CHAPTERS = [
     region: 'Alien planet',
     reach: 'Leave Earth → alien planet',
     summary: 'Leave Earth. The vacuum/re-entry chamber certifies materials and life support; systems biology drives terraforming and life-engineering.',
-    entry: { type: 'preview', event: null, target: null },
+    // First playable slice: the Vacuum / Re-entry Chamber — the spine finale.
+    // Enterable once Chapter 6 is complete.
+    entry: { type: 'scene', event: 'space:start', target: 'VacuumChamberScene', demo: 'Vacuum Chamber' },
   },
 ];
 

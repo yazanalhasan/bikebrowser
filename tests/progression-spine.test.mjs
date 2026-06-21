@@ -43,13 +43,18 @@ test('the biological spine runs parallel and is fully populated', () => {
   }
 });
 
-test('Chapter 1 ships; Chapters 2-7 are canonical scaffold/locked', () => {
+test('Chapter 1 ships; Chapters 2-7 are scaffold (each has a playable rig)', () => {
   assert.equal(chapter(1).status, 'shipped');
+  // Every later chapter now has its signature engineering rig built, so all of
+  // 2-7 are 'scaffold' (playable demo, not yet a full chapter) — none 'locked'.
   for (const c of CHAPTERS.slice(1)) {
-    assert.ok(c.status === 'scaffold' || c.status === 'locked');
+    assert.equal(c.status, 'scaffold', `Ch${c.num} should be scaffold`);
   }
-  // exactly one chapter is the next-to-build scaffold (Chapter 2)
-  assert.deepEqual(CHAPTERS.filter((c) => c.status === 'scaffold').map((c) => c.num), [2]);
+  // Every scaffold chapter exposes a live ladder entry event (its rig).
+  for (const c of CHAPTERS.slice(1)) {
+    assert.equal(c.entry.type, 'scene');
+    assert.ok(c.entry.event, `Ch${c.num} has a live entry event`);
+  }
 });
 
 test('carry-forward unlock rule: a chapter unlocks when the prior is complete', () => {
