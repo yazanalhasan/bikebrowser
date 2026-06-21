@@ -1351,6 +1351,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.registry.events.on('phyto:built', () => {
       this.showFeedback({ message: 'Phytochemistry: you isolated pure salicin — the molecule behind the willow remedy.' });
     });
+    // Chapter 4 biology pillar — resolving cells under the microscope.
+    this.registry.events.on('cell:built', () => {
+      this.showFeedback({ message: 'Cellular biology: you can see the cells — the shared building blocks of all life.' });
+    });
 
     // ZuzuBucks counter (top-right) — earned on first quest/objective completion,
     // spent on upgrades. Pulses gold when it changes.

@@ -109,6 +109,17 @@ export default class CrashTestScene extends Phaser.Scene {
       y += 58;
     });
 
+    // Cross-link to Chapter 4's biology pillar — the Microscope (cellular
+    // biology). The Crash Test is the Ch4 hub (mirrors Ch2/Ch3 pillar links).
+    const bioBtn = this.add.rectangle(1128, 64, 220, 30, 0x153028, 1)
+      .setStrokeStyle(1, 0xa8d8c0, 0.5).setScrollFactor(0)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => { this.hide(); this.registry.events.emit('cell:start'); });
+    const bioTxt = this.add.text(1128, 64, '🔬 Microscope →', {
+      fontFamily: 'Arial', fontSize: '12px', color: '#a8d8c0', fontStyle: 'bold',
+    }).setOrigin(0.5).setScrollFactor(0);
+    this.controlLayer.add([bioBtn, bioTxt]);
+
     const px = 740;
     const pTitle = this.add.text(px, 112, this.challenge.predictPrompt, {
       fontFamily: 'Arial', fontSize: '13px', color: '#cdd6e2', wordWrap: { width: 470 },
