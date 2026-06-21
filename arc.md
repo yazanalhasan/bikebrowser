@@ -755,10 +755,14 @@ separate architecture. Future expansion: player-created, downloadable,
 challenge, and educational-physics-scenario layouts — all the same
 layout system.
 
-**Scope note (status):** this is *future* canon. It unlocks at the end
-of Act 1 / Chapter 1, which sits behind the current Act-1 playtest
-scope freeze — recorded here so the carry-forward physics/construction
-contract is fixed before implementation, not built yet.
+**Scope note (status):** unlocks at the end of Act 1 / Chapter 1.
+*Implementation status (2026-06-21):* **Phase 2 shipped** — the obstacle
+data model (`skateparkObstacles.js`), the data-driven Level-1 layout
+(`public/layouts/skatepark.level1.json`), the `SkateParkSystem`, and the
+post-bridge unlock are built and validated in the live game; the BMX
+riding scene + Physics Goggles are the next phase. Built gated behind the
+unlock so the frozen Act-1 critical path is unaffected. See
+`artifacts/bikebrowser/skatepark_{audit,visual_bible,architecture,implementation_report}.md`.
 
 ### Materials Lab / UTM Rig
 

@@ -10,4 +10,6 @@ export const act1Locations = [
   { id: 'trader_area', displayName: 'Local Materials Table', region: 'neighborhood', x: 360, y: 940 },
   { id: 'chemistry_station', displayName: 'Safe Chemistry Bench', region: 'garage', x: 560, y: 930 },
   { id: 'wider_gate', displayName: 'Wider Map Gate', region: 'map_edge', x: 2380, y: 600 },
+  // Unlocks after the bridge repair reconnects the neighborhood (arc.md §4 Skate Park).
+  { id: 'skate_park', displayName: 'Neighborhood Skate Park', region: 'wash', x: 2320, y: 980 },
 ];

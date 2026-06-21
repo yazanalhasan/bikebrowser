@@ -16,6 +16,7 @@ import { NotebookSystem } from './NotebookSystem.js';
 import { PredictionSystem } from './PredictionSystem.js';
 import { QuestSystem } from './QuestSystem.js';
 import { ReasoningGrader } from './ReasoningGrader.js';
+import { SkateParkSystem } from './skatepark/SkateParkSystem.js';
 import { TrustSystem } from './TrustSystem.js';
 import { PLACEHOLDER_ASSET_CONTRACT } from './AssetRegistry.js';
 import { getAssetRegistryState } from './AssetRegistry.js';
@@ -57,6 +58,10 @@ export class Act1RuntimeSystem {
     this.discoveryMapSystem = new DiscoveryMapSystem();
     this.discoveryRegistry = new DiscoveryRegistrySystem();
     this.biomeSystem = new BiomeSystem();
+    // Skate Park (arc.md §4) — carry-forward construction + applied-physics system.
+    // Reuses the material schema (friction added per-obstacle); unlocks after the
+    // bridge repair. Phase 2: data/state + unlock only (riding scene is Phase 3).
+    this.skateParkSystem = new SkateParkSystem(act1Materials);
     this.debugDiagnosticSystem = new DebugDiagnosticSystem(this);
     this.audioSystem = new Act1AudioSystem();
     this.assetContract = PLACEHOLDER_ASSET_CONTRACT;
@@ -539,6 +544,7 @@ export class Act1RuntimeSystem {
       discoveryUnlocks: this.getDiscoveryUnlocks(),
       worldMap: this.getWorldMap(),
       biomes: this.biomeSystem.getState(),
+      skatePark: this.skateParkSystem.getState(),
       engineeringLoop: this.getEngineeringLoop(),
       reasoning: this.assessReasoning(),
       feedback: {

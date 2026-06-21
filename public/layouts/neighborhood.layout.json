@@ -111,6 +111,7 @@
         "street": { "x": 286, "y": 282, "label": "Street", "alwaysKnown": true },
         "dry_wash": { "x": 436, "y": 258, "label": "Dry Wash" },
         "bridge": { "x": 526, "y": 266, "label": "Bridge" },
+        "skate_park": { "x": 590, "y": 300, "label": "Skate Park", "lockedUntilBridge": true, "revealedWhenLocked": true },
         "wider_gate": { "x": 614, "y": 210, "label": "City Gate", "lockedByWiderMap": true, "revealedWhenLocked": true },
         "salt_river": { "x": 562, "y": 146, "label": "Salt River", "lockedByWiderMap": true, "revealedWhenLocked": true },
         "copper_mine": { "x": 668, "y": 132, "label": "Copper Mine", "lockedByWiderMap": true, "revealedWhenLocked": true }

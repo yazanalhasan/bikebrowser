@@ -14,6 +14,8 @@ export default class PreloadScene extends Phaser.Scene {
 
   preload() {
     this.load.json('act1NeighborhoodLayout', 'layouts/neighborhood.layout.json');
+    // Skate Park (arc.md §4) level layouts — data-driven; consumed by the SkateScene (Phase 3).
+    this.load.json('skateparkLevel1', 'layouts/skatepark.level1.json');
     loadAct1FinalAssets(this);
     loadAct1CharacterAnimationSheets(this);
     loadAct1RouteMarkerSheet(this);

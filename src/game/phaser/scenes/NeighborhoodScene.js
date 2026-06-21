@@ -2498,7 +2498,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
       mapY: point.y,
       alwaysKnown: Boolean(point.alwaysKnown),
       revealedWhenLocked: Boolean(point.revealedWhenLocked),
-      locked: Boolean(point.lockedByWiderMap && !state.discovery.widerMapUnlocked),
+      locked: Boolean(
+        (point.lockedByWiderMap && !state.discovery.widerMapUnlocked)
+        // Skate Park opens once the bridge reconnects the neighborhood (arc.md §4).
+        || (point.lockedUntilBridge && !state.bridge.bridgeReconnected),
+      ),
     }));
   }
 
