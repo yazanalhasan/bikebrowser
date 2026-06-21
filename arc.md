@@ -759,10 +759,13 @@ layout system.
 *Implementation status (2026-06-21):* **Phases 2–3 shipped** — the obstacle
 data model (`skateparkObstacles.js`), the data-driven Level-1 layout
 (`public/layouts/skatepark.level1.json`), the `SkateParkSystem`, the
-post-bridge unlock, AND the side-view BMX riding scene (`SkateScene.js`:
+post-bridge unlock, the side-view BMX riding scene (`SkateScene.js`:
 ride/jump/ramp-launch/safe-bail) with the **Physics Goggles** (velocity
-vector + predicted trajectory + landing marker) are built and validated in
-the live game. Next: flow/metrics + reasoning quests (Phase 4). Built gated behind the
+vector + predicted trajectory + landing marker), AND the **flow system +
+3 reasoning quests** (predict/optimize/experiment, Observe→Predict→Test→
+Explain) with extended park metrics are built and validated in the live
+game. Next: community NPC sim + visual evolution (human-gated art) + the
+player build/save editor (Phase 5). Built gated behind the
 unlock so the frozen Act-1 critical path is unaffected. See
 `artifacts/bikebrowser/skatepark_{audit,visual_bible,architecture,implementation_report}.md`.
 

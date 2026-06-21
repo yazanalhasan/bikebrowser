@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { obstacleById } from '../../data/act1/skateparkObstacles.js';
+import { SkateParkSystem } from '../systems/skatepark/SkateParkSystem.js';
 
 // SkateScene — Phase 3 BMX riding prototype (side-view arcade physics). The
 // neighborhood is top-down; the skate park RIDE is its own scene, mounted modally
@@ -55,7 +56,12 @@ export default class SkateScene extends Phaser.Scene {
     this.readout = this.add.text(18, 18, '', { fontFamily: 'Arial', fontSize: '15px', color: '#1d2a30' });
     this.hint = this.add.text(640, 694, 'D ride · A brake · Space jump · G Physics Goggles · Esc leave', { fontFamily: 'Arial', fontSize: '13px', color: '#234' }).setOrigin(0.5, 1);
     this.feedback = this.add.text(640, 120, '', { fontFamily: 'Georgia, serif', fontSize: '22px', color: '#2f6b2a', fontStyle: 'bold' }).setOrigin(0.5);
-    this.hud.add([this.title, this.readout, this.hint, this.feedback]);
+    // Reasoning quest banner + live Flow meter (Phase 4).
+    this.questText = this.add.text(640, 52, '', { fontFamily: 'Georgia, serif', fontSize: '14px', color: '#234', align: 'center', wordWrap: { width: 980 } }).setOrigin(0.5, 0);
+    this.flowLabel = this.add.text(1262, 18, '', { fontFamily: 'Arial', fontSize: '14px', color: '#1d2a30', fontStyle: 'bold' }).setOrigin(1, 0);
+    this.flowBarBg = this.add.rectangle(1262, 42, 160, 10, 0x000000, 0.18).setOrigin(1, 0);
+    this.flowBar = this.add.rectangle(1262 - 160, 42, 2, 10, 0x2f8b3a, 1).setOrigin(0, 0);
+    this.hud.add([this.title, this.readout, this.hint, this.feedback, this.questText, this.flowLabel, this.flowBarBg, this.flowBar]);
 
     this.keys = this.input.keyboard.addKeys('W,A,S,D,SPACE,G,LEFT,RIGHT,UP');
 
@@ -72,6 +78,14 @@ export default class SkateScene extends Phaser.Scene {
     this.running = true;
     this.bailUntil = 0;
     this.feedback.setText('');
+    // Per-run telemetry (Phase 4) — drives flow_score + reasoning-quest checks.
+    this.run = {
+      maxSpeed: 0, avgAccum: 0, samples: 0, bails: 0, progress: 0, reachedFlag: false,
+      usedRamp: false, usedQuarter: false, rodeSteel: false, rodeConcrete: false,
+      rampDist: 0, quarterDist: 0, launchX: null, launchType: null, recorded: false,
+    };
+    this.prediction = null; // prediction quest: 'ramp' | 'quarter'
+    this._refreshQuestBanner();
     this._buildLevel();
     this._spawnPlayer();
     [this.sky, this.glow, this.worldLayer, this.hud].forEach((o) => o.setVisible(true));
@@ -86,6 +100,7 @@ export default class SkateScene extends Phaser.Scene {
     this.platforms.clear(true, true);
     this.ramps = [];
     this.pumps = [];
+    this.materialZones = []; // ride-over obstacles, tagged by material (friction experiment)
 
     const layout = this.cache.json.get('skateparkLevel1') || { obstacles: [], ground: { friction: 0.6 } };
     this.worldWidth = Math.max(1600, ...(layout.obstacles || []).map((o) => o.x + 240));
@@ -136,6 +151,7 @@ export default class SkateScene extends Phaser.Scene {
         this.worldLayer.add(rect);
         const plat = this.add.rectangle(x + w / 2, topY - h / 2, w, 10, 0x000000, 0);
         this.platforms.add(plat);
+        this.materialZones.push({ material: def.material, x1: x, x2: x + w });
       }
       // material label (small, educational: see the material you tested at the UTM)
       this.worldLayer.add(this.add.text(inst.x + 4, GROUND_Y + 16, def.material, { fontFamily: 'Arial', fontSize: '10px', color: '#3a2a18' }).setDepth(5).setAlpha(0.7));
@@ -171,6 +187,53 @@ export default class SkateScene extends Phaser.Scene {
     const k = (event.key || '').toLowerCase();
     if (k === 'g') { this.goggles = !this.goggles; this.gogglesGfx.setVisible(this.goggles); this._publish(); }
     if ((event.code === 'Space' || k === 'arrowup' || k === 'w')) this._tryJump();
+    // Prediction quest: ◀ ramp / ▶ quarter (one-time, before testing by riding).
+    if ((k === 'arrowleft' || k === 'arrowright') && !this.prediction) {
+      const q = this.registry.get('act1Runtime')?.skateParkSystem?.getActiveQuest?.();
+      if (q?.type === 'prediction') { this.prediction = k === 'arrowleft' ? 'ramp' : 'quarter'; this._refreshQuestBanner(); }
+    }
+  }
+
+  _refreshQuestBanner() {
+    const sp = this.registry.get('act1Runtime')?.skateParkSystem;
+    const q = sp?.getActiveQuest?.();
+    if (!this.questText) return;
+    if (!q) { this.questText.setText('All reasoning quests complete — free ride.'); return; }
+    const predNote = q.type === 'prediction'
+      ? `   [predict: ◀ ramp / ▶ quarter${this.prediction ? ` — you said ${this.prediction}` : ''}]`
+      : '';
+    this.questText.setText(`${q.level} · ${q.title}\n${q.prompt}${predNote}`);
+  }
+
+  // Record the finished run: flow + reasoning-quest evaluation, with evidence shown.
+  _recordRun(headline) {
+    if (!this.run || this.run.recorded) return;
+    this.run.recorded = true;
+    const sp = this.registry.get('act1Runtime')?.skateParkSystem;
+    const summary = {
+      flowScore: this._flow ?? 0,
+      maxSpeed: Math.round(this.run.maxSpeed),
+      avgSpeed: Math.round(this.run.avgAccum / Math.max(1, this.run.samples)),
+      progress: this.run.progress, bails: this.run.bails, reachedFlag: this.run.reachedFlag,
+      usedRamp: this.run.usedRamp, usedQuarter: this.run.usedQuarter,
+      rampDist: this.run.rampDist, quarterDist: this.run.quarterDist,
+      rodeSteel: this.run.rodeSteel, rodeConcrete: this.run.rodeConcrete,
+      prediction: this.prediction,
+    };
+    const res = sp?.recordRun?.(summary) || { completed: [] };
+    const bits = [headline];
+    if (this.run.usedRamp && this.run.usedQuarter) {
+      const farther = this.run.rampDist >= this.run.quarterDist ? 'angled ramp' : 'quarter pipe';
+      bits.push(`Evidence: the ${farther} went farther.${this.prediction ? `  (you predicted: ${this.prediction})` : ''}`);
+    }
+    if (res.completed?.length) {
+      const teach = sp.quests.find((q) => q.id === res.completed[0])?.teach;
+      bits.push(`Quest complete! ${teach || ''}`);
+      this.registry.events.emit('quest:changed');
+    }
+    this.feedback.setText(bits.join('\n')).setColor('#2f6b2a');
+    this._refreshQuestBanner();
+    this._publish();
   }
 
   _tryJump() {
@@ -187,11 +250,11 @@ export default class SkateScene extends Phaser.Scene {
     const onGround = b.blocked.down || b.touching.down;
     const bailing = this.time.now < this.bailUntil;
 
-    // input (held)
+    // input (held). D rides, A brakes; ◀ ▶ are reserved for the prediction choice.
     let ax = 0;
     if (!bailing) {
-      if (this.keys.D.isDown || this.keys.RIGHT.isDown) ax = ACCEL;
-      else if (this.keys.A.isDown || this.keys.LEFT.isDown) ax = -ACCEL * 0.9;
+      if (this.keys.D.isDown) ax = ACCEL;
+      else if (this.keys.A.isDown) ax = -ACCEL * 0.9;
     }
     b.setAccelerationX(ax);
     // ground friction scales with the surface you're on (data-driven feel)
@@ -205,6 +268,10 @@ export default class SkateScene extends Phaser.Scene {
           const speed = b.velocity.x;
           b.setVelocityY(-speed * Math.sin(a) * (r.vertical ? 1.5 : 1.15));
           if (r.vertical) b.setVelocityX(speed * 0.45);
+          // telemetry for the prediction quest (which launch goes farther)
+          this.run.launchX = this.player.x;
+          this.run.launchType = r.vertical ? 'quarter' : 'ramp';
+          if (r.vertical) this.run.usedQuarter = true; else this.run.usedRamp = true;
           break;
         }
       }
@@ -226,9 +293,27 @@ export default class SkateScene extends Phaser.Scene {
       if (this.time.now > this.bailUntil) this.lastSafeX = this.player.x;
     }
 
-    // reached the finish flag
-    if (this.player.x > this.worldWidth - 96 && this.feedback.text.indexOf('Nice run') < 0) {
-      this.feedback.setText('Nice run! ▶ Esc to leave').setColor('#2f6b2a');
+    // telemetry: speed, progress, and which materials you rode (friction experiment)
+    const speed = Math.hypot(b.velocity.x, b.velocity.y);
+    this.run.maxSpeed = Math.max(this.run.maxSpeed, speed);
+    this.run.avgAccum += speed; this.run.samples += 1;
+    this.run.progress = Math.max(this.run.progress, this.player.x / this.worldWidth);
+    if (onGround && b.velocity.x > 30) {
+      for (const z of this.materialZones || []) {
+        if (this.player.x >= z.x1 && this.player.x <= z.x2) {
+          if (z.material === 'steel') this.run.rodeSteel = true;
+          else if (z.material === 'concrete') this.run.rodeConcrete = true;
+        }
+      }
+    }
+    // live Flow meter
+    const flow = SkateParkSystem.flowFrom({ avgSpeed: this.run.avgAccum / Math.max(1, this.run.samples), progress: this.run.progress, bails: this.run.bails });
+    this._setFlow(flow);
+
+    // reached the finish flag -> the run counts (records flow + reasoning quests)
+    if (this.player.x > this.worldWidth - 96 && !this.run.reachedFlag) {
+      this.run.reachedFlag = true;
+      this._recordRun('Nice run!');
     }
 
     this._drawGoggles(b, onGround);
@@ -236,10 +321,27 @@ export default class SkateScene extends Phaser.Scene {
     this._publish();
   }
 
+  _setFlow(flow) {
+    this._flow = flow;
+    if (this.flowLabel) this.flowLabel.setText(`Flow ${flow}`);
+    if (this.flowBar) {
+      this.flowBar.width = Math.max(2, 160 * Math.min(1, flow / 100));
+      this.flowBar.fillColor = flow >= 60 ? 0x2f8b3a : flow >= 35 ? 0xb0892a : 0x9a4a2a;
+    }
+  }
+
   _onLand(b) {
+    // record the jump distance, tagged by the launch used (prediction quest).
+    if (this.run?.launchX != null) {
+      const dist = Math.max(0, Math.round(this.player.x - this.run.launchX));
+      if (this.run.launchType === 'quarter') this.run.quarterDist = Math.max(this.run.quarterDist, dist);
+      else this.run.rampDist = Math.max(this.run.rampDist, dist);
+      this.run.launchX = null; this.run.launchType = null;
+    }
     const impact = Math.abs(b.velocity.y);
     if (impact > FAIL_VY || Math.abs(this.player.rotation) > 1.2) {
       // bail — safe: brief tumble, respawn at last safe spot. Never a death.
+      if (this.run) this.run.bails += 1;
       this.bailUntil = this.time.now + 700;
       this.feedback.setText('Bail! Shake it off…').setColor('#9a4a2a');
       this.tweens.add({ targets: this.player, angle: this.player.angle + 240, duration: 500 });
@@ -294,6 +396,9 @@ export default class SkateScene extends Phaser.Scene {
   }
 
   _finish() {
+    // Leaving also counts the run, so a friction experiment / prediction completes
+    // even without reaching the flag.
+    if (this.run && !this.run.recorded && (this.run.samples > 0)) this._recordRun('Run ended.');
     this.running = false;
     if (this.player) this.player.body.setAcceleration(0, 0);
     this.cameras.main.stopFollow();
@@ -317,6 +422,9 @@ export default class SkateScene extends Phaser.Scene {
       vy: b ? Math.round(b.velocity.y) : 0,
       inAir: b ? !(b.blocked.down || b.touching.down) : false,
       worldWidth: this.worldWidth,
+      flow: this._flow ?? 0,
+      prediction: this.prediction ?? null,
+      reachedFlag: Boolean(this.run?.reachedFlag),
     };
   }
 }

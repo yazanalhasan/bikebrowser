@@ -64,11 +64,28 @@ Goggles) is next, per the agreed "smallest-useful-first" pacing.
 | Visual bible exists | ✅ (Phase 1) |
 | Existing ARC systems reused | ✅ materials/layout/unlock/portability |
 | Build/tests run successfully | ✅ |
-| Flow system | ⏳ Phase 4 |
-| ≥3 reasoning quests | ⏳ Phase 4 |
+| **Flow system** | ✅ (Phase 4) |
+| **≥3 reasoning quests** | ✅ (Phase 4) |
 | Visual Truth Agent review passes | ⏳ **human** review (no local multimodal critique); riding shapes are procedural placeholders, production art human-gated |
 
-**Status:** the park now **unlocks, is ridable, and visualizes physics** — a real,
-testable BMX prototype. Still ahead of the directive's "iconic/memorable" bar:
-flow_score + metrics + community sim + ≥3 reasoning quests (Phase 4) and human-gated
-production art. Next: Phase 4 (flow/metrics + reasoning quests).
+## Shipped — Phase 4 (flow system + metrics + reasoning quests)
+| File | What |
+|---|---|
+| `src/game/data/act1/skateparkQuests.js` | **new** — 3 reasoning quests (prediction / optimization / experimental), Observe→Predict→Test→Explain, no trivia |
+| `SkateParkSystem.js` | `flowFrom()` + `recordRun()` (evaluates quests from run telemetry); metrics extended (safety/creativity/popularity/flowScore/bestFlow); quest state in `getState()` |
+| `SkateScene.js` | per-run telemetry; **live Flow meter**; reasoning-quest banner; a **predict ◀/▶ choice**; evidence reveal ("the angled ramp went farther"); records the run on flag/exit |
+
+- **flow_score** = momentum preserved across the line (speed + progress + no-bail),
+  shown live and stored as `bestFlow`. Early systems-optimization lesson.
+- **3 reasoning quests**, each an Observe→Predict→Test→Explain loop run *by riding*:
+  prediction ("which launch goes farther?" — predict, ride both, evidence reveals),
+  optimization ("reach the flag with flow ≥ 60"), experiment ("ride the low-friction
+  steel rail vs the concrete pad — keep more speed?"). Completion is evaluated from
+  run telemetry, not a quiz.
+- **Park metrics** extended: flow, safety, creativity, popularity, physicsComplexity.
+
+**Status:** the park unlocks, is **ridable**, **visualizes physics**, has a **flow
+system**, and runs **three reasoning quests** — the core curriculum loop is live.
+Remaining for the directive's "iconic" bar: community NPC simulation + visual
+evolution L2–L5 (human-gated production art) + the player construction editor. Next:
+Phase 5 (community sim + the build/save editor) and human art review.
