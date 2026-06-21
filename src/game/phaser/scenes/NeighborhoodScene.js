@@ -2062,10 +2062,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
       }
     }
     if (this._animeChars) {
-      // Anime walk: the clean front cutout for all facing (flip for left); a livelier
-      // bob (squash/stretch + tiny lean) while moving so it reads as walking.
+      // Anime walk: back cutout when heading up (if available), else the front
+      // cutout for all facing; flip for left; a squash/stretch + lean bob while
+      // moving so it reads as walking.
       const facing = this.playerFacing || 'down';
-      if (this.player.texture.key !== 'zuzu_front') this.player.setTexture('zuzu_front');
+      const wantKey = (facing === 'up' && this.textures.exists('zuzu_back')) ? 'zuzu_back' : 'zuzu_front';
+      if (this.player.texture.key !== wantKey) this.player.setTexture(wantKey);
       this.player.setFlipX(facing === 'left');
       const base = this._animePlayerScale;
       const bob = isMoving ? Math.sin(time / 90) : Math.sin(time / 520) * 0.4;
