@@ -113,6 +113,18 @@ export default class EngineDynoScene extends Phaser.Scene {
     });
 
     // Predict + dyno pull (right column).
+    // Cross-link to Chapter 3's biology pillar — the Phytochemistry Lab. The
+    // Engine Dyno is the Ch3 hub, so both rigs are reachable from one ladder entry
+    // (mirrors Ch2's Circuit Bench → Extraction Bench).
+    const bioBtn = this.add.rectangle(1130, 64, 230, 30, 0x18301d, 1)
+      .setStrokeStyle(1, 0xbfe3c3, 0.5).setScrollFactor(0)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => { this.hide(); this.registry.events.emit('phyto:start'); });
+    const bioTxt = this.add.text(1130, 64, '⚗ Phytochemistry Lab →', {
+      fontFamily: 'Arial', fontSize: '12px', color: '#bfe3c3', fontStyle: 'bold',
+    }).setOrigin(0.5).setScrollFactor(0);
+    this.controlLayer.add([bioBtn, bioTxt]);
+
     const px = 740;
     const pTitle = this.add.text(px, 110, this.challenge.predictPrompt, {
       fontFamily: 'Arial', fontSize: '13px', color: '#e2d2cd', wordWrap: { width: 470 },

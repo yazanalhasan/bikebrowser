@@ -21,6 +21,7 @@ import CrashTestScene from './scenes/CrashTestScene.js';
 import BoatTankScene from './scenes/BoatTankScene.js';
 import PlaneTunnelScene from './scenes/PlaneTunnelScene.js';
 import VacuumChamberScene from './scenes/VacuumChamberScene.js';
+import PhytoLabScene from './scenes/PhytoLabScene.js';
 import DebugScene from './scenes/DebugScene.js';
 
 export function createGame(parent) {
@@ -67,6 +68,7 @@ export function createGame(parent) {
       BoatTankScene,
       PlaneTunnelScene,
       VacuumChamberScene,
+      PhytoLabScene,
       DebugScene,
     ],
     audio: { noAudio: true },

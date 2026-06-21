@@ -1347,6 +1347,10 @@ export default class NeighborhoodScene extends Phaser.Scene {
         this.showFeedback({ message: `Ethnobotany: you can now make ${discovered.length} thing(s) from desert plants.` });
       }
     });
+    // Chapter 3 biology pillar — bottling pure salicin in the phytochemistry lab.
+    this.registry.events.on('phyto:built', () => {
+      this.showFeedback({ message: 'Phytochemistry: you isolated pure salicin — the molecule behind the willow remedy.' });
+    });
 
     // ZuzuBucks counter (top-right) — earned on first quest/objective completion,
     // spent on upgrades. Pulses gold when it changes.

@@ -58,6 +58,12 @@ const ALLOW = {
     'plane:done', 'plane:opened', 'plane:flew',
     // Chapter 7 Vacuum Chamber pings.
     'space:done', 'space:opened', 'space:certified',
+    // Chapter 3 Phytochemistry Lab — `phyto:start` is emitted literally from the
+    // Engine Dyno hub but LISTENED dynamically in the KnobBenchScene base
+    // (cfg.startEvent), so the scan sees the emit but not the listen. Wiring
+    // covered by the chapter3-phyto e2e. The `phyto:opened/extracted/done` pings
+    // are fire-and-forget.
+    'phyto:start',
     // unused hook for a special quest-reward flourish; the reward still applies
     // via zuzubucks:changed + recordFeedback. Reviewed 2026-06-21 as benign.
     'reward:quest',
@@ -87,6 +93,9 @@ const ALLOW = {
     // emit even though NeighborhoodScene listens. The wiring is covered by each
     // chapter's e2e (build → markChapterComplete). Reviewed 2026-06-21.
     'boat:built', 'plane:built', 'space:built',
+    // phyto:built — dynamic base emit (cfg.builtEvent), listened literally in
+    // NeighborhoodScene. Wiring covered by the chapter3-phyto e2e.
+    'phyto:built',
   ]),
   // runtime handlers the scene intentionally supersedes with a richer flow
   // (utm→prediction, bridge_plan→design UI) — kept for debug/tests.
