@@ -19,7 +19,13 @@ async function nearestId(p) { return p.evaluate(() => { const g = window.__bikeb
 // Holds each axis PROPORTIONAL to distance (the player moves ~160px/s; fixed
 // micro-steps spent all their wall-clock in readWorld round-trips and timed out).
 async function walkTo(p, t, maxSteps = 110) {
-  if (!t) return false; let last = null, stuck = 0;
+  if (!t) return false;
+  // A dialogue/feedback overlay left by a previous interaction FREEZES the player
+  // (movement is gated on !modalActive && !dialogueActive), which would spin this
+  // walk to the timeout. Dismiss it before walking (you can't walk with a modal up).
+  await p.keyboard.press('Escape');
+  await p.waitForFunction(() => { const g = window.__bikebrowserRebuildGame; return !g.registry.get('modalActive') && !g.registry.get('dialogueActive'); }, null, { timeout: 3000 }).catch(() => {});
+  let last = null, stuck = 0;
   for (let i = 0; i < maxSteps; i++) {
     const w = await readWorld(p); if (!w) return false;
     const dx = t.x - w.player.x, dy = t.y - w.player.y;
