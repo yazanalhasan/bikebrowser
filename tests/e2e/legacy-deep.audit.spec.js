@@ -1,3 +1,7 @@
+// SKIPPED 2026-06-21: this spec boots a REMOVED route (the legacy Phaser `/legacy-play` /
+// Godot `/play` / `/play3d` prototypes were quarantined — see src/renderer/utils/uxSafety.js).
+// The canonical game is `/game-rebuild`, covered by the game-rebuild.*.spec.js suite.
+// Re-author against /game-rebuild if this coverage is still wanted.
 // legacy-deep.audit.spec.js — Deeper interaction probe of /legacy-play.
 // Dismisses the audio-unlock modal, advances the opening dialogue, then drives
 // scene transitions directly to verify multiple legacy scenes actually RENDER
@@ -8,7 +12,7 @@ import { test } from 'playwright/test';
 
 const DIR = 'playtest_captures/legacy_vs_rebuild';
 
-test('LEGACY deep scene reachability + render probe', async ({ page }) => {
+test.skip('LEGACY deep scene reachability + render probe', async ({ page }) => {
   test.setTimeout(120000);
   mkdirSync(DIR, { recursive: true });
   const errors = [];

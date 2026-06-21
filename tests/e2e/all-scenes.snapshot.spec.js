@@ -131,7 +131,9 @@ test.describe('all scene snapshots', () => {
     }
   });
 
-  test('captures every registered legacy Phaser scene', async ({ page }) => {
+  // SKIPPED 2026-06-21: /legacy-play removed (quarantined prototype). The rebuild
+  // Act-1 snapshot test above (/game-rebuild) remains the live coverage.
+  test.skip('captures every registered legacy Phaser scene', async ({ page }) => {
     mkdirSync(outputDir, { recursive: true });
     await waitForGameBoot(page, { route: '/legacy-play', timeout: 30_000 });
     await expect(page.locator('canvas')).toBeVisible();
@@ -147,7 +149,8 @@ test.describe('all scene snapshots', () => {
     );
   });
 
-  test('captures canonical Godot and 3D routes', async ({ page }) => {
+  // SKIPPED 2026-06-21: /play and /play3d (Godot + 3D prototypes) removed.
+  test.skip('captures canonical Godot and 3D routes', async ({ page }) => {
     mkdirSync(outputDir, { recursive: true });
 
     await page.goto('/play');

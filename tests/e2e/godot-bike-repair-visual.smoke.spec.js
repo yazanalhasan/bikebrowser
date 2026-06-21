@@ -1,3 +1,7 @@
+// SKIPPED 2026-06-21: this spec boots a REMOVED route (the legacy Phaser `/legacy-play` /
+// Godot `/play` / `/play3d` prototypes were quarantined — see src/renderer/utils/uxSafety.js).
+// The canonical game is `/game-rebuild`, covered by the game-rebuild.*.spec.js suite.
+// Re-author against /game-rebuild if this coverage is still wanted.
 import { test, expect } from 'playwright/test';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -21,7 +25,7 @@ async function waitForGodot(page) {
   return iframe;
 }
 
-test.describe('Godot bike repair visual correctness', () => {
+test.describe.skip('Godot bike repair visual correctness', () => {
   test('captures close-up chain and tire repair preview states', async ({ page }) => {
     await fs.mkdir(SCREENSHOT_DIR, { recursive: true });
     await page.goto(playUrl('?playtest=1&playtestRegion=bike_repair_visual_preview'));

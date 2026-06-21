@@ -1,3 +1,7 @@
+// SKIPPED 2026-06-21: this spec boots a REMOVED route (the legacy Phaser `/legacy-play` /
+// Godot `/play` / `/play3d` prototypes were quarantined — see src/renderer/utils/uxSafety.js).
+// The canonical game is `/game-rebuild`, covered by the game-rebuild.*.spec.js suite.
+// Re-author against /game-rebuild if this coverage is still wanted.
 // mission-inventory-hud.smoke.spec.js - player-visible progression affordances.
 
 import { test, expect } from 'playwright/test';
@@ -56,7 +60,7 @@ function seedForageState() {
   };
 }
 
-test.describe('mission and inventory HUD', () => {
+test.describe.skip('mission and inventory HUD', () => {
   test('active mission objective and inventory are visible to the player', async ({ page }) => {
     await page.addInitScript((state) => {
       localStorage.setItem('bikebrowser_game_save', JSON.stringify(state));

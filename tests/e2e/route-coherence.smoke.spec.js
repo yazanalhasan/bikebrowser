@@ -1,6 +1,10 @@
+// SKIPPED 2026-06-21: this spec boots a REMOVED route (the legacy Phaser `/legacy-play` /
+// Godot `/play` / `/play3d` prototypes were quarantined — see src/renderer/utils/uxSafety.js).
+// The canonical game is `/game-rebuild`, covered by the game-rebuild.*.spec.js suite.
+// Re-author against /game-rebuild if this coverage is still wanted.
 import { test, expect } from 'playwright/test';
 
-test.describe('route coherence', () => {
+test.describe.skip('route coherence', () => {
   test('youtube search without a query invites search instead of spinning forever', async ({ page }) => {
     await page.goto('/youtube/search');
 

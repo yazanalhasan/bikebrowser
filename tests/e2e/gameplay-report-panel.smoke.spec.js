@@ -1,3 +1,7 @@
+// SKIPPED 2026-06-21: this spec boots a REMOVED route (the legacy Phaser `/legacy-play` /
+// Godot `/play` / `/play3d` prototypes were quarantined — see src/renderer/utils/uxSafety.js).
+// The canonical game is `/game-rebuild`, covered by the game-rebuild.*.spec.js suite.
+// Re-author against /game-rebuild if this coverage is still wanted.
 // gameplay-report-panel.smoke.spec.js - bug report handoff panel.
 
 import { test, expect } from 'playwright/test';
@@ -48,7 +52,7 @@ function seedState() {
   };
 }
 
-test.describe('gameplay report panel', () => {
+test.describe.skip('gameplay report panel', () => {
   test('saved report stays visible as full selectable text', async ({ page }) => {
     await page.addInitScript((state) => {
       localStorage.setItem('bikebrowser_game_save', JSON.stringify(state));

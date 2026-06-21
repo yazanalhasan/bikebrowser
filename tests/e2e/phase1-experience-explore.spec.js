@@ -9,7 +9,9 @@ import fs from 'fs';
 const SHOT_DIR = 'C:/Users/admin/Documents/executive-brain/artifacts/qa_audit/screenshots/phase1';
 fs.mkdirSync(SHOT_DIR, { recursive: true });
 
-const ROUTES = ['/', '/legacy-play', '/game-rebuild', '/play', '/play3d'];
+// /legacy-play, /play, /play3d removed 2026-06-21 (quarantined prototypes) — probe
+// only the live routes so this doesn't spend its budget on redirects/timeouts.
+const ROUTES = ['/', '/game-rebuild'];
 
 test('probe routes for Phase 1 runtime', async ({ page }) => {
   const probe = [];

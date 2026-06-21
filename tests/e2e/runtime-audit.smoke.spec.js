@@ -1,3 +1,7 @@
+// SKIPPED 2026-06-21: this spec boots a REMOVED route (the legacy Phaser `/legacy-play` /
+// Godot `/play` / `/play3d` prototypes were quarantined — see src/renderer/utils/uxSafety.js).
+// The canonical game is `/game-rebuild`, covered by the game-rebuild.*.spec.js suite.
+// Re-author against /game-rebuild if this coverage is still wanted.
 // runtime-audit.smoke.spec.js — Boot-time data-integrity smoke test.
 //
 // Asserts that runRuntimeAudit() (src/renderer/game/systems/runtimeAudit.js)
@@ -12,7 +16,7 @@
 import { test, expect } from 'playwright/test';
 import { waitForGameBoot, waitForRuntimeAudit } from './helpers/gameBoot.js';
 
-test.describe('runtime audit smoke', () => {
+test.describe.skip('runtime audit smoke', () => {
   test('runtime audit reports zero errors at boot', async ({ page }) => {
     // Surface page-side console errors in the test output so a regression
     // surfaces with full context, not just "audit had errors".

@@ -27,7 +27,9 @@ function collectConsole(page, sink) {
 // ---------------------------------------------------------------------------
 // LEGACY  (/legacy-play, src/renderer/game)
 // ---------------------------------------------------------------------------
-test('LEGACY /legacy-play runtime audit', async ({ page }) => {
+// SKIPPED 2026-06-21: /legacy-play removed (quarantined prototype). The REBUILD
+// audit below (/game-rebuild) remains the live coverage.
+test.skip('LEGACY /legacy-play runtime audit', async ({ page }) => {
   mkdirSync(DIR, { recursive: true });
   const errors = [];
   collectConsole(page, errors);

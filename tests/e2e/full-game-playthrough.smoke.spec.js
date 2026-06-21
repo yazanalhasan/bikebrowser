@@ -1,3 +1,7 @@
+// SKIPPED 2026-06-21: this spec boots a REMOVED route (the legacy Phaser `/legacy-play` /
+// Godot `/play` / `/play3d` prototypes were quarantined — see src/renderer/utils/uxSafety.js).
+// The canonical game is `/game-rebuild`, covered by the game-rebuild.*.spec.js suite.
+// Re-author against /game-rebuild if this coverage is still wanted.
 // full-game-playthrough.smoke.spec.js - deterministic end-to-end quest graph.
 //
 // This is the "play the whole game every time" safety net. It boots the
@@ -94,7 +98,7 @@ function seedState() {
   };
 }
 
-test.describe('full game playthrough', () => {
+test.describe.skip('full game playthrough', () => {
   test('every shipped quest can be completed in the browser runtime', async ({ page }) => {
     const runtimeErrors = [];
     page.on('pageerror', (err) => runtimeErrors.push(err.message));

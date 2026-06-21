@@ -1,3 +1,7 @@
+// SKIPPED 2026-06-21: this spec boots a REMOVED route (the legacy Phaser `/legacy-play` /
+// Godot `/play` / `/play3d` prototypes were quarantined — see src/renderer/utils/uxSafety.js).
+// The canonical game is `/game-rebuild`, covered by the game-rebuild.*.spec.js suite.
+// Re-author against /game-rebuild if this coverage is still wanted.
 // flat-tire-flow.smoke.spec.js — catches the fragile early-game repair path.
 
 import { test, expect } from 'playwright/test';
@@ -48,7 +52,7 @@ function baseState() {
   };
 }
 
-test.describe('flat tire repair flow', () => {
+test.describe.skip('flat tire repair flow', () => {
   test('street bike interaction reaches explainer and cognitive scene boots', async ({ page }) => {
     const runtimeErrors = [];
     page.on('pageerror', (err) => runtimeErrors.push(err.message));

@@ -1,6 +1,10 @@
+// SKIPPED 2026-06-21: this spec boots a REMOVED route (the legacy Phaser `/legacy-play` /
+// Godot `/play` / `/play3d` prototypes were quarantined — see src/renderer/utils/uxSafety.js).
+// The canonical game is `/game-rebuild`, covered by the game-rebuild.*.spec.js suite.
+// Re-author against /game-rebuild if this coverage is still wanted.
 import { test, expect } from 'playwright/test';
 
-test.describe('Godot level editor', () => {
+test.describe.skip('Godot level editor', () => {
   test('toggles edit mode, selects, nudges, and undoes through /play', async ({ page }) => {
     await page.goto('/play');
 
