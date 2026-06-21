@@ -209,7 +209,7 @@ async function driveEcology(page) {
 }
 
 test.describe('player reachability', () => {
-  test.describe.configure({ timeout: 120000 });
+  test.describe.configure({ timeout: 240000 }); // generous headroom: these walk-heavy guards do many page.evaluate round-trips that slow under full-suite parallel CPU contention (they pass ~84s each in isolation);
 
   // ---- GUARDS: must stay reachable (regression protection) ----
 
@@ -243,7 +243,6 @@ test.describe('player reachability', () => {
   // stacked Mrs. Ramirez zones into one progression-aware `neighbor` zone. Now a
   // GUARD: no zone is geometrically shadowed, AND the thank-you beat is reachable.
   test('GUARD: no shadowed zones, and Mrs. Ramirez\'s thank-you beat is reachable', async ({ page }) => {
-    test.setTimeout(90000);
     await bootRebuild(page);
     // (1) Geometry: no two interaction zones overlap. The old `spanish_neighbor`
     // zone sat at 0px from `neighbor`, so nearest() could never return it.
@@ -311,7 +310,6 @@ test.describe('player reachability', () => {
   // workbench must offer a genuine material CHOICE (phase 'choose' with
   // candidates) and a sound design must visibly hold. No __GAME__ for the action.
   test('GUARD: a player designs the bridge by hand — real choice, sound design holds', async ({ page }) => {
-    test.setTimeout(120000);
     await bootRebuild(page);
     // Real prerequisite, all by keyboard: gather candidate materials + mesquite,
     // then predict-and-test each at the UTM so the bridge has tested candidates.
@@ -343,7 +341,6 @@ test.describe('player reachability', () => {
   // gather evidence -> conclude by keyboard, and require the per-mystery
   // concluded + corrected-by-evidence flags to flip. No __GAME__ for the action.
   test('GUARD: a player runs the Dry Wash investigation by hand — evidence corrects a wrong guess', async ({ page }) => {
-    test.setTimeout(90000);
     await bootRebuild(page);
     const zone = await zoneById(page, 'investigate_wash');
     expect(zone, 'an "investigate the washout" interaction exists').toBeTruthy();
@@ -369,7 +366,6 @@ test.describe('player reachability', () => {
   // PAYOFF assertion (the player visibly receives choice -> consequence ->
   // payoff). Driven by keyboard only; no __GAME__ for the action.
   test('GUARD: a player runs the ecology loop by hand — outcome shown, payoff delivered', async ({ page }) => {
-    test.setTimeout(60000);
     await bootRebuild(page);
     const zone = await zoneById(page, 'ecology_garden');
     expect(zone, 'an ecology planting interaction exists').toBeTruthy();
@@ -397,7 +393,6 @@ test.describe('player reachability', () => {
   // discovery through play fires the NEW DISCOVERY banner (immediate payoff) and
   // the persistent registry view opens with [J] (categorised payoff).
   test('GUARD: a discovery through play shows NEW DISCOVERY and opens the registry ([J])', async ({ page }) => {
-    test.setTimeout(60000);
     await bootRebuild(page);
     const before = await page.evaluate(() => window.__DISCOVERY__?.total ?? 0);
     const eco = await zoneById(page, 'ecology_patch');
@@ -419,7 +414,6 @@ test.describe('player reachability', () => {
   // (current/reachable/locked from real state) and closes again — it previously
   // double-toggled and read as a dead key. Keyboard only.
   test('GUARD: G opens a functional world map (current/reachable/locked) and closes', async ({ page }) => {
-    test.setTimeout(45000);
     await bootRebuild(page);
     await page.waitForFunction(() => Boolean(window.__WORLDMAP__), null, { timeout: 8000 });
     expect(await page.evaluate(() => window.__WORLDMAP__.open), 'map starts collapsed').toBe(false);
@@ -439,7 +433,6 @@ test.describe('player reachability', () => {
   // observe->predict->outcome->payoff loop by keyboard. Payoff = biome complete +
   // discoveries recorded.
   test('GUARD: a player runs the Salt River biome loop by hand — payoff delivered', async ({ page }) => {
-    test.setTimeout(70000);
     await bootRebuild(page);
     // Prerequisite (not the action): open the wider map so the biome unlocks.
     await page.evaluate(() => {
@@ -478,7 +471,6 @@ test.describe('player reachability', () => {
   // prompt), discovering the City Gate reveals the otherwise-hidden Salt River
   // expedition — a discovery that affects progression, not a collectible.
   test('GUARD: a discovery affects progression — City Gate reveals the Salt River expedition', async ({ page }) => {
-    test.setTimeout(60000);
     await bootRebuild(page);
     const scene = (fn) => page.evaluate(`(${fn.toString()})(window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene'))`);
     expect(await scene((s) => s.saltRiverMarker.visible), 'expedition hidden at start').toBe(false);
