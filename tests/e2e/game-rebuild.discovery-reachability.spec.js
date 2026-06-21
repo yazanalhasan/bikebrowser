@@ -69,9 +69,28 @@ test.describe('Player reachability — discovery registry', () => {
     expect(await page.evaluate(() => window.__DISCOVERY__.last?.title), 'the banner names a real discovery').toBeTruthy();
     await page.screenshot({ path: `${captureDir}/01_new_discovery_banner.png`, fullPage: true });
 
-    // Open the registry with [J] — the persistent, categorised payoff.
-    await page.keyboard.press('KeyJ');
-    await page.waitForFunction(() => window.__DISCOVERY__.open === true, null, { timeout: 5_000 });
+    // The journal toggle ([J]) is suppressed while a modal/dialogue is active
+    // (NeighborhoodScene: modal = modalActive || dialogueActive || editMode), and
+    // observing the desert helpers can leave a dialogue up. Dismiss it and wait for
+    // the modal state to clear before opening the registry.
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => {
+      const g = window.__bikebrowserRebuildGame;
+      return !g.registry.get('modalActive') && !g.registry.get('dialogueActive');
+    }, null, { timeout: 5_000 }).catch(() => {});
+
+    // Open the registry with [J] — the persistent, categorised payoff. Retry while
+    // it isn't open yet (any lingering transient overlay briefly suppresses the
+    // toggle). We only press when it's closed, so this never toggles it back shut.
+    let registryOpen = false;
+    for (let i = 0; i < 12 && !registryOpen; i += 1) {
+      registryOpen = await page.evaluate(() => window.__DISCOVERY__.open === true);
+      if (registryOpen) break;
+      await page.keyboard.press('KeyJ');
+      await page.waitForTimeout(500);
+      registryOpen = await page.evaluate(() => window.__DISCOVERY__.open === true);
+    }
+    expect(registryOpen, 'pressing [J] opens the discovery registry').toBe(true);
     const state = await page.evaluate(() => window.__DISCOVERY__);
     expect(state.total, 'the registry holds the discoveries').toBeGreaterThan(0);
     expect(state.categories.some((c) => c.category === 'plant' && c.count > 0), 'plants are catalogued').toBe(true);

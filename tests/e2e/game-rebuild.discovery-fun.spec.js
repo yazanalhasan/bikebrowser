@@ -39,9 +39,18 @@ test.describe('Discovery Registry — Fun (consequential)', () => {
     test.setTimeout(60_000);
     await ready(page);
     const before = await page.evaluate(() => window.__DISCOVERY__?.total ?? 0);
-    // Walk right toward the desert/wash edge — never press E.
-    for (let i = 0; i < 14; i++) await hold(page, 'ArrowRight');
-    for (let i = 0; i < 6; i++) await hold(page, 'ArrowDown');
+    // Exploration discovery fires by PROXIMITY to a landmark
+    // (NeighborhoodScene._explorationAreas: Desert Vista ~1030,760, City Gate
+    // ~1484,514) — NOT by wandering in any direction, and never by pressing E.
+    // Head for the Desert Vista (up and to the left of the start).
+    for (let i = 0; i < 40; i++) {
+      if ((await page.evaluate(() => window.__DISCOVERY__?.total ?? 0)) > before) break;
+      const p = await scene(page, (s) => ({ x: Math.round(s.player.x), y: Math.round(s.player.y) }));
+      const dx = 1030 - p.x, dy = 760 - p.y;
+      if (Math.abs(dx) < 24 && Math.abs(dy) < 24) break;
+      if (Math.abs(dx) > 24) await hold(page, dx > 0 ? 'ArrowRight' : 'ArrowLeft', Math.min(220, Math.max(60, Math.abs(dx) * 1.8)));
+      if (Math.abs(dy) > 24) await hold(page, dy > 0 ? 'ArrowDown' : 'ArrowUp', Math.min(220, Math.max(60, Math.abs(dy) * 1.8)));
+    }
     await page.waitForFunction((b) => (window.__DISCOVERY__?.total ?? 0) > b, before, { timeout: 8_000 });
     // Exploration alone produced a discovery, and the first-discovery tutorial fired.
     const sawTutorial = await scene(page, (s) => Boolean(s._firstDiscoveryShown));
