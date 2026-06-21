@@ -45,6 +45,10 @@ const ALLOW = {
     // (circuit hub→bench) and `extraction:done` ARE listened; these are
     // fire-and-forget notifications. Reviewed 2026-06-21.
     'extraction:opened', 'extraction:yield',
+    // Chapter 3 Engine Dyno pings — `engine:start` (ladder→dyno) and
+    // `engine:built` (dyno→neighborhood, marks Ch3) ARE listened; these are
+    // fire-and-forget notifications. Reviewed 2026-06-21.
+    'engine:done', 'engine:opened', 'engine:tuned',
     // unused hook for a special quest-reward flourish; the reward still applies
     // via zuzubucks:changed + recordFeedback. Reviewed 2026-06-21 as benign.
     'reward:quest',
@@ -58,6 +62,9 @@ const ALLOW = {
     // registry.emit(ch.entry.event) → CircuitBenchScene listens. Verified by the
     // chapter-ladder + circuit-bench e2e. Reviewed 2026-06-21.
     'circuit:start',
+    // Same data-driven dynamic emit as circuit:start — Chapter 3's ladder entry
+    // event launches the Engine Dyno. Verified by the chapter3-engine e2e.
+    'engine:start',
   ]),
   // runtime handlers the scene intentionally supersedes with a richer flow
   // (utm→prediction, bridge_plan→design UI) — kept for debug/tests.

@@ -16,6 +16,7 @@ import SkateScene from './scenes/SkateScene.js';
 import ChapterMapScene from './scenes/ChapterMapScene.js';
 import CircuitBenchScene from './scenes/CircuitBenchScene.js';
 import ExtractionBenchScene from './scenes/ExtractionBenchScene.js';
+import EngineDynoScene from './scenes/EngineDynoScene.js';
 import DebugScene from './scenes/DebugScene.js';
 
 export function createGame(parent) {
@@ -57,6 +58,7 @@ export function createGame(parent) {
       ChapterMapScene,
       CircuitBenchScene,
       ExtractionBenchScene,
+      EngineDynoScene,
       DebugScene,
     ],
     audio: { noAudio: true },

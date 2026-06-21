@@ -50,6 +50,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.scene.launch('ChapterMapScene');
     this.scene.launch('CircuitBenchScene');
     this.scene.launch('ExtractionBenchScene');
+    this.scene.launch('EngineDynoScene');
     this.scene.launch('DebugScene');
   }
 }

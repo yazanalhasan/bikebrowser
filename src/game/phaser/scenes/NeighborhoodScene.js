@@ -1307,6 +1307,12 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.registry.events.on('chapter:enter', ({ num }) => {
       if (num === 1) this.showFeedback({ message: 'Chapter 1 — Bike. Ride on.' });
       else if (num === 2) this.showFeedback({ message: 'Chapter 2 — E-bike. Wire the Circuit Bench.' });
+      else if (num === 3) this.showFeedback({ message: 'Chapter 3 — Motorcycle. Tune the engine on the dyno.' });
+    });
+    // Building the motorcycle engine completes Chapter 3's first slice.
+    this.registry.events.on('engine:built', () => {
+      this._markChapterComplete(3);
+      this.showFeedback({ message: 'Engine tuned and built — Chapter 3 underway.' });
     });
     // Building the e-bike circuit completes Chapter 2's first slice.
     this.registry.events.on('circuit:built', () => {

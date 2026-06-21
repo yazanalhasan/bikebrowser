@@ -82,7 +82,7 @@ export const CHAPTERS = [
   {
     num: 3,
     actId: 'act1',
-    status: 'locked',
+    status: 'scaffold',
     vehicle: 'Motorcycle',
     engineeringDomain: 'Combustion powertrain: engine, fuel, ignition, transmission, cooling, exhaust',
     rig: 'Engine / thermal dyno',
@@ -91,7 +91,9 @@ export const CHAPTERS = [
     region: 'First regional roads',
     reach: 'First regional roads',
     summary: 'Build a combustion powertrain and read its thermal dyno. Phytochemistry explains why the extraction method from Chapter 2 changes the result.',
-    entry: { type: 'preview', event: null, target: null },
+    // First playable slice: the Engine Dyno (combustion/thermal rig). Enterable
+    // from the Vehicle Ladder once Chapter 2 is complete.
+    entry: { type: 'scene', event: 'engine:start', target: 'EngineDynoScene', demo: 'Engine Dyno' },
   },
   {
     num: 4,
