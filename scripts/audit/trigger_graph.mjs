@@ -49,6 +49,9 @@ const ALLOW = {
     // `engine:built` (dyno→neighborhood, marks Ch3) ARE listened; these are
     // fire-and-forget notifications. Reviewed 2026-06-21.
     'engine:done', 'engine:opened', 'engine:tuned',
+    // Chapter 4 Crash Test pings — `crash:start`/`crash:built` ARE wired; these
+    // are fire-and-forget. Reviewed 2026-06-21.
+    'crash:done', 'crash:opened', 'crash:passed',
     // unused hook for a special quest-reward flourish; the reward still applies
     // via zuzubucks:changed + recordFeedback. Reviewed 2026-06-21 as benign.
     'reward:quest',
@@ -65,6 +68,8 @@ const ALLOW = {
     // Same data-driven dynamic emit as circuit:start — Chapter 3's ladder entry
     // event launches the Engine Dyno. Verified by the chapter3-engine e2e.
     'engine:start',
+    // Chapter 4 ladder entry → Crash & Load Test. Same dynamic emit.
+    'crash:start',
   ]),
   // runtime handlers the scene intentionally supersedes with a richer flow
   // (utm→prediction, bridge_plan→design UI) — kept for debug/tests.

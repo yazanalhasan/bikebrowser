@@ -17,6 +17,7 @@ import ChapterMapScene from './scenes/ChapterMapScene.js';
 import CircuitBenchScene from './scenes/CircuitBenchScene.js';
 import ExtractionBenchScene from './scenes/ExtractionBenchScene.js';
 import EngineDynoScene from './scenes/EngineDynoScene.js';
+import CrashTestScene from './scenes/CrashTestScene.js';
 import DebugScene from './scenes/DebugScene.js';
 
 export function createGame(parent) {
@@ -59,6 +60,7 @@ export function createGame(parent) {
       CircuitBenchScene,
       ExtractionBenchScene,
       EngineDynoScene,
+      CrashTestScene,
       DebugScene,
     ],
     audio: { noAudio: true },

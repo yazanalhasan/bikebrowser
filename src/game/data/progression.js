@@ -98,7 +98,7 @@ export const CHAPTERS = [
   {
     num: 4,
     actId: 'act1',
-    status: 'locked',
+    status: 'scaffold',
     vehicle: 'Car',
     engineeringDomain: 'Systems integration & scale: chassis, drivetrain, steering geometry, safety/crash, HVAC, load distribution',
     rig: 'Crash / load + systems test',
@@ -107,7 +107,9 @@ export const CHAPTERS = [
     region: 'Connected land regions',
     reach: 'Overland cross-country',
     summary: 'Integrate every prior system at scale into a car. The Microscope opens cellular biology — what living systems are made of.',
-    entry: { type: 'preview', event: null, target: null },
+    // First playable slice: the Crash & Load Test. Enterable from the Vehicle
+    // Ladder once Chapter 3 is complete.
+    entry: { type: 'scene', event: 'crash:start', target: 'CrashTestScene', demo: 'Crash & Load Test' },
   },
   {
     num: 5,
