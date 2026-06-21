@@ -84,6 +84,15 @@ async function closeDialogue(page) {
 
 async function interactAt(page, step) {
   if (step.before) await step.before(page);
+  // Auto steps don't require walking to the zone — the consequence already
+  // happened (e.g. on a passed load test the bridge auto-repairs AND auto-plays
+  // the Community Crossing, so the player never walks east across the wash to the
+  // bridge_repair zone). Just verify the resulting state + capture.
+  if (step.auto) {
+    if (step.waitFor) await page.waitForFunction(step.waitFor);
+    await page.screenshot({ path: `${captureDir}/${step.file}.png`, fullPage: true });
+    return;
+  }
   const target = await interactionTarget(page, step);
   await walkTo(page, target);
   await page.waitForFunction((expected) => {
@@ -103,7 +112,7 @@ async function interactAt(page, step) {
 
 test.describe('Act 1 player-visible acceptance walkthrough', () => {
   test('completes Act 1 through visible movement and interaction prompts', async ({ page }) => {
-    test.setTimeout(240_000); // 8-material UTM predict-flow + Phase-6 crossing cutscene
+    test.setTimeout(300_000); // full Act-1 walkthrough in headless (collect 8 materials, 8-material UTM predict-flow, bridge design + load test + crossing cutscene, wider-gate). Runs ~3min; margin for CI variance.
     mkdirSync(captureDir, { recursive: true });
     await ready(page);
 
@@ -263,6 +272,10 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
       },
       {
         id: 'bridge_repair',
+        // No walk: a passed load test auto-repairs the bridge and auto-plays the
+        // Community Crossing (decision_log #31), so the player never crosses east
+        // to this zone. We just confirm the reconnection + step the cutscene.
+        auto: true,
         x: 1255,
         y: 642,
         prompt: 'Reconnect the crossing',
@@ -283,21 +296,46 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
       await interactAt(page, step);
       if (step.id === 'bridge_plan') {
         // Phase 3 — a sound design flows into the Load Test (a modal). Step through
-        // it by real keyboard so the next walk isn't blocked by modalActive.
-        await page.waitForFunction(() => window.__LOAD_TEST__ && window.__LOAD_TEST__.active === true, null, { timeout: 8000 }).catch(() => {});
-        for (let i = 0; i < 8 && (await page.evaluate(() => Boolean(window.__LOAD_TEST__ && window.__LOAD_TEST__.active))); i += 1) {
+        // it by real keyboard (each E advances one load scenario; the final E
+        // finishes and emits loadTest:done -> the bridge reconnects + the wash
+        // barrier lifts, so the next walk to bridge_repair isn't blocked). Drive it
+        // until the bridge actually reconnects rather than a fixed press count, so
+        // a slow modal open or an extra scenario can't leave the barrier up.
+        await page.waitForFunction(() => window.__LOAD_TEST__ && window.__LOAD_TEST__.active === true, null, { timeout: 10000 }).catch(() => {});
+        // Drive E until the bridge reconnects AND the wash barrier physically lifts
+        // (state flipping isn't enough — the next walk crosses the wash, so the
+        // collider must actually be disabled). Keep pressing in case a scenario
+        // step was dropped.
+        const barrierDown = () => page.evaluate(() => {
+          const s = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+          const recon = window.__GAME__.getBridgeState().bridgeReconnected === true;
+          const barrier = s.washBarrier?.body;
+          return recon && (!barrier || barrier.enable === false);
+        });
+        for (let i = 0; i < 18; i += 1) {
+          if (await barrierDown()) break;
           await page.keyboard.press('KeyE');
-          await page.waitForTimeout(150);
+          await page.waitForTimeout(200);
         }
+        await page.waitForFunction(() => {
+          const s = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+          const recon = window.__GAME__.getBridgeState().bridgeReconnected === true;
+          const barrier = s.washBarrier?.body;
+          return recon && (!barrier || barrier.enable === false);
+        }, null, { timeout: 6000 });
       }
       if (step.id === 'bridge_repair') {
-        // Phase 6 — repairing the bridge plays the Community Crossing cutscene
-        // (Mr. Chen crosses to meet Mrs. Ramirez). Step through it by real keyboard.
+        // Phase 6 — repairing the bridge auto-plays the Community Crossing cutscene
+        // (Mr. Chen crosses to meet Mrs. Ramirez). It FREEZES the player until it is
+        // fully closed, so step it to COMPLETION (each E advances a beat) — a fixed
+        // press count can leave it active and the next walk to the wider gate frozen.
         await page.waitForFunction(() => window.__CROSSING__ && window.__CROSSING__.active === true, null, { timeout: 8000 }).catch(() => {});
-        for (let i = 0; i < 8 && (await page.evaluate(() => Boolean(window.__CROSSING__ && window.__CROSSING__.active))); i += 1) {
+        for (let i = 0; i < 20; i += 1) {
+          if (!(await page.evaluate(() => Boolean(window.__CROSSING__ && window.__CROSSING__.active)))) break;
           await page.keyboard.press('KeyE');
-          await page.waitForTimeout(150);
+          await page.waitForTimeout(180);
         }
+        await page.waitForFunction(() => !window.__CROSSING__ || window.__CROSSING__.active === false, null, { timeout: 5000 });
       }
     }
 
@@ -327,6 +365,7 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         chemistryResults: state.chemistry.completedRecipes,
         ecologyObservations: state.ecology.observations,
         finalFeedback: window.__GAME__.getFeedbackState().last,
+        feedbackMessages: (window.__GAME__.getFeedbackState().log || []).map((f) => f && f.message).filter(Boolean),
         promptText: scene.prompt.text,
         audioSummary: audio ? {
           hookVerified: audio.available,
@@ -395,7 +434,11 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
     expect(finalState.reasoning.band).not.toBe('developing');
     expect(finalState.reasoning.learnings.length).toBeGreaterThan(0);
     expect(finalState.reasoning.rewardsReasoningNotCorrectness).toBe(true);
-    expect(finalState.finalFeedback.message).toContain('Wider map unlocked');
+    // The "Wider map unlocked" feedback fires on the gate interaction; unlocking
+    // the gate ALSO registers a discovery, whose banner can be the very last
+    // feedback. Assert the unlock message appears in the feedback LOG (not strictly
+    // last). The widerMapUnlocked state assertion above is the authoritative signal.
+    expect(finalState.feedbackMessages.some((m) => m.includes('Wider map unlocked'))).toBe(true);
 
     // Phase 1.8: Dry Wash investigation loop (run last so it doesn't clobber the
     // map-unlock feedback above). Observe -> Hypothesize (a MISLEADING
