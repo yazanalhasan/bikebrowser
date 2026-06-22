@@ -1127,7 +1127,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     let baseScale;
     if (useAnime) {
       npc = this.add.image(x, y, animeKey).setOrigin(0.5, 0.92);
-      baseScale = 80 / npc.height;
+      baseScale = 160 / npc.height; // ~160px tall on screen (2x)
     } else {
       npc = animated ? this.add.sprite(x, y, sheetKey, 0) : this.add.image(x, y, fallbackKey);
       baseScale = this.characterVisuals.npcScale;
