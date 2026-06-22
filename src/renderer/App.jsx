@@ -23,6 +23,7 @@ const GameRebuildPage = lazy(() => import('./pages/GameRebuildPage'));
 // prototype /play3d), GodotPrototypePage (Godot iframe /play, /godot-prototype).
 // The canonical playable experience is GameRebuildPage at /game-rebuild.
 const SpellingTrainerApp = lazy(() => import('./spellingTrainer/SpellingTrainerApp'));
+const UTMLabPage = lazy(() => import('./utm/UTMLab.jsx'));
 
 const VERSION_STORAGE_KEY = 'bikebrowser_cached_version';
 
@@ -83,6 +84,7 @@ function AppContent() {
               kept on disk but no longer routed or bundled. /game-rebuild is the
               single canonical playable experience. */}
           <Route path="/spelling-trainer" element={<SpellingTrainerApp />} />
+          <Route path="/utm-lab" element={<div style={{ height: '100vh' }}><UTMLabPage /></div>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
