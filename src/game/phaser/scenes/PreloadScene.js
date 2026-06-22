@@ -24,7 +24,7 @@ export default class PreloadScene extends Phaser.Scene {
       this.load.image(`${c}_back`, `sprites/${c}_back.png`);
     });
     // Anime painted backdrops (GPU-generated scenery).
-    ['crossing', 'skatepark', 'ground', 'utm', 'ecology', 'investigation', 'biome'].forEach((b) => this.load.image(`bg_${b}`, `backdrops/${b}.png`));
+    ['crossing', 'skatepark', 'ground', 'utm', 'ecology', 'investigation', 'biome', 'vista'].forEach((b) => this.load.image(`bg_${b}`, `backdrops/${b}.png`));
     // Anime neighbourhood HOMES (GPU-generated, transparent cutouts) — the
     // neighbours' houses framing the common street.
     ['chen', 'ramirez', 'mariam', 'dex', 'zuzu'].forEach((h) => this.load.image(`home_${h}`, `props/house_${h}.png`));

@@ -159,15 +159,18 @@ export default class NeighborhoodScene extends Phaser.Scene {
   // the neighbourhood so the common street reads as a place people live. Returns
   // true if the anime art was available (so the procedural fallback can be skipped).
   _drawAnimeHomes() {
+    // A row of homes behind (north of) the NPC commons: below the vista horizon
+    // (~y400) and above the neighbours (~y800), so it reads as a street people
+    // live on rather than houses floating on the skyline.
     const homes = [
-      { key: 'home_zuzu', x: 300, y: 565, label: 'Zuzu home' },
-      { key: 'home_dex', x: 660, y: 575, label: "Dex's place" },
-      { key: 'home_chen', x: 1090, y: 548, label: "Mr. Chen's" },
-      { key: 'home_ramirez', x: 1350, y: 565, label: "Mrs. Ramirez's" },
-      { key: 'home_mariam', x: 1640, y: 548, label: "Auntie Mariam's" },
+      { key: 'home_zuzu', x: 360, y: 730, label: 'Zuzu home' },
+      { key: 'home_dex', x: 720, y: 742, label: "Dex's place" },
+      { key: 'home_chen', x: 1060, y: 724, label: "Mr. Chen's" },
+      { key: 'home_ramirez', x: 1390, y: 742, label: "Mrs. Ramirez's" },
+      { key: 'home_mariam', x: 1730, y: 724, label: "Auntie Mariam's" },
     ];
     if (!homes.some((h) => this.textures.exists(h.key))) return false;
-    const targetH = 340;
+    const targetH = 330;
     for (const h of homes) {
       if (!this.textures.exists(h.key)) continue;
       const src = this.textures.get(h.key).getSourceImage();
@@ -191,7 +194,15 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this.add.rectangle(W / 2, H / 2, W, H, 0xcdb389, 0.10).setDepth(-29);
     }
 
-    this.drawMountainBackdrop();
+    // North horizon — a painted Sonoran desert vista (mountains, a distant town,
+    // palms, golden-hour sky) so the neighbourhood sits in a real valley. The
+    // procedural mountain range is the fallback when the painting is absent.
+    if (this.textures.exists('bg_vista')) {
+      const vistaH = 400;
+      this.add.image(W / 2, 0, 'bg_vista').setOrigin(0.5, 0).setDisplaySize(W, vistaH).setDepth(-26);
+    } else {
+      this.drawMountainBackdrop();
+    }
     this.drawRegionGrounds();
     this.drawRegionBanners();
 
@@ -302,28 +313,16 @@ export default class NeighborhoodScene extends Phaser.Scene {
     g.fillStyle(0xfff0c7, 0.15).fillEllipse(W * 0.7, 84, 920, 90);
   }
 
-  // Four tinted ground platforms (one per region) joined by tan paths.
+  // Dirt paths joining the areas. The old tinted region platforms (slate/adobe/
+  // teal/green boxes) were removed — against the painted desert ground they read
+  // as flat grey boxes, so the warm ground now shows through uninterrupted.
   drawRegionGrounds() {
     const g = this.add.graphics();
     g.setDepth(-22);
-    // Connecting paths first, so the platform edges sit over their ends.
-    g.fillStyle(0xcfa970, 0.85);
+    g.fillStyle(0xcfa970, 0.55);
     g.fillRoundedRect(700, 786, 360, 92, 28);   // garage <-> home
     g.fillRoundedRect(1560, 786, 360, 92, 28);  // home <-> wash
     g.fillRoundedRect(1232, 1120, 96, 220, 28); // home <-> ecology
-    g.setDepth(-20);
-    const regions = [
-      { cx: 470, cy: 800, w: 600, h: 580, color: 0x37474a, alpha: 0.55 },  // GARAGE — workshop slate
-      { cx: 1280, cy: 860, w: 700, h: 640, color: 0x6b5535, alpha: 0.48 }, // HOME — warm adobe
-      { cx: 2120, cy: 800, w: 720, h: 600, color: 0x2f5a55, alpha: 0.55 }, // WASH — riverbed teal
-      { cx: 1280, cy: 1350, w: 620, h: 400, color: 0x3a5a3a, alpha: 0.55 }, // ECOLOGY — living green
-    ];
-    for (const r of regions) {
-      g.fillStyle(r.color, r.alpha);
-      g.fillRoundedRect(r.cx - r.w / 2, r.cy - r.h / 2, r.w, r.h, 42);
-      g.lineStyle(3, 0xfff0c7, 0.12);
-      g.strokeRoundedRect(r.cx - r.w / 2, r.cy - r.h / 2, r.w, r.h, 42);
-    }
   }
 
   // Big region signage so each place announces itself.
