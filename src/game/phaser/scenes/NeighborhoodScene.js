@@ -37,8 +37,8 @@ export default class NeighborhoodScene extends Phaser.Scene {
       window.__BIKEBROWSER_FORCE_PLACEHOLDER_PROPS === true,
     );
     this.characterVisuals = {
-      playerScale: 1.6,
-      npcScale: 1.52,
+      playerScale: 3.2,
+      npcScale: 3.04,
       runtimeSource: 'aseprite_final_character_sheets',
       animatedSheets: [],
       npcIds: [],
@@ -75,6 +75,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.createInteractions();
     this.createFeedbackHud();
     this.createWorldMapHud();
+    this.createMinimapHud();
     configureNeighborhoodCamera(this, this.player);
 
     this.helpText = this.add.text(18, 680, 'WASD / arrows move • E or Space explore • G map • N notebook • J discoveries • F2 edit • R replay voice • M quiet', {
@@ -770,7 +771,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // Spawn in the HOME hub (world centre), among the NPCs.
     this.player = this.physics.add.sprite(1280, 1040, startKey);
     if (this._animeChars) {
-      this._animePlayerScale = 88 / this.player.height; // ~88px tall on screen
+      this._animePlayerScale = 176 / this.player.height; // ~176px tall on screen (2x)
       this.player.setOrigin(0.5, 0.92).setScale(this._animePlayerScale).setDepth(260);
     } else {
       this.player.setScale(this.characterVisuals.playerScale).setDepth(260);
@@ -1981,6 +1982,135 @@ export default class NeighborhoodScene extends Phaser.Scene {
     this.scale.on('resize', () => this.setWorldMapHudExpanded(this.worldMapHudExpanded));
   }
 
+  // Persistent on-screen minimap: a corner map that restores the open-world
+  // orientation affordances the navigation audit flagged as missing — a current
+  // location / player marker (arrow), quest markers for the active objective, a
+  // compass rose, a breadcrumb trail toward the objective, and click-to-fast-travel
+  // to discovered locations. Complements the full world map (G) without replacing it.
+  createMinimapHud() {
+    const W = 188;
+    const H = 118;
+    this.minimapSize = { w: W, h: H, pad: 8 };
+    this.minimap = this.add.container(16, 16).setScrollFactor(0).setDepth(956);
+    const panel = this.add.graphics();
+    panel.fillStyle(0x16201d, 0.84).fillRoundedRect(0, 0, W, H, 10);
+    panel.lineStyle(1, 0xd9b36a, 0.7).strokeRoundedRect(0, 0, W, H, 10);
+    this.minimapTitle = this.add.text(8, 4, 'NEIGHBORHOOD MAP', { fontFamily: 'Arial', fontSize: '10px', color: '#ffe8aa' });
+    // Compass rose — north is up so the minimap reads as an orientation aid.
+    this.minimapCompass = this.add.text(W - 8, 4, 'N ▲', { fontFamily: 'Arial', fontSize: '10px', color: '#bfe3ff' }).setOrigin(1, 0);
+    // Current-location indicator ('You are here').
+    this.minimapHere = this.add.text(8, H - 14, '', { fontFamily: 'Arial', fontSize: '10px', color: '#cfeee0' });
+    // Dynamic layer redrawn each frame: location/quest markers, breadcrumb, player arrow.
+    this.minimapGfx = this.add.graphics();
+    this.minimap.add([panel, this.minimapGfx, this.minimapTitle, this.minimapCompass, this.minimapHere]);
+    // Static per-location labels, toggled by discovery state (avoids per-frame churn).
+    this.minimapLabels = {};
+    for (const loc of act1Locations) {
+      const p = this._minimapPoint(loc.x, loc.y);
+      const label = this.add.text(p.x + 4, p.y - 5, this.shortLocationLabel(loc.id), {
+        fontFamily: 'Arial',
+        fontSize: '8px',
+        color: '#dfeee6',
+      }).setVisible(false);
+      this.minimap.add(label);
+      this.minimapLabels[loc.id] = label;
+    }
+    // Click a discovered location to fast-travel there.
+    this.minimapHit = this.add.zone(0, 0, W, H).setOrigin(0, 0).setInteractive({ useHandCursor: true });
+    this.minimap.add(this.minimapHit);
+    this.minimapHit.on('pointerdown', (pointer) => this._minimapFastTravel(pointer));
+  }
+
+  _minimapPoint(worldX, worldY) {
+    const { w, h, pad } = this.minimapSize;
+    return {
+      x: pad + (worldX / this.worldWidth) * (w - pad * 2),
+      y: pad + (worldY / this.worldHeight) * (h - pad * 2),
+    };
+  }
+
+  updateMinimapHud(state, currentLocationId, activeQuestMarkerId, discovered) {
+    if (!this.minimapGfx || !this.player) return;
+    this._minimapState = { discovered, locations: act1Locations };
+    const g = this.minimapGfx;
+    g.clear();
+    // Location markers: active objective = pulsing quest marker, discovered =
+    // bright landmark, undiscovered = faint.
+    for (const loc of act1Locations) {
+      const p = this._minimapPoint(loc.x, loc.y);
+      const isActive = loc.id === activeQuestMarkerId;
+      const known = discovered.has(loc.id) || loc.id === currentLocationId;
+      const label = this.minimapLabels[loc.id];
+      if (label) label.setVisible(known || isActive);
+      if (isActive) {
+        const r = 4 + Math.sin(this.time.now / 180) * 1.2;
+        g.fillStyle(0xffd24a, 1).fillCircle(p.x, p.y, r);
+        g.lineStyle(1, 0xfff3c4, 0.9).strokeCircle(p.x, p.y, r + 2);
+      } else if (known) {
+        g.fillStyle(0x8fe3b0, 0.95).fillCircle(p.x, p.y, 2.5);
+      } else {
+        g.fillStyle(0x6a7b73, 0.55).fillCircle(p.x, p.y, 2);
+      }
+    }
+    // Breadcrumb trail from the player toward the active objective.
+    const target = act1Locations.find((loc) => loc.id === activeQuestMarkerId);
+    const playerPoint = this._minimapPoint(this.player.x, this.player.y);
+    if (target) {
+      this._drawMinimapBreadcrumb(g, playerPoint, this._minimapPoint(target.x, target.y));
+    }
+    // Player marker / current-location indicator: a small arrow pointing where Zuzu faces.
+    this._drawPlayerMarker(g, playerPoint);
+    const here = act1Locations.find((loc) => loc.id === currentLocationId);
+    this.minimapHere.setText(here ? `You: ${this.shortLocationLabel(currentLocationId)}` : '');
+  }
+
+  _drawMinimapBreadcrumb(g, from, to) {
+    const dist = Phaser.Math.Distance.Between(from.x, from.y, to.x, to.y);
+    const steps = Math.max(2, Math.floor(dist / 6));
+    g.fillStyle(0xffe08a, 0.85);
+    for (let i = 1; i < steps; i += 2) {
+      const t = i / steps;
+      g.fillCircle(from.x + (to.x - from.x) * t, from.y + (to.y - from.y) * t, 1);
+    }
+  }
+
+  _drawPlayerMarker(g, p) {
+    const facing = this.playerFacing || 'down';
+    const angles = { up: -Math.PI / 2, down: Math.PI / 2, left: Math.PI, right: 0 };
+    const ang = angles[facing] ?? Math.PI / 2;
+    const r = 5;
+    const tip = { x: p.x + Math.cos(ang) * r, y: p.y + Math.sin(ang) * r };
+    const left = { x: p.x + Math.cos(ang + 2.4) * r, y: p.y + Math.sin(ang + 2.4) * r };
+    const right = { x: p.x + Math.cos(ang - 2.4) * r, y: p.y + Math.sin(ang - 2.4) * r };
+    g.fillStyle(0x4ea1ff, 1).fillTriangle(tip.x, tip.y, left.x, left.y, right.x, right.y);
+    g.lineStyle(1, 0xffffff, 0.9).strokeTriangle(tip.x, tip.y, left.x, left.y, right.x, right.y);
+  }
+
+  _minimapFastTravel(pointer) {
+    if (this.editMode || this.registry.get('modalActive') || this.registry.get('dialogueActive')) return;
+    const st = this._minimapState;
+    if (!st || !this.player) return;
+    const localX = pointer.x - this.minimap.x;
+    const localY = pointer.y - this.minimap.y;
+    let best = null;
+    let bestDist = 14;
+    for (const loc of st.locations) {
+      if (!st.discovered.has(loc.id)) continue; // only fast-travel to discovered places
+      const p = this._minimapPoint(loc.x, loc.y);
+      const d = Phaser.Math.Distance.Between(localX, localY, p.x, p.y);
+      if (d < bestDist) {
+        bestDist = d;
+        best = loc;
+      }
+    }
+    if (!best) return;
+    this.player.body?.setVelocity?.(0, 0);
+    this.player.setPosition(best.x, Math.max(this.WALKABLE_TOP + 20, best.y));
+    this.registry.set('playerPosition', { x: this.player.x, y: this.player.y });
+    this.showFeedback?.({ message: `Fast traveled to ${this.shortLocationLabel(best.id)}.` });
+    this.runtime?.audioSystem?.playInteractionCue?.('notebook_open');
+  }
+
   createWorldMapRouteVisualization() {
     return this.add.graphics();
   }
@@ -2398,6 +2528,7 @@ export default class NeighborhoodScene extends Phaser.Scene {
     const discovered = new Set(state.discovery.discovered || []);
     const currentLocation = this.nearestMapLocationId();
     const activeQuestMarker = state.bridge.bridgeReconnected ? 'wider_gate' : discovered.has('dry_wash') ? 'bridge' : 'dry_wash';
+    this.updateMinimapHud(state, currentLocation, activeQuestMarker, discovered);
     const locations = this.getWorldMapLocations(state);
     const lockedDestinations = locations.filter((location) => location.locked).map((location) => location.id);
     const unlockedDestinations = locations.filter((location) => !location.locked).map((location) => location.id);
