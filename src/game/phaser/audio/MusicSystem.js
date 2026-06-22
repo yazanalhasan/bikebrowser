@@ -51,6 +51,14 @@ export class MusicSystem {
 
   unlock() {
     this.unlocked = true;
+    // A track is often selected (transitionTo) before the first user gesture, while
+    // autoplay is still blocked — so startElement was skipped. Now that we're
+    // unlocked, actually begin playing the already-selected track. Without this the
+    // music stays silent forever because unlockAudio() won't re-transition when a
+    // currentState already exists.
+    if (this.enabled && this.currentState && typeof Audio !== 'undefined') {
+      this.startElement(MUSIC_STATES[this.currentState] || MUSIC_STATES.neighborhood);
+    }
     return { ok: true, unlocked: true };
   }
 
