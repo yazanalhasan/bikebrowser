@@ -1,0 +1,9 @@
+/* Fermentation bench — reuses utm.css chrome. */
+.utm-lab .utm-chip { height: 54px; }
+.utm-chip__sub { display: block; font-size: 11px; opacity: 0.7; text-transform: capitalize; }
+.fb-ctrl { display: inline-flex; flex-direction: column; font-size: 11px; color: #9fb3c8; margin-left: 12px; }
+.fb-ctrl input { width: 110px; }
+.fb-toggle { margin-left: 12px; padding: 5px 12px; border-radius: 9px; border: 1px solid #334; background: #1b2330; color: #cbd5e1; cursor: pointer; font-size: 12px; }
+.fb-toggle.is-on { background: #0ea5e9; border-color: #0ea5e9; color: #042; }
+.fb-toggle:disabled { opacity: 0.45; cursor: not-allowed; }
+.fb-warn { position: absolute; top: 12px; left: 12px; background: rgba(234,179,8,0.92); color: #422006; padding: 5px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; }
