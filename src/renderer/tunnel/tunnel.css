@@ -1,0 +1,5 @@
+/* Wind tunnel lab — reuses utm.css chrome. */
+.tn-slider { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #cbd5e1; min-width: 320px; }
+.tn-slider input { flex: 1; accent-color: #4ea1ff; }
+.tn-stall { background: #EF4444; color: #fff; font: 800 12px Inter, system-ui, sans-serif; letter-spacing: .08em; padding: 4px 10px; border-radius: 6px; animation: tn-pulse 0.7s ease-in-out infinite; }
+@keyframes tn-pulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }

@@ -136,7 +136,7 @@ export default function CurvePanel({
     canvas.width = width * dpr; canvas.height = height * dpr;
     draw(complete ? 1 : (progressRef?.current?.t ?? 0), annotRef.current);
     // eslint-disable-next-line
-  }, [width, height, series, complete]);
+  }, [width, height, series, complete, annotations, zones]);
 
   useEffect(() => {
     if (!isRunning) return undefined;
