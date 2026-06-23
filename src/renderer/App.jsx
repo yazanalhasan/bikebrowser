@@ -35,6 +35,7 @@ const ExtractionLabPage = lazy(() => import('./extraction/ExtractionLab.jsx'));
 const PhytoLabPage = lazy(() => import('./phyto/PhytoLab.jsx'));
 const MicroscopeLabPage = lazy(() => import('./microscope/MicroscopeLab.jsx'));
 const FermentLabPage = lazy(() => import('./ferment/FermentLab.jsx'));
+const MechanismLabPage = lazy(() => import('./mechanism/MechanismLab.jsx'));
 
 const VERSION_STORAGE_KEY = 'bikebrowser_cached_version';
 
@@ -107,6 +108,7 @@ function AppContent() {
           <Route path="/phyto-lab" element={<div style={{ height: '100vh' }}><PhytoLabPage /></div>} />
           <Route path="/scope-lab" element={<div style={{ height: '100vh' }}><MicroscopeLabPage /></div>} />
           <Route path="/ferment-lab" element={<div style={{ height: '100vh' }}><FermentLabPage /></div>} />
+          <Route path="/enzyme-lab" element={<div style={{ height: '100vh' }}><MechanismLabPage /></div>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

@@ -20,13 +20,14 @@ const LAB_COMPONENTS = {
   phyto: lazy(() => import('../renderer/phyto/PhytoLab.jsx')),
   microscope: lazy(() => import('../renderer/microscope/MicroscopeLab.jsx')),
   ferment: lazy(() => import('../renderer/ferment/FermentLab.jsx')),
+  mechanism: lazy(() => import('../renderer/mechanism/MechanismLab.jsx')),
 };
 const LAB_TITLE = {
   utm: 'Universal Testing Machine', bridge: 'Bridge Design', dyno: 'Engine Dyno',
   crash: 'Crash & Load Test', tunnel: 'Wind Tunnel', circuit: 'Circuit Bench',
   boat: 'Hydro Tank', vacuum: 'Vacuum & Re-entry Chamber',
   extraction: 'Extraction Bench', phyto: 'Phytochemistry Lab', microscope: 'Microscope',
-  ferment: 'Fermentation Bench',
+  ferment: 'Fermentation Bench', mechanism: 'Molecular Mechanism Bench',
 };
 // The chapter bench labs replace a Phaser bench scene, triggered by its registry
 // start event. We open the React lab and hide the Phaser stub it supersedes.
@@ -42,6 +43,7 @@ const LAB_TRIGGERS = [
   { lab: 'phyto', start: 'phyto:start', scene: 'PhytoLabScene' },
   { lab: 'microscope', start: 'cell:start', scene: 'MicroscopeScene' },
   { lab: 'ferment', start: 'ferment:start', scene: 'FermentBenchScene' },
+  { lab: 'mechanism', start: 'mech:start', scene: 'MechanismScene' },
 ];
 const SCENE_BY_LAB = Object.fromEntries(LAB_TRIGGERS.map((t) => [t.lab, t.scene]));
 
