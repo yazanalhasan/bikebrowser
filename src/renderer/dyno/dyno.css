@@ -1,0 +1,2 @@
+/* Dyno-specific tweaks; the lab reuses utm.css chrome classes for consistency. */
+.utm-lab .utm-chip { height: 52px; }

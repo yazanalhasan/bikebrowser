@@ -24,6 +24,7 @@ const GameRebuildPage = lazy(() => import('./pages/GameRebuildPage'));
 // The canonical playable experience is GameRebuildPage at /game-rebuild.
 const SpellingTrainerApp = lazy(() => import('./spellingTrainer/SpellingTrainerApp'));
 const UTMLabPage = lazy(() => import('./utm/UTMLab.jsx'));
+const EngineDynoLabPage = lazy(() => import('./dyno/EngineDynoLab.jsx'));
 
 const VERSION_STORAGE_KEY = 'bikebrowser_cached_version';
 
@@ -85,6 +86,7 @@ function AppContent() {
               single canonical playable experience. */}
           <Route path="/spelling-trainer" element={<SpellingTrainerApp />} />
           <Route path="/utm-lab" element={<div style={{ height: '100vh' }}><UTMLabPage /></div>} />
+          <Route path="/dyno-lab" element={<div style={{ height: '100vh' }}><EngineDynoLabPage /></div>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
