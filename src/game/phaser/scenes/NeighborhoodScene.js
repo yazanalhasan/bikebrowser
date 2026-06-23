@@ -2186,9 +2186,11 @@ export default class NeighborhoodScene extends Phaser.Scene {
           this.registry.set('modalActive', true);
           window.dispatchEvent(new CustomEvent('bikebrowser:open-utm', { detail: { collected } }));
         } else if (nearest.action === 'bridge_plan') {
-          // Phase 1.9.3: the player designs the bridge (choose a material per
-          // role) and sees it hold or fail, instead of an auto-completed plan.
-          this.registry.events.emit('bridgeDesign:start');
+          // The bridge now opens the full R3F Bridge Design lab (React overlay via
+          // GameShell): assign the tested materials to deck/cables/towers and run
+          // a live load test. Freeze the player while it is open.
+          this.registry.set('modalActive', true);
+          window.dispatchEvent(new CustomEvent('bikebrowser:open-lab', { detail: { lab: 'bridge' } }));
         } else if (nearest.action === 'skate_park') {
           // Skate Park (arc.md §4): opens the side-view BMX ride. Gated on the
           // bridge repair (also physically east of the wash barrier).
