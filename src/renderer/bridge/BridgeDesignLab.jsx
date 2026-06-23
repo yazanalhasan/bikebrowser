@@ -7,10 +7,17 @@ import { useBridgeSounds } from './useBridgeSounds.js';
 import { getUtmMaterialById } from '../utm/utmMaterials.js';
 import { computeBridgeSim, roleSuitabilities, VERDICT_LABEL, VERDICT_COLOR } from './bridgeModel.js';
 import { DEFAULT_ROLE_MATERIALS } from './bridgeTasks.js';
+import PredictBar from '../scenekit/PredictBar.jsx';
+import { callRuntime } from '../scenekit/gameBridge.js';
 import '../utm/utm.css';
 import './bridge.css';
 
 const LOAD_MS = 3200;
+const VERDICTS = [
+  { id: 'pass', label: 'Holds', color: '#22C55E' },
+  { id: 'marginal', label: 'Survives', color: '#EAB308' },
+  { id: 'fail', label: 'Fails', color: '#EF4444' },
+];
 
 export default function BridgeDesignLab({ onBridgeComplete } = {}) {
   const [materials, setMaterials] = useState(() => ({
@@ -21,6 +28,8 @@ export default function BridgeDesignLab({ onBridgeComplete } = {}) {
   const [phase, setPhase] = useState('idle');
   const [sim, setSim] = useState(null);
   const [showResults, setShowResults] = useState(false);
+  const [predicted, setPredicted] = useState(null);
+  const [revealed, setRevealed] = useState(false);
 
   const bridgeRef = useRef({ phase: 'idle', loadPos: 0.5, maxDeflection: 0 });
   const rafRef = useRef(0);
@@ -30,6 +39,7 @@ export default function BridgeDesignLab({ onBridgeComplete } = {}) {
   const reset = useCallback((next = materials) => {
     cancelAnimationFrame(rafRef.current);
     setPhase('idle'); setSim(null); setShowResults(false);
+    setPredicted(null); setRevealed(false);
     bridgeRef.current = { phase: 'idle', loadPos: 0.5, maxDeflection: 0 };
     void next;
   }, [materials]);
@@ -42,7 +52,9 @@ export default function BridgeDesignLab({ onBridgeComplete } = {}) {
 
   const finish = useCallback((result) => {
     bridgeRef.current.phase = result.verdict;
-    setPhase(result.verdict); setSim(result);
+    setPhase(result.verdict); setSim(result); setRevealed(true);
+    // A bridge that holds (or just survives) repairs the wash crossing in-game.
+    if (result.verdict !== 'fail') callRuntime('completeBridgePlan', 'tested_triangle_plan');
     if (result.verdict === 'fail') {
       sounds.concreteCrack();
       setTimeout(() => sounds.cableSnap(), 420);
@@ -89,7 +101,16 @@ export default function BridgeDesignLab({ onBridgeComplete } = {}) {
         </div>
 
         <div className="br-side">
-          <MaterialAssignmentPanel materials={materials} suit={suit} onReassign={reassign} onRun={runTest} phase={phase} />
+          <PredictBar
+            prompt="Predict: will your bridge hold the load test?"
+            options={VERDICTS}
+            predicted={predicted}
+            onPredict={setPredicted}
+            revealed={revealed}
+            actual={sim ? sim.verdict : null}
+            disabled={phase === 'loading'}
+          />
+          <MaterialAssignmentPanel materials={materials} suit={suit} onReassign={reassign} onRun={runTest} phase={phase} canRun={Boolean(predicted)} />
         </div>
       </div>
 

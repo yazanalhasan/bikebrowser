@@ -4,15 +4,31 @@ import WindTunnel from './WindTunnel.jsx';
 import CurvePanel from '../scenekit/CurvePanel.jsx';
 import { AIRFOILS } from './airfoils.js';
 import { getAeroCoeffs, buildAeroCurves } from './aeroModel.js';
+import PredictBar from '../scenekit/PredictBar.jsx';
+import { emitGameEvent } from '../scenekit/gameBridge.js';
 import '../utm/utm.css';
 import './tunnel.css';
 
+const VERDICTS = [
+  { id: 'flies', label: 'Flies', color: '#22C55E' },
+  { id: 'stalls', label: 'Stalls', color: '#EF4444' },
+];
+
 export default function WindTunnelLab() {
-  const [airfoil, setAirfoil] = useState(AIRFOILS[0]);
-  const [aoa, setAoa] = useState(4);
+  const [airfoil, setAirfoilState] = useState(AIRFOILS[0]);
+  const [aoa, setAoaState] = useState(4);
+  const [predicted, setPredicted] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+  const [flown, setFlown] = useState(false);
 
   const coeffs = useMemo(() => getAeroCoeffs(airfoil, aoa), [airfoil, aoa]);
   const curves = useMemo(() => buildAeroCurves(airfoil), [airfoil]);
+  const flies = !coeffs.stalled && coeffs.CL > 0.2;
+
+  // changing the setup invalidates a prediction / flight
+  const setAirfoil = (a) => { setAirfoilState(a); setPredicted(null); setRevealed(false); setFlown(false); };
+  const setAoa = (v) => { setAoaState(v); setPredicted(null); setRevealed(false); setFlown(false); };
+  const testFlight = () => { setRevealed(true); setFlown(true); if (flies) emitGameEvent('plane:built', { airfoil: airfoil.id, aoa }); };
 
   const annotations = [
     { label: `CL ${coeffs.CL}`, x: aoa, y: coeffs.CL, yAxis: 'left', color: '#4ea1ff' },
@@ -50,10 +66,20 @@ export default function WindTunnelLab() {
               <input type="range" min="-5" max="20" step="0.5" value={aoa} onChange={(e) => setAoa(Number(e.target.value))} />
             </label>
             {coeffs.stalled && <span className="tn-stall">STALL</span>}
+            <button type="button" className="utm-btn utm-btn--run" onClick={testFlight} disabled={!predicted || flown} title={!predicted ? 'Make a prediction first' : ''}>✈ Test Flight</button>
+            {flown && <span style={{ fontWeight: 800, color: flies ? '#22C55E' : '#EF4444' }}>{flies ? 'IT FLIES' : 'IT STALLS'}</span>}
           </div>
         </div>
 
         <div className="utm-lab__side">
+          <PredictBar
+            prompt={`Predict: will ${airfoil.name} fly at ${aoa.toFixed(1)}°?`}
+            options={VERDICTS}
+            predicted={predicted}
+            onPredict={setPredicted}
+            revealed={revealed}
+            actual={flown ? (flies ? 'flies' : 'stalls') : null}
+          />
           <CurvePanel
             xAxis={{ label: 'Angle of Attack', min: -5, max: 20, unit: '°' }}
             yAxisLeft={{ label: 'Lift Coeff', min: 0, max: 2, unit: 'CL', color: '#4ea1ff' }}

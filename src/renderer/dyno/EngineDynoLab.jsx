@@ -7,11 +7,18 @@ import CurvePanel from '../scenekit/CurvePanel.jsx';
 import { useEngineSounds } from './useEngineSounds.js';
 import { ENGINES, getEngineById } from './engines.js';
 import { BIKE_MISSIONS, DEFAULT_MISSION, getMissionById } from './bikeMissions.js';
-import { buildEngineCurves, computeDynoResult, redlineZone, dynoAnnotations } from './dynoModel.js';
+import { buildEngineCurves, computeDynoResult, redlineZone, dynoAnnotations, engineSuitability } from './dynoModel.js';
+import PredictBar from '../scenekit/PredictBar.jsx';
+import { emitGameEvent } from '../scenekit/gameBridge.js';
 import '../utm/utm.css';
 import './dyno.css';
 
 const TEST_MS = 5000;
+const VERDICTS = [
+  { id: 'SUITABLE', label: 'Suitable', color: '#22C55E' },
+  { id: 'MARGINAL', label: 'Marginal', color: '#EAB308' },
+  { id: 'UNSUITABLE', label: 'Unsuitable', color: '#EF4444' },
+];
 
 export default function EngineDynoLab({ onEngineTested } = {}) {
   const [engine, setEngine] = useState(null);
@@ -21,6 +28,8 @@ export default function EngineDynoLab({ onEngineTested } = {}) {
   const [missionId, setMissionId] = useState(DEFAULT_MISSION.id);
   const [dragActive, setDragActive] = useState(false);
   const [tip, setTip] = useState(false);
+  const [predicted, setPredicted] = useState(null);
+  const [revealed, setRevealed] = useState(false);
 
   const dynoRef = useRef({ rpm: 0, t: 0, running: false });
   const rafRef = useRef(0);
@@ -32,6 +41,7 @@ export default function EngineDynoLab({ onEngineTested } = {}) {
     if (!e) return;
     cancelAnimationFrame(rafRef.current);
     setEngine(e); setComplete(false); setResult(null); setIsRunning(false); setTip(false);
+    setPredicted(null); setRevealed(false);
     dynoRef.current = { rpm: e.idleRPM, t: 0, running: false };
   }, []);
 
@@ -50,12 +60,14 @@ export default function EngineDynoLab({ onEngineTested } = {}) {
       else {
         dynoRef.current.running = false; dynoRef.current.rpm = engine.idleRPM;
         const res = computeDynoResult(engine, curves);
-        setIsRunning(false); setResult(res); setComplete(true);
+        setIsRunning(false); setResult(res); setComplete(true); setRevealed(true);
         onEngineTested?.(engine.id);
+        // A mission-suitable engine completes Chapter 3's engineering slice.
+        if (engineSuitability(engine, mission).label === 'SUITABLE') emitGameEvent('engine:built', { engine: engine.id });
       }
     };
     rafRef.current = requestAnimationFrame(tick);
-  }, [engine, isRunning, curves, sounds, onEngineTested]);
+  }, [engine, isRunning, curves, sounds, onEngineTested, mission]);
 
   const onDrop = useCallback((ev) => {
     ev.preventDefault(); setDragActive(false);
@@ -96,12 +108,23 @@ export default function EngineDynoLab({ onEngineTested } = {}) {
           </div>
 
           <div className="utm-lab__controls">
-            <button type="button" className="utm-btn utm-btn--run" onClick={rev} disabled={isRunning || !engine}>▶ Rev to Redline</button>
+            <button type="button" className="utm-btn utm-btn--run" onClick={rev} disabled={isRunning || !engine || !predicted} title={engine && !predicted ? 'Make a prediction first' : ''}>▶ Rev to Redline</button>
             {tip && <span className="utm-tip">Drop an engine onto the dyno first</span>}
           </div>
         </div>
 
         <div className="utm-lab__side">
+          {engine && (
+            <PredictBar
+              prompt={`Predict: is this engine suitable for ${mission.name}?`}
+              options={VERDICTS}
+              predicted={predicted}
+              onPredict={setPredicted}
+              revealed={revealed}
+              actual={result ? engineSuitability(engine, mission).label : null}
+              disabled={isRunning}
+            />
+          )}
           {engine && curves && (
             <CurvePanel
               xAxis={{ label: 'Engine Speed', min: 0, max: engine.maxRPM, unit: 'RPM' }}

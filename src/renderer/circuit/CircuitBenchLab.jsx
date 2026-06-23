@@ -2,8 +2,15 @@ import React, { useMemo, useState } from 'react';
 import CircuitSchematic from './CircuitSchematic.jsx';
 import { SLOT_OPTIONS, DEFAULT_CIRCUIT, findComponent } from './components.js';
 import { computeCircuit, circuitInsight } from './circuitModel.js';
+import PredictBar from '../scenekit/PredictBar.jsx';
+import { emitGameEvent } from '../scenekit/gameBridge.js';
 import '../utm/utm.css';
 import './circuit.css';
+
+const VERDICTS = [
+  { id: 'ok', label: 'Works well', color: '#22C55E' },
+  { id: 'problem', label: 'Has a problem', color: '#EF4444' },
+];
 
 const SLOT_LABEL = { battery: 'Battery', controller: 'Controller', motor: 'Motor', load: 'Road Load' };
 
@@ -24,6 +31,17 @@ export default function CircuitBenchLab() {
   }), [sel]);
   const circuit = useMemo(() => computeCircuit(components), [components]);
   const insight = useMemo(() => circuitInsight(circuit, components.motor), [circuit, components]);
+
+  const [predicted, setPredicted] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+  const [built, setBuilt] = useState(false);
+
+  const choose = (slot, id) => { setSel((p) => ({ ...p, [slot]: id })); setPredicted(null); setRevealed(false); setBuilt(false); };
+  const build = () => {
+    setRevealed(true); setBuilt(true);
+    if (insight.label === 'WELL MATCHED') emitGameEvent('circuit:built', {});
+  };
+  const actual = built ? (insight.label === 'WELL MATCHED' ? 'ok' : 'problem') : null;
 
   const meters = [
     { label: 'Voltage', value: `${circuit.V} V`, color: '#22C55E' },
@@ -49,7 +67,7 @@ export default function CircuitBenchLab() {
               {SLOT_OPTIONS[slot].map((opt) => (
                 <div key={opt.id} className={`utm-chip cir-chip ${sel[slot] === opt.id ? 'utm-chip--sel' : ''}`}
                   style={{ background: '#1b2330', backgroundImage: `linear-gradient(135deg, ${opt.color}44, transparent 60%)` }}
-                  onClick={() => setSel((p) => ({ ...p, [slot]: opt.id }))}>
+                  onClick={() => choose(slot, opt.id)}>
                   <span className="utm-chip__name">{opt.name}</span>
                 </div>
               ))}
@@ -72,15 +90,32 @@ export default function CircuitBenchLab() {
               </div>
             ))}
           </div>
-          <div className="utm-card utm-card--in" style={{ boxShadow: `0 8px 28px rgba(0,0,0,.45), 0 0 0 1px ${components.motor.color}44` }}>
-            <div className="utm-card__header">
-              <div><div className="utm-card__name">Powertrain</div><div className="utm-card__cat">{components.battery.name} · {components.motor.name}</div></div>
-            </div>
-            <div className="utm-card__suit" style={{ borderTop: 'none', paddingTop: 0 }}>
-              <div className="utm-card__rating" style={{ color: insight.color }}><Icon icon={insight.icon} /><span>{insight.label}</span></div>
-              <p className="utm-card__reason">{insight.reason}</p>
-            </div>
-          </div>
+          <PredictBar
+            prompt="Tune the parts, then predict before you build:"
+            options={VERDICTS}
+            predicted={predicted}
+            onPredict={setPredicted}
+            revealed={revealed}
+            actual={actual}
+            disabled={built}
+          />
+          {!built && (
+            <button type="button" className="utm-btn utm-btn--run" onClick={build} disabled={!predicted} title={!predicted ? 'Make a prediction first' : ''}>⚡ Build E-Bike</button>
+          )}
+          {built && (
+            <>
+              <div className="utm-card utm-card--in" style={{ boxShadow: `0 8px 28px rgba(0,0,0,.45), 0 0 0 1px ${components.motor.color}44` }}>
+                <div className="utm-card__header">
+                  <div><div className="utm-card__name">Powertrain</div><div className="utm-card__cat">{components.battery.name} · {components.motor.name}</div></div>
+                </div>
+                <div className="utm-card__suit" style={{ borderTop: 'none', paddingTop: 0 }}>
+                  <div className="utm-card__rating" style={{ color: insight.color }}><Icon icon={insight.icon} /><span>{insight.label}</span></div>
+                  <p className="utm-card__reason">{insight.reason}</p>
+                </div>
+              </div>
+              <button type="button" className="utm-btn utm-btn--ghost" onClick={() => { setBuilt(false); setRevealed(false); setPredicted(null); }}>↺ Tweak &amp; retry</button>
+            </>
+          )}
         </div>
       </div>
     </div>

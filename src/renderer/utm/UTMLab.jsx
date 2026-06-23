@@ -9,7 +9,15 @@ import LibraryModal from './LibraryModal.jsx';
 import { useMaterials } from './useMaterials.js';
 import { useUTMSounds } from './useUTMSounds.js';
 import { BUILD_TASKS, DEFAULT_BUILD_TASK, listBuildTasks } from './buildTasks.js';
+import { rateSuitability } from './suitability.js';
+import PredictBar from '../scenekit/PredictBar.jsx';
 import './utm.css';
+
+const VERDICTS = [
+  { id: 'SUITABLE', label: 'Suitable', color: '#22C55E' },
+  { id: 'MARGINAL', label: 'Marginal', color: '#EAB308' },
+  { id: 'UNSUITABLE', label: 'Unsuitable', color: '#EF4444' },
+];
 
 const LIB_KEY = 'bikebrowser_material_results';
 
@@ -30,6 +38,8 @@ export default function UTMLab({ onMaterialTested } = {}) {
   const [flash, setFlash] = useState(false);
   const [tip, setTip] = useState(false);
   const [sceneKey, setSceneKey] = useState(0);
+  const [predicted, setPredicted] = useState(null);
+  const [revealed, setRevealed] = useState(false);
 
   const progressRef = useRef({ t: 0, phase: 'idle' });
   const buildTask = BUILD_TASKS[taskId] || DEFAULT_BUILD_TASK;
@@ -55,6 +65,8 @@ export default function UTMLab({ onMaterialTested } = {}) {
     setIsRunning(false);
     progressRef.current = { t: 0, phase: 'idle' };
     setTip(false);
+    setPredicted(null);
+    setRevealed(false);
   }, []);
 
   const runTest = useCallback(() => {
@@ -75,6 +87,7 @@ export default function UTMLab({ onMaterialTested } = {}) {
     // upsert into persisted library
     const next = [res, ...library.filter((r) => r.id !== res.id)].slice(0, 24);
     persistLibrary(next);
+    setRevealed(true);
     // notify any host (e.g. the in-game overlay) that a material was tested
     onMaterialTested?.(res.id);
   }, [library, persistLibrary, sounds, onMaterialTested]);
@@ -95,6 +108,8 @@ export default function UTMLab({ onMaterialTested } = {}) {
     progressRef.current = { t: 0, phase: 'idle' };
     setSceneKey((k) => k + 1); // remount the scene for a fresh specimen
     sounds.stopHum();
+    setPredicted(null);
+    setRevealed(false);
   }, [sounds]);
 
   const addToComparison = useCallback((res) => {
@@ -165,7 +180,8 @@ export default function UTMLab({ onMaterialTested } = {}) {
               type="button"
               className="utm-btn utm-btn--run"
               onClick={runTest}
-              disabled={isRunning || !selected}
+              disabled={isRunning || !selected || !predicted}
+              title={selected && !predicted ? 'Make a prediction first' : ''}
             >
               ▶ Run Test
             </button>
@@ -175,6 +191,17 @@ export default function UTMLab({ onMaterialTested } = {}) {
         </div>
 
         <div className="utm-lab__side">
+          {selected && (
+            <PredictBar
+              prompt={`Predict: is ${selected.name} suitable for the ${buildTask.name}?`}
+              options={VERDICTS}
+              predicted={predicted}
+              onPredict={setPredicted}
+              revealed={revealed}
+              actual={result ? rateSuitability(selected, buildTask).label : null}
+              disabled={isRunning}
+            />
+          )}
           {selected && (
             <StressStrainPanel
               material={selected}

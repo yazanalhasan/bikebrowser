@@ -1,0 +1,16 @@
+.pb { background: #111827; border: 1px solid #374151; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.pb--right { border-color: #22C55E66; }
+.pb--wrong { border-color: #EF444466; }
+.pb__prompt { font-size: 12px; color: #cbd5e1; font-weight: 600; }
+.pb--right .pb__prompt { color: #4ade80; }
+.pb--wrong .pb__prompt { color: #f87171; }
+.pb__opts { display: flex; gap: 8px; flex-wrap: wrap; }
+.pb__opt {
+  flex: 1 1 auto; min-width: 88px; cursor: pointer; font: 600 12px Inter, system-ui, sans-serif;
+  background: #0d1320; color: #cbd5e1; border: 1px solid #374151; border-radius: 8px; padding: 8px 10px;
+  transition: background .15s, border-color .15s;
+}
+.pb__opt:hover:not(:disabled) { border-color: var(--pb-c); }
+.pb__opt:disabled { cursor: default; }
+.pb__opt--pred { border-color: var(--pb-c); box-shadow: inset 0 0 0 1px var(--pb-c); }
+.pb__opt--actual { background: color-mix(in srgb, var(--pb-c) 22%, #0d1320); border-color: var(--pb-c); color: #fff; }

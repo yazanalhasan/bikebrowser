@@ -7,8 +7,16 @@ import MaterialTray from '../utm/MaterialTray.jsx';
 import { UTM_MATERIALS, getUtmMaterialById } from '../utm/utmMaterials.js';
 import { useCrashSounds } from './useCrashSounds.js';
 import { computeLoadResult, computeCrashResult, evaluateLoad, evaluateCrash } from './crashModel.js';
+import PredictBar from '../scenekit/PredictBar.jsx';
+import { emitGameEvent } from '../scenekit/gameBridge.js';
 import '../utm/utm.css';
 import './crash.css';
+
+const VERDICTS = [
+  { id: 'SUITABLE', label: 'Suitable', color: '#22C55E' },
+  { id: 'MARGINAL', label: 'Marginal', color: '#EAB308' },
+  { id: 'UNSUITABLE', label: 'Unsuitable', color: '#EF4444' },
+];
 
 export default function CrashTestLab({ onTested } = {}) {
   const [material, setMaterial] = useState(null);
@@ -18,6 +26,8 @@ export default function CrashTestLab({ onTested } = {}) {
   const [complete, setComplete] = useState(false);
   const [result, setResult] = useState(null);
   const [dragActive, setDragActive] = useState(false);
+  const [predicted, setPredicted] = useState(null);
+  const [revealed, setRevealed] = useState(false);
 
   const crashRef = useRef({ t: 0, weightY: 0, deflect: 0, carX: -3, crumple: 0 });
   const rafRef = useRef(0);
@@ -31,6 +41,7 @@ export default function CrashTestLab({ onTested } = {}) {
   const reset = useCallback((m = mode) => {
     cancelAnimationFrame(rafRef.current);
     setIsRunning(false); setComplete(false); setResult(null);
+    setPredicted(null); setRevealed(false);
     crashRef.current = { t: 0, weightY: 0, deflect: 0, carX: m === 'crash' ? -3 : 0, crumple: 0 };
   }, [mode]);
 
@@ -52,7 +63,7 @@ export default function CrashTestLab({ onTested } = {}) {
         crashRef.current.deflect = deflW * Math.min(1, t / 0.85);
         if (t > 0.6 && !groaned) { groaned = true; sounds.groan(); }
         if (t < 1) rafRef.current = requestAnimationFrame(tick);
-        else { sounds.impact(0.8); crashRef.current.deflect = deflW * 1.15; setIsRunning(false); setResult(res); setComplete(true); onTested?.(material.id, 'load'); }
+        else { sounds.impact(0.8); crashRef.current.deflect = deflW * 1.15; setIsRunning(false); setResult(res); setComplete(true); setRevealed(true); onTested?.(material.id, 'load'); if (evaluateLoad(res).label === 'SUITABLE') emitGameEvent('crash:built', { material: material.id, mode: 'load' }); }
       };
       rafRef.current = requestAnimationFrame(tick);
     } else {
@@ -67,7 +78,7 @@ export default function CrashTestLab({ onTested } = {}) {
           if (!banged) { banged = true; sounds.impact(Math.min(1, speed / 60)); }
           const c = (e - APPROACH) / CRUSH; crashRef.current.crumple = crumpleMax * c; crashRef.current.carX = 0 + c * 0.1; crashRef.current.t = 0.6 + c * 0.4;
           rafRef.current = requestAnimationFrame(tick);
-        } else { setIsRunning(false); setResult(res); setComplete(true); onTested?.(material.id, 'crash'); }
+        } else { setIsRunning(false); setResult(res); setComplete(true); setRevealed(true); onTested?.(material.id, 'crash'); if (evaluateCrash(res).label === 'SUITABLE') emitGameEvent('crash:built', { material: material.id, mode: 'crash' }); }
       };
       rafRef.current = requestAnimationFrame(tick);
     }
@@ -110,13 +121,24 @@ export default function CrashTestLab({ onTested } = {}) {
                 <input type="range" min="30" max="90" value={speed} disabled={isRunning} onChange={(e) => setSpeed(Number(e.target.value))} />
               </label>
             )}
-            <button type="button" className="utm-btn utm-btn--run" onClick={run} disabled={isRunning || !material}>
+            <button type="button" className="utm-btn utm-btn--run" onClick={run} disabled={isRunning || !material || !predicted} title={material && !predicted ? 'Make a prediction first' : ''}>
               {mode === 'load' ? '▶ Drop Load' : '▶ Launch Crash'}
             </button>
           </div>
         </div>
 
         <div className="utm-lab__side">
+          {material && (
+            <PredictBar
+              prompt={mode === 'load' ? 'Predict: will the frame pass the load test?' : 'Predict: will it protect the passenger?'}
+              options={VERDICTS}
+              predicted={predicted}
+              onPredict={setPredicted}
+              revealed={revealed}
+              actual={result && rating ? rating.label : null}
+              disabled={isRunning}
+            />
+          )}
           {mode === 'load' && material && (
             <CurvePanel
               xAxis={{ label: 'Deflection', min: 0, max: Math.ceil((result?.maxDeflectionMm || 30) * 1.1), unit: 'mm' }}

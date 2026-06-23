@@ -4,7 +4,7 @@ import { STRUCTURAL_ROLES, BRIDGE_TASKS } from './bridgeTasks.js';
 
 const ROLE_LABEL = { deck: 'Deck', cables: 'Cables', towers: 'Towers' };
 
-export default function MaterialAssignmentPanel({ materials, suit, onReassign, onRun, phase }) {
+export default function MaterialAssignmentPanel({ materials, suit, onReassign, onRun, phase, canRun = true }) {
   const running = phase === 'loading';
   return (
     <div className="br-assign">
@@ -28,7 +28,7 @@ export default function MaterialAssignmentPanel({ materials, suit, onReassign, o
           </div>
         );
       })}
-      <button type="button" className="utm-btn utm-btn--run" onClick={onRun} disabled={running} style={{ width: '100%', marginTop: 4 }}>
+      <button type="button" className="utm-btn utm-btn--run" onClick={onRun} disabled={running || !canRun} title={!canRun ? 'Make a prediction first' : ''} style={{ width: '100%', marginTop: 4 }}>
         {running ? 'Testing…' : '▶ Run Load Test'}
       </button>
     </div>
