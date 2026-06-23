@@ -44,7 +44,7 @@
 
 /* stage / canvas */
 .utm-lab__stage { display: flex; flex-direction: column; min-width: 0; }
-.utm-canvas-wrap { position: relative; flex: 1; min-height: 380px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: var(--bg); }
+.utm-canvas-wrap { position: relative; flex: 1; min-height: 380px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #e8edf4; }
 .utm-canvas-wrap--drop { box-shadow: inset 0 0 0 2px var(--accent), 0 0 22px rgba(30,111,219,.5); animation: utm-pulse 1s ease-in-out infinite; }
 @keyframes utm-pulse { 0%,100% { box-shadow: inset 0 0 0 2px rgba(30,111,219,.6), 0 0 16px rgba(30,111,219,.35); } 50% { box-shadow: inset 0 0 0 3px rgba(30,111,219,1), 0 0 28px rgba(30,111,219,.7); } }
 .utm-drop-hint, .utm-empty-hint { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); background: rgba(17,21,28,.85); color: #cbd5e1; font-size: 12px; padding: 6px 12px; border-radius: 999px; pointer-events: none; }

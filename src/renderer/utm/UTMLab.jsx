@@ -147,7 +147,7 @@ export default function UTMLab({ onMaterialTested } = {}) {
             onDrop={onDrop}
           >
             <Canvas key={sceneKey} camera={{ position: [4.8, 3.0, 6.2], fov: 42 }} dpr={[1, 2]}>
-              <color attach="background" args={['#0b0f17']} />
+              <color attach="background" args={['#e8edf4']} />
               <UTMScene
                 material={selected}
                 isRunning={isRunning}
