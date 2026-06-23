@@ -16,3 +16,37 @@
   height: 100%;
   image-rendering: auto;
 }
+
+/* In-game UTM lab overlay (React/R3F mounted over the Phaser canvas) */
+.bb-utm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #0b0f17;
+  display: flex;
+  flex-direction: column;
+}
+
+.bb-utm-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  z-index: 1002;
+  background: rgba(17, 21, 28, 0.9);
+  color: #e5e7eb;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font: 600 13px Inter, system-ui, sans-serif;
+  cursor: pointer;
+}
+.bb-utm-close:hover { background: #1f2937; }
+
+.bb-utm-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #9ca3af;
+  font: 500 15px Inter, system-ui, sans-serif;
+}

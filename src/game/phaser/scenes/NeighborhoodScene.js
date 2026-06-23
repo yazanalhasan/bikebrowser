@@ -2178,10 +2178,13 @@ export default class NeighborhoodScene extends Phaser.Scene {
       }
       if (!modal && !justClosedModal && this.inputSystem.interactionJustPressed()) {
         if (nearest.action === 'utm') {
-          // Phase 1.9.2: prediction gates testing (arc.md). The UTM opens the
-          // player-facing predict-before-test flow instead of batch-testing.
-          const materials = [...(this.runtime?.materialsLabSystem?.materials?.keys?.() || [])].filter((id) => this.runtime?.inventorySystem?.has(id));
-          this.registry.events.emit('prediction:start', materials);
+          // The UTM now opens the full R3F Universal Testing Machine lab (a React
+          // overlay rendered by GameShell). Freeze the player while it is open;
+          // GameShell clears modalActive on close. Collected materials are passed
+          // so the lab can surface what the player owns.
+          const collected = [...(this.runtime?.materialsLabSystem?.materials?.keys?.() || [])].filter((id) => this.runtime?.inventorySystem?.has(id));
+          this.registry.set('modalActive', true);
+          window.dispatchEvent(new CustomEvent('bikebrowser:open-utm', { detail: { collected } }));
         } else if (nearest.action === 'bridge_plan') {
           // Phase 1.9.3: the player designs the bridge (choose a material per
           // role) and sees it hold or fail, instead of an auto-completed plan.

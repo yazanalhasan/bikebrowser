@@ -13,7 +13,7 @@ import './utm.css';
 
 const LIB_KEY = 'bikebrowser_material_results';
 
-export default function UTMLab() {
+export default function UTMLab({ onMaterialTested } = {}) {
   const { materials, getMaterialById } = useMaterials();
   const sounds = useUTMSounds();
 
@@ -75,7 +75,9 @@ export default function UTMLab() {
     // upsert into persisted library
     const next = [res, ...library.filter((r) => r.id !== res.id)].slice(0, 24);
     persistLibrary(next);
-  }, [library, persistLibrary, sounds]);
+    // notify any host (e.g. the in-game overlay) that a material was tested
+    onMaterialTested?.(res.id);
+  }, [library, persistLibrary, sounds, onMaterialTested]);
 
   const handleFx = useCallback((kind) => {
     if (kind === 'creak') sounds.playCreak();
