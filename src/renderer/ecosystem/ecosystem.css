@@ -1,0 +1,8 @@
+/* Ecosystem capstone — reuses utm.css chrome; population config sliders. */
+.eco-config { display: flex; flex-direction: column; gap: 10px; min-width: 210px; }
+.eco-row { display: grid; grid-template-columns: 16px 1fr; grid-template-areas: 'sw name' 'sl sl' 'val val'; align-items: center; gap: 4px 8px; padding: 8px; background: #161c26; border: 1px solid #243042; border-radius: 10px; }
+.eco-swatch { grid-area: sw; width: 14px; height: 14px; border-radius: 4px; }
+.eco-name { grid-area: name; font-size: 13px; color: #cbd5e1; }
+.eco-row input { grid-area: sl; width: 100%; }
+.eco-val { grid-area: val; font-size: 12px; color: #9fb3c8; font-family: 'IBM Plex Mono', monospace; text-align: right; }
+.ext-phase { padding: 2px 10px; border-radius: 10px; background: #1b2330; color: #86efac; font-size: 12px; }
