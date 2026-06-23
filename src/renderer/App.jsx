@@ -26,6 +26,7 @@ const SpellingTrainerApp = lazy(() => import('./spellingTrainer/SpellingTrainerA
 const UTMLabPage = lazy(() => import('./utm/UTMLab.jsx'));
 const EngineDynoLabPage = lazy(() => import('./dyno/EngineDynoLab.jsx'));
 const BridgeDesignLabPage = lazy(() => import('./bridge/BridgeDesignLab.jsx'));
+const CrashTestLabPage = lazy(() => import('./crash/CrashTestLab.jsx'));
 
 const VERSION_STORAGE_KEY = 'bikebrowser_cached_version';
 
@@ -89,6 +90,7 @@ function AppContent() {
           <Route path="/utm-lab" element={<div style={{ height: '100vh' }}><UTMLabPage /></div>} />
           <Route path="/dyno-lab" element={<div style={{ height: '100vh' }}><EngineDynoLabPage /></div>} />
           <Route path="/bridge-lab" element={<div style={{ height: '100vh' }}><BridgeDesignLabPage /></div>} />
+          <Route path="/crash-lab" element={<div style={{ height: '100vh' }}><CrashTestLabPage /></div>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
