@@ -22,6 +22,10 @@ const LAB_COMPONENTS = {
   ferment: lazy(() => import('../renderer/ferment/FermentLab.jsx')),
   mechanism: lazy(() => import('../renderer/mechanism/MechanismLab.jsx')),
   ecosystem: lazy(() => import('../renderer/ecosystem/EcosystemLab.jsx')),
+  loadtest: lazy(() => import('../renderer/loadtest/LoadTestLab.jsx')),
+  skate: lazy(() => import('../renderer/skate/SkateLab.jsx')),
+  ecology: lazy(() => import('../renderer/habitat/EcologyLab.jsx')),
+  biome: lazy(() => import('../renderer/habitat/BiomeLab.jsx')),
 };
 const LAB_TITLE = {
   utm: 'Universal Testing Machine', bridge: 'Bridge Design', dyno: 'Engine Dyno',
@@ -29,7 +33,8 @@ const LAB_TITLE = {
   boat: 'Hydro Tank', vacuum: 'Vacuum & Re-entry Chamber',
   extraction: 'Extraction Bench', phyto: 'Phytochemistry Lab', microscope: 'Microscope',
   ferment: 'Fermentation Bench', mechanism: 'Molecular Mechanism Bench',
-  ecosystem: 'Ecosystem Engineering',
+  ecosystem: 'Ecosystem Engineering', loadtest: 'Load Test',
+  skate: 'Skate Park', ecology: 'Desert Ecology', biome: 'Salt River Biome',
 };
 // The chapter bench labs replace a Phaser bench scene, triggered by its registry
 // start event. We open the React lab and hide the Phaser stub it supersedes.
@@ -47,12 +52,17 @@ const LAB_TRIGGERS = [
   { lab: 'ferment', start: 'ferment:start', scene: 'FermentBenchScene' },
   { lab: 'mechanism', start: 'mech:start', scene: 'MechanismScene' },
   { lab: 'ecosystem', start: 'eco:start', scene: 'EcosystemScene' },
+  { lab: 'loadtest', start: 'loadTest:start', scene: 'LoadTestScene' },
+  { lab: 'skate', start: 'skate:start', scene: 'SkateScene' },
+  { lab: 'ecology', start: 'ecology:start', scene: 'EcologyScene' },
+  { lab: 'biome', start: 'biome:start', scene: 'BiomeScene' },
 ];
 const SCENE_BY_LAB = Object.fromEntries(LAB_TRIGGERS.map((t) => [t.lab, t.scene]));
 
 export default function GameShell() {
   const hostRef = useRef(null);
   const [lab, setLab] = useState(null);
+  const [labDetail, setLabDetail] = useState(null);
 
   useEffect(() => {
     if (!hostRef.current) return undefined;
@@ -63,9 +73,10 @@ export default function GameShell() {
     const teardownAnnotation = initAnnotationOverlay();
     const teardownVoice = initVoiceFeedback();
 
-    const open = (which) => {
+    const open = (which, detail) => {
       if (!LAB_COMPONENTS[which]) return;
       setLab(which);
+      setLabDetail(detail ?? null);
       // Hide the superseded Phaser stub (after its own start handler runs) and
       // freeze the overworld player while the lab is open.
       requestAnimationFrame(() => {
@@ -79,7 +90,7 @@ export default function GameShell() {
     window.addEventListener('bikebrowser:open-lab', onOpenLab);
 
     const offs = LAB_TRIGGERS.map((t) => {
-      const handler = () => open(t.lab);
+      const handler = (detail) => open(t.lab, detail);
       game.registry.events.on(t.start, handler);
       return () => game.registry.events.off(t.start, handler);
     });
@@ -117,7 +128,7 @@ export default function GameShell() {
         <div className="bb-utm-overlay" role="dialog" aria-modal="true" aria-label={LAB_TITLE[lab]}>
           <button type="button" className="bb-utm-close" onClick={close}>✕ Close {LAB_TITLE[lab]}</button>
           <Suspense fallback={<div className="bb-utm-loading">Loading {LAB_TITLE[lab]}…</div>}>
-            <LabComponent onMaterialTested={lab === 'utm' ? handleMaterialTested : undefined} />
+            <LabComponent onMaterialTested={lab === 'utm' ? handleMaterialTested : undefined} plan={lab === 'loadtest' ? labDetail : undefined} />
           </Suspense>
         </div>
       )}

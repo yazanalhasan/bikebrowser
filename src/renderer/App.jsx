@@ -37,6 +37,10 @@ const MicroscopeLabPage = lazy(() => import('./microscope/MicroscopeLab.jsx'));
 const FermentLabPage = lazy(() => import('./ferment/FermentLab.jsx'));
 const MechanismLabPage = lazy(() => import('./mechanism/MechanismLab.jsx'));
 const EcosystemLabPage = lazy(() => import('./ecosystem/EcosystemLab.jsx'));
+const LoadTestLabPage = lazy(() => import('./loadtest/LoadTestLab.jsx'));
+const SkateLabPage = lazy(() => import('./skate/SkateLab.jsx'));
+const EcologyLabPage = lazy(() => import('./habitat/EcologyLab.jsx'));
+const BiomeLabPage = lazy(() => import('./habitat/BiomeLab.jsx'));
 
 const VERSION_STORAGE_KEY = 'bikebrowser_cached_version';
 
@@ -111,6 +115,10 @@ function AppContent() {
           <Route path="/ferment-lab" element={<div style={{ height: '100vh' }}><FermentLabPage /></div>} />
           <Route path="/enzyme-lab" element={<div style={{ height: '100vh' }}><MechanismLabPage /></div>} />
           <Route path="/ecosystem-lab" element={<div style={{ height: '100vh' }}><EcosystemLabPage /></div>} />
+          <Route path="/loadtest-lab" element={<div style={{ height: '100vh' }}><LoadTestLabPage /></div>} />
+          <Route path="/skate-lab" element={<div style={{ height: '100vh' }}><SkateLabPage /></div>} />
+          <Route path="/ecology-lab" element={<div style={{ height: '100vh' }}><EcologyLabPage /></div>} />
+          <Route path="/biome-lab" element={<div style={{ height: '100vh' }}><BiomeLabPage /></div>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

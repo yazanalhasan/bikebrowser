@@ -1,0 +1,6 @@
+/* Load-test lab — reuses utm.css chrome; load-sequence list. */
+.lt-load { display: flex; align-items: center; gap: 8px; padding: 9px 10px; margin-bottom: 6px; border-radius: 9px; background: #161c26; border: 1px solid #243042; color: #9fb3c8; font-size: 13px; }
+.lt-load.is-active { border-color: #f1c84b; color: #f8e8b0; box-shadow: 0 0 0 1px #f1c84b55; }
+.lt-load.is-fail { border-color: #e45757; color: #ffb4b4; }
+.lt-load__n { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: #243042; font-size: 11px; }
+.lt-load__v { margin-left: auto; font-weight: 700; }

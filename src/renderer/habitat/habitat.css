@@ -1,0 +1,12 @@
+/* Habitat-fit diorama (ecology + biome) — reuses utm.css chrome. */
+.hb-tray { min-width: 220px; }
+.hb-progress { padding: 2px 10px; border-radius: 10px; background: #1b2330; color: #9ae6b4; font-size: 12px; }
+.hb-site { font-size: 13px; color: #cbd5e1; line-height: 1.55; margin-bottom: 10px; }
+.hb-cond { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.hb-chip { font-size: 11px; padding: 3px 8px; border-radius: 8px; background: #243042; color: #9fb3c8; }
+.hb-trait { font-size: 12px; color: #9fb3c8; border-top: 1px solid #243042; padding-top: 8px; }
+.hb-trait b { color: #e2e8f0; }
+.hb-why { background: #161c26; border: 1px solid #243042; border-left-width: 4px; border-radius: 9px; padding: 11px 13px; margin: 10px 0; font-size: 13px; color: #cbd5e1; line-height: 1.55; }
+.hb-why.is-good { border-left-color: #22c55e; }
+.hb-why.is-bad { border-left-color: #eab308; }
+.hb-why b { color: #f8e8b0; }
