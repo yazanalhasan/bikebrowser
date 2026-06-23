@@ -54,6 +54,62 @@
       "active": true
     },
     {
+      "key": "SkateScene",
+      "active": true
+    },
+    {
+      "key": "ChapterMapScene",
+      "active": true
+    },
+    {
+      "key": "CircuitBenchScene",
+      "active": true
+    },
+    {
+      "key": "ExtractionBenchScene",
+      "active": true
+    },
+    {
+      "key": "EngineDynoScene",
+      "active": true
+    },
+    {
+      "key": "CrashTestScene",
+      "active": true
+    },
+    {
+      "key": "BoatTankScene",
+      "active": true
+    },
+    {
+      "key": "PlaneTunnelScene",
+      "active": true
+    },
+    {
+      "key": "VacuumChamberScene",
+      "active": true
+    },
+    {
+      "key": "PhytoLabScene",
+      "active": true
+    },
+    {
+      "key": "MicroscopeScene",
+      "active": true
+    },
+    {
+      "key": "FermentBenchScene",
+      "active": true
+    },
+    {
+      "key": "MechanismScene",
+      "active": true
+    },
+    {
+      "key": "EcosystemScene",
+      "active": true
+    },
+    {
       "key": "DebugScene",
       "active": true
     }
@@ -61,7 +117,7 @@
   "activeScenes": [
     {
       "key": "NeighborhoodScene",
-      "childCount": 84,
+      "childCount": 94,
       "interactiveCount": 0,
       "textSamples": [
         "Zuzu home",
@@ -70,6 +126,7 @@
         "Mr. Chen",
         "Mrs. Ramirez",
         "Auntie Mariam",
+        "Dex",
         "materials table",
         "GARAGE",
         "tools · testing · materials",
@@ -84,7 +141,8 @@
         "broken wash",
         "Current clue\nStart with the bike, then follow the wash.\nThe bridge needs tested ",
         "WASD / arrows move • E or Space explore • G map • N notebook • J discoveries • F",
-        "◈ 0 ZuzuBucks"
+        "◈ 0 ZuzuBucks",
+        "[V] Vehicle Ladder"
       ],
       "hasPlayer": true
     },
@@ -97,7 +155,7 @@
     },
     {
       "key": "DialogueScene",
-      "childCount": 1,
+      "childCount": 2,
       "interactiveCount": 0,
       "textSamples": [],
       "hasPlayer": false
@@ -146,6 +204,104 @@
     },
     {
       "key": "BiomeScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "SkateScene",
+      "childCount": 5,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "ChapterMapScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "CircuitBenchScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "ExtractionBenchScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "EngineDynoScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "CrashTestScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "BoatTankScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "PlaneTunnelScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "VacuumChamberScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "PhytoLabScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "MicroscopeScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "FermentBenchScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "MechanismScene",
+      "childCount": 1,
+      "interactiveCount": 0,
+      "textSamples": [],
+      "hasPlayer": false
+    },
+    {
+      "key": "EcosystemScene",
       "childCount": 1,
       "interactiveCount": 0,
       "textSamples": [],

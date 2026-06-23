@@ -1,0 +1,4 @@
+/* Extraction bench lab — reuses utm.css chrome. */
+.utm-lab .utm-chip { height: 54px; }
+.utm-chip__sub { display: block; font-size: 11px; opacity: 0.7; text-transform: capitalize; }
+.ext-phase { margin-left: 12px; padding: 2px 10px; border-radius: 10px; background: #1b2330; color: #7dd3fc; font-size: 12px; text-transform: capitalize; letter-spacing: 0.04em; }

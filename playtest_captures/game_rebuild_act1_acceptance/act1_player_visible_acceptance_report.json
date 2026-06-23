@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-06T15:11:05.302Z",
+  "generatedAt": "2026-06-21T20:47:08.964Z",
   "playerVisibleWalkthrough": true,
   "backendCompletionShortcutsUsed": false,
   "setupShortcutsUsed": [
@@ -64,6 +64,7 @@
     "widerMapUnlocked": true,
     "unlockedNotebookEntries": [
       "bike_check",
+      "compression_vs_tension",
       "broken_wash",
       "bridge_problem",
       "balsa",
@@ -74,7 +75,6 @@
       "iron",
       "steel",
       "carbon_fiber",
-      "compression_vs_tension",
       "desert_plant",
       "mesquite",
       "creosote",
@@ -86,6 +86,7 @@
       "concrete_tension_outlier",
       "bridge_plan",
       "bridge_repaired",
+      "zuzu_crossing",
       "wider_map_unlocked"
     ],
     "materialTestCount": 8,
@@ -351,12 +352,40 @@
       }
     ],
     "finalFeedback": {
-      "id": "1780758663928-20",
-      "kind": "map",
-      "message": "Wider map unlocked. A larger systems mystery is waiting.",
-      "details": {},
-      "createdAt": "2026-06-06T15:11:03.928Z"
+      "id": "1782074827223-20",
+      "kind": "discovery",
+      "message": "NEW DISCOVERY — Map Gate's account",
+      "details": {
+        "id": "npc_wider_gate_clue",
+        "category": "npc_fact",
+        "title": "Map Gate's account",
+        "detail": "The repaired crossing opens the wider route.",
+        "source": "dialogue"
+      },
+      "createdAt": "2026-06-21T20:47:07.223Z"
     },
+    "feedbackMessages": [
+      "+5 ZuzuBucks",
+      "+5 ZuzuBucks",
+      "+5 ZuzuBucks",
+      "✦ Quest complete: Bridge Plan!  +25 ZuzuBucks",
+      "Bridge design accepted: Every part fits its job — a stiff deck, compression-strong supports and foundation, and a tension-strong cable. The load has a safe path to the ground.",
+      "NEW DISCOVERY — Safe load path",
+      "+5 ZuzuBucks",
+      "+5 ZuzuBucks",
+      "✦ Quest complete: Reconnect the Crossing!  +25 ZuzuBucks",
+      "New field note: Bridge Repaired",
+      "NEW DISCOVERY — The repaired crossing",
+      "Bridge repaired: Zuzu tested, built, crossed, and the path feels safe again.",
+      "New field note: The Crossing",
+      "✦ Quest complete: Mr. Chen’s Crossing!  +250 ZuzuBucks",
+      "New field note: Wider Map Unlocked",
+      "+5 ZuzuBucks",
+      "+5 ZuzuBucks",
+      "✦ Quest complete: First Wider Map!  +25 ZuzuBucks",
+      "Wider map unlocked. A larger systems mystery is waiting.",
+      "NEW DISCOVERY — Map Gate's account"
+    ],
     "promptText": "[E] Open wider map clue",
     "audioSummary": {
       "hookVerified": true,
