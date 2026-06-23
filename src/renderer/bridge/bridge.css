@@ -1,0 +1,32 @@
+/* Bridge lab — reuses utm.css chrome; 2-column body (stage + assignment side). */
+.br-body { flex: 1; display: grid; grid-template-columns: 1fr 320px; gap: 16px; padding: 16px; min-height: 0; }
+
+.br-side { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+.br-assign { display: flex; flex-direction: column; gap: 10px; }
+
+.br-chip { background: #1F2937; border-radius: 10px; padding: 10px 12px; }
+.br-chip__head { display: flex; align-items: center; justify-content: space-between; }
+.br-chip__role { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #9CA3AF; }
+.br-chip__badge { font-size: 10px; font-weight: 700; border: 1px solid; border-radius: 999px; padding: 1px 7px; }
+.br-chip__row { display: flex; align-items: center; gap: 8px; margin: 8px 0 6px; }
+.br-chip__swatch { width: 16px; height: 16px; border-radius: 4px; flex: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
+.br-chip__row select { flex: 1; background: #111827; color: #E5E7EB; border: 1px solid #374151; border-radius: 6px; padding: 4px 6px; font: inherit; font-size: 12px; }
+.br-chip__hint { margin: 0; font-size: 11px; line-height: 1.35; color: #94a3b8; }
+
+/* results modal */
+.br-modal { position: fixed; inset: 0; background: rgba(0,0,0,.65); backdrop-filter: blur(3px); display: flex; align-items: center; justify-content: center; z-index: 60; }
+.br-modal__panel { width: min(460px, 92vw); background: #0f1623; border: 1px solid #374151; border-radius: 16px; padding: 22px; }
+.br-modal__head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.br-modal__head h2 { font-size: 18px; margin: 0; color: #fff; }
+.br-modal__dot { width: 12px; height: 12px; border-radius: 999px; flex: none; }
+.br-modal__row { background: #1F2937; border-radius: 10px; padding: 12px; margin-bottom: 14px; }
+.br-modal__line { display: flex; justify-content: space-between; font-size: 13px; color: #9CA3AF; margin-bottom: 4px; }
+.br-modal__bar { height: 8px; background: #374151; border-radius: 999px; overflow: hidden; margin-top: 8px; }
+.br-modal__fill { height: 100%; border-radius: 999px; transition: width .8s ease; }
+.br-modal__mats { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.br-modal__mat { display: grid; grid-template-columns: 70px 1fr auto; align-items: center; gap: 8px; background: #1F2937; border-radius: 8px; padding: 6px 10px; font-size: 13px; }
+.br-modal__verdict { border: 1px solid; border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 16px; }
+.br-modal__verdict p { margin: 0; font-weight: 800; letter-spacing: .04em; }
+.br-modal__reason { margin-top: 6px !important; font-weight: 400 !important; font-size: 12px; opacity: .85; }
+.br-modal__actions { display: flex; gap: 10px; }
+.br-modal__actions .utm-btn { flex: 1; }
