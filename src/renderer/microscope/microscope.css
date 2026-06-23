@@ -1,0 +1,15 @@
+/* Microscope lab — reuses utm.css chrome; adds eyepiece split + checklist. */
+.utm-lab .utm-chip { height: 54px; }
+.utm-chip__sub { display: block; font-size: 11px; opacity: 0.7; }
+.scope-split { position: relative; }
+.scope-eye-wrap { position: absolute; top: 12px; right: 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.scope-eye { border-radius: 50%; box-shadow: 0 0 0 6px #11161d, 0 6px 22px rgba(0,0,0,0.5); background: #0b0f14; }
+.scope-eye-cap { font-size: 11px; color: #9fb3c8; font-family: 'IBM Plex Mono', monospace; }
+.scope-mag { display: inline-flex; gap: 4px; margin-left: 10px; }
+.scope-mag__btn { padding: 3px 9px; border-radius: 8px; border: 1px solid #334; background: #1b2330; color: #cbd5e1; cursor: pointer; font-size: 12px; }
+.scope-mag__btn.is-on { background: #2563eb; border-color: #2563eb; color: #fff; }
+.scope-checklist { background: #161c26; border: 1px solid #243042; border-radius: 10px; padding: 10px 12px; margin: 8px 0; }
+.scope-checklist__title { font-size: 12px; color: #9fb3c8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.scope-item { font-size: 13px; color: #7d8aa0; padding: 2px 0; }
+.scope-item.is-seen { color: #34d399; }
+.scope-item span { display: inline-block; width: 16px; }
