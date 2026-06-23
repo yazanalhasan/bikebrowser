@@ -15,11 +15,12 @@ const LAB_COMPONENTS = {
   tunnel: lazy(() => import('../renderer/tunnel/WindTunnelLab.jsx')),
   circuit: lazy(() => import('../renderer/circuit/CircuitBenchLab.jsx')),
   boat: lazy(() => import('../renderer/boat/BoatTankLab.jsx')),
+  vacuum: lazy(() => import('../renderer/vacuum/VacuumChamberLab.jsx')),
 };
 const LAB_TITLE = {
   utm: 'Universal Testing Machine', bridge: 'Bridge Design', dyno: 'Engine Dyno',
   crash: 'Crash & Load Test', tunnel: 'Wind Tunnel', circuit: 'Circuit Bench',
-  boat: 'Hydro Tank',
+  boat: 'Hydro Tank', vacuum: 'Vacuum & Re-entry Chamber',
 };
 // The chapter bench labs replace a Phaser bench scene, triggered by its registry
 // start event. We open the React lab and hide the Phaser stub it supersedes.
@@ -30,6 +31,7 @@ const LAB_TRIGGERS = [
   { lab: 'tunnel', start: 'plane:start', scene: 'PlaneTunnelScene' },
   { lab: 'circuit', start: 'circuit:start', scene: 'CircuitBenchScene' },
   { lab: 'boat', start: 'boat:start', scene: 'BoatTankScene' },
+  { lab: 'vacuum', start: 'space:start', scene: 'VacuumChamberScene' },
 ];
 const SCENE_BY_LAB = Object.fromEntries(LAB_TRIGGERS.map((t) => [t.lab, t.scene]));
 

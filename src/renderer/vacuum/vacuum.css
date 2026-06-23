@@ -1,0 +1,3 @@
+/* Vacuum chamber lab — reuses utm.css chrome. */
+.utm-lab .utm-chip { height: 48px; }
+.vc-readout { font: 800 16px "JetBrains Mono", ui-monospace, monospace; color: #ff9a6a; }
