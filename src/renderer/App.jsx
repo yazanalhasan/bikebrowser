@@ -29,6 +29,7 @@ const BridgeDesignLabPage = lazy(() => import('./bridge/BridgeDesignLab.jsx'));
 const CrashTestLabPage = lazy(() => import('./crash/CrashTestLab.jsx'));
 const WindTunnelLabPage = lazy(() => import('./tunnel/WindTunnelLab.jsx'));
 const CircuitBenchLabPage = lazy(() => import('./circuit/CircuitBenchLab.jsx'));
+const BoatTankLabPage = lazy(() => import('./boat/BoatTankLab.jsx'));
 
 const VERSION_STORAGE_KEY = 'bikebrowser_cached_version';
 
@@ -95,6 +96,7 @@ function AppContent() {
           <Route path="/crash-lab" element={<div style={{ height: '100vh' }}><CrashTestLabPage /></div>} />
           <Route path="/tunnel-lab" element={<div style={{ height: '100vh' }}><WindTunnelLabPage /></div>} />
           <Route path="/circuit-lab" element={<div style={{ height: '100vh' }}><CircuitBenchLabPage /></div>} />
+          <Route path="/boat-lab" element={<div style={{ height: '100vh' }}><BoatTankLabPage /></div>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
