@@ -1391,28 +1391,34 @@ export default class NeighborhoodScene extends Phaser.Scene {
     // Chapter 2 biology pillar — leaving the Extraction Bench reports what the
     // player learned to make from desert plants.
     this.registry.events.on('extraction:done', ({ discovered }) => {
+      this._markBioComplete(2);
       if (discovered && discovered.length) {
         this.showFeedback({ message: `Ethnobotany: you can now make ${discovered.length} thing(s) from desert plants.` });
       }
     });
     // Chapter 3 biology pillar — bottling pure salicin in the phytochemistry lab.
     this.registry.events.on('phyto:built', () => {
+      this._markBioComplete(3);
       this.showFeedback({ message: 'Phytochemistry: you isolated pure salicin — the molecule behind the willow remedy.' });
     });
     // Chapter 4 biology pillar — resolving cells under the microscope.
     this.registry.events.on('cell:built', () => {
+      this._markBioComplete(4);
       this.showFeedback({ message: 'Cellular biology: you can see the cells — the shared building blocks of all life.' });
     });
     // Chapter 5 biology pillar — fermenting sugar to alcohol with microbes.
     this.registry.events.on('ferment:built', () => {
+      this._markBioComplete(5);
       this.showFeedback({ message: 'Microbiology: yeast fermented your sugar to alcohol — microbes transform matter.' });
     });
     // Chapter 6 biology pillar — explaining the willow remedy at the molecular level.
     this.registry.events.on('mech:built', () => {
+      this._markBioComplete(6);
       this.showFeedback({ message: 'Molecular biology: salicylic acid inhibits the COX enzyme — the willow mechanism, explained.' });
     });
     // Chapter 7 biology capstone — engineering a stable, responsible ecosystem.
     this.registry.events.on('eco:built', () => {
+      this._markBioComplete(7);
       this.showFeedback({ message: 'Systems biology: a self-sustaining ecosystem — engineered responsibly. Not just "can I?" but "should I?".' });
     });
 
@@ -1443,7 +1449,24 @@ export default class NeighborhoodScene extends Phaser.Scene {
     if (set.has(num)) return;
     set.add(num);
     this.registry.set('progression', { ...prev, chaptersComplete: [...set].sort((a, b) => a - b) });
+    this.runtime?.saveGame?.(); // persist the unlock so it survives a reload
     this.registry.events.emit('progression:changed', { chaptersComplete: [...set] });
+  }
+
+  // The parallel biological spine (arc.md §3): each chapter's biology lab records a
+  // completion alongside the vehicle ladder, so the two ladders are tracked as
+  // independent-but-cumulative. Persisted in the same save object as `progression`
+  // (see Act1RuntimeSystem.getAct1State / restoreProgression). Audit Doc 4, Option B
+  // foundation — the per-sub-system soft-gates (PharmacologyBench, inhibitor mode,
+  // disturbance events, stewardship end) wait on those systems being built, which the
+  // canonical port order defers (biology substrates / GameEndScene).
+  _markBioComplete(num) {
+    const set = new Set(this.registry.get('bioComplete') || []);
+    if (set.has(num)) return;
+    set.add(num);
+    this.registry.set('bioComplete', [...set].sort((a, b) => a - b));
+    this.runtime?.saveGame?.(); // persist the bio completion across a reload
+    this.registry.events.emit('bio:progression:changed', { bioComplete: [...set] });
   }
 
   _renderZuzuBucks(total, pulse = false) {

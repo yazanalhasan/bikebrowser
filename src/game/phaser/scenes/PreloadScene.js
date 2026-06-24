@@ -38,6 +38,7 @@ export default class PreloadScene extends Phaser.Scene {
     createPlaceholderTextures(this);
     const runtime = new Act1RuntimeSystem(this.game);
     runtime.bindRegistry(this.registry);
+    runtime.restoreProgression(); // keep unlocked chapters across a reload
     window.__GAME__ = runtime.createDebugApi();
     this.scene.start('NeighborhoodScene');
     this.scene.launch('QuestScene');

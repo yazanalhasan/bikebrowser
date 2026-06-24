@@ -544,6 +544,11 @@ export class Act1RuntimeSystem {
       discoveryUnlocks: this.getDiscoveryUnlocks(),
       worldMap: this.getWorldMap(),
       biomes: this.biomeSystem.getState(),
+      // Cross-chapter Vehicle Ladder unlock state (progression.js). Lives in the
+      // save object so it survives a reload — see restoreProgression() below.
+      progression: this.registry?.get('progression') || { chaptersComplete: [] },
+      // Parallel biological spine completion (arc.md §3). Same persistence path.
+      bioComplete: this.registry?.get('bioComplete') || [],
       skatePark: this.skateParkSystem.getState(),
       engineeringLoop: this.getEngineeringLoop(),
       reasoning: this.assessReasoning(),
@@ -732,6 +737,22 @@ export class Act1RuntimeSystem {
     return { ok: true, state: this.getAct1State() };
   };
 
+  // Restore ONLY the cross-chapter progression value (Vehicle Ladder unlocks) from
+  // the saved state, without rehydrating the full Act 1 runtime. Called once at boot
+  // (PreloadScene) so a page refresh keeps the chapters the player unlocked. The full
+  // save is still restorable on demand via loadGame(). Backward-compatible: an old
+  // save with no `progression` field is a no-op.
+  restoreProgression = () => {
+    const saved = loadRebuildState();
+    if (saved?.progression && this.registry) {
+      this.registry.set('progression', saved.progression);
+    }
+    if (saved?.bioComplete && this.registry) {
+      this.registry.set('bioComplete', saved.bioComplete);
+    }
+    return saved?.progression || null;
+  };
+
   validateLoadedState(state) {
     const requiredObjects = ['quests', 'notebook', 'inventory', 'bike', 'materialTests', 'bridge', 'ecology', 'chemistry', 'trust', 'language', 'discovery'];
     const missing = requiredObjects.filter((key) => !state || typeof state[key] !== 'object');
@@ -760,6 +781,8 @@ export class Act1RuntimeSystem {
     this.discoveryMapSystem.loadState(state.discovery);
     this.discoveryRegistry.loadState(state.discoveryRegistry);
     this.biomeSystem.loadState(state.biomes);
+    if (this.registry && state.progression) this.registry.set('progression', state.progression);
+    if (this.registry && state.bioComplete) this.registry.set('bioComplete', state.bioComplete);
   }
 
   resetAct1 = () => {
