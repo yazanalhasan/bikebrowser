@@ -125,7 +125,7 @@ export default function LoadTestLab({ plan: planProp }) {
             </Canvas>
           </div>
           <div className="utm-lab__controls">
-            <button type="button" className="utm-btn utm-btn--run" onClick={run} disabled={isRunning || !predicted} title={!predicted ? 'Make a prediction first' : ''}>▶ Apply Loads</button>
+            <button type="button" className={`utm-btn utm-btn--run ${!predicted ? 'utm-btn--needs-predict' : ''}`} onClick={run} disabled={isRunning || !predicted} title={!predicted ? 'Make a prediction first' : ''}>{!predicted ? '⤴ Predict first to run' : '▶ Apply Loads'}</button>
           </div>
         </div>
 

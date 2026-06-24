@@ -100,7 +100,7 @@ export default function CircuitBenchLab() {
             disabled={built}
           />
           {!built && (
-            <button type="button" className="utm-btn utm-btn--run" onClick={build} disabled={!predicted} title={!predicted ? 'Make a prediction first' : ''}>⚡ Build E-Bike</button>
+            <button type="button" className={`utm-btn utm-btn--run ${!predicted ? 'utm-btn--needs-predict' : ''}`} onClick={build} disabled={!predicted} title={!predicted ? 'Make a prediction first' : ''}>{!predicted ? '⤴ Predict first to build' : '⚡ Build E-Bike'}</button>
           )}
           {built && (
             <>

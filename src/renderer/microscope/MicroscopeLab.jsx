@@ -114,7 +114,7 @@ export default function MicroscopeLab() {
             {!slide && <div className="utm-empty-hint">Pick a slide to observe</div>}
           </div>
           <div className="utm-lab__controls">
-            <button type="button" className="utm-btn utm-btn--run" onClick={run} disabled={isRunning || !slide || !predicted} title={slide && !predicted ? 'Make a prediction first' : ''}>▶ Focus & Observe</button>
+            <button type="button" className={`utm-btn utm-btn--run ${slide && !predicted ? 'utm-btn--needs-predict' : ''}`} onClick={run} disabled={isRunning || !slide || !predicted} title={slide && !predicted ? 'Make a prediction first' : ''}>{!slide ? '▶ Pick a slide' : !predicted ? '⤴ Predict first to run' : '▶ Focus & Observe'}</button>
           </div>
         </div>
 

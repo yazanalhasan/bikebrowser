@@ -121,8 +121,8 @@ export default function CrashTestLab({ onTested } = {}) {
                 <input type="range" min="30" max="90" value={speed} disabled={isRunning} onChange={(e) => setSpeed(Number(e.target.value))} />
               </label>
             )}
-            <button type="button" className="utm-btn utm-btn--run" onClick={run} disabled={isRunning || !material || !predicted} title={material && !predicted ? 'Make a prediction first' : ''}>
-              {mode === 'load' ? '▶ Drop Load' : '▶ Launch Crash'}
+            <button type="button" className={`utm-btn utm-btn--run ${material && !predicted ? 'utm-btn--needs-predict' : ''}`} onClick={run} disabled={isRunning || !material || !predicted} title={material && !predicted ? 'Make a prediction first' : ''}>
+              {!material ? '▶ Pick a material' : !predicted ? '⤴ Predict first to run' : (mode === 'load' ? '▶ Drop Load' : '▶ Launch Crash')}
             </button>
           </div>
         </div>

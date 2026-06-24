@@ -108,7 +108,7 @@ export default function EngineDynoLab({ onEngineTested } = {}) {
           </div>
 
           <div className="utm-lab__controls">
-            <button type="button" className="utm-btn utm-btn--run" onClick={rev} disabled={isRunning || !engine || !predicted} title={engine && !predicted ? 'Make a prediction first' : ''}>▶ Rev to Redline</button>
+            <button type="button" className={`utm-btn utm-btn--run ${engine && !predicted ? 'utm-btn--needs-predict' : ''}`} onClick={rev} disabled={isRunning || !engine || !predicted} title={engine && !predicted ? 'Make a prediction first' : ''}>{!engine ? '▶ Pick an engine' : !predicted ? '⤴ Predict first to run' : '▶ Rev to Redline'}</button>
             {tip && <span className="utm-tip">Drop an engine onto the dyno first</span>}
           </div>
         </div>

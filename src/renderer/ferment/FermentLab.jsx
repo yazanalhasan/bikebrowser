@@ -124,7 +124,7 @@ export default function FermentLab() {
             {org && !compatible && <div className="fb-warn">⚠ Poor substrate match — yield halved</div>}
           </div>
           <div className="utm-lab__controls">
-            <button type="button" className="utm-btn utm-btn--run" onClick={run} disabled={isRunning || !org || !predicted} title={org && !predicted ? 'Make a prediction first' : ''}>▶ Inoculate &amp; Run</button>
+            <button type="button" className={`utm-btn utm-btn--run ${org && !predicted ? 'utm-btn--needs-predict' : ''}`} onClick={run} disabled={isRunning || !org || !predicted} title={org && !predicted ? 'Make a prediction first' : ''}>{!org ? '▶ Pick a microbe' : !predicted ? '⤴ Predict first to run' : '▶ Inoculate &amp; Run'}</button>
           </div>
         </div>
 

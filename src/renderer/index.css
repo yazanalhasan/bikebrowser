@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Standalone apparatus-lab routes fill the whole viewport (above the app nav),
+   so the lab's bottom controls (Run button) are never pushed off-screen. */
+.bb-lab-route { position: fixed; inset: 0; z-index: 40; background: #0b0f14; }
+
 /* Global styles for kid-friendly UI */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

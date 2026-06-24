@@ -66,7 +66,7 @@ export default function WindTunnelLab() {
               <input type="range" min="-5" max="20" step="0.5" value={aoa} onChange={(e) => setAoa(Number(e.target.value))} />
             </label>
             {coeffs.stalled && <span className="tn-stall">STALL</span>}
-            <button type="button" className="utm-btn utm-btn--run" onClick={testFlight} disabled={!predicted || flown} title={!predicted ? 'Make a prediction first' : ''}>✈ Test Flight</button>
+            <button type="button" className={`utm-btn utm-btn--run ${!predicted && !flown ? 'utm-btn--needs-predict' : ''}`} onClick={testFlight} disabled={!predicted || flown} title={!predicted ? 'Make a prediction first' : ''}>{!predicted && !flown ? '⤴ Predict first to fly' : '✈ Test Flight'}</button>
             {flown && <span style={{ fontWeight: 800, color: flies ? '#22C55E' : '#EF4444' }}>{flies ? 'IT FLIES' : 'IT STALLS'}</span>}
           </div>
         </div>

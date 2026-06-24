@@ -101,7 +101,7 @@ export default function BoatTankLab() {
             {!hull && <div className="utm-empty-hint">Pick a hull to test</div>}
           </div>
           <div className="utm-lab__controls">
-            <button type="button" className="utm-btn utm-btn--run" onClick={runTow} disabled={isRunning || !hull || !predicted} title={hull && !predicted ? 'Make a prediction first' : ''}>▶ Run Tow Test</button>
+            <button type="button" className={`utm-btn utm-btn--run ${hull && !predicted ? 'utm-btn--needs-predict' : ''}`} onClick={runTow} disabled={isRunning || !hull || !predicted} title={hull && !predicted ? 'Make a prediction first' : ''}>{!hull ? '▶ Pick a hull' : !predicted ? '⤴ Predict first to run' : '▶ Run Tow Test'}</button>
           </div>
         </div>
 

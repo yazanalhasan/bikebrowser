@@ -97,7 +97,7 @@ export default function PhytoLab() {
             {!extract && <div className="utm-empty-hint">Pick an extract to assay</div>}
           </div>
           <div className="utm-lab__controls">
-            <button type="button" className="utm-btn utm-btn--run" onClick={run} disabled={isRunning || !extract || !predicted} title={extract && !predicted ? 'Make a prediction first' : ''}>▶ Run Assays</button>
+            <button type="button" className={`utm-btn utm-btn--run ${extract && !predicted ? 'utm-btn--needs-predict' : ''}`} onClick={run} disabled={isRunning || !extract || !predicted} title={extract && !predicted ? 'Make a prediction first' : ''}>{!extract ? '▶ Pick an extract' : !predicted ? '⤴ Predict first to run' : '▶ Run Assays'}</button>
           </div>
         </div>
 

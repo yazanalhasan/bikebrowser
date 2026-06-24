@@ -128,7 +128,7 @@ export default function ExtractionLab() {
             {!plant && <div className="utm-empty-hint">Pick a plant to extract</div>}
           </div>
           <div className="utm-lab__controls">
-            <button type="button" className="utm-btn utm-btn--run" onClick={run} disabled={isRunning || !plant || !predicted} title={plant && !predicted ? 'Make a prediction first' : ''}>▶ Run Extraction</button>
+            <button type="button" className={`utm-btn utm-btn--run ${plant && !predicted ? 'utm-btn--needs-predict' : ''}`} onClick={run} disabled={isRunning || !plant || !predicted} title={plant && !predicted ? 'Make a prediction first' : ''}>{!plant ? '▶ Pick a plant' : !predicted ? '⤴ Predict first to run' : '▶ Run Extraction'}</button>
           </div>
         </div>
 

@@ -101,24 +101,24 @@ function AppContent() {
               kept on disk but no longer routed or bundled. /game-rebuild is the
               single canonical playable experience. */}
           <Route path="/spelling-trainer" element={<SpellingTrainerApp />} />
-          <Route path="/utm-lab" element={<div style={{ height: '100vh' }}><UTMLabPage /></div>} />
-          <Route path="/dyno-lab" element={<div style={{ height: '100vh' }}><EngineDynoLabPage /></div>} />
-          <Route path="/bridge-lab" element={<div style={{ height: '100vh' }}><BridgeDesignLabPage /></div>} />
-          <Route path="/crash-lab" element={<div style={{ height: '100vh' }}><CrashTestLabPage /></div>} />
-          <Route path="/tunnel-lab" element={<div style={{ height: '100vh' }}><WindTunnelLabPage /></div>} />
-          <Route path="/circuit-lab" element={<div style={{ height: '100vh' }}><CircuitBenchLabPage /></div>} />
-          <Route path="/boat-lab" element={<div style={{ height: '100vh' }}><BoatTankLabPage /></div>} />
-          <Route path="/vacuum-lab" element={<div style={{ height: '100vh' }}><VacuumChamberLabPage /></div>} />
-          <Route path="/extraction-lab" element={<div style={{ height: '100vh' }}><ExtractionLabPage /></div>} />
-          <Route path="/phyto-lab" element={<div style={{ height: '100vh' }}><PhytoLabPage /></div>} />
-          <Route path="/scope-lab" element={<div style={{ height: '100vh' }}><MicroscopeLabPage /></div>} />
-          <Route path="/ferment-lab" element={<div style={{ height: '100vh' }}><FermentLabPage /></div>} />
-          <Route path="/enzyme-lab" element={<div style={{ height: '100vh' }}><MechanismLabPage /></div>} />
-          <Route path="/ecosystem-lab" element={<div style={{ height: '100vh' }}><EcosystemLabPage /></div>} />
-          <Route path="/loadtest-lab" element={<div style={{ height: '100vh' }}><LoadTestLabPage /></div>} />
-          <Route path="/skate-lab" element={<div style={{ height: '100vh' }}><SkateLabPage /></div>} />
-          <Route path="/ecology-lab" element={<div style={{ height: '100vh' }}><EcologyLabPage /></div>} />
-          <Route path="/biome-lab" element={<div style={{ height: '100vh' }}><BiomeLabPage /></div>} />
+          <Route path="/utm-lab" element={<div className="bb-lab-route"><UTMLabPage /></div>} />
+          <Route path="/dyno-lab" element={<div className="bb-lab-route"><EngineDynoLabPage /></div>} />
+          <Route path="/bridge-lab" element={<div className="bb-lab-route"><BridgeDesignLabPage /></div>} />
+          <Route path="/crash-lab" element={<div className="bb-lab-route"><CrashTestLabPage /></div>} />
+          <Route path="/tunnel-lab" element={<div className="bb-lab-route"><WindTunnelLabPage /></div>} />
+          <Route path="/circuit-lab" element={<div className="bb-lab-route"><CircuitBenchLabPage /></div>} />
+          <Route path="/boat-lab" element={<div className="bb-lab-route"><BoatTankLabPage /></div>} />
+          <Route path="/vacuum-lab" element={<div className="bb-lab-route"><VacuumChamberLabPage /></div>} />
+          <Route path="/extraction-lab" element={<div className="bb-lab-route"><ExtractionLabPage /></div>} />
+          <Route path="/phyto-lab" element={<div className="bb-lab-route"><PhytoLabPage /></div>} />
+          <Route path="/scope-lab" element={<div className="bb-lab-route"><MicroscopeLabPage /></div>} />
+          <Route path="/ferment-lab" element={<div className="bb-lab-route"><FermentLabPage /></div>} />
+          <Route path="/enzyme-lab" element={<div className="bb-lab-route"><MechanismLabPage /></div>} />
+          <Route path="/ecosystem-lab" element={<div className="bb-lab-route"><EcosystemLabPage /></div>} />
+          <Route path="/loadtest-lab" element={<div className="bb-lab-route"><LoadTestLabPage /></div>} />
+          <Route path="/skate-lab" element={<div className="bb-lab-route"><SkateLabPage /></div>} />
+          <Route path="/ecology-lab" element={<div className="bb-lab-route"><EcologyLabPage /></div>} />
+          <Route path="/biome-lab" element={<div className="bb-lab-route"><BiomeLabPage /></div>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

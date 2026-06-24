@@ -116,7 +116,7 @@ export default function MechanismLab() {
             {!enzyme && <div className="utm-empty-hint">Pick an enzyme to assemble a pathway</div>}
           </div>
           <div className="utm-lab__controls">
-            <button type="button" className="utm-btn utm-btn--run" onClick={run} disabled={isRunning || !enzyme || !predicted} title={enzyme && !predicted ? 'Make a prediction first' : ''}>▶ Run Reaction</button>
+            <button type="button" className={`utm-btn utm-btn--run ${enzyme && !predicted ? 'utm-btn--needs-predict' : ''}`} onClick={run} disabled={isRunning || !enzyme || !predicted} title={enzyme && !predicted ? 'Make a prediction first' : ''}>{!enzyme ? '▶ Pick an enzyme' : !predicted ? '⤴ Predict first to run' : '▶ Run Reaction'}</button>
           </div>
         </div>
 

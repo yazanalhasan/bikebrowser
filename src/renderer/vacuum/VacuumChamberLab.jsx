@@ -133,7 +133,7 @@ export default function VacuumChamberLab() {
             {phase !== 'idle' && !complete && <div className="utm-drop-hint">{phase === 'vacuum' ? 'Pumping down…' : 'Re-entry…'}</div>}
           </div>
           <div className="utm-lab__controls">
-            <button type="button" className="utm-btn utm-btn--run" onClick={run} disabled={running || !material || !predicted} title={material && !predicted ? 'Make a prediction first' : ''}>▶ Run Certification</button>
+            <button type="button" className={`utm-btn utm-btn--run ${material && !predicted ? 'utm-btn--needs-predict' : ''}`} onClick={run} disabled={running || !material || !predicted} title={material && !predicted ? 'Make a prediction first' : ''}>{!material ? '▶ Pick a material' : !predicted ? '⤴ Predict first to run' : '▶ Run Certification'}</button>
           </div>
         </div>
 

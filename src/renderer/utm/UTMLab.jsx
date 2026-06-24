@@ -178,12 +178,12 @@ export default function UTMLab({ onMaterialTested } = {}) {
           <div className="utm-lab__controls">
             <button
               type="button"
-              className="utm-btn utm-btn--run"
+              className={`utm-btn utm-btn--run ${selected && !predicted ? 'utm-btn--needs-predict' : ''}`}
               onClick={runTest}
               disabled={isRunning || !selected || !predicted}
               title={selected && !predicted ? 'Make a prediction first' : ''}
             >
-              ▶ Run Test
+              {!selected ? '▶ Pick a material' : !predicted ? '⤴ Predict first to run' : '▶ Run Test'}
             </button>
             {testComplete && <button type="button" className="utm-btn utm-btn--ghost" onClick={reset}>↺ Reset</button>}
             {tip && <span className="utm-tip">Drop a material sample into the grips first</span>}

@@ -110,7 +110,7 @@ export default function HabitatLab({ dataset = 'ecology' }) {
             {!finished && !predicted && <div className="utm-empty-hint">Pick the option you think fits, then plant it</div>}
           </div>
           <div className="utm-lab__controls">
-            {!finished && !revealed && <button type="button" className="utm-btn utm-btn--run" onClick={plant} disabled={isRunning || !predicted} title={!predicted ? 'Pick an option first' : ''}>▶ Plant it</button>}
+            {!finished && !revealed && <button type="button" className={`utm-btn utm-btn--run ${!predicted ? 'utm-btn--needs-predict' : ''}`} onClick={plant} disabled={isRunning || !predicted} title={!predicted ? 'Pick an option first' : ''}>{!predicted ? '⤴ Pick an option first' : '▶ Plant it'}</button>}
             {!finished && revealed && <button type="button" className="utm-btn utm-btn--run" onClick={next}>{idx < placements.length - 1 ? 'Next site ▶' : 'Field notes ▶'}</button>}
             {finished && <button type="button" className="utm-btn utm-btn--run" onClick={restart}>↻ Replay</button>}
           </div>
