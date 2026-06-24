@@ -28,8 +28,8 @@ export default function MaterialAssignmentPanel({ materials, suit, onReassign, o
           </div>
         );
       })}
-      <button type="button" className="utm-btn utm-btn--run" onClick={onRun} disabled={running || !canRun} title={!canRun ? 'Make a prediction first' : ''} style={{ width: '100%', marginTop: 4 }}>
-        {running ? 'Testing…' : '▶ Run Load Test'}
+      <button type="button" className={`utm-btn utm-btn--run ${!canRun && !running ? 'utm-btn--needs-predict' : ''}`} onClick={onRun} disabled={running || !canRun} title={!canRun ? 'Make a prediction first' : ''} style={{ width: '100%', marginTop: 4 }}>
+        {running ? 'Testing…' : !canRun ? '⤴ Predict first to run' : '▶ Run Load Test'}
       </button>
     </div>
   );

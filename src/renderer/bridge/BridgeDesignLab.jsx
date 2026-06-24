@@ -8,7 +8,7 @@ import { getUtmMaterialById } from '../utm/utmMaterials.js';
 import { computeBridgeSim, roleSuitabilities, VERDICT_LABEL, VERDICT_COLOR } from './bridgeModel.js';
 import { DEFAULT_ROLE_MATERIALS } from './bridgeTasks.js';
 import PredictBar from '../scenekit/PredictBar.jsx';
-import { callRuntime } from '../scenekit/gameBridge.js';
+import { callRuntime, emitGameEvent } from '../scenekit/gameBridge.js';
 import '../utm/utm.css';
 import './bridge.css';
 
@@ -54,7 +54,15 @@ export default function BridgeDesignLab({ onBridgeComplete } = {}) {
     bridgeRef.current.phase = result.verdict;
     setPhase(result.verdict); setSim(result); setRevealed(true);
     // A bridge that holds (or just survives) repairs the wash crossing in-game.
-    if (result.verdict !== 'fail') callRuntime('completeBridgePlan', 'tested_triangle_plan');
+    // completeBridgePlan only sets the tested plan if every material was proven in
+    // the UTM first; when it does, emit loadTest:done so NeighborhoodScene places
+    // the span over the wash, opens the wider map, plays the Community Crossing,
+    // and completes Chapter 1 (→ unlocks Chapter 2). Without this emit the lab
+    // succeeded but nothing happened in the overworld.
+    if (result.verdict !== 'fail') {
+      const planResult = callRuntime('completeBridgePlan', 'tested_triangle_plan');
+      if (planResult && planResult.ok) emitGameEvent('loadTest:done', { ok: true, plan: 'tested_triangle_plan' });
+    }
     if (result.verdict === 'fail') {
       sounds.concreteCrack();
       setTimeout(() => sounds.cableSnap(), 420);
