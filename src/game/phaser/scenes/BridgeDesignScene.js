@@ -60,6 +60,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.trayPieces = [];
     this.dragging = null;
     this.success = false;
+    this.rosterRows = []; // persistent right-hand "your bridge" roster (usability)
     // da vinci state
     this.dvWoods = [];
     this.dvWoodIdx = 0;
@@ -162,6 +163,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
   }
 
   _hideAllModeGfx() {
+    this.rosterRows.forEach((r) => r.destroy()); this.rosterRows = [];
     this.trayStrip.setVisible(false);
     this.ghostGfx.setVisible(false); this.activeGfx.clear();
     this.dvGfx.setVisible(false).clear(); this.dvActiveGfx.clear();
@@ -241,6 +243,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
   // TRUSS assembly (deck/support/brace/cable/foundation)
   // ========================================================================
   _resetAssembly() {
+    this._focusKey = null;
     this.selection = {};
     Object.values(this.placed).forEach((p) => p.destroy());
     this.placed = {};
@@ -271,11 +274,62 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this._highlightHeld();
     this._drawMeters();
     this._updateActive();
+    this._renderRoster();
     this._publish();
   }
 
   _activeZone() {
+    // An explicitly re-selected role takes priority (roster click); otherwise the
+    // first unfilled slot in order.
+    if (this._focusKey && !this.selection[this._focusKey]) return ZONE_BY_KEY[this._focusKey];
     return ZONES.find((z) => !this.selection[z.key]) || null;
+  }
+
+  // Persistent "Your bridge" roster on the right — mirrors the 3D-sim's material
+  // panel: every role, its assigned material, and a live fit badge, all visible
+  // at once. Clicking a row jumps to that role to (re)choose it, so the player
+  // can fix any slot directly instead of only building front-to-back.
+  _renderRoster() {
+    this.rosterRows.forEach((r) => r.destroy());
+    this.rosterRows = [];
+    if (this.bridgeType !== 'truss' || (this.phase !== 'choose' && this.phase !== 'ready')) return;
+    const x = 1044; const w = 236; const rowH = 60; const y0 = 182;
+    const header = this.add.text(x, y0 - 24, 'YOUR BRIDGE', { fontFamily: 'Georgia, serif', fontSize: '13px', color: '#6f5430', fontStyle: 'bold' }).setOrigin(0.5).setScrollFactor(0).setDepth(1450);
+    this.chrome.add(header); this.rosterRows.push(header);
+    const active = this._activeZone();
+    ZONES.forEach((z, i) => {
+      const y = y0 + i * rowH;
+      const matId = this.selection[z.key];
+      const mat = matId && this.matById.get(matId);
+      const fit = mat ? roleFit(mat, z.key) : null;
+      const isActive = active && active.key === z.key;
+      const row = this.add.container(x, y).setScrollFactor(0).setDepth(1450);
+      const box = this.add.rectangle(0, 0, w, rowH - 10, matId ? 0xf6ead0 : 0xe7d6ac, isActive ? 0.98 : 0.82)
+        .setStrokeStyle(isActive ? 3 : 1.5, isActive ? 0xe0a93a : 0x8a6a3c, isActive ? 1 : 0.55);
+      const swatch = this.add.rectangle(-w / 2 + 16, -8, 14, 14, MATERIAL_COLORS[matId] ?? 0xcdb079, matId ? 1 : 0.25).setStrokeStyle(1, 0x3a2a18, 0.5);
+      const role = this.add.text(-w / 2 + 32, -14, z.label, { fontFamily: 'Georgia, serif', fontSize: '11px', color: '#7a5a32', fontStyle: 'bold' }).setOrigin(0, 0.5);
+      const matName = this.add.text(-w / 2 + 32, 6, mat ? (mat.displayName || mat.name || matId) : 'tap to choose', { fontFamily: 'Georgia, serif', fontSize: '13px', color: mat ? '#3a2a18' : '#9a8a6a', fontStyle: mat ? 'bold' : 'italic' }).setOrigin(0, 0.5);
+      let badgeTxt = ''; let badgeCol = '#9a8a6a';
+      if (mat) { if (fit.fits) { badgeTxt = '✓ OK'; badgeCol = '#2f6b2a'; } else { badgeTxt = '⚠ WEAK'; badgeCol = '#a5561f'; } }
+      const badge = this.add.text(w / 2 - 12, 0, badgeTxt, { fontFamily: 'Georgia, serif', fontSize: '11px', color: badgeCol, fontStyle: 'bold' }).setOrigin(1, 0.5);
+      row.add([box, swatch, role, matName, badge]);
+      box.setInteractive({ useHandCursor: true }).on('pointerup', () => this._rosterClick(z.key));
+      this.chrome.add(row); this.rosterRows.push(row);
+    });
+  }
+
+  // Jump to a role from the roster: free it if filled, focus it, and re-enter
+  // the choose flow — the equivalent of changing that role's dropdown.
+  _rosterClick(key) {
+    if (this.phase === 'result') return;
+    if (this.selection[key]) {
+      this.placed[key]?.destroy(); delete this.placed[key]; delete this.selection[key];
+      this._cue('bridge_error');
+    }
+    this._focusKey = key;
+    this.heldIdx = null;
+    this._lastActiveKey = null; // re-apply the slot's ideal orientation
+    this._showChoose();
   }
 
   _refreshSubtitle() {
@@ -438,6 +492,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     // Empty the player's hands after every placement: the next slot needs a fresh,
     // intentional choice. This is what stops repeated E from auto-building the bridge.
     this.heldIdx = null;
+    if (this._focusKey === zone.key) this._focusKey = null;
     const next = this._activeZone();
     if (!next) { this._showReady(); } else { this._showChoose(); }
   }
@@ -472,8 +527,9 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this._armTestButton();
     this.title.setText('Bridge assembled');
     this.subtitle.setText('Every slot is filled. Press TEST BRIDGE to load it.');
-    this.hint.setText('E / Enter or click TEST BRIDGE   ◀ ▶ swap a part   ⌫ remove   Esc leave');
+    this.hint.setText('E / Enter or click TEST BRIDGE   ◀ ▶ swap a part   ⌫ remove   or tap a part on the right   Esc leave');
     this._drawMeters();
+    this._renderRoster();
     this._publish();
     narrateText(this, 'Bridge assembled. Press Test Bridge to load it.');
   }
@@ -1012,6 +1068,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
   // ===== visibility + publish =============================================
   _clearDynamic() {
+    this.rosterRows.forEach((r) => r.destroy()); this.rosterRows = [];
     this.trayPieces.forEach((p) => p.destroy());
     this.trayPieces = [];
     Object.values(this.placed).forEach((p) => p.destroy());

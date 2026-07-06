@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Billboard, Line, OrbitControls, Text } from '@react-three/drei';
-import { CatmullRomCurve3, TubeGeometry, Vector3, Color, BufferAttribute } from 'three';
+import { CatmullRomCurve3, TubeGeometry, Vector3, Color, BufferAttribute, SphereGeometry, BackSide, PlaneGeometry } from 'three';
 import { deflectionAtX } from './bridgeModel.js';
 
 const SPAN = 10;
@@ -30,6 +30,54 @@ function Annotation({ text, at, to }) {
         <mesh><planeGeometry args={[text.length * 0.09 + 0.2, 0.28]} /><meshBasicMaterial color="#0d1320" transparent opacity={0.72} /></mesh>
         <Text fontSize={0.17} color={ANNOT} anchorX="center" anchorY="middle">{text}</Text>
       </Billboard>
+    </group>
+  );
+}
+
+// The Sonoran-wash environment the bridge actually spans. Before this, the
+// bridge floated in a flat gray void; grounding it in the desert crossing is
+// most of the graphics lift. Sky dome (warm gradient), two sandy banks the
+// towers stand on, and the dry-wash channel with a thin ribbon of water
+// between them.
+function DesertWash() {
+  const sky = useMemo(() => {
+    const g = new SphereGeometry(70, 32, 20);
+    const top = new Color('#6ea9d6');   // high desert blue
+    const horizon = new Color('#f3dcae'); // warm dusty haze
+    const pos = g.attributes.position;
+    const colors = new Float32Array(pos.count * 3);
+    for (let i = 0; i < pos.count; i++) {
+      const t = Math.max(0, Math.min(1, (pos.getY(i) / 70 + 0.15) / 1.0));
+      const c = horizon.clone().lerp(top, t);
+      colors[i * 3] = c.r; colors[i * 3 + 1] = c.g; colors[i * 3 + 2] = c.b;
+    }
+    g.setAttribute('color', new BufferAttribute(colors, 3));
+    return g;
+  }, []);
+
+  // Banks: the two landmasses the crossing reconnects. Their inner faces frame
+  // the open wash; the towers/anchorages sit on them.
+  return (
+    <group>
+      <mesh geometry={sky} renderOrder={-1}><meshBasicMaterial vertexColors side={BackSide} fog={false} /></mesh>
+      {/* far desert backdrop so no dark void shows through the wash gap */}
+      <mesh position={[0, 3, -12]}><planeGeometry args={[90, 44]} /><meshStandardMaterial color="#e3cfa4" roughness={1} /></mesh>
+      {/* the far canyon bank across the wash (behind the deck) */}
+      <mesh position={[0, -2.2, -6]}><boxGeometry args={[26, 6, 3]} /><meshStandardMaterial color="#c2925c" roughness={1} /></mesh>
+      {/* riverbed under the whole scene */}
+      <mesh position={[0, -2.4, 0]} rotation={[-Math.PI / 2, 0, 0]}><planeGeometry args={[60, 30]} /><meshStandardMaterial color="#b98a55" roughness={1} /></mesh>
+      {/* left + right banks the towers stand on */}
+      {[-7.3, 7.3].map((bx) => (
+        <group key={bx} position={[bx, 0, 0]}>
+          <mesh position={[0, -1.95, 0]} receiveShadow><boxGeometry args={[8, 3.7, 8]} /><meshStandardMaterial color="#c99a63" roughness={1} /></mesh>
+          {/* sloped inner face carved by the wash */}
+          <mesh position={[bx > 0 ? -4.1 : 4.1, -1.4, 0]} rotation={[0, 0, bx > 0 ? -0.5 : 0.5]}><boxGeometry args={[1.6, 2.6, 8]} /><meshStandardMaterial color="#b98a55" roughness={1} /></mesh>
+        </group>
+      ))}
+      {/* damp channel sand nestled in the gap */}
+      <mesh position={[0, -1.42, 0]} rotation={[-Math.PI / 2, 0, 0]}><planeGeometry args={[7.2, 5]} /><meshStandardMaterial color="#9c7746" roughness={1} /></mesh>
+      {/* a thin ribbon of monsoon water */}
+      <mesh position={[0, -1.36, 0]} rotation={[-Math.PI / 2, 0, 0]}><planeGeometry args={[6.6, 1.7]} /><meshStandardMaterial color="#5fa8b8" transparent opacity={0.78} metalness={0.35} roughness={0.2} /></mesh>
     </group>
   );
 }
@@ -152,9 +200,13 @@ export default function BridgeMesh({ materials, bridgeRef }) {
 
   return (
     <group ref={root}>
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 8, 5]} intensity={1.2} />
-      <OrbitControls enableDamping dampingFactor={0.08} target={[0, 0.4, 0]} />
+      {/* warm late-afternoon desert light (matches arc.md's Sonoran palette) */}
+      <hemisphereLight args={['#dfeaf5', '#c79a63', 0.75]} />
+      <ambientLight intensity={0.35} />
+      <directionalLight position={[6, 9, 4]} intensity={1.15} color="#fff2d8" castShadow />
+      <directionalLight position={[-8, 4, -6]} intensity={0.35} color="#9fb8d6" />
+      <DesertWash />
+      <OrbitControls enableDamping dampingFactor={0.08} target={[0, 0.4, 0]} minDistance={6} maxDistance={26} maxPolarAngle={Math.PI / 2 + 0.15} />
 
       {/* deck (deformable + vertex-coloured) */}
       <mesh ref={deck} position={[0, DECK_Y, 0]}>

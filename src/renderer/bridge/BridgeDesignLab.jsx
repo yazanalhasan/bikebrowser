@@ -101,9 +101,9 @@ export default function BridgeDesignLab({ onBridgeComplete } = {}) {
       </header>
 
       <div className="br-body">
-        <div className="utm-canvas-wrap" style={{ background: '#e8edf4' }}>
-          <Canvas camera={{ position: [0, 2.6, 15], fov: 40 }} dpr={[1, 2]}>
-            <color attach="background" args={['#e8edf4']} />
+        <div className="utm-canvas-wrap" style={{ background: '#dfe7ef' }}>
+          <Canvas camera={{ position: [0, 2.6, 15], fov: 40 }} dpr={[1, 2]} shadows>
+            <fog attach="fog" args={['#e6d6b6', 22, 55]} />
             <BridgeMesh materials={materials} bridgeRef={bridgeRef} />
           </Canvas>
         </div>
