@@ -33,6 +33,24 @@ const assetPrompts = [
       'Copper red and violet mine rock, golden desert trail, blue-purple shadows, expressive painted texture, warm educational adventure mood.',
   },
   {
+    // v2: "modular kit" phrasing produced an incoherent jumble; ask for one
+    // coherent diorama slice instead.
+    id: 'salt_river_creek_bend_v2',
+    prompt:
+      'One coherent low-poly diorama slice of a desert creek bend: a smooth turquoise water ribbon curving between rounded red-orange river rocks, sandy banks, two small desert shrubs and one saguaro cactus, stylized game environment piece, readable silhouette, no text, no people.',
+    texturePrompt:
+      'Vivid turquoise water, warm red-orange smooth rocks, tan sand, painterly hand-painted brush strokes, child friendly browser game look.',
+  },
+  {
+    // v2: "backdrop prop" phrasing collapsed to a few cacti; describe one
+    // solid terrain chunk with the trail carved into it.
+    id: 'copper_mine_trail_slice_v2',
+    prompt:
+      'One solid low-poly desert hillside terrain chunk with a winding ochre dirt trail carved across it, a copper mine rock face with rust-orange ore seams on one side, one prickly pear cactus and one saguaro, stylized diorama piece for a kid bicycle adventure game, readable silhouette, no text, no people.',
+    texturePrompt:
+      'Copper red and violet rock, golden ochre dirt trail, green cactus, warm sunset light, painterly hand-painted texture, clean game asset.',
+  },
+  {
     id: 'sonoran_neighborhood_bridge_diorama',
     prompt:
       'Small stylized Sonoran neighborhood diorama tile with stucco homes, red tile roofs, palm trees, saguaro cactus, lush desert plants, a broken wash bridge connecting two neighborhoods, low-poly game environment, no text, no people.',
