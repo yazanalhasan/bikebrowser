@@ -20,6 +20,13 @@
 .utm-lab__task { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
 .utm-lab__task select { background: #111827; color: #E5E7EB; border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; font: inherit; }
 
+/* When the lab is opened as an in-game overlay, the floating "✕ Close Universal
+   Testing Machine" button (game-shell .bb-utm-close) is absolutely positioned in
+   the top-right and would otherwise paint OVER the header's Compare/Library
+   controls. Reserve room for it so nothing hides behind the Close button. The
+   standalone /utm-lab route has no overlay, so it is unaffected. */
+.bb-utm-overlay .utm-lab__bar { padding-right: 264px; }
+
 /* buttons */
 .utm-btn { font: inherit; font-size: 13px; font-weight: 600; border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; transition: filter .15s, background .15s, transform .1s; }
 .utm-btn--run { background: var(--accent); color: #fff; }

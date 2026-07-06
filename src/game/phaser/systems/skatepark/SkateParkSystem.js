@@ -42,7 +42,9 @@ export class SkateParkSystem {
     const speedPart = Math.min(1, (run.avgSpeed ?? run.maxSpeed ?? 0) / 360) * 60;
     const progressPart = Math.min(1, (run.progress ?? 0)) * 25;
     const cleanPart = run.bails ? 0 : 15;
-    return Math.round(speedPart + progressPart + cleanPart);
+    const stylePart = Math.min(1, (run.style ?? 0) / 100) * 8;
+    const comboPart = Math.min(7, (run.bestCombo ?? 0) * 1.5 + (run.grinds ?? 0) * 2);
+    return Math.round(Math.min(100, speedPart + progressPart + cleanPart + stylePart + comboPart));
   }
 
   // Record a finished run: update flow + metrics, evaluate the reasoning quests.

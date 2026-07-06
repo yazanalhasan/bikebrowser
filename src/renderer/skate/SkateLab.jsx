@@ -11,8 +11,8 @@ import '../utm/utm.css';
 import './skate.css';
 
 const VERDICTS = [
-  { id: 'SUITABLE', label: 'Stomp it', color: '#22C55E' },
-  { id: 'MARGINAL', label: 'Land hard', color: '#EAB308' },
+  { id: 'SUITABLE', label: 'Clean landing', color: '#22C55E' },
+  { id: 'MARGINAL', label: 'Sketchy landing', color: '#EAB308' },
   { id: 'UNSUITABLE', label: 'Bail', color: '#EF4444' },
 ];
 const FLIGHT_MS = 2200;
@@ -76,7 +76,7 @@ export default function SkateLab() {
   return (
     <div className="utm-lab">
       <header className="utm-lab__bar">
-        <div className="utm-lab__title">Skate Park — Launch Trainer</div>
+        <div className="utm-lab__title">Neighborhood Skate Park — Jump Line</div>
         <div className="utm-lab__bar-right">
           <label className="fb-ctrl">Speed {speed} px/s
             <input type="range" min={150} max={360} step={5} value={speed} disabled={isRunning} onChange={(e) => setS(Number(e.target.value))} />
@@ -90,16 +90,21 @@ export default function SkateLab() {
       <div className="utm-lab__body">
         <div className="utm-tray" role="group" aria-label="Physics">
           <div className="utm-tray__title">Physics Goggles</div>
-          <div className="sk-fact">Range peaks at <b>45°</b>:<br />R = v²·sin(2θ) / g</div>
-          <div className="sk-fact">Apex = v²·sin²θ / 2g</div>
-          <div className="sk-fact">Land softer by <b>flattening</b> the angle (less vertical drop speed).</div>
+          <div className="sk-fact">The green paint is the <b>clean landing zone</b>. The jump only counts if the wheels touch down there.</div>
+          <div className="sk-fact">Range peaks near <b>45°</b>:<br />R = v²·sin(2θ) / g</div>
+          <div className="sk-fact">More speed sends you farther. A steeper angle sends you higher, but not always farther.</div>
         </div>
 
         <div className="utm-lab__stage">
           <div className="utm-canvas-wrap" style={{ background: '#bfe0ef' }}>
-            <Canvas shadows camera={{ position: [1, 2.4, 8], fov: 42 }} dpr={[1, 2]}>
+            <Canvas
+              shadows
+              camera={{ position: [1, 2.4, 8], fov: 42 }}
+              dpr={[1, 2]}
+              gl={{ antialias: true, powerPreference: 'high-performance' }}
+            >
               <color attach="background" args={['#bfe0ef']} />
-              <SkatePark3D gap={GAP} angleDeg={angle} riderRef={riderRef} />
+              <SkatePark3D gap={GAP} angleDeg={angle} riderRef={riderRef} trajectory={result.traj} />
             </Canvas>
           </div>
           <div className="utm-lab__controls">
@@ -113,9 +118,10 @@ export default function SkateLab() {
             xAxis={{ label: 'Distance', min: 0, max: maxX, unit: 'px' }}
             yAxisLeft={{ label: 'Height', min: 0, max: maxY, unit: 'px', color: '#2563EB' }}
             series={[{ id: 'arc', label: 'Flight arc', color: '#2563EB', points: curve, yAxis: 'left' }]}
+            zones={[{ xStart: GAP.start, xEnd: GAP.end, color: 'rgba(34, 197, 94, 0.16)' }]}
             annotations={[
-              { label: 'land start', x: GAP.start, y: 0, yAxis: 'left', color: '#16A34A' },
-              { label: 'land end', x: GAP.end, y: 0, yAxis: 'left', color: '#EF4444' },
+              { label: 'clean zone starts', x: GAP.start, y: 0, yAxis: 'left', color: '#16A34A' },
+              { label: 'clean zone ends', x: GAP.end, y: 0, yAxis: 'left', color: '#16A34A' },
             ]}
             progressRef={riderRef} isRunning={isRunning} complete={complete} width={460} height={290}
           />

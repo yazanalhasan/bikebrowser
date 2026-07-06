@@ -3,7 +3,7 @@
 // hard landing bails. Teaches range = v²·sin(2θ)/g and the 45° optimum.
 export const GRAVITY = 900;     // px/s² (matches SkateScene)
 export const FAIL_VY = 560;     // land faster than this → bail
-export const GAP = { start: 190, end: 330 }; // clean landing ramp zone (px)
+export const GAP = { start: 84, end: 132 }; // clean landing ramp zone (px), reachable at the default 300 px/s, 45deg jump
 
 export function launch(speed, angleDeg) {
   const rad = (angleDeg * Math.PI) / 180;

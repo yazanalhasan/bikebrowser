@@ -53,7 +53,6 @@ const LAB_TRIGGERS = [
   { lab: 'mechanism', start: 'mech:start', scene: 'MechanismScene' },
   { lab: 'ecosystem', start: 'eco:start', scene: 'EcosystemScene' },
   { lab: 'loadtest', start: 'loadTest:start', scene: 'LoadTestScene' },
-  { lab: 'skate', start: 'skate:start', scene: 'SkateScene' },
   { lab: 'ecology', start: 'ecology:start', scene: 'EcologyScene' },
   { lab: 'biome', start: 'biome:start', scene: 'BiomeScene' },
 ];

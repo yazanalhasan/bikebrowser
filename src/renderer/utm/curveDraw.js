@@ -140,13 +140,17 @@ export function renderCurve(ctx, opts) {
       ctx.globalAlpha = reveal;
       ctx.strokeStyle = COL.annot; ctx.fillStyle = COL.annot;
       drawMarker(ctx, m.kind, x, y);
-      // dashed leader + label, alternating above/below to reduce overlap
+      // dashed leader + label, alternating above/below to reduce overlap. For a
+      // marker near the right edge (e.g. Fracture/UTS) the right-pointing label
+      // would overflow the panel and clip ("Frac…"), so flip it to the left.
       const up = i % 2 === 0 ? -1 : 1;
+      const labelW = ctx.measureText(m.label).width;
+      const side = (x + 13 + labelW > width - 6) ? -1 : 1;
       ctx.setLineDash([3, 3]); ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 10, y + up * 22); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + side * 10, y + up * 22); ctx.stroke();
       ctx.setLineDash([]);
-      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-      ctx.fillText(m.label, x + 13, y + up * 22);
+      ctx.textAlign = side === -1 ? 'right' : 'left'; ctx.textBaseline = 'middle';
+      ctx.fillText(m.label, x + side * 13, y + up * 22);
       ctx.globalAlpha = 1;
     });
   }

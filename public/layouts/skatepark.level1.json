@@ -8,6 +8,7 @@
   "obstacles": [
     { "obstacle": "manual_pad", "x": 360, "y": 560, "angle": 0, "condition": "ok" },
     { "obstacle": "launch_ramp_s", "x": 540, "y": 560, "angle": 25, "condition": "temporary" },
+    { "obstacle": "pump_segment", "x": 645, "y": 560, "angle": 0, "condition": "ok" },
     { "obstacle": "grind_box", "x": 720, "y": 560, "angle": 0, "condition": "ok" },
     { "obstacle": "low_rail", "x": 900, "y": 560, "angle": 0, "condition": "missing" },
     { "obstacle": "quarter_pipe", "x": 1120, "y": 560, "angle": 90, "condition": "cracked" }
