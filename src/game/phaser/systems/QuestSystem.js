@@ -19,6 +19,12 @@ export class QuestSystem {
     if (!quest) {
       return { ok: false, reason: 'unknown_objective' };
     }
+    // A side quest (not in the `next` chain) activates the moment the player
+    // makes progress on it, so it SHOWS UP in the tracker instead of completing
+    // silently in the background.
+    if (!this.activeQuestIds.has(quest.id) && !this.completedQuestIds.has(quest.id)) {
+      this.activeQuestIds.add(quest.id);
+    }
     // Track FIRST completion so rewards (ZuzuBucks, fanfare) fire once, not every
     // time a mini-game is replayed.
     const newObjective = !this.completedObjectives.has(objectiveId);
@@ -59,7 +65,22 @@ export class QuestSystem {
 
   getSummary() {
     const quest = this.activeQuest;
-    if (!quest) return { id: null, name: 'No active quest', objectives: [] };
+    if (!quest) return { id: null, name: 'No active quest', objectives: [], sideQuests: [] };
+    // Side quests = active, incomplete quests other than the current chain quest.
+    // Surfaced so optional stories (Prediction Duel, Mariam's Garden) are visible
+    // in the tracker rather than completing invisibly.
+    const sideQuests = [...this.activeQuestIds]
+      .filter((id) => id !== quest.id && !this.completedQuestIds.has(id))
+      .map((id) => this.quests.get(id))
+      .filter(Boolean)
+      .map((side) => ({
+        id: side.id,
+        name: side.name,
+        objectives: side.objectives.map((objective) => ({
+          ...objective,
+          complete: this.completedObjectives.has(objective.id),
+        })),
+      }));
     return {
       id: quest.id,
       name: quest.name,
@@ -67,6 +88,7 @@ export class QuestSystem {
         ...objective,
         complete: this.completedObjectives.has(objective.id),
       })),
+      sideQuests,
     };
   }
 

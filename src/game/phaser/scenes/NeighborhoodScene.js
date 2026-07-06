@@ -987,6 +987,16 @@ export default class NeighborhoodScene extends Phaser.Scene {
       label: 'Plan bridge repair',
       action: 'bridge_plan',
     });
+    // The R3F 3D load sim: an optional enrichment station beside the plan
+    // workbench (the quest path uses the truss designer at bridge_plan). Real,
+    // reachable content — not a shadowed duplicate.
+    this.interactions.register({
+      id: 'bridge_sim_3d',
+      x: bridgePlanWorkbench.x + 96,
+      y: bridgePlanWorkbench.y + 24,
+      label: 'Run the 3D load sim',
+      action: 'bridge_sim_3d',
+    });
     const bridgeDebris = this.layout.bridge_debris;
     this.interactions.register({
       id: 'bridge_repair',
@@ -1388,9 +1398,15 @@ export default class NeighborhoodScene extends Phaser.Scene {
       this._markChapterComplete(2);
       this.showFeedback({ message: 'E-bike powered — circuit built! Chapter 2 underway.' });
     });
-    // Chapter 2 biology pillar — leaving the Extraction Bench reports what the
-    // player learned to make from desert plants.
-    this.registry.events.on('extraction:done', ({ discovered }) => {
+    // Chapter 2 biology pillar — the Extraction Bench reports what the player
+    // learned to make from desert plants. Completion requires REAL results: a
+    // SUITABLE extraction (R3F lab) or actual discoveries (Phaser bench). The
+    // hidden Phaser stub also fires an empty-handed `extraction:done` when
+    // GameShell hides it under the React lab — that must never complete the
+    // pillar.
+    this.registry.events.on('extraction:done', ({ discovered, verdict } = {}) => {
+      const real = verdict === 'SUITABLE' || (discovered && discovered.length);
+      if (!real) return;
       this._markBioComplete(2);
       if (discovered && discovered.length) {
         this.showFeedback({ message: `Ethnobotany: you can now make ${discovered.length} thing(s) from desert plants.` });
@@ -2209,9 +2225,15 @@ export default class NeighborhoodScene extends Phaser.Scene {
           this.registry.set('modalActive', true);
           window.dispatchEvent(new CustomEvent('bikebrowser:open-utm', { detail: { collected } }));
         } else if (nearest.action === 'bridge_plan') {
-          // The bridge now opens the full R3F Bridge Design lab (React overlay via
-          // GameShell): assign the tested materials to deck/cables/towers and run
-          // a live load test. Freeze the player while it is open.
+          // The bridge plan opens the truss designer — family choice, five roles
+          // (deck/support/brace/cable/foundation), brace GEOMETRY (why triangles
+          // hold), and the fail→iterate→hold loop. This is the acceptance-tested
+          // rich flow; the R3F lab is the optional 3D sim next door.
+          this.registry.events.emit('bridgeDesign:start');
+        } else if (nearest.action === 'bridge_sim_3d') {
+          // Optional enrichment: the R3F 3-role load sim (deck/cables/towers)
+          // with the live 3D deflection view. Freeze the player while open;
+          // GameShell clears modalActive on close.
           this.registry.set('modalActive', true);
           window.dispatchEvent(new CustomEvent('bikebrowser:open-lab', { detail: { lab: 'bridge' } }));
         } else if (nearest.action === 'skate_park') {

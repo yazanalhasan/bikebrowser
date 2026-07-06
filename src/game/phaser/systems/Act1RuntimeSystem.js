@@ -114,6 +114,9 @@ export class Act1RuntimeSystem {
       const quest = this.questSystem.quests.get(result.newQuest);
       this.awardZuzuBucks(25, { kind: 'quest', questId: result.newQuest, questName: quest?.name });
     }
+    // Auto-save on real progress: a page refresh must never cost a kid their
+    // quest run (the boot auto-continue in PreloadScene restores it).
+    if (result.ok && result.newObjective) this.saveGame();
     return result;
   }
 
@@ -274,20 +277,35 @@ export class Act1RuntimeSystem {
         return { ok: true };
       },
       collect_materials: () => {
-        this.inventorySystem.addMany(UTM_MATERIAL_IDS);
-        this.unlockNotebookEntries(UTM_MATERIAL_IDS);
-        UTM_MATERIAL_IDS.forEach((id) => this.completeObjective(`collect_${id}`));
-        this.recordFeedback('inventory', 'Mr. Chen material catalog collected: balsa, pine, bamboo, brick, concrete, iron, steel, carbon fiber.');
-        return { ok: true };
+        // One sample per visit: eight objectives mean eight real collections,
+        // not a single click that silently checks all eight boxes.
+        const next = UTM_MATERIAL_IDS.find((id) => !this.questSystem.isObjectiveComplete(`collect_${id}`));
+        if (!next) {
+          this.recordFeedback('inventory', 'Every material in Mr. Chen\'s catalog is already collected.');
+          return { ok: true, done: true };
+        }
+        this.inventorySystem.add(next);
+        this.unlockNotebookEntries([next]);
+        this.completeObjective(`collect_${next}`);
+        const remaining = UTM_MATERIAL_IDS.filter((id) => !this.questSystem.isObjectiveComplete(`collect_${id}`));
+        this.recordFeedback('inventory', remaining.length
+          ? `Collected ${next}. ${remaining.length} sample${remaining.length === 1 ? '' : 's'} left in the catalog.`
+          : `Collected ${next} — the whole material catalog is gathered.`);
+        return { ok: true, collected: next, remaining: remaining.length };
       },
       ecology_patch: () => {
         this.inventorySystem.add('mesquite');
         this.completeObjective('collect_mesquite');
-        // Observe all three desert plants respectfully: completes the
-        // desert_helper objectives (observe_mesquite/creosote/saguaro) and
-        // unlocks their ecology notebook entries (mesquite/creosote/saguaro).
-        ['mesquite', 'creosote', 'saguaro'].forEach((species) => this.observeEcology(species));
-        return { ok: true };
+        // Observe ONE desert plant per respectful visit (mesquite → creosote →
+        // saguaro). Three observe objectives mean three real observations.
+        const species = ['mesquite', 'creosote', 'saguaro']
+          .find((id) => !this.questSystem.isObjectiveComplete(`observe_${id}`));
+        if (!species) {
+          this.recordFeedback('ecology', 'All three desert plants are already in the notebook.');
+          return { ok: true, done: true };
+        }
+        this.observeEcology(species);
+        return { ok: true, observed: species };
       },
       utm: () => UTM_MATERIAL_IDS.map((id) => this.testMaterial(id)),
       bridge_plan: () => this.completeBridgePlan('tested_triangle_plan'),

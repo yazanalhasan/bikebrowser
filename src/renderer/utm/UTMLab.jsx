@@ -21,7 +21,7 @@ const VERDICTS = [
 
 const LIB_KEY = 'bikebrowser_material_results';
 
-export default function UTMLab({ onMaterialTested } = {}) {
+export default function UTMLab({ onMaterialTested, onMaterialPredicted } = {}) {
   const { materials, getMaterialById } = useMaterials();
   const sounds = useUTMSounds();
 
@@ -196,7 +196,12 @@ export default function UTMLab({ onMaterialTested } = {}) {
               prompt={`Predict: is ${selected.name} suitable for the ${buildTask.name}?`}
               options={VERDICTS}
               predicted={predicted}
-              onPredict={setPredicted}
+              onPredict={(verdict) => {
+                setPredicted(verdict);
+                // Record into the runtime prediction ledger so game state (and the
+                // reachability acceptance) can prove prediction preceded the test.
+                onMaterialPredicted?.(selected.id, verdict);
+              }}
               revealed={revealed}
               actual={result ? rateSuitability(selected, buildTask).label : null}
               disabled={isRunning}

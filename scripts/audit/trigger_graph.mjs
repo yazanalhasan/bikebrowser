@@ -31,8 +31,10 @@ const ALLOW = {
   orphanEmits: new Set([
     // scene completion pings; each scene applies its own effects + emits
     // quest:changed (which IS listened). Reviewed 2026-06-21 as fire-and-forget.
-    'biome:done', 'ecology:done', 'investigation:done', 'prediction:done',
+    'biome:done', 'ecology:done', 'investigation:done',
     'bridgeDesign:done', 'crossing:done', 'skate:done',
+    // (prediction:done removed 2026-07-06 with PredictionScene — the predict-
+    // before-test flow now lives in the R3F UTM lab with a runtime ledger.)
     // Vehicle Ladder (chapter map, §3) open/close pings — fire-and-forget
     // notifications; the navigable action is `chapter:enter` (which IS listened).
     // Reviewed 2026-06-21 as benign.
@@ -41,6 +43,10 @@ const ALLOW = {
     // `circuit:built` (bench→neighborhood, marks Ch2 complete) ARE listened;
     // these are fire-and-forget notifications. Reviewed 2026-06-21.
     'circuit:done', 'circuit:opened', 'circuit:solved', 'progression:changed',
+    // bio:progression:changed — biology-spine twin of progression:changed;
+    // fire-and-forget HUD ping, persisted state is the source of truth.
+    // Reviewed 2026-07-06 alongside the GameShell bio doors.
+    'bio:progression:changed',
     // Chapter 2 Extraction Bench (ethnobotany) pings — `extraction:start`
     // (circuit hub→bench) and `extraction:done` ARE listened; these are
     // fire-and-forget notifications. Reviewed 2026-06-21.

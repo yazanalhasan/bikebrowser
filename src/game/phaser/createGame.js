@@ -1,11 +1,9 @@
 import Phaser from 'phaser';
 import BootScene from './scenes/BootScene.js';
 import PreloadScene from './scenes/PreloadScene.js';
-import WorldMapScene from './scenes/WorldMapScene.js';
 import NeighborhoodScene from './scenes/NeighborhoodScene.js';
 import QuestScene from './scenes/QuestScene.js';
 import DialogueScene from './scenes/DialogueScene.js';
-import PredictionScene from './scenes/PredictionScene.js';
 import BridgeDesignScene from './scenes/BridgeDesignScene.js';
 import LoadTestScene from './scenes/LoadTestScene.js';
 import CrossingScene from './scenes/CrossingScene.js';
@@ -52,11 +50,9 @@ export function createGame(parent) {
     scene: [
       BootScene,
       PreloadScene,
-      WorldMapScene,
       NeighborhoodScene,
       QuestScene,
       DialogueScene,
-      PredictionScene,
       BridgeDesignScene,
       LoadTestScene,
       CrossingScene,

@@ -156,16 +156,17 @@ export default class DialogueScene extends Phaser.Scene {
     this.showLine(result);
   }
 
-  // Graceful leave from any state. Clears any choice menu, force-closes the
-  // active dialogue (applying its base completions so a quest-critical talk is
-  // never abandoned half-done), hides the box, unfreezes the player, and stops
-  // speech. Reachable via Esc or the ✕ button. Idempotent and safe to re-fire.
+  // Graceful leave from any state. Clears any choice menu and closes the active
+  // dialogue. Base completions/effects apply only if the player actually heard
+  // the conversation (DialogueSystem.leave decides) — an instant Esc can't
+  // complete a quest-critical talk, and re-talking is always possible.
+  // Reachable via Esc or the ✕ button. Idempotent and safe to re-fire.
   _leaveDialogue() {
     if (!this.panel.visible && !this.choices) return;
     this._clearChoices();
     const res = this.registry.get('dialogueSystem')?.leave();
     if (res) {
-      this._closeConversation(res.dialogueId, res.completesObjective, res.completes);
+      this._closeConversation(res.dialogueId, res.completesObjective, res.completes, { abandoned: res.abandoned });
       return;
     }
     this.panel.setVisible(false);
@@ -174,11 +175,12 @@ export default class DialogueScene extends Phaser.Scene {
     this.registry.events.emit('quest:changed');
   }
 
-  _closeConversation(dialogueId, completesObjective, completes = []) {
+  _closeConversation(dialogueId, completesObjective, completes = [], { abandoned = false } = {}) {
     this.panel.setVisible(false);
     this.registry.set('dialogueActive', false);
     this.registry.get('act1AudioSystem')?.stopSpeech();
-    if (dialogueId) this.registry.get('act1Runtime')?.applyDialogueEffects(dialogueId);
+    // Abandoned early: no effects, no completions — the conversation was not heard.
+    if (dialogueId && !abandoned) this.registry.get('act1Runtime')?.applyDialogueEffects(dialogueId);
     const questSystem = this.registry.get('questSystem');
     if (completesObjective) questSystem?.completeObjective(completesObjective);
     for (const objectiveId of completes || []) questSystem?.completeObjective(objectiveId);

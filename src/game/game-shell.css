@@ -42,6 +42,16 @@
 }
 .bb-utm-close:hover { background: #1f2937; }
 
+/* Dual-spine door: the engineering lab's cross-link to its biology pillar.
+   Sits left of the close button; green accent to read as "biology". */
+.bb-bio-door {
+  right: auto;
+  left: 16px;
+  border-color: #2f6b3f;
+  color: #bfe3c3;
+}
+.bb-bio-door:hover { background: #16281c; }
+
 .bb-utm-loading {
   display: flex;
   align-items: center;

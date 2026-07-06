@@ -74,18 +74,20 @@ export class DialogueSystem {
   }
 
   // Leave the conversation immediately, from ANY point (mid-line or at a choice
-  // menu). The player has engaged the NPC, so the active dialogue's base
-  // completions still apply — backing out of a quest-critical talk does not lose
-  // progress or softlock; the player simply doesn't commit a branch choice.
-  // Returns the same shape as a natural close, or null if nothing is active.
+  // menu). Completion integrity: base completions only apply when the player has
+  // actually HEARD the dialogue (they are on the final line or at the choice
+  // menu). An early Esc abandons without progress — opening a quest-critical
+  // talk and immediately backing out must not complete it. No softlock either
+  // way: every conversation can simply be started again.
   leave() {
     if (!this.active) return null;
     const dialogueId = this.active.id;
-    const completesObjective = this.active.completesObjective || null;
-    const completes = this.active.completes || [];
+    const heardItAll = this.index >= this._lines().length - 1;
+    const completesObjective = heardItAll ? this.active.completesObjective || null : null;
+    const completes = heardItAll ? this.active.completes || [] : [];
     this.active = null;
     this.index = 0;
-    return { closed: true, dialogueId, completesObjective, completes };
+    return { closed: true, dialogueId, completesObjective, completes, abandoned: !heardItAll };
   }
 
   choose(choiceId) {

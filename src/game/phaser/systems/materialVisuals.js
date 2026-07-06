@@ -4,8 +4,8 @@
 // about WHY a material holds or fails. Each material now reads as its own family
 // (warm pixel palette) with a procedural surface texture; failure is curve-driven
 // (brittle -> crack, ductile -> bend). Procedural primitives only (no painted
-// asset), so this is a freeze-safe clarity edit. Used by both PredictionScene
-// (the player-facing predict-then-test modal) and the ambient neighbourhood rig.
+// asset), so this is a freeze-safe clarity edit. Used by the ambient
+// neighbourhood rig (the predict-then-test flow now lives in the R3F UTM lab).
 export const MATERIAL_VIS = {
   balsa: { base: 0xe7d6a2, detail: 0xc8b173, pattern: 'grain' },
   pine: { base: 0xd2a062, detail: 0xa06a33, pattern: 'grain' },

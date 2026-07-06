@@ -20,6 +20,8 @@
     "build": "vite build",
     "build:electron": "electron-builder",
     "lint": "eslint src --ext js,jsx",
+    "test": "node --test \"tests/*.test.mjs\"",
+    "test:unit": "node --test \"tests/*.test.mjs\"",
     "tunnel": "cloudflared tunnel run bikebrowser",
     "check:health": "node scripts/check-health.js",
     "art:audit:act1": "node scripts/art_audit/capture_runtime_character_frames.mjs",

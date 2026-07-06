@@ -78,7 +78,12 @@ export default function ExtractionLab() {
       benchRef.current.grinding = false; benchRef.current.bubbling = false; benchRef.current.t = 1;
       setIsRunning(false); setComplete(true); setRevealed(true); setPhaseLabel('done');
       if (result.rating.label === 'UNSUITABLE') sounds.buzz(); else sounds.ping();
-      emitGameEvent('extraction:done', { plant: plant.id, solvent: solventId, discovered: result.identified, verdict: result.rating.label });
+      // Completion only on a genuinely suitable extraction — same gate as every
+      // sibling lab. A poor solvent match must not complete the chapter's
+      // biology pillar ("test before you trust").
+      if (result.rating.label === 'SUITABLE') {
+        emitGameEvent('extraction:done', { plant: plant.id, solvent: solventId, discovered: result.identified, verdict: result.rating.label });
+      }
     }, TOTAL + 50));
   }, [plant, solventId, isRunning, predicted, result, sounds]);
 

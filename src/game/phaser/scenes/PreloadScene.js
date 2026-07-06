@@ -39,11 +39,14 @@ export default class PreloadScene extends Phaser.Scene {
     const runtime = new Act1RuntimeSystem(this.game);
     runtime.bindRegistry(this.registry);
     runtime.restoreProgression(); // keep unlocked chapters across a reload
+    // Auto-continue: a refresh restores the whole run (quests, inventory,
+    // bridge), not just the ladder. No save / invalid save is a clean no-op,
+    // and resetAct1() still gives a fresh slate.
+    runtime.loadGame();
     window.__GAME__ = runtime.createDebugApi();
     this.scene.start('NeighborhoodScene');
     this.scene.launch('QuestScene');
     this.scene.launch('DialogueScene');
-    this.scene.launch('PredictionScene');
     this.scene.launch('BridgeDesignScene');
     this.scene.launch('LoadTestScene');
     this.scene.launch('CrossingScene');

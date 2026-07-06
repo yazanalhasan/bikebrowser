@@ -20,7 +20,6 @@ export function detectSceneContext() {
   const w = window;
   if (w.__BIOME__?.active) return { scene: 'BiomeScene', object: w.__BIOME__.placementId || 'salt_river' };
   if (w.__ECOLOGY__?.active) return { scene: 'EcologyScene', object: w.__ECOLOGY__.placementId || null };
-  if (w.__PREDICTION__?.active) return { scene: 'PredictionScene', object: 'utm_material_test' };
   if (w.__BRIDGE_DESIGN__?.active) return { scene: 'BridgeDesignScene', object: 'bridge_design_station' };
   if (w.__INVESTIGATION__?.active) return { scene: 'InvestigationScene', object: w.__INVESTIGATION__.id || 'wash_out_cause' };
   // Default: the open world — report the nearest interaction the player is at.

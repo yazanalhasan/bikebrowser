@@ -22,10 +22,7 @@ const LAB_COMPONENTS = {
   ferment: lazy(() => import('../renderer/ferment/FermentLab.jsx')),
   mechanism: lazy(() => import('../renderer/mechanism/MechanismLab.jsx')),
   ecosystem: lazy(() => import('../renderer/ecosystem/EcosystemLab.jsx')),
-  loadtest: lazy(() => import('../renderer/loadtest/LoadTestLab.jsx')),
   skate: lazy(() => import('../renderer/skate/SkateLab.jsx')),
-  ecology: lazy(() => import('../renderer/habitat/EcologyLab.jsx')),
-  biome: lazy(() => import('../renderer/habitat/BiomeLab.jsx')),
 };
 const LAB_TITLE = {
   utm: 'Universal Testing Machine', bridge: 'Bridge Design', dyno: 'Engine Dyno',
@@ -33,8 +30,8 @@ const LAB_TITLE = {
   boat: 'Hydro Tank', vacuum: 'Vacuum & Re-entry Chamber',
   extraction: 'Extraction Bench', phyto: 'Phytochemistry Lab', microscope: 'Microscope',
   ferment: 'Fermentation Bench', mechanism: 'Molecular Mechanism Bench',
-  ecosystem: 'Ecosystem Engineering', loadtest: 'Load Test',
-  skate: 'Skate Park', ecology: 'Desert Ecology', biome: 'Salt River Biome',
+  ecosystem: 'Ecosystem Engineering',
+  skate: 'Skate Park',
 };
 // The chapter bench labs replace a Phaser bench scene, triggered by its registry
 // start event. We open the React lab and hide the Phaser stub it supersedes.
@@ -52,11 +49,26 @@ const LAB_TRIGGERS = [
   { lab: 'ferment', start: 'ferment:start', scene: 'FermentBenchScene' },
   { lab: 'mechanism', start: 'mech:start', scene: 'MechanismScene' },
   { lab: 'ecosystem', start: 'eco:start', scene: 'EcosystemScene' },
-  { lab: 'loadtest', start: 'loadTest:start', scene: 'LoadTestScene' },
-  { lab: 'ecology', start: 'ecology:start', scene: 'EcologyScene' },
-  { lab: 'biome', start: 'biome:start', scene: 'BiomeScene' },
+  // NOTE: loadTest:start, ecology:start and biome:start deliberately have NO
+  // React triggers — the truss designer flows into the Phaser LoadTestScene,
+  // and the in-world Salt River / planting loops are the Phaser Ecology/Biome
+  // scenes (beat-driven, notebook-integrated, acceptance-tested). Their React
+  // twins stay reachable at /loadtest-lab, /ecology-lab and /biome-lab.
 ];
 const SCENE_BY_LAB = Object.fromEntries(LAB_TRIGGERS.map((t) => [t.lab, t.scene]));
+const START_BY_LAB = Object.fromEntries(LAB_TRIGGERS.map((t) => [t.lab, t.start]));
+// Dual spine (arc.md): every engineering chapter rig cross-links to its chapter's
+// biology pillar. The Phaser bench scenes carried this door, but they are hidden
+// under the React labs — the door must live on the visible overlay or the whole
+// biology spine is unreachable in normal play.
+const BIO_DOOR = {
+  circuit: { lab: 'extraction', label: '🌿 Extraction Bench →' },
+  dyno: { lab: 'phyto', label: '🌿 Phytochemistry Lab →' },
+  crash: { lab: 'microscope', label: '🧫 Microscope →' },
+  boat: { lab: 'ferment', label: '🧪 Fermentation Bench →' },
+  tunnel: { lab: 'mechanism', label: '🧬 Mechanism Bench →' },
+  vacuum: { lab: 'ecosystem', label: '🌎 Ecosystem Engineering →' },
+};
 
 export default function GameShell() {
   const hostRef = useRef(null);
@@ -114,8 +126,34 @@ export default function GameShell() {
     } catch { /* game gone */ }
   };
 
+  // Anti-trap guarantee: every lab overlay closes on Escape, exactly like the
+  // Phaser modals it replaced — the player is never stuck in an apparatus.
+  useEffect(() => {
+    if (!lab) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') close(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+
   // Record a tested material back into the game so objectives/discoveries advance.
   const handleMaterialTested = (id) => { try { window.__GAME__?.testMaterial?.(id); } catch { /* not ready */ } };
+  // Record predictions into the runtime ledger too — the lab UI gates test-on-
+  // predict, but "prediction precedes intervention" (arc.md) must also be TRUE in
+  // the game state the acceptance suite reads, not just in local component state.
+  const handleMaterialPredicted = (id, verdict) => {
+    try { window.__GAME__?.predictMaterial?.(id, verdict === 'SUITABLE', 'medium', `UTM lab prediction: ${verdict}`); } catch { /* not ready */ }
+  };
+
+  // Walk through the dual-spine door: emit the biology bench's start trigger so
+  // the normal open() path (including hiding the superseded Phaser stub) runs.
+  const openBioDoor = () => {
+    const door = BIO_DOOR[lab];
+    if (!door) return;
+    try {
+      const game = window.__bikebrowserRebuildGame;
+      if (game && START_BY_LAB[door.lab]) game.registry.events.emit(START_BY_LAB[door.lab]);
+    } catch { /* game gone */ }
+  };
 
   const LabComponent = lab ? LAB_COMPONENTS[lab] : null;
 
@@ -126,8 +164,16 @@ export default function GameShell() {
       {LabComponent && (
         <div className="bb-utm-overlay" role="dialog" aria-modal="true" aria-label={LAB_TITLE[lab]}>
           <button type="button" className="bb-utm-close" onClick={close}>✕ Close {LAB_TITLE[lab]}</button>
+          {BIO_DOOR[lab] && (
+            <button type="button" className="bb-utm-close bb-bio-door" data-testid="bio-door" onClick={openBioDoor}>
+              {BIO_DOOR[lab].label}
+            </button>
+          )}
           <Suspense fallback={<div className="bb-utm-loading">Loading {LAB_TITLE[lab]}…</div>}>
-            <LabComponent onMaterialTested={lab === 'utm' ? handleMaterialTested : undefined} plan={lab === 'loadtest' ? labDetail : undefined} />
+            <LabComponent
+              onMaterialTested={lab === 'utm' ? handleMaterialTested : undefined}
+              onMaterialPredicted={lab === 'utm' ? handleMaterialPredicted : undefined}
+            />
           </Suspense>
         </div>
       )}
