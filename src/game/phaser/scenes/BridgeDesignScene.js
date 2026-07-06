@@ -27,7 +27,7 @@ const ZONES = [
   { key: 'deck', label: 'DECK', hint: 'the roadway you ride across', x: 640, y: 274, w: 300, h: 26, ideal: 0, tip: 'lay it flat' },
   { key: 'support', label: 'SUPPORT', hint: 'the legs that carry the load down', x: 640, y: 402, w: 56, h: 96, ideal: 90, tip: 'stand it vertical' },
   { key: 'brace', label: 'BRACE', hint: 'the triangle that stiffens the span', x: 640, y: 338, w: 150, h: 60, ideal: 45, tip: 'angle it diagonal' },
-  { key: 'cable', label: 'CABLE', hint: 'lines that pull the deck up — tension', x: 640, y: 204, w: 330, h: 30, ideal: 135, tip: 'string it taut' },
+  { key: 'cable', label: 'CABLE', hint: 'the top tie that carries tension across the span', x: 640, y: 204, w: 330, h: 22, ideal: 0, tip: 'string it taut across the top' },
   { key: 'foundation', label: 'FOUNDATION', hint: 'anchors pressed into the ground — compression', x: 640, y: 474, w: 220, h: 30, ideal: 0, tip: 'seat it on bedrock' },
 ];
 const ZONE_BY_KEY = Object.fromEntries(ZONES.map((z) => [z.key, z]));
@@ -73,20 +73,43 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.matById = new Map(act1Materials.map((m) => [m.id, m]));
 
     // --- static chrome (one container we show/hide) -------------------------
+    // Visual foundation (2026-07-06 rework): the leonardo notebook art has the
+    // arch/truss study sketches BAKED IN — used near-opaque as the backdrop it
+    // fought every menu drawn on top. Now: a dark scrim over the world, a calm
+    // solid-parchment panel that actually CONTAINS all the UI (the old 960×600
+    // art left the tray/hints/meters floating naked over the world), and the
+    // notebook art as a whisper of texture, not the wallpaper.
     this.chrome = this.add.container(0, 0).setScrollFactor(0).setDepth(1400).setVisible(false);
-    const leoKey = this.textures.exists(ASSET_KEYS.leonardoNotebookArt) ? ASSET_KEYS.leonardoNotebookArt : ASSET_KEYS.leonardoNotebookBackdrop;
-    const bg = this.add.image(640, 300, leoKey).setOrigin(0.5).setDisplaySize(960, 600).setAlpha(0.97);
-    const wash = this.add.image(640, 360, ASSET_KEYS.washCrossingBackdrop).setOrigin(0.5).setDisplaySize(620, 150).setAlpha(0.28);
-    this.title = this.add.text(640, 54, '', { fontFamily: 'Georgia, serif', fontSize: '24px', color: '#3a2a18', fontStyle: 'bold' }).setOrigin(0.5);
-    this.subtitle = this.add.text(640, 86, '', { fontFamily: 'Georgia, serif', fontSize: '14px', color: '#5a3d22', align: 'center', wordWrap: { width: 820 } }).setOrigin(0.5);
+    const scrim = this.add.rectangle(640, 360, 1280, 720, 0x140f08, 0.62);
+    const panelGfx = this.add.graphics();
+    panelGfx.fillStyle(0xf0e3c0, 0.985).fillRoundedRect(100, 22, 1080, 656, 14);
+    panelGfx.lineStyle(4, 0x4a341e, 0.9).strokeRoundedRect(100, 22, 1080, 656, 14);
+    panelGfx.lineStyle(2, 0x8a6a3c, 0.7).strokeRoundedRect(112, 34, 1056, 632, 10);
+    // NOTE: the leonardo_notebook art is a self-contained illustration with its
+    // OWN frame and baked-in text ("Load Test — does the bridge hold?", "Holds
+    // the herd"). Behind the live UI it read as a fake result already on screen,
+    // which is most of why this scene looked broken. It is NOT used as the
+    // backdrop. Faint hand-drawn margin flourishes give the notebook feel
+    // without competing text.
+    const margin = this.add.graphics();
+    margin.lineStyle(1, 0x8a6a3c, 0.22);
+    for (let i = 0; i < 26; i += 1) { const y = 60 + i * 22; margin.lineBetween(150, y, 168, y); } // ruled left margin
+    margin.lineStyle(2, 0x8a6a3c, 0.18).lineBetween(178, 46, 178, 654); // margin rule
+    // Tray strip: a real shelf for the material parts, inside the panel.
+    this.trayStrip = this.add.graphics();
+    this.trayStrip.fillStyle(0xe3d0a2, 0.6).fillRoundedRect(140, 592, 1000, 58, 8);
+    this.trayStrip.lineStyle(2, 0x8a6a3c, 0.55).strokeRoundedRect(140, 592, 1000, 58, 8);
+    this.trayStrip.setVisible(false);
+    this.title = this.add.text(640, 56, '', { fontFamily: 'Georgia, serif', fontSize: '24px', color: '#3a2a18', fontStyle: 'bold' }).setOrigin(0.5);
+    this.subtitle = this.add.text(640, 88, '', { fontFamily: 'Georgia, serif', fontSize: '14px', color: '#5a3d22', align: 'center', wordWrap: { width: 820 } }).setOrigin(0.5);
     this.ghostGfx = this.add.graphics();      // truss zones
     this.activeGfx = this.add.graphics();     // truss active zone
     this.dvGfx = this.add.graphics();         // da vinci ghost arch + slot states
     this.dvActiveGfx = this.add.graphics();   // da vinci active slot
     this.zoneLabels = ZONES.map((z) => this.add.text(z.x, z.y, z.label, { fontFamily: 'Georgia, serif', fontSize: '11px', color: '#7a5a32' }).setOrigin(0.5).setAlpha(0.7));
-    this.verdict = this.add.text(640, 548, '', { fontFamily: 'Georgia, serif', fontSize: '17px', color: '#3a2a18', fontStyle: 'bold', align: 'center', wordWrap: { width: 760 } }).setOrigin(0.5);
-    this.trayLabel = this.add.text(640, 588, '', { fontFamily: 'Georgia, serif', fontSize: '12px', color: '#6f5430' }).setOrigin(0.5);
-    this.hint = this.add.text(640, 700, '', { fontFamily: 'Georgia, serif', fontSize: '12px', color: '#6f5430' }).setOrigin(0.5);
+    this.verdict = this.add.text(640, 540, '', { fontFamily: 'Georgia, serif', fontSize: '17px', color: '#3a2a18', fontStyle: 'bold', align: 'center', wordWrap: { width: 900 } }).setOrigin(0.5);
+    this.trayLabel = this.add.text(640, 578, '', { fontFamily: 'Georgia, serif', fontSize: '12px', color: '#6f5430' }).setOrigin(0.5);
+    this.hint = this.add.text(640, 662, '', { fontFamily: 'Georgia, serif', fontSize: '12px', color: '#6f5430' }).setOrigin(0.5);
 
     this.meterDefs = [
       { key: 'strength', label: 'Strength', good: true },
@@ -96,15 +119,15 @@ export default class BridgeDesignScene extends Phaser.Scene {
       { key: 'cost', label: 'Cost', good: false },
     ];
     this.meterGfx = this.add.graphics();
-    this.meterLabels = this.meterDefs.map((d, i) => this.add.text(70, 214 + i * 30, d.label, { fontFamily: 'Georgia, serif', fontSize: '11px', color: '#6f5430' }).setOrigin(0, 0));
+    this.meterLabels = this.meterDefs.map((d, i) => this.add.text(150, 214 + i * 30, d.label, { fontFamily: 'Georgia, serif', fontSize: '11px', color: '#6f5430' }).setOrigin(0, 0));
 
-    this.testBtn = this.add.container(640, 624).setVisible(false);
+    this.testBtn = this.add.container(640, 540).setVisible(false);
     this.testBtnBg = this.add.rectangle(0, 0, 220, 46, 0x6f9a4a, 1).setStrokeStyle(3, 0x3f5e28, 1);
     this.testBtnTxt = this.add.text(0, 0, '⚒  TEST BRIDGE', { fontFamily: 'Georgia, serif', fontSize: '18px', color: '#fdfbe9', fontStyle: 'bold' }).setOrigin(0.5);
     this.testBtn.add([this.testBtnBg, this.testBtnTxt]);
     this.testBtnBg.setInteractive({ useHandCursor: true }).on('pointerup', () => { if (this.phase === 'ready' || this.phase === 'dv_ready') this._testBridge(); });
 
-    this.chrome.add([bg, wash, this.title, this.subtitle, this.ghostGfx, this.activeGfx, this.dvGfx, this.dvActiveGfx,
+    this.chrome.add([scrim, panelGfx, margin, this.trayStrip, this.title, this.subtitle, this.ghostGfx, this.activeGfx, this.dvGfx, this.dvActiveGfx,
       ...this.zoneLabels, this.meterGfx, ...this.meterLabels, this.verdict, this.trayLabel, this.hint, this.testBtn]);
 
     this._drawGhost();
@@ -139,6 +162,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
   }
 
   _hideAllModeGfx() {
+    this.trayStrip.setVisible(false);
     this.ghostGfx.setVisible(false); this.activeGfx.clear();
     this.dvGfx.setVisible(false).clear(); this.dvActiveGfx.clear();
     this.zoneLabels.forEach((l) => l.setVisible(false));
@@ -170,11 +194,11 @@ export default class BridgeDesignScene extends Phaser.Scene {
       const selected = i === this.familyIdx;
       const ready = fam.status === 'ready';
       const row = this.add.container(640, y).setScrollFactor(0).setDepth(1430);
-      const box = this.add.rectangle(0, 0, 600, 58, 0xe7d6ac, selected ? 0.92 : 0.5)
-        .setStrokeStyle(selected ? 4 : 2, selected ? 0xe0a93a : 0x8a6a3c, selected ? 1 : 0.6);
-      const name = this.add.text(-280, -14, fam.name, { fontFamily: 'Georgia, serif', fontSize: '18px', color: ready ? '#3a2a18' : '#8a7a5a', fontStyle: 'bold' }).setOrigin(0, 0);
-      const concept = this.add.text(-280, 10, fam.concept, { fontFamily: 'Georgia, serif', fontSize: '12px', color: ready ? '#5a3d22' : '#9a8a6a' }).setOrigin(0, 0);
-      const badge = this.add.text(280, 0, ready ? 'BUILD ▶' : 'soon', { fontFamily: 'Georgia, serif', fontSize: ready ? '15px' : '12px', color: ready ? '#2f6b2a' : '#9a8a6a', fontStyle: ready ? 'bold' : 'italic' }).setOrigin(1, 0.5);
+      const box = this.add.rectangle(0, 0, 640, 58, selected ? 0xf6ead0 : 0xe7d6ac, selected ? 0.98 : 0.88)
+        .setStrokeStyle(selected ? 4 : 2, selected ? 0xe0a93a : 0x8a6a3c, selected ? 1 : 0.7);
+      const name = this.add.text(-300, -14, fam.name, { fontFamily: 'Georgia, serif', fontSize: '18px', color: ready ? '#3a2a18' : '#7d6c50', fontStyle: 'bold' }).setOrigin(0, 0);
+      const concept = this.add.text(-300, 10, fam.concept, { fontFamily: 'Georgia, serif', fontSize: '12px', color: ready ? '#5a3d22' : '#8d7c60' }).setOrigin(0, 0);
+      const badge = this.add.text(300, 0, ready ? 'BUILD ▶' : 'SOON', { fontFamily: 'Georgia, serif', fontSize: ready ? '15px' : '11px', color: ready ? '#2f6b2a' : '#8d7c60', fontStyle: ready ? 'bold' : 'italic' }).setOrigin(1, 0.5);
       row.add([box, name, concept, badge]);
       box.setInteractive({ useHandCursor: true })
         .on('pointerover', () => { this.familyIdx = i; this._renderFamily(); this._publish(); })
@@ -230,6 +254,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
   _showChoose() {
     this.phase = 'choose';
+    this.trayStrip.setVisible(true);
     this.ghostGfx.setVisible(true); this.zoneLabels.forEach((l) => l.setVisible(true));
     this.meterLabels.forEach((l) => l.setVisible(true));
     this.testBtn.setVisible(false);
@@ -284,7 +309,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
   _drawGhost() {
     const g = this.ghostGfx;
     g.clear();
-    g.fillStyle(0x6b4a2a, 0.12).fillRect(420, 300, 440, 210);
+    g.fillStyle(0x6b4a2a, 0.08).fillRoundedRect(420, 300, 440, 210, 18);
     ZONES.forEach((z) => {
       g.lineStyle(2, 0x8a6a3c, 0.55);
       g.fillStyle(0xe7d6ac, 0.18);
@@ -307,14 +332,14 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.trayPieces.forEach((p) => p.destroy());
     this.trayPieces = [];
     const n = this.candidates.length;
-    const span = Math.min(1100, n * 150);
+    const span = Math.min(960, n * 120);
     const x0 = 640 - span / 2 + span / (2 * n);
     this.candidates.forEach((c, i) => {
       const x = n > 1 ? x0 + (span / n) * i : 640;
       const piece = this._makePiece(c.id, c, 96, 34, false);
-      piece.setPosition(x, 636);
+      piece.setPosition(x, 620);
       piece.setData('matIdx', i);
-      piece.setData('home', { x, y: 636 });
+      piece.setData('home', { x, y: 620 });
       piece.setSize(96, 34).setInteractive({ useHandCursor: true });
       this.input.setDraggable(piece);
       // Click (not drag) a tray part to pick it up; then E or drag-to-slot places it.
@@ -560,6 +585,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.phase = 'dv_build';
     this._clearDynamic();
     this._hideAllModeGfx();
+    this.trayStrip.setVisible(true);
     this.dvGfx.setVisible(true);
     this.title.setText('Build the self-supporting arch');
     this.trayLabel.setText('Drag a beam onto a slot, or ◀ ▶ choose a slot then E');
@@ -576,8 +602,8 @@ export default class BridgeDesignScene extends Phaser.Scene {
     this.dvBeam?.destroy();
     const wood = this.dvWoods[this.dvWoodIdx] || { id: this.dvWood, name: this.dvWood, safe: true };
     const beam = this._makeBeam(this.dvWood, wood, 76, 16);
-    beam.setPosition(640, 636).setAngle(0);
-    beam.setData('home', { x: 640, y: 636 });
+    beam.setPosition(640, 620).setAngle(0);
+    beam.setData('home', { x: 640, y: 620 });
     beam.setData('isDvBeam', true);
     beam.setSize(86, 30).setInteractive({ useHandCursor: true });
     this.input.setDraggable(beam);
@@ -924,6 +950,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
 
   _enterResult() {
     this.phase = 'result';
+    this.trayStrip.setVisible(false);
     this.tweens.killTweensOf(this.testBtn);
     this.testBtn.setVisible(false);
     this.meterGfx.clear(); this.meterLabels.forEach((l) => l.setVisible(false));
@@ -973,7 +1000,7 @@ export default class BridgeDesignScene extends Phaser.Scene {
     const g = this.meterGfx;
     g.clear();
     this.meterDefs.forEach((d, i) => {
-      const x = 70; const y = 228 + i * 30; const w = 90; const h = 7;
+      const x = 150; const y = 228 + i * 30; const w = 90; const h = 7;
       const val = Math.max(0, Math.min(1, v[d.key] || 0));
       const score = d.good ? val : 1 - val;
       const color = score > 0.6 ? 0x4e8a3a : score > 0.34 ? 0xb0892a : 0x9a4a2a;

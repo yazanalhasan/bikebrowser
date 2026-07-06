@@ -88,6 +88,32 @@ full validation suite.
   on every first-time objective completion + auto-continue at boot (verified
   live: full run restored after reload — quests, bridge, ZuzuBucks, ladder).
 
+## Bridge Design scene visual rework (2026-07-06, follow-up)
+
+The user flagged the bridge-building scene as "still terrible." Looking at it
+in real Chrome revealed three compounding problems, all fixed:
+
+1. **The `leonardo_notebook` art was the wallpaper.** It's a self-contained
+   illustration with its OWN frame and BAKED-IN TEXT ("Load Test — does the
+   bridge hold?", "Holds the herd — max stress 79%"). Used near-opaque as the
+   backdrop, during the *build* phase it read as a finished result already on
+   screen. Removed from the backdrop entirely; replaced with a calm solid
+   parchment panel + faint ruled-margin flourishes for the notebook feel.
+2. **The UI floated naked over the world.** The old 960×600 art left the tray,
+   hints, and meters scattered over the neighborhood behind it. Now a dark
+   scrim isolates the scene and a bordered panel actually contains every
+   element (title, meters, build area, tray shelf, verdict, hint).
+3. **The cable piece looked broken.** Its 135° "ideal" swung a 330px-wide bar
+   diagonally clear across the span, stabbing past the deck — the single worst
+   offender. Changed to a flat top tie (ideal 0°) that seats cleanly as the
+   span's top chord; still honestly in tension, material-teaching preserved.
+
+Result: the assembled truss now reads top-to-bottom as a real cross-section
+(top tie → deck → diagonal brace → vertical support → foundation); the Da Vinci
+arch build view is clean; the blocked/no-materials state is legible. Verified
+in Chrome across family select, truss assemble, load-test hold, Da Vinci build,
+and blocked states.
+
 ## Still open / follow-ups
 
 - **Chapters 2–7 remain single-rig previews by design** (ladder labels them IN
