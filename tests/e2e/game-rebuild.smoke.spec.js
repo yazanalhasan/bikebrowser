@@ -108,8 +108,8 @@ test.describe('game graphics reset route', () => {
 
     const unlockedMapHudState = await page.evaluate(() => {
       const game = window.__GAME__;
-      game.handleInteraction('collect_materials');
-      game.handleInteraction('ecology_patch');
+      for (let i = 0; i < 8; i += 1) game.handleInteraction('collect_materials');
+      for (let i = 0; i < 3; i += 1) game.handleInteraction('ecology_patch');
       ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => game.testMaterial(id));
       game.completeBridgePlan('tested_triangle_plan');
       game.repairBridge();

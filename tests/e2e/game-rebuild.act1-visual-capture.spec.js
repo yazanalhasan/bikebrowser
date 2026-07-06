@@ -37,8 +37,8 @@ test.describe('Act 1 visual captures', () => {
     await page.screenshot({ path: `${captureDir}/03_bridge_discovery.png`, fullPage: true });
 
     await page.evaluate(() => {
-      window.__GAME__.handleInteraction('collect_materials');
-      window.__GAME__.handleInteraction('ecology_patch');
+      for (let i = 0; i < 8; i += 1) window.__GAME__.handleInteraction('collect_materials');
+      for (let i = 0; i < 3; i += 1) window.__GAME__.handleInteraction('ecology_patch');
       ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => window.__GAME__.testMaterial(id));
     });
     await frame(page, 742, 408);
@@ -91,8 +91,8 @@ test.describe('Act 1 visual captures', () => {
       const game = window.__GAME__;
       game.resetAct1();
       game.handleInteraction('bike_check');
-      game.handleInteraction('collect_materials');
-      game.handleInteraction('ecology_patch');
+      for (let i = 0; i < 8; i += 1) game.handleInteraction('collect_materials');
+      for (let i = 0; i < 3; i += 1) game.handleInteraction('ecology_patch');
       ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => game.testMaterial(id));
       game.completeBridgePlan('tested_triangle_plan');
       game.repairBridge();

@@ -20,7 +20,6 @@ const legacySceneKeys = [
   'MountainScene',
   'ExplainerScene',
   'CognitiveQuestScene',
-  'WorldMapScene',
   'DesertForagingScene',
   'CopperMineScene',
   'SaltRiverScene',
@@ -99,7 +98,7 @@ test.describe('all scene snapshots', () => {
       }],
       ['game_rebuild_bridge', 1190, 574, () => window.__GAME__.handleInteraction('dry_wash')],
       ['game_rebuild_materials', 742, 408, () => {
-        window.__GAME__.handleInteraction('collect_materials');
+        for (let i = 0; i < 8; i += 1) window.__GAME__.handleInteraction('collect_materials');
         ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => window.__GAME__.testMaterial(id));
       }],
       ['game_rebuild_ecology', 1030, 760, () => {

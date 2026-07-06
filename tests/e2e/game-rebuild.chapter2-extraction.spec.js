@@ -55,8 +55,12 @@ test.describe('Chapter 2 — Extraction Bench (ethnobotany)', () => {
     // Leaving reports the discoveries and closes.
     const closed = await page.evaluate(() => new Promise((resolve) => {
       const game = window.__bikebrowserRebuildGame;
+      const s = game.scene.getScene('ExtractionBenchScene');
       game.registry.events.once('extraction:done', ({ discovered }) => resolve({ discovered }));
-      game.scene.getScene('ExtractionBenchScene').hide();
+      // GameShell hides the bench under the React lab a frame after
+      // extraction:start — re-open so hide() has a close to report.
+      if (!s.open) game.registry.events.emit('extraction:start');
+      setTimeout(() => s.hide(), 80);
     }));
     expect(closed.discovered).toContain('cordage');
 

@@ -90,8 +90,8 @@ test.describe('Player reachability — Salt River biome', () => {
     // Setup only (prerequisite, not the action): open the wider map.
     await page.evaluate(() => {
       const g = window.__GAME__;
-      g.handleInteraction('collect_materials');
-      g.handleInteraction('ecology_patch');
+      for (let i = 0; i < 8; i += 1) g.handleInteraction('collect_materials');
+      for (let i = 0; i < 3; i += 1) g.handleInteraction('ecology_patch');
       ['bamboo', 'steel', 'carbon_fiber'].forEach((id) => g.testMaterial(id));
       g.designBridge({ deck: 'bamboo', support: 'steel', brace: 'carbon_fiber' });
       g.repairBridge();

@@ -177,7 +177,7 @@ test.describe('Act 1 polish hardening', () => {
     expect(tooSoon.reason).toBe('missing_tests');
 
     await page.evaluate(() => {
-      window.__GAME__.handleInteraction('collect_materials');
+      for (let i = 0; i < 8; i += 1) window.__GAME__.handleInteraction('collect_materials');
       ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => window.__GAME__.testMaterial(id));
     });
     const accepted = await page.evaluate(() => window.__GAME__.completeBridgePlan('tested_triangle_plan'));
@@ -194,7 +194,7 @@ test.describe('Act 1 polish hardening', () => {
     await page.evaluate(() => window.__GAME__.resetAct1());
 
     await page.evaluate(() => {
-      window.__GAME__.handleInteraction('collect_materials');
+      for (let i = 0; i < 8; i += 1) window.__GAME__.handleInteraction('collect_materials');
       ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => window.__GAME__.testMaterial(id));
       window.__GAME__.completeBridgePlan('tested_triangle_plan');
       window.__GAME__.repairBridge();

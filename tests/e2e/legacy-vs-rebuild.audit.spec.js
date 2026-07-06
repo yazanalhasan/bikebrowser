@@ -256,7 +256,7 @@ test('REBUILD /game-rebuild runtime audit', async ({ page }) => {
   await page.screenshot({ path: `${DIR}/rebuild_01_bike_check.png`, fullPage: true });
   await step('dry_wash', () => page.evaluate(() => window.__GAME__.handleInteraction('dry_wash')));
   await page.screenshot({ path: `${DIR}/rebuild_02_dry_wash.png`, fullPage: true });
-  await step('collect_materials', () => page.evaluate(() => window.__GAME__.handleInteraction('collect_materials')));
+  await step('collect_materials', () => page.evaluate(() => { for (let i = 0; i < 8; i += 1) window.__GAME__.handleInteraction('collect_materials'); }));
   await step('test_materials', () => page.evaluate(() =>
     ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => window.__GAME__.testMaterial(id))));
   await page.screenshot({ path: `${DIR}/rebuild_03_material_tests.png`, fullPage: true });

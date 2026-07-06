@@ -52,16 +52,10 @@ function readWorld(page) {
   });
 }
 function predictionModalOpen(page) {
-  // The PredictionScene is a PERSISTENT overlay (it shows/hides a panel rather
-  // than stopping), so scene.isActive() is always true. The real "modal up /
-  // player trapped" signal is the visible panel — window.__PREDICTION__.active
-  // (panel.visible) or the modalActive registry flag set in _finish().
-  return page.evaluate(() => {
-    if (window.__PREDICTION__ && typeof window.__PREDICTION__.active === 'boolean') return window.__PREDICTION__.active;
-    const g = window.__bikebrowserRebuildGame;
-    const s = g?.scene?.scenes?.find((x) => /predict/i.test(x.scene?.key || ''));
-    return Boolean(s?.registry?.get?.('modalActive'));
-  });
+  // The predict-before-test flow lives in the R3F UTM lab (a GameShell overlay).
+  // The real "modal up / player trapped" signal is the visible overlay dialog.
+  return page.evaluate(() =>
+    document.querySelector('.bb-utm-overlay')?.getAttribute('aria-label') === 'Universal Testing Machine');
 }
 async function holdKey(page, key, ms) {
   await page.keyboard.down(key);
@@ -152,17 +146,29 @@ async function collectAt(page, id) {
   await page.keyboard.press('e');
   await page.waitForTimeout(250);
 }
-// Drive the prediction overlay (already opened by the caller pressing E at the
-// UTM) to completion so every queued material is genuinely predicted + tested,
-// then it closes. E advances every phase (choose->test, result->next, summary->close).
-async function drivePredictionToCompletion(page) {
-  await page.waitForFunction(() => window.__PREDICTION__ && window.__PREDICTION__.active === true, null, { timeout: 8000 });
-  for (let i = 0; i < 40; i++) {
-    if (!(await page.evaluate(() => window.__PREDICTION__.active))) break;
-    await page.keyboard.press('e');
-    await page.waitForTimeout(240);
+// Drive the R3F UTM lab (already opened by the caller pressing E at the UTM) to
+// completion by real mouse input: for every sample chip — select, predict, run,
+// wait for the result — then close with Escape. Every prediction is recorded in
+// the runtime ledger, so prediction-precedes-intervention is provable state.
+async function drivePredictionToCompletion(page, names = null) {
+  await page.waitForFunction(() =>
+    document.querySelector('.bb-utm-overlay')?.getAttribute('aria-label') === 'Universal Testing Machine', null, { timeout: 8000 });
+  // The overlay chrome mounts before the lazy-loaded lab body (Suspense), so
+  // wait for the sample tray itself — counting too early sees zero chips.
+  await page.locator('.utm-chip').first().waitFor({ timeout: 20000 });
+  const chips = page.locator('.utm-chip');
+  const n = await chips.count();
+  if (!n) throw new Error('UTM lab rendered no material chips');
+  for (let i = 0; i < n; i += 1) {
+    const label = (await chips.nth(i).textContent()) || '';
+    if (names && !names.some((m) => label.includes(m))) continue;
+    await chips.nth(i).click();
+    await page.locator('.pb__opt').first().click();
+    await page.locator('.utm-btn--run').click();
+    await page.locator('.utm-btn--ghost', { hasText: 'Reset' }).first().waitFor({ timeout: 20000 });
   }
-  await page.waitForFunction(() => window.__PREDICTION__.active === false, null, { timeout: 8000 });
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !document.querySelector('.bb-utm-overlay'), null, { timeout: 8000 });
 }
 // In the bridge design overlay, cycle the candidate to `materialId` and commit it.
 async function pickBridgeMaterial(page, materialId) {
@@ -246,7 +252,12 @@ test.describe('player reachability', () => {
     await walkTo(page, utm);
     await page.keyboard.press('e');
     await page.waitForTimeout(900);
-    expect(await predictionModalOpen(page), 'pressing E at the UTM opens the prediction (HOLD/BREAK) modal').toBe(true);
+    expect(await predictionModalOpen(page), 'pressing E at the UTM opens the UTM lab overlay').toBe(true);
+    // The gate is visible: the run button stays locked until a prediction is made.
+    await page.locator('.utm-chip').first().click();
+    expect(await page.locator('.utm-btn--run').isDisabled(), 'testing is locked before a prediction').toBe(true);
+    await page.locator('.pb__opt').first().click();
+    expect(await page.locator('.utm-btn--run').isDisabled(), 'predicting unlocks the test').toBe(false);
   });
 
   // PROMOTED 2026-06-02: was WORKLIST (test.fail); fixed by collapsing the two
@@ -267,9 +278,11 @@ test.describe('player reachability', () => {
     }
     expect(dupes, `overlapping zones shadow each other: ${dupes.join('; ')}`).toEqual([]);
 
-    // (2) Reachable through play: the single neighbor zone yields the wash intro
-    // first (completes talk_neighbor), then the Spanish thank-you (completes
-    // spanish_neighbor + trust/language). Drive it by keyboard only.
+    // (2) Reachable through play: the neighbor zone yields the wash intro first
+    // (completes talk_neighbor). The Spanish thank-you is a POST-REPAIR beat by
+    // design (Quest 9 thanks the neighbors after the crossing reconnects), so
+    // the repair is set up via the debug API (setup, not the action) and then
+    // the thank-you is driven by real keys. E advances AND picks choices.
     const nb = await zoneById(page, 'neighbor');
     expect(nb, 'a Mrs. Ramirez interaction exists').toBeTruthy();
     await walkTo(page, nb);
@@ -278,13 +291,28 @@ test.describe('player reachability', () => {
     }, obj);
     await page.keyboard.press('e'); // open the wash intro
     await page.waitForTimeout(200);
-    // Mash the advance key: closes the intro (-> talk_neighbor); the next
-    // re-trigger opens the thank-you, which closes (-> spanish_neighbor).
-    for (let i = 0; i < 18 && !(await done('spanish_neighbor')); i++) {
-      await page.keyboard.press('Space');
+    for (let i = 0; i < 22 && !(await done('talk_neighbor')); i++) {
+      await page.keyboard.press('e');
       await page.waitForTimeout(150);
     }
     expect(await done('talk_neighbor'), 'the wash intro is reachable (talk_neighbor)').toBe(true);
+    // Setup only: reconnect the bridge so the thank-you beat unlocks.
+    await page.evaluate(() => {
+      const g = window.__GAME__;
+      for (let i = 0; i < 8; i += 1) g.handleInteraction('collect_materials');
+      ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => g.testMaterial(id));
+      g.completeBridgePlan('tested_triangle_plan');
+      g.repairBridge();
+    });
+    await page.keyboard.press('Escape'); // clear the crossing cutscene if it opened
+    await page.waitForTimeout(400);
+    await walkTo(page, nb);
+    await page.keyboard.press('e'); // open the thank-you
+    await page.waitForTimeout(200);
+    for (let i = 0; i < 22 && !(await done('spanish_neighbor')); i++) {
+      await page.keyboard.press('e');
+      await page.waitForTimeout(150);
+    }
     expect(await done('spanish_neighbor'), 'the Spanish thank-you beat is reachable (spanish_neighbor)').toBe(true);
   });
 
@@ -302,16 +330,9 @@ test.describe('player reachability', () => {
     // then fall back to playing through + Esc.
     await page.keyboard.press('Escape');
     await page.waitForTimeout(500);
-    if (await predictionModalOpen(page)) {
-      for (let i = 0; i < 6 && (await predictionModalOpen(page)); i++) {
-        await page.keyboard.press('ArrowLeft');
-        await page.keyboard.press('e');
-        await page.waitForTimeout(400);
-      }
-      await page.keyboard.press('Escape');
-      await page.waitForTimeout(500);
-    }
-    expect(await predictionModalOpen(page), 'player can exit the UTM (Esc or play-through), regaining control').toBe(false);
+    expect(await predictionModalOpen(page), 'Escape closes the UTM lab, regaining control').toBe(false);
+    const freed = await page.evaluate(() => !window.__bikebrowserRebuildGame.registry.get('modalActive'));
+    expect(freed, 'the player is unfrozen after closing the lab').toBe(true);
   });
 
   // PROMOTED 2026-06-02: was WORKLIST (test.fail); fixed by 1.9.3 (bridge_plan
@@ -323,24 +344,34 @@ test.describe('player reachability', () => {
     await bootRebuild(page);
     // Real prerequisite, all by keyboard: gather candidate materials + mesquite,
     // then predict-and-test each at the UTM so the bridge has tested candidates.
-    await collectAt(page, 'materials_table'); // steel, copper_brace, weak_scrap
+    // Real input all the way: eight catalog samples (one per visit post
+    // de-pad), mesquite, then predict-and-test each sample in the UTM lab.
+    for (let i = 0; i < 8; i += 1) await collectAt(page, 'materials_table');
     await collectAt(page, 'ecology_patch');   // mesquite
     await walkTo(page, await zoneById(page, 'utm'));
     await page.keyboard.press('e');
-    await drivePredictionToCompletion(page);
+    // Predict-and-test the four materials the truss build uses (the full
+    // 8-material pass is the acceptance walkthrough's job).
+    await drivePredictionToCompletion(page, ['Bamboo', 'Steel', 'Carbon Fiber', 'Iron']);
 
-    // The bridge workbench now opens a real choice — not a pre-baked plan.
+    // The bridge workbench opens the truss designer — a real family + material
+    // choice, not a pre-baked plan.
     await walkTo(page, await zoneById(page, 'bridge_plan'));
     await page.keyboard.press('e');
     await page.waitForFunction(() => window.__BRIDGE_DESIGN__ && window.__BRIDGE_DESIGN__.active === true, null, { timeout: 8000 });
     expect(await bridgeDesignOpen(page), 'pressing E opens the bridge DESIGN modal').toBe(true);
+    // Family (truss) -> five-role build, by keyboard.
+    await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'family');
+    for (let g = 0; g < 8; g += 1) {
+      if ((await page.evaluate(() => window.__BRIDGE_DESIGN__.families[window.__BRIDGE_DESIGN__.familyIndex].key)) === 'truss') break;
+      await page.keyboard.press('ArrowDown');
+    }
+    await page.keyboard.press('e');
     await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'choose');
     expect(await page.evaluate(() => window.__BRIDGE_DESIGN__.candidates.length), 'tested materials are offered as candidates').toBeGreaterThan(0);
-
-    // Choose a sound design (mesquite deck / steel support / copper brace) -> holds.
-    await pickBridgeMaterial(page, 'mesquite');
-    await pickBridgeMaterial(page, 'steel');
-    await pickBridgeMaterial(page, 'copper_brace');
+    for (const id of ['bamboo', 'steel', 'carbon_fiber', 'steel', 'iron']) await pickBridgeMaterial(page, id);
+    await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'ready');
+    await page.keyboard.press('e'); // Test Bridge
     await page.waitForFunction(() => window.__BRIDGE_DESIGN__.phase === 'result', null, { timeout: 8000 });
     expect(await page.evaluate(() => window.__BRIDGE_DESIGN__.outcome), 'the sound design holds').toBe('safe');
   });
@@ -408,11 +439,19 @@ test.describe('player reachability', () => {
     const eco = await zoneById(page, 'ecology_patch');
     expect(eco, 'an ecology observation interaction exists').toBeTruthy();
     expect(await walkTo(page, eco), 'player can walk to it').toBe(true);
-    await page.keyboard.press('e');
+    for (let i = 0; i < 6; i += 1) {
+      await page.keyboard.press('e');
+      await page.waitForTimeout(400);
+      const grew = await page.evaluate((b) => Boolean(window.__DISCOVERY__ && window.__DISCOVERY__.total > b), before);
+      if (grew) break;
+    }
     await page.waitForFunction((b) => window.__DISCOVERY__ && window.__DISCOVERY__.total > b, before, { timeout: 10000 });
     // Immediate payoff: the banner.
     expect(await page.evaluate(() => window.__DISCOVERY__.bannerVisible), 'NEW DISCOVERY banner shows').toBe(true);
-    // Persistent payoff: the registry view opens and is categorised.
+    // Persistent payoff: the registry view opens and is categorised. Clear the
+    // observation dialogue first — the dialogue box eats world keys like J.
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(300);
     await page.keyboard.press('j');
     await page.waitForFunction(() => window.__DISCOVERY__.open === true, null, { timeout: 5000 });
     const st = await page.evaluate(() => window.__DISCOVERY__);
@@ -447,13 +486,38 @@ test.describe('player reachability', () => {
     // Prerequisite (not the action): open the wider map so the biome unlocks.
     await page.evaluate(() => {
       const g = window.__GAME__;
-      g.handleInteraction('collect_materials');
-      g.handleInteraction('ecology_patch');
-      ['mesquite', 'steel', 'copper_brace', 'weak_scrap'].forEach((id) => g.testMaterial(id));
-      g.designBridge({ deck: 'mesquite', support: 'steel', brace: 'copper_brace' });
+      for (let i = 0; i < 8; i += 1) g.handleInteraction('collect_materials');
+      for (let i = 0; i < 3; i += 1) g.handleInteraction('ecology_patch');
+      ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => g.testMaterial(id));
+      g.completeBridgePlan('tested_triangle_plan');
       g.repairBridge();
       g.unlockWiderMap();
     });
+    // The repair auto-plays the Community Crossing (modal) — clear it fully or
+    // the walk below starts frozen.
+    for (let i = 0; i < 10; i += 1) {
+      const modal = await page.evaluate(() => Boolean(window.__bikebrowserRebuildGame.registry.get('modalActive')));
+      if (!modal) break;
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(300);
+    }
+    // The expedition is a HIDDEN opportunity until the City Gate is discovered
+    // (a discovery that affects progression). Walk right up to the gate
+    // (~1484,514) — the exploration-proximity discovery needs a closer approach
+    // than the interaction radius (same walk as the City Gate GUARD).
+    const revealed = () => page.evaluate(() =>
+      window.__GAME__.getAct1State().discoveryUnlocks?.saltRiverRevealed === true);
+    for (let g = 0; g < 60 && !(await revealed()); g++) {
+      const p = await page.evaluate(() => {
+        const sc = window.__bikebrowserRebuildGame.scene.getScene('NeighborhoodScene');
+        return { x: Math.round(sc.player.x), y: Math.round(sc.player.y) };
+      });
+      const dx = 1484 - p.x, dy = 514 - p.y;
+      if (Math.hypot(dx, dy) < 24) break;
+      if (Math.abs(dx) > 12) { await page.keyboard.down(dx > 0 ? 'ArrowRight' : 'ArrowLeft'); await page.waitForTimeout(120); await page.keyboard.up(dx > 0 ? 'ArrowRight' : 'ArrowLeft'); }
+      if (Math.abs(dy) > 12) { await page.keyboard.down(dy > 0 ? 'ArrowDown' : 'ArrowUp'); await page.waitForTimeout(120); await page.keyboard.up(dy > 0 ? 'ArrowDown' : 'ArrowUp'); }
+    }
+    await page.waitForFunction(() => window.__GAME__.getAct1State().discoveryUnlocks?.saltRiverRevealed === true, null, { timeout: 8000 });
     const zone = await zoneById(page, 'salt_river_expedition');
     expect(zone, 'a Salt River expedition interaction exists').toBeTruthy();
     expect(await walkTo(page, zone), 'player can walk to the expedition').toBe(true);

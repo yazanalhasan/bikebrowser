@@ -15,7 +15,7 @@ test.describe('Act 1 complete substrate', () => {
       const game = window.__GAME__;
       game.handleInteraction('bike_check');
       game.handleInteraction('dry_wash');
-      game.handleInteraction('collect_materials');
+      for (let i = 0; i < 8; i += 1) game.handleInteraction('collect_materials');
       ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber'].forEach((id) => game.testMaterial(id));
       game.completeBridgePlan('tested_triangle_plan');
       game.repairBridge();

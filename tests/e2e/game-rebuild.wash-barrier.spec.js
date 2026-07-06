@@ -31,8 +31,8 @@ test('wash blocks crossing until the bridge is repaired', async ({ page }) => {
   // Repair the bridge via the real chain, then the barrier should drop.
   await page.evaluate(() => {
     const g = window.__GAME__;
-    g.handleInteraction('collect_materials');
-    g.handleInteraction('ecology_patch'); // collect mesquite so it can be tested
+    for (let i = 0; i < 8; i += 1) g.handleInteraction('collect_materials');
+    for (let i = 0; i < 3; i += 1) g.handleInteraction('ecology_patch'); // collect mesquite so it can be tested
     ['bamboo', 'steel', 'carbon_fiber'].forEach((id) => g.testMaterial(id));
     g.designBridge({ deck: 'bamboo', support: 'steel', brace: 'carbon_fiber' });
     g.repairBridge();

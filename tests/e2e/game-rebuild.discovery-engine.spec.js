@@ -22,7 +22,7 @@ test.describe('Engine acceptance — discovery registry', () => {
       // Real gameplay actions populate several categories.
       g.observeEcology('mesquite');     // plant
       g.observeEcology('saguaro');      // plant + landmark
-      g.handleInteraction('collect_materials');
+      for (let i = 0; i < 8; i += 1) g.handleInteraction('collect_materials');
       g.testMaterial('steel');          // material
       g.handleInteraction('dry_wash');  // landmark(s)
       g.handleInteraction('spanish_neighbor'); // language + npc_fact

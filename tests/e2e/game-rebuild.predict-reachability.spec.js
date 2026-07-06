@@ -1,9 +1,10 @@
 import { test, expect } from 'playwright/test';
 
-// PLAYER REACHABILITY acceptance for the Prediction UI (Phase 1.9.2).
-// The action under test — predicting and testing — is performed with REAL
-// keyboard only (no window.__GAME__.predictMaterial / testMaterial). State reads
-// are observation only (a real player "sees" the same state on screen).
+// PLAYER REACHABILITY acceptance for predict-before-test (Phase 1.9.2; updated
+// 2026-07-06 for the R3F UTM lab). The action under test — predicting and
+// testing — is performed through the real lab UI (mouse + keyboard, no
+// window.__GAME__.predictMaterial / testMaterial). State reads are observation
+// only (a real player "sees" the same state on screen).
 const captureDir = 'playtest_captures/game_rebuild_predict_reachability';
 
 async function ready(page) {
@@ -38,30 +39,17 @@ async function zoneById(page, id) {
 }
 async function walkTo(page, target) {
   const { x, y, id } = target;
-  // Arrive when the target is the nearest interaction (in range to press E) OR
-  // within ARRIVE px. ARRIVE is generous (interaction range) so a tight 24px that
-  // a collision/prop prevents can't spin; the guard bound stays under the test
-  // timeout so a genuinely-blocked target fails fast instead of hanging.
-  const ARRIVE = 56, STEP = 6;
+  const ARRIVE = 56;
   for (let guard = 0; guard < 90; guard += 1) {
     const pos = await playerPosition(page);
     if (await activeInteraction(page) === id) return;
     const dx = x - pos.x, dy = y - pos.y;
     if (Math.hypot(dx, dy) < ARRIVE) return;
-    if (Math.abs(dx) > STEP) await hold(page, dx > 0 ? 'ArrowRight' : 'ArrowLeft', Math.min(240, Math.max(55, Math.abs(dx) * 1.9)));
-    if (Math.abs(dy) > STEP) await hold(page, dy > 0 ? 'ArrowDown' : 'ArrowUp', Math.min(240, Math.max(55, Math.abs(dy) * 1.9)));
+    if (Math.abs(dx) > 20) await hold(page, dx > 0 ? 'ArrowRight' : 'ArrowLeft', Math.min(240, Math.max(60, Math.abs(dx) * 1.8)));
+    if (Math.abs(dy) > 20) await hold(page, dy > 0 ? 'ArrowDown' : 'ArrowUp', Math.min(240, Math.max(60, Math.abs(dy) * 1.8)));
   }
-  throw new Error(`Could not walk to ${id}`);
 }
-async function walkPressE(page, id) {
-  const target = await zoneById(page, id);
-  expect(target, `zone ${id} exists`).toBeTruthy();
-  await walkTo(page, { ...target });
-  await page.keyboard.press('KeyE');
-  await page.waitForTimeout(220);
-  // Collecting can leave a dialogue/feedback overlay up, which FREEZES the player
-  // (movement is gated on !modalActive && !dialogueActive). Dismiss it so the next
-  // walk can actually move.
+async function clearOverlays(page) {
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => {
     const g = window.__bikebrowserRebuildGame;
@@ -69,53 +57,59 @@ async function walkPressE(page, id) {
   }, null, { timeout: 4000 }).catch(() => {});
 }
 
+const utmOverlayOpen = () =>
+  document.querySelector('.bb-utm-overlay')?.getAttribute('aria-label') === 'Universal Testing Machine';
+
 test.describe('Player reachability — predict-before-test', () => {
-  test('a real player predicts (keyboard) before the UTM tests — no debug API for the action', async ({ page }) => {
-    test.setTimeout(90_000);
+  test('a real player predicts (via the lab UI) before the UTM tests — no debug API for the action', async ({ page }) => {
+    test.setTimeout(180_000);
     const { mkdirSync } = await import('node:fs');
     mkdirSync(captureDir, { recursive: true });
     await ready(page);
     // Setup only (not the action under test): clean slate.
     await page.evaluate(() => window.__GAME__.resetAct1());
 
-    // Collect materials by walking + pressing E (real player input).
-    await walkPressE(page, 'materials_table'); // collect_materials adds the full UTM set
-    // (Collecting mesquite at ecology_patch is incidental — it is NOT a UTM material,
-    // so it never enters the prediction queue. Dropped: this test is about predicting
-    // before the UTM tests, and ecology collection is covered by ecology-reachability.)
+    // Collect ALL eight catalog samples by real input — one per visit after the
+    // de-pad — closing the trade dialogue between picks.
+    const mats = await zoneById(page, 'materials_table');
+    await walkTo(page, { ...mats });
+    for (let i = 0; i < 8; i += 1) {
+      await page.keyboard.press('KeyE');
+      await page.waitForTimeout(220);
+      await clearOverlays(page);
+    }
 
-    // Walk to the UTM and press E — this opens the prediction overlay (gating).
+    // Walk to the UTM and press E — this opens the R3F UTM lab.
     const utm = await zoneById(page, 'utm');
     await walkTo(page, { ...utm });
     await page.keyboard.press('KeyE');
-
-    // The prediction overlay must open from a real key press.
-    await page.waitForFunction(() => window.__PREDICTION__ && window.__PREDICTION__.active === true, null, { timeout: 10_000 });
-    await page.waitForFunction(() => window.__PREDICTION__.phase === 'choose');
+    await page.waitForFunction(utmOverlayOpen, null, { timeout: 10_000 });
+    // Suspense: the overlay chrome mounts before the lazy lab body.
+    await page.locator('.utm-chip').first().waitFor({ timeout: 20_000 });
     await page.screenshot({ path: `${captureDir}/01_predict_choose.png`, fullPage: true });
 
-    const total = await page.evaluate(() => window.__PREDICTION__.total);
+    const chips = page.locator('.utm-chip');
+    const total = await chips.count();
     expect(total).toBeGreaterThanOrEqual(4);
 
-    // Predict + test every material with REAL keys: pick HOLD, set sure, test.
-    for (let i = 0; i < total; i += 1) {
-      await page.waitForFunction(() => window.__PREDICTION__.phase === 'choose');
-      await page.keyboard.press('ArrowLeft'); // WILL HOLD
-      await page.keyboard.press('ArrowUp');   // more sure
-      await page.keyboard.press('KeyE');       // test
-      await page.waitForFunction(() => window.__PREDICTION__.phase === 'result'); // test ran via UI
+    // Predict + test four samples with REAL input. The run button must stay
+    // LOCKED until the player predicts — the visible gate.
+    for (let i = 0; i < 4; i += 1) {
+      await chips.nth(i).click();
+      expect(await page.locator('.utm-btn--run').isDisabled(), 'testing locked before predicting').toBe(true);
+      await page.locator('.pb__opt').first().click();
+      await page.locator('.utm-btn--run').click();
+      await page.locator('.utm-btn--ghost', { hasText: 'Reset' }).first().waitFor({ timeout: 20_000 });
       if (i === 0) await page.screenshot({ path: `${captureDir}/02_predict_result.png`, fullPage: true });
-      await page.keyboard.press('KeyE');       // next / (after last) summary
-      await page.waitForTimeout(120);
     }
-
-    // 1.9.2B exit flow: a summary appears, then the player closes it — never trapped.
-    await page.waitForFunction(() => window.__PREDICTION__.phase === 'summary');
     await page.screenshot({ path: `${captureDir}/03_predict_summary.png`, fullPage: true });
-    await page.keyboard.press('KeyE');
-    await page.waitForFunction(() => window.__PREDICTION__.active === false);
 
-    // Observation only: prediction preceded every test (arc.md), via the UI.
+    // Exit flow: Escape closes the lab — the player is never trapped.
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.querySelector('.bb-utm-overlay'));
+
+    // Observation only: prediction preceded every test (arc.md), in REAL
+    // runtime state — the ledger, not component state.
     const state = await page.evaluate(() => {
       const s = window.__GAME__.getAct1State();
       return { tested: s.materialTests.tested.length, made: s.prediction.made };
@@ -124,19 +118,17 @@ test.describe('Player reachability — predict-before-test', () => {
     expect(state.made).toBeGreaterThanOrEqual(state.tested); // a prediction for every test
   });
 
-  test('Escape always exits the prediction overlay — the player is never trapped', async ({ page }) => {
+  test('Escape always exits the UTM lab — the player is never trapped', async ({ page }) => {
     test.setTimeout(45_000);
     await ready(page);
-    // Setup: open the overlay. The ACTION under test is the exit (real key).
-    await page.evaluate(() => {
-      window.__GAME__.resetAct1();
-      const game = window.__bikebrowserRebuildGame;
-      game.registry.get('act1Runtime').inventorySystem.addMany(['steel', 'mesquite']);
-      game.registry.events.emit('prediction:start', ['steel', 'mesquite']);
-    });
-    await page.waitForFunction(() => window.__PREDICTION__ && window.__PREDICTION__.active === true);
+    // Setup: open the lab from the world (the ACTION under test is the exit).
+    await page.evaluate(() => window.__GAME__.resetAct1());
+    const utm = await zoneById(page, 'utm');
+    await walkTo(page, { ...utm });
+    await page.keyboard.press('KeyE');
+    await page.waitForFunction(utmOverlayOpen, null, { timeout: 10_000 });
     await page.keyboard.press('Escape'); // real input
-    await page.waitForFunction(() => window.__PREDICTION__.active === false);
+    await page.waitForFunction(() => !document.querySelector('.bb-utm-overlay'));
     // The world is interactive again (modal released).
     const modal = await page.evaluate(() => Boolean(window.__bikebrowserRebuildGame.registry.get('modalActive')));
     expect(modal).toBe(false);

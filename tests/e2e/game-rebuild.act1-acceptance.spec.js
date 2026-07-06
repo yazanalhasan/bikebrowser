@@ -71,14 +71,16 @@ async function interactionTarget(page, step) {
 }
 
 async function closeDialogue(page) {
-  for (let guard = 0; guard < 8; guard += 1) {
+  // E advances lines AND selects a highlighted choice; Space only advances, so
+  // it stalls on branching menus (every major NPC branches now).
+  for (let guard = 0; guard < 26; guard += 1) {
     const visible = await page.evaluate(() => {
       const scene = window.__bikebrowserRebuildGame.scene.getScene('DialogueScene');
       return Boolean(scene.panel?.visible);
     });
     if (!visible) return;
-    await page.keyboard.press('Space');
-    await page.waitForTimeout(100);
+    await page.keyboard.press('KeyE');
+    await page.waitForTimeout(130);
   }
 }
 
@@ -161,7 +163,23 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         y: 410,
         prompt: 'Collect candidate materials',
         file: '04_collect_materials',
-        waitFor: () => window.__GAME__.getAct1State().inventory.items.includes('steel'),
+        // De-padded collection: one sample per visit. Condition-based (a press
+        // can be eaten while a dialogue line is mid-advance), so press until the
+        // whole catalog is collected.
+        drive: async (page) => {
+          await closeDialogue(page);
+          for (let i = 0; i < 14; i += 1) {
+            const done = await page.evaluate(() =>
+              ['balsa', 'pine', 'bamboo', 'brick', 'concrete', 'iron', 'steel', 'carbon_fiber']
+                .every((m) => window.__GAME__.getAct1State().quests.completedObjectives.includes(`collect_${m}`)));
+            if (done) break;
+            await page.keyboard.press('KeyE');
+            await page.waitForTimeout(200);
+            await closeDialogue(page);
+          }
+        },
+        waitFor: () => window.__GAME__.getAct1State().inventory.items.includes('steel')
+          && window.__GAME__.getAct1State().inventory.items.includes('carbon_fiber'),
       },
       {
         id: 'ecology_patch',
@@ -169,6 +187,20 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         y: 760,
         prompt: 'Observe desert helpers',
         file: '05_ecology_observation',
+        // De-padded observation: one plant per respectful visit. Condition-based
+        // so an eaten press can't leave saguaro unobserved.
+        drive: async (page) => {
+          await closeDialogue(page);
+          for (let i = 0; i < 10; i += 1) {
+            const done = await page.evaluate(() =>
+              ['observe_mesquite', 'observe_creosote', 'observe_saguaro']
+                .every((o) => window.__GAME__.getAct1State().quests.completedObjectives.includes(o)));
+            if (done) break;
+            await page.keyboard.press('KeyE');
+            await page.waitForTimeout(200);
+            await closeDialogue(page);
+          }
+        },
         waitFor: () => window.__GAME__.getAct1State().notebook.unlocked.includes('desert_plant'),
       },
       {
@@ -185,30 +217,30 @@ test.describe('Act 1 player-visible acceptance walkthrough', () => {
         y: 408,
         prompt: 'Run UTM material tests',
         file: '07_utm_tests',
-        // Phase 1.9.2: predict-before-test is now PLAYER-REACHABLE. Pressing E at
-        // the UTM opens the prediction flow; the player picks HOLD/BREAK + how-
-        // sure and presses E to test — via REAL keyboard, no __GAME__ predict.
+        // Predict-before-test is PLAYER-REACHABLE in the R3F UTM lab: pressing E
+        // at the UTM opens the lab; for every sample the player predicts (the run
+        // button is locked until they do), runs the test, and the prediction is
+        // recorded in the runtime ledger — real input, no __GAME__ predict.
         drive: async (page) => {
-          await page.waitForFunction(() => window.__PREDICTION__ && window.__PREDICTION__.active === true);
-          // Predict for every material the UTM offers — the count is data-driven
-          // (8 materials), so loop until the summary appears rather than a fixed N.
-          for (let i = 0; i < 12; i += 1) {
-            if ((await page.evaluate(() => window.__PREDICTION__.phase)) === 'summary') break;
-            await page.waitForFunction(() => window.__PREDICTION__.phase === 'choose');
+          await page.waitForFunction(() =>
+            document.querySelector('.bb-utm-overlay')?.getAttribute('aria-label') === 'Universal Testing Machine');
+          // Suspense: the overlay chrome mounts before the lazy lab body.
+          await page.locator('.utm-chip').first().waitFor({ timeout: 20000 });
+          const chips = page.locator('.utm-chip');
+          const n = await chips.count();
+          if (!n) throw new Error('UTM lab rendered no material chips');
+          for (let i = 0; i < n; i += 1) {
+            await chips.nth(i).click();
             if (i === 0) await page.screenshot({ path: `${captureDir}/07a_prediction_choose.png`, fullPage: true });
-            await page.keyboard.press('ArrowLeft'); // pick "WILL HOLD"
-            await page.keyboard.press('ArrowUp');   // how sure: up
-            await page.keyboard.press('KeyE');       // commit + test
-            await page.waitForFunction(() => window.__PREDICTION__.phase === 'result');
+            await page.locator('.pb__opt').first().click();
+            await page.locator('.utm-btn--run').click();
+            await page.locator('.utm-btn--ghost', { hasText: 'Reset' }).first().waitFor({ timeout: 20000 });
             if (i === 0) await page.screenshot({ path: `${captureDir}/07b_prediction_result.png`, fullPage: true });
-            await page.keyboard.press('KeyE');       // next material / (after last) summary
-            await page.waitForTimeout(120);
           }
-          // 1.9.2B exit flow: a summary appears, then the overlay closes cleanly.
-          await page.waitForFunction(() => window.__PREDICTION__.phase === 'summary');
           await page.screenshot({ path: `${captureDir}/07c_prediction_summary.png`, fullPage: true });
-          await page.keyboard.press('KeyE');
-          await page.waitForFunction(() => window.__PREDICTION__.active === false);
+          // Exit flow: Escape closes the lab cleanly — never trapped.
+          await page.keyboard.press('Escape');
+          await page.waitForFunction(() => !document.querySelector('.bb-utm-overlay'));
           // arc.md: prediction precedes intervention — a prediction exists for
           // every material tested (made via UI, not __GAME__).
           const gated = await page.evaluate(() => {
