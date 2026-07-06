@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-21T20:47:08.964Z",
+  "generatedAt": "2026-07-06T11:25:04.667Z",
   "playerVisibleWalkthrough": true,
   "backendCompletionShortcutsUsed": false,
   "setupShortcutsUsed": [
@@ -68,13 +68,6 @@
       "broken_wash",
       "bridge_problem",
       "balsa",
-      "pine",
-      "bamboo",
-      "brick",
-      "concrete",
-      "iron",
-      "steel",
-      "carbon_fiber",
       "desert_plant",
       "mesquite",
       "creosote",
@@ -111,13 +104,13 @@
           "score": 1
         },
         "calibration": {
-          "score": 0.63
+          "score": 1
         },
         "explanation": {
           "score": 1
         }
       },
-      "overall": 0.96,
+      "overall": 1,
       "band": "strong",
       "learnings": [
         "You predicted pine would hold and the test agreed — your reasoning matched the evidence.",
@@ -178,8 +171,8 @@
         {
           "subjectId": "balsa",
           "willHold": true,
-          "confidence": "high",
-          "explanation": "I think it will hold.",
+          "confidence": "medium",
+          "explanation": "UTM lab prediction: SUITABLE",
           "resolved": true,
           "actualSafe": false,
           "correct": false
@@ -187,8 +180,8 @@
         {
           "subjectId": "pine",
           "willHold": true,
-          "confidence": "high",
-          "explanation": "I think it will hold.",
+          "confidence": "medium",
+          "explanation": "UTM lab prediction: SUITABLE",
           "resolved": true,
           "actualSafe": true,
           "correct": true
@@ -196,8 +189,8 @@
         {
           "subjectId": "bamboo",
           "willHold": true,
-          "confidence": "high",
-          "explanation": "I think it will hold.",
+          "confidence": "medium",
+          "explanation": "UTM lab prediction: SUITABLE",
           "resolved": true,
           "actualSafe": true,
           "correct": true
@@ -205,8 +198,8 @@
         {
           "subjectId": "brick",
           "willHold": true,
-          "confidence": "high",
-          "explanation": "I think it will hold.",
+          "confidence": "medium",
+          "explanation": "UTM lab prediction: SUITABLE",
           "resolved": true,
           "actualSafe": false,
           "correct": false
@@ -214,8 +207,8 @@
         {
           "subjectId": "concrete",
           "willHold": true,
-          "confidence": "high",
-          "explanation": "I think it will hold.",
+          "confidence": "medium",
+          "explanation": "UTM lab prediction: SUITABLE",
           "resolved": true,
           "actualSafe": false,
           "correct": false
@@ -223,8 +216,8 @@
         {
           "subjectId": "iron",
           "willHold": true,
-          "confidence": "high",
-          "explanation": "I think it will hold.",
+          "confidence": "medium",
+          "explanation": "UTM lab prediction: SUITABLE",
           "resolved": true,
           "actualSafe": true,
           "correct": true
@@ -232,8 +225,8 @@
         {
           "subjectId": "steel",
           "willHold": true,
-          "confidence": "high",
-          "explanation": "I think it will hold.",
+          "confidence": "medium",
+          "explanation": "UTM lab prediction: SUITABLE",
           "resolved": true,
           "actualSafe": true,
           "correct": true
@@ -241,8 +234,8 @@
         {
           "subjectId": "carbon_fiber",
           "willHold": true,
-          "confidence": "high",
-          "explanation": "I think it will hold.",
+          "confidence": "medium",
+          "explanation": "UTM lab prediction: SUITABLE",
           "resolved": true,
           "actualSafe": true,
           "correct": true
@@ -352,7 +345,7 @@
       }
     ],
     "finalFeedback": {
-      "id": "1782074827223-20",
+      "id": "1783337102864-20",
       "kind": "discovery",
       "message": "NEW DISCOVERY — Map Gate's account",
       "details": {
@@ -362,7 +355,7 @@
         "detail": "The repaired crossing opens the wider route.",
         "source": "dialogue"
       },
-      "createdAt": "2026-06-21T20:47:07.223Z"
+      "createdAt": "2026-07-06T11:25:02.864Z"
     },
     "feedbackMessages": [
       "+5 ZuzuBucks",

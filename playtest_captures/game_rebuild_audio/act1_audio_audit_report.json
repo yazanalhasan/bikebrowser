@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-21T20:47:44.729Z",
+  "generatedAt": "2026-07-06T11:25:44.055Z",
   "hookVerified": true,
   "bridgeShape": {
     "exists": true,
@@ -24,7 +24,7 @@
   },
   "audit": {
     "available": true,
-    "installedAt": "2026-06-21T20:47:44.275Z",
+    "installedAt": "2026-07-06T11:25:43.595Z",
     "speechAvailable": true,
     "settings": {
       "speechEnabled": true,
@@ -141,17 +141,17 @@
         {
           "state": "neighborhood",
           "label": "Neighborhood exploration",
-          "at": "2026-06-21T20:47:44.276Z"
+          "at": "2026-07-06T11:25:43.597Z"
         },
         {
           "state": "garage",
           "label": "Garage/workbench",
-          "at": "2026-06-21T20:47:44.555Z"
+          "at": "2026-07-06T11:25:43.901Z"
         },
         {
           "state": "map_unlock",
           "label": "Wider world tease",
-          "at": "2026-06-21T20:47:44.555Z"
+          "at": "2026-07-06T11:25:43.901Z"
         }
       ]
     },
@@ -165,24 +165,24 @@
         {
           "cueId": "notebook_open",
           "label": "Notebook open",
-          "at": "2026-06-21T20:47:44.555Z"
+          "at": "2026-07-06T11:25:43.901Z"
         },
         {
           "cueId": "map_unlock",
           "label": "Map unlock",
-          "at": "2026-06-21T20:47:44.555Z"
+          "at": "2026-07-06T11:25:43.901Z"
         }
       ]
     },
     "events": [
       {
         "type": "audit_reset",
-        "at": "2026-06-21T20:47:44.554Z",
+        "at": "2026-07-06T11:25:43.901Z",
         "available": true
       },
       {
         "type": "audio_unlocked",
-        "at": "2026-06-21T20:47:44.555Z",
+        "at": "2026-07-06T11:25:43.901Z",
         "ok": true,
         "speechAvailable": true,
         "music": {
@@ -234,19 +234,19 @@
             {
               "state": "neighborhood",
               "label": "Neighborhood exploration",
-              "at": "2026-06-21T20:47:44.276Z"
+              "at": "2026-07-06T11:25:43.597Z"
             },
             {
               "state": "garage",
               "label": "Garage/workbench",
-              "at": "2026-06-21T20:47:44.555Z"
+              "at": "2026-07-06T11:25:43.901Z"
             }
           ]
         }
       },
       {
         "type": "music_transition",
-        "at": "2026-06-21T20:47:44.555Z",
+        "at": "2026-07-06T11:25:43.901Z",
         "requestedState": "garage",
         "result": {
           "ok": true,
@@ -302,24 +302,24 @@
             {
               "state": "neighborhood",
               "label": "Neighborhood exploration",
-              "at": "2026-06-21T20:47:44.276Z"
+              "at": "2026-07-06T11:25:43.597Z"
             },
             {
               "state": "garage",
               "label": "Garage/workbench",
-              "at": "2026-06-21T20:47:44.555Z"
+              "at": "2026-07-06T11:25:43.901Z"
             },
             {
               "state": "map_unlock",
               "label": "Wider world tease",
-              "at": "2026-06-21T20:47:44.555Z"
+              "at": "2026-07-06T11:25:43.901Z"
             }
           ]
         }
       },
       {
         "type": "music_transition",
-        "at": "2026-06-21T20:47:44.555Z",
+        "at": "2026-07-06T11:25:43.901Z",
         "requestedState": "map_unlock",
         "result": {
           "ok": true,
@@ -375,38 +375,38 @@
             {
               "state": "neighborhood",
               "label": "Neighborhood exploration",
-              "at": "2026-06-21T20:47:44.276Z"
+              "at": "2026-07-06T11:25:43.597Z"
             },
             {
               "state": "garage",
               "label": "Garage/workbench",
-              "at": "2026-06-21T20:47:44.555Z"
+              "at": "2026-07-06T11:25:43.901Z"
             },
             {
               "state": "map_unlock",
               "label": "Wider world tease",
-              "at": "2026-06-21T20:47:44.555Z"
+              "at": "2026-07-06T11:25:43.901Z"
             }
           ]
         }
       },
       {
         "type": "interaction_cue",
-        "at": "2026-06-21T20:47:44.555Z",
+        "at": "2026-07-06T11:25:43.901Z",
         "cueId": "notebook_open",
         "label": "Notebook open",
         "skipped": false
       },
       {
         "type": "interaction_cue",
-        "at": "2026-06-21T20:47:44.555Z",
+        "at": "2026-07-06T11:25:43.901Z",
         "cueId": "map_unlock",
         "label": "Map unlock",
         "skipped": false
       },
       {
         "type": "speech_attempt",
-        "at": "2026-06-21T20:47:44.555Z",
+        "at": "2026-07-06T11:25:43.902Z",
         "voiceId": "garage_mentor",
         "displayName": "Mr. Chen",
         "normalized": "Mr. Chen says the bridge needs tested proof.",
@@ -414,7 +414,7 @@
       },
       {
         "type": "speech_started",
-        "at": "2026-06-21T20:47:44.555Z",
+        "at": "2026-07-06T11:25:43.902Z",
         "text": "Mr. Chen says the bridge needs tested proof.",
         "normalized": "Mr. Chen says the bridge needs tested proof.",
         "voiceId": "garage_mentor",

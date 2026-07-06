@@ -1,0 +1,17 @@
+{
+  "id": "copper_mine_trail_slice_v2",
+  "createdAt": "2026-07-06T07:54:19.161Z",
+  "previewTaskId": "019f3668-43ee-70b3-b6c5-d08cd68b925a",
+  "refineTaskId": "019f366a-74fa-7530-9dce-05b60334416c",
+  "status": "SUCCEEDED",
+  "consumedCredits": {
+    "preview": 20,
+    "refine": 10
+  },
+  "files": {
+    "glb": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\copper_mine_trail_slice_v2\\copper_mine_trail_slice_v2.glb",
+    "thumbnail": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\copper_mine_trail_slice_v2\\copper_mine_trail_slice_v2.png"
+  },
+  "source": "meshy-text-to-3d",
+  "runtimeUse": "reference_only_until_curated"
+}

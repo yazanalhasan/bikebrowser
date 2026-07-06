@@ -1,0 +1,17 @@
+{
+  "id": "salt_river_creek_bend_v2",
+  "createdAt": "2026-07-06T07:50:28.677Z",
+  "previewTaskId": "019f3663-7e86-7fa4-9b2f-8019ffefb9eb",
+  "refineTaskId": "019f3666-b2db-7042-8155-870b936904f5",
+  "status": "SUCCEEDED",
+  "consumedCredits": {
+    "preview": 20,
+    "refine": 10
+  },
+  "files": {
+    "glb": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\salt_river_creek_bend_v2\\salt_river_creek_bend_v2.glb",
+    "thumbnail": "C:\\dev\\bikebrowser\\generated_assets\\meshy\\act1_reference_pass\\salt_river_creek_bend_v2\\salt_river_creek_bend_v2.png"
+  },
+  "source": "meshy-text-to-3d",
+  "runtimeUse": "reference_only_until_curated"
+}

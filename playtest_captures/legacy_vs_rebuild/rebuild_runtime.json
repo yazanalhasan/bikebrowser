@@ -10,10 +10,6 @@
       "active": false
     },
     {
-      "key": "WorldMapScene",
-      "active": false
-    },
-    {
       "key": "NeighborhoodScene",
       "active": true
     },
@@ -23,10 +19,6 @@
     },
     {
       "key": "DialogueScene",
-      "active": true
-    },
-    {
-      "key": "PredictionScene",
       "active": true
     },
     {
@@ -117,10 +109,9 @@
   "activeScenes": [
     {
       "key": "NeighborhoodScene",
-      "childCount": 94,
+      "childCount": 109,
       "interactiveCount": 0,
       "textSamples": [
-        "Zuzu home",
         "garage / workbench",
         "dry wash path",
         "Mr. Chen",
@@ -136,13 +127,16 @@
         "flood · bridge · the gate",
         "ECOLOGY",
         "plant · observe · restore",
+        "Zuzu home",
+        "Dex's place",
+        "Mr. Chen's",
+        "Mrs. Ramirez's",
+        "Auntie Mariam's",
         "compare bend",
         "repaired crossing",
         "broken wash",
         "Current clue\nStart with the bike, then follow the wash.\nThe bridge needs tested ",
-        "WASD / arrows move • E or Space explore • G map • N notebook • J discoveries • F",
-        "◈ 0 ZuzuBucks",
-        "[V] Vehicle Ladder"
+        "WASD / arrows move • E or Space explore • G map • N notebook • J discoveries • F"
       ],
       "hasPlayer": true
     },
@@ -156,13 +150,6 @@
     {
       "key": "DialogueScene",
       "childCount": 2,
-      "interactiveCount": 0,
-      "textSamples": [],
-      "hasPlayer": false
-    },
-    {
-      "key": "PredictionScene",
-      "childCount": 1,
       "interactiveCount": 0,
       "textSamples": [],
       "hasPlayer": false

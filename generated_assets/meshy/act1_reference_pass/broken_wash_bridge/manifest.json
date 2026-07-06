@@ -1,8 +1,8 @@
 {
   "id": "broken_wash_bridge",
-  "createdAt": "2026-05-28T06:50:34.984Z",
-  "previewTaskId": "019e6d57-a148-7e56-8be9-8e3ada506537",
-  "refineTaskId": "019e6d58-5e75-74b7-98c7-aa20ba600674",
+  "createdAt": "2026-07-06T07:26:15.719Z",
+  "previewTaskId": "019f364e-d358-7309-ba62-0139e5d8f318",
+  "refineTaskId": "019f3650-215b-7357-8f89-180945db4e0d",
   "status": "SUCCEEDED",
   "consumedCredits": {
     "preview": 20,

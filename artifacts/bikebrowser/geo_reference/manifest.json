@@ -1,0 +1,72 @@
+{
+  "createdAt": "2026-07-06T08:02:37.765Z",
+  "source": "cesium-ion (World Terrain + ion world imagery)",
+  "purpose": "Chapter 1 Sonoran dry-wash geographic reference for art direction",
+  "runtimeUse": "reference_only_until_curated",
+  "viewport": {
+    "width": 1600,
+    "height": 900
+  },
+  "shots": [
+    {
+      "id": "rillito_wash_tucson_oblique",
+      "note": "Rillito River wash, Tucson — wide sandy dry wash between residential banks",
+      "lon": -110.949,
+      "lat": 32.29,
+      "agl": 350,
+      "heading": 350,
+      "pitch": -28,
+      "groundHeightM": 686,
+      "file": "C:\\dev\\bikebrowser\\artifacts\\bikebrowser\\geo_reference\\rillito_wash_tucson_oblique.png",
+      "tilesSettled": false
+    },
+    {
+      "id": "pantano_wash_tucson_oblique",
+      "note": "Pantano Wash, Tucson — braided dry channel, desert scrub margins",
+      "lon": -110.842,
+      "lat": 32.201,
+      "agl": 320,
+      "heading": 20,
+      "pitch": -30,
+      "groundHeightM": 782,
+      "file": "C:\\dev\\bikebrowser\\artifacts\\bikebrowser\\geo_reference\\pantano_wash_tucson_oblique.png",
+      "tilesSettled": false
+    },
+    {
+      "id": "indian_bend_wash_scottsdale_oblique",
+      "note": "Indian Bend Wash greenbelt, Scottsdale — wash threading a neighborhood",
+      "lon": -111.909,
+      "lat": 33.52,
+      "agl": 300,
+      "heading": 200,
+      "pitch": -26,
+      "groundHeightM": 355,
+      "file": "C:\\dev\\bikebrowser\\artifacts\\bikebrowser\\geo_reference\\indian_bend_wash_scottsdale_oblique.png",
+      "tilesSettled": false
+    },
+    {
+      "id": "tucson_neighborhood_wash_low",
+      "note": "Residential wash crossing, central Tucson — street-scale bridge context",
+      "lon": -110.905,
+      "lat": 32.257,
+      "agl": 160,
+      "heading": 90,
+      "pitch": -22,
+      "groundHeightM": 712,
+      "file": "C:\\dev\\bikebrowser\\artifacts\\bikebrowser\\geo_reference\\tucson_neighborhood_wash_low.png",
+      "tilesSettled": false
+    },
+    {
+      "id": "rillito_wash_tucson_topdown",
+      "note": "Rillito wash top-down — channel shape reference for level layout",
+      "lon": -110.949,
+      "lat": 32.284,
+      "agl": 900,
+      "heading": 0,
+      "pitch": -88,
+      "groundHeightM": 684,
+      "file": "C:\\dev\\bikebrowser\\artifacts\\bikebrowser\\geo_reference\\rillito_wash_tucson_topdown.png",
+      "tilesSettled": false
+    }
+  ]
+}
