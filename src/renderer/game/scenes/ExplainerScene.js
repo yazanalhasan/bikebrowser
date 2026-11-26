@@ -341,7 +341,7 @@ export default class ExplainerScene extends Phaser.Scene {
 
     const hole = this.layout.hole;
     const distance = Phaser.Math.Distance.Between(this.patch.x, this.patch.y, hole.x, hole.y);
-    if (distance <= hole.r + 34) {
+    if (distance <= hole.r + 72) {
       this.patch.setPosition(hole.x, hole.y);
       this.airParticles.forEach((p) => p.setVisible(false));
       this.holePulse.forEach((p) => p.setVisible(false));

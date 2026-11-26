@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { promises as fs } from 'fs'
+import { existsSync, readdirSync, rmSync, statSync } from 'fs'
 
 // Dev-only plugin: persist layout JSON edits from LayoutEditorOverlayScene.
 function layoutSaverPlugin() {
@@ -41,8 +42,49 @@ function layoutSaverPlugin() {
   };
 }
 
+// Archived masters and wavs that already have an ogg/mp3 sibling are kept
+// in the repo but are not part of the Pages upload. The loader tries
+// .ogg then .mp3 before .wav, so a wav next to a compressed file is unused.
+function omitUnusedPublicAudio() {
+  const dropRedundantWavs = (dir) => {
+    if (!existsSync(dir)) return;
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        dropRedundantWavs(full);
+        continue;
+      }
+      if (!entry.name.endsWith('.wav')) continue;
+      const stem = full.slice(0, -4);
+      if (existsSync(`${stem}.ogg`) || existsSync(`${stem}.mp3`)) {
+        rmSync(full);
+      }
+    }
+  };
+
+  return {
+    name: 'omit-unused-public-audio',
+    apply: 'build',
+    closeBundle() {
+      const outDir = path.resolve(__dirname, 'build');
+      const archived = path.join(outDir, 'audio', '_archived');
+      if (existsSync(archived)) {
+        rmSync(archived, { recursive: true, force: true });
+      }
+      dropRedundantWavs(path.join(outDir, 'game', 'audio'));
+      dropRedundantWavs(path.join(outDir, 'audio'));
+      const archivedParent = path.join(outDir, 'audio');
+      if (existsSync(archivedParent) && statSync(archivedParent).isDirectory() && readdirSync(archivedParent).length === 0) {
+        rmSync(archivedParent, { recursive: true, force: true });
+      }
+    },
+  };
+}
+
+const HEAVY_PRELOAD = ['vendor-three', 'vendor-r3f', 'vendor-drei', 'vendor-rapier'];
+
 export default defineConfig({
-  plugins: [react(), layoutSaverPlugin()],
+  plugins: [react(), layoutSaverPlugin(), omitUnusedPublicAudio()],
   base: '/',
   optimizeDeps: {
     include: ['react', 'react-dom', 'react/jsx-runtime']
@@ -50,6 +92,11 @@ export default defineConfig({
   build: {
     outDir: 'build',
     emptyOutDir: true,
+    modulePreload: {
+      resolveDependencies(_filename, deps) {
+        return deps.filter((dep) => !HEAVY_PRELOAD.some((name) => dep.includes(name)));
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {

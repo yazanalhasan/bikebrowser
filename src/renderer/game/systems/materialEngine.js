@@ -486,7 +486,7 @@ export function computeBuoyancy(objectMaterialId, objectVolume, fluidDensity, ca
   let explanation;
   if (!floats) {
     explanation = `Object sinks! Density (${r(objectDensity)}) exceeds fluid density (${r(fluidDensity)}). ` +
-      `Buoyancy = displaced fluid weight. To float, object density must be less than fluid density (Archimedes\' principle).`;
+      `Buoyancy = displaced fluid weight. To float, object density must be less than fluid density (Archimedes' principle).`;
   } else if (capsizeRisk > 0.7) {
     explanation = `Object floats but is dangerously unstable! Tilt: ${r(tiltAngle)}°. ` +
       `Uneven cargo shifts the center of gravity away from the center of buoyancy → capsizing risk.`;
@@ -618,7 +618,7 @@ export function applyCoating(coatingMaterialId, substrateMaterialId, thickness) 
     `Coverage: ${r(coverage * 100)}%. Bond: ${r(bondQuality * 100)}%. ` +
     `Heat protection: ${r(heatProtection * 100)}%. Moisture: ${r(moistureProtection * 100)}%. ` +
     `Coating works by placing a barrier between the material and its environment. ` +
-    `The coating\'s properties determine what it blocks: reflective coatings deflect heat, ` +
+    `The coating's properties determine what it blocks: reflective coatings deflect heat, ` +
     `hydrophobic coatings repel water, antimicrobial coatings prevent biological fouling.`;
 
   return { protection, explanation };

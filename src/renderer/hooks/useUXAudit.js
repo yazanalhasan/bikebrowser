@@ -45,6 +45,9 @@ export function useUXAudit() {
           );
         }
 
+        const onGameRoute = location.pathname === '/play' || location.pathname.startsWith('/play3d');
+        if (onGameRoute) return;
+
         auditUXState(serializableState, {
           mode: violations.length > 0 ? 'debug' : 'continuous',
           includeHealthyState: false,
@@ -66,7 +69,7 @@ export function useUXAudit() {
     }, 100); // Give React time to render
 
     return () => clearTimeout(timer);
-  }, [location.pathname]);
+  }, [location.pathname]); // game routes skip the remote audit so a missing AI server does not error in the console
 }
 
 // Convenience export

@@ -31,6 +31,7 @@ import { spawnObstacles } from '../systems/obstacleSystem.js';
 import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
 import { interpolateStepText } from '../systems/questTemplating.js';
 import { getPhysicsState, wireCameraToMCP } from '../systems/physicsbridge.js';
+import { localCameraFit } from '../utils/localCameraFit.js';
 
 // Default world size for local scenes (viewport-scale, not overworld-scale)
 const DEFAULT_WORLD = { width: 800, height: 600 };
@@ -220,37 +221,15 @@ export default class LocalSceneBase extends Phaser.Scene {
     }
 
     // --- Camera ---
-    const cam = this.cameras.main;
-    if (world.width > cam.width || world.height > cam.height) {
-      // World is larger than viewport: bound the camera and follow the player.
-      cam.setBounds(0, 0, world.width, world.height);
-      cam.startFollow(this.player.sprite, true, 0.1, 0.1);
-      cam.setDeadzone(60, 40);
-    } else {
-      // World FITS inside the viewport (small scene + larger window). Without
-      // this branch the camera stays at scroll (0,0) and the world content
-      // renders in the canvas top-left with empty space to the right/bottom.
-      // Center the camera on the world's center so the scene appears centered
-      // in the viewport.
-      cam.centerOn(world.width / 2, world.height / 2);
-
-      // Fill the empty space around the world with a biome-themed frame
-      // and overlay a soft vignette so the surround reads as intentional
-      // rather than uninitialized.
-      this._renderViewportFrame();
-
-      // Re-center + redraw frame on every viewport resize so the scene stays
-      // visually intact when the window is resized after scene boot. Cleaned
-      // up on scene shutdown so HMR + scene-stop don't leak listeners on the
-      // global Scale manager.
-      this.scale.on('resize', this._recenterCameraOnWorld, this);
-      this.scale.on('resize', this._renderViewportFrame, this);
-      this.events.once('shutdown', () => {
-        this.scale.off('resize', this._recenterCameraOnWorld, this);
-        this.scale.off('resize', this._renderViewportFrame, this);
-      });
-    }
-    cam.fadeIn(350, 0, 0, 0);
+    // Fit single-screen rooms (and any room that already fits) so a phone
+    // shows the whole garage instead of cropping it to the top, and a large
+    // window scales the room up. Bigger maps still follow the player.
+    this._fitLocalCamera();
+    this.scale.on('resize', this._fitLocalCamera, this);
+    this.events.once('shutdown', () => {
+      this.scale.off('resize', this._fitLocalCamera, this);
+    });
+    this.cameras.main.fadeIn(350, 0, 0, 0);
 
     // --- Input ---
     this.actionKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
@@ -291,6 +270,7 @@ export default class LocalSceneBase extends Phaser.Scene {
     if (!this.player.sprite || !this.player.sprite.active || !this.player.sprite.body) return;
 
     const pos = this.player.update();
+    if (this._cameraMode === 'follow') this._frameFollowCamera();
 
     // Update NPCs
     Object.values(this._npcs).forEach(npc => npc.update(this.player.sprite));
@@ -482,22 +462,23 @@ export default class LocalSceneBase extends Phaser.Scene {
     const priorityProp = this._getQuestPriorityInteractable();
     if (priorityProp) {
       priorityProp.onInteract();
-      return;
+      return true;
     }
 
     // Try NPCs first
     for (const npc of Object.values(this._npcs)) {
       if (npc.isNearby()) {
         npc.onInteract();
-        return;
+        return true;
       }
     }
     // Then interactable props
     const nearestProp = this._getNearbyInteractables()[0];
     if (nearestProp) {
       nearestProp.onInteract();
-      return;
+      return true;
     }
+    return false;
   }
 
   _handlePointerInteract(pointer) {
@@ -606,34 +587,33 @@ export default class LocalSceneBase extends Phaser.Scene {
       this._viewportVignette = null;
     }
 
-    // Bail if the world fully covers the viewport — no empty space to fill.
-    if (cam.width <= world.width && cam.height <= world.height) return;
+    // On-screen room size after zoom and scroll. Bands fill whatever the
+    // room does not cover, including a phone letterbox.
+    const zoom = cam.zoom || 1;
+    const displayW = world.width * zoom;
+    const displayH = world.height * zoom;
+    const originX = -cam.scrollX * zoom;
+    const originY = -cam.scrollY * zoom;
+    const offsetX = Math.max(0, originX);
+    const offsetY = Math.max(0, originY);
+    const rightGap = Math.max(0, cam.width - (originX + displayW));
+    const bottomGap = Math.max(0, cam.height - (originY + displayH));
+    if (offsetX < 1 && offsetY < 1 && rightGap < 1 && bottomGap < 1) return;
 
     const sceneKey = this.getSceneKey();
     const biome = SCENE_BIOMES[sceneKey] || DEFAULT_BIOME;
-
-    // Empty-band positions in screen-space. Camera is centered on world
-    // center, so world covers the rect (offsetX, offsetY)-(offsetX+W, offsetY+H).
-    const offsetX = Math.max(0, (cam.width  - world.width)  / 2);
-    const offsetY = Math.max(0, (cam.height - world.height) / 2);
 
     // ── Biome fill bands ──────────────────────────────────────────────────
     const frame = this.add.graphics();
     frame.setScrollFactor(0);
     frame.setDepth(2000);
     frame.fillStyle(biome.fill, 1.0);
-    if (offsetX > 0) {
-      frame.fillRect(0, 0, offsetX, cam.height);                              // left
-      frame.fillRect(cam.width - offsetX, 0, offsetX, cam.height);            // right
-    }
-    if (offsetY > 0) {
-      frame.fillRect(offsetX, 0, world.width, offsetY);                       // top
-      frame.fillRect(offsetX, cam.height - offsetY, world.width, offsetY);    // bottom
-    }
-    // Accent line just outside the world edges — a thin biome-accent stroke
-    // that visually frames the playable area.
+    if (offsetX > 0) frame.fillRect(0, 0, offsetX, cam.height);
+    if (rightGap > 0) frame.fillRect(cam.width - rightGap, 0, rightGap, cam.height);
+    if (offsetY > 0) frame.fillRect(0, 0, cam.width, offsetY);
+    if (bottomGap > 0) frame.fillRect(0, cam.height - bottomGap, cam.width, bottomGap);
     frame.lineStyle(2, biome.accent, 0.85);
-    frame.strokeRect(offsetX - 1, offsetY - 1, world.width + 2, world.height + 2);
+    frame.strokeRect(originX - 1, originY - 1, displayW + 2, displayH + 2);
     this._viewportFrame = frame;
 
     // ── Vignette over the full viewport ───────────────────────────────────
@@ -666,28 +646,61 @@ export default class LocalSceneBase extends Phaser.Scene {
   }
 
   /**
-   * Re-center the camera on the world's center. Used by the world-fits-in-
-   * viewport path so the scene stays visually centered if the window is
-   * resized AFTER scene boot. Wired as a `scale.resize` listener inside
-   * create(); removed on scene shutdown to avoid leaks across HMR/scene
-   * restarts.
+   * Follow Zuzu on axes that are tighter than the room, and center the room
+   * on axes where the window is taller or wider. Keeps a phone from pinning
+   * the garage to the top of a tall screen.
    */
-  _recenterCameraOnWorld() {
+  _frameFollowCamera() {
+    if (!this.cameras?.main || !this.player?.sprite) return;
+    const cam = this.cameras.main;
+    const world = this.getWorldSize();
+    const viewW = cam.width / cam.zoom;
+    const viewH = cam.height / cam.zoom;
+    const maxX = world.width - viewW;
+    const maxY = world.height - viewH;
+    const scrollX = maxX <= 0
+      ? maxX / 2
+      : Phaser.Math.Clamp(this.player.sprite.x - viewW / 2, 0, maxX);
+    // Lift a letterboxed room so the south door sits above the on-screen pad.
+    const lift = maxY <= 0 ? Math.min(56, -maxY / 2) : 0;
+    const scrollY = maxY <= 0
+      ? maxY / 2 + lift
+      : Phaser.Math.Clamp(this.player.sprite.y - viewH / 2, 0, maxY);
+    cam.setScroll(scrollX, scrollY);
+  }
+
+  /**
+   * Frame the room for the current viewport. Wired to `scale.resize` so a
+   * phone rotation or a devtools dock does not leave the garage cropped.
+   */
+  _fitLocalCamera() {
     if (!this.cameras?.main) return;
     const world = this.getWorldSize();
     const cam = this.cameras.main;
-    if (world.width > cam.width || world.height > cam.height) {
-      // Window has shrunk below world size — bound + follow if not already
-      if (!cam.useBounds) {
-        cam.setBounds(0, 0, world.width, world.height);
-        if (this.player?.sprite) {
-          cam.startFollow(this.player.sprite, true, 0.1, 0.1);
-          cam.setDeadzone(60, 40);
-        }
-      }
+    const fit = localCameraFit({
+      camWidth: cam.width,
+      camHeight: cam.height,
+      worldWidth: world.width,
+      worldHeight: world.height,
+    });
+
+    if (fit.mode === 'follow') {
+      this._cameraMode = 'follow';
+      cam.stopFollow();
+      cam.setZoom(1);
+      if (cam.useBounds) cam.removeBounds();
+      this._frameFollowCamera();
+      this._renderViewportFrame();
       return;
     }
+
+    this._cameraMode = 'fit';
+
+    cam.stopFollow();
+    if (cam.useBounds) cam.removeBounds();
+    cam.setZoom(fit.zoom);
     cam.centerOn(world.width / 2, world.height / 2);
+    this._renderViewportFrame();
   }
 
   _savePosition(pos) {

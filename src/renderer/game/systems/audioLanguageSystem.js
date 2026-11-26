@@ -259,7 +259,7 @@ export function scorePronunciation(captureResult, vocab) {
     level = 'understandable';
   } else {
     feedback = `Try again — listen to each syllable: ${vocab.pronunciation}.`;
-    level: 'retry';
+    level = 'retry';
   }
 
   return {

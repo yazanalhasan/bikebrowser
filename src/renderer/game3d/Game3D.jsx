@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 import { Sky } from '@react-three/drei';
@@ -42,6 +43,7 @@ function InputDebugHUDBridge() {
 }
 
 function Game3DInner() {
+  const navigate = useNavigate();
   const [camMode, setCamMode] = useState('angled');
   const physicsDebug = usePhysicsDebug();
 
@@ -68,9 +70,30 @@ function Game3DInner() {
   }, []);
 
   return (
-    <div style={{ width: '100%', height: 'calc(100vh - 80px)', minHeight: 500, position: 'relative' }}>
+    <div style={{ width: '100%', height: '100%', minHeight: 0, position: 'relative' }}>
       <InputRefBridge inputRef={inputRef} />
-      <Canvas shadows>
+      <button
+        type="button"
+        aria-label="Home"
+        onClick={() => navigate('/')}
+        style={{
+          position: 'absolute',
+          top: 12,
+          right: 12,
+          zIndex: 5,
+          width: 44,
+          height: 44,
+          borderRadius: 10,
+          border: 'none',
+          background: 'rgba(255,255,255,0.92)',
+          fontSize: 22,
+          cursor: 'pointer',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.25)',
+        }}
+      >
+        🏠
+      </button>
+      <Canvas shadows={{ type: THREE.PCFShadowMap }}>
         {camMode === 'side' && <SideCam targetRef={playerPosRef} distance={16} />}
         {camMode === 'angled' && <AngledCam targetRef={playerPosRef} distance={14} angleDeg={30} />}
         {camMode === 'top' && <TopCam targetRef={playerPosRef} distance={16} />}
