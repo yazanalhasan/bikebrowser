@@ -16,6 +16,7 @@ import { saveGame } from '../systems/saveSystem.js';
 import QUESTS from '../data/quests.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { startInteraction } from '../systems/interactionManager.js';
 
 export default class MountainScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -145,10 +146,17 @@ export default class MountainScene extends LocalSceneBase {
       icon: '🕳️',
       radius: 60,
       onInteract: () => {
-        this.registry.set('dialogEvent', {
-          speaker: 'Zuzu',
-          text: "A massive cave carved into the mountainside... Strange echoes come from deep within.\n\nThis feels important. I should prepare before going in.\n\n(Mountain dungeon coming soon!)",
-          choices: null, step: null,
+        startInteraction(this, {
+          type: 'ecology',
+          lessonId: 'mountain_cave_mouth',
+          knowledgeId: 'concept:thermal_mass',
+          prompt: 'The mountain cave is cooler than the sunny slope. Why?',
+          choices: [
+            { label: 'Thick rock changes temperature slowly', correct: true },
+            { label: 'Mountains are always made of ice', correct: false },
+            { label: 'Caves float above the heat', correct: false },
+          ],
+          success: 'Rock is a slow heater. I can test that idea on the thermal rig.',
         });
       },
     });

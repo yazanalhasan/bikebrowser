@@ -12,6 +12,7 @@
  */
 
 import LocalSceneBase from './LocalSceneBase.js';
+import { startInteraction } from '../systems/interactionManager.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 
@@ -133,11 +134,7 @@ export default class SportsFieldsScene extends LocalSceneBase {
       icon: '🏁',
       radius: this.layout.interact_race_start.radius,
       onInteract: () => {
-        this.registry.set('dialogEvent', {
-          speaker: 'Zuzu',
-          text: "A starting line painted on the grass. Looks like someone set up a sprint track!\n\n(Race challenge coming soon!)",
-          choices: null, step: null,
-        });
+        startInteraction(this, { type: 'race', title: 'Starting line' });
       },
     });
 

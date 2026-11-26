@@ -1,46 +1,23 @@
 /**
- * Interaction Manager — focused interaction system for micro-layer gameplay.
+ * Interaction Manager — focused interactions that stay in the dialog overlay.
  *
- * Handles overlay/modal-style interactions that pause the parent scene
- * and render a focused experience:
- *   - Bike repair bench (step-by-step repair with tools)
- *   - NPC dialogue with choices
- *   - Item pickup / inspection
- *   - Puzzle interaction
- *   - Race or movement challenge
+ * Primitive declarations (arc.md §8.1):
+ * - Consults: inventory and recipe data. Repair checks a named tool.
+ *   Craft uses the shared crafting system. Lessons do not read biome strings.
+ * - Updates: observations (low-level log) and knowledgeState (Seen/Interacted).
+ * - Scales: the same repair/craft/lesson types work in later acts.
  *
- * Architecture:
- *   The interaction manager works through the React dialog overlay
- *   (GameContainer.jsx already renders dialogs via registry events).
- *   For more complex interactions, it can launch a Phaser overlay scene.
- *
- * Usage from a local scene:
- *   import { startInteraction } from '../systems/interactionManager.js';
- *   startInteraction(this, {
- *     type: 'inspect',
- *     title: 'Workbench',
- *     text: 'Your trusty workbench...',
- *     icon: '🔧',
- *   });
+ * No scene imports.
  */
 
+import { craft } from './craftingSystem.js';
+import { saveGame } from './saveSystem.js';
+import { practiceLanguageTerm } from './languageLayer.js';
+import { markKnowledge } from './knowledgeState/index.js';
+
 /**
- * Start a focused interaction.
- *
- * For simple interactions (inspect, dialogue), this uses the existing
- * React dialog overlay via registry. For complex interactions (repair,
- * puzzle, combat), this will launch overlay scenes in the future.
- *
- * @param {Phaser.Scene} scene — the parent scene
+ * @param {Phaser.Scene} scene
  * @param {object} config
- * @param {string} config.type — 'inspect' | 'dialogue' | 'repair' | 'puzzle' | 'race' | 'craft'
- * @param {string} config.title — interaction title
- * @param {string} config.text — description/dialog text
- * @param {string} [config.speaker='Zuzu'] — who is speaking
- * @param {string} [config.icon] — emoji icon
- * @param {Array} [config.choices] — quiz/dialogue choices
- * @param {object} [config.step] — quest step reference
- * @param {function} [config.onComplete] — called when interaction ends
  */
 export function startInteraction(scene, config) {
   const {
@@ -51,7 +28,6 @@ export function startInteraction(scene, config) {
     icon = '',
     choices = null,
     step = null,
-    onComplete = null,
   } = config;
 
   const audioMgr = scene.registry.get('audioManager');
@@ -59,7 +35,6 @@ export function startInteraction(scene, config) {
   switch (type) {
     case 'inspect':
     case 'dialogue':
-      // Simple: use the React dialog overlay
       audioMgr?.playSfx('interaction_ping');
       scene.registry.set('dialogEvent', {
         speaker,
@@ -70,51 +45,45 @@ export function startInteraction(scene, config) {
       break;
 
     case 'repair':
-      // Future: launch repair overlay scene
       audioMgr?.playSfx('toolbox_open');
-      scene.registry.set('dialogEvent', {
-        speaker: 'Zuzu',
-        text: `🔧 ${title}\n\n${text}\n\n(Detailed repair mini-game coming soon!)`,
-        choices: null,
-        step: null,
-      });
+      runToolCheck(scene, config);
       break;
 
     case 'puzzle':
-      // Future: launch puzzle overlay scene
+    case 'pace':
+    case 'buoyancy':
+    case 'ecology':
       audioMgr?.playSfx('interaction_ping');
-      scene.registry.set('dialogEvent', {
-        speaker: 'Zuzu',
-        text: `🧩 ${title}\n\n${text}\n\n(Puzzle interaction coming soon!)`,
-        choices: null,
-        step: null,
-      });
+      runLesson(scene, config);
       break;
 
     case 'race':
-      // Future: launch race/movement challenge
       audioMgr?.playSfx('interaction_ping');
-      scene.registry.set('dialogEvent', {
-        speaker: 'Zuzu',
-        text: `🏁 ${title}\n\n${text}\n\n(Race challenge coming soon!)`,
-        choices: null,
-        step: null,
+      runLesson(scene, {
+        ...config,
+        lessonId: config.lessonId || 'pace_practiced',
+        prompt: config.prompt || 'A fair ride is about steady pedals, not a secret trick.',
+        choices: config.choices || [
+          { label: 'Keep a steady pedal so the tires keep their grip', correct: true },
+          { label: 'Lock the brakes the whole way', correct: false },
+          { label: 'Take the chain off to go faster', correct: false },
+        ],
+        success: 'Grip comes from the tire meeting the ground. Steady pedals keep that grip.',
+        knowledgeId: 'concept:friction',
       });
       break;
 
     case 'craft':
-      // Future: launch crafting/upgrade overlay
+      audioMgr?.playSfx('toolbox_open');
+      runCraft(scene, config);
+      break;
+
+    case 'language':
       audioMgr?.playSfx('interaction_ping');
-      scene.registry.set('dialogEvent', {
-        speaker: 'Zuzu',
-        text: `⚒️ ${title}\n\n${text}\n\n(Crafting system coming soon!)`,
-        choices: null,
-        step: null,
-      });
+      runLanguagePractice(scene, config);
       break;
 
     default:
-      // Fallback to simple dialog
       scene.registry.set('dialogEvent', {
         speaker,
         text,
@@ -124,10 +93,130 @@ export function startInteraction(scene, config) {
   }
 }
 
-/**
- * Close the current interaction.
- * @param {Phaser.Scene} scene
- */
 export function endInteraction(scene) {
   scene.registry.set('dialogEvent', null);
+}
+
+function persist(scene, state) {
+  scene.registry.set('gameState', state);
+  saveGame(state);
+  return state;
+}
+
+function runToolCheck(scene, config) {
+  const toolId = config.requiredItem || 'tire_lever';
+  const state = scene.registry.get('gameState') || {};
+  const hasTool = (state.inventory || []).includes(toolId);
+  const pretty = toolId.replace(/_/g, ' ');
+  if (!hasTool) {
+    scene.registry.set('dialogEvent', {
+      speaker: 'Zuzu',
+      text: `I need a ${pretty} before I can do this repair.`,
+      choices: null,
+      step: null,
+    });
+    return;
+  }
+  const observation = config.lessonId || `repair_${toolId}`;
+  const next = remember(state, observation, `Used ${pretty} on a repair.`);
+  const withKnowledge = markKnowledge(next, `concept:tool.${toolId}`, 'interacted', 'repair');
+  persist(scene, withKnowledge);
+  scene.registry.set('dialogEvent', {
+    speaker: 'Zuzu',
+    text: config.success || `The ${pretty} does the job. I can feel the part move the way it should.`,
+    choices: null,
+    step: null,
+  });
+}
+
+function runCraft(scene, config) {
+  const state = scene.registry.get('gameState') || {};
+  const recipeId = config.recipeId || 'healing_salve';
+  const result = craft(recipeId, state.inventory || []);
+  if (!result?.success) {
+    scene.registry.set('dialogEvent', {
+      speaker: 'Zuzu',
+      text: result?.message || 'I do not have the ingredients for that recipe yet.',
+      choices: null,
+      step: null,
+    });
+    return;
+  }
+  const next = {
+    ...state,
+    inventory: result.inventory,
+  };
+  const remembered = remember(next, `crafted_${recipeId}`, result.message || `Crafted ${recipeId}.`);
+  persist(scene, markKnowledge(remembered, `recipe:${recipeId}`, 'interacted', 'craft'));
+  scene.registry.set('dialogEvent', {
+    speaker: 'Zuzu',
+    text: result.message || 'The recipe worked.',
+    choices: null,
+    step: null,
+  });
+}
+
+function runLesson(scene, config) {
+  const choices = config.choices || [];
+  scene.registry.set('dialogEvent', {
+    speaker: 'Zuzu',
+    text: config.prompt || config.text || 'Think about how this works.',
+    choices,
+    step: {
+      type: 'quiz',
+      id: config.lessonId || 'field_lesson',
+      lesson: true,
+      success: config.success || 'That matches how the world works.',
+      observation: config.lessonId || 'field_lesson',
+      knowledgeId: config.knowledgeId || null,
+    },
+  });
+}
+
+function runLanguagePractice(scene, config) {
+  const state = scene.registry.get('gameState') || {};
+  const result = practiceLanguageTerm(state, config.termId || 'placeholder_repair');
+  if (!result.ok) {
+    scene.registry.set('dialogEvent', {
+      speaker: 'Zuzu',
+      text: result.message,
+      choices: null,
+      step: null,
+    });
+    return;
+  }
+  const withKnowledge = markKnowledge(
+    result.state,
+    `language.term:${result.card.id}`,
+    'interacted',
+    'language-practice',
+  );
+  persist(scene, withKnowledge);
+  scene.registry.set('dialogEvent', {
+    speaker: 'Zuzu',
+    text: result.message,
+    choices: null,
+    step: null,
+  });
+}
+
+function remember(state, observationId, journalLine) {
+  const observations = state.observations || [];
+  const journal = state.journal || [];
+  return {
+    ...state,
+    observations: observations.includes(observationId) ? observations : [...observations, observationId],
+    journal: journal.includes(journalLine) ? journal : [...journal, journalLine],
+  };
+}
+
+/**
+ * Field lessons are quizzes that are not quest steps. LocalSceneBase skips
+ * them unless the scene calls this after a correct answer.
+ */
+export function completeFieldLesson(state, step) {
+  if (!step?.lesson) return state;
+  const remembered = remember(state, step.observation || step.id, step.success || 'Lesson learned.');
+  if (!step.knowledgeId) return remembered;
+  return markKnowledge(remembered, step.knowledgeId, 'understood', 'field-lesson');
 }

@@ -1,3 +1,5 @@
+import { evaluateAct1 } from '../systems/act1Progress.js';
+
 /**
  * World Map Data — defines explorable regions and locations beyond the neighborhood.
  *
@@ -31,6 +33,16 @@ export const REGIONS = {
     icon: '⛰️',
     mapPos: { x: 0.8, y: 0.2 },
     unlockReq: { reputation: 50, questsAny: ['bridge_collapse'] },
+    educationalDomain: 'force and gravity on an incline',
+  },
+  wider_earth: {
+    id: 'wider_earth',
+    name: 'Beyond the Desert',
+    description: 'The road out of the neighborhood. Same tools, a bigger map.',
+    icon: '🗺️',
+    mapPos: { x: 0.15, y: 0.15 },
+    unlockReq: { act1Complete: true },
+    educationalDomain: 'systems thinking — tools travel with you',
   },
 };
 
@@ -106,6 +118,26 @@ export const WORLD_LOCATIONS = {
     travelTime: 'Short ride',
     travelIcon: '🚲',
   },
+
+  wider_earth_gate: {
+    id: 'wider_earth_gate',
+    name: 'Road Beyond the Desert',
+    description: 'The bike can leave the neighborhood. Act 2 is the next journey.',
+    icon: '🗺️',
+    region: 'wider_earth',
+    type: 'exploration',
+    difficulty: 1,
+    entryScene: null,
+    ceremony: true,
+    ceremonyText:
+      'The wider map is open. Your bike rolls, the bridge holds, and you tested materials instead of guessing. Neighbors trust you. The next lands are Act 2 — same tools, new places.',
+    mapPos: { x: 0.18, y: 0.18 },
+    unlockReq: { act1Complete: true },
+    educationalDomain: 'systems thinking — tools travel with you',
+    rewards: ['regional_travel'],
+    travelTime: 'The next journey',
+    travelIcon: '🚲',
+  },
 };
 
 // ── Helper Functions ────────────────────────────────────────────────────────
@@ -133,6 +165,7 @@ export function isRegionUnlocked(regionId, state) {
       && !req.questsAnyOrActive.some(q => completed.includes(q) || q === activeId)) {
     return false;
   }
+  if (req.act1Complete && !evaluateAct1(state).complete) return false;
   return true;
 }
 
@@ -158,6 +191,7 @@ export function isLocationUnlocked(locationId, state) {
   if (req.questsAll) {
     for (const q of req.questsAll) { if (!completed.includes(q)) return false; }
   }
+  if (req.act1Complete && !evaluateAct1(state).complete) return false;
   return true;
 }
 

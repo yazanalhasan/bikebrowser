@@ -11,6 +11,7 @@ import { onRegionDiscovered } from './discoverySystem.js';
 import DISCOVERY_UNLOCKS from '../data/discoveryUnlocks.js';
 import { revealLocationsByQuestId } from './discoveryBridge.js';
 import { runProgressionReachabilityAudit } from './progressionReachabilityAudit.js';
+import { stampAct1 } from './act1Progress.js';
 
 // ── Discovery → Quest Bridge ─────────────────────────────────────────────────
 
@@ -261,7 +262,7 @@ function finishQuest(state, quest) {
   if (earnedRep > 0) journalEntries.push(`⭐ Reputation +${earnedRep}`);
 
   return {
-    state: {
+    state: stampAct1({
       ...state,
       inventory,
       upgrades,
@@ -270,7 +271,7 @@ function finishQuest(state, quest) {
       completedQuests: [...state.completedQuests, quest.id],
       activeQuest: null,
       journal: [...state.journal, ...journalEntries],
-    },
+    }),
     ok: true,
     message: 'Quest complete!',
   };

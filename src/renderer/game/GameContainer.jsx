@@ -28,6 +28,8 @@ import { processEvent as processKnowledgeEvent } from './systems/knowledgeSystem
 import { checkMilestones, applyRewards, getAvailableMilestones, getCompletedMilestones, getProgressionSummary } from './systems/milestoneEngine.js';
 import { CATEGORY_ICONS, PHASE_NAMES } from './data/milestones.js';
 import { canCraft, craft, getAllRecipes } from './systems/craftingSystem.js';
+import { completeFieldLesson } from './systems/interactionManager.js';
+import { evaluateAct1 } from './systems/act1Progress.js';
 import ITEMS from './data/items.js';
 import MaterialLogEntry from './components/MaterialLogEntry.jsx';
 import {
@@ -885,6 +887,31 @@ export default function GameContainer() {
       return;
     }
 
+    if (dialog?.step?.lesson) {
+      const lessonState = game.registry?.get?.('gameState') || {};
+      const lessonChoice = dialog.choices?.[choiceIndex];
+      if (!lessonChoice?.correct) {
+        game.registry.set('dialogEvent', {
+          speaker: 'Zuzu',
+          text: `Not quite. Try the other idea.\n\n${dialog.text}`,
+          choices: dialog.choices,
+          step: dialog.step,
+        });
+        return;
+      }
+      const learned = completeFieldLesson(lessonState, dialog.step);
+      game.registry.set('gameState', learned);
+      saveGame(learned);
+      audio?.playSfx?.('ui_success');
+      game.registry.set('dialogEvent', {
+        speaker: 'Zuzu',
+        text: dialog.step.success || 'That matches how the world works.',
+        choices: null,
+        step: null,
+      });
+      return;
+    }
+
     if (action.craftRecipe) {
       const state = game.registry?.get?.('gameState');
       const result = craft(action.craftRecipe, state?.inventory || []);
@@ -1231,6 +1258,9 @@ export default function GameContainer() {
           <div className="flex items-start justify-between px-2 gap-2">
             {/* Quest tracker + Zuzubucks */}
             <div className="flex flex-col gap-1.5 max-w-[55%]">
+              {gameState && (
+                <Act1Checklist state={gameState} />
+              )}
               {questInfo && (
                 <div className="bg-white/90 rounded-lg px-3 py-2 shadow text-xs sm:text-sm pointer-events-auto">
                   <div className="font-bold text-blue-700 truncate">📋 {questInfo.title}</div>
@@ -1885,7 +1915,7 @@ export default function GameContainer() {
           💬
         </button>
       )}
-      {phase === 'playing' && !dialog && !paused && !gameState?.activeQuest && (
+      {phase === 'playing' && !dialog && !paused && !gameState?.activeQuest && !evaluateAct1(gameState || {}).complete && (
         <div className="pointer-events-none absolute left-1/2 top-20 z-20 w-[min(18rem,calc(100%-7rem))] -translate-x-1/2 rounded-xl bg-white/95 px-3 py-2 text-center text-sm font-semibold text-gray-800 shadow-lg">
           Arrows or the pad to walk. The door at the bottom goes outside.
         </div>
@@ -2166,6 +2196,28 @@ function AIAssistantPanel({ messages, status, onClose, onClear }) {
       <div className="px-3 py-1.5 border-t border-gray-100 text-[10px] text-gray-400 text-center">
         {messages.length} message{messages.length !== 1 ? 's' : ''} · AI-powered guidance
       </div>
+    </div>
+  );
+}
+
+function Act1Checklist({ state }) {
+  const report = evaluateAct1(state);
+  if (report.complete) {
+    return (
+      <div className="bg-emerald-50 rounded-lg px-3 py-2 shadow text-xs pointer-events-auto" data-testid="act1-complete">
+        <div className="font-bold text-emerald-800">Wider map is open</div>
+        <div className="text-emerald-700">Check the world map for the road beyond the desert.</div>
+      </div>
+    );
+  }
+  return (
+    <div className="bg-white/90 rounded-lg px-3 py-2 shadow text-xs pointer-events-auto" data-testid="act1-checklist">
+      <div className="font-bold text-gray-800">Neighborhood goals</div>
+      {report.rows.map((row) => (
+        <div key={row.id} className={row.done ? 'text-emerald-700' : 'text-gray-600'}>
+          {row.done ? '✅' : '⬜'} {row.label}
+        </div>
+      ))}
     </div>
   );
 }
