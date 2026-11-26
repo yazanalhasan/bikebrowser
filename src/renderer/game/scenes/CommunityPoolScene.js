@@ -13,6 +13,7 @@
  */
 
 import LocalSceneBase from './LocalSceneBase.js';
+import { startInteraction } from '../systems/interactionManager.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 
@@ -136,10 +137,17 @@ export default class CommunityPoolScene extends LocalSceneBase {
       icon: '🤿',
       radius: 55,
       onInteract: () => {
-        this.registry.set('dialogEvent', {
-          speaker: 'Zuzu',
-          text: "The diving board bounces when I step on it. Looks like it goes over the deep end!\n\n(Diving mini-game coming soon!)",
-          choices: null, step: null,
+        startInteraction(this, {
+          type: 'buoyancy',
+          lessonId: 'diving_board_buoyancy',
+          knowledgeId: 'concept:buoyancy',
+          prompt: 'The board hangs over the deep end. What keeps me from sinking all the way if I jump in?',
+          choices: [
+            { label: 'Water pushes up with the same force as the water I push aside', correct: true },
+            { label: 'The board keeps pulling me back up', correct: false },
+            { label: 'Air in the pool rules sign holds me', correct: false },
+          ],
+          success: 'That push is buoyancy. The same idea tells you if a raft will float.',
         });
       },
     });

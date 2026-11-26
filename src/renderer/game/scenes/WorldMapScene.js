@@ -1310,6 +1310,15 @@ export default class WorldMapScene extends Phaser.Scene {
   // ── Travel to location ──────────────────────────────────────────────────
 
   _selectLocation(loc) {
+    if (loc.ceremony) {
+      this.registry.set('dialogEvent', {
+        speaker: 'Zuzu',
+        text: loc.ceremonyText || loc.description,
+        choices: null,
+        step: null,
+      });
+      return;
+    }
     // Check if scene class is registered
     const sceneExists = this.scene.manager.keys[loc.entryScene];
     if (!sceneExists) {

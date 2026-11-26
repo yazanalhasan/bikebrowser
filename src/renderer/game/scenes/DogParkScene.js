@@ -17,6 +17,7 @@ import { saveGame } from '../systems/saveSystem.js';
 import { drawPlant } from '../utils/plantRenderer.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { startInteraction } from '../systems/interactionManager.js';
 
 const INTERACTIVE_PLANT_SCALE = 1.65;
 
@@ -167,10 +168,17 @@ export default class DogParkScene extends LocalSceneBase {
       icon: '🎾',
       radius: this.layout.interact_tennis_ball.radius,
       onInteract: () => {
-        this.registry.set('dialogEvent', {
-          speaker: 'Zuzu',
-          text: "A tennis ball! I could throw this for the dogs.\n\n(Fetch mini-game coming soon! 🐕)",
-          choices: null, step: null,
+        startInteraction(this, {
+          type: 'ecology',
+          lessonId: 'dog_motion',
+          knowledgeId: 'concept:motion',
+          prompt: 'The dogs lean toward the ball before I throw it. What are they watching?',
+          choices: [
+            { label: 'Motion. Their eyes follow what is about to move', correct: true },
+            { label: 'The color of the sky', correct: false },
+            { label: 'Nothing. Dogs ignore toys', correct: false },
+          ],
+          success: 'Animals track motion. That is how a chase starts, on a field or in a food chain.',
         });
       },
     });
@@ -182,10 +190,11 @@ export default class DogParkScene extends LocalSceneBase {
       icon: '📿',
       radius: this.layout.interact_lost_collar.radius,
       onInteract: () => {
-        this.registry.set('dialogEvent', {
-          speaker: 'Zuzu',
-          text: "A lost dog collar! Someone's pet must have shaken it off.\n\nMaybe I should ask around to find the owner.\n\n(Lost collar quest coming soon!)",
-          choices: null, step: null,
+        startInteraction(this, {
+          type: 'inspect',
+          title: 'Lost collar',
+          icon: '🐕',
+          text: 'The name on the tag is worn off. I will remember the collar and ask the neighbors. I am not starting a new job until I know whose dog it is.',
         });
       },
     });

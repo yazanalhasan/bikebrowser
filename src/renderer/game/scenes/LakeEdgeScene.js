@@ -13,6 +13,7 @@
  */
 
 import LocalSceneBase from './LocalSceneBase.js';
+import { startInteraction } from '../systems/interactionManager.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
@@ -232,10 +233,17 @@ export default class LakeEdgeScene extends LocalSceneBase {
           return;
         }
 
-        this.registry.set('dialogEvent', {
-          speaker: 'Zuzu',
-          text: "The water is calm here at the end of the dock. I can see fish swimming below!\n\n(Fishing mini-game coming soon!)",
-          choices: null, step: null,
+        startInteraction(this, {
+          type: 'ecology',
+          lessonId: 'dock_shade',
+          knowledgeId: 'concept:shade',
+          prompt: 'Fish are holding in the shadow of the dock. Why does shade matter here?',
+          choices: [
+            { label: 'Shade is cooler water, so animals wait out the desert heat', correct: true },
+            { label: 'Shade makes the water disappear', correct: false },
+            { label: 'Fish only swim where there is no light at all', correct: false },
+          ],
+          success: 'Shade is a desert tool. Plants, people, and fish all use it to beat the heat.',
         });
       },
     });
@@ -247,10 +255,17 @@ export default class LakeEdgeScene extends LocalSceneBase {
       icon: '🕳️',
       radius: 55,
       onInteract: () => {
-        this.registry.set('dialogEvent', {
-          speaker: 'Zuzu',
-          text: "A dark cave opening in the rocks... I can feel cool air coming from inside.\n\nI should come back with a flashlight.\n\n(Cave exploration coming soon!)",
-          choices: null, step: null,
+        startInteraction(this, {
+          type: 'ecology',
+          lessonId: 'cave_mouth_seen',
+          knowledgeId: 'concept:thermal_mass',
+          prompt: 'The cave mouth is cooler than the sunny rocks. Why?',
+          choices: [
+            { label: 'Rock is slow to heat, so the inside stays cool', correct: true },
+            { label: 'Caves make their own ice', correct: false },
+            { label: 'The sun cannot shine anywhere in the desert', correct: false },
+          ],
+          success: 'Rock holds heat slowly. That is the same idea the thermal rig tests on metal.',
         });
       },
     });
