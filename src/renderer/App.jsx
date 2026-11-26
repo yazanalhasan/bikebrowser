@@ -158,7 +158,7 @@ function App() {
           </div>
         </div>
       )}
-      <RouterComponent>
+      <RouterComponent future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AccessibilityProvider>
           <ReadingFocusOverlay />
           <AppContent />

@@ -264,11 +264,13 @@ export default class OverworldScene extends Phaser.Scene {
 
     if (nearest) {
       transitionTo(this, nearest.sceneDef.key, 'fromOverworld');
+      return true;
     }
+    return false;
   }
 
   _handleActionKey() {
-    this._enterNearestLocation();
+    return this._enterNearestLocation();
   }
 
   _handlePointerDown(pointer) {

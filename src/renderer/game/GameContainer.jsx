@@ -38,13 +38,13 @@ import {
 import { clearDialogueCache } from './services/npcAiClient.js';
 import { setBusy, recordQuestionDismissed } from './systems/gameplayArbiter.js';
 import { runRuntimeAudit } from './systems/runtimeAudit.js';
+import { gameplayReportsEnabled } from './utils/gameplayReports.js';
 import { getCurrentStep, initDiscoveryQuestBridge } from './systems/questSystem.js';
 import { interpolateStepText } from './systems/questTemplating.js';
 import { triggerQuestRevealsForState } from './systems/discoveryBridge.js';
 
 const GAMEPLAY_REPORTS_KEY = 'bikebrowser_gameplay_reports';
-const GAMEPLAY_REPORTS_ENABLED =
-  import.meta.env.VITE_ENABLE_GAMEPLAY_REPORTS !== 'false';
+const GAMEPLAY_REPORTS_ENABLED = gameplayReportsEnabled(import.meta.env);
 const CONSOLE_BUFFER_ENABLED =
   GAMEPLAY_REPORTS_ENABLED || import.meta.env.DEV || import.meta.env.VITE_ENABLE_CONSOLE_BUFFER === 'true';
 const PHYSICS_HUD_ENABLED =
@@ -159,9 +159,9 @@ async function copyTextWithFallback(text) {
 
 function getDialogPrimaryAction(dialog, state) {
   const step = dialog?.step;
-  if (!step) return { label: 'Continue ->', canAdvance: false };
+  if (!step) return { label: 'Continue', canAdvance: false };
   if (step.isSideQuest || step.type === 'embedded_challenge') {
-    return { label: 'Continue ->', canAdvance: true };
+    return { label: 'Continue', canAdvance: true };
   }
 
   const inventory = state?.inventory || [];
@@ -170,7 +170,7 @@ function getDialogPrimaryAction(dialog, state) {
   if (step.type === 'forage') {
     const hasRequiredItem = hasItem(inventory, step.requiredItem);
     return {
-      label: hasRequiredItem ? 'Continue ->' : 'Close',
+      label: hasRequiredItem ? 'Continue' : 'Close',
       canAdvance: hasRequiredItem,
       hint: step.hint || 'Find the required item first.',
     };
@@ -181,7 +181,7 @@ function getDialogPrimaryAction(dialog, state) {
     const craftCheck = canCraft(step.requiredRecipe, inventory);
     return {
       label: hasRequiredItem
-        ? 'Continue ->'
+        ? 'Continue'
         : craftCheck.canCraft
           ? `Craft ${step.requiredRecipe.replace(/_/g, ' ')}`
           : 'Close',
@@ -203,13 +203,13 @@ function getDialogPrimaryAction(dialog, state) {
   if (step.type === 'observe') {
     const observed = !step.requiredObservation || observations.includes(step.requiredObservation);
     return {
-      label: observed ? 'Continue ->' : 'Close',
+      label: observed ? 'Continue' : 'Close',
       canAdvance: observed,
       hint: step.hint || 'Observe the target first.',
     };
   }
 
-  return { label: 'Continue ->', canAdvance: true };
+  return { label: 'Continue', canAdvance: true };
 }
 
 // ---------------------------------------------------------------------------
@@ -306,6 +306,9 @@ export default function GameContainer() {
 
   // Dialog state (quest step overlay)
   const [dialog, setDialog] = useState(null);
+  const [actionHint, setActionHint] = useState('');
+  const hintTimerRef = useRef(null);
+  const lastActionAtRef = useRef(0);
 
   // AI notification toasts
   const [aiToasts, setAiToasts] = useState([]);
@@ -986,14 +989,25 @@ export default function GameContainer() {
   }, []);
 
   const triggerWorldAction = useCallback(() => {
+    const now = Date.now();
+    if (now - lastActionAtRef.current < 350) return false;
+    lastActionAtRef.current = now;
+
     const game = gameRef.current;
-    if (!game) return;
+    if (!game) return false;
     const activeScenes = game.scene.getScenes(true);
     const scene = activeScenes.find((s) => typeof s._handleActionKey === 'function');
-    if (scene) {
-      scene._handleActionKey();
+    if (!scene) return false;
+    const handled = scene._handleActionKey() === true;
+    if (handled) {
       audio?.playSfx('ui_tap');
+      setActionHint('');
+      return true;
     }
+    setActionHint('Walk up to a person or object, then tap again.');
+    if (hintTimerRef.current) window.clearTimeout(hintTimerRef.current);
+    hintTimerRef.current = window.setTimeout(() => setActionHint(''), 2800);
+    return false;
   }, [audio]);
 
   // ------------------------------------------------------------------
@@ -1199,11 +1213,13 @@ export default function GameContainer() {
               onClick={() => navigate('/')}
               className={HUD_BUTTON_CLASS}
               title="Home"
+              aria-label="Home"
             >🏠</button>
             <button
               onClick={() => navigate(-1)}
               className={HUD_BUTTON_CLASS}
               title="Back"
+              aria-label="Back"
             >←</button>
           </div>
         </div>
@@ -1327,7 +1343,7 @@ export default function GameContainer() {
       {/* ---- Notebook panel ---- */}
       {showNotebook && (
         <div className="absolute top-14 z-20 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg p-3 w-[min(16rem,calc(100vw-4rem))] max-h-[calc(100vh-5rem)] overflow-y-auto" style={HUD_PANEL_STYLE}>
-          <div className="font-bold text-gray-700 mb-2 text-sm">📓 Zuzu's Notebook</div>
+          <div className="font-bold text-gray-700 mb-2 text-sm">📓 Zuzu&apos;s Notebook</div>
           {journal.map((entry, i) => {
             if (typeof entry === 'string') {
               return (
@@ -1692,8 +1708,8 @@ export default function GameContainer() {
                       e.stopPropagation();
                       handleDialogContinue(i);
                     }}
-                    className="bg-blue-50 border-2 border-blue-300 rounded-xl px-4 py-2 text-sm
-                               font-medium text-blue-800 hover:bg-blue-100 active:scale-[0.98]
+                    className="bg-blue-50 border-2 border-blue-300 rounded-xl px-4 py-3 text-base
+                               min-h-12 font-medium text-blue-800 hover:bg-blue-100 active:scale-[0.98]
                                text-left"
                   >
                     {choice.label}
@@ -1710,7 +1726,7 @@ export default function GameContainer() {
                     e.stopPropagation();
                     handleDialogContinue(null);
                   }}
-                  className="bg-blue-500 text-white px-5 py-2 rounded-xl text-sm font-semibold
+                  className="bg-blue-500 text-white px-5 py-3 rounded-xl text-base min-h-12 font-semibold
                              hover:bg-blue-600 active:scale-95"
                 >
                   {primaryAction.label}
@@ -1855,18 +1871,10 @@ export default function GameContainer() {
       {/* ---- Action button (interact with NPCs) ---- */}
       {phase === 'playing' && !paused && !dialog && (
         <button
+          type="button"
+          aria-label="Talk or use the thing you are standing next to"
           onPointerDown={() => {
-            const game = gameRef.current;
-            game?.scene?.scenes?.forEach((s) => {
-              // Check all NPCs for proximity interaction (supports both old and new layout)
-              const npcs = s._npcs ? Object.values(s._npcs) : [];
-              for (const npc of npcs) {
-                if (npc.isNearby?.()) {
-                  npc.onInteract?.();
-                  return;
-                }
-              }
-            });
+            triggerWorldAction();
           }}
           className="absolute bottom-6 right-6 z-20 bg-amber-400 text-white rounded-full w-16 h-16
                      flex items-center justify-center text-2xl shadow-lg
@@ -1876,6 +1884,20 @@ export default function GameContainer() {
         >
           💬
         </button>
+      )}
+      {phase === 'playing' && !dialog && !paused && !gameState?.activeQuest && (
+        <div className="pointer-events-none absolute left-1/2 top-20 z-20 w-[min(18rem,calc(100%-7rem))] -translate-x-1/2 rounded-xl bg-white/95 px-3 py-2 text-center text-sm font-semibold text-gray-800 shadow-lg">
+          Arrows or the pad to walk. The door at the bottom goes outside.
+        </div>
+      )}
+      {phase === 'playing' && actionHint && (
+        <div
+          role="status"
+          className="absolute bottom-24 right-6 z-20 max-w-[14rem] rounded-xl bg-white/95 px-3 py-2 text-sm text-gray-800 shadow-lg"
+          style={{ marginBottom: 'env(safe-area-inset-bottom)', marginRight: 'env(safe-area-inset-right)' }}
+        >
+          {actionHint}
+        </div>
       )}
     </div>
   );
@@ -2153,35 +2175,44 @@ function AIAssistantPanel({ messages, status, onClose, onClear }) {
 // ---------------------------------------------------------------------------
 function VirtualJoystick({ onMove, onAction }) {
   const tapTimerRef = useRef(null);
+  const pressStartedRef = useRef(0);
+  const vectorRef = useRef({ x: 0, y: 0 });
   const btnClass =
     'bg-white/60 backdrop-blur-sm rounded-xl shadow flex items-center justify-center text-lg sm:text-xl ' +
-    'select-none w-10 h-10 sm:w-12 sm:h-12 cursor-pointer ' +
+    'select-none w-12 h-12 cursor-pointer ' +
     'transition-all duration-75 active:scale-90 active:bg-blue-300/80 hover:bg-white/80';
 
-  const press = (x, y) => {
-    if (tapTimerRef.current) {
-      window.clearTimeout(tapTimerRef.current);
-      tapTimerRef.current = null;
-    }
-    onMove(x, y);
-  };
-  const release = () => {
-    if (!tapTimerRef.current) onMove(0, 0);
-  };
   const tap = (x, y) => {
     if (tapTimerRef.current) window.clearTimeout(tapTimerRef.current);
     onMove(x, y);
     tapTimerRef.current = window.setTimeout(() => {
       onMove(0, 0);
       tapTimerRef.current = null;
-    }, 120);
+    }, 160);
+  };
+  const press = (x, y) => {
+    if (tapTimerRef.current) {
+      window.clearTimeout(tapTimerRef.current);
+      tapTimerRef.current = null;
+    }
+    pressStartedRef.current = Date.now();
+    vectorRef.current = { x, y };
+    onMove(x, y);
+  };
+  const release = () => {
+    const { x, y } = vectorRef.current;
+    if (Date.now() - pressStartedRef.current < 180) {
+      tap(x, y);
+      return;
+    }
+    if (!tapTimerRef.current) onMove(0, 0);
   };
 
   const controlButton = (label, x, y) => (
     <button
       type="button"
+      aria-label={label === '⬆' ? 'Move up' : label === '⬇' ? 'Move down' : label === '⬅' ? 'Move left' : 'Move right'}
       className={btnClass}
-      onClick={() => tap(x, y)}
       onPointerDown={() => press(x, y)}
       onPointerUp={release}
       onPointerCancel={release}
@@ -2192,7 +2223,7 @@ function VirtualJoystick({ onMove, onAction }) {
   );
 
   return (
-    <div className="absolute bottom-3 left-3 z-20 grid grid-cols-3 gap-1" style={{ width: '132px', paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)' }}>
+    <div className="absolute bottom-3 left-3 z-20 grid grid-cols-3 gap-1" style={{ width: '156px', paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)' }}>
       <div />
       {controlButton('⬆', 0, -1)}
       <div />
@@ -2200,9 +2231,9 @@ function VirtualJoystick({ onMove, onAction }) {
       <button
         type="button"
         className={`${btnClass} text-sm font-bold`}
-        onClick={onAction}
+        aria-label="Talk or use"
         onPointerDown={onAction}
-        title="Action"
+        title="Talk or use"
       >
         E
       </button>

@@ -507,7 +507,7 @@ export default class AudioManager {
 
     // No real file — try procedural buffer
     const buffer = this._buffers.get(key) || await this.load(key);
-    if (!buffer) { try { gainNode.disconnect(); } catch {} return null; }
+    if (!buffer) { try { gainNode.disconnect(); } catch { void 0; } return null; }
     const source = this.ctx.createBufferSource();
     source.buffer = buffer;
     source.loop = loop;
@@ -550,12 +550,12 @@ export default class AudioManager {
     setTimeout(() => {
       try {
         if (handle.kind === 'stream') {
-          try { handle.el.pause(); } catch {}
-          try { handle.el.src = ''; } catch {}
-          try { handle.src.disconnect(); } catch {}
+          try { handle.el.pause(); } catch { void 0; }
+          try { handle.el.src = ''; } catch { void 0; }
+          try { handle.src.disconnect(); } catch { void 0; }
         } else if (handle.kind === 'buffer') {
-          try { handle.source.stop(); } catch {}
-          try { handle.source.disconnect(); } catch {}
+          try { handle.source.stop(); } catch { void 0; }
+          try { handle.source.disconnect(); } catch { void 0; }
         }
         gainNode.disconnect();
       } catch { /* ok */ }
