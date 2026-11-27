@@ -179,41 +179,24 @@ export default class DesertForagingScene extends BaseSubScene {
   }
 
   _handleGuideInteract() {
-    const state = this.registry.get('gameState');
-    const fiberQuest = state.sideQuests?.collect_desert_fibers;
-    const waterQuest = state.sideQuests?.water_management_101;
-
-    if (fiberQuest?.completed && waterQuest?.completed) {
-      this.registry.set('dialogEvent', {
-        speaker: 'Ranger Nita',
-        text: 'You\'ve learned so much about desert plants! Come back anytime to collect more resources.',
-        choices: null, step: null,
-      });
-    } else if (!fiberQuest) {
-      this.registry.set('dialogEvent', {
-        speaker: 'Ranger Nita',
-        text: 'Welcome to the Sonoran Foraging Grounds! I\'m Ranger Nita. Want to learn about desert plants? I have a fiber-collecting challenge for you.',
-        choices: [
-          { label: 'Start the Fiber Quest!', action: 'start_quest', questId: 'collect_desert_fibers' },
-          { label: 'Maybe later', action: 'dismiss' },
-        ],
-        step: { type: 'side_quest_offer', questId: 'collect_desert_fibers' },
-      });
-    } else if (!waterQuest && fiberQuest?.completed) {
-      this.registry.set('dialogEvent', {
-        speaker: 'Ranger Nita',
-        text: 'Great fiber work! Now, let me teach you about water management in the desert.',
-        choices: [
-          { label: 'Start the Water Quest!', action: 'start_quest', questId: 'water_management_101' },
-          { label: 'Maybe later', action: 'dismiss' },
-        ],
-        step: { type: 'side_quest_offer', questId: 'water_management_101' },
-      });
-    } else {
-      // Active quest — show current step
-      const activeId = fiberQuest && !fiberQuest.completed ? 'collect_desert_fibers' : 'water_management_101';
-      this.triggerSideQuest(activeId); // will show current step
-    }
+    this.offerSideQuest('Ranger Nita', {
+      allDone: 'You\'ve learned so much about desert plants! Come back anytime to '
+        + 'collect more resources.',
+      decline: 'Maybe later',
+      offers: {
+        collect_desert_fibers: {
+          text: 'Welcome to the Sonoran Foraging Grounds! I\'m Ranger Nita. Want to '
+            + 'learn about desert plants? I have a fiber-collecting challenge for '
+            + 'you.',
+          accept: 'Start the Fiber Quest!',
+        },
+        water_management_101: {
+          text: 'Great fiber work! Now, let me teach you about water management in '
+            + 'the desert.',
+          accept: 'Start the Water Quest!',
+        },
+      },
+    });
   }
 }
 

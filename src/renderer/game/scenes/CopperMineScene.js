@@ -258,40 +258,23 @@ export default class CopperMineScene extends BaseSubScene {
   }
 
   _handleMinerInteract() {
-    const state = this.registry.get('gameState');
-    const copperQuest = state.sideQuests?.collect_copper_samples;
-    const stabilityQuest = state.sideQuests?.mine_stability_check;
-
-    if (copperQuest?.completed && stabilityQuest?.completed) {
-      this.registry.set('dialogEvent', {
-        speaker: 'Old Miner Pete',
-        text: 'You\'re a natural prospector! That copper will serve you well when you start building battery systems.',
-        choices: null, step: null,
-      });
-    } else if (!copperQuest) {
-      this.registry.set('dialogEvent', {
-        speaker: 'Old Miner Pete',
-        text: 'Well hey there, young explorer! This old mine\'s got some fine copper still. Want me to show you how to prospect?',
-        choices: [
-          { label: 'Start Copper Quest!', action: 'start_quest', questId: 'collect_copper_samples' },
-          { label: 'Just looking around', action: 'dismiss' },
-        ],
-        step: { type: 'side_quest_offer', questId: 'collect_copper_samples' },
-      });
-    } else if (!stabilityQuest && copperQuest?.completed) {
-      this.registry.set('dialogEvent', {
-        speaker: 'Old Miner Pete',
-        text: 'Now that you\'ve got copper skills, let me teach you about structural safety. These old supports need checking.',
-        choices: [
-          { label: 'Start Stability Quest!', action: 'start_quest', questId: 'mine_stability_check' },
-          { label: 'Maybe later', action: 'dismiss' },
-        ],
-        step: { type: 'side_quest_offer', questId: 'mine_stability_check' },
-      });
-    } else {
-      const activeId = copperQuest && !copperQuest.completed ? 'collect_copper_samples' : 'mine_stability_check';
-      this.triggerSideQuest(activeId);
-    }
+    this.offerSideQuest('Old Miner Pete', {
+      allDone: 'You\'re a natural prospector! That copper will serve you well when '
+        + 'you start building battery systems.',
+      decline: 'Just looking around',
+      offers: {
+        collect_copper_samples: {
+          text: 'Well hey there, young explorer! This old mine\'s got some fine copper '
+            + 'still. Want me to show you how to prospect?',
+          accept: 'Start Copper Quest!',
+        },
+        mine_stability_check: {
+          text: 'Now that you\'ve got copper skills, let me teach you about structural '
+            + 'safety. These old supports need checking.',
+          accept: 'Start Stability Quest!',
+        },
+      },
+    });
   }
 }
 

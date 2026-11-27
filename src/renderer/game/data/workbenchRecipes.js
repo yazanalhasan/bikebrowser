@@ -1,11 +1,7 @@
-import ITEMS from './items.js';
+import ITEMS, { itemName } from './items.js';
 import { RECIPES as BIOLOGY_RECIPES } from './recipes.js';
 
 const WORKBENCH_RECIPE_IDS = ['protective_coating', 'plant_composite'];
-
-function itemName(itemId) {
-  return ITEMS[itemId]?.name || itemId.replace(/_/g, ' ');
-}
 
 function fromBiologyRecipe(id, extra = {}) {
   const recipe = BIOLOGY_RECIPES[id];

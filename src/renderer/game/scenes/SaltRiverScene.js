@@ -234,40 +234,23 @@ export default class SaltRiverScene extends BaseSubScene {
   }
 
   _handleBiologistInteract() {
-    const state = this.registry.get('gameState');
-    const ecosystemQuest = state.sideQuests?.river_ecosystem_survey;
-    const flowQuest = state.sideQuests?.balance_the_flow;
-
-    if (ecosystemQuest?.completed && flowQuest?.completed) {
-      this.registry.set('dialogEvent', {
-        speaker: 'Dr. Maya',
-        text: 'You\'re becoming a real river ecologist! Your samples will help with bio-production research.',
-        choices: null, step: null,
-      });
-    } else if (!ecosystemQuest) {
-      this.registry.set('dialogEvent', {
-        speaker: 'Dr. Maya',
-        text: 'Hi there! I\'m Dr. Maya, studying the Salt River ecosystem. Want to help me survey the wildlife?',
-        choices: [
-          { label: 'Start Ecosystem Survey!', action: 'start_quest', questId: 'river_ecosystem_survey' },
-          { label: 'Just exploring', action: 'dismiss' },
-        ],
-        step: { type: 'side_quest_offer', questId: 'river_ecosystem_survey' },
-      });
-    } else if (!flowQuest && ecosystemQuest?.completed) {
-      this.registry.set('dialogEvent', {
-        speaker: 'Dr. Maya',
-        text: 'Great survey work! Now I need help balancing the irrigation channels. It\'s all about water fractions.',
-        choices: [
-          { label: 'Start Flow Quest!', action: 'start_quest', questId: 'balance_the_flow' },
-          { label: 'Maybe later', action: 'dismiss' },
-        ],
-        step: { type: 'side_quest_offer', questId: 'balance_the_flow' },
-      });
-    } else {
-      const activeId = ecosystemQuest && !ecosystemQuest.completed ? 'river_ecosystem_survey' : 'balance_the_flow';
-      this.triggerSideQuest(activeId);
-    }
+    this.offerSideQuest('Dr. Maya', {
+      allDone: 'You\'re becoming a real river ecologist! Your samples will help with '
+        + 'bio-production research.',
+      decline: 'Just exploring',
+      offers: {
+        river_ecosystem_survey: {
+          text: 'Hi there! I\'m Dr. Maya, studying the Salt River ecosystem. Want to '
+            + 'help me survey the wildlife?',
+          accept: 'Start Ecosystem Survey!',
+        },
+        balance_the_flow: {
+          text: 'Great survey work! Now I need help balancing the irrigation '
+            + 'channels. It\'s all about water fractions.',
+          accept: 'Start Flow Quest!',
+        },
+      },
+    });
   }
 }
 

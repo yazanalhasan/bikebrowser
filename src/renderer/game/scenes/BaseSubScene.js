@@ -22,7 +22,10 @@
 
 import LocalSceneBase from './LocalSceneBase.js';
 import { setBusy, resetBusyState } from '../systems/gameplayArbiter.js';
-import { getSideQuestsForLocation, startSideQuest, getCurrentSideStep, advanceSideQuest } from '../systems/sideQuestSystem.js';
+import {
+  startSideQuest, getCurrentSideStep, advanceSideQuest,
+  getOfferableSideQuests, getActiveSideQuestAt, sideQuestDialogAction,
+} from '../systems/sideQuestSystem.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { addArt } from '../../../game/assets/act1Art.js';
@@ -102,12 +105,20 @@ export default class BaseSubScene extends LocalSceneBase {
 
   _showArrivalMessage() {
     const state = this.registry.get('gameState');
-    const quests = getSideQuestsForLocation(this.getLocationId());
-    const available = quests.filter(q => !state.sideQuests?.[q.id]?.completed);
+    const locationId = this.getLocationId();
+    // Only count what the kid can actually take. This used to count every
+    // quest defined for the location, so the mine promised "2 quests here"
+    // when Pete offers the second one only after the first is finished.
+    const offerable = getOfferableSideQuests(locationId, state);
+    const underway = getActiveSideQuestAt(locationId, state);
 
     let text = 'You arrived! Explore the area.';
-    if (available.length > 0) {
-      text = `You arrived! There ${available.length === 1 ? 'is' : 'are'} ${available.length} quest${available.length > 1 ? 's' : ''} here.`;
+    if (underway) {
+      text = `You arrived! "${underway.title}" is still going.`;
+    } else if (offerable.length === 1) {
+      text = 'You arrived! Someone here has a quest for you.';
+    } else if (offerable.length > 1) {
+      text = `You arrived! There are ${offerable.length} quests to pick up here.`;
     }
 
     this.time.delayedCall(500, () => {
@@ -123,6 +134,68 @@ export default class BaseSubScene extends LocalSceneBase {
 
   _initSideQuests() {
     // Nothing to do on init — quests are triggered by NPC/interactable interactions
+  }
+
+  /**
+   * The standard side-quest giver turn: resume what is running, offer the
+   * next one that can be started, or say the all-done line.
+   *
+   * The mine, the foraging grounds and the river each had their own copy of
+   * this branching with the prerequisite spelled out in scene code
+   * ("...&& fiberQuest?.completed"). The prerequisite now lives in the quest
+   * data as `requires`, and this reads it.
+   *
+   * @param {string} npcName
+   * @param {{ allDone: string, offers: Record<string, {text: string, accept: string}>,
+   *           decline?: string }} lines
+   */
+  offerSideQuest(npcName, lines) {
+    const state = this.registry.get('gameState');
+    const locationId = this.getLocationId();
+
+    const underway = getActiveSideQuestAt(locationId, state);
+    if (underway) {
+      this.triggerSideQuest(underway.id);
+      return;
+    }
+
+    const next = getOfferableSideQuests(locationId, state)[0];
+    if (!next) {
+      this.registry.set('dialogEvent', {
+        speaker: npcName, text: lines.allDone, choices: null, step: null,
+      });
+      return;
+    }
+
+    const offer = lines.offers?.[next.id] || {};
+    this.registry.set('dialogEvent', {
+      speaker: npcName,
+      text: offer.text || `Want to take on ${next.title}?`,
+      choices: [
+        { label: offer.accept || `Start ${next.title}!`, action: 'start_quest', questId: next.id },
+        { label: lines.decline || 'Maybe later', action: 'dismiss' },
+      ],
+      step: { type: 'side_quest_offer', questId: next.id },
+    });
+  }
+
+  /**
+   * Side-quest dialogs never belong to the main quest.
+   *
+   * Offers and side-quest steps used to fall through to
+   * `LocalSceneBase.advanceFromDialog`, which tried to advance whatever main
+   * quest was running: "Start Copper Quest!" answered with the bridge
+   * quest's hint and started nothing, and a side quest's own steps never
+   * advanced.
+   */
+  advanceFromDialog(choiceIndex) {
+    const action = sideQuestDialogAction(this.registry.get('dialogEvent'), choiceIndex);
+    if (!action) return super.advanceFromDialog(choiceIndex);
+
+    this.registry.set('dialogEvent', null);
+    if (action.kind === 'start') this.triggerSideQuest(action.questId);
+    else if (action.kind === 'advance') this.advanceSideQuestStep(action.questId, choiceIndex);
+    return undefined;
   }
 
   /**

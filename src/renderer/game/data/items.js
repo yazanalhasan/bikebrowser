@@ -503,4 +503,20 @@ const ITEMS = {
   },
 };
 
+/**
+ * The name to show a child, never the id.
+ *
+ * Toasts and quest messages were printing raw ids ("You need to find:
+ * surface_copper"). `workbenchRecipes.js` had its own private copy of this;
+ * it imports this one now.
+ *
+ * @param {string} itemId
+ * @param {{ icon?: boolean }} [options] prefix the item's icon
+ */
+export function itemName(itemId, options = {}) {
+  const item = ITEMS[itemId];
+  const name = item?.name || String(itemId || '').replace(/_/g, ' ');
+  return options.icon && item?.icon ? `${item.icon} ${name}` : name;
+}
+
 export default ITEMS;
