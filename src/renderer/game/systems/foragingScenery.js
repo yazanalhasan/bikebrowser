@@ -28,6 +28,8 @@
 
 import QUESTS from '../data/quests.js';
 import { getForageItems, getForageDescription } from '../data/foragePlants.js';
+import { getSceneObstacles } from '../data/obstacles.js';
+import { getNpcProfile } from '../data/npcProfiles.js';
 import { saveGame } from './saveSystem.js';
 import {
   registerEntities,
@@ -169,6 +171,38 @@ export function mountLayoutFauna(scene, animals = [], options = {}) {
   return registerEntities(scene, configs);
 }
 
+/**
+ * Display name of whoever gave the active quest, for "bring this back to X".
+ * Returns null when there is no giver, so the caller can drop the sentence
+ * rather than name the wrong neighbour.
+ */
+function activeQuestGiverName(state) {
+  const quest = QUESTS[state?.activeQuest?.id];
+  if (!quest?.giver) return null;
+  return getNpcProfile(quest.giver)?.name || null;
+}
+
+/**
+ * Items an unsolved puzzle in this scene still needs.
+ *
+ * Without this a plant only ever yields what an active quest asked for, and
+ * the wilted plant sits in Desert Edge unsolvable: the only quest granting
+ * prickly-pear fruit arrives several quests later. A child who picks the
+ * fruit because the plant obviously wants water should be able to do that.
+ */
+function unsolvedPuzzleItems(scene, state) {
+  const sceneKey = scene.getSceneKey?.() || scene.scene?.key || '';
+  const solved = new Set(state?.solvedObstacles || []);
+  const wanted = new Set();
+  for (const puzzle of getSceneObstacles(sceneKey).puzzles || []) {
+    if (solved.has(puzzle.id)) continue;
+    if (puzzle.solveCondition?.type === 'item' && puzzle.solveCondition.item) {
+      wanted.add(puzzle.solveCondition.item);
+    }
+  }
+  return wanted;
+}
+
 /** The active quest's current step, but only if it is a forage step. */
 function currentForageStep(state) {
   if (!state.activeQuest) return null;
@@ -219,6 +253,16 @@ export function handlePlantInteract(scene, species, label, plantX, plantY) {
     }
   }
 
+  // (c) Puzzle flow — an unsolved puzzle in this scene needs an item this
+  //     plant produces. Independent of any quest, so the wilted plant is
+  //     solvable the moment a child thinks to bring it a juicy fruit.
+  if (!grantedItem) {
+    const puzzleWants = unsolvedPuzzleItems(scene, state);
+    grantedItem = items.find(
+      (item) => puzzleWants.has(item) && !state.inventory.includes(item),
+    ) || null;
+  }
+
   if (grantedItem) {
     const advancesCurrentStep = step?.requiredItem === grantedItem;
     const updated = { ...state, inventory: [...state.inventory, grantedItem] };
@@ -226,11 +270,15 @@ export function handlePlantInteract(scene, species, label, plantX, plantY) {
     saveGame(updated);
     audioMgr?.playSfx('item_pickup');
 
+    // Name whoever actually asked for it. This used to say "Mrs. Ramirez"
+    // for every plant in the game, which is wrong for all of Mr. Chen's
+    // quests. With no giver we leave the sentence out entirely.
+    const giver = advancesCurrentStep ? activeQuestGiverName(state) : null;
+    const found = `Found ${grantedItem.replace(/_/g, ' ')}! ${desc}`;
+
     scene.registry.set('dialogEvent', {
       speaker: 'Zuzu',
-      text: advancesCurrentStep
-        ? `Found ${grantedItem.replace(/_/g, ' ')}! ${desc}\n\nBring this back to Mrs. Ramirez.`
-        : `Found ${grantedItem.replace(/_/g, ' ')}! ${desc}`,
+      text: giver ? `${found}\n\nBring this back to ${giver}.` : found,
       choices: null,
       step: advancesCurrentStep ? step : null,
     });

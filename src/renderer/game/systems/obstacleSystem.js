@@ -242,17 +242,7 @@ function _handlePuzzleInteract(scene, puzzle) {
       text: puzzle.successMessage,
       choices: null, step: null,
     });
-    _markSolved(scene, puzzle.id);
-
-    // Grant rewards
-    if (puzzle.reward) {
-      const updated = { ...state };
-      if (puzzle.reward.xp) updated.reputation = (updated.reputation || 0) + (puzzle.reward.reputation || 0);
-      if (puzzle.reward.zuzubucks) updated.zuzubucks = (updated.zuzubucks || 0) + puzzle.reward.zuzubucks;
-      scene.registry.set('gameState', updated);
-
-      saveGame(updated);
-    }
+    _solvePuzzle(scene, puzzle, state);
   } else {
     const count = (_failureCounts.get(puzzle.id) || 0) + 1;
     _failureCounts.set(puzzle.id, count);
@@ -280,6 +270,58 @@ function _handlePuzzleInteract(scene, puzzle) {
 }
 
 // ── Solve Persistence ────────────────────────────────────────────────────────
+
+/**
+ * Solve a puzzle: record it, spend whatever solved it, and pay the reward —
+ * in ONE state write.
+ *
+ * This used to be two writes. `_markSolved` saved `solvedObstacles`, then the
+ * reward block rebuilt the state from the *pre-solve* copy captured at the top
+ * of the handler and saved that over the top, wiping `solvedObstacles` in
+ * memory and on disk. The puzzle therefore never persisted: every return to
+ * the scene re-spawned it and paid the reward again, so the wilted plant was a
+ * Zuzubucks tap a child could hold down.
+ *
+ * @returns {object} the state that was written
+ */
+function _solvePuzzle(scene, puzzle, state) {
+  const solved = new Set(state.solvedObstacles || []);
+  solved.add(puzzle.id);
+  const updated = { ...state, solvedObstacles: [...solved] };
+
+  // Spend the thing that solved it. Only for puzzles (`solveCondition`), not
+  // for obstacles you merely need to be carrying something to pass
+  // (`passCondition`) — sun balm is protection you keep, not a key you burn.
+  const cond = puzzle.solveCondition;
+  if (cond?.type === 'item' && cond.item) {
+    const inventory = [...(updated.inventory || [])];
+    const at = inventory.indexOf(cond.item);
+    if (at !== -1) {
+      inventory.splice(at, 1);
+      updated.inventory = inventory;
+    }
+  }
+
+  // Each reward field is guarded on itself. The old code tested `reward.xp`
+  // and then added `reward.reputation`, so a reward of `{ xp, zuzubucks }`
+  // added `undefined || 0` reputation and granted nothing for the xp.
+  //
+  // `reward.xp` has no home in the save (gameState carries `reputation` and
+  // `zuzubucks`; the xp counters belong to the physics and language systems).
+  // It is deliberately not granted here rather than being quietly mapped onto
+  // reputation — see the review reply in bikebrowser-handoff.
+  const reward = puzzle.reward || {};
+  if (reward.reputation) {
+    updated.reputation = (updated.reputation || 0) + reward.reputation;
+  }
+  if (reward.zuzubucks) {
+    updated.zuzubucks = (updated.zuzubucks || 0) + reward.zuzubucks;
+  }
+
+  scene.registry.set('gameState', updated);
+  saveGame(updated);
+  return updated;
+}
 
 function _markSolved(scene, obstacleId) {
   const state = scene.registry.get('gameState') || {};

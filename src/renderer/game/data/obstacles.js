@@ -82,7 +82,10 @@ export const SCENE_OBSTACLES = {
         description: 'A plant that needs water. If you could find some...',
         solveCondition: { type: 'item', item: 'prickly_pear_fruit' },
         failMessage: 'The plant is too dry. It needs water or a hydrating fruit...',
-        successMessage: 'The prickly pear juice revives the plant! It reveals a hidden path.',
+        // No hidden path is opened — the desert is already reachable through
+        // the signed gap in the fence, and promising one sends a child
+        // hunting for something that does not exist.
+        successMessage: 'The prickly pear juice soaks in and the plant perks up. Its leaves go green again!',
         reward: { xp: 15, zuzubucks: 10 },
         learnSystem: 'foraging',
       },
