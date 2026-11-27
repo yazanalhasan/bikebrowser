@@ -517,7 +517,8 @@ export default class DryWashScene extends LocalSceneBase {
     // Hint banner so the player knows what to do.
     this.time.delayedCall(400, () => {
       const audioMgr = this.registry.get('audioManager');
-      audioMgr?.playSfx?.('ui_open');
+      // 'ui_open' was never a key; the panel sound is 'ui_panel_open'.
+      audioMgr?.playSfx?.('ui_panel_open');
       this.registry.set('mcpAlert', {
         id: 'dry_wash_build_intro',
         message: 'Click each ghost beam to place a mesquite plank across the wash.',

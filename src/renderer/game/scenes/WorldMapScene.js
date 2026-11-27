@@ -1501,7 +1501,9 @@ export default class WorldMapScene extends Phaser.Scene {
     if (audioMgr) {
       // Try discover key first; fall back to reward_stinger.
       if (audioMgr.hasSfx?.('discover')) {
-        audioMgr.playSfx('discover');
+        // 'discover' was never a key; the find-something sound is
+        // 'desert_discovery'.
+        audioMgr.playSfx('desert_discovery');
       } else if (audioMgr.playStinger) {
         audioMgr.playStinger('reward_stinger');
       } else {

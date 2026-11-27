@@ -558,7 +558,8 @@ export default class LabRigBase extends LocalSceneBase {
     this._chartPoints = [];
 
     const audioMgr = this.registry.get('audioManager');
-    audioMgr?.playSfx?.('ui_click');
+    // 'ui_click' was never a key; the button sound is 'ui_tap'.
+    audioMgr?.playSfx?.('ui_tap');
 
     const curve = result.curve;
     const duration = this.getTestDurationMs();
