@@ -303,6 +303,9 @@ export default function GameContainer() {
   const [showQuestBoard, setShowQuestBoard] = useState(false);
   const [showShop, setShowShop] = useState(false);
   const [gameState, setGameState] = useState(null);
+  // Which local scene is on screen. Published by LocalSceneBase on entry so
+  // HUD hints can be scene-specific.
+  const [activeSceneKey, setActiveSceneKey] = useState(null);
   const [paused, setPaused] = useState(false);
   const [showInventory, setShowInventory] = useState(false);
   const [showNotebook, setShowNotebook] = useState(false);
@@ -587,6 +590,11 @@ export default function GameContainer() {
     // Refresh HUD once the game is ready
     game.events.once('ready', () => {
       refreshHud(savedState);
+      // Belt-and-braces: if the first scene set the key before this effect
+      // attached its listener, pick it up here. `registry.set` only emits
+      // changedata when the value actually changes, so a missed first write
+      // would otherwise never be seen.
+      setActiveSceneKey(game.registry.get('activeSceneKey') || null);
     });
 
     // Listen for registry changes to keep HUD in sync
@@ -665,6 +673,11 @@ export default function GameContainer() {
         }
       }
       prevCompletedRef.current = completed;
+    });
+
+    // Track which local scene is on screen (for scene-specific HUD hints)
+    game.registry.events.on('changedata-activeSceneKey', (_parent, value) => {
+      setActiveSceneKey(value || null);
     });
 
     // Listen for dialog events from scenes
@@ -771,6 +784,25 @@ export default function GameContainer() {
     document.addEventListener('visibilitychange', onVisChange);
     return () => document.removeEventListener('visibilitychange', onVisChange);
   }, [audio, dialog]);
+
+  // Keep the active-scene key in sync.
+  //
+  // The registry listener above is not enough on its own. A scene writes the
+  // key once, in its create(); if that single write lands before the listener
+  // is attached, the value then never changes again and no event ever fires —
+  // so the HUD would sit on a stale (usually null) scene key for the whole
+  // session. Polling the registry costs nothing at 500ms and is immune to the
+  // boot ordering.
+  useEffect(() => {
+    if (phase !== 'playing') return undefined;
+    const sync = () => {
+      const key = gameRef.current?.registry?.get?.('activeSceneKey') || null;
+      setActiveSceneKey((prev) => (prev === key ? prev : key));
+    };
+    sync();
+    const timer = setInterval(sync, 500);
+    return () => clearInterval(timer);
+  }, [phase]);
 
   // Auto-dismiss AI toasts after 6 seconds
   useEffect(() => {
@@ -1389,10 +1421,11 @@ export default function GameContainer() {
             return null;
           })}
 
-          {/* ---- Words Mariam taught (Act 1 Levantine Arabic cards) ----
-              Script, kid transliteration and English caption all stay
-              visible: the language brief's rule is that rank 1 never hides
-              the Arabic. Practice counts come from state.languagePractice. */}
+          {/* ---- Words Mariam taught (Act 1 Modern Standard Arabic) ----
+              Script, transliteration and English caption all stay visible:
+              rank 1 never hides the Arabic. The words themselves come from
+              the `ar_*` rows in data/languages.js via systems/languageLayer.js.
+              Practice counts come from state.languagePractice. */}
           <div className="mt-3 pt-2 border-t border-gray-200">
             <div className="font-bold text-gray-700 mb-1 text-xs">
               Words Mariam taught
@@ -1945,7 +1978,11 @@ export default function GameContainer() {
           💬
         </button>
       )}
-      {phase === 'playing' && !dialog && !paused && !gameState?.activeQuest && !evaluateAct1(gameState || {}).complete && (
+      {/* First-room hint. Garage only: "the door at the bottom goes outside"
+          is only true in the garage, and on the street or in the desert it
+          pointed a child at a wall. */}
+      {phase === 'playing' && !dialog && !paused && activeSceneKey === 'ZuzuGarageScene'
+        && !gameState?.activeQuest && !evaluateAct1(gameState || {}).complete && (
         <div className="pointer-events-none absolute left-1/2 top-20 z-20 w-[min(18rem,calc(100%-7rem))] -translate-x-1/2 rounded-xl bg-white/95 px-3 py-2 text-center text-sm font-semibold text-gray-800 shadow-lg">
           Arrows or the pad to walk. The door at the bottom goes outside.
         </div>

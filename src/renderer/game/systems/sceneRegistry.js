@@ -133,14 +133,49 @@ const SCENES = {
       default: { x: 400, y: 300 },
       fromGarage: { x: 120, y: 300 },
       fromOverworld: { x: 400, y: 80 },
+      // Back up through the south gap. Well clear of the gate (which spans
+      // y 672-700): land on the zone and the overlap fires again and the
+      // child bounces straight back into the desert.
+      fromDesertEdge: { x: 530, y: 596 },
     },
     exits: {
       toGarage: { target: 'ZuzuGarageScene', spawn: 'fromStreet' },
       toOverworld: { target: 'OverworldScene', spawn: 'fromStreet' },
+      toDesertEdge: { target: 'DesertEdgeScene', spawn: 'fromStreet' },
     },
     unlockReq: null,
     region: 'neighborhood',
     defaultMusic: 'pixel_pedal_parade_v2',
+  },
+
+  // Home Street's other half. Split out on 2026-11-26 (owner request): the
+  // desert flora, fauna and foraging were crowding the street scene.
+  //
+  // `worldPos` is null on purpose. Desert Edge is reached on foot from the
+  // street, the same way the Materials Lab and Thermal Lab are reached from
+  // the garage, so it is not a separate pin on the neighborhood overworld.
+  // It still appears automatically in anything that enumerates local scenes
+  // (`getLocalScenes`, `getAllRegionStatus`) because those read this map.
+  DesertEdgeScene: {
+    key: 'DesertEdgeScene',
+    layer: 'local',
+    name: 'Desert Edge',
+    icon: '🌵',
+    iconArt: ART.map_desert,
+    description: 'The open desert past the fence — plants, animals, foraging',
+    worldPos: null,
+    spawns: {
+      // Both well below the north gate (y 0-28) for the same reason the
+      // street's `fromDesertEdge` sits well above the south gap.
+      default: { x: 530, y: 130 },
+      fromStreet: { x: 530, y: 110 },
+    },
+    exits: {
+      toStreet: { target: 'StreetBlockScene', spawn: 'fromDesertEdge' },
+    },
+    unlockReq: null,
+    region: 'neighborhood',
+    defaultMusic: 'desert_discovery',
   },
 
   DogParkScene: {

@@ -20,6 +20,7 @@ import ZuzuGarageScene from './scenes/ZuzuGarageScene.js';
 import MaterialLabScene from './scenes/MaterialLabScene.js';
 import ThermalRigScene from './scenes/ThermalRigScene.js';
 import StreetBlockScene from './scenes/StreetBlockScene.js';
+import DesertEdgeScene from './scenes/DesertEdgeScene.js';
 import DogParkScene from './scenes/DogParkScene.js';
 import LakeEdgeScene from './scenes/LakeEdgeScene.js';
 import SportsFieldsScene from './scenes/SportsFieldsScene.js';
@@ -54,6 +55,7 @@ const ALL_SCENES = [
   ThermalRigScene,
   OverworldScene,
   StreetBlockScene,
+  DesertEdgeScene,
   DogParkScene,
   LakeEdgeScene,
   SportsFieldsScene,

@@ -378,6 +378,7 @@ export const SCENE_MUSIC = {
   NeighborhoodScene: 'pixel_pedal_parade_v2',
   OverworldScene: 'pixel_pedal_parade_v2',
   StreetBlockScene: 'pixel_pedal_parade_v2',
+  DesertEdgeScene: 'desert_discovery',
   DogParkScene: 'neighborhood_hybrid_ride',
   LakeEdgeScene: 'warm_hands_quiet_gears',
   SportsFieldsScene: 'neighborhood_hybrid_ride',
@@ -398,6 +399,7 @@ export const SCENE_MUSIC_ALT = {
   NeighborhoodScene: 'neighborhood_hybrid_ride',
   OverworldScene: 'neighborhood_hybrid_ride',
   StreetBlockScene: 'neighborhood_hybrid_ride',
+  DesertEdgeScene: 'neighborhood_hybrid_ride',
 };
 
 export const SCENE_AMBIENT = {
@@ -406,6 +408,7 @@ export const SCENE_AMBIENT = {
   NeighborhoodScene: 'neighborhood_ambience',
   OverworldScene: 'neighborhood_ambience',
   StreetBlockScene: 'neighborhood_ambience',
+  DesertEdgeScene: 'neighborhood_ambience',
   DogParkScene: 'neighborhood_ambience',
 };
 

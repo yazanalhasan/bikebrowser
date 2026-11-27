@@ -66,6 +66,12 @@ const SCENE_BIOMES = {
 };
 const DEFAULT_BIOME = { fill: 0x2a2422, accent: 0x4a4030, label: 'unknown' };
 
+/**
+ * How much further than the interaction radius a prop's name stays
+ * visible. Gives the child the name just before the interact prompt.
+ */
+const NAME_LABEL_LEAD_PX = 34;
+
 export default class LocalSceneBase extends Phaser.Scene {
   constructor(sceneKey) {
     super({ key: sceneKey });
@@ -204,6 +210,12 @@ export default class LocalSceneBase extends Phaser.Scene {
     const state = this.registry.get('gameState');
     const sceneKey = this.getSceneKey();
     const world = this.getWorldSize();
+
+    // Publish which scene is on screen so the React HUD can scene-gate its
+    // hints. `gameState.player.scene` is not usable for that: it is only
+    // rewritten by `_savePosition`, so it still names the previous scene
+    // until the child moves.
+    this.registry.set('activeSceneKey', sceneKey);
 
     // --- Physics world bounds ---
     this.physics.world.setBounds(0, 0, world.width, world.height);
@@ -537,10 +549,13 @@ export default class LocalSceneBase extends Phaser.Scene {
    *   scene has already drawn the prop (legacy: an emoji glyph)
    * @param {number} [config.iconMaxPx] — cap the icon's longest side
    * @param {number} [config.radius=60] — interaction radius
+   * @param {boolean} [config.showNameLabel=true] — set false when the scene
+   *   has already drawn a visible name for this object, so the hotspot does
+   *   not print the same name a second time on top of it
    * @param {function} config.onInteract — called when player interacts
    */
   addInteractable(config) {
-    const { x, y, label, icon, radius = 60, onInteract } = config;
+    const { x, y, label, icon, radius = 60, onInteract, showNameLabel = true } = config;
 
     // Three cases:
     //  - an art key      -> draw the sprite
@@ -557,10 +572,17 @@ export default class LocalSceneBase extends Phaser.Scene {
     } else if (icon) {
       text = this.add.text(x, y, icon, { fontSize: '28px' }).setOrigin(0.5).setDepth(4);
     }
-    const nameLabel = this.add.text(x, y + 24, label, {
-      fontSize: '11px', fontFamily: 'sans-serif', color: '#374151',
-      fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 2,
-    }).setOrigin(0.5).setDepth(4);
+    // Object caption. Hidden until Zuzu is near it: a scene that names every
+    // prop at once is unreadable for a young child (owner request
+    // 2026-11-26). `_updateInteractablePrompts` drives the visibility, using
+    // a slightly wider radius than the interact prompt so the name arrives
+    // first and the child knows what they are walking up to.
+    const nameLabel = showNameLabel
+      ? this.add.text(x, y + 24, label, {
+        fontSize: '11px', fontFamily: 'sans-serif', color: '#374151',
+        fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 2,
+      }).setOrigin(0.5).setDepth(4).setVisible(false)
+      : null;
 
     // Prompt (hidden by default)
     const prompt = this.add.text(x, y - 24, '💬 Interact', {
@@ -699,6 +721,11 @@ export default class LocalSceneBase extends Phaser.Scene {
       prop._nearby = dist < prop.radius;
       prop._distanceToPlayer = dist;
       prop.prompt.setVisible(prop._nearby);
+      // The name shows a little before the prompt does, and only if the
+      // prop actually has a name.
+      if (prop.nameLabel) {
+        prop.nameLabel.setVisible(Boolean(prop.label) && dist < prop.radius + NAME_LABEL_LEAD_PX);
+      }
     }
   }
 

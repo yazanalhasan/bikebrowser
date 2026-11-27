@@ -8,6 +8,21 @@ export class WorldLabel {
     this.offsetY = options.offsetY ?? 0;
     this.distanceTarget = options.distanceTarget || null;
     this.maxDistance = options.maxDistance ?? null;
+    /**
+     * Proximity gate. When set, the label is only shown while the player
+     * (or an explicit `distanceTarget`) is within this many world pixels of
+     * the label's anchor. A young child reads a screen far better when only
+     * the thing they are standing next to is named, so scenes that would
+     * otherwise print a dozen captions at once pass this.
+     *
+     * `nearRadiusRelease` adds hysteresis so a label does not flicker when
+     * the player walks the boundary.
+     */
+    this.nearRadius = options.nearRadius ?? null;
+    this.nearRadiusRelease = options.nearRadiusRelease ?? (
+      this.nearRadius != null ? this.nearRadius + 28 : null
+    );
+    this._near = false;
     this.minZoom = options.minZoom ?? 0;
     this.baseScale = options.scale ?? 1;
     this.pointer = options.pointer ?? false;
@@ -51,6 +66,13 @@ export class WorldLabel {
     }
 
     this._updateScale();
+    // A proximity label starts hidden: on scene entry the player is usually
+    // nowhere near it, and a one-frame flash of every caption is exactly the
+    // clutter the gate exists to remove.
+    if (this.nearRadius != null) {
+      this.container.setAlpha(0);
+      this.container.setVisible(false);
+    }
     this._event = scene.events.on('update', this.update, this);
   }
 
@@ -90,6 +112,35 @@ export class WorldLabel {
     return this;
   }
 
+  /** World position the label is anchored at (its follow target, else itself). */
+  _anchor() {
+    if (this.target?.x !== undefined) return this.target;
+    return this.container;
+  }
+
+  /**
+   * Who proximity is measured from. An explicit `distanceTarget` wins;
+   * otherwise the player sprite, resolved lazily because labels are built in
+   * `createWorld()` and the player is constructed after that.
+   */
+  _proximitySource() {
+    if (this.distanceTarget) return this.distanceTarget;
+    return this.scene?.player?.sprite || null;
+  }
+
+  /** True while the proximity source is inside the gate (with hysteresis). */
+  _isNear() {
+    const src = this._proximitySource();
+    if (!src || src.x === undefined) return false;
+    const anchor = this._anchor();
+    const dx = src.x - anchor.x;
+    const dy = src.y - anchor.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const limit = this._near ? this.nearRadiusRelease : this.nearRadius;
+    this._near = dist <= limit;
+    return this._near;
+  }
+
   _updateScale() {
     const zoom = this.scene.cameras?.main?.zoom || 1;
     const scale = this.baseScale / Math.max(zoom, 0.001);
@@ -107,14 +158,33 @@ export class WorldLabel {
     const zoom = this.scene.cameras?.main?.zoom || 1;
     const zoomVisible = zoom >= this.minZoom;
     let distanceVisible = true;
-    if (this.distanceTarget && this.maxDistance && this.target) {
-      const dx = this.distanceTarget.x - this.target.x;
-      const dy = this.distanceTarget.y - this.target.y;
+    if (this.distanceTarget && this.maxDistance) {
+      const anchor = this._anchor();
+      const dx = this.distanceTarget.x - anchor.x;
+      const dy = this.distanceTarget.y - anchor.y;
       distanceVisible = Math.sqrt(dx * dx + dy * dy) <= this.maxDistance;
     }
 
-    const shouldShow = zoomVisible && distanceVisible && this.visible;
-    this.container.setVisible(shouldShow);
+    const nearVisible = this.nearRadius == null ? true : this._isNear();
+    const shouldShow = zoomVisible && distanceVisible && nearVisible && this.visible;
+
+    if (this.nearRadius == null) {
+      this.container.setVisible(shouldShow);
+      return;
+    }
+
+    // Proximity labels ease in and out so walking past a plant reads as the
+    // name arriving, not as a flashing caption.
+    const targetAlpha = shouldShow ? 1 : 0;
+    const alpha = this.container.alpha;
+    if (Math.abs(alpha - targetAlpha) < 0.01) {
+      this.container.setAlpha(targetAlpha);
+      this.container.setVisible(targetAlpha > 0);
+      return;
+    }
+    const next = alpha + (targetAlpha - alpha) * 0.18;
+    this.container.setAlpha(next);
+    this.container.setVisible(next > 0.01);
   }
 
   destroy() {

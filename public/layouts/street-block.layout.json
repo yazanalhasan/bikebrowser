@@ -234,104 +234,29 @@
         "y": 500
       },
       {
-        "x": 500,
-        "y": 620
+        "x": 240,
+        "y": 650,
+        "_note": "Moved west out of the Desert Edge path (was 500,620)."
       },
       {
         "x": 900,
         "y": 500
       }
     ],
-    "plants": [
-      {
-        "species": "mesquite",
-        "label": "Mesquite Tree",
-        "x": 205,
-        "y": 475,
-        "radius": 65
-      },
-      {
-        "species": "mesquite",
-        "label": "Mesquite Tree",
-        "x": 900,
-        "y": 460,
-        "radius": 65
-      },
-      {
-        "species": "creosote",
-        "label": "Creosote Bush",
-        "x": 80,
-        "y": 460,
-        "radius": 55
-      },
-      {
-        "species": "creosote",
-        "label": "Creosote Bush",
-        "x": 950,
-        "y": 620,
-        "radius": 55
-      },
-      {
-        "species": "prickly_pear",
-        "label": "Prickly Pear",
-        "x": 480,
-        "y": 640,
-        "radius": 50
-      },
-      {
-        "species": "barrel_cactus",
-        "label": "Barrel Cactus",
-        "x": 30,
-        "y": 620,
-        "radius": 45
-      },
-      {
-        "species": "jojoba",
-        "label": "Jojoba Shrub",
-        "x": 780,
-        "y": 640,
-        "radius": 45
-      },
-      {
-        "species": "ephedra",
-        "label": "Ephedra (Mormon Tea)",
-        "x": 270,
-        "y": 155,
-        "radius": 45
-      },
-      {
-        "species": "agave",
-        "label": "Agave Plant",
-        "x": 450,
-        "y": 460,
-        "radius": 55
-      },
-      {
-        "species": "yucca",
-        "label": "Yucca Plant",
-        "x": 150,
-        "y": 620,
-        "radius": 50
-      },
-      {
-        "species": "desert_lavender",
-        "label": "Desert Lavender",
-        "x": 650,
-        "y": 460,
-        "radius": 50
-      }
-    ],
+    "plants": [],
     "fire_hydrant": {
-      "x": 340,
-      "y": 275
+      "x": 250,
+      "y": 275,
+      "_note": "Moved west from x=340 to open space between the hydrant, Mrs. Ramirez's bike (418) and the street sign (500)."
     },
     "mailbox_left": {
       "x": 190,
       "y": 265
     },
     "mailbox_right": {
-      "x": 610,
-      "y": 265
+      "x": 665,
+      "y": 265,
+      "_note": "Moved east from x=610 to spread the top-sidewalk props."
     },
     "street_sign": {
       "x": 500,
@@ -390,43 +315,39 @@
       "h": 5,
       "_note": "Original: x = width - 60 (1000-60)."
     },
-    "wall_south": {
-      "x": 500,
-      "y": 710,
-      "w": 1000,
-      "h": 20,
-      "_note": "Original: x = width / 2 (1000), y = height + 10 (700+10), w = width."
-    },
-    "animals": [
-      {
-        "speciesId": "javelina",
-        "label": "Javelina",
-        "x": 390,
-        "y": 515,
-        "interactionRadius": 60,
-        "_note": "Near the west mesquite, but offset from Mr. Chen and his bike — javelina feeds on mesquite pods"
-      },
-      {
-        "speciesId": "rabbit",
-        "label": "Desert Jackrabbit",
-        "x": 120,
-        "y": 545,
-        "interactionRadius": 55,
-        "_note": "Near creosote, lower on the lawn so the animal cluster reads clearly"
-      },
-      {
-        "speciesId": "coyote",
-        "label": "Coyote",
-        "x": 830,
-        "y": 520,
-        "interactionRadius": 65,
-        "_note": "Predator roaming near the east mesquite, with space from the player path and other animals"
-      }
-    ],
+    "animals": [],
     "npc_mariam": {
       "x": 700,
       "y": 470,
       "_note": "Mariam, the Act 1 Levantine Arabic mentor. Stands in her front yard between the south sidewalk (y=420) and the yellow house (y=550), clear of Mrs. Ramirez (550,310) and Mr. Chen (313,402)."
+    },
+    "plants_note": "Desert flora moved to desert-edge.layout.json (owner request 2026-11-26: the street was too crowded for a young child). Kept as an empty array so the scene's layout contract is unchanged and a plant can be added back by data alone.",
+    "animals_note": "Desert fauna moved to desert-edge.layout.json. See plants_note.",
+    "wall_south_west": {
+      "x": 230,
+      "y": 710,
+      "w": 460,
+      "h": 20,
+      "_note": "South bound, west of the Desert Edge gap (spans x=0..460)."
+    },
+    "wall_south_east": {
+      "x": 800,
+      "y": 710,
+      "w": 400,
+      "h": 20,
+      "_note": "South bound, east of the Desert Edge gap (spans x=600..1000)."
+    },
+    "exit_zone_south": {
+      "x": 530,
+      "y": 686,
+      "w": 140,
+      "h": 28,
+      "_note": "Walk south off the street into Desert Edge. Sits in the gap between the green and yellow houses; a signed arrow is drawn above it so a young child can see where it goes."
+    },
+    "desert_edge_sign": {
+      "x": 530,
+      "y": 620,
+      "_note": "Arrow sign over the south exit: \"Desert Edge\"."
     }
   }
 }

@@ -42,11 +42,16 @@ export const SCENE_OBSTACLES = {
         unlocksPath: 'south_desert_access',
       },
       {
+        // The gate IS the workshop's door, so it sits on the workshop
+        // (blue_house_door in street-block.layout.json) and is named for the
+        // door. It used to stand at (700,200) in open grass labelled
+        // "Workshop", which printed a second "Workshop" caption 120px from
+        // the building's own label.
         id: 'locked_workshop',
         type: 'gate',
-        x: 700, y: 200,
+        x: 850, y: 225,
         width: 60, height: 60,
-        label: 'Workshop',
+        label: 'Workshop Door',
         icon: '',
         description: 'A locked workshop with tools inside. Someone trusts you to enter.',
         passCondition: { type: 'reputation', threshold: 15, message: 'Earn more reputation by completing quests.' },
@@ -57,11 +62,21 @@ export const SCENE_OBSTACLES = {
         unlocksPath: 'workshop_interior',
       },
     ],
+    // The wilted plant moved to DesertEdgeScene with the rest of the flora
+    // (owner request 2026-11-26). The pavement hazard and the locked
+    // workshop stay here: both are street furniture.
+    puzzles: [],
+  },
+
+  DesertEdgeScene: {
+    obstacles: [],
     puzzles: [
       {
         id: 'wilted_plant',
         type: 'puzzle',
-        x: 350, y: 480,
+        // Just off the trail down from the street gate, so it is the first
+        // thing a child meets in the desert.
+        x: 640, y: 250,
         icon: '🥀',
         label: 'Wilted Plant',
         description: 'A plant that needs water. If you could find some...',

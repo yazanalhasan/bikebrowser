@@ -1,13 +1,23 @@
 /**
- * StreetBlockScene — the street outside Zuzu's house.
+ * StreetBlockScene — Home Street, the street outside Zuzu's house.
  *
  * Local playable scene with:
  *   - Sidewalks, road, driveways
  *   - Zuzu's house exterior
  *   - Mrs. Ramirez + flat tire quest
- *   - Neighbor houses
+ *   - Neighbor houses, Mr. Chen, Mariam, Lina
  *   - Exit to garage (west)
  *   - Exit to overworld (north)
+ *   - Exit to Desert Edge (south)
+ *
+ * The Sonoran plants, the animals and the foraging interactions used to be
+ * here too. On 2026-11-26 the owner asked for the neighborhood to be split
+ * in two because one screen with five houses, four neighbours, two bikes,
+ * eleven plants and three animals was too busy for a young child: the
+ * desert now lives in `DesertEdgeScene`, reached through the signed gap in
+ * the south fence. Nothing moved by hard-coding — the plants are rows in
+ * `public/layouts/desert-edge.layout.json` and the behaviour is the shared
+ * `systems/foragingScenery.js`.
  *
  * World size: 1000×700 (slightly larger than viewport for scrolling)
  */
@@ -18,7 +28,6 @@ import { saveGame } from '../systems/saveSystem.js';
 import { NPC_PLACEMENTS } from '../data/neighborhoodLayout.js';
 import { getNextQuestForNPC } from '../data/questBoard.js';
 import QUESTS from '../data/quests.js';
-import { drawPlant } from '../utils/plantRenderer.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { startInteractiveExplainer } from '../systems/interactiveExplainerSystem.js';
@@ -27,16 +36,6 @@ import { registerZuzuAnimations } from '../../../game/characters/registerCharact
 import { createWorldLabel } from '../../../game/ui/WorldLabel.js';
 import { createInteractionMarker } from '../../../game/ui/InteractionMarker.js';
 import { createGarageLeftSignPlaceholder } from '../../../game/art/placeholderFactories.js';
-import {
-  registerEntities,
-  attachEcologyTicker,
-  emitObservation,
-  emitForage,
-} from '../systems/ecology/index.js';
-import {
-  preloadEcologyAssets,
-  ECOLOGY_ASSET_KEYS,
-} from '../systems/ecology/ecologyAssetManifest.js';
 import {
   LANGUAGE_CARDS,
   practiceLanguageTerm,
@@ -47,20 +46,6 @@ import { groundDepth } from '../../../game/assets/act1Art.js';
 import { hasAtlasFrame } from '../../../game/assets/createAtlasSprite.js';
 
 const NEIGHBORHOOD_ATLAS = 'neighborhood_atlas';
-
-const PLANT_GRANTS = {
-  mesquite: ['mesquite_pods', 'mesquite_wood_sample', 'bio_sample_bacteria'],
-  creosote: ['creosote_leaves'],
-  prickly_pear: ['prickly_pear_fruit'],
-  barrel_cactus: ['barrel_cactus_pulp'],
-  jojoba: ['jojoba_seeds'],
-  agave: ['agave_fiber', 'bio_sample_agave'],
-  yucca: ['yucca_root'],
-  desert_lavender: ['desert_lavender_flowers'],
-  ephedra: ['ephedra_stems'],
-  yerba_mansa: ['yerba_mansa_root'],
-};
-const INTERACTIVE_PLANT_SCALE = 1.65;
 
 export default class StreetBlockScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -80,10 +65,6 @@ export default class StreetBlockScene extends LocalSceneBase {
     super.preload?.();
     preloadGameAssets(this);
     this.load.json('streetBlockLayout', 'layouts/street-block.layout.json');
-    // ECOLOGY (additive — Phase 4 animals): preload animal sprite textures.
-    // Plant textures are unused visually (plants use drawPlant graphics), but
-    // animal sprites are rendered via this.add.image using ecology texture keys.
-    preloadEcologyAssets(this);
   }
 
   createWorld() {
@@ -169,102 +150,11 @@ export default class StreetBlockScene extends LocalSceneBase {
       this._drawTree(t.x, t.y, t.scale || 1);
     }
 
-    // === ECOLOGY PLANTS (drawn with graphics + interactable) ===
+    // No plants or animals on Home Street: the desert moved to
+    // DesertEdgeScene. The layout still carries empty `plants` and
+    // `animals` arrays, so putting a plant back on the street is a data
+    // edit and this scene needs no new code for it.
     this._ecologyPlants = [];
-
-    for (const p of this.layout.plants) {
-      // Painted plant sprite, keyed by species so a species added to
-      // data/ecology.js picks up its art with no code change. The ecology
-      // pack is the source; drawPlant() stays as the fallback for any
-      // species that has no sprite yet.
-      const plantKey = ECOLOGY_ASSET_KEYS.plants[p.species];
-      const plantSprite = plantKey && this.hasArtTexture(plantKey)
-        ? this.addProp(plantKey, p.x, p.y + 14, {
-          displayHeight: 96 * ((p.visualScale || INTERACTIVE_PLANT_SCALE) / INTERACTIVE_PLANT_SCALE),
-          depth: groundDepth(p.y),
-        })
-        : null;
-      if (!plantSprite) {
-        const plantContainer = drawPlant(this, p.species, p.x, p.y, {
-          scale: p.visualScale || INTERACTIVE_PLANT_SCALE,
-        });
-        plantContainer.setDepth(4); // background decoration, below player (depth 6)
-      }
-
-      // Add invisible interaction zone (uses existing addInteractable for prompt/hitbox)
-      this.addInteractable({
-        x: p.x, y: p.y, label: p.label, icon: '', // no emoji — visual is drawn above
-        radius: p.radius,
-        grantsItems: PLANT_GRANTS[p.species] || [],
-        metadata: { type: 'plant', species: p.species },
-        onInteract: () => this._handlePlantInteract(p.species, p.label, p.x, p.y),
-      });
-      this._ecologyPlants.push({ species: p.species, x: p.x, y: p.y });
-      this._drawMapLabel(p.x, p.y + (p.labelOffsetY || 31), p.label, {
-        depth: 14,
-        fontSize: 10,
-        maxWidth: 142,
-      });
-    }
-
-    // === ECOLOGY SUBSTRATE WIRING (additive — Phase 4) ===========================
-    // Register each layout-driven plant as an EcologyEntity so the ecology
-    // substrate can track observations and forage events alongside the
-    // existing plant-interaction flow. The original `_handlePlantInteract`
-    // path (forage gate, item grant, dialog) is preserved unchanged below;
-    // ecology emission is layered on top.
-    const SCENE_KEY = 'StreetBlockScene';
-    const ecologyConfigs = this.layout.plants.map((p, i) => ({
-      id: `${SCENE_KEY}_plant_${i}_${p.species}`,
-      speciesId: p.species,
-      sceneKey: SCENE_KEY,
-      x: p.x,
-      y: p.y,
-      spawnedBy: 'static',
-      interactionRadius: p.radius,
-    }));
-    /** @type {import('../systems/ecology/index.js').EcologyEntity[]} */
-    this._ecologyEntities = registerEntities(this, ecologyConfigs);
-    // Index by `${species}|${x}|${y}` so `_handlePlantInteract` can find
-    // the registered entity for the specific plant the player interacted with.
-    this._ecologyEntityIndex = new Map();
-    for (const ent of this._ecologyEntities) {
-      this._ecologyEntityIndex.set(`${ent.speciesId}|${ent.x}|${ent.y}`, ent);
-    }
-    attachEcologyTicker(this);
-
-    // === ECOLOGY ANIMALS (additive — Phase 4 animals) ========================
-    // Render layout-driven animal sprites and register them as EcologyEntity
-    // instances. The existing plant rendering/registration above is unchanged.
-    // `attachEcologyTicker` above is type-agnostic and already covers fauna.
-    for (const a of this.layout.animals) {
-      const key = ECOLOGY_ASSET_KEYS.animals[a.speciesId];
-      if (!key) continue;
-      this.addProp(key, a.x, a.y + 12, { displayHeight: 52, depth: groundDepth(a.y) });
-      this._drawMapLabel(a.x, a.y + 34, this._formatAnimalLabel(a), {
-        depth: 14,
-        fontSize: 10,
-        maxWidth: 118,
-      });
-    }
-
-    const animalConfigs = this.layout.animals.map((a, i) => ({
-      id: `${SCENE_KEY}_animal_${i}_${a.speciesId}`,
-      speciesId: a.speciesId,
-      sceneKey: SCENE_KEY,
-      x: a.x,
-      y: a.y,
-      spawnedBy: 'static',
-      interactionRadius: a.interactionRadius,
-      observable: true,
-      forageable: false,
-    }));
-    this._ecologyAnimalEntities = registerEntities(this, animalConfigs);
-    for (const ent of this._ecologyAnimalEntities) {
-      // eslint-disable-next-line no-console
-      console.log(`[ecology-debug] registered animal: ${ent.speciesId} at ${ent.x}, ${ent.y}`);
-    }
-    // =========================================================================
 
     // Fire hydrant
     {
@@ -305,8 +195,12 @@ export default class StreetBlockScene extends LocalSceneBase {
     {
       const o = this.layout.ramirez_bike_icon;
       this._drawBike(o.x, o.y, { color: 0x2563eb, accent: 0xef4444, flat: !questDone, depth: groundDepth(o.y) });
-      if (!questDone) createInteractionMarker(this, o.x + 58, o.y - 10, 'blocked', { pulse: true });
-      this._ramirezBike = this._drawBikeBadge(o.x + 48, o.y - 8, questDone ? 'OK' : '', questDone);
+      // Only the open quest gets a floating marker. The "OK" badge that used
+      // to sit here once the tyre was fixed told the child nothing and added
+      // to the clutter, so a finished bike now simply looks fixed.
+      // Above the bike, not beside it: at x+58 the marker landed inside the
+      // "E Trailside" street sign board (which spans x 452-548).
+      if (!questDone) createInteractionMarker(this, o.x, o.y - 56, 'blocked', { pulse: true });
     }
 
     const ramirezBikeInteract = this.layout.ramirez_bike_icon;
@@ -319,7 +213,7 @@ export default class StreetBlockScene extends LocalSceneBase {
       onInteract: () => this._handleRamirezBikeInteract(),
     });
 
-    // === MARIAM NPC (Act 1 Levantine Arabic mentor) ===
+    // === MARIAM NPC (Act 1 Arabic mentor) ===
     // A grown-up neighbor in her own front yard, same placement pattern as
     // Mrs. Ramirez. She is a mentor, not a quest-giver: talking to her
     // teaches one of the three briefed Arabic words and nothing else.
@@ -349,15 +243,20 @@ export default class StreetBlockScene extends LocalSceneBase {
     const chenMotorCleaningActive =
       state.activeQuest?.id === 'engine_cleaning'
       && getCurrentStep(state)?.id === 'clean_motor';
+    // A badge only when a quest needs one: OIL during the motor-cleaning
+    // step, FIX while the chain job is open, and nothing at all once it is
+    // done (the old "OK" badge was decoration).
     const chenBikeIcon = chenMotorCleaningActive
       ? 'OIL'
       : chenQuestDone
-        ? 'OK'
+        ? ''
         : 'FIX';
     {
       const o = this.layout.chen_bike_icon;
       this._drawBike(o.x, o.y, { color: 0xef4444, accent: 0x111827, depth: groundDepth(o.y) });
-      this._chenBike = this._drawBikeBadge(o.x + 44, o.y - 7, chenBikeIcon, chenQuestDone);
+      this._chenBike = chenBikeIcon
+        ? this._drawBikeBadge(o.x + 44, o.y - 7, chenBikeIcon, chenQuestDone)
+        : null;
       this.addInteractable({
         x: o.x,
         y: o.y,
@@ -445,11 +344,49 @@ export default class StreetBlockScene extends LocalSceneBase {
       this._drawGpsPost(o.x, o.y);
     }
 
-    // === WORLD BOUNDS ===
+    // === SOUTH EXIT → Desert Edge ===
+    // The one way out to the plants and animals. A signed arrow sits above
+    // the gap so a young child can see where the opening in the fence goes.
     {
-      const o = this.layout.wall_south;
-      this.addWall(o.x, o.y, o.w, o.h); // south
+      const sign = this.layout.desert_edge_sign;
+      this._drawDesertEdgeSign(sign.x, sign.y);
+      const o = this.layout.exit_zone_south;
+      this.addExit({
+        x: o.x, y: o.y,
+        width: o.w, height: o.h,
+        targetScene: 'DesertEdgeScene',
+        targetSpawn: 'fromStreet',
+        label: null,
+      });
     }
+
+    // === WORLD BOUNDS ===
+    // The south bound is two bodies with a gap between them — that gap is
+    // the Desert Edge gate.
+    for (const key of ['wall_south_west', 'wall_south_east']) {
+      const o = this.layout[key];
+      if (o) this.addWall(o.x, o.y, o.w, o.h);
+    }
+  }
+
+  /**
+   * Signed arrow over the south gap: a board reading "Desert Edge" and a
+   * big triangle pointing down out of the neighborhood.
+   */
+  _drawDesertEdgeSign(x, y) {
+    const gfx = this.add.graphics().setDepth(20);
+    gfx.fillStyle(0x8a5a2b, 1);
+    gfx.fillRoundedRect(x - 94, y - 20, 188, 40, 8);
+    gfx.lineStyle(3, 0xf0d9a8, 0.95);
+    gfx.strokeRoundedRect(x - 94, y - 20, 188, 40, 8);
+    this.add.text(x + 14, y, 'Desert Edge', {
+      fontFamily: 'sans-serif',
+      fontSize: '16px',
+      fontStyle: 'bold',
+      color: '#ffffff',
+    }).setOrigin(0.5).setDepth(21);
+    this.add.triangle(x - 58, y, 0, -11, 22, -11, 11, 13, 0xfacc15, 1).setDepth(21);
+    return gfx;
   }
 
   _drawGrassField(o) {
@@ -518,7 +455,9 @@ export default class StreetBlockScene extends LocalSceneBase {
       roofColor: 0x1557a8,
       shutterColor: 0x1d4f91,
       garage: true,
-      label: { text: 'Workshop', x: this.layout.blue_house_body.x - 34, y: this.layout.blue_house_body.y + 76 },
+      // Centred below the building. The old offset put it 7px from the
+      // workshop-door gate's own caption, so the two names collided.
+      label: { text: 'Workshop', x: this.layout.blue_house_body.x, y: this.layout.blue_house_body.y + 102 },
     });
     this._drawHouseSkin({
       body: this.layout.green_house_body,
@@ -683,17 +622,6 @@ export default class StreetBlockScene extends LocalSceneBase {
     });
   }
 
-  _formatAnimalLabel(animal) {
-    const bySpecies = {
-      rabbit: 'Jackrabbit',
-      jackrabbit: 'Jackrabbit',
-      javelina: 'Javelina',
-      coyote: 'Coyote',
-    };
-    const labelKey = animal.label?.toLowerCase?.().replace(/^desert\s+/, '');
-    return bySpecies[animal.speciesId] || bySpecies[labelKey] || animal.label || animal.speciesId;
-  }
-
   _drawStreetSign(x, y, text) {
     const gfx = this.add.graphics().setDepth(8);
     gfx.lineStyle(4, 0xe5e7eb, 0.9);
@@ -812,7 +740,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     gfx.lineBetween(x - 4, y - 12, x + 4, y - 16);
   }
 
-  // ── Mariam: Levantine Arabic mentor ──────────────────────────────────────────
+  // ── Mariam: Arabic mentor ────────────────────────────────────────────────────
 
   /**
    * Teach the next of Mariam's three briefed words.
@@ -820,8 +748,9 @@ export default class StreetBlockScene extends LocalSceneBase {
    * Order is fixed (hello, then water, then repair) and each word is taught
    * until the child has practised it, so she never races ahead. Once all
    * three are known she greets and offers a refresher. Content comes from
-   * `systems/languageLayer.js`, which holds the owner-approved lines — this
-   * method must not author Arabic of its own.
+   * `systems/languageLayer.js`, which derives every word from the canonical
+   * `ar_*` rows in `data/languages.js` — this method must not author Arabic
+   * of its own.
    * @private
    */
   _handleMariamInteract() {
@@ -845,7 +774,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     this.registry.set('dialogEvent', {
       speaker: 'Mariam',
       // Script first, then the kid transliteration, then the English
-      // caption — the brief's rule is that rank 1 never hides the script.
+      // caption — rank 1 never hides the script.
       text: `${line.script}
 ${line.transliteration}
 
@@ -853,122 +782,6 @@ ${line.caption}`,
       choices: null,
       step: null,
     });
-  }
-
-  // ── Plant Interaction ────────────────────────────────────────────────────────
-
-  _handlePlantInteract(species, label, plantX, plantY) {
-    const state = this.registry.get('gameState');
-    const audioMgr = this.registry.get('audioManager');
-    audioMgr?.playSfx('interaction_ping');
-
-    // Notify MCP about plant interaction
-    const mcp = this.registry.get('mcp');
-    if (mcp) {
-      mcp.emit('FORAGE_AVAILABLE', { species, x: 0, y: 0 });
-    }
-
-    // Resolve the registered ecology entity for this exact plant (by
-    // species + world position). Used after the existing flow completes
-    // to fire ecology observation/forage events alongside, without
-    // disturbing the canonical dialog/inventory path below.
-    const ecologyEntity = (typeof plantX === 'number' && typeof plantY === 'number')
-      ? this._ecologyEntityIndex?.get(`${species}|${plantX}|${plantY}`) ?? null
-      : null;
-
-    // Plant info from flora data
-    const PLANT_INFO = {
-      mesquite: { desc: 'A mesquite tree! Its pods are nutritious and its wood makes excellent charcoal. Animals gather here to eat the pods. The soil around its roots is full of desert microbes.', items: ['mesquite_pods', 'mesquite_wood_sample', 'bio_sample_bacteria'] },
-      creosote: { desc: 'Creosote bush — its resin is antimicrobial and anti-inflammatory. Careful: toxic in large doses!', items: ['creosote_leaves'] },
-      prickly_pear: { desc: 'Prickly pear cactus! The fruit is sweet and hydrating. The pads are edible too.', items: ['prickly_pear_fruit'] },
-      barrel_cactus: { desc: 'Barrel cactus — it has moisture inside but the pulp is bitter and can cause nausea.', items: ['barrel_cactus_pulp'] },
-      jojoba: { desc: 'Jojoba shrub — its seeds produce a stable liquid wax. Natural sunscreen and lubricant!', items: ['jojoba_seeds'] },
-      agave: { desc: 'Agave plant — strong fibers for rope and bandages. The sap has healing properties.', items: ['agave_fiber', 'bio_sample_agave'] },
-      yucca: { desc: 'Yucca — the root contains natural soap (saponins). Used for cleaning and surfactants for thousands of years.', items: ['yucca_root'] },
-      desert_lavender: { desc: 'Desert lavender — purple flowers with a calming scent. Makes a soothing tea that improves focus.', items: ['desert_lavender_flowers'] },
-      ephedra: { desc: 'Ephedra (Mormon Tea) — a powerful natural stimulant. Boosts energy but stresses the heart. Use with caution!', items: ['ephedra_stems'] },
-      yerba_mansa: { desc: 'Yerba mansa — powerful antimicrobial root found near water. The desert\'s natural antibiotic.', items: ['yerba_mansa_root'] },
-    };
-
-    const info = PLANT_INFO[species] || { desc: `A ${label}.`, items: [] };
-
-    // Decide whether this plant grants an item to the player. Two gates:
-    //   (a) Canonical flow — current step is a forage step whose
-    //       requiredItem matches this plant's outputs.
-    //   (b) Recovery flow — the active quest has SOME forage step that
-    //       requires an item this plant produces, and the player
-    //       doesn't already have it. Catches the case where a quest
-    //       advanced past the gather step without the item (e.g. pre-
-    //       C3-fix saves where observe steps auto-advanced and pulled
-    //       the player past forage steps too aggressively).
-    let grantedItem = null;
-    const step = state.activeQuest ? this._getCurrentStepIfForage(state) : null;
-    if (step && info.items.includes(step.requiredItem)) {
-      grantedItem = step.requiredItem;
-    }
-    if (!grantedItem && state.activeQuest) {
-      const quest = QUESTS[state.activeQuest.id];
-      if (quest) {
-        grantedItem = info.items.find((item) =>
-          !state.inventory.includes(item)
-          && quest.steps.some(
-            (s) => s.type === 'forage' && s.requiredItem === item,
-          ),
-        ) || null;
-      }
-    }
-
-    if (grantedItem) {
-      const advancesCurrentStep = step?.requiredItem === grantedItem;
-      const updated = {
-        ...state,
-        inventory: [...state.inventory, grantedItem],
-      };
-      this.registry.set('gameState', updated);
-      // saveGame already imported at top of file
-      saveGame(updated);
-
-      audioMgr?.playSfx('item_pickup');
-
-      this.registry.set('dialogEvent', {
-        speaker: 'Zuzu',
-        text: advancesCurrentStep
-          ? `Found ${grantedItem.replace(/_/g, ' ')}! ${info.desc}\n\nBring this back to Mrs. Ramirez.`
-          : `Found ${grantedItem.replace(/_/g, ' ')}! ${info.desc}`,
-        choices: null,
-        step: advancesCurrentStep ? step : null,
-      });
-
-      // ECOLOGY (additive): fire observation + forage events alongside the
-      // existing dialog/inventory grant. Existing flow above is unchanged.
-      if (ecologyEntity) {
-        try { emitObservation(ecologyEntity, 'interact'); } catch { /* swallow */ }
-        try { emitForage(ecologyEntity, 'interact'); } catch { /* swallow */ }
-      }
-      return;
-    }
-
-    // Otherwise just show plant info
-    this.registry.set('dialogEvent', {
-      speaker: 'Zuzu',
-      text: info.desc,
-      choices: null, step: null,
-    });
-
-    // ECOLOGY (additive): record the inspect-style interaction so
-    // observation state advances even when no item is granted.
-    if (ecologyEntity) {
-      try { emitObservation(ecologyEntity, 'interact'); } catch { /* swallow */ }
-    }
-  }
-
-  _getCurrentStepIfForage(state) {
-    if (!state.activeQuest) return null;
-    const quest = QUESTS[state.activeQuest.id];
-    if (!quest) return null;
-    const step = quest.steps[state.activeQuest.stepIndex];
-    if (step?.type === 'forage') return step;
-    return null;
   }
 
   // ── NPC Interaction ─────────────────────────────────────────────────────────
