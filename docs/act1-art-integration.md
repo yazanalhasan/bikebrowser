@@ -11,7 +11,44 @@ Companion documents:
 | `docs/act1-art-manifest.json` | The delivered manifest. 200 entries over 150 PNGs, each with its target path, origin, provenance and QA score. |
 | `docs/act1-art-style-guide.md` | The style guide the art was made to. |
 | `docs/act1-art-reused-assets.md` | The 117 reused assets and where each came from. |
-| `docs/act1-art-screens/` | One screenshot per Act 1 scene, captured from the running game. |
+| `docs/act1-art-screens/` | One screenshot per Act 1 scene, captured from the running game. Recaptured 2026-11-26; `02b-desert-edge.jpg` is the new scene. |
+
+---
+
+## Follow-up pass — 2026-11-26
+
+Three owner-requested changes on top of the art integration. None of them
+touches an art file; all three are code, data or layout.
+
+**Act 1 Arabic is Modern Standard Arabic.** `systems/languageLayer.js` now
+derives every card from the canonical `ar_*` rows in `data/languages.js`
+(مرحبا marhaba, ماء maa', إصلاح islaah) instead of keeping its own copy. The
+colloquial Levantine fills that used to be hard-coded here and in
+`data/companions.js` are gone, along with the comments that described them as
+owner-authorised — they were not. Lina's greeting is English; the Southwest
+Spanish brief is still unapproved.
+
+**The neighborhood is two scenes.** One screen carried five houses, four
+neighbours, two bikes, the road, eleven plants and three animals, which is too
+much for a young child to read. Home Street keeps the people and the buildings;
+the new `DesertEdgeScene` holds the Sonoran flora, the fauna, every foraging
+interaction and the wilted-plant puzzle. A signed gap in the south fence
+connects them both ways. The flora/fauna behaviour moved into
+`systems/foragingScenery.js` so the two scenes share one implementation rather
+than forking it, and the plant content moved to `data/foragePlants.js`.
+
+**Object labels are proximity-gated.** `addInteractable` used to print every
+prop's name permanently, *and* the plants each carried a second hand-drawn
+caption on top of that. Names now fade in only when Zuzu is close, the doubled
+plant captions are gone, and the decorative "OK" badges on finished bikes are
+removed (a badge now appears only while a quest needs one). The garage's
+"Zuzu's Bike" hotspot no longer prints a second name across Zuzu's chest.
+
+**The garage is brighter.** Two ADD-blended light washes in
+`ZuzuGarageScene._liftInteriorLight` — an even warm ambient and a daylight pool
+at the open door. Measured on an A/B capture at identical framing, the room
+goes from mean luma **84.1 to 125.6**. Phaser's tint multiplies and can only
+darken, so brightening had to be additive. The art plates are untouched.
 
 ---
 
