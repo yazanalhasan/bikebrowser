@@ -84,15 +84,16 @@ const NPC_PROFILES = {
     voicePreference: { rate: 0.95, pitch: 1.05 },
   },
 
-  // Act 1 Levantine Arabic mentor. A grown-up neighbor on Zuzu's street —
-  // not a parent, not a classroom teacher. Persona per
-  // bb-briefs/levantine-arabic.md ("Mariam — Act 1 Arabic mentor"):
-  // warm, practical, a little teasing, never lecturing. She codeswitches
-  // with English so the child is never dropped into a wall of Arabic.
+  // Act 1 Arabic mentor. A grown-up neighbor on Zuzu's street — not a
+  // parent, not a classroom teacher: warm, practical, a little teasing,
+  // never lecturing. She codeswitches with English so the child is never
+  // dropped into a wall of Arabic. Act 1 teaches Modern Standard Arabic
+  // (owner decision, 2026-11-26); the words she teaches come from the
+  // `ar_*` rows in `data/languages.js` via `systems/languageLayer.js`.
   mariam: {
     id: 'mariam',
     name: 'Mariam',
-    role: 'Neighbor on Zuzu’s street; the first person who speaks Levantine Arabic with him',
+    role: 'Neighbor on Zuzu’s street; the first person who speaks Arabic with him',
     tone: 'warm',
     ageStyle: 'talks to kids like a trusted neighbor — one idea per line, a little teasing, never lecturing',
     teachingStyle: 'everyday and useful — a greeting at the gate, water before a hot ride, a hand on a bike that needs fixing',

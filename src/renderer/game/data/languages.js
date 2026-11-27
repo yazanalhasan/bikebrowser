@@ -15,7 +15,8 @@
  * First 20 terms per region are survival-relevant and immediately useful.
  *
  * Source rules:
- *   - Arabic terms: Arabic dictionaries and Levantine references only
+ *   - Arabic terms: Modern Standard Arabic, from Arabic dictionaries only
+ *     (Act 1 dialect decision, owner, 2026-11-26)
  *   - All terms: common, regionally relevant, simple
  */
 
@@ -81,7 +82,7 @@ export const REGIONS = {
 export const VOCABULARY = [
 
   // ════════════════════════════════════════════════════════════════════════════
-  // LEVANT — Arabic (Levantine + Classical)
+  // LEVANT — Modern Standard Arabic
   // ════════════════════════════════════════════════════════════════════════════
 
   // Environment

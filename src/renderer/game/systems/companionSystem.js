@@ -5,7 +5,7 @@
  * neighborhood and the desert, comments on what he finds, and can be talked
  * to for a hint. She is NOT a second controllable character, NOT a
  * quest-giver, and she does not fight, fetch, or replace the bike, the lab
- * or the quest engine (bb-briefs/levantine-arabic.md, "Lina — companion").
+ * or the quest engine. Her lines live in `data/companions.js`.
  *
  * Scales to: any later travelling companion. The follow behaviour, the
  * sheet-driven sprite and the save record are companion-agnostic; who is

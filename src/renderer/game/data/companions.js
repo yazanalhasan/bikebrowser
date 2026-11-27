@@ -4,19 +4,21 @@
  * Canonical data for `systems/companionSystem.js`. Adding a companion is a
  * row here plus their character sheets in the art registry; no code change.
  *
- * Cultural scope. Lina's spoken lines below are limited to what the owner
- * has decided:
- *   - The three Levantine Arabic terms from `systems/languageLayer.js`
- *     (mar7aba / mayy / salli7), which she repeats kid-to-kid. The brief
- *     explicitly allows her to "repeat a word Mariam just used" and to use
- *     "the same hello / water / repair cards in a kid-to-kid line".
- *   - The one decided Spanish line, "¡Vamos, Zuzu!", from
- *     bb-briefs/southwest-spanish.md ("Lina (companion) — decided
- *     2026-11-26").
- * No other Spanish vocabulary and no new Arabic may be added here without a
- * further sign-off. Lina never introduces a word Mariam or Mrs. Ramirez has
- * not already taught.
+ * Cultural scope. Lina only ever repeats a word Mariam has already taught,
+ * and Act 1 teaches Modern Standard Arabic (owner decision, 2026-11-26).
+ * Her word lines therefore carry a `{term}` placeholder that is filled from
+ * the canonical `ar_*` row in `./languages.js` — no word is spelled out
+ * here, so the dialect can never drift away from the vocabulary data. The
+ * colloquial forms this file used to hard-code (mar7aba / mayy / salli7)
+ * were not owner-authorised and have been removed.
+ *
+ * Her greeting is English. The Southwest Spanish brief is NOT approved, so
+ * there is no Spanish here; adding Spanish, new Arabic, or Indigenous or
+ * religious content needs owner sign-off first. Lina never introduces a
+ * word Mariam or Mrs. Ramirez has not already taught.
  */
+
+import { getVocabItem } from './languages.js';
 
 export const COMPANIONS = {
   lina: {
@@ -32,6 +34,7 @@ export const COMPANIONS = {
      */
     scenes: [
       'StreetBlockScene',
+      'DesertEdgeScene',
       'OverworldScene',
       'DesertTrailScene',
       'DesertForagingScene',
@@ -52,22 +55,22 @@ export const COMPANIONS = {
     lines: [
       {
         id: 'lina_greet',
-        text: '¡Vamos, Zuzu! Let’s go see what’s down the street.',
+        text: 'Come on, Zuzu! Let’s go see what’s down the street.',
       },
       {
         id: 'lina_hello',
         requiresCard: 'ar_hello',
-        text: 'Mar7aba! That’s the one Mariam taught us. Did I say it right?',
+        text: '{term}! That’s the one Mariam taught us. Did I say it right?',
       },
       {
         id: 'lina_water',
         requiresCard: 'ar_water',
-        text: 'Mayy. Water. Take some before we ride — it’s hot out here.',
+        text: '{term}. That’s the word for water. Take some before we ride — it’s hot out here.',
       },
       {
         id: 'lina_repair',
         requiresCard: 'ar_fix',
-        text: 'Salli7! You fixed it. Mariam’s word — fix it so it works again.',
+        text: '{term}! You fixed it. Mariam’s word for making something work again.',
       },
     ],
   },
@@ -96,6 +99,22 @@ export function markCompanionMet(state, companionId) {
 }
 
 /**
+ * Fill a line's `{term}` placeholder from the canonical vocabulary row for
+ * its `requiresCard`, sentence-cased so it can open the sentence.
+ *
+ * A line with no placeholder is returned untouched. A missing row leaves the
+ * placeholder visible rather than inventing a word — loud, and caught by the
+ * companion-line test.
+ */
+function resolveLineTerm(line) {
+  if (!line || !line.text.includes('{term}') || !line.requiresCard) return line;
+  const row = getVocabItem(line.requiresCard);
+  if (!row) return line;
+  const term = row.transliteration.charAt(0).toUpperCase() + row.transliteration.slice(1);
+  return { ...line, text: line.text.replace('{term}', term) };
+}
+
+/**
  * Pick Lina's next line: prefer a word she has seen Mariam teach (so she is
  * practising, not introducing), else her plain greeting.
  */
@@ -106,7 +125,7 @@ export function pickCompanionLine(companion, state) {
   );
   if (practised.length > 0) {
     const turn = Object.values(practice).reduce((n, rec) => n + (rec.practiced || 0), 0);
-    return practised[turn % practised.length];
+    return resolveLineTerm(practised[turn % practised.length]);
   }
   return (companion.lines || []).find((line) => !line.requiresCard) || null;
 }
