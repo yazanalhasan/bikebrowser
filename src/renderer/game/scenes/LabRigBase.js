@@ -240,6 +240,18 @@ export default class LabRigBase extends LocalSceneBase {
   /** Default world size — 800×600 unless overridden. */
   getWorldSize() { return { width: DEFAULT_WORLD_W, height: DEFAULT_WORLD_H }; }
 
+  /**
+   * A rig is a control panel, not a place to walk around in, so the whole
+   * room has to be on screen at once.
+   *
+   * The cover fit that every other local scene uses fills the screen width
+   * and follows Zuzu vertically. On a rig that crops the room: at 1280x720
+   * the Materials Lab showed 800x450 of its 800x600, so the top of the
+   * material list and the START TEST button were never visible together and
+   * the child had to walk Zuzu up the room to reach a button.
+   */
+  getCameraFitMode() { return 'contain'; }
+
   // ─────────────────────────────────────────────────────────────────────
   // LocalSceneBase hook — base owns the entire build.
   // ─────────────────────────────────────────────────────────────────────

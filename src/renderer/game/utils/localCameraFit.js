@@ -22,7 +22,8 @@
  *   vertically, clamped to the world so it never shows past the walls.
  * - If the room is shorter than the view, it is centred and nothing moves.
  *
- * @param {{ camWidth: number, camHeight: number, worldWidth: number, worldHeight: number }} size
+ * @param {{ camWidth: number, camHeight: number, worldWidth: number,
+ *           worldHeight: number, mode?: 'cover'|'contain' }} size
  * @returns {{ zoom: number, followY: boolean, viewWidth: number, viewHeight: number,
  *             fillsWidth: boolean }}
  */
@@ -35,25 +36,41 @@
  */
 export const MAX_FIT_ZOOM = 3;
 
-export function localCameraFit({ camWidth, camHeight, worldWidth, worldHeight }) {
+export function localCameraFit({
+  camWidth, camHeight, worldWidth, worldHeight, mode = 'cover',
+}) {
   const width = Math.max(1, camWidth);
   const height = Math.max(1, camHeight);
   const worldW = Math.max(1, worldWidth);
   const worldH = Math.max(1, worldHeight);
 
   const widthZoom = width / worldW;
-  const zoom = Math.min(widthZoom, MAX_FIT_ZOOM);
+
+  // `contain` is for rooms that are really a control panel — the Materials
+  // Lab and the Thermal Lab. Filling the width there crops the room
+  // vertically and makes the camera chase Zuzu, so the material list and the
+  // START TEST button are never on screen at the same time and the child has
+  // to walk the room to reach a button. Those scenes show everything at once
+  // and never follow.
+  const zoom = mode === 'contain'
+    ? Math.min(Math.min(widthZoom, height / worldH), MAX_FIT_ZOOM)
+    : Math.min(widthZoom, MAX_FIT_ZOOM);
 
   const viewWidth = width / zoom;
   const viewHeight = height / zoom;
 
   return {
+    mode,
     zoom,
-    // Only follow when the room is genuinely taller than what fits.
-    followY: viewHeight < worldH,
+    // Only follow when the room is genuinely taller than what fits, and
+    // never in contain mode — there the whole room is on screen by
+    // construction.
+    followY: mode !== 'contain' && viewHeight < worldH,
     viewWidth,
     viewHeight,
-    fillsWidth: zoom === widthZoom,
+    fillsWidth: mode !== 'contain' && zoom === widthZoom,
+    // True when the entire room is visible on both axes.
+    showsWholeRoom: viewWidth >= worldW - 1e-9 && viewHeight >= worldH - 1e-9,
   };
 }
 
