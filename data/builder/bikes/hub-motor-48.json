@@ -1,0 +1,32 @@
+{
+  "id": "hub-motor-48",
+  "name": "48 V hub-motor kit",
+  "bikeType": "conversion-hub",
+  "wheelSize": "26",
+  "note": "Teaching kit. Geared rear hub motor is the rear hub. QR 135, HG cassette, torque arm included. Draft parts.",
+  "slots": {
+    "frame": "frame-mtb-standard-post-180",
+    "cassette": "cassette-shimano-hg400-9-11-36",
+    "chain": "chain-shimano-hg-9",
+    "rear_derailleur": "shimano-rd-m3100-sgs",
+    "shifter": "shifter-shimano-alivio-m3100-9",
+    "crankset": "crank-1x-32",
+    "bottom_bracket": "bb-bsa-shimano-24",
+    "motor": "motor-hub-geared-135",
+    "torque_arm": "torque-arm-qr-135",
+    "battery": "battery-48-xt60",
+    "controller": "controller-48-uart-xt60",
+    "display": "display-uart",
+    "throttle": "throttle-hall-twist-julet",
+    "pas": "pas-12-julet",
+    "brake_sensor": "brake-sensor-no-julet",
+    "speed_sensor": "speed-julet",
+    "light": "light-6v-julet",
+    "front_hub": "front-hub-qr-100",
+    "headset": "headset-zs44-ec44",
+    "seatpost": "seatpost-30-9",
+    "brake_lever": "lever-shimano-bl-mt200",
+    "brake_caliper": "caliper-shimano-br-mt200",
+    "rotor": "rotor-6bolt-180"
+  }
+}

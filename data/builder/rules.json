@@ -1,0 +1,4023 @@
+{
+  "version": 1,
+  "notes": "Declarative fitment rules. A predicate that evaluates true is a problem. Missing values become cannot_verify inside the engine. Unknown never passes.",
+  "rules": [
+    {
+      "id": "cassette-freehub-driver",
+      "version": 1,
+      "slots": [
+        "hub",
+        "cassette"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "adapter_allowed",
+        "mode": "freehub",
+        "driver": "slot.hub.specs.freehub",
+        "fits": "slot.cassette.specs.freehubFit"
+      },
+      "messageAdult": "This cassette does not fit this freehub body.",
+      "messageKid": "This cassette and this wheel use different splines, so the cassette cannot slide on.",
+      "fix": "Choose a cassette made for this freehub, or a wheel with the matching driver.",
+      "messageAdultByStatus": {
+        "warning": "This cassette fits this {driver} freehub only with a {spacerMm} mm spacer.",
+        "cannot_verify": "The freehub or the cassette spline list is missing, so this pair does not pass.",
+        "incompatible": "This cassette does not fit a {driver} freehub."
+      },
+      "messageKidByStatus": {
+        "warning": "These can work together if a grown-up adds a thin {spacerMm} mm spacer.",
+        "cannot_verify": "We do not know the splines yet, so we will not say the cassette fits the wheel.",
+        "incompatible": "This cassette and this wheel use different splines, so the cassette cannot slide on."
+      },
+      "fixByStatus": {
+        "warning": "Add the {spacerMm} mm spacer the maker specifies, then check that the cassette sits flat and the lockring tightens.",
+        "incompatible": "Choose a cassette made for this freehub, or a wheel with the matching driver.",
+        "cannot_verify": "Fill in the freehub body and the cassette's spline list."
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceUrlByDriver": {
+        "xd": "https://support.sram.com/hc/en-us/sections/6129171904667",
+        "xdr": "https://support.sram.com/hc/en-us/sections/6129171904667"
+      },
+      "sourceRef": "Shimano C-731 freehub table (HG-S/M/L/L2, Micro Spline, 1.85 mm spacer notes). SRAM XD on XDR uses a 1.85 mm spacer; XDR does not fit XD."
+    },
+    {
+      "id": "speed-count",
+      "version": 1,
+      "slots": [
+        "shifter",
+        "rear_derailleur",
+        "cassette",
+        "chain"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "speeds_match",
+          "paths": [
+            "slot.shifter.specs.speeds",
+            "slot.rear_derailleur.specs.speeds",
+            "slot.cassette.specs.speeds",
+            "slot.chain.specs.speeds"
+          ],
+          "relax": [
+            {
+              "path": "slot.rear_derailleur.specs.speeds",
+              "whenFamily": "slot.rear_derailleur.specs.actuationFamily",
+              "family": "shimano-road-6-9-10",
+              "allowed": [
+                6,
+                7,
+                8,
+                9
+              ],
+              "othersMustBeInAllowed": true
+            }
+          ]
+        }
+      },
+      "messageAdult": "Speed counts do not match across the shifter, rear derailleur, cassette, and chain. Shimano classic-cable rear derailleurs of 6, 7, 8, and 9 speeds are the recorded exception: the shifter, cassette, and chain still have to match each other.",
+      "messageKid": "The clicker, the derailleur, the cassette, and the chain need the same number of speeds. Right now they do not.",
+      "messageKidByStatus": {
+        "cannot_verify": "We are missing a speed count, so we will not say the speeds match."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "A speed count is missing on the shifter, derailleur, cassette, or chain. Missing is not a match."
+      },
+      "fix": "Use one speed count for the shifter, cassette, and chain. On the older Shimano cable pull, a 6, 7, 8, or 9-speed rear derailleur can be the exception.",
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Shimano drivetrain compatibility charts group parts by speed. The 6–9 speed rear-derailleur exception is the shared classic cable pull, described at https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/"
+    },
+    {
+      "id": "actuation-family",
+      "version": 1,
+      "slots": [
+        "shifter",
+        "rear_derailleur"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "same_family",
+          "left": "slot.shifter.specs.actuationFamily",
+          "right": "slot.rear_derailleur.specs.actuationFamily"
+        }
+      },
+      "messageAdult": "The shifter and the rear derailleur are in different actuation families, so each click pulls a different amount of cable (or they are different electronic systems).",
+      "messageKid": "The shifter and the derailleur speak different languages, so the clicks will not land on the cogs.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know the click family yet, so we will not say the shifter and derailleur match."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Actuation family is missing. Close pull-ratio numbers are not treated as a match."
+      },
+      "fix": "Pair a shifter and a rear derailleur from the same family. Pull-ratio measurements live in standards.js from boothinator/derailleur-analysis (MIT).",
+      "sourceUrl": "https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/",
+      "sourceRef": "Actuation families follow manufacturer compatibility plus measured pull ratios from boothinator/derailleur-analysis (MIT), https://github.com/boothinator/derailleur-analysis"
+    },
+    {
+      "id": "rd-max-cog",
+      "version": 1,
+      "slots": [
+        "cassette",
+        "rear_derailleur"
+      ],
+      "optionalSlots": [
+        "hanger_extender"
+      ],
+      "severity": "incompatible",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "rd_max_cog",
+        "extenderWindowTeeth": 8
+      },
+      "messageAdult": "The largest cog is {largestCog}T and this derailleur is published to {maxCog}T.",
+      "messageKid": "The biggest cog is taller than this derailleur was built for.",
+      "fix": "Add a hanger extender (for example a Wolf Tooth GoatLink or RoadLink style extender) and set the B-screw, or choose a long-cage rear derailleur rated for this cog.",
+      "messageAdultByStatus": {
+        "warning": "Largest cog is {largestCog}T. This derailleur is published to {maxCog}T, which is {overBy}T over the spec. A hanger extender is in the build, inside the 8-tooth practitioner window.",
+        "incompatible": "Largest cog is {largestCog}T. This derailleur is published to {maxCog}T ({overBy}T over). That is outside the published max, and it is not inside the 8-tooth hanger-extender window.",
+        "cannot_verify": "The cassette's largest cog or the derailleur's published max cog is missing, so the big-cog check does not pass."
+      },
+      "messageKidByStatus": {
+        "warning": "The biggest cog is a bit taller than this derailleur's published limit. A hanger extender is on the bike, so a grown-up can try it after setting the B-screw.",
+        "incompatible": "The biggest cog is too tall for this derailleur. A hanger extender is not in the build, or the cog is still too tall even with one.",
+        "cannot_verify": "We need the biggest cog and the derailleur's max cog before we can check this."
+      },
+      "fixByStatus": {
+        "warning": "Keep the hanger extender. Set the B-screw so the upper pulley clears the largest cog, then shift through every gear on the bike.",
+        "incompatible": "Add a hanger extender (for example a Wolf Tooth GoatLink or RoadLink style extender) and set the B-screw, or choose a long-cage rear derailleur rated for this cog.",
+        "cannot_verify": "Enter the derailleur's published maximum sprocket and the cassette's largest cog."
+      },
+      "sourceUrl": "https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/",
+      "sourceRef": "Published max cog is the manufacturer limit on each derailleur record. The ≤8T window with a hanger extender is a phase 1 practitioner rule, not a Shimano or SRAM specification."
+    },
+    {
+      "id": "rd-min-largest-cog",
+      "version": 1,
+      "slots": [
+        "cassette",
+        "rear_derailleur"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "exists",
+            "path": "slot.rear_derailleur.specs.minLargestCog"
+          },
+          {
+            "op": "lt",
+            "left": "slot.cassette.specs.largestCog",
+            "right": {
+              "path": "slot.rear_derailleur.specs.minLargestCog"
+            }
+          }
+        ]
+      },
+      "messageAdult": "The largest cog is {largestCog}T, below this derailleur's published minimum of {minLargestCog}T.",
+      "messageKid": "This derailleur wants a bigger largest cog than the one on this cassette.",
+      "fix": "Use a cassette whose largest cog is at least {minLargestCog}T, or a derailleur rated for this cassette.",
+      "messageKidByStatus": {
+        "cannot_verify": "We cannot check the derailleur's smallest allowed big cog until both numbers are filled in."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Minimum largest-cog check is missing a number. If the maker did not publish a minimum, the part record leaves it empty and this rule stays quiet."
+      },
+      "sourceUrl": "https://bike.shimano.com/en-EU/product/component/alivio-m3100/RD-M3100-SGS.html",
+      "sourceRef": "Example of a published minimum: RD-M3100-SGS low sprocket min 32T. The rule runs only when the part record includes minLargestCog."
+    },
+    {
+      "id": "rd-total-capacity",
+      "version": 1,
+      "slots": [
+        "rear_derailleur",
+        "cassette",
+        "crankset"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "capacity_sum_lte",
+          "capacity": "slot.rear_derailleur.specs.capacity",
+          "frontDiff": "derived.frontDiff",
+          "cogRange": "derived.cogRange"
+        }
+      },
+      "messageAdult": "Chain wrap is {capacityNeeded}T ((big ring − small ring) + (big cog − small cog)). This derailleur's published capacity is {rdCapacity}T.",
+      "messageKid": "The chain has to wrap more difference than this derailleur can take up.",
+      "fix": "Choose a derailleur with more total capacity, or a closer chainring pair, or a closer cassette.",
+      "messageKidByStatus": {
+        "cannot_verify": "We are missing a tooth count or the derailleur's capacity, so we will not say the chain wrap is okay."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Total capacity needs the derailleur capacity, the chainring difference, and the cassette range. A blank capacity does not pass."
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/articles/6496285693339",
+      "sourceRef": "Capacity = (big ring − small ring) + (big cog − small cog). Also explained at https://wisewheeling.com/rear-derailleur-capacity/"
+    },
+    {
+      "id": "rd-max-front-diff",
+      "version": 1,
+      "slots": [
+        "rear_derailleur",
+        "crankset"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "gt",
+            "left": "derived.ringCount",
+            "right": 1
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "lte",
+              "left": "derived.frontDiff",
+              "right": {
+                "path": "slot.rear_derailleur.specs.maxFrontDiff"
+              }
+            }
+          }
+        ]
+      },
+      "messageAdult": "The chainring difference is {frontDiff}T and this derailleur's published maximum front difference is {maxFrontDiff}T.",
+      "messageKid": "The two chainrings are farther apart than this derailleur can handle.",
+      "fix": "Use a closer chainring pair or a derailleur rated for this front difference.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the chainring sizes and the derailleur's max front difference before this can pass."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Front-difference check is missing chainring teeth or the derailleur's published max front difference."
+      },
+      "sourceUrl": "https://wisewheeling.com/rear-derailleur-capacity/",
+      "sourceRef": "On a 2x bike the front difference also has to sit inside the derailleur's published maximum front difference."
+    },
+    {
+      "id": "electronic-ecosystem",
+      "version": 1,
+      "slots": [
+        "shifter",
+        "rear_derailleur"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "same_ecosystem",
+          "left": "slot.shifter.specs.eEcosystem",
+          "right": "slot.rear_derailleur.specs.eEcosystem"
+        }
+      },
+      "messageAdult": "Electronic ecosystems do not mix. Di2, AXS, and Campagnolo electronic parts stay inside their own system. A cable part and an electronic part do not mix either.",
+      "messageKid": "These shifters and derailleurs are from different electronic families, so they do not talk to each other.",
+      "messageKidByStatus": {
+        "cannot_verify": "We cannot tell if these are cable or electronic yet."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "eEcosystem is missing on the shifter or the derailleur. Leave it null only for a cable part."
+      },
+      "fix": "Keep Di2 with Di2, AXS with AXS, and Campagnolo electronic with Campagnolo electronic. Generations still have to match on speed and actuation family.",
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/road/axs-components-compatibility-map.pdf",
+      "sourceRef": "SRAM AXS components compatibility map. Shimano Di2 and Campagnolo electronic are separate ecosystems and are not on that map."
+    },
+    {
+      "id": "full-mount-needs-udh",
+      "version": 1,
+      "slots": [
+        "rear_derailleur",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "requires_standard",
+          "whenPath": "slot.rear_derailleur.specs.mount",
+          "whenValue": "full-mount",
+          "standardPath": "slot.frame.specs.hanger",
+          "standard": "udh"
+        }
+      },
+      "messageAdult": "This is a Full Mount rear derailleur (Eagle Transmission or XPLR AXS). SRAM requires a UDH frame.",
+      "messageKid": "This derailleur bolts to a Universal Derailleur Hanger. This frame has a different hanger.",
+      "fix": "Use this derailleur on a UDH frame, or choose a derailleur that uses this frame's hanger.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the derailleur mount and the frame hanger before we can check Full Mount."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Full Mount check is missing derailleur mount or frame hanger. It does not pass while either is blank."
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "SRAM: Full Mount derailleurs (Eagle Transmission, XPLR AXS) require a UDH frame."
+    },
+    {
+      "id": "chain-type",
+      "version": 1,
+      "slots": [
+        "chain",
+        "cassette",
+        "rear_derailleur",
+        "shifter"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "chain_types_match",
+          "paths": [
+            "slot.chain.specs.chainType",
+            "slot.cassette.specs.chainType",
+            "slot.rear_derailleur.specs.chainType",
+            "slot.shifter.specs.chainType"
+          ]
+        }
+      },
+      "messageAdult": "Chain type does not match across the chain, cassette, rear derailleur, and shifter. Flattop, T-Type, Linkglide, Eagle, and Campagnolo chains stay with their own systems.",
+      "messageKid": "This chain is made for one special drivetrain. The other parts are not that drivetrain.",
+      "fix": "Use the chain that belongs to this drivetrain.",
+      "messageKidByStatus": {
+        "cannot_verify": "A chain type is missing, so we will not say this chain belongs with these parts."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "chainType is missing on the chain, cassette, derailleur, or shifter."
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "SRAM T-Type (Transmission) and Flattop are dedicated chains. Shimano Linkglide uses its own chain. Eagle mechanical uses an Eagle chain. Ordinary HG chains stay with HG systems."
+    },
+    {
+      "id": "brake-type-match",
+      "version": 1,
+      "slots": [
+        "brake_lever",
+        "brake_caliper"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.brake_lever.specs.brakeType",
+          "right": "slot.brake_caliper.specs.brakeType"
+        }
+      },
+      "messageAdult": "The brake lever and the caliper are different systems (rim, V-brake, cantilever, mechanical disc, or hydraulic disc).",
+      "messageKid": "This lever and this brake are different kinds, so they are not a pair.",
+      "fix": "Use a lever and a caliper from the same brake system.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know the brake type yet."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Brake type is missing on the lever or the caliper."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "Lever and caliper have to be the same brake system. Hydraulic pairings are on the SRAM hydraulic compatibility map; Shimano publishes its own mineral-oil pairings."
+    },
+    {
+      "id": "brake-frame-match",
+      "version": 1,
+      "slots": [
+        "frame",
+        "brake_caliper"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "brake_frame_match",
+          "frame": "slot.frame.specs.brakeStyle",
+          "part": "slot.brake_caliper.specs.brakeType"
+        }
+      },
+      "messageAdult": "The frame's brake style (rim or disc) does not match this caliper.",
+      "messageKid": "This frame and this brake are not the same kind. A rim frame does not take a disc caliper, and a disc frame does not take a rim brake.",
+      "fix": "Match a disc caliper to a disc frame, or a rim brake to a rim frame.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know if this frame is set up for rim brakes or disc brakes."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Frame brake style or caliper brake type is missing."
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/chain-compatibility",
+      "sourceRef": "Phase 1 brake-style check: rim frames take rim brakes, disc frames take disc calipers. Park Tool is cited for general service context; the frame record supplies brakeStyle."
+    },
+    {
+      "id": "brake-fluid",
+      "version": 1,
+      "slots": [
+        "brake_lever",
+        "brake_caliper"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "same_fluid",
+          "leverType": "slot.brake_lever.specs.brakeType",
+          "caliperType": "slot.brake_caliper.specs.brakeType",
+          "left": "slot.brake_lever.specs.fluid",
+          "right": "slot.brake_caliper.specs.fluid"
+        }
+      },
+      "messageAdult": "Hydraulic lever and caliper use different fluids. Mineral oil and DOT fluid are never mixed. Shimano and Campagnolo use mineral oil. Most SRAM brakes use DOT fluid. SRAM Maven uses mineral oil.",
+      "messageKid": "This lever and this caliper need the same brake fluid. These two use different kinds, so they are not a pair.",
+      "fix": "Choose a caliper that uses the same fluid as the lever.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know the brake fluid yet, so we will not say these brakes match."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Fluid is blank on a hydraulic lever or caliper. Blank fluid does not pass."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "SRAM hydraulic lever/caliper map. Mineral vs DOT is a hard stop. SRAM Maven is mineral oil; Code, Level, and Guide are DOT."
+    },
+    {
+      "id": "caliper-mount",
+      "version": 1,
+      "slots": [
+        "brake_caliper",
+        "frame"
+      ],
+      "severity": "warning",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "adapter_allowed",
+        "mode": "mount",
+        "left": "slot.brake_caliper.specs.caliperMount",
+        "right": "slot.frame.specs.caliperMount"
+      },
+      "messageAdult": "The caliper mount and the frame mount are different.",
+      "messageKid": "The brake and the frame use different bolt patterns.",
+      "fix": "Use a matching mount, or add the correct adapter and check that the wheel still spins freely.",
+      "messageAdultByStatus": {
+        "warning": "Caliper mount is {leftMount} and the frame mount is {rightMount}. An adapter can bridge them. Confirm the adapter, the bolt length, and rotor clearance on the bike.",
+        "cannot_verify": "Caliper mount or frame mount is missing, so the mount check does not pass."
+      },
+      "messageKidByStatus": {
+        "warning": "The mounts do not match. A grown-up can add an adapter, then check that the wheel still spins freely.",
+        "cannot_verify": "We do not know both bolt patterns yet."
+      },
+      "fixByStatus": {
+        "warning": "Fit the correct mount adapter. Check bolt length and that the rotor sits in the middle of the pads.",
+        "cannot_verify": "Enter the caliper mount and the frame mount."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "Post mount, flat mount, and IS are different patterns. A mismatch is a warning when an adapter is the usual fix, not a silent pass."
+    },
+    {
+      "id": "rotor-size",
+      "version": 1,
+      "slots": [
+        "rotor",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "lte",
+          "left": "slot.rotor.specs.sizeMm",
+          "right": {
+            "path": "slot.frame.specs.maxRotorMm"
+          }
+        }
+      },
+      "messageAdult": "Rotor size exceeds the frame's published maximum.",
+      "messageKid": "This rotor is bigger than the frame has room for.",
+      "fix": "Choose a rotor at or under the frame's maximum, or a frame rated for this rotor.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the rotor size and the frame's biggest allowed rotor."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rotor size or frame max rotor is missing. Missing does not mean the rotor fits."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "Rotor diameter has to be less than or equal to the frame or fork maximum stored on the frame record. Phase 1 uses one max for the frame."
+    },
+    {
+      "id": "rotor-mount",
+      "version": 1,
+      "slots": [
+        "rotor",
+        "hub"
+      ],
+      "severity": "warning",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "adapter_allowed",
+        "mode": "mount",
+        "left": "slot.rotor.specs.rotorMount",
+        "right": "slot.hub.specs.rotorMount"
+      },
+      "messageAdult": "The rotor mount and the hub mount are different.",
+      "messageKid": "This rotor and this hub do not use the same mounting style.",
+      "fix": "Use a matching rotor, or the correct 6-bolt / Center Lock adapter, and check that it locks tight.",
+      "messageAdultByStatus": {
+        "warning": "Rotor mount is {leftMount} and the hub is {rightMount}. An adapter exists for this pair. It is a warning, not a native fit.",
+        "cannot_verify": "Rotor mount or hub mount is missing."
+      },
+      "messageKidByStatus": {
+        "warning": "A grown-up can add an adapter so this rotor fits this hub. Check that it locks tight.",
+        "cannot_verify": "We do not know if this rotor and hub use 6-bolt or Center Lock."
+      },
+      "fixByStatus": {
+        "warning": "Add the correct 6-bolt to Center Lock adapter (or the other way around) and torque it to the maker's spec.",
+        "cannot_verify": "Enter the rotor mount and the hub's rotor mount."
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "6-bolt and Center Lock are different rotor interfaces. An adapter is a warning."
+    },
+    {
+      "id": "two-by-needs-front-derailleur",
+      "version": 1,
+      "slots": [
+        "crankset"
+      ],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "gt",
+            "left": "derived.ringCount",
+            "right": 1
+          },
+          {
+            "op": "slot_empty",
+            "slot": "front_derailleur"
+          }
+        ]
+      },
+      "messageAdult": "This crank has more than one chainring and no front derailleur is selected.",
+      "messageKid": "Two chainrings need a front derailleur. We have not picked one yet, so this does not pass.",
+      "fix": "Add a front derailleur for this 2x crank, or switch to a single chainring.",
+      "sourceUrl": "https://wisewheeling.com/rear-derailleur-capacity/",
+      "sourceRef": "Phase 1 models front derailleurs for 2x only."
+    },
+    {
+      "id": "one-by-with-front-derailleur",
+      "version": 1,
+      "slots": [
+        "crankset",
+        "front_derailleur"
+      ],
+      "severity": "warning",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "derived.ringCount",
+            "right": 1
+          },
+          {
+            "op": "slot_filled",
+            "slot": "front_derailleur"
+          }
+        ]
+      },
+      "messageAdult": "A front derailleur is selected on a single-chainring crank.",
+      "messageKid": "A bike with one chainring does not use a front derailleur.",
+      "fix": "Leave the front derailleur off a 1x bike.",
+      "sourceUrl": "https://wisewheeling.com/rear-derailleur-capacity/",
+      "sourceRef": "1x setups do not use a front derailleur."
+    },
+    {
+      "id": "front-derailleur-speed",
+      "version": 1,
+      "slots": [
+        "front_derailleur",
+        "shifter"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.front_derailleur.specs.speeds",
+          "right": "slot.shifter.specs.speeds"
+        }
+      },
+      "messageAdult": "The front derailleur speed count does not match the shifter.",
+      "messageKid": "The front derailleur and the shifter are built for different numbers of speeds.",
+      "fix": "Match the front derailleur to the shifter's speed count.",
+      "messageKidByStatus": {
+        "cannot_verify": "We are missing a speed count on the front derailleur or the shifter."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Front derailleur speed or shifter speed is missing."
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Front derailleurs are grouped by speed in the Shimano compatibility charts."
+    },
+    {
+      "id": "chain-length-on-bike",
+      "version": 1,
+      "slots": [],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "always"
+      },
+      "messageAdult": "Chain length has to be sized on the bike after the cassette and chainrings are installed. The parts list cannot pass that check.",
+      "messageKid": "The chain still has to be sized on the real bike. We cannot do that from the parts list.",
+      "fix": "Size the chain on the bike with the big ring and the big cog, then leave a little extra as the maker shows.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/chain-compatibility",
+      "sourceRef": "Always-on phase 1 note. Chain length is a workshop step."
+    },
+    {
+      "id": "tire-clearance-not-checked",
+      "version": 1,
+      "slots": [],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "always"
+      },
+      "messageAdult": "Tire and frame clearance are not checked in phase 1. Do not read a compatible drivetrain as a tire fit.",
+      "messageKid": "We are not checking whether the tire fits the frame yet. A grown-up still looks at that on the real bike.",
+      "fix": "Check tire clearance at the fork, the chainstays, and the seatstays before riding.",
+      "sourceUrl": "https://pedalbrief.com/data/",
+      "sourceRef": "Phase 1 scope limit. Pedal Brief's gravel tire-clearance dataset is a later-phase source, not applied here."
+    },
+    {
+      "id": "brakes-not-in-build",
+      "version": 1,
+      "slots": [],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "all_empty",
+            "slots": [
+              "brake_lever",
+              "brake_caliper",
+              "rotor"
+            ]
+          },
+          {
+            "op": "slot_empty",
+            "slot": "front_caliper"
+          },
+          {
+            "op": "slot_empty",
+            "slot": "rear_caliper"
+          }
+        ]
+      },
+      "messageAdult": "No brake lever, caliper, or rotor is selected, so brakes were not checked.",
+      "messageKid": "Brakes are not in this build yet, so we have not checked them.",
+      "fix": "Add a lever, a caliper, and a rotor when you are ready to check the brakes.",
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "Phase 1: an empty brake section is cannot_verify, not a pass."
+    },
+    {
+      "id": "rear-axle-match",
+      "version": 1,
+      "slots": [
+        "hub",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.hub.specs.axle",
+          "right": "slot.frame.specs.rearAxle"
+        }
+      },
+      "messageAdult": "The rear hub axle does not match the frame's rear dropout. A hub motor standing in for the hub uses the motor's axle.",
+      "messageKid": "This rear wheel's axle and the frame's dropouts are different sizes, so the wheel does not drop in.",
+      "fix": "Match the axle: quick release 135 mm, 12x142, or 12x148 Boost are different and do not swap.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both axle sizes before we can say the wheel fits the frame."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rear axle is blank on the hub or the frame. Blank is not a match."
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "QR 135, 12x142, and 12x148 Boost are different rear standards. A hub motor covers the hub slot when no separate hub is chosen."
+    },
+    {
+      "id": "front-axle-match",
+      "version": 1,
+      "slots": [
+        "front_hub",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.front_hub.specs.axle",
+          "right": "slot.frame.specs.frontAxle"
+        }
+      },
+      "messageAdult": "The front hub axle does not match the fork end recorded on the frame.",
+      "messageKid": "The front wheel axle and the fork do not match.",
+      "fix": "Match quick release 100 mm, 12x100, 15x100, or 15x110 Boost.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the front axle and the fork axle before this can pass."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Front axle is blank on the hub or the frame."
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Front axle standards: QR 100, 12x100, 15x100, 15x110 Boost."
+    },
+    {
+      "id": "bottom-bracket-shell",
+      "version": 1,
+      "slots": [
+        "bottom_bracket",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.bottom_bracket.specs.shell",
+          "right": "slot.frame.specs.bbShell"
+        }
+      },
+      "messageAdult": "The bottom bracket shell does not match the frame shell. BSA, T47, BB86, and PF30 are different.",
+      "messageKid": "This bottom bracket and this frame use different shapes, so it will not thread or press in.",
+      "fix": "Choose a bottom bracket made for this frame's shell.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know both shell types yet."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Bottom bracket shell or frame shell is blank."
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Shell standards: BSA threaded, T47, BB86/BB92, PF30. A mid-drive does not use a separate bottom bracket."
+    },
+    {
+      "id": "bottom-bracket-spindle",
+      "version": 1,
+      "slots": [
+        "bottom_bracket",
+        "crankset"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.bottom_bracket.specs.spindle",
+          "right": "slot.crankset.specs.spindle"
+        }
+      },
+      "messageAdult": "The bottom bracket spindle does not match the crank. Shimano 24 mm, SRAM DUB, 30 mm, and Campagnolo spindles are different.",
+      "messageKid": "The crank's axle and this bottom bracket are different, so the crank will not sit in the bearings.",
+      "fix": "Pair the crank's spindle with a bottom bracket made for that spindle and for the frame shell.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the crank spindle and the bottom bracket spindle."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Spindle is blank on the crank or the bottom bracket."
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "The bottom bracket has to fit the frame shell and the crank spindle at the same time."
+    },
+    {
+      "id": "bottom-bracket-width",
+      "version": 1,
+      "slots": [
+        "bottom_bracket",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "in",
+          "left": "slot.frame.specs.bbWidthMm",
+          "right": "slot.bottom_bracket.specs.widths"
+        }
+      },
+      "messageAdult": "The frame's bottom-bracket width is not in this bottom bracket's width list.",
+      "messageKid": "This bottom bracket is the wrong width for the frame.",
+      "fix": "Use a bottom bracket that lists this frame's shell width. 68 mm and 73 mm often share a BSA unit with spacers. 100 mm does not.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the shell width and the bottom bracket's width list."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Shell width or the bottom bracket width list is blank."
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Width has to be one of the widths the bottom bracket lists."
+    },
+    {
+      "id": "needs-bottom-bracket",
+      "version": 1,
+      "slots": [
+        "crankset",
+        "frame"
+      ],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "slot_filled",
+            "slot": "crankset"
+          },
+          {
+            "op": "slot_empty",
+            "slot": "bottom_bracket"
+          }
+        ]
+      },
+      "messageAdult": "A separate crank is selected and no bottom bracket is selected. The shell and spindle are not checked yet.",
+      "messageKid": "The crank still needs a bottom bracket that fits this frame. We will not say the crank fits until that is chosen. A mid-drive brings its own bearings.",
+      "fix": "Choose a bottom bracket whose shell matches the frame and whose spindle matches the crank.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Fires only when the rider picked a crank. A mid-drive covers the crank slot and does not ask for a second bottom bracket."
+    },
+    {
+      "id": "mid-drive-bb-shell",
+      "version": 1,
+      "slots": [
+        "motor",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.motor.specs.motorType",
+            "right": "mid-drive"
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "in",
+              "left": "slot.frame.specs.bbShell",
+              "right": "slot.motor.specs.bbShells"
+            }
+          }
+        ]
+      },
+      "messageAdult": "This mid-drive does not list the frame's bottom-bracket shell. Bafang BBS02 and TSDZ2 are BSA threaded. A press-fit shell is not a pass.",
+      "messageKid": "This mid-drive motor does not fit this frame's bottom bracket shape.",
+      "fix": "Use a frame with a shell this motor lists, usually a threaded BSA shell of 68 or 73 mm.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the motor's shell list and the frame's shell."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Mid-drive shell list or frame shell is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "BBS02 and TSDZ2 install in a threaded BSA shell, 68 or 73 mm. BBSHD 100 mm is a different width. Draft until the maker's current manual is re-checked. Press-fit shells are not treated as a fit."
+    },
+    {
+      "id": "mid-drive-bb-width",
+      "version": 1,
+      "slots": [
+        "motor",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.motor.specs.motorType",
+            "right": "mid-drive"
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "in",
+              "left": "slot.frame.specs.bbWidthMm",
+              "right": "slot.motor.specs.bbWidths"
+            }
+          }
+        ]
+      },
+      "messageAdult": "The frame's bottom-bracket width is not in this mid-drive's width list.",
+      "messageKid": "This motor is the wrong width for the frame's bottom bracket.",
+      "fix": "Match a 68/73 mm motor to a 68 or 73 mm shell. A 100 mm BBSHD needs a 100 mm shell.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both widths."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Mid-drive width list or frame width is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Width lists are draft from the published BBS02 68-73 mm fit and the separate BBSHD 100 mm version."
+    },
+    {
+      "id": "mid-drive-replaces-crank",
+      "version": 1,
+      "slots": [
+        "motor"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.motor.specs.motorType",
+            "right": "mid-drive"
+          },
+          {
+            "op": "slot_filled",
+            "slot": "crankset"
+          }
+        ]
+      },
+      "messageAdult": "A mid-drive and a separate crank are both selected. The mid-drive replaces the crank and the bottom bracket.",
+      "messageKid": "A mid-drive motor takes the place of the crank. Take the extra crank off the build.",
+      "fix": "Remove the separate crank, or remove the mid-drive.",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "BBS and TSDZ mid-drives install through the bottom bracket and include their own chainring."
+    },
+    {
+      "id": "mid-drive-no-separate-bb",
+      "version": 1,
+      "slots": [
+        "motor"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.motor.specs.motorType",
+            "right": "mid-drive"
+          },
+          {
+            "op": "slot_filled",
+            "slot": "bottom_bracket"
+          }
+        ]
+      },
+      "messageAdult": "A mid-drive and a separate bottom bracket are both selected. The motor's bearings replace the bottom bracket.",
+      "messageKid": "The mid-drive has its own bearings. Do not also add a bottom bracket.",
+      "fix": "Remove the separate bottom bracket.",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "The mid-drive unit is the bottom bracket."
+    },
+    {
+      "id": "hub-motor-replaces-hub",
+      "version": 1,
+      "slots": [
+        "motor"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "in",
+            "left": "slot.motor.specs.motorType",
+            "right": [
+              "geared-hub",
+              "direct-drive-hub"
+            ]
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.motor.specs.position",
+              "right": "front"
+            }
+          },
+          {
+            "op": "slot_filled",
+            "slot": "hub"
+          }
+        ]
+      },
+      "messageAdult": "A hub motor and a separate rear hub are both selected. The motor is the rear hub.",
+      "messageKid": "A hub motor is the rear wheel's hub. Do not also pick a separate hub.",
+      "fix": "Remove the separate rear hub, or remove the hub motor.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "When no separate hub is chosen, the motor covers the hub slot so the cassette, axle, and rotor checks use the motor."
+    },
+    {
+      "id": "hub-motor-axle",
+      "version": 1,
+      "slots": [
+        "motor",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "in",
+            "left": "slot.motor.specs.motorType",
+            "right": [
+              "geared-hub",
+              "direct-drive-hub"
+            ]
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.motor.specs.position",
+              "right": "front"
+            }
+          },
+          {
+            "op": "slot_filled",
+            "slot": "hub"
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.motor.specs.axle",
+              "right": "slot.frame.specs.rearAxle"
+            }
+          }
+        ]
+      },
+      "messageAdult": "The hub motor's axle does not match the frame, and a separate hub is also selected.",
+      "messageKid": "This hub motor's axle does not match the frame.",
+      "fix": "Choose a motor whose axle matches the frame, and do not keep a second hub.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the motor axle and the frame axle."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Hub-motor axle or frame axle is blank."
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Used when a separate hub is also selected. Otherwise rear-axle-match reads the motor through the covered hub slot."
+    },
+    {
+      "id": "single-speed-hub-no-cassette",
+      "version": 1,
+      "slots": [
+        "motor"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "in",
+            "left": "slot.motor.specs.motorType",
+            "right": [
+              "geared-hub",
+              "direct-drive-hub"
+            ]
+          },
+          {
+            "op": "eq",
+            "left": "slot.motor.specs.sprocket",
+            "right": "single"
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.motor.specs.position",
+              "right": "front"
+            }
+          },
+          {
+            "op": "slot_filled",
+            "slot": "cassette"
+          }
+        ]
+      },
+      "messageAdult": "This hub motor has a single sprocket. A cassette does not mount on it.",
+      "messageKid": "This motor wheel has one cog. A cassette stack does not go on it.",
+      "fix": "Use the single cog and a single-speed chain, or choose a cassette hub motor.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Single-sprocket hub motors skip the cassette, shifter, and derailleur prompts."
+    },
+    {
+      "id": "torque-arm-for-hub-motor",
+      "version": 1,
+      "slots": [
+        "motor"
+      ],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "in",
+            "left": "slot.motor.specs.motorType",
+            "right": [
+              "geared-hub",
+              "direct-drive-hub"
+            ]
+          },
+          {
+            "op": "slot_empty",
+            "slot": "torque_arm"
+          }
+        ]
+      },
+      "messageAdult": "A hub motor is selected without a torque arm. The axle can twist a normal dropout. This is a warning, not a pass.",
+      "messageKid": "A hub motor can twist the frame's dropouts. Add a torque arm, then a grown-up checks that the axle sits flat.",
+      "fix": "Add a torque arm that fits this axle, and recheck the axle nuts or thru-axle after the first ride.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Practitioner rule: a hub motor in a standard dropout should use a torque arm. Not a manufacturer pass. Axle match is a separate rule."
+    },
+    {
+      "id": "torque-arm-axle",
+      "version": 1,
+      "slots": [
+        "torque_arm",
+        "motor"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "in",
+            "left": "slot.motor.specs.motorType",
+            "right": [
+              "geared-hub",
+              "direct-drive-hub"
+            ]
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.torque_arm.specs.axle",
+              "right": "slot.motor.specs.axle"
+            }
+          }
+        ]
+      },
+      "messageAdult": "This torque arm's dropout standard does not match the hub motor axle. A QR 135 mm (10 mm axle with flats) arm does not fit a 12x148 thru-axle, and the reverse does not fit either.",
+      "messageKid": "This torque arm is made for a different axle than the hub motor, so it will not sit on the dropout.",
+      "fix": "Use a torque arm listed for this motor's axle (the same QR or thru-axle standard).",
+      "messageAdultByStatus": {
+        "cannot_verify": "The torque arm axle or the hub motor axle is blank, so this pair does not pass."
+      },
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know this torque arm's axle yet, so we will not say it fits."
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Dropout standards differ: QR 135 uses a 10 mm axle with flats; 12x148 Boost is a 12 mm thru-axle. The arm has to name the same standard as the motor. A blank axle is cannot_verify, not a pass."
+    },
+    {
+      "id": "battery-controller-voltage",
+      "version": 1,
+      "slots": [
+        "battery",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "in",
+          "left": "slot.battery.specs.voltage",
+          "right": "slot.controller.specs.acceptedVoltages"
+        }
+      },
+      "messageAdult": "The battery nominal voltage is not in the controller's accepted list. 36 V, 48 V, and 52 V are not interchangeable unless the controller lists that voltage.",
+      "messageKid": "This battery and this controller use different voltages, so they are not a pair.",
+      "fix": "Choose a battery whose nominal voltage is listed on the controller.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the battery voltage and the controller's voltage list."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Battery voltage or controller acceptedVoltages is blank. A blank list does not mean every pack fits."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Nominal pack voltage must be one of the controller's accepted voltages. 52 V on a 48 V-only controller does not pass."
+    },
+    {
+      "id": "motor-controller-voltage",
+      "version": 1,
+      "slots": [
+        "motor",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "in",
+          "left": "slot.motor.specs.voltage",
+          "right": "slot.controller.specs.acceptedVoltages"
+        }
+      },
+      "messageAdult": "The motor's nominal voltage is not in the controller's accepted list.",
+      "messageKid": "This motor and this controller want different voltages.",
+      "fix": "Pair a 36 V motor with a 36 V controller, or a 48 V motor with a controller that lists 48 V.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both voltage numbers."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Motor voltage or the controller voltage list is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Bafang 36 V and 48 V motors are different models. Do not mix them."
+    },
+    {
+      "id": "battery-current-covers-controller",
+      "version": 1,
+      "slots": [
+        "battery",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "lte",
+          "left": "slot.controller.specs.maxCurrent",
+          "right": {
+            "path": "slot.battery.specs.maxCurrent"
+          }
+        }
+      },
+      "messageAdult": "The controller can ask for more current than this battery's BMS allows.",
+      "messageKid": "This battery cannot supply the current the controller may ask for.",
+      "fix": "Use a battery whose continuous current is at least the controller's current, or a controller with a lower current limit.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both current numbers before this can pass."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Battery max current or controller max current is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Battery BMS current must be greater than or equal to the controller current. Missing current does not pass."
+    },
+    {
+      "id": "controller-power-vs-motor",
+      "version": 1,
+      "slots": [
+        "controller",
+        "motor"
+      ],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "lt",
+        "left": "slot.controller.specs.powerW",
+        "right": {
+          "path": "slot.motor.specs.powerW"
+        }
+      },
+      "messageAdult": "The controller's listed power is below the motor's listed power. The motor may not reach that power. This is a warning.",
+      "messageKid": "This controller is smaller than the motor's listed power. The bike can still run, but it may feel softer than the motor's number.",
+      "fix": "Use a controller rated at or above the motor, or accept that the controller is the limit.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both power numbers."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Controller power or motor power is blank, so this is not a pass."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Practitioner rule: controller power below motor power is a warning. It is not treated as incompatible, and a blank number is not a pass."
+    },
+    {
+      "id": "battery-connector",
+      "version": 1,
+      "slots": [
+        "battery",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.battery.specs.connector",
+          "right": "slot.controller.specs.batteryConnector"
+        }
+      },
+      "messageAdult": "The battery plug and the controller's battery plug are different. XT60 and XT90 do not mate.",
+      "messageKid": "These plugs are different shapes, so the battery does not plug into the controller.",
+      "fix": "Match the plug, or have a grown-up fit a proper adapter lead made for these two plugs. Do not force a plug.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know both plugs yet."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Battery connector or controller battery connector is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Connector names must match. An adapter is not assumed."
+    },
+    {
+      "id": "motor-controller-protocol",
+      "version": 1,
+      "slots": [
+        "motor",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.motor.specs.protocol",
+          "right": "slot.controller.specs.protocol"
+        }
+      },
+      "messageAdult": "The motor and controller use different data protocols. Bafang UART and CAN do not talk to each other.",
+      "messageKid": "This motor and this controller do not speak the same language.",
+      "fix": "Keep UART with UART and CAN with CAN.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know the protocol yet, so we will not say they talk."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Protocol is blank on the motor or the controller."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Bafang UART kits and CAN kits are different generations. Draft the protocol on each part."
+    },
+    {
+      "id": "display-protocol",
+      "version": 1,
+      "slots": [
+        "display",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.display.specs.protocol",
+          "right": "slot.controller.specs.protocol"
+        }
+      },
+      "messageAdult": "The display protocol does not match the controller.",
+      "messageKid": "This screen and this controller do not speak the same language.",
+      "fix": "Match the display protocol to the controller.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both protocols."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Display or controller protocol is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Display and controller protocols must match."
+    },
+    {
+      "id": "brake-cutoff-on-bike",
+      "version": 1,
+      "slots": [
+        "motor"
+      ],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "always"
+      },
+      "messageAdult": "The motor brake cutoff still has to be wired and tested on the bike. The parts list cannot pass that.",
+      "messageKid": "The motor still needs its brake switch tested on the real bike. We cannot do that from the parts list.",
+      "fix": "Squeeze each brake and confirm the motor stops helping before you ride.",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Always-on when a motor is selected."
+    },
+    {
+      "id": "ebike-class-not-checked",
+      "version": 1,
+      "slots": [
+        "motor"
+      ],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "always"
+      },
+      "messageAdult": "This checker does not decide e-bike class or local riding rules. A power number is not a legal class.",
+      "messageKid": "A grown-up still checks the local rules for where this motor bike can ride. We do not decide that here.",
+      "fix": "Ask a grown-up to check the local class rules before riding on a path or a street.",
+      "sourceUrl": "https://www.ecfr.gov/",
+      "sourceRef": "No statute is copied here. Class and path rules vary. The checker refuses to call a motor legal."
+    },
+    {
+      "id": "headset-standard",
+      "version": 1,
+      "slots": [
+        "headset",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.headset.specs.standard",
+          "right": "slot.frame.specs.headset"
+        }
+      },
+      "messageAdult": "The headset standard does not match the frame (SHIS).",
+      "messageKid": "This headset and the frame's head tube are different sizes.",
+      "fix": "Match the headset standard to the frame. ZS44/EC44 and integrated IS42 are different.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both headset standards."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Headset standard or frame headset is blank."
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/headset-standards",
+      "sourceRef": "SHIS headset standards. Mismatch is incompatible."
+    },
+    {
+      "id": "seatpost-too-large",
+      "version": 1,
+      "slots": [
+        "seatpost",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "gt",
+        "left": "slot.seatpost.specs.diameterMm",
+        "right": {
+          "path": "slot.frame.specs.seatpostMm"
+        }
+      },
+      "messageAdult": "The seatpost is larger than the frame's seat tube. It does not fit.",
+      "messageKid": "This seatpost is too big for the frame.",
+      "fix": "Use a post the same size as the frame, or a smaller post with a shim. A larger post does not go in.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both diameters."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Seatpost diameter or frame seatpost size is blank."
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/seatpost-installation",
+      "sourceRef": "A larger post is incompatible. A smaller post is the shim warning."
+    },
+    {
+      "id": "seatpost-needs-shim",
+      "version": 1,
+      "slots": [
+        "seatpost",
+        "frame"
+      ],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "lt",
+        "left": "slot.seatpost.specs.diameterMm",
+        "right": {
+          "path": "slot.frame.specs.seatpostMm"
+        }
+      },
+      "messageAdult": "The seatpost is smaller than the frame. A shim can fill the gap. This is a warning, not a native fit.",
+      "messageKid": "This post is a little small. A grown-up can add a shim so it is snug. Do not ride it loose.",
+      "fix": "Fit a shim sized for this post and this frame, and check that the post does not slip.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/seatpost-installation",
+      "sourceRef": "Practitioner rule: a smaller post can be shimmed. Equal diameters pass with no finding."
+    },
+    {
+      "id": "wheel-size-match",
+      "version": 1,
+      "slots": [
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "exists",
+            "path": "slot.frame.specs.wheelSize"
+          },
+          {
+            "op": "exists",
+            "path": "build.wheelSize"
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.frame.specs.wheelSize",
+              "right": "build.wheelSize"
+            }
+          }
+        ]
+      },
+      "messageAdult": "The chosen wheel size does not match the wheel size recorded on the frame.",
+      "messageKid": "This frame is built for a different wheel size than the one you picked.",
+      "fix": "Pick the wheel size written on the frame, or a frame made for this wheel.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Runs only when the frame record includes wheelSize. Tire clearance is still a separate cannot-verify."
+    },
+    {
+      "id": "throttle-signal",
+      "version": 1,
+      "slots": [
+        "throttle",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.throttle.specs.signal",
+          "right": "slot.controller.specs.throttleSignal"
+        }
+      },
+      "messageAdult": "The throttle signal does not match the controller. A hall throttle (about 0.8 V to 4.2 V on a 5 V supply) is not a potentiometer throttle. Pack voltage is not the test.",
+      "messageKid": "This grip and this controller do not use the same kind of signal, so the throttle will not read correctly.",
+      "fix": "Match hall with a hall input, or potentiometer with a potentiometer input.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know the throttle signal yet."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Throttle signal or controller throttle signal is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft. Hall and potentiometer throttles are different electrically. Both are powered at about 5 V by the controller, so 36 V and 48 V packs do not by themselves make a throttle fit or not."
+    },
+    {
+      "id": "throttle-connector",
+      "version": 1,
+      "slots": [
+        "throttle",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.throttle.specs.connector",
+          "right": "slot.controller.specs.throttleConnector"
+        }
+      },
+      "messageAdult": "The throttle plug does not match the controller's throttle plug. Julet 3-pin, KT, Tongsheng, CAN, SM, and loose bullets do not mate.",
+      "messageKid": "This throttle's plug is a different shape from the controller's plug.",
+      "fix": "Use the plug this controller's throttle port expects. Do not force a different plug.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both plug names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Throttle connector or controller throttle connector is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Connector family has to match. A shared hall signal is not enough when the plug is different."
+    },
+    {
+      "id": "throttle-protocol",
+      "version": 1,
+      "slots": [
+        "throttle",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.throttle.specs.protocol",
+          "right": "slot.controller.specs.throttleProtocol"
+        }
+      },
+      "messageAdult": "The throttle talk-type does not match. An analog hall grip is not a UART or CAN bus throttle.",
+      "messageKid": "This throttle talks in a different way than the controller is listening for.",
+      "fix": "Use an analog throttle on an analog throttle port, or a bus throttle on a controller that speaks that bus.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know how this throttle talks."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Throttle protocol or controller throttle protocol is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Analog throttles ignore the display bus. Bus throttles have to match UART, CAN, or the maker's own bus."
+    },
+    {
+      "id": "display-connector",
+      "version": 1,
+      "slots": [
+        "display",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.display.specs.connector",
+          "right": "slot.controller.specs.displayConnector"
+        }
+      },
+      "messageAdult": "The display plug does not match the controller, even if the protocol name is the same.",
+      "messageKid": "This screen speaks the right language, but the plug does not fit the controller.",
+      "fix": "Match both the protocol and the display plug.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both display plugs."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Display connector or controller display connector is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Protocol match is not enough. The display connector is a separate check."
+    },
+    {
+      "id": "pas-kind",
+      "version": 1,
+      "slots": [
+        "pas",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.pas.specs.kind",
+          "right": "slot.controller.specs.pasKind"
+        }
+      },
+      "messageAdult": "The pedal sensor kind does not match. A magnet disc is not the torque sensor built into a Tongsheng motor.",
+      "messageKid": "This pedal sensor is not the kind this controller is built for.",
+      "fix": "Use a magnet PAS on a controller that expects one, or leave the external sensor off a motor that has its own torque sensor.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know the pedal-sensor kind yet."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "PAS kind or controller PAS kind is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "kind is magnet or torque. Tongsheng TSDZ2 uses an internal torque sensor."
+    },
+    {
+      "id": "pas-magnets",
+      "version": 1,
+      "slots": [
+        "pas",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.pas.specs.kind",
+            "right": "magnet"
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "in",
+              "left": "slot.pas.specs.magnetCount",
+              "right": "slot.controller.specs.pasMagnets"
+            }
+          }
+        ]
+      },
+      "messageAdult": "The PAS magnet count is not in the controller's list. 5, 8, and 12 magnet discs are not interchangeable unless the controller lists that count.",
+      "messageKid": "This pedal disc has the wrong number of magnets for this controller.",
+      "fix": "Use a disc whose magnet count the controller lists.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the magnet count and the controller's list."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Magnet count or the controller magnet list is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Runs for magnet PAS only. A torque sensor skips this check."
+    },
+    {
+      "id": "pas-connector",
+      "version": 1,
+      "slots": [
+        "pas",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.pas.specs.connector",
+          "right": "slot.controller.specs.pasConnector"
+        }
+      },
+      "messageAdult": "The PAS plug does not match the controller.",
+      "messageKid": "This pedal sensor's plug does not fit the controller.",
+      "fix": "Match the PAS plug.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both PAS plugs."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "PAS connector is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "PAS connector is separate from magnet count."
+    },
+    {
+      "id": "brake-sensor-logic",
+      "version": 1,
+      "slots": [
+        "brake_sensor",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.brake_sensor.specs.switchType",
+          "right": "slot.controller.specs.brakeSwitch"
+        }
+      },
+      "messageAdult": "The brake cutoff is normally-open or normally-closed, and the controller expects the other one. The motor can then either refuse to start or refuse to cut.",
+      "messageKid": "This brake switch works backwards for this controller, so it is not a safe pair.",
+      "fix": "Match normally-open with a normally-open input, or normally-closed with a normally-closed input.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know if this brake switch is the open or closed kind."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Brake switch type or controller brake input is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Normally-open and normally-closed cutoffs are not interchangeable."
+    },
+    {
+      "id": "brake-sensor-connector",
+      "version": 1,
+      "slots": [
+        "brake_sensor",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.brake_sensor.specs.connector",
+          "right": "slot.controller.specs.brakeConnector"
+        }
+      },
+      "messageAdult": "The brake-cutoff plug does not match the controller.",
+      "messageKid": "This brake switch's plug does not fit the controller.",
+      "fix": "Match the brake-cutoff plug.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both brake-switch plugs."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Brake connector is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Plug match is separate from open versus closed."
+    },
+    {
+      "id": "speed-sensor-type",
+      "version": 1,
+      "slots": [
+        "speed_sensor",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.speed_sensor.specs.sensorType",
+          "right": "slot.controller.specs.speedSensor"
+        }
+      },
+      "messageAdult": "The speed sensor type does not match the controller's speed input.",
+      "messageKid": "This speed sensor is not the kind this controller reads.",
+      "fix": "Match a spoke-magnet sensor to a spoke-magnet input.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know the speed-sensor kind."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Speed sensor type or controller speed input is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "External speed sensors are optional. The check runs only when one is selected."
+    },
+    {
+      "id": "speed-sensor-connector",
+      "version": 1,
+      "slots": [
+        "speed_sensor",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.speed_sensor.specs.connector",
+          "right": "slot.controller.specs.speedConnector"
+        }
+      },
+      "messageAdult": "The speed-sensor plug does not match the controller.",
+      "messageKid": "This speed sensor's plug does not fit.",
+      "fix": "Match the speed-sensor plug.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both speed-sensor plugs."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Speed connector is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Connector check for an external speed sensor."
+    },
+    {
+      "id": "light-voltage",
+      "version": 1,
+      "slots": [
+        "light",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.light.specs.voltage",
+          "right": "slot.controller.specs.lightVoltage"
+        }
+      },
+      "messageAdult": "The light voltage does not match the controller's light port. A 6 V port is not a 12 V port and is not the full pack voltage.",
+      "messageKid": "This light wants a different voltage than the controller's light plug provides.",
+      "fix": "Match the light voltage to the controller's light port.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both light voltages."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Light voltage or controller light voltage is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Controller light outputs are commonly 6 V. Pack-voltage lamps do not belong on that port."
+    },
+    {
+      "id": "light-connector",
+      "version": 1,
+      "slots": [
+        "light",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.light.specs.connector",
+          "right": "slot.controller.specs.lightConnector"
+        }
+      },
+      "messageAdult": "The light plug does not match the controller's light port.",
+      "messageKid": "This light's plug does not fit the controller.",
+      "fix": "Match the light plug.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both light plugs."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Light connector is blank."
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Light connector is separate from light voltage."
+    },
+    {
+      "id": "front-hub-motor-replaces-front-hub",
+      "version": 1,
+      "slots": [
+        "motor"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.motor.specs.position",
+            "right": "front"
+          },
+          {
+            "op": "slot_filled",
+            "slot": "front_hub"
+          }
+        ]
+      },
+      "messageAdult": "A front hub motor and a separate front hub are both selected. The motor is the front hub.",
+      "messageKid": "This motor is the front wheel's hub. Do not also pick a separate front hub.",
+      "fix": "Remove the separate front hub, or remove the front hub motor.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "A front hub motor covers the front hub slot when no separate front hub is chosen."
+    },
+    {
+      "id": "dirt-front-axle-diameter",
+      "version": 1,
+      "slots": [
+        "front_wheel",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.front_wheel.specs.axleDiameterMm",
+          "right": "slot.frame.specs.frontAxleDiameterMm"
+        }
+      },
+      "messageAdult": "The front wheel axle diameter does not match the fork/frame axle.",
+      "messageKid": "This front wheel's axle is a different thickness than the fork.",
+      "fix": "Match the front axle diameter.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both front axle sizes."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Front axle diameter is blank on the wheel or the frame. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Draft axle diameters from maker model pages. Confirm the millimeter size on the axle before a real build."
+    },
+    {
+      "id": "dirt-rear-axle-diameter",
+      "version": 1,
+      "slots": [
+        "rear_wheel",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.rear_wheel.specs.axleDiameterMm",
+          "right": "slot.frame.specs.rearAxleDiameterMm"
+        }
+      },
+      "messageAdult": "The rear wheel axle diameter does not match the swingarm.",
+      "messageKid": "This rear wheel's axle does not match the swingarm.",
+      "fix": "Match the rear axle diameter.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both rear axle sizes."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rear axle diameter is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Draft. Rear axle diameter is a first-class fitment field. Confirm on the maker sheet."
+    },
+    {
+      "id": "dirt-front-hub-width",
+      "version": 1,
+      "slots": [
+        "front_wheel",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.front_wheel.specs.hubWidthMm",
+          "right": "slot.frame.specs.frontHubWidthMm"
+        }
+      },
+      "messageAdult": "Front hub width does not match the fork spacing.",
+      "messageKid": "This front hub is the wrong width for the fork.",
+      "fix": "Match the front hub width.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both front hub widths."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Front hub width is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Hub width (fork or swingarm spacing) has to match the wheel. Draft until measured on the model."
+    },
+    {
+      "id": "dirt-rear-hub-width",
+      "version": 1,
+      "slots": [
+        "rear_wheel",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.rear_wheel.specs.hubWidthMm",
+          "right": "slot.frame.specs.rearHubWidthMm"
+        }
+      },
+      "messageAdult": "Rear hub width does not match the swingarm spacing.",
+      "messageKid": "This rear hub is the wrong width for the swingarm.",
+      "fix": "Match the rear hub width.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both rear hub widths."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rear hub width is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Swingarm inner width has to match the rear hub. Draft."
+    },
+    {
+      "id": "dirt-front-rim-size",
+      "version": 1,
+      "slots": [
+        "front_wheel",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.front_wheel.specs.rimDiameterIn",
+          "right": "slot.frame.specs.frontRimIn"
+        }
+      },
+      "messageAdult": "Front rim diameter does not match the frame's front wheel size.",
+      "messageKid": "This front rim is a different size than the frame was built for.",
+      "fix": "Use the front rim size the frame lists.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both front rim sizes."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Front rim size is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Rim diameter in inches (12, 16, 19, 21) is model-specific. Draft."
+    },
+    {
+      "id": "dirt-rear-rim-size",
+      "version": 1,
+      "slots": [
+        "rear_wheel",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.rear_wheel.specs.rimDiameterIn",
+          "right": "slot.frame.specs.rearRimIn"
+        }
+      },
+      "messageAdult": "Rear rim diameter does not match the frame's rear wheel size.",
+      "messageKid": "This rear rim is a different size than the frame was built for.",
+      "fix": "Use the rear rim size the frame lists.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both rear rim sizes."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rear rim size is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Rear rim diameter is model-specific. Draft."
+    },
+    {
+      "id": "dirt-tire-on-rim",
+      "version": 1,
+      "slots": [
+        "front_tire",
+        "front_wheel"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "or",
+        "args": [
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.front_tire.specs.rimDiameterIn",
+              "right": "slot.front_wheel.specs.rimDiameterIn"
+            }
+          },
+          {
+            "op": "lt",
+            "left": "slot.front_wheel.specs.rimWidthMm",
+            "right": {
+              "path": "slot.front_tire.specs.rimWidthMinMm"
+            }
+          },
+          {
+            "op": "gt",
+            "left": "slot.front_wheel.specs.rimWidthMm",
+            "right": {
+              "path": "slot.front_tire.specs.rimWidthMaxMm"
+            }
+          }
+        ]
+      },
+      "messageAdult": "The front tire does not match this rim's diameter or width.",
+      "messageKid": "This front tire does not belong on this rim.",
+      "fix": "Match the tire's rim diameter and the rim-width window.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the rim size and the tire's rim window."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Tire or rim size is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.kmcchain.com/",
+      "sourceRef": "Tire bead diameter must match the rim. Rim inner width must sit inside the tire's published window. Draft windows."
+    },
+    {
+      "id": "dirt-rear-tire-on-rim",
+      "version": 1,
+      "slots": [
+        "rear_tire",
+        "rear_wheel"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "or",
+        "args": [
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.rear_tire.specs.rimDiameterIn",
+              "right": "slot.rear_wheel.specs.rimDiameterIn"
+            }
+          },
+          {
+            "op": "lt",
+            "left": "slot.rear_wheel.specs.rimWidthMm",
+            "right": {
+              "path": "slot.rear_tire.specs.rimWidthMinMm"
+            }
+          },
+          {
+            "op": "gt",
+            "left": "slot.rear_wheel.specs.rimWidthMm",
+            "right": {
+              "path": "slot.rear_tire.specs.rimWidthMaxMm"
+            }
+          }
+        ]
+      },
+      "messageAdult": "The rear tire does not match this rim's diameter or width.",
+      "messageKid": "This rear tire does not belong on this rim.",
+      "fix": "Match the rear tire to the rear rim.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the rear rim size and the tire's rim window."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rear tire or rim size is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.kmcchain.com/",
+      "sourceRef": "Same rim match as the front tire. Draft."
+    },
+    {
+      "id": "dirt-tire-clearance",
+      "version": 1,
+      "slots": [
+        "front_tire",
+        "rear_tire",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "or",
+        "args": [
+          {
+            "op": "gt",
+            "left": "slot.front_tire.specs.widthMm",
+            "right": {
+              "path": "slot.frame.specs.maxTireWidthMm"
+            }
+          },
+          {
+            "op": "gt",
+            "left": "slot.rear_tire.specs.widthMm",
+            "right": {
+              "path": "slot.frame.specs.maxTireWidthMm"
+            }
+          }
+        ]
+      },
+      "messageAdult": "A tire is wider than the frame's recorded maximum.",
+      "messageKid": "This tire is wider than the frame has room for.",
+      "fix": "Choose a tire at or under the frame's maximum width, then look at the real gap.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the tire width and the frame's maximum."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Tire width or frame max tire width is blank. Blank is not a clearance pass."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Frame max tire width is a draft field. The always-on note still says to look at the real bike."
+    },
+    {
+      "id": "dirt-chain-pitch-front",
+      "version": 1,
+      "slots": [
+        "chain",
+        "countershaft_sprocket"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.chain.specs.pitch",
+          "right": "slot.countershaft_sprocket.specs.pitch"
+        }
+      },
+      "messageAdult": "Chain pitch does not match the front sprocket. 420, 428, and 520 do not mix.",
+      "messageKid": "This chain and the front sprocket use different link sizes.",
+      "fix": "Use one pitch for the chain and both sprockets.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the chain pitch and the sprocket pitch."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Chain pitch or sprocket pitch is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.kmcchain.com/",
+      "sourceRef": "Motorcycle chain series 420, 428, and 520 are different pitch and roller width. They do not interchange."
+    },
+    {
+      "id": "dirt-chain-pitch-rear",
+      "version": 1,
+      "slots": [
+        "chain",
+        "rear_sprocket"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.chain.specs.pitch",
+          "right": "slot.rear_sprocket.specs.pitch"
+        }
+      },
+      "messageAdult": "Chain pitch does not match the rear sprocket.",
+      "messageKid": "This chain and the rear sprocket use different link sizes.",
+      "fix": "Match the rear sprocket pitch to the chain.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both pitches."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rear sprocket pitch or chain pitch is blank."
+      },
+      "sourceUrl": "https://www.kmcchain.com/",
+      "sourceRef": "Rear sprocket pitch must equal the chain pitch."
+    },
+    {
+      "id": "dirt-rear-sprocket-bolt",
+      "version": 1,
+      "slots": [
+        "rear_sprocket",
+        "rear_wheel"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.rear_sprocket.specs.boltPattern",
+          "right": "slot.rear_wheel.specs.sprocketBoltPattern"
+        }
+      },
+      "messageAdult": "The rear sprocket bolt pattern does not match the hub.",
+      "messageKid": "The sprocket's bolts do not line up with this hub.",
+      "fix": "Match the bolt pattern.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both bolt patterns."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Bolt pattern is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Sprocket bolt circle and bolt count are model-specific. Draft."
+    },
+    {
+      "id": "dirt-countershaft-spline",
+      "version": 1,
+      "slots": [
+        "countershaft_sprocket",
+        "motor"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.countershaft_sprocket.specs.spline",
+          "right": "slot.motor.specs.countershaftSpline"
+        }
+      },
+      "messageAdult": "The front sprocket spline does not match the countershaft.",
+      "messageKid": "The front sprocket does not slide onto this shaft.",
+      "fix": "Match the countershaft spline.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both spline names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Spline is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Countershaft spline is model-specific. On a gas bike the engine record can stand in for the motor slot. Draft."
+    },
+    {
+      "id": "dirt-chainline",
+      "version": 1,
+      "slots": [
+        "rear_sprocket",
+        "frame"
+      ],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "abs_diff_gt",
+        "left": "slot.rear_sprocket.specs.chainlineMm",
+        "right": "slot.frame.specs.chainlineMm",
+        "limit": 4
+      },
+      "messageAdult": "Chainline is more than 4 mm off the frame's recorded line. The chain may wear or walk off.",
+      "messageKid": "The chain may not run in a straight line. A grown-up should check it.",
+      "fix": "Pick a sprocket offset closer to the frame's chainline, then look at the chain on the bike.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both chainline numbers."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Chainline is blank. Blank is not a straight-chain pass."
+      },
+      "sourceUrl": "https://www.kmcchain.com/",
+      "sourceRef": "Practitioner threshold: more than 4 mm of chainline error is a warning, not a silent pass."
+    },
+    {
+      "id": "dirt-primary-drive",
+      "version": 1,
+      "slots": [
+        "primary",
+        "motor"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.primary.specs.drive",
+          "right": "slot.motor.specs.primaryDrive"
+        }
+      },
+      "messageAdult": "Primary drive does not match the motor. A belt primary is not a chain primary.",
+      "messageKid": "The first drive from the motor is the wrong kind for this motor.",
+      "fix": "Match belt to a belt motor, or chain to a chain motor.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the primary type on both parts."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Primary drive is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Some light e-moto use a belt primary and a chain final drive. Draft per model."
+    },
+    {
+      "id": "dirt-phase-connector",
+      "version": 1,
+      "slots": [
+        "motor",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.motor.specs.phaseConnector",
+          "right": "slot.controller.specs.phaseConnector"
+        }
+      },
+      "messageAdult": "Motor phase plug does not match the controller phase plug.",
+      "messageKid": "The three thick motor wires use a different plug than the controller.",
+      "fix": "Match the phase connector. Do not mix the phase colors to force a different plug.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both phase plugs."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Phase connector is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Phase connector family has to match. Draft plug names."
+    },
+    {
+      "id": "dirt-hall-connector",
+      "version": 1,
+      "slots": [
+        "motor",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.motor.specs.hallConnector",
+          "right": "slot.controller.specs.hallConnector"
+        }
+      },
+      "messageAdult": "Motor hall-sensor plug does not match the controller.",
+      "messageKid": "The small sensor plug from the motor does not fit this controller.",
+      "fix": "Match the hall connector.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both hall plugs."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Hall connector is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Hall connector is separate from the phase plug. Draft."
+    },
+    {
+      "id": "dirt-firmware-family",
+      "version": 1,
+      "slots": [
+        "motor",
+        "controller"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.motor.specs.firmwareLock",
+            "right": "locked"
+          },
+          {
+            "op": "eq",
+            "left": "slot.controller.specs.firmwareLock",
+            "right": "locked"
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.motor.specs.firmwareFamily",
+              "right": "slot.controller.specs.firmwareFamily"
+            }
+          }
+        ]
+      },
+      "messageAdult": "Both the motor and the controller are firmware-locked, and they are not the same family. They will not pair.",
+      "messageKid": "These two only talk to parts from their own locked family.",
+      "fix": "Keep a locked motor with a controller from the same family, or use unlocked parts that list each other.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know if these are locked to one family."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Firmware lock or family is blank. Blank is not a pass."
+      },
+      "sourceUrl": "https://www.starkfuture.com/",
+      "sourceRef": "Some e-moto controllers refuse a motor from another firmware family. Draft. Open parts set firmwareLock to open and skip this rule."
+    },
+    {
+      "id": "dirt-peak-current",
+      "version": 1,
+      "slots": [
+        "motor",
+        "controller"
+      ],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "lt",
+        "left": "slot.controller.specs.peakCurrent",
+        "right": {
+          "path": "slot.motor.specs.peakCurrent"
+        }
+      },
+      "messageAdult": "The controller's peak current is below the motor's peak current. The motor may not reach its listed peak.",
+      "messageKid": "This controller cannot give the motor its biggest burst of power. The bike can still run, but it may feel softer.",
+      "fix": "Use a controller whose peak current is at least the motor's peak, or accept the controller as the limit.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both peak-current numbers."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Peak current is blank. Blank is not a pass."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Practitioner rule: controller peak below motor peak is a warning. Continuous current is the separate battery-current rule."
+    },
+    {
+      "id": "dirt-battery-bay",
+      "version": 1,
+      "slots": [
+        "battery",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "or",
+        "args": [
+          {
+            "op": "gt",
+            "left": "slot.battery.specs.lengthMm",
+            "right": {
+              "path": "slot.frame.specs.bayLengthMm"
+            }
+          },
+          {
+            "op": "gt",
+            "left": "slot.battery.specs.widthMm",
+            "right": {
+              "path": "slot.frame.specs.bayWidthMm"
+            }
+          },
+          {
+            "op": "gt",
+            "left": "slot.battery.specs.heightMm",
+            "right": {
+              "path": "slot.frame.specs.bayHeightMm"
+            }
+          }
+        ]
+      },
+      "messageAdult": "The battery is larger than the frame bay in length, width, or height.",
+      "messageKid": "This battery does not fit in the frame's battery space.",
+      "fix": "Use a battery that fits inside the bay, then check the connectors and the lid.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the battery size and the bay size."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Battery or bay size is blank. Blank is not a fit."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Physical bay fit is separate from voltage. Draft millimeter boxes."
+    },
+    {
+      "id": "dirt-charger-voltage",
+      "version": 1,
+      "slots": [
+        "charger",
+        "battery"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.charger.specs.voltage",
+          "right": "slot.battery.specs.voltage"
+        }
+      },
+      "messageAdult": "Charger nominal voltage does not match the battery.",
+      "messageKid": "This charger is for a different battery voltage.",
+      "fix": "Match the charger voltage to the battery.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both voltages."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Charger or battery voltage is blank."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Charge the pack only with a charger listed for that nominal voltage and chemistry."
+    },
+    {
+      "id": "dirt-charger-connector",
+      "version": 1,
+      "slots": [
+        "charger",
+        "battery"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.charger.specs.connector",
+          "right": "slot.battery.specs.chargeConnector"
+        }
+      },
+      "messageAdult": "Charger plug does not match the battery's charge port.",
+      "messageKid": "This charger's plug does not fit the battery.",
+      "fix": "Match the charge plug.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both charge plugs."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Charge connector is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Charge-port family has to match. Draft."
+    },
+    {
+      "id": "dirt-charger-chemistry",
+      "version": 1,
+      "slots": [
+        "charger",
+        "battery"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.charger.specs.chemistry",
+          "right": "slot.battery.specs.chemistry"
+        }
+      },
+      "messageAdult": "Charger chemistry does not match the battery. A charger profile for one lithium chemistry is not a pass for another.",
+      "messageKid": "This charger is set up for a different kind of battery.",
+      "fix": "Match the charger chemistry to the battery.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both chemistry names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Chemistry is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Draft chemistry tags such as NMC or LFP. Confirm the pack label."
+    },
+    {
+      "id": "dirt-front-rotor-size",
+      "version": 1,
+      "slots": [
+        "front_rotor",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "gt",
+        "left": "slot.front_rotor.specs.sizeMm",
+        "right": {
+          "path": "slot.frame.specs.maxFrontRotorMm"
+        }
+      },
+      "messageAdult": "Front rotor is larger than the frame's maximum.",
+      "messageKid": "This front brake disc is too big for the frame.",
+      "fix": "Use a rotor at or under the frame maximum.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the rotor size and the frame maximum."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Front rotor size or frame max is blank."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Rotor diameter must be at or under the recorded maximum. Draft."
+    },
+    {
+      "id": "dirt-rear-rotor-size",
+      "version": 1,
+      "slots": [
+        "rear_rotor",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "gt",
+        "left": "slot.rear_rotor.specs.sizeMm",
+        "right": {
+          "path": "slot.frame.specs.maxRearRotorMm"
+        }
+      },
+      "messageAdult": "Rear rotor is larger than the frame's maximum.",
+      "messageKid": "This rear brake disc is too big for the frame.",
+      "fix": "Use a rotor at or under the frame maximum.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the rear rotor size and the frame maximum."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rear rotor size or frame max is blank."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Rear rotor diameter check. Draft."
+    },
+    {
+      "id": "dirt-front-caliper-mount",
+      "version": 1,
+      "slots": [
+        "front_caliper",
+        "frame"
+      ],
+      "severity": "warning",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.front_caliper.specs.caliperMount",
+          "right": "slot.frame.specs.frontCaliperMount"
+        }
+      },
+      "messageAdult": "Front caliper mount does not match the fork. An adapter may exist. This is a warning, not a native fit.",
+      "messageKid": "The front brake bolts do not match. A grown-up may add an adapter, then check that the wheel still spins.",
+      "fix": "Use a matching mount, or the correct adapter, and confirm pad and rotor alignment.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both front brake mounts."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Front caliper mount is blank. Blank is not a pass."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "Post mount and radial mount are different. A mismatch is a warning only when an adapter is the usual path."
+    },
+    {
+      "id": "dirt-brake-fluid-pair",
+      "version": 1,
+      "slots": [
+        "front_caliper",
+        "rear_caliper"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.front_caliper.specs.fluid",
+          "right": "slot.rear_caliper.specs.fluid"
+        }
+      },
+      "messageAdult": "Front and rear calipers list different fluids. Mineral oil and DOT fluid are never mixed in one system.",
+      "messageKid": "The front and rear brakes use different fluids. They are not a pair.",
+      "fix": "Use the same fluid front and rear.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both fluid names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Brake fluid is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "DOT and mineral oil do not mix. Many dirt bikes use DOT fluid. Confirm the caliper."
+    },
+    {
+      "id": "dirt-fork-travel",
+      "version": 1,
+      "slots": [
+        "fork",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "gt",
+        "left": "slot.fork.specs.travelMm",
+        "right": {
+          "path": "slot.frame.specs.maxForkTravelMm"
+        }
+      },
+      "messageAdult": "Fork travel is longer than the frame's maximum.",
+      "messageKid": "This fork moves farther than the frame was built for.",
+      "fix": "Use a fork at or under the frame's maximum travel.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both travel numbers."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Fork travel or frame maximum is blank."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Fork travel versus frame maximum. Draft."
+    },
+    {
+      "id": "dirt-steerer",
+      "version": 1,
+      "slots": [
+        "fork",
+        "stem"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.fork.specs.steerer",
+          "right": "slot.stem.specs.steerer"
+        }
+      },
+      "messageAdult": "Fork steerer does not match the triple clamp or stem.",
+      "messageKid": "The fork tube and the clamps are different sizes.",
+      "fix": "Match the steerer standard.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both steerer names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Steerer is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Steerer / triple-clamp standard is model-specific. Draft."
+    },
+    {
+      "id": "dirt-triple-offset",
+      "version": 1,
+      "slots": [
+        "fork",
+        "frame"
+      ],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "abs_diff_gt",
+        "left": "slot.fork.specs.offsetMm",
+        "right": "slot.frame.specs.tripleOffsetMm",
+        "limit": 3
+      },
+      "messageAdult": "Triple-clamp offset differs from the frame's recorded offset by more than 3 mm. Steering feel changes.",
+      "messageKid": "The fork sits a different amount forward than this frame expects. A grown-up should check the handling.",
+      "fix": "Use the offset the frame lists, or have a grown-up confirm the new geometry.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both offset numbers."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Offset is blank. Blank is not a pass."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Practitioner rule: more than 3 mm of offset change is a warning."
+    },
+    {
+      "id": "dirt-bar-clamp",
+      "version": 1,
+      "slots": [
+        "handlebar",
+        "stem"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.handlebar.specs.clampMm",
+          "right": "slot.stem.specs.barClampMm"
+        }
+      },
+      "messageAdult": "Handlebar clamp diameter does not match. 22.2 mm and 28.6 mm fat bar are different.",
+      "messageKid": "This handlebar is a different thickness than the clamps.",
+      "fix": "Match 22.2 mm with 22.2 mm clamps, or 28.6 mm with fat-bar clamps.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both clamp sizes."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Bar clamp size is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Standard dirt-bike bar centers are 22.2 mm (7/8 in) or 28.6 mm fat bar."
+    },
+    {
+      "id": "dirt-shock-eye",
+      "version": 1,
+      "slots": [
+        "shock",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.shock.specs.eyeToEyeMm",
+          "right": "slot.frame.specs.shockEyeMm"
+        }
+      },
+      "messageAdult": "Shock eye-to-eye length does not match the frame.",
+      "messageKid": "This shock is the wrong length for the frame.",
+      "fix": "Match the eye-to-eye length.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both shock lengths."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Eye-to-eye length is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Eye-to-eye length is a hard fitment dimension. Draft."
+    },
+    {
+      "id": "dirt-shock-stroke",
+      "version": 1,
+      "slots": [
+        "shock",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.shock.specs.strokeMm",
+          "right": "slot.frame.specs.shockStrokeMm"
+        }
+      },
+      "messageAdult": "Shock stroke does not match the frame.",
+      "messageKid": "This shock does not travel the distance the frame expects.",
+      "fix": "Match the stroke.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both stroke numbers."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Stroke is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Stroke is separate from eye-to-eye length. Draft."
+    },
+    {
+      "id": "dirt-shock-mount",
+      "version": 1,
+      "slots": [
+        "shock",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.shock.specs.mount",
+          "right": "slot.frame.specs.shockMount"
+        }
+      },
+      "messageAdult": "Shock mounting hardware does not match the frame.",
+      "messageKid": "The bolts or bushings on this shock do not match the frame.",
+      "fix": "Match the mount hardware.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both mount names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Shock mount is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Bushing and pin hardware are model-specific. Draft."
+    },
+    {
+      "id": "dirt-spring-rider-weight",
+      "version": 1,
+      "slots": [
+        "shock"
+      ],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "exists",
+            "path": "build.riderWeightKg"
+          },
+          {
+            "op": "or",
+            "args": [
+              {
+                "op": "lt",
+                "left": "build.riderWeightKg",
+                "right": {
+                  "path": "slot.shock.specs.minRiderKg"
+                }
+              },
+              {
+                "op": "gt",
+                "left": "build.riderWeightKg",
+                "right": {
+                  "path": "slot.shock.specs.maxRiderKg"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "messageAdult": "Rider weight is outside the shock spring's recorded window. This is a setup warning, not a parts-shape failure.",
+      "messageKid": "This spring may be too soft or too stiff for the rider. A grown-up can help pick a closer spring.",
+      "fix": "Choose a spring rate whose rider window includes the rider, then set sag.",
+      "messageKidByStatus": {
+        "cannot_verify": "Add the rider weight and the spring's rider window."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rider weight or the spring window is blank, so sag is not checked."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Practitioner warning only. The rule stays quiet until a rider weight is entered. It never turns a weight mismatch into a hard stop."
+    },
+    {
+      "id": "dirt-footpeg-mount",
+      "version": 1,
+      "slots": [
+        "footpeg",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.footpeg.specs.mount",
+          "right": "slot.frame.specs.footpegMount"
+        }
+      },
+      "messageAdult": "Footpeg mount does not match the frame.",
+      "messageKid": "These footpegs do not bolt to this frame.",
+      "fix": "Match the footpeg mount.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both mount names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Footpeg mount is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Peg mount pattern is model-specific. Draft."
+    },
+    {
+      "id": "dirt-power-class",
+      "version": 1,
+      "slots": [
+        "motor",
+        "frame"
+      ],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "gt",
+        "left": "slot.motor.specs.powerW",
+        "right": {
+          "path": "slot.frame.specs.maxPowerW"
+        }
+      },
+      "messageAdult": "Motor power is above the frame's recorded power class. On a kids' bike that is a safety warning.",
+      "messageKid": "This motor is stronger than this frame is listed for. A grown-up should decide if that is okay.",
+      "fix": "Use a motor at or under the frame's power class, or a frame listed for this power.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the motor power and the frame's power class."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Power class is blank. Blank is not a pass for a kids' bike."
+      },
+      "sourceUrl": "https://stacyc.com/",
+      "sourceRef": "Kids' e-moto power class is a warning, not a lecture and not a legal ruling. Draft limits."
+    },
+    {
+      "id": "dirt-age-wheel",
+      "version": 1,
+      "slots": [
+        "frame",
+        "front_wheel"
+      ],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.frame.specs.ageClass",
+            "right": "kids"
+          },
+          {
+            "op": "gt",
+            "left": "slot.front_wheel.specs.rimDiameterIn",
+            "right": {
+              "path": "slot.frame.specs.maxKidsWheelIn"
+            }
+          }
+        ]
+      },
+      "messageAdult": "This kids' frame is paired with a larger front wheel than its size class lists.",
+      "messageKid": "This front wheel is bigger than the size this kids' bike lists. A grown-up should check the fit.",
+      "fix": "Use a wheel at or under the kids' size, or a larger frame.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the kids' wheel limit and the rim size."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Kids' wheel limit is blank."
+      },
+      "sourceUrl": "https://stacyc.com/",
+      "sourceRef": "Size-class warning for kids' e-moto and kids' gas bikes. Adult frames set ageClass to adult so this stays quiet."
+    },
+    {
+      "id": "dirt-dcdc-input",
+      "version": 1,
+      "slots": [
+        "dc_dc",
+        "battery"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.dc_dc.specs.inputVoltage",
+          "right": "slot.battery.specs.voltage"
+        }
+      },
+      "messageAdult": "DC-DC input voltage does not match the battery.",
+      "messageKid": "This little power box is for a different battery voltage.",
+      "fix": "Match the DC-DC input to the pack voltage.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both voltages."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "DC-DC input or battery voltage is blank."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "A DC-DC converter steps the pack down for lights. Input has to be the pack nominal voltage. Draft."
+    },
+    {
+      "id": "dirt-dcdc-light",
+      "version": 1,
+      "slots": [
+        "dc_dc",
+        "light"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.dc_dc.specs.outputVoltage",
+          "right": "slot.light.specs.voltage"
+        }
+      },
+      "messageAdult": "DC-DC output voltage does not match the light.",
+      "messageKid": "This light wants a different voltage than the power box puts out.",
+      "fix": "Match the light to the DC-DC output.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both voltages."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "DC-DC output or light voltage is blank."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "Light voltage must match the DC-DC output when a converter is in the build. Draft."
+    },
+    {
+      "id": "dirt-fork-axle",
+      "version": 1,
+      "slots": [
+        "fork",
+        "front_wheel"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.fork.specs.axleDiameterMm",
+          "right": "slot.front_wheel.specs.axleDiameterMm"
+        }
+      },
+      "messageAdult": "The fork axle diameter does not match the front wheel axle.",
+      "messageKid": "This fork and this front wheel use different axle sizes.",
+      "fix": "Match the fork axle to the front wheel axle.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both axle sizes."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Fork or wheel axle diameter is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sur-ron.com/",
+      "sourceRef": "The fork dropout and the front axle have to be the same diameter. Draft."
+    },
+    {
+      "id": "dirt-front-rotor-mount",
+      "version": 1,
+      "slots": [
+        "front_rotor",
+        "front_wheel"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.front_rotor.specs.mount",
+          "right": "slot.front_wheel.specs.rotorMount"
+        }
+      },
+      "messageAdult": "Front rotor mount does not match the hub. 6-bolt and centerlock are different.",
+      "messageKid": "This front brake disc does not bolt to this hub.",
+      "fix": "Match 6-bolt to 6-bolt, or centerlock to centerlock.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both rotor mounts."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rotor mount is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "6-bolt and centerlock rotors do not interchange without a listed adapter. Draft."
+    },
+    {
+      "id": "dirt-rear-rotor-mount",
+      "version": 1,
+      "slots": [
+        "rear_rotor",
+        "rear_wheel"
+      ],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.rear_rotor.specs.mount",
+          "right": "slot.rear_wheel.specs.rotorMount"
+        }
+      },
+      "messageAdult": "Rear rotor mount does not match the hub.",
+      "messageKid": "This rear brake disc does not bolt to this hub.",
+      "fix": "Match the rear rotor mount to the hub.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both rear rotor mounts."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rear rotor mount is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "Rear rotor mount must match the hub. Draft."
+    },
+    {
+      "id": "dirt-rear-caliper-mount",
+      "version": 1,
+      "slots": [
+        "rear_caliper",
+        "frame"
+      ],
+      "severity": "warning",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.rear_caliper.specs.caliperMount",
+          "right": "slot.frame.specs.rearCaliperMount"
+        }
+      },
+      "messageAdult": "Rear caliper mount does not match the swingarm. An adapter may exist. This is a warning, not a native fit.",
+      "messageKid": "The rear brake bolts do not match. A grown-up may add an adapter, then check that the wheel still spins.",
+      "fix": "Use a matching mount, or the correct adapter, and confirm pad and rotor alignment.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both rear brake mounts."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rear caliper mount is blank. Blank is not a pass."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "Rear post mount and radial mount are different. A mismatch is a warning only when an adapter is the usual path."
+    },
+    {
+      "id": "dirt-engine-family",
+      "version": 1,
+      "slots": [
+        "engine",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.engine.specs.family",
+          "right": "slot.frame.specs.engineFamily"
+        }
+      },
+      "messageAdult": "The engine family does not match the frame. A different model is not a pass just because the displacement looks close.",
+      "messageKid": "This engine is for a different bike than this frame.",
+      "fix": "Use the engine family the frame lists.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both engine family names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Engine family is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Engine family is model-specific. Draft until the current maker sheet is confirmed."
+    },
+    {
+      "id": "dirt-engine-displacement",
+      "version": 1,
+      "slots": [
+        "engine",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.engine.specs.displacementCc",
+          "right": "slot.frame.specs.displacementCc"
+        }
+      },
+      "messageAdult": "Engine displacement does not match the frame's recorded displacement.",
+      "messageKid": "This engine is a different size than this frame lists.",
+      "fix": "Match the cubic centimeters.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both engine sizes."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Displacement is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Displacement is a first-class fitment field. Draft."
+    },
+    {
+      "id": "dirt-engine-years",
+      "version": 1,
+      "slots": [
+        "engine",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.engine.specs.yearSensitive",
+            "right": true
+          },
+          {
+            "op": "or",
+            "args": [
+              {
+                "op": "lt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.engine.specs.yearMin"
+                }
+              },
+              {
+                "op": "gt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.engine.specs.yearMax"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "messageAdult": "This engine's model years do not include the frame's model year.",
+      "messageKid": "This engine is for different years than this frame.",
+      "fix": "Use an engine whose year range includes the frame year.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the frame year and the engine's year range."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Model year is blank. A blank year does not pass."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Year-sensitive parts fail outside yearMin–yearMax. A blank year is cannot_verify, not a pass and not a hard fail by itself."
+    },
+    {
+      "id": "dirt-engine-spline",
+      "version": 1,
+      "slots": [
+        "countershaft_sprocket",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.countershaft_sprocket.specs.spline",
+          "right": "slot.engine.specs.countershaftSpline"
+        }
+      },
+      "messageAdult": "The front sprocket spline does not match the engine countershaft.",
+      "messageKid": "The front sprocket does not slide onto this engine.",
+      "fix": "Match the countershaft spline.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both spline names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Countershaft spline is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Gas bikes compare the sprocket spline to the engine, not to an electric motor. Draft."
+    },
+    {
+      "id": "dirt-intake-family",
+      "version": 1,
+      "slots": [
+        "intake",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.intake.specs.engineFamily",
+          "right": "slot.frame.specs.engineFamily"
+        }
+      },
+      "messageAdult": "The intake is listed for a different engine family.",
+      "messageKid": "This carburetor or injector is for a different bike.",
+      "fix": "Match the intake to the engine family.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both family names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Intake family is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Carburetor and EFI manifolds are family-specific. Draft."
+    },
+    {
+      "id": "dirt-intake-induction",
+      "version": 1,
+      "slots": [
+        "intake",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.intake.specs.induction",
+          "right": "slot.engine.specs.induction"
+        }
+      },
+      "messageAdult": "Carburetor and fuel injection do not interchange.",
+      "messageKid": "This air-and-fuel part is the wrong kind for this engine.",
+      "fix": "Use a carburetor on a carbureted engine, or EFI on an EFI engine.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need to know if each part is a carburetor or fuel injection."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Induction type is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://powersports.honda.com/",
+      "sourceRef": "Carb and EFI are different systems. Draft per model year."
+    },
+    {
+      "id": "dirt-intake-years",
+      "version": 1,
+      "slots": [
+        "intake",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.intake.specs.yearSensitive",
+            "right": true
+          },
+          {
+            "op": "or",
+            "args": [
+              {
+                "op": "lt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.intake.specs.yearMin"
+                }
+              },
+              {
+                "op": "gt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.intake.specs.yearMax"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "messageAdult": "This intake's model years do not include the frame year.",
+      "messageKid": "This carburetor or injector is for different years.",
+      "fix": "Use an intake whose year range includes the frame year.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the frame year and the intake's year range."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Intake year range is blank. A blank year does not pass."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Intake fitment is year-ranged. Draft."
+    },
+    {
+      "id": "dirt-exhaust-family",
+      "version": 1,
+      "slots": [
+        "exhaust",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.exhaust.specs.engineFamily",
+          "right": "slot.frame.specs.engineFamily"
+        }
+      },
+      "messageAdult": "The exhaust header is listed for a different engine family.",
+      "messageKid": "This pipe is for a different bike.",
+      "fix": "Match the exhaust to the engine family.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both family names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Exhaust family is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Header and pipe fitment follow the engine family. Draft."
+    },
+    {
+      "id": "dirt-exhaust-years",
+      "version": 1,
+      "slots": [
+        "exhaust",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.exhaust.specs.yearSensitive",
+            "right": true
+          },
+          {
+            "op": "or",
+            "args": [
+              {
+                "op": "lt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.exhaust.specs.yearMin"
+                }
+              },
+              {
+                "op": "gt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.exhaust.specs.yearMax"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "messageAdult": "This exhaust's model years do not include the frame year.",
+      "messageKid": "This pipe is for different years than this frame.",
+      "fix": "Use a pipe whose year range includes the frame year.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the frame year and the pipe's year range."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Exhaust year range is blank. A blank year does not pass."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Header and pipe fitment is year-ranged. A 2016–2018 pipe does not pass on a 2022 frame. Draft ranges."
+    },
+    {
+      "id": "dirt-plastics-family",
+      "version": 1,
+      "slots": [
+        "plastics",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.plastics.specs.engineFamily",
+          "right": "slot.frame.specs.engineFamily"
+        }
+      },
+      "messageAdult": "These plastics are listed for a different model.",
+      "messageKid": "These body panels are for a different bike.",
+      "fix": "Match the plastics to the model.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both model names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Plastics model is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Plastics follow the model family. Draft."
+    },
+    {
+      "id": "dirt-plastics-years",
+      "version": 1,
+      "slots": [
+        "plastics",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.plastics.specs.yearSensitive",
+            "right": true
+          },
+          {
+            "op": "or",
+            "args": [
+              {
+                "op": "lt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.plastics.specs.yearMin"
+                }
+              },
+              {
+                "op": "gt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.plastics.specs.yearMax"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "messageAdult": "These plastics' model years do not include the frame year.",
+      "messageKid": "These body panels are for different years.",
+      "fix": "Use plastics whose year range includes the frame year.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the frame year and the plastics' year range."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Plastics year range is blank. A blank year does not pass."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Plastic kits are year-ranged. Draft."
+    },
+    {
+      "id": "dirt-air-filter",
+      "version": 1,
+      "slots": [
+        "air_filter",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.air_filter.specs.airbox",
+          "right": "slot.frame.specs.airbox"
+        }
+      },
+      "messageAdult": "The air filter does not match this airbox.",
+      "messageKid": "This air filter does not fit this bike's air box.",
+      "fix": "Match the air filter to the airbox.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both airbox names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Airbox is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Air-filter shape follows the airbox. Draft."
+    },
+    {
+      "id": "dirt-plug-thread",
+      "version": 1,
+      "slots": [
+        "spark_plug",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.spark_plug.specs.thread",
+          "right": "slot.engine.specs.plugThread"
+        }
+      },
+      "messageAdult": "Spark plug thread does not match the engine.",
+      "messageKid": "This spark plug does not screw into this engine.",
+      "fix": "Match the thread.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both thread sizes."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Spark plug thread is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Thread and reach are hard fitment. Draft plug codes."
+    },
+    {
+      "id": "dirt-plug-reach",
+      "version": 1,
+      "slots": [
+        "spark_plug",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.spark_plug.specs.reach",
+          "right": "slot.engine.specs.plugReach"
+        }
+      },
+      "messageAdult": "Spark plug reach does not match the engine.",
+      "messageKid": "This spark plug is the wrong length for this engine.",
+      "fix": "Match the reach.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both reach numbers."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Spark plug reach is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Reach is separate from thread. Draft."
+    },
+    {
+      "id": "dirt-plug-heat",
+      "version": 1,
+      "slots": [
+        "spark_plug",
+        "engine"
+      ],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.spark_plug.specs.heatRange",
+          "right": "slot.engine.specs.plugHeat"
+        }
+      },
+      "messageAdult": "Spark plug heat range differs from the engine's listed plug. Thread and reach can still match. This is a warning.",
+      "messageKid": "This spark plug is hotter or colder than the one this engine lists. A grown-up should check it.",
+      "fix": "Use the heat range the engine lists, or have a grown-up confirm a different range.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both heat-range names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Heat range is blank. Blank is not a pass."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Heat range is a warning when thread and reach already match. Draft codes."
+    },
+    {
+      "id": "dirt-fuel-stroke",
+      "version": 1,
+      "slots": [
+        "fuel",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "or",
+        "args": [
+          {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "left": "slot.engine.specs.stroke",
+                "right": "2"
+              },
+              {
+                "op": "not",
+                "arg": {
+                  "op": "eq",
+                  "left": "slot.fuel.specs.kind",
+                  "right": "premix"
+                }
+              }
+            ]
+          },
+          {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "left": "slot.engine.specs.stroke",
+                "right": "4"
+              },
+              {
+                "op": "eq",
+                "left": "slot.fuel.specs.kind",
+                "right": "premix"
+              }
+            ]
+          }
+        ]
+      },
+      "messageAdult": "2-stroke engines need premix. 4-stroke engines do not use premix in the fuel.",
+      "messageKid": "This fuel mix does not match this engine. A 2-stroke needs oil in the gas. A 4-stroke does not.",
+      "fix": "Use premix for a 2-stroke, and plain gasoline plus the listed crankcase oil for a 4-stroke.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need to know if the engine is a 2-stroke or a 4-stroke, and what kind of fuel this is."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Stroke or fuel kind is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "2-stroke premix and 4-stroke gasoline are not interchangeable. Draft."
+    },
+    {
+      "id": "dirt-premix-ratio",
+      "version": 1,
+      "slots": [
+        "fuel",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.engine.specs.stroke",
+            "right": "2"
+          },
+          {
+            "op": "eq",
+            "left": "slot.fuel.specs.kind",
+            "right": "premix"
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.fuel.specs.premixRatio",
+              "right": "slot.engine.specs.premixRatio"
+            }
+          }
+        ]
+      },
+      "messageAdult": "Premix ratio does not match the ratio the engine lists.",
+      "messageKid": "The oil-in-gas mix is a different amount than this engine lists.",
+      "fix": "Mix the ratio the engine lists.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both mix ratios."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Premix ratio is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Premix ratio is model-specific. A different ratio does not pass. Draft."
+    },
+    {
+      "id": "dirt-oil-spec",
+      "version": 1,
+      "slots": [
+        "fuel",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.engine.specs.stroke",
+            "right": "4"
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.fuel.specs.oilSpec",
+              "right": "slot.engine.specs.oilSpec"
+            }
+          }
+        ]
+      },
+      "messageAdult": "Crankcase oil does not match the 4-stroke engine's listed oil.",
+      "messageKid": "This oil is not the kind this engine lists.",
+      "fix": "Use the oil grade the engine lists.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both oil grades."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Oil grade is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://powersports.honda.com/",
+      "sourceRef": "4-stroke oil grade is separate from premix. Draft."
+    }
+  ]
+}

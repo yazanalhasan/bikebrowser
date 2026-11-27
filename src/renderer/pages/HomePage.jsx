@@ -46,6 +46,14 @@ function HomePage() {
       color: 'from-cyan-500 to-lime-500'
     },
     {
+      id: 'bike-builder',
+      title: 'Bike Builder',
+      subtitle: 'Check whether parts fit',
+      emoji: '🔧',
+      isBikeBuilder: true,
+      color: 'from-sky-600 to-indigo-700'
+    },
+    {
       id: 'shop-materials',
       title: 'Shop Materials',
       subtitle: 'Kid-safe parts and cart',
@@ -166,6 +174,8 @@ function HomePage() {
                   navigate('/current-projects');
                 } else if (topic.isBuildPlanner) {
                   navigate('/build-planner');
+                } else if (topic.isBikeBuilder) {
+                  navigate('/builder');
                 } else if (topic.isShop) {
                   navigate('/shop');
                 } else if (topic.isGame) {

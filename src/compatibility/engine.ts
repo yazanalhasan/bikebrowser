@@ -1,15 +1,13 @@
 import type { CompatibilityIssue, ProjectItem } from '../types/project';
+import { selectRuleInputs } from './pairing';
 import { compatibilityRules } from './rules';
 
 export const runCompatibilityCheck = (items: ProjectItem[]): CompatibilityIssue[] => {
   const results: CompatibilityIssue[] = [];
 
-  const battery = items.find((item) => item.category === 'battery');
-  const controller = items.find((item) => item.category === 'controller');
-  const motor = items.find((item) => item.category === 'motor');
-
   compatibilityRules.forEach((rule) => {
-    const result = rule.check(battery, controller) || rule.check(motor, controller);
+    const { a, b } = selectRuleInputs(rule.pair, items);
+    const result = rule.check(a, b);
 
     if (result) {
       results.push({

@@ -1,0 +1,422 @@
+# Parts needing review
+
+Generated 2026-11-27. 393 parts. Approved means the numbers were copied from a manufacturer specification table during this build. Draft means a person still needs to check them before anyone trusts a real build.
+
+A draft part can still appear in the builder. If a number is blank, the engine says "can't verify" instead of "fits".
+
+## Approved
+
+- `shimano-rd-m3100-sgs` Shimano Alivio RD-M3100-SGS — https://bike.shimano.com/en-EU/product/component/alivio-m3100/RD-M3100-SGS.html
+- `shimano-rd-m370-sgs` Shimano Altus RD-M370-SGS — https://bike.shimano.com/en-EU/product/component/altus-m370/RD-M370-SGS.html
+
+## Draft
+
+- `hub-hg-m-6bolt` (hub) Standard Rear hub, HG spline M, 6-bolt — Shimano C-731: HG spline M is the 10/9/8/7 and MTB 11-speed body, outer length 34.9 mm.
+- `hub-hg-m-centerlock` (hub) Standard Rear hub, HG spline M, Center Lock — Shimano C-731 HG spline M. Center Lock is Shimano's rotor spline.
+- `hub-hg-l-centerlock` (hub) Standard Rear hub, HG spline L, Center Lock — Shimano C-731: HG spline L, road 12/11-speed, outer length 36.75 mm.
+- `hub-hg-l2-centerlock` (hub) Standard Rear hub, HG spline L2, Center Lock — Shimano C-731: HG spline L2, road 12-speed dedicated, outer length 37.65 mm.
+- `hub-hg-s-6bolt` (hub) Standard Rear hub, HG spline S, 6-bolt — Shimano C-731: HG spline S, 7-speed, outer length 31 mm.
+- `hub-microspline-centerlock` (hub) Standard Rear hub, Micro Spline, Center Lock — Shimano C-731: Micro Spline, 23 spline teeth, outer length 26 mm, MTB 12-speed.
+- `hub-microspline-6bolt` (hub) Standard Rear hub, Micro Spline, 6-bolt — Shimano C-731 Micro Spline body with a 6-bolt rotor mount.
+- `hub-xd-6bolt` (hub) SRAM XD driver rear hub, 6-bolt — SRAM XD driver. Draft: confirm the exact hub model before a real build.
+- `hub-xd-centerlock` (hub) SRAM XD driver rear hub, Center Lock — SRAM XD driver. Draft.
+- `hub-xdr-centerlock` (hub) SRAM XDR driver rear hub, Center Lock — SRAM XDR is the longer road driver. An XD cassette needs a 1.85 mm spacer.
+- `hub-campagnolo-centerlock` (hub) Campagnolo Campagnolo freehub, Center Lock — Campagnolo uses its own spline. Draft generic body, not a specific hub model.
+- `hub-n3w-centerlock` (hub) Campagnolo N3W freehub, Center Lock — Campagnolo N3W. Older Campagnolo cassettes are marked unknown here, not a pass.
+- `hub-linkglide-centerlock` (hub) Shimano Linkglide freehub, Center Lock — C-731 says its table does not include Linkglide cassettes. This body is separate from HG. Draft.
+- `cassette-vg-sports-9-11-42` (cassette) VG Sports 9-speed cassette 11-42T — Tooth count 11-42T is the owner's VG Sports 9-speed kit (ASIN B09VBNTGCD). No shop link. Freehub: 9-speed HG uses HG spline M natively and HG spline L with a 1.85 mm spacer (C-731).
+- `cassette-shimano-hg400-9-11-36` (cassette) Shimano CS-HG400-9 11-36T — Shimano 2025-2026 compatibility v037 lists CS-HG400-9 11-36T with 9-speed HG derailleurs.
+- `cassette-shimano-hg400-9-11-34` (cassette) Shimano CS-HG400-9 11-34T — CS-HG400-9 is a 9-speed HG cassette family. 11-34T is a common ratio in that family. Draft the exact tooth board.
+- `cassette-shimano-hg400-9-11-32` (cassette) Shimano CS-HG400-9 11-32T — 9-speed HG cassette. Draft exact ratio.
+- `cassette-shimano-hg-8-11-32` (cassette) Shimano 8-speed HG cassette 11-32T — Chart lists CS-HG400-8. Draft the 11-32 ratio.
+- `cassette-shimano-hg-7-12-28` (cassette) Shimano CS-HG400-7 12-28T — C-731 *6: CS-HG400-7 fits HG spline M. *7 lists other 7-speed cassettes on HG spline S. Draft which exact 7-speed model is native on S.
+- `cassette-shimano-hg-10-11-36` (cassette) Shimano 10-speed HG cassette 11-36T — 10/9/8-speed cassettes are marked compatible with HG spline M, and with HG spline L using a 1.85 mm spacer (C-731 *2). Draft model code.
+- `cassette-shimano-road-10-11-28` (cassette) Shimano 10-speed road HG cassette 11-28T — C-731 *5 and *2 name CS-5700 among 10-speed road cassettes that need spacers. Draft.
+- `cassette-shimano-mtb-11-11-42` (cassette) Shimano CS-M5100-11 11-42T — Chart lists CS-M5100-11 (11-42T). MTB 11-speed uses the HG spline M body (C-731) and needs a 1.85 mm spacer on HG spline L.
+- `cassette-shimano-mtb-11-11-46` (cassette) Shimano 11-speed MTB cassette 11-46T — Chart lists CS-M7000-11 11-46T among 11-speed MTB cassettes. Draft which exact SKU.
+- `cassette-shimano-mtb-11-11-51` (cassette) Shimano CS-M5100-11 11-51T — Chart lists CS-M5100-11 (11-51T).
+- `cassette-shimano-r7000-11-28` (cassette) Shimano 105 CS-R7000 11-28T — Pedal Brief CC BY 4.0, groupset 105 R7000, Cassettes, checked 2026-10-20. stated: 11-28, 11-30, 11-32, 11-34, 12-25. Standard 11-speed road cassettes other than CS-HG700/HG800/RS400 need HG spline L (C-731).
+- `cassette-shimano-r7000-11-32` (cassette) Shimano 105 CS-R7000 11-32T — Pedal Brief CC BY 4.0, 105 R7000 cassettes include 11-32. HG spline L native.
+- `cassette-shimano-hg700-11-34` (cassette) Shimano CS-HG700-11 11-34T — C-731 *4: CS-HG700 of road 11-speed fits HG spline M. *3: the same cassette fits HG spline L with a 1.85 mm spacer. Pedal Brief lists 11-34 on the 105 R7000 chart as CS-HG700-11.
+- `cassette-shimano-r7100-11-34` (cassette) Shimano 105 12-speed cassette 11-34T — Pedal Brief CC BY 4.0, 105 R7100 cassettes stated 11-34, 11-36. C-731: road 12-speed fits HG spline L2 and HG spline L.
+- `cassette-shimano-r7100-11-36` (cassette) Shimano 105 12-speed cassette 11-36T — Pedal Brief CC BY 4.0, 105 R7100 cassettes include 11-36. Model code draft.
+- `cassette-shimano-r8100-11-30` (cassette) Shimano Ultegra 12-speed cassette 11-30T — Pedal Brief CC BY 4.0, Ultegra R8100 cassettes stated 11-30, 11-34. Road 12 freehubs per C-731.
+- `cassette-shimano-m6100-10-51` (cassette) Shimano CS-M6100-12 10-51T — Chart lists CS-M6100-12 (10-51T) with 12-speed MTB derailleurs. Micro Spline only (C-731).
+- `cassette-shimano-m7100-10-45` (cassette) Shimano CS-M7100-12 10-45T — Chart lists CS-M7100-12 (10-45T). Micro Spline.
+- `cassette-sram-nx-11-50` (cassette) SRAM NX Eagle PG-1230 11-50T — NX Eagle uses a Shimano HG driver, not XD. Draft: confirm 11-50 against the current SRAM PG-1230 page.
+- `cassette-sram-gx-10-52` (cassette) SRAM GX Eagle XG-1275 10-52T — GX Eagle 10-52 uses an XD driver. XD on XDR needs a 1.85 mm spacer. Draft the current model code.
+- `cassette-sram-xg-10-50` (cassette) SRAM Eagle cassette 10-50T — Earlier Eagle 10-50 cassettes use XD. Draft.
+- `cassette-sram-force-xdr-10-36` (cassette) SRAM Force AXS cassette 10-36T — Road AXS cassettes use XDR and a Flattop chain. Draft the 10-36 ratio.
+- `cassette-sram-transmission-10-52` (cassette) SRAM GX Eagle Transmission XS-1275 10-52T — Transmission cassettes are T-Type and use an XD driver body. Draft model code.
+- `cassette-sram-flattop-10-33` (cassette) SRAM Red/Force AXS cassette 10-33T — Flattop road cassette on XDR. Draft ratio.
+- `cassette-shimano-linkglide-11-46` (cassette) Shimano Linkglide cassette 11-46T — Linkglide is excluded from the C-731 HG table. Draft tooth count and model code.
+- `cassette-campagnolo-12-11-34` (cassette) Campagnolo 12-speed cassette 11-34T — Pedal Brief CC BY 4.0 lists Chorus 12 cassettes including 11-34. N3W cross-fit is unknown, not a pass.
+- `cassette-campagnolo-13-10-29` (cassette) Campagnolo Super Record 13 cassette 10-29T — Pedal Brief CC BY 4.0, Super Record 13 cassettes include 10-29. N3W native. Draft.
+- `chain-shimano-hg-7` (chain) Shimano 7-speed HG chain — Match chain speed to the drivetrain. Draft model.
+- `chain-shimano-hg-8` (chain) Shimano 8-speed HG chain — Match chain speed to the drivetrain. Draft model.
+- `chain-shimano-hg-9` (chain) Shimano CN-HG53 9-speed chain — 9-speed HG chain for the 9-speed kit. Draft the exact Shimano chain code on the bike.
+- `chain-shimano-hg-10` (chain) Shimano 10-speed HG chain — Draft model.
+- `chain-shimano-hg-11` (chain) Shimano CN-HG601-11 chain — Chart lists CN-HG601-11 with 11-speed road groups.
+- `chain-shimano-hg-12` (chain) Shimano 12-speed HG chain — 12-speed Shimano mountain and road HG chains. Draft the exact code (CN-M7100 / CN-M8100).
+- `chain-sram-eagle-12` (chain) SRAM Eagle 12-speed chain — Eagle mechanical uses an Eagle chain. Draft model (GX/NX/SX).
+- `chain-sram-flattop-12` (chain) SRAM Flattop 12-speed chain — Road AXS uses a Flattop chain.
+- `chain-sram-ttype-12` (chain) SRAM T-Type Transmission chain — Eagle Transmission uses a T-Type chain.
+- `chain-shimano-linkglide` (chain) Shimano Linkglide chain — Linkglide chain stays with Linkglide. Speed draft: many CUES bikes are 9, 10, or 11.
+- `chain-campagnolo-12` (chain) Campagnolo 12-speed chain — Pedal Brief CC BY 4.0 Chorus / Super Record 12 mechanical. Draft.
+- `chain-campagnolo-13` (chain) Campagnolo 13-speed chain — Pedal Brief CC BY 4.0 Super Record 13. Draft.
+- `shimano-rd-classic-8` (rear_derailleur) Shimano 8-speed rear derailleur, classic cable pull — Teaching part for the 6–9 speed interchange exception. Not a specific current model. Draft the max cog.
+- `shimano-rd-m5120-sgs` (rear_derailleur) Shimano Deore RD-M5120-SGS — Chart: RD-M5120-SGS, 42T ≤ largest sprocket ≤ 46T for 1x11 and 1x10. Seeded as 11-speed mountain actuation so a 10-speed mix does not pass. Needs review.
+- `shimano-rd-m5100-sgs` (rear_derailleur) Shimano Deore RD-M5100-SGS — Chart: RD-M5100-SGS (51T ≤ largest sprocket ≤ 51T for 1x11-speed).
+- `shimano-rd-m8000-sgs` (rear_derailleur) Shimano XT RD-M8000-SGS — Chart: RD-M8000-SGS, 40T ≤ largest ≤ 46T for 1x11-speed. Capacity not on that row, left blank.
+- `shimano-rd-m6100-sgs` (rear_derailleur) Shimano Deore RD-M6100-SGS — Chart pairs RD-M6100-SGS (1x12-speed) with CS-M6100-12 (10-51T). Capacity not copied.
+- `shimano-rd-m7100-sgs` (rear_derailleur) Shimano SLX RD-M7100-SGS — Chart pairs RD-M7100-SGS (1x12-speed) with 10-51 cassettes. Capacity blank.
+- `shimano-rd-m8100-sgs` (rear_derailleur) Shimano XT RD-M8100-SGS — Chart pairs RD-M8100-SGS (1x12-speed) with 10-51 cassettes. Capacity blank.
+- `shimano-rd-m4100-10` (rear_derailleur) Shimano Deore 10-speed rear derailleur — 10-speed mountain (Dyna-Sys) is its own actuation family. Max cog left blank on purpose.
+- `shimano-rd-r7000-ss` (rear_derailleur) Shimano 105 RD-R7000-SS — Chart: RD-R7000-SS (25T ≤ largest sprocket ≤ 30T). Capacity not on that row.
+- `shimano-rd-r7000-gs` (rear_derailleur) Shimano 105 RD-R7000-GS — Chart lists RD-R7000-GS beside a 30–34T largest-sprocket note. The OCR of that row is messy, so capacity is blank and this stays draft.
+- `shimano-rd-r8000-ss` (rear_derailleur) Shimano Ultegra RD-R8000-SS — Chart: RD-R8000-SS (25T ≤ largest sprocket ≤ 30T).
+- `shimano-rd-r8000-gs` (rear_derailleur) Shimano Ultegra RD-R8000-GS — Chart: RD-R8000-GS (28T ≤ largest sprocket ≤ 34T).
+- `shimano-rd-4700-gs` (rear_derailleur) Shimano Tiagra RD-4700-GS — Tiagra 4700 uses the newer road cable pull, not classic 10-speed. Max cog draft.
+- `shimano-rd-r7100` (rear_derailleur) Shimano 105 RD-R7100 — Pedal Brief CC BY 4.0: 105 R7100 is 12-speed. Mechanical and Di2 both exist; this record is the Di2 generation and stays draft until the mechanical twin is split out.
+- `shimano-rd-r8150` (rear_derailleur) Shimano Ultegra RD-R8150 — Pedal Brief CC BY 4.0: Ultegra R8100 Di2, 12-speed, cassettes to 11-34. Draft max cog.
+- `shimano-rd-r8050` (rear_derailleur) Shimano Ultegra RD-R8050-SS — Chart: RD-R8050-SS (25T ≤ largest sprocket ≤ 30T). Wired Di2 generation.
+- `shimano-rd-u6000` (rear_derailleur) Shimano CUES RD-U6000 — CUES / Linkglide is its own family. Speed and max cog left for review. A 10-speed CUES derailleur measured pull ratio 1.06 in derailleur-analysis.
+- `sram-rd-sx-eagle` (rear_derailleur) SRAM SX Eagle rear derailleur — Measured pull ratio 1.08 on RD-SX-1-B1 (MIT). Max cog 50T is draft.
+- `sram-rd-nx-eagle` (rear_derailleur) SRAM NX Eagle rear derailleur — NX Eagle mechanical 12-speed. Max cog draft 50T.
+- `sram-rd-gx-eagle` (rear_derailleur) SRAM GX Eagle rear derailleur — GX Eagle mechanical. Max cog draft 52T.
+- `sram-rd-gx-axs` (rear_derailleur) SRAM GX Eagle AXS rear derailleur — AXS ecosystem. Eagle AXS uses an Eagle chain, not Flattop. Draft max cog.
+- `sram-rd-xx-transmission` (rear_derailleur) SRAM GX Eagle Transmission rear derailleur — Full Mount Transmission derailleur requires a UDH frame and a T-Type chain.
+- `sram-rd-apex-xplr-axs` (rear_derailleur) SRAM Apex XPLR AXS rear derailleur — Pedal Brief CC BY 4.0: Apex AXS XPLR is 12-speed electronic, cassette 11-44. Newer XPLR derailleurs are Full Mount. Draft the mount if this exact Apex is hanger-mount.
+- `sram-rd-gx-10` (rear_derailleur) SRAM GX 10-speed rear derailleur — Measured pull ratio 1.33 (MIT). Max cog draft.
+- `sram-rd-apex-11` (rear_derailleur) SRAM Apex 1 rear derailleur — Measured pull ratio 1.22 (MIT). Max cog draft.
+- `campagnolo-rd-chorus-12` (rear_derailleur) Campagnolo Chorus 12 mechanical rear derailleur — Pedal Brief CC BY 4.0: Chorus 12 mechanical, cassettes include 11-34. Draft max cog.
+- `microshift-rd-advent` (rear_derailleur) microSHIFT Advent 9-speed rear derailleur — Advent is not Shimano 9-speed actuation. Max cog draft.
+- `microshift-rd-advent-x` (rear_derailleur) microSHIFT Advent X RD-M6205AM — Measured pull ratio 1.05 (MIT). Max cog draft.
+- `shifter-shimano-altus-m370-9` (shifter) Shimano Altus SL-M370 9-speed — Chart lists SL-M370-R with 9-speed Altus derailleurs. Used as the 9-speed Shimano shifter stand-in. Confirm the shifter actually on Zuzu's bike.
+- `shifter-shimano-alivio-m3100-9` (shifter) Shimano Alivio SL-M3100 9-speed — Chart lists SL-M3100-R with RD-M3100-SGS.
+- `shifter-shimano-classic-8` (shifter) Shimano 8-speed Shimano shifter, classic cable — Teaching shifter for the 6–9 interchange. Draft.
+- `shifter-shimano-deore-m4100-10` (shifter) Shimano Deore SL-M4100 10-speed — Cable pull about 3.48 mm/shift measured on SL-M4100 (MIT).
+- `shifter-shimano-deore-m5100-11` (shifter) Shimano Deore SL-M5100 11-speed — Cable pull about 3.40 mm/shift measured on SL-M5100 (MIT).
+- `shifter-shimano-slx-m7100-12` (shifter) Shimano SLX SL-M7100 12-speed — Cable pull about 3.19 mm/shift measured on SL-M7100 (MIT).
+- `shifter-shimano-deore-m6100-12` (shifter) Shimano Deore SL-M6100 12-speed — Chart lists SL-M6100 with RD-M6100.
+- `shifter-shimano-105-r7000` (shifter) Shimano 105 ST-R7000 11-speed — Pedal Brief CC BY 4.0: 105 R7000 mechanical, 11-speed. maker_wording names ST-R7000-R.
+- `shifter-shimano-tiagra-4700` (shifter) Shimano Tiagra ST-4700 — Cable pull about 2.65 mm/shift measured on ST-4700 (MIT).
+- `shifter-shimano-ultegra-r8170` (shifter) Shimano Ultegra ST-R8170 Di2 — Pedal Brief CC BY 4.0: Ultegra R8100 Di2, 12-speed, wireless disc levers.
+- `shifter-shimano-ultegra-r8050` (shifter) Shimano Ultegra ST-R8050 Di2 — 11-speed wired Di2 shifter. Draft the exact lever code.
+- `shifter-shimano-cues-u6000` (shifter) Shimano CUES SL-U6000 10-speed — Cable pull about 3.58 mm/shift measured on SL-U6000-10R (MIT).
+- `shifter-sram-sx-eagle` (shifter) SRAM SX Eagle shifter — Cable pull about 3.25 mm/shift measured on SL-SX-1-A1 (MIT).
+- `shifter-sram-gx-eagle` (shifter) SRAM GX Eagle shifter — Mechanical Eagle 12-speed shifter. Draft.
+- `shifter-sram-nx-eagle` (shifter) SRAM NX Eagle shifter — Mechanical Eagle 12-speed shifter. Draft.
+- `shifter-sram-gx-axs` (shifter) SRAM GX Eagle AXS controller — AXS pod. Eagle AXS, not road Flattop.
+- `shifter-sram-force-axs` (shifter) SRAM Force AXS shifter — Road AXS, Flattop chain. Draft.
+- `shifter-sram-transmission` (shifter) SRAM Eagle Transmission AXS controller — Transmission pod. T-Type chain and Full Mount derailleur.
+- `shifter-sram-gx-10` (shifter) SRAM GX 10-speed shifter — Cable pull about 3.00 mm/shift measured on SL-GX-A1 (MIT).
+- `shifter-campagnolo-chorus-12` (shifter) Campagnolo Chorus 12 mechanical shifter — Pedal Brief CC BY 4.0: Chorus 12 mechanical.
+- `shifter-microshift-advent` (shifter) microSHIFT Advent 9-speed shifter — Not a Shimano 9-speed match. Draft.
+- `shifter-microshift-advent-x` (shifter) microSHIFT Advent X shifter — Cable pull about 3.41 mm/shift (MIT).
+- `crank-1x-32` (crankset) Teaching Single 32T chainring — Teaching 1x ring. Front difference is 0. Not a branded crank.
+- `crank-zuzu-1x-unknown` (crankset) Unknown Single chainring, tooth count not recorded — Zuzu's VG Sports kit did not record the chainring size. ringCount 1 is an assumption from the 11-42 wide-range cassette. Confirm on the bike.
+- `crank-shimano-105-50-34` (crankset) Shimano 105 FC-R7000 50-34T — Pedal Brief CC BY 4.0: 105 R7000 chainrings include 50-34.
+- `crank-shimano-105-52-36` (crankset) Shimano 105 FC-R7000 52-36T — Pedal Brief CC BY 4.0: 105 R7000 chainrings include 52-36.
+- `crank-shimano-105-46-36` (crankset) Shimano 105 FC-RS510 46-36T — Pedal Brief maker_wording includes FC-RS510 46-36T.
+- `crank-shimano-grx-46-30` (crankset) Shimano GRX 46-30T — Common GRX 2x ratio. Draft against the current GRX lineup page.
+- `crank-mtb-36` (crankset) Teaching Single 36T chainring — Teaching 1x ring.
+- `crank-mtb-30` (crankset) Teaching Single 30T chainring — Teaching Eagle 1x ring. Draft.
+- `crank-sram-gx-32` (crankset) SRAM GX Eagle 32T — Draft Eagle chainring.
+- `crank-sram-transmission-32` (crankset) SRAM Transmission 32T — Draft T-Type ring.
+- `crank-road-48-31` (crankset) Teaching Gravel 48-31T — Teaching sub-compact. Not a specific groupset row.
+- `crank-campagnolo-50-34` (crankset) Campagnolo 50-34T — Pedal Brief lists 50/34 on several Campagnolo road groups. Draft.
+- `fd-shimano-r7000` (front_derailleur) Shimano 105 FD-R7000 — Pedal Brief: 105 R7000 is 2x11 mechanical.
+- `fd-shimano-r7100` (front_derailleur) Shimano 105 12-speed front derailleur — Pedal Brief: 105 R7100 is 2x12. Draft model code.
+- `fd-shimano-grx-rx810` (front_derailleur) Shimano GRX FD-RX810 — Draft GRX front derailleur for 2x.
+- `fd-shimano-deore-m5100` (front_derailleur) Shimano Deore 2x11 front derailleur — Draft. Only for a 2x mountain crank.
+- `fd-sram-force-axs` (front_derailleur) SRAM Force AXS front derailleur — Road AXS front derailleur. Draft.
+- `fd-campagnolo-chorus-12` (front_derailleur) Campagnolo Chorus 12 front derailleur — Pedal Brief Chorus 12 mechanical. Draft.
+- `lever-shimano-bl-mt200` (brake_lever) Shimano BL-MT200 — Shimano MT200 lever. Mineral oil. Draft until the product page is re-opened.
+- `caliper-shimano-br-mt200` (brake_caliper) Shimano BR-MT200 — Chart lists BR-MT200 as hydraulic with BL-MT200. Mineral oil. Post mount. Draft.
+- `lever-shimano-bl-m6100` (brake_lever) Shimano Deore BL-M6100 — Deore hydraulic lever. Mineral oil. Draft.
+- `caliper-shimano-br-m6100` (brake_caliper) Shimano Deore BR-M6100 — Deore hydraulic caliper. Mineral oil. Draft.
+- `lever-shimano-bl-mt401` (brake_lever) Shimano BL-MT401 — Shimano MT401-series lever. Mineral oil. Draft the exact code.
+- `caliper-shimano-br-mt410` (brake_caliper) Shimano BR-MT410 — Draft mineral-oil caliper in the MT400 family.
+- `lever-sram-level` (brake_lever) SRAM Level brake lever — SRAM Level uses DOT fluid. Draft.
+- `caliper-sram-level` (brake_caliper) SRAM Level caliper — SRAM Level DOT, post mount. Draft.
+- `lever-sram-code` (brake_lever) SRAM Code brake lever — SRAM Code uses DOT fluid. Draft.
+- `caliper-sram-code` (brake_caliper) SRAM Code caliper — SRAM Code DOT, post mount. Draft.
+- `lever-sram-maven` (brake_lever) SRAM Maven brake lever — SRAM Maven uses mineral oil, unlike Code and Level. Draft.
+- `caliper-sram-maven` (brake_caliper) SRAM Maven caliper — SRAM Maven mineral oil. Draft.
+- `lever-tektro-hd-m275` (brake_lever) Tektro HD-M275 lever — Fluid left blank so a missing fluid cannot pass as mineral or DOT. Draft.
+- `caliper-tektro-hd-m275` (brake_caliper) Tektro HD-M275 caliper — Fluid blank on purpose. Draft.
+- `lever-avid-bb7` (brake_lever) Avid BB7 lever — Avid BB7 is a cable disc brake. No fluid.
+- `caliper-avid-bb7` (brake_caliper) Avid BB7 mechanical caliper — Cable-actuated disc caliper. Draft mount: post-mount version.
+- `lever-shimano-st-r7020` (brake_lever) Shimano 105 ST-R7020 hydraulic — Pedal Brief: 105 R7000 offers hydraulic disc. Mineral oil. Draft the lever code.
+- `caliper-shimano-br-flat-105` (brake_caliper) Shimano 105 hydraulic flat-mount caliper — Flat-mount road caliper. Draft model code. Pedal Brief says the R7000 chart mentions a hydraulic disc brake.
+- `caliper-shimano-br-r7000-rim` (brake_caliper) Shimano 105 BR-R7000 rim caliper — Pedal Brief maker_wording: Caliper Brake BR-R7000.
+- `lever-shimano-st-r7000-rim` (brake_lever) Shimano 105 ST-R7000 rim — Mechanical rim-brake lever pairing for BR-R7000. Draft.
+- `lever-vbrake` (brake_lever) Shimano V-brake lever — Linear-pull V-brake lever. Draft.
+- `caliper-vbrake` (brake_caliper) Shimano V-brake — V-brake arms. No disc mount.
+- `caliper-shimano-br-post-105` (brake_caliper) Shimano 105 hydraulic post-mount caliper — Post-mount mineral caliper used so a flat-mount frame can show the adapter warning. Draft.
+- `rotor-6bolt-140` (rotor) Standard 140 mm 6-bolt rotor — Generic 140 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-centerlock-140` (rotor) Standard 140 mm center-lock rotor — Generic 140 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-6bolt-160` (rotor) Standard 160 mm 6-bolt rotor — Generic 160 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-centerlock-160` (rotor) Standard 160 mm center-lock rotor — Generic 160 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-6bolt-180` (rotor) Standard 180 mm 6-bolt rotor — Generic 180 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-centerlock-180` (rotor) Standard 180 mm center-lock rotor — Generic 180 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-6bolt-203` (rotor) Standard 203 mm 6-bolt rotor — Generic 203 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-centerlock-203` (rotor) Standard 203 mm center-lock rotor — Generic 203 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-6bolt-220` (rotor) Standard 220 mm 6-bolt rotor — Generic 220 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-centerlock-220` (rotor) Standard 220 mm center-lock rotor — Generic 220 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `frame-mtb-standard-post-180` (frame) Teaching Mountain frame, standard hanger, post mount, 180 mm max — Teaching hardtail. BSA 73 mm, QR 135 rear, QR 100 front. Not a measured bike.
+- `frame-mtb-standard-post-203` (frame) Teaching Mountain frame, standard hanger, post mount, 203 mm max — Teaching hardtail. BSA 73 mm, QR 135 rear.
+- `frame-mtb-udh-post-203` (frame) Teaching Mountain frame, UDH, post mount, 203 mm max — UDH boost teaching frame. 12x148 rear, 15x110 front, BSA 73 mm.
+- `frame-road-flat-160` (frame) Teaching Road frame, standard hanger, flat mount, 160 mm max — Teaching road disc frame. BB86, 12x142 rear, 12x100 front, 27.2 mm post.
+- `frame-road-rim` (frame) Teaching Road frame, rim brakes, standard hanger — Teaching rim-brake road frame. BSA 68 mm, QR 130 rear.
+- `frame-direct-mount-post-180` (frame) Teaching Frame, direct-mount hanger, post mount, 180 mm max — Direct-mount hanger is not UDH. BSA 73, QR 135.
+- `frame-gravel-flat-180` (frame) Teaching Gravel frame, standard hanger, flat mount, 180 mm max — Teaching gravel frame. T47 internal, 12x142, 12x100.
+- `frame-mtb-post-140` (frame) Teaching Mountain frame, standard hanger, post mount, 140 mm max — Small-rotor teaching frame. BSA 73, QR 135.
+- `frame-pf30-135` (frame) Teaching Press-fit PF30 frame, QR 135 — PF30 shell. A BSA mid-drive does not pass on this frame.
+- `frame-bb100` (frame) Teaching BSA 100 mm shell frame, QR 135 — Teaching 100 mm BSA shell for a 100 mm mid-drive. Draft width.
+- `extender-vg-sports` (hanger_extender) VG Sports Derailleur hanger extender from the 9-speed kit — The owner's VG Sports 9-speed kit (ASIN B09VBNTGCD) includes a derailleur hanger extender. No shop link. The extender does not change the published max cog; the 8-tooth window is a practitioner rule.
+- `extender-roadlink-style` (hanger_extender) Teaching RoadLink-style hanger extender — Teaching name for a road hanger extender. Not a shop listing.
+- `motor-bbs02-48` (motor) Bafang BBS02 48 V mid-drive — Draft. BBS02 is a mid-drive for a threaded BSA shell, 68 or 73 mm, in a 48 V version. It replaces the crank. Confirm the label on the unit. 36 V BBS02 is a different motor.
+- `motor-bbs02-36` (motor) Bafang BBS02 36 V mid-drive — Draft. 36 V BBS02 is not the 48 V motor. Same BSA 68/73 shell.
+- `motor-bbshd-100` (motor) Bafang BBSHD 100 mm 48 V mid-drive — Draft. This record is the 100 mm BBSHD only. It does not pass on a 68 or 73 mm shell.
+- `motor-tsdz2-48` (motor) Tongsheng TSDZ2 48 V mid-drive — Draft. TSDZ2 installs in a BSA 68/73 mm shell and uses its own protocol, not Bafang UART.
+- `motor-hub-geared-135` (motor) Bafang 48 V geared rear hub, QR 135, HG — Draft teaching geared hub motor: 135 mm quick release, HG cassette body, 6-bolt rotor, 48 V. Confirm the axle stamped on the real motor.
+- `motor-hub-geared-148` (motor) Bafang 48 V geared rear hub, 12x148 Boost, HG — Draft. 12x148 Boost hub motor. It does not fit a QR 135 frame.
+- `motor-hub-direct-135` (motor) Teaching 48 V direct-drive rear hub, QR 135, HG — Draft direct-drive hub. Same axle and cassette checks as a geared hub. Torque arm still applies.
+- `motor-hub-single-135` (motor) Teaching 48 V rear hub, single sprocket, QR 135 — Draft single-sprocket hub motor. A cassette does not mount. Shifter and derailleur are not required.
+- `battery-36-xt60` (battery) Teaching 36 V pack, XT60, 20 A BMS — Draft pack. Nominal 36 V, BMS 20 A, xt60 plug. No capacity claim and no shop listing.
+- `battery-48-xt60` (battery) Teaching 48 V pack, XT60, 30 A BMS — Draft pack. Nominal 48 V, BMS 30 A, xt60 plug. No capacity claim and no shop listing.
+- `battery-48-xt90` (battery) Teaching 48 V pack, XT90, 40 A BMS — Draft pack. Nominal 48 V, BMS 40 A, xt90 plug. No capacity claim and no shop listing.
+- `battery-52-xt60` (battery) Teaching 52 V pack, XT60, 30 A BMS — Draft pack. Nominal 52 V, BMS 30 A, xt60 plug. No capacity claim and no shop listing.
+- `controller-48-uart-xt60` (controller) Teaching 48 V UART controller, 25 A, XT60 — Draft controller. Accepts 48 V, 25 A, 1000 W, battery plug xt60, data protocol uart. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-36-uart-xt60` (controller) Teaching 36 V UART controller, 15 A, XT60 — Draft controller. Accepts 36 V, 15 A, 500 W, battery plug xt60, data protocol uart. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-48-can-xt60` (controller) Teaching 48 V CAN controller, 25 A, XT60 — Draft controller. Accepts 48 V, 25 A, 1000 W, battery plug xt60, data protocol can. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-48-uart-xt90` (controller) Teaching 48 V UART controller, 35 A, XT90 — Draft controller. Accepts 48 V, 35 A, 1500 W, battery plug xt90, data protocol uart. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-tongsheng-48` (controller) Teaching 48 V Tongsheng controller, 18 A, XT60 — Draft controller. Accepts 48 V, 18 A, 500 W, battery plug xt60, data protocol tongsheng. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-kt-36` (controller) Teaching KT 36 V controller — Draft controller. Accepts 36 V, 15 A, 500 W, battery plug xt60, data protocol kt. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-kt-48` (controller) Teaching KT 48 V controller — Draft controller. Accepts 48 V, 22 A, 750 W, battery plug xt60, data protocol kt. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-kt-48-nc` (controller) Teaching KT 48 V controller, normally-closed brakes — Draft controller. Accepts 48 V, 22 A, 750 W, battery plug xt60, data protocol kt. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-km5s-48` (controller) Teaching Generic 48 V KM5S controller — Draft controller. Accepts 48 V, 18 A, 500 W, battery plug xt60, data protocol km5s. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-km5s-36` (controller) Teaching Generic 36 V KM5S controller — Draft controller. Accepts 36 V, 15 A, 350 W, battery plug xt60, data protocol km5s. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-bullet-36` (controller) Teaching 36 V controller, bullet plugs — Draft controller. Accepts 36 V, 12 A, 350 W, battery plug bullet, data protocol km5s. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-pot-48` (controller) Teaching 48 V controller, potentiometer throttle — Draft controller. Accepts 48 V, 15 A, 500 W, battery plug xt60, data protocol km5s. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-uart-bus-throttle` (controller) Teaching 48 V UART controller, bus throttle port — Draft controller. Accepts 48 V, 25 A, 1000 W, battery plug xt60, data protocol uart. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `display-uart` (display) Teaching UART display, Julet 5-pin — Draft display. Protocol uart, plug julet-5. Both have to match the controller.
+- `display-can` (display) Teaching CAN display, Bafang CAN plug — Draft display. Protocol can, plug bafang-can-5. Both have to match the controller.
+- `display-tongsheng` (display) Teaching Tongsheng display — Draft display. Protocol tongsheng, plug tongsheng. Both have to match the controller.
+- `display-850c` (display) Teaching 850C-style UART display — Draft display. Protocol uart, plug julet-5. Both have to match the controller.
+- `display-500c` (display) Teaching 500C-style UART display — Draft display. Protocol uart, plug julet-5. Both have to match the controller.
+- `display-dpc14` (display) Teaching DPC-14-style UART display — Draft display. Protocol uart, plug julet-5. Both have to match the controller.
+- `display-dpc18` (display) Teaching DP C18-style CAN display — Draft display. Protocol can, plug bafang-can-5. Both have to match the controller.
+- `display-uart-sm` (display) Teaching UART display with an SM plug — Draft display. Protocol uart, plug sm-5. Both have to match the controller.
+- `display-kt-lcd3` (display) Teaching KT LCD3 — Draft display. Protocol kt, plug kt-5. Both have to match the controller.
+- `display-kt-lcd8` (display) Teaching KT LCD8H — Draft display. Protocol kt, plug kt-5. Both have to match the controller.
+- `display-kt-lcd1` (display) Teaching KT LCD1 — Draft display. Protocol kt, plug kt-5. Both have to match the controller.
+- `display-sw900` (display) Teaching SW900-style KM5S display — Draft display. Protocol km5s, plug sm-5. Both have to match the controller.
+- `bb-bsa-shimano-24` (bottom_bracket) Teaching BSA bottom bracket for 24 mm spindle — Draft bottom bracket. Shell bsa, spindle shimano-24, widths 68/73 mm.
+- `bb-bsa-68-shimano-24` (bottom_bracket) Teaching BSA 68 mm bottom bracket for 24 mm spindle — Draft bottom bracket. Shell bsa, spindle shimano-24, widths 68 mm.
+- `bb-bsa-dub` (bottom_bracket) Teaching BSA bottom bracket for SRAM DUB — Draft bottom bracket. Shell bsa, spindle sram-dub, widths 68/73 mm.
+- `bb-bb86-shimano-24` (bottom_bracket) Teaching BB86 bottom bracket for 24 mm spindle — Draft bottom bracket. Shell bb86, spindle shimano-24, widths 86 mm.
+- `bb-t47-shimano-24` (bottom_bracket) Teaching T47 bottom bracket for 24 mm spindle — Draft bottom bracket. Shell t47, spindle shimano-24, widths 86 mm.
+- `bb-pf30-30` (bottom_bracket) Teaching PF30 bottom bracket for 30 mm spindle — Draft bottom bracket. Shell pf30, spindle 30mm, widths 68/73 mm.
+- `bb-bsa-square` (bottom_bracket) Teaching BSA square-taper bottom bracket — Draft bottom bracket. Shell bsa, spindle square-taper, widths 68/73 mm.
+- `front-hub-qr-100` (front_hub) Teaching Front hub, quick release 100 mm — Draft front hub. Axle qr-100.
+- `front-hub-12x100` (front_hub) Teaching Front hub, 12x100 thru-axle — Draft front hub. Axle 12x100.
+- `front-hub-15x100` (front_hub) Teaching Front hub, 15x100 thru-axle — Draft front hub. Axle 15x100.
+- `front-hub-15x110` (front_hub) Teaching Front hub, 15x110 Boost — Draft front hub. Axle 15x110.
+- `headset-zs44-ec44` (headset) Teaching Headset, ZS44 upper / EC44 lower — Draft headset. SHIS-style id zs44-ec44.
+- `headset-integrated-is42` (headset) Teaching Integrated headset, IS42 — Draft headset. SHIS-style id integrated-is42.
+- `headset-ec34` (headset) Teaching Headset, EC34 threaded-style external — Draft headset. SHIS-style id ec34.
+- `seatpost-27-2` (seatpost) Teaching 27.2 mm seatpost — Draft seatpost diameter 27.2 mm. A larger post does not fit. A smaller post is a shim warning.
+- `seatpost-30-9` (seatpost) Teaching 30.9 mm seatpost — Draft seatpost diameter 30.9 mm. A larger post does not fit. A smaller post is a shim warning.
+- `seatpost-31-6` (seatpost) Teaching 31.6 mm seatpost — Draft seatpost diameter 31.6 mm. A larger post does not fit. A smaller post is a shim warning.
+- `torque-arm-qr-135` (torque_arm) Teaching Torque arm for a QR 135 hub motor — Draft. QR 135 mm dropout, 10 mm axle with flats. The arm has to name the same axle as the hub motor. A 12 mm thru-axle arm does not fit.
+- `torque-arm-12x148` (torque_arm) Teaching Torque arm for a 12x148 hub motor — Draft. 12x148 Boost thru-axle, 12 mm, no QR flats. It does not fit a QR 135 hub motor.
+- `torque-arm-axle-unknown` (torque_arm) Teaching Torque arm, axle not recorded — Draft. Axle standard was not recorded. The checker returns cannot_verify and does not call this a fit.
+- `motor-hub-geared-36` (motor) Bafang 36 V geared rear hub, QR 135, HG — Draft 36 V geared hub. It does not match a 48 V-only controller.
+- `motor-m620-can` (motor) Bafang M620-style 48 V CAN mid-drive — Draft. CAN mid-drive. Shell and width are left blank so a guessed bottom bracket cannot pass.
+- `motor-front-hub-36` (motor) Teaching 36 V geared front hub, QR 100 — Draft front hub motor. It covers the front hub, not the rear hub. QR 100.
+- `motor-hub-kt-48` (motor) Teaching 48 V geared rear hub, KT protocol, QR 135 — Draft hub motor that speaks KT, not Bafang UART.
+- `throttle-hall-thumb-julet` (throttle) Teaching Hall thumb throttle, Julet 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-twist-julet` (throttle) Teaching Hall twist throttle, Julet 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-half-julet` (throttle) Teaching Hall half-twist throttle, Julet 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-thumb-can` (throttle) Teaching Hall thumb throttle, Bafang CAN plug — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-twist-can` (throttle) Teaching Hall twist throttle, Bafang CAN plug — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-thumb-kt` (throttle) Teaching Hall thumb throttle, KT 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-twist-kt` (throttle) Teaching Hall twist throttle, KT 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-thumb-sm` (throttle) Teaching Hall thumb throttle, SM 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-thumb-bullet` (throttle) Teaching Hall thumb throttle, bullet wires — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-pot-twist-sm` (throttle) Teaching Potentiometer twist throttle, SM 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-tongsheng` (throttle) Teaching Hall thumb throttle, Tongsheng plug — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-uart-bus` (throttle) Teaching UART bus thumb throttle — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand. This one speaks UART. It does not fit an analog throttle port.
+- `pas-8-julet` (pas) Teaching 8-magnet PAS, Julet — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-12-julet` (pas) Teaching 12-magnet PAS, Julet — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-5-julet` (pas) Teaching 5-magnet PAS, Julet — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-12-kt` (pas) Teaching 12-magnet PAS, KT plug — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-8-kt` (pas) Teaching 8-magnet PAS, KT plug — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-12-sm` (pas) Teaching 12-magnet PAS, SM plug — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-5-sm` (pas) Teaching 5-magnet PAS, SM plug — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-8-sm` (pas) Teaching 8-magnet PAS, SM plug — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-5-bullet` (pas) Teaching 5-magnet PAS, bullet wires — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-torque-tongsheng` (pas) Teaching Tongsheng torque sensor lead — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `brake-sensor-no-julet` (brake_sensor) Teaching Normally-open brake cutoff, Julet — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-nc-julet` (brake_sensor) Teaching Normally-closed brake cutoff, Julet — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-no-sm` (brake_sensor) Teaching Normally-open brake cutoff, SM — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-nc-sm` (brake_sensor) Teaching Normally-closed brake cutoff, SM — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-no-kt` (brake_sensor) Teaching Normally-open brake cutoff, KT — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-nc-kt` (brake_sensor) Teaching Normally-closed brake cutoff, KT — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-no-hydraulic` (brake_sensor) Teaching Hydraulic reed cutoff, normally-open, Julet — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-nc-hydraulic` (brake_sensor) Teaching Hydraulic reed cutoff, normally-closed, Julet — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-no-bullet` (brake_sensor) Teaching Normally-open brake cutoff, bullets — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-tongsheng` (brake_sensor) Teaching Tongsheng brake cutoff, normally-open — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `speed-julet` (speed_sensor) Teaching Spoke-magnet speed sensor, Julet — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-sm` (speed_sensor) Teaching Spoke-magnet speed sensor, SM — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-kt` (speed_sensor) Teaching Spoke-magnet speed sensor, KT — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-bullet` (speed_sensor) Teaching Spoke-magnet speed sensor, bullets — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-tongsheng` (speed_sensor) Teaching Spoke-magnet speed sensor, Tongsheng — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-disc-julet` (speed_sensor) Teaching Disc-magnet speed sensor, Julet — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-disc-sm` (speed_sensor) Teaching Disc-magnet speed sensor, SM — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-internal-hall` (speed_sensor) Teaching Motor-hall speed tap, Julet — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-internal-hall-sm` (speed_sensor) Teaching Motor-hall speed tap, SM — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-wheel-12` (speed_sensor) Teaching 12-magnet wheel sensor, Julet — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional. Still a spoke-magnet type. Magnet count on the wheel is not a second protocol.
+- `light-6v-julet` (light) Teaching 6 V light, Julet — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-6v-sm` (light) Teaching 6 V light, SM — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-6v-kt` (light) Teaching 6 V light, KT — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-6v-tongsheng` (light) Teaching 6 V light, Tongsheng — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-12v-sm` (light) Teaching 12 V light, SM — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-12v-julet` (light) Teaching 12 V light, Julet — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-36v-bullet` (light) Teaching 36 V pack-voltage light, bullets — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-48v-bullet` (light) Teaching 48 V pack-voltage light, bullets — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-6v-bullet` (light) Teaching 6 V light, bullets — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-12v-kt` (light) Teaching 12 V light, KT plug — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `frame-surron-light-bee-x` (frame) Sur-Ron Light Bee X frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current Sur-Ron sheet.
+- `frame-talaria-sting` (frame) Talaria Sting frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current Talaria sheet.
+- `frame-segway-x260` (frame) Segway X260 frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current Segway sheet.
+- `frame-stark-varg` (frame) Stark Varg frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current Stark sheet.
+- `frame-ktm-freeride-e` (frame) KTM Freeride E frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current KTM sheet.
+- `frame-stacyc-16` (frame) STACYC 16 eDRIVE frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current STACYC sheet.
+- `frame-oset-16` (frame) OSET 16.0 Racing frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current OSET sheet.
+- `wheel-surron-front-19` (dirt_wheel) Teaching Sur-Ron front wheel 19 in — Draft wheel. Axle diameter, hub width, rim size, and sprocket bolts need confirmation.
+- `wheel-surron-rear-18` (dirt_wheel) Teaching Sur-Ron rear wheel 18 in — Draft wheel. Axle diameter, hub width, rim size, and sprocket bolts need confirmation.
+- `wheel-talaria-rear-19` (dirt_wheel) Teaching Talaria rear wheel 19 in — Draft wheel. Axle diameter, hub width, rim size, and sprocket bolts need confirmation.
+- `wheel-stark-front-21` (dirt_wheel) Teaching Stark front wheel 21 in — Draft wheel. Axle diameter, hub width, rim size, and sprocket bolts need confirmation.
+- `wheel-stacyc-front-16` (dirt_wheel) Teaching STACYC front wheel 16 in — Draft wheel. Axle diameter, hub width, rim size, and sprocket bolts need confirmation.
+- `wheel-blank-axle` (dirt_wheel) Teaching Front wheel, axle not recorded — Draft wheel. Axle diameter, hub width, rim size, and sprocket bolts need confirmation.
+- `tire-surron-front` (dirt_tire) Teaching 70 mm tire for 19 in rim — Draft tire. Rim diameter and the rim-width window need confirmation.
+- `tire-surron-rear` (dirt_tire) Teaching 80 mm tire for 18 in rim — Draft tire. Rim diameter and the rim-width window need confirmation.
+- `tire-wide-rear` (dirt_tire) Teaching 120 mm tire for 18 in rim — Draft tire. Rim diameter and the rim-width window need confirmation.
+- `tire-stacyc-16` (dirt_tire) Teaching 50 mm tire for 16 in rim — Draft tire. Rim diameter and the rim-width window need confirmation.
+- `chain-pitch-420` (chain) Teaching 420 chain — Draft 420 roller chain. 420, 428, and 520 do not mix. Confirm the series on the chain stamp.
+- `chain-pitch-428` (chain) Teaching 428 chain — Draft 428 roller chain. 420, 428, and 520 do not mix. Confirm the series on the chain stamp.
+- `chain-pitch-520` (chain) Teaching 520 chain — Draft 520 roller chain. 420, 428, and 520 do not mix. Confirm the series on the chain stamp.
+- `sprocket-surron-cs` (sprocket) Teaching countershaft sprocket 420 13T — Draft sprocket. Pitch, bolt pattern or spline, and chainline need confirmation.
+- `sprocket-surron-rear` (sprocket) Teaching rear sprocket 420 48T — Draft sprocket. Pitch, bolt pattern or spline, and chainline need confirmation.
+- `sprocket-520-rear` (sprocket) Teaching rear sprocket 520 48T — Draft sprocket. Pitch, bolt pattern or spline, and chainline need confirmation.
+- `sprocket-talaria-rear` (sprocket) Teaching rear sprocket 420 48T — Draft sprocket. Pitch, bolt pattern or spline, and chainline need confirmation.
+- `primary-surron-belt` (primary_drive) Sur-Ron Light Bee belt primary — Draft. Light Bee primary is recorded here as a belt. Confirm on the bike.
+- `primary-chain` (primary_drive) Teaching Chain primary — Draft chain primary. It does not match a belt-primary motor.
+- `controller-surron-lbx` (controller) Sur-Ron Light Bee controller — Draft Sur-Ron controller. Voltage, current, phase plug, hall plug, and firmware family need confirmation.
+- `controller-stark-varg` (controller) Stark Varg controller — Draft Stark controller. Voltage, current, phase plug, hall plug, and firmware family need confirmation.
+- `controller-stacyc` (controller) STACYC 16 eDRIVE controller — Draft STACYC controller. Voltage, current, phase plug, hall plug, and firmware family need confirmation.
+- `motor-surron-lbx` (motor) Sur-Ron Light Bee motor — Draft Sur-Ron motor. Voltage, current, plugs, and primary drive need confirmation. Not a bicycle bottom-bracket mid-drive.
+- `motor-stark-varg` (motor) Stark Varg motor — Draft Stark motor. Voltage, current, plugs, and primary drive need confirmation. Not a bicycle bottom-bracket mid-drive.
+- `motor-stacyc` (motor) STACYC 16 eDRIVE motor — Draft STACYC motor. Voltage, current, plugs, and primary drive need confirmation. Not a bicycle bottom-bracket mid-drive.
+- `motor-surron-power-unknown` (motor) Sur-Ron Light Bee motor, peak current not recorded — Draft Sur-Ron motor. Voltage, current, plugs, and primary drive need confirmation. Not a bicycle bottom-bracket mid-drive.
+- `battery-surron-60` (battery) Sur-Ron 60 V Light Bee pack — Draft pack. Voltage, BMS current, connector, chemistry, and bay size need confirmation.
+- `battery-stark-360` (battery) Stark Varg pack — Draft pack. Voltage, BMS current, connector, chemistry, and bay size need confirmation.
+- `battery-stacyc-36` (battery) STACYC 36 V kids pack — Draft pack. Voltage, BMS current, connector, chemistry, and bay size need confirmation.
+- `battery-surron-too-big` (battery) Teaching 60 V pack, too big for a Light Bee bay — Draft pack. Voltage, BMS current, connector, chemistry, and bay size need confirmation.
+- `charger-surron-60` (charger) Sur-Ron 60 V charger — Draft charger. Voltage, chemistry, and charge plug need confirmation.
+- `charger-36` (charger) Teaching 36 V charger — Draft 36 V charger. It does not match a 60 V pack.
+- `rotor-surron-front-203` (dirt_rotor) Teaching 203 mm front rotor — Draft rotor diameter and mount. Confirm the millimeter size.
+- `rotor-surron-rear-203` (dirt_rotor) Teaching 203 mm rear rotor — Draft rotor diameter and mount. Confirm the millimeter size.
+- `rotor-oversize-270` (dirt_rotor) Teaching 270 mm rotor — Draft rotor diameter and mount. Confirm the millimeter size.
+- `dirt-rotor-centerlock-203` (dirt_rotor) Teaching 203 mm centerlock rotor — Draft rotor diameter and mount. Confirm the millimeter size.
+- `caliper-surron-front` (dirt_caliper) Teaching Front post-mount caliper, DOT — Draft caliper. Mount and fluid (DOT or mineral) need confirmation. Do not mix fluids.
+- `caliper-surron-rear` (dirt_caliper) Teaching Rear post-mount caliper, DOT — Draft caliper. Mount and fluid (DOT or mineral) need confirmation. Do not mix fluids.
+- `caliper-mineral-radial` (dirt_caliper) Teaching Radial caliper, mineral oil — Draft caliper. Mount and fluid (DOT or mineral) need confirmation. Do not mix fluids.
+- `fork-surron` (fork) Sur-Ron Light Bee fork — Draft fork. Travel, steerer, offset, and axle need confirmation.
+- `fork-long` (fork) Teaching Fork, 250 mm travel — Draft long fork. Travel is over a Light Bee frame maximum.
+- `shock-surron` (shock) Sur-Ron Light Bee shock — Draft shock. Eye-to-eye, stroke, mount, and rider window need confirmation.
+- `shock-wrong-length` (shock) Teaching Shock, 290 mm eye-to-eye — Draft shock that does not match a Light Bee eye-to-eye length.
+- `stem-surron-fat` (stem) Sur-Ron Fat-bar clamps — Draft 28.6 mm fat-bar clamps. Confirm the clamp diameter.
+- `bar-fat-28-6` (handlebar) Teaching 28.6 mm fat handlebar — Draft 28.6 mm bar center.
+- `bar-22-2` (handlebar) Teaching 22.2 mm handlebar — Draft 22.2 mm (7/8 in) bar. It does not clamp in a 28.6 mm fat-bar mount.
+- `peg-surron` (footpeg) Sur-Ron Light Bee footpegs — Draft peg mount. Confirm the bolt pattern.
+- `brake-sensor-surron` (brake_sensor) Sur-Ron Light Bee brake switch — Draft normally-open brake cutoff on the Light Bee plug.
+- `throttle-surron` (throttle) Sur-Ron Light Bee hall thumb throttle — Draft hall throttle on the Light Bee plug. Pack voltage is not the fit test.
+- `display-surron` (display) Sur-Ron Light Bee display — Draft display. Protocol and plug need confirmation.
+- `dcdc-surron-12` (dc_dc) Sur-Ron 60 V to 12 V converter — Draft DC-DC. Input is pack nominal voltage. Output is the light voltage.
+- `light-surron-12` (light) Sur-Ron 12 V light — Draft 12 V light on the Sur-Ron light plug.
+- `sprocket-wrong-spline` (sprocket) Teaching Front sprocket, other spline — Draft front sprocket whose spline is not the Light Bee shaft.
+- `sprocket-chainline-off` (sprocket) Teaching Rear sprocket, chainline 50 mm — Draft rear sprocket. Bolts match a Light Bee hub. Chainline is 8 mm off.
+- `controller-locked-other` (controller) Teaching Locked controller, other family — Draft locked controller from a different firmware family than the Varg motor.
+- `controller-surron-soft` (controller) Teaching Light Bee controller, low peak current — Draft controller whose peak current is below the Light Bee motor peak. Warning only.
+- `charger-lfp-60` (charger) Teaching 60 V LFP charger — Draft charger for a different lithium chemistry than an NMC pack.
+- `fork-offset-only` (fork) Teaching Fork, offset 40 mm — Draft fork with the Light Bee travel and axle, and a different offset.
+- `fork-axle-17` (fork) Teaching Fork, 17 mm axle — Draft fork whose axle is not the Light Bee front axle.
+- `stem-other` (stem) Teaching Clamps for a different steerer — Draft clamps that do not match the Light Bee steerer.
+- `shock-stroke-only` (shock) Teaching Shock, stroke 80 mm — Draft shock with the Light Bee length and a different stroke.
+- `shock-mount-only` (shock) Teaching Shock, other mount — Draft shock with the Light Bee length and different hardware.
+- `peg-talaria` (footpeg) Talaria Sting footpegs — Draft pegs that do not use the Light Bee mount.
+- `dcdc-36-12` (dc_dc) Teaching 36 V to 12 V converter — Draft DC-DC for a 36 V pack. It does not match a 60 V battery.
+- `motor-kids-too-strong` (motor) Teaching 3000 W motor on a kids mount — Draft motor whose power is over a STACYC-class frame limit. Used to show the kids power warning.
+- `frame-ktm-sx-125-2022` (frame) KTM 2022 SX 125 frame — Draft 2022 SX 125 frame. Model year, engine family, axles, and airbox need confirmation on the current KTM sheet.
+- `frame-ktm-sx-125-year-blank` (frame) KTM SX 125 frame, year not recorded — Draft frame with the SX 125 geometry and a blank model year. Year-sensitive parts cannot pass.
+- `frame-honda-crf250f` (frame) Honda CRF250F frame — Draft CRF250F frame. 4-stroke trail geometry is separate from the SX 125. Confirm on the Honda sheet.
+- `wheel-ktm-sx-front-21` (dirt_wheel) KTM KTM SX front wheel 21 in — Draft SX wheel. Axle, hub width, rim, sprocket bolts, and rotor mount need confirmation.
+- `wheel-ktm-sx-rear-19` (dirt_wheel) KTM KTM SX rear wheel 19 in — Draft SX wheel. Axle, hub width, rim, sprocket bolts, and rotor mount need confirmation.
+- `tire-ktm-sx-front` (dirt_tire) KTM 80 mm tire for 21 in rim — Draft front tire for the SX teaching kit.
+- `tire-ktm-sx-rear` (dirt_tire) KTM 90 mm tire for 19 in rim — Draft rear tire for the SX teaching kit.
+- `sprocket-ktm-cs` (sprocket) KTM SX countershaft sprocket 520 13T — Draft 520 countershaft sprocket. Spline needs confirmation.
+- `sprocket-ktm-rear` (sprocket) KTM SX rear sprocket 520 50T — Draft 520 rear sprocket. Bolt pattern needs confirmation.
+- `sprocket-honda-cs` (sprocket) Honda CRF countershaft sprocket — Draft sprocket with a Honda countershaft spline. It does not fit the SX shaft.
+- `engine-ktm-sx-125-2022` (engine) KTM 2022 SX 125 engine — Draft 2-stroke 125. Family, years, premix, plug, and spline need confirmation. Not a 4-stroke.
+- `engine-ktm-sx-125-2016` (engine) KTM 2016 SX 125 engine — Draft earlier SX 125. Same family, years that do not include 2022.
+- `engine-honda-crf250f` (engine) Honda CRF250F engine — Draft 4-stroke EFI trail engine. It does not match an SX 125 carbureted 2-stroke.
+- `intake-ktm-sx-carb` (intake) KTM SX 125 carburetor — Draft carburetor for the SX 125 teaching years.
+- `intake-ktm-sx-2016` (intake) KTM SX 125 carburetor, 2016-2018 — Draft earlier carburetor. Same family, years that do not include 2022.
+- `intake-ktm-sx-efi` (intake) Teaching SX 125 fuel injection — Draft EFI intake. It does not match the carbureted SX 125 engine.
+- `exhaust-ktm-sx-2019` (exhaust) KTM SX 125 pipe, 2019-2022 — Draft header and pipe for 2019-2022. Confirm the year range on the KTM sheet.
+- `exhaust-ktm-sx-2016` (exhaust) KTM SX 125 pipe, 2016-2018 — Draft earlier pipe. It does not fit a 2022 frame.
+- `exhaust-year-blank` (exhaust) KTM SX 125 pipe, years not recorded — Draft pipe with a blank year range. It cannot pass.
+- `exhaust-honda-crf` (exhaust) Honda CRF250F pipe — Draft CRF pipe. Wrong family on an SX frame even when the year overlaps.
+- `plastics-ktm-sx-2019` (plastics) KTM SX 125 plastics, 2019-2022 — Draft plastic kit for 2019-2022.
+- `plastics-ktm-sx-2024` (plastics) KTM SX 125 plastics, 2024-2025 — Draft later plastics. They do not fit a 2022 frame.
+- `plastics-honda-crf` (plastics) Honda CRF250F plastics — Draft CRF plastics. Wrong model on an SX frame.
+- `filter-ktm-sx` (air_filter) KTM SX 125 air filter — Draft filter for the SX 125 airbox.
+- `filter-honda-crf` (air_filter) Honda CRF250F air filter — Draft CRF filter. It does not fit the SX airbox.
+- `plug-br8` (spark_plug) Teaching BR8, reach 19 — Draft plug matching the SX 125 teaching spec. Confirm the code.
+- `plug-short-reach` (spark_plug) Teaching BR8, reach 12 — Draft plug with the listed thread and a shorter reach.
+- `plug-br7` (spark_plug) Teaching BR7, reach 19 — Draft hotter or colder plug. Thread and reach match. Heat range is a warning.
+- `fuel-premix-32` (fuel) Teaching Premix 32:1 — Draft 2-stroke premix at 32:1. Confirm the ratio on the engine sheet.
+- `fuel-premix-40` (fuel) Teaching Premix 40:1 — Draft premix at a different ratio than the SX 125 teaching spec.
+- `fuel-gasoline-10w40` (fuel) Teaching Gasoline and 10W-40 — Draft 4-stroke fuel and crankcase oil. It is not premix.
+- `fuel-gasoline-10w50` (fuel) Teaching Gasoline and 10W-50 — Draft gasoline with a different oil grade than the CRF teaching spec.
+- `rotor-ktm-front-220` (dirt_rotor) KTM 220 mm front rotor — Draft 220 mm rotor under the SX front maximum.
+- `rotor-ktm-rear-200` (dirt_rotor) KTM 200 mm rear rotor — Draft 200 mm rotor under the SX rear maximum.
+- `caliper-ktm-front` (dirt_caliper) KTM SX front caliper, DOT — Draft DOT post-mount caliper. Confirm the fluid.
+- `caliper-ktm-rear` (dirt_caliper) KTM SX rear caliper, DOT — Draft DOT post-mount caliper. Confirm the fluid.
+- `fork-ktm-sx` (fork) KTM SX fork — Draft SX fork. Travel, steerer, offset, and axle need confirmation.
+- `shock-ktm-sx` (shock) KTM SX shock — Draft SX shock. Length, stroke, mount, and rider window need confirmation.
+- `stem-ktm-22` (stem) KTM 22.2 mm bar clamps — Draft 22.2 mm (7/8 in) clamps.
+- `peg-ktm` (footpeg) KTM SX footpegs — Draft SX peg mount.
+
+## Open questions for Dr. Yazan
+
+- Zuzu's chainring tooth count was not recorded. The baseline uses one chainring and an unknown tooth count so capacity can be checked (front difference 0) and gear inches stay "can't verify" until the size is entered.
+- The exact 9-speed shifter on his bike was not recorded. The baseline uses an Altus SL-M370 stand-in. Please replace it with the model on the bike.
+- The rear derailleur model is owned-unknown on purpose.
+- Shimano mountain 10-speed and 11-speed are separate actuation families, even though one planning note wrote them as a single label. Mixing them does not pass.
+- Eagle, T-Type, Flattop, Linkglide, and Campagnolo are separate chain types. A blank chain type does not pass.
+- Most derailleur capacities are blank. Only RD-M3100-SGS and RD-M370-SGS capacities were copied from the product pages.
+- The 8-tooth hanger-extender window is a practitioner rule, not a manufacturer spec.
+- Campagnolo N3W with older cassettes is "can't verify", not a pass.
+- RD-M5120's chart mentions 10-speed and 11-speed cog ranges. It is seeded as 11-speed only so a 10-speed mix cannot pass by accident.
+- Gear inches use nominal wheel diameters (700c assumes a 28 mm tire).
+- E-bike voltages, BB shells, and axle sizes on the new motor, battery, and frame records are draft. A 52 V pack does not pass on a 48 V-only controller. BBS02 is BSA 68/73 only. The 100 mm BBSHD does not pass on a 73 mm shell.
+- Hub motors cover the rear hub slot when no separate hub is chosen, so the cassette, axle, and rotor checks use the motor. A torque arm is a warning, not optional silence.
+- Headset, seatpost, front axle, and bottom bracket are checked when those parts are chosen. Tire clearance is still not measured.
+- E-dirt and gas-dirt axle, hub, sprocket, voltage, and bay numbers are draft teaching records. They are internally consistent so a mismatch fails, and they still need a human to confirm each one against the current maker sheet. A blank field does not pass.
+- Kids' e-moto power and wheel-size checks are warnings. They are not a legal ruling and they are not a lecture.

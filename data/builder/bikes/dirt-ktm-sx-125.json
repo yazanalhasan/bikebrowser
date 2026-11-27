@@ -1,0 +1,33 @@
+{
+  "id": "dirt-ktm-sx-125",
+  "name": "2022 SX 125 teaching kit",
+  "bikeType": "dirt",
+  "wheelSize": null,
+  "note": "Draft gas dirt kit. Model years and every measurement still need a grown-up to confirm them against the current KTM sheet. The parts agree with each other so the fitment rules can be tested.",
+  "slots": {
+    "frame": "frame-ktm-sx-125-2022",
+    "engine": "engine-ktm-sx-125-2022",
+    "intake": "intake-ktm-sx-carb",
+    "exhaust": "exhaust-ktm-sx-2019",
+    "plastics": "plastics-ktm-sx-2019",
+    "air_filter": "filter-ktm-sx",
+    "spark_plug": "plug-br8",
+    "fuel": "fuel-premix-32",
+    "front_wheel": "wheel-ktm-sx-front-21",
+    "rear_wheel": "wheel-ktm-sx-rear-19",
+    "front_tire": "tire-ktm-sx-front",
+    "rear_tire": "tire-ktm-sx-rear",
+    "chain": "chain-pitch-520",
+    "countershaft_sprocket": "sprocket-ktm-cs",
+    "rear_sprocket": "sprocket-ktm-rear",
+    "front_rotor": "rotor-ktm-front-220",
+    "rear_rotor": "rotor-ktm-rear-200",
+    "front_caliper": "caliper-ktm-front",
+    "rear_caliper": "caliper-ktm-rear",
+    "fork": "fork-ktm-sx",
+    "shock": "shock-ktm-sx",
+    "stem": "stem-ktm-22",
+    "handlebar": "bar-22-2",
+    "footpeg": "peg-ktm"
+  }
+}

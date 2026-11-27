@@ -640,6 +640,14 @@ export default function BuildPlannerPage() {
           <p className="mt-2 text-slate-600">
             Plan a safe bike build with AI-generated checklist steps, compatibility review cards, and cart-ready recommendations.
           </p>
+          <p className="mt-3">
+            <Link
+              to="/builder"
+              className="inline-flex min-h-11 items-center rounded-xl bg-slate-900 px-4 py-2 font-semibold text-white hover:bg-slate-700"
+            >
+              Check parts fit
+            </Link>
+          </p>
           <p className="mt-2 text-xs uppercase tracking-[0.2em] text-cyan-700">
             Project Cart ID: {projectId}
           </p>
