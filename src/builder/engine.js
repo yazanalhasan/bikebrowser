@@ -390,8 +390,12 @@ function isHubMotorType(type) {
 
 function applyDriveCovers(slots) {
   const type = motorType(slots);
-  if (slots.hub?.state === 'empty' && isHubMotorType(type)) {
+  const position = slots.motor?.part?.specs?.position || (type === 'mid-drive' ? 'bottom' : 'rear');
+  if (slots.hub?.state === 'empty' && isHubMotorType(type) && position !== 'front') {
     slots.hub = { state: 'part', slot: 'hub', part: slots.motor.part, covered: true };
+  }
+  if (slots.front_hub?.state === 'empty' && isHubMotorType(type) && position === 'front') {
+    slots.front_hub = { state: 'part', slot: 'front_hub', part: slots.motor.part, covered: true };
   }
   if (slots.crankset?.state === 'empty' && type === 'mid-drive') {
     slots.crankset = { state: 'part', slot: 'crankset', part: slots.motor.part, covered: true };
@@ -503,7 +507,8 @@ export function checkBuild(build, catalog, rules) {
   const findings = [];
 
   const skipCore = new Set();
-  if (slots.motor?.part?.specs?.sprocket === 'single') {
+  const motorSpecs = slots.motor?.part?.specs;
+  if (motorSpecs?.sprocket === 'single' && motorSpecs?.position !== 'front') {
     skipCore.add('cassette');
     skipCore.add('rear_derailleur');
     skipCore.add('shifter');

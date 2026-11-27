@@ -1349,6 +1349,7 @@ function motor(entry) {
       connector: null,
       bbShells: [],
       bbWidths: [],
+      position: entry.specs?.motorType === 'mid-drive' ? 'bottom' : 'rear',
       ...entry.specs,
     },
   });
@@ -1444,16 +1445,54 @@ battery('battery-48-xt60', 48, 30, 'xt60', '48 V pack, XT60, 30 A BMS');
 battery('battery-48-xt90', 48, 40, 'xt90', '48 V pack, XT90, 40 A BMS');
 battery('battery-52-xt60', 52, 30, 'xt60', '52 V pack, XT60, 30 A BMS');
 
-function controller(id, voltages, amps, powerW, connector, protocol, model) {
+function controller(id, voltages, amps, powerW, connector, protocol, model, ports = {}) {
+  const uartPorts = {
+    throttleSignal: 'hall',
+    throttleConnector: 'julet-3',
+    throttleProtocol: 'analog',
+    displayConnector: 'julet-5',
+    pasKind: 'magnet',
+    pasMagnets: [8, 12],
+    pasConnector: 'julet-3',
+    brakeSwitch: 'normally-open',
+    brakeConnector: 'julet-2',
+    speedSensor: 'spoke-magnet',
+    speedConnector: 'julet-2',
+    lightVoltage: 6,
+    lightConnector: 'julet-2',
+  };
+  const presets = {
+    uart: uartPorts,
+    can: { ...uartPorts, throttleConnector: 'bafang-can-3', displayConnector: 'bafang-can-5' },
+    tongsheng: {
+      ...uartPorts,
+      throttleConnector: 'tongsheng',
+      displayConnector: 'tongsheng',
+      pasKind: 'torque',
+      pasMagnets: [],
+      pasConnector: 'tongsheng',
+      brakeConnector: 'tongsheng',
+      speedConnector: 'tongsheng',
+      lightConnector: 'tongsheng',
+    },
+  };
   add({
     id,
     category: 'controller',
     brand: 'Teaching',
     model,
     modelCode: null,
-    specs: { acceptedVoltages: voltages, maxCurrent: amps, powerW, batteryConnector: connector, protocol },
+    specs: {
+      acceptedVoltages: voltages,
+      maxCurrent: amps,
+      powerW,
+      batteryConnector: connector,
+      protocol,
+      ...(presets[protocol] || uartPorts),
+      ...ports,
+    },
     sourceUrl: BAFANG,
-    sourceRef: `Draft controller. Accepts ${voltages.join('/')} V, ${amps} A, ${powerW} W, ${connector}, protocol ${protocol}.`,
+    sourceRef: `Draft controller. Accepts ${voltages.join('/')} V, ${amps} A, ${powerW} W, battery plug ${connector}, data protocol ${protocol}. Throttle fit is signal + plug + analog-or-bus, not pack voltage.`,
     quote: voltages.join('/'),
   });
 }
@@ -1462,23 +1501,70 @@ controller('controller-36-uart-xt60', [36], 15, 500, 'xt60', 'uart', '36 V UART 
 controller('controller-48-can-xt60', [48], 25, 1000, 'xt60', 'can', '48 V CAN controller, 25 A, XT60');
 controller('controller-48-uart-xt90', [48], 35, 1500, 'xt90', 'uart', '48 V UART controller, 35 A, XT90');
 controller('controller-tongsheng-48', [48], 18, 500, 'xt60', 'tongsheng', '48 V Tongsheng controller, 18 A, XT60');
+controller('controller-kt-36', [36], 15, 500, 'xt60', 'kt', 'KT 36 V controller', {
+  throttleSignal: 'hall', throttleConnector: 'kt-3', throttleProtocol: 'analog', displayConnector: 'kt-5',
+  pasKind: 'magnet', pasMagnets: [12], pasConnector: 'kt-3', brakeSwitch: 'normally-open', brakeConnector: 'kt-2',
+  speedSensor: 'spoke-magnet', speedConnector: 'kt-2', lightVoltage: 6, lightConnector: 'kt-2',
+});
+controller('controller-kt-48', [48], 22, 750, 'xt60', 'kt', 'KT 48 V controller', {
+  throttleSignal: 'hall', throttleConnector: 'kt-3', throttleProtocol: 'analog', displayConnector: 'kt-5',
+  pasKind: 'magnet', pasMagnets: [12], pasConnector: 'kt-3', brakeSwitch: 'normally-open', brakeConnector: 'kt-2',
+  speedSensor: 'spoke-magnet', speedConnector: 'kt-2', lightVoltage: 6, lightConnector: 'kt-2',
+});
+controller('controller-kt-48-nc', [48], 22, 750, 'xt60', 'kt', 'KT 48 V controller, normally-closed brakes', {
+  throttleSignal: 'hall', throttleConnector: 'kt-3', throttleProtocol: 'analog', displayConnector: 'kt-5',
+  pasKind: 'magnet', pasMagnets: [12], pasConnector: 'kt-3', brakeSwitch: 'normally-closed', brakeConnector: 'kt-2',
+  speedSensor: 'spoke-magnet', speedConnector: 'kt-2', lightVoltage: 6, lightConnector: 'kt-2',
+});
+controller('controller-km5s-48', [48], 18, 500, 'xt60', 'km5s', 'Generic 48 V KM5S controller', {
+  throttleSignal: 'hall', throttleConnector: 'sm-3', throttleProtocol: 'analog', displayConnector: 'sm-5',
+  pasKind: 'magnet', pasMagnets: [5, 12], pasConnector: 'sm-3', brakeSwitch: 'normally-open', brakeConnector: 'sm-2',
+  speedSensor: 'spoke-magnet', speedConnector: 'sm-2', lightVoltage: 12, lightConnector: 'sm-2',
+});
+controller('controller-km5s-36', [36], 15, 350, 'xt60', 'km5s', 'Generic 36 V KM5S controller', {
+  throttleSignal: 'hall', throttleConnector: 'sm-3', throttleProtocol: 'analog', displayConnector: 'sm-5',
+  pasKind: 'magnet', pasMagnets: [5, 12], pasConnector: 'sm-3', brakeSwitch: 'normally-open', brakeConnector: 'sm-2',
+  speedSensor: 'spoke-magnet', speedConnector: 'sm-2', lightVoltage: 12, lightConnector: 'sm-2',
+});
+controller('controller-bullet-36', [36], 12, 350, 'bullet', 'km5s', '36 V controller, bullet plugs', {
+  throttleSignal: 'hall', throttleConnector: 'bullet', throttleProtocol: 'analog', displayConnector: 'sm-5',
+  pasKind: 'magnet', pasMagnets: [5], pasConnector: 'bullet', brakeSwitch: 'normally-open', brakeConnector: 'bullet',
+  speedSensor: 'spoke-magnet', speedConnector: 'bullet', lightVoltage: 36, lightConnector: 'bullet',
+});
+controller('controller-pot-48', [48], 15, 500, 'xt60', 'km5s', '48 V controller, potentiometer throttle', {
+  throttleSignal: 'potentiometer', throttleConnector: 'sm-3', throttleProtocol: 'analog', displayConnector: 'sm-5',
+  pasKind: 'magnet', pasMagnets: [8], pasConnector: 'sm-3', brakeSwitch: 'normally-closed', brakeConnector: 'sm-2',
+  speedSensor: 'spoke-magnet', speedConnector: 'sm-2', lightVoltage: 6, lightConnector: 'sm-2',
+});
+controller('controller-uart-bus-throttle', [48], 25, 1000, 'xt60', 'uart', '48 V UART controller, bus throttle port', {
+  throttleSignal: 'hall', throttleConnector: 'julet-3', throttleProtocol: 'uart', displayConnector: 'julet-5',
+});
 
-function display(id, protocol, model) {
+function display(id, protocol, connector, model) {
   add({
     id,
     category: 'display',
     brand: 'Teaching',
     model,
     modelCode: null,
-    specs: { protocol },
+    specs: { protocol, connector },
     sourceUrl: BAFANG,
-    sourceRef: `Draft display. Protocol ${protocol}. It only matches a controller with the same protocol.`,
+    sourceRef: `Draft display. Protocol ${protocol}, plug ${connector}. Both have to match the controller.`,
     quote: protocol,
   });
 }
-display('display-uart', 'uart', 'UART display');
-display('display-can', 'can', 'CAN display');
-display('display-tongsheng', 'tongsheng', 'Tongsheng display');
+display('display-uart', 'uart', 'julet-5', 'UART display, Julet 5-pin');
+display('display-can', 'can', 'bafang-can-5', 'CAN display, Bafang CAN plug');
+display('display-tongsheng', 'tongsheng', 'tongsheng', 'Tongsheng display');
+display('display-850c', 'uart', 'julet-5', '850C-style UART display');
+display('display-500c', 'uart', 'julet-5', '500C-style UART display');
+display('display-dpc14', 'uart', 'julet-5', 'DPC-14-style UART display');
+display('display-dpc18', 'can', 'bafang-can-5', 'DP C18-style CAN display');
+display('display-uart-sm', 'uart', 'sm-5', 'UART display with an SM plug');
+display('display-kt-lcd3', 'kt', 'kt-5', 'KT LCD3');
+display('display-kt-lcd8', 'kt', 'kt-5', 'KT LCD8H');
+display('display-kt-lcd1', 'kt', 'kt-5', 'KT LCD1');
+display('display-sw900', 'km5s', 'sm-5', 'SW900-style KM5S display');
 
 function bb(id, shell, spindle, widths, model) {
   add({
@@ -1574,6 +1660,126 @@ add({
   sourceRef: 'Draft torque arm noted for a Boost thru-axle hub motor.',
   quote: 'torque arm',
 });
+
+motor({
+  id: 'motor-hub-geared-36',
+  brand: 'Bafang',
+  model: '36 V geared rear hub, QR 135, HG',
+  modelCode: null,
+  specs: { motorType: 'geared-hub', voltage: 36, powerW: 350, protocol: 'uart', position: 'rear', axle: 'qr-135', freehub: 'hg-m', rotorMount: '6-bolt', sprocket: 'cassette', speeds: 9 },
+  sourceRef: 'Draft 36 V geared hub. It does not match a 48 V-only controller.',
+  quote: '36 V QR 135',
+});
+motor({
+  id: 'motor-m620-can',
+  brand: 'Bafang',
+  model: 'M620-style 48 V CAN mid-drive',
+  modelCode: 'M620',
+  specs: { motorType: 'mid-drive', voltage: 48, powerW: 1000, protocol: 'can', position: 'bottom', bbShells: null, bbWidths: null, chainrings: [46], ringCount: 1, speeds: 9 },
+  sourceRef: 'Draft. CAN mid-drive. Shell and width are left blank so a guessed bottom bracket cannot pass.',
+  quote: 'CAN mid-drive',
+});
+motor({
+  id: 'motor-front-hub-36',
+  brand: 'Teaching',
+  model: '36 V geared front hub, QR 100',
+  modelCode: null,
+  specs: { motorType: 'geared-hub', voltage: 36, powerW: 250, protocol: 'uart', position: 'front', axle: 'qr-100', freehub: null, rotorMount: '6-bolt', sprocket: 'single', speeds: 1 },
+  sourceRef: 'Draft front hub motor. It covers the front hub, not the rear hub. QR 100.',
+  quote: 'front hub QR 100',
+});
+motor({
+  id: 'motor-hub-kt-48',
+  brand: 'Teaching',
+  model: '48 V geared rear hub, KT protocol, QR 135',
+  modelCode: null,
+  specs: { motorType: 'geared-hub', voltage: 48, powerW: 500, protocol: 'kt', position: 'rear', axle: 'qr-135', freehub: 'hg-m', rotorMount: '6-bolt', sprocket: 'cassette', speeds: 9 },
+  sourceRef: 'Draft hub motor that speaks KT, not Bafang UART.',
+  quote: 'KT hub',
+});
+
+function accessory(category, rows, specNote) {
+  for (const row of rows) {
+    add({
+      id: row.id,
+      category,
+      brand: 'Teaching',
+      model: row.model,
+      modelCode: null,
+      specs: row.specs,
+      sourceUrl: BAFANG,
+      sourceRef: `Draft ${category}. ${specNote} ${row.note || ''}`.trim(),
+      quote: row.quote || '',
+    });
+  }
+}
+
+accessory('throttle', [
+  { id: 'throttle-hall-thumb-julet', model: 'Hall thumb throttle, Julet 3-pin', specs: { signal: 'hall', connector: 'julet-3', protocol: 'analog', style: 'thumb' }, quote: 'hall julet-3 analog' },
+  { id: 'throttle-hall-twist-julet', model: 'Hall twist throttle, Julet 3-pin', specs: { signal: 'hall', connector: 'julet-3', protocol: 'analog', style: 'twist' }, quote: 'hall julet-3 analog' },
+  { id: 'throttle-hall-half-julet', model: 'Hall half-twist throttle, Julet 3-pin', specs: { signal: 'hall', connector: 'julet-3', protocol: 'analog', style: 'half-twist' }, quote: 'hall julet-3 analog' },
+  { id: 'throttle-hall-thumb-can', model: 'Hall thumb throttle, Bafang CAN plug', specs: { signal: 'hall', connector: 'bafang-can-3', protocol: 'analog', style: 'thumb' }, quote: 'hall can analog' },
+  { id: 'throttle-hall-twist-can', model: 'Hall twist throttle, Bafang CAN plug', specs: { signal: 'hall', connector: 'bafang-can-3', protocol: 'analog', style: 'twist' }, quote: 'hall can analog' },
+  { id: 'throttle-hall-thumb-kt', model: 'Hall thumb throttle, KT 3-pin', specs: { signal: 'hall', connector: 'kt-3', protocol: 'analog', style: 'thumb' }, quote: 'hall kt-3 analog' },
+  { id: 'throttle-hall-twist-kt', model: 'Hall twist throttle, KT 3-pin', specs: { signal: 'hall', connector: 'kt-3', protocol: 'analog', style: 'twist' }, quote: 'hall kt-3 analog' },
+  { id: 'throttle-hall-thumb-sm', model: 'Hall thumb throttle, SM 3-pin', specs: { signal: 'hall', connector: 'sm-3', protocol: 'analog', style: 'thumb' }, quote: 'hall sm-3 analog' },
+  { id: 'throttle-hall-thumb-bullet', model: 'Hall thumb throttle, bullet wires', specs: { signal: 'hall', connector: 'bullet', protocol: 'analog', style: 'thumb' }, quote: 'hall bullet analog' },
+  { id: 'throttle-pot-twist-sm', model: 'Potentiometer twist throttle, SM 3-pin', specs: { signal: 'potentiometer', connector: 'sm-3', protocol: 'analog', style: 'twist' }, quote: 'potentiometer sm-3' },
+  { id: 'throttle-hall-tongsheng', model: 'Hall thumb throttle, Tongsheng plug', specs: { signal: 'hall', connector: 'tongsheng', protocol: 'analog', style: 'thumb' }, quote: 'hall tongsheng analog' },
+  { id: 'throttle-uart-bus', model: 'UART bus thumb throttle', specs: { signal: 'hall', connector: 'julet-3', protocol: 'uart', style: 'thumb' }, note: 'This one speaks UART. It does not fit an analog throttle port.', quote: 'uart bus' },
+], 'Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.');
+
+accessory('pas', [
+  { id: 'pas-8-julet', model: '8-magnet PAS, Julet', specs: { kind: 'magnet', magnetCount: 8, connector: 'julet-3' }, quote: '8 julet' },
+  { id: 'pas-12-julet', model: '12-magnet PAS, Julet', specs: { kind: 'magnet', magnetCount: 12, connector: 'julet-3' }, quote: '12 julet' },
+  { id: 'pas-5-julet', model: '5-magnet PAS, Julet', specs: { kind: 'magnet', magnetCount: 5, connector: 'julet-3' }, quote: '5 julet' },
+  { id: 'pas-12-kt', model: '12-magnet PAS, KT plug', specs: { kind: 'magnet', magnetCount: 12, connector: 'kt-3' }, quote: '12 kt' },
+  { id: 'pas-8-kt', model: '8-magnet PAS, KT plug', specs: { kind: 'magnet', magnetCount: 8, connector: 'kt-3' }, quote: '8 kt' },
+  { id: 'pas-12-sm', model: '12-magnet PAS, SM plug', specs: { kind: 'magnet', magnetCount: 12, connector: 'sm-3' }, quote: '12 sm' },
+  { id: 'pas-5-sm', model: '5-magnet PAS, SM plug', specs: { kind: 'magnet', magnetCount: 5, connector: 'sm-3' }, quote: '5 sm' },
+  { id: 'pas-8-sm', model: '8-magnet PAS, SM plug', specs: { kind: 'magnet', magnetCount: 8, connector: 'sm-3' }, quote: '8 sm' },
+  { id: 'pas-5-bullet', model: '5-magnet PAS, bullet wires', specs: { kind: 'magnet', magnetCount: 5, connector: 'bullet' }, quote: '5 bullet' },
+  { id: 'pas-torque-tongsheng', model: 'Tongsheng torque sensor lead', specs: { kind: 'torque', magnetCount: null, connector: 'tongsheng' }, quote: 'torque' },
+], 'Magnet discs have to be a count the controller lists. A torque sensor is a different kind.');
+
+accessory('brake_sensor', [
+  { id: 'brake-sensor-no-julet', model: 'Normally-open brake cutoff, Julet', specs: { switchType: 'normally-open', connector: 'julet-2', style: 'lever' }, quote: 'NO julet' },
+  { id: 'brake-sensor-nc-julet', model: 'Normally-closed brake cutoff, Julet', specs: { switchType: 'normally-closed', connector: 'julet-2', style: 'lever' }, quote: 'NC julet' },
+  { id: 'brake-sensor-no-sm', model: 'Normally-open brake cutoff, SM', specs: { switchType: 'normally-open', connector: 'sm-2', style: 'lever' }, quote: 'NO sm' },
+  { id: 'brake-sensor-nc-sm', model: 'Normally-closed brake cutoff, SM', specs: { switchType: 'normally-closed', connector: 'sm-2', style: 'lever' }, quote: 'NC sm' },
+  { id: 'brake-sensor-no-kt', model: 'Normally-open brake cutoff, KT', specs: { switchType: 'normally-open', connector: 'kt-2', style: 'lever' }, quote: 'NO kt' },
+  { id: 'brake-sensor-nc-kt', model: 'Normally-closed brake cutoff, KT', specs: { switchType: 'normally-closed', connector: 'kt-2', style: 'lever' }, quote: 'NC kt' },
+  { id: 'brake-sensor-no-hydraulic', model: 'Hydraulic reed cutoff, normally-open, Julet', specs: { switchType: 'normally-open', connector: 'julet-2', style: 'hydraulic' }, quote: 'NO hydraulic' },
+  { id: 'brake-sensor-nc-hydraulic', model: 'Hydraulic reed cutoff, normally-closed, Julet', specs: { switchType: 'normally-closed', connector: 'julet-2', style: 'hydraulic' }, quote: 'NC hydraulic' },
+  { id: 'brake-sensor-no-bullet', model: 'Normally-open brake cutoff, bullets', specs: { switchType: 'normally-open', connector: 'bullet', style: 'lever' }, quote: 'NO bullet' },
+  { id: 'brake-sensor-tongsheng', model: 'Tongsheng brake cutoff, normally-open', specs: { switchType: 'normally-open', connector: 'tongsheng', style: 'lever' }, quote: 'NO tongsheng' },
+], 'Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.');
+
+accessory('speed_sensor', [
+  { id: 'speed-julet', model: 'Spoke-magnet speed sensor, Julet', specs: { sensorType: 'spoke-magnet', connector: 'julet-2' }, quote: 'spoke julet' },
+  { id: 'speed-sm', model: 'Spoke-magnet speed sensor, SM', specs: { sensorType: 'spoke-magnet', connector: 'sm-2' }, quote: 'spoke sm' },
+  { id: 'speed-kt', model: 'Spoke-magnet speed sensor, KT', specs: { sensorType: 'spoke-magnet', connector: 'kt-2' }, quote: 'spoke kt' },
+  { id: 'speed-bullet', model: 'Spoke-magnet speed sensor, bullets', specs: { sensorType: 'spoke-magnet', connector: 'bullet' }, quote: 'spoke bullet' },
+  { id: 'speed-tongsheng', model: 'Spoke-magnet speed sensor, Tongsheng', specs: { sensorType: 'spoke-magnet', connector: 'tongsheng' }, quote: 'spoke tongsheng' },
+  { id: 'speed-disc-julet', model: 'Disc-magnet speed sensor, Julet', specs: { sensorType: 'disc-magnet', connector: 'julet-2' }, quote: 'disc julet' },
+  { id: 'speed-disc-sm', model: 'Disc-magnet speed sensor, SM', specs: { sensorType: 'disc-magnet', connector: 'sm-2' }, quote: 'disc sm' },
+  { id: 'speed-internal-hall', model: 'Motor-hall speed tap, Julet', specs: { sensorType: 'motor-hall', connector: 'julet-2' }, quote: 'motor-hall' },
+  { id: 'speed-internal-hall-sm', model: 'Motor-hall speed tap, SM', specs: { sensorType: 'motor-hall', connector: 'sm-2' }, quote: 'motor-hall sm' },
+  { id: 'speed-wheel-12', model: '12-magnet wheel sensor, Julet', specs: { sensorType: 'spoke-magnet', connector: 'julet-2' }, note: 'Still a spoke-magnet type. Magnet count on the wheel is not a second protocol.', quote: 'spoke julet' },
+], 'The sensor type and the plug both have to match. This part is optional.');
+
+accessory('light', [
+  { id: 'light-6v-julet', model: '6 V light, Julet', specs: { voltage: 6, connector: 'julet-2' }, quote: '6 V julet' },
+  { id: 'light-6v-sm', model: '6 V light, SM', specs: { voltage: 6, connector: 'sm-2' }, quote: '6 V sm' },
+  { id: 'light-6v-kt', model: '6 V light, KT', specs: { voltage: 6, connector: 'kt-2' }, quote: '6 V kt' },
+  { id: 'light-6v-tongsheng', model: '6 V light, Tongsheng', specs: { voltage: 6, connector: 'tongsheng' }, quote: '6 V tongsheng' },
+  { id: 'light-12v-sm', model: '12 V light, SM', specs: { voltage: 12, connector: 'sm-2' }, quote: '12 V sm' },
+  { id: 'light-12v-julet', model: '12 V light, Julet', specs: { voltage: 12, connector: 'julet-2' }, quote: '12 V julet' },
+  { id: 'light-36v-bullet', model: '36 V pack-voltage light, bullets', specs: { voltage: 36, connector: 'bullet' }, quote: '36 V bullet' },
+  { id: 'light-48v-bullet', model: '48 V pack-voltage light, bullets', specs: { voltage: 48, connector: 'bullet' }, quote: '48 V bullet' },
+  { id: 'light-6v-bullet', model: '6 V light, bullets', specs: { voltage: 6, connector: 'bullet' }, quote: '6 V bullet' },
+  { id: 'light-12v-kt', model: '12 V light, KT plug', specs: { voltage: 12, connector: 'kt-2' }, quote: '12 V kt' },
+], 'Light voltage has to match the controller light port. A 6 V port is not pack voltage.');
 
 const ids = parts.map((part) => part.id);
 const dupes = ids.filter((id, index) => ids.indexOf(id) !== index);

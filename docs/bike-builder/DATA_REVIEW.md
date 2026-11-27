@@ -1,6 +1,6 @@
 # Parts needing review
 
-Generated 2026-11-27. 207 parts. Approved means the numbers were copied from a manufacturer specification table during this build. Draft means a person still needs to check them before anyone trusts a real build.
+Generated 2026-11-27. 280 parts. Approved means the numbers were copied from a manufacturer specification table during this build. Draft means a person still needs to check them before anyone trusts a real build.
 
 A draft part can still appear in the builder. If a number is blank, the engine says "can't verify" instead of "fits".
 
@@ -189,14 +189,31 @@ A draft part can still appear in the builder. If a number is blank, the engine s
 - `battery-48-xt60` (battery) Teaching 48 V pack, XT60, 30 A BMS — Draft pack. Nominal 48 V, BMS 30 A, xt60 plug. No capacity claim and no shop listing.
 - `battery-48-xt90` (battery) Teaching 48 V pack, XT90, 40 A BMS — Draft pack. Nominal 48 V, BMS 40 A, xt90 plug. No capacity claim and no shop listing.
 - `battery-52-xt60` (battery) Teaching 52 V pack, XT60, 30 A BMS — Draft pack. Nominal 52 V, BMS 30 A, xt60 plug. No capacity claim and no shop listing.
-- `controller-48-uart-xt60` (controller) Teaching 48 V UART controller, 25 A, XT60 — Draft controller. Accepts 48 V, 25 A, 1000 W, xt60, protocol uart.
-- `controller-36-uart-xt60` (controller) Teaching 36 V UART controller, 15 A, XT60 — Draft controller. Accepts 36 V, 15 A, 500 W, xt60, protocol uart.
-- `controller-48-can-xt60` (controller) Teaching 48 V CAN controller, 25 A, XT60 — Draft controller. Accepts 48 V, 25 A, 1000 W, xt60, protocol can.
-- `controller-48-uart-xt90` (controller) Teaching 48 V UART controller, 35 A, XT90 — Draft controller. Accepts 48 V, 35 A, 1500 W, xt90, protocol uart.
-- `controller-tongsheng-48` (controller) Teaching 48 V Tongsheng controller, 18 A, XT60 — Draft controller. Accepts 48 V, 18 A, 500 W, xt60, protocol tongsheng.
-- `display-uart` (display) Teaching UART display — Draft display. Protocol uart. It only matches a controller with the same protocol.
-- `display-can` (display) Teaching CAN display — Draft display. Protocol can. It only matches a controller with the same protocol.
-- `display-tongsheng` (display) Teaching Tongsheng display — Draft display. Protocol tongsheng. It only matches a controller with the same protocol.
+- `controller-48-uart-xt60` (controller) Teaching 48 V UART controller, 25 A, XT60 — Draft controller. Accepts 48 V, 25 A, 1000 W, battery plug xt60, data protocol uart. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-36-uart-xt60` (controller) Teaching 36 V UART controller, 15 A, XT60 — Draft controller. Accepts 36 V, 15 A, 500 W, battery plug xt60, data protocol uart. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-48-can-xt60` (controller) Teaching 48 V CAN controller, 25 A, XT60 — Draft controller. Accepts 48 V, 25 A, 1000 W, battery plug xt60, data protocol can. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-48-uart-xt90` (controller) Teaching 48 V UART controller, 35 A, XT90 — Draft controller. Accepts 48 V, 35 A, 1500 W, battery plug xt90, data protocol uart. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-tongsheng-48` (controller) Teaching 48 V Tongsheng controller, 18 A, XT60 — Draft controller. Accepts 48 V, 18 A, 500 W, battery plug xt60, data protocol tongsheng. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-kt-36` (controller) Teaching KT 36 V controller — Draft controller. Accepts 36 V, 15 A, 500 W, battery plug xt60, data protocol kt. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-kt-48` (controller) Teaching KT 48 V controller — Draft controller. Accepts 48 V, 22 A, 750 W, battery plug xt60, data protocol kt. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-kt-48-nc` (controller) Teaching KT 48 V controller, normally-closed brakes — Draft controller. Accepts 48 V, 22 A, 750 W, battery plug xt60, data protocol kt. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-km5s-48` (controller) Teaching Generic 48 V KM5S controller — Draft controller. Accepts 48 V, 18 A, 500 W, battery plug xt60, data protocol km5s. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-km5s-36` (controller) Teaching Generic 36 V KM5S controller — Draft controller. Accepts 36 V, 15 A, 350 W, battery plug xt60, data protocol km5s. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-bullet-36` (controller) Teaching 36 V controller, bullet plugs — Draft controller. Accepts 36 V, 12 A, 350 W, battery plug bullet, data protocol km5s. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-pot-48` (controller) Teaching 48 V controller, potentiometer throttle — Draft controller. Accepts 48 V, 15 A, 500 W, battery plug xt60, data protocol km5s. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `controller-uart-bus-throttle` (controller) Teaching 48 V UART controller, bus throttle port — Draft controller. Accepts 48 V, 25 A, 1000 W, battery plug xt60, data protocol uart. Throttle fit is signal + plug + analog-or-bus, not pack voltage.
+- `display-uart` (display) Teaching UART display, Julet 5-pin — Draft display. Protocol uart, plug julet-5. Both have to match the controller.
+- `display-can` (display) Teaching CAN display, Bafang CAN plug — Draft display. Protocol can, plug bafang-can-5. Both have to match the controller.
+- `display-tongsheng` (display) Teaching Tongsheng display — Draft display. Protocol tongsheng, plug tongsheng. Both have to match the controller.
+- `display-850c` (display) Teaching 850C-style UART display — Draft display. Protocol uart, plug julet-5. Both have to match the controller.
+- `display-500c` (display) Teaching 500C-style UART display — Draft display. Protocol uart, plug julet-5. Both have to match the controller.
+- `display-dpc14` (display) Teaching DPC-14-style UART display — Draft display. Protocol uart, plug julet-5. Both have to match the controller.
+- `display-dpc18` (display) Teaching DP C18-style CAN display — Draft display. Protocol can, plug bafang-can-5. Both have to match the controller.
+- `display-uart-sm` (display) Teaching UART display with an SM plug — Draft display. Protocol uart, plug sm-5. Both have to match the controller.
+- `display-kt-lcd3` (display) Teaching KT LCD3 — Draft display. Protocol kt, plug kt-5. Both have to match the controller.
+- `display-kt-lcd8` (display) Teaching KT LCD8H — Draft display. Protocol kt, plug kt-5. Both have to match the controller.
+- `display-kt-lcd1` (display) Teaching KT LCD1 — Draft display. Protocol kt, plug kt-5. Both have to match the controller.
+- `display-sw900` (display) Teaching SW900-style KM5S display — Draft display. Protocol km5s, plug sm-5. Both have to match the controller.
 - `bb-bsa-shimano-24` (bottom_bracket) Teaching BSA bottom bracket for 24 mm spindle — Draft bottom bracket. Shell bsa, spindle shimano-24, widths 68/73 mm.
 - `bb-bsa-68-shimano-24` (bottom_bracket) Teaching BSA 68 mm bottom bracket for 24 mm spindle — Draft bottom bracket. Shell bsa, spindle shimano-24, widths 68 mm.
 - `bb-bsa-dub` (bottom_bracket) Teaching BSA bottom bracket for SRAM DUB — Draft bottom bracket. Shell bsa, spindle sram-dub, widths 68/73 mm.
@@ -216,6 +233,62 @@ A draft part can still appear in the builder. If a number is blank, the engine s
 - `seatpost-31-6` (seatpost) Teaching 31.6 mm seatpost — Draft seatpost diameter 31.6 mm. A larger post does not fit. A smaller post is a shim warning.
 - `torque-arm-qr-135` (torque_arm) Teaching Torque arm for a QR 135 hub motor — Draft torque arm for a quick-release hub motor. The checker treats any torque arm as present. The axle match is still the frame rule.
 - `torque-arm-12x148` (torque_arm) Teaching Torque arm for a 12x148 hub motor — Draft torque arm noted for a Boost thru-axle hub motor.
+- `motor-hub-geared-36` (motor) Bafang 36 V geared rear hub, QR 135, HG — Draft 36 V geared hub. It does not match a 48 V-only controller.
+- `motor-m620-can` (motor) Bafang M620-style 48 V CAN mid-drive — Draft. CAN mid-drive. Shell and width are left blank so a guessed bottom bracket cannot pass.
+- `motor-front-hub-36` (motor) Teaching 36 V geared front hub, QR 100 — Draft front hub motor. It covers the front hub, not the rear hub. QR 100.
+- `motor-hub-kt-48` (motor) Teaching 48 V geared rear hub, KT protocol, QR 135 — Draft hub motor that speaks KT, not Bafang UART.
+- `throttle-hall-thumb-julet` (throttle) Teaching Hall thumb throttle, Julet 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-twist-julet` (throttle) Teaching Hall twist throttle, Julet 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-half-julet` (throttle) Teaching Hall half-twist throttle, Julet 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-thumb-can` (throttle) Teaching Hall thumb throttle, Bafang CAN plug — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-twist-can` (throttle) Teaching Hall twist throttle, Bafang CAN plug — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-thumb-kt` (throttle) Teaching Hall thumb throttle, KT 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-twist-kt` (throttle) Teaching Hall twist throttle, KT 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-thumb-sm` (throttle) Teaching Hall thumb throttle, SM 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-thumb-bullet` (throttle) Teaching Hall thumb throttle, bullet wires — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-pot-twist-sm` (throttle) Teaching Potentiometer twist throttle, SM 3-pin — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-hall-tongsheng` (throttle) Teaching Hall thumb throttle, Tongsheng plug — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand.
+- `throttle-uart-bus` (throttle) Teaching UART bus thumb throttle — Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand. This one speaks UART. It does not fit an analog throttle port.
+- `pas-8-julet` (pas) Teaching 8-magnet PAS, Julet — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-12-julet` (pas) Teaching 12-magnet PAS, Julet — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-5-julet` (pas) Teaching 5-magnet PAS, Julet — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-12-kt` (pas) Teaching 12-magnet PAS, KT plug — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-8-kt` (pas) Teaching 8-magnet PAS, KT plug — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-12-sm` (pas) Teaching 12-magnet PAS, SM plug — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-5-sm` (pas) Teaching 5-magnet PAS, SM plug — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-8-sm` (pas) Teaching 8-magnet PAS, SM plug — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-5-bullet` (pas) Teaching 5-magnet PAS, bullet wires — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `pas-torque-tongsheng` (pas) Teaching Tongsheng torque sensor lead — Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind.
+- `brake-sensor-no-julet` (brake_sensor) Teaching Normally-open brake cutoff, Julet — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-nc-julet` (brake_sensor) Teaching Normally-closed brake cutoff, Julet — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-no-sm` (brake_sensor) Teaching Normally-open brake cutoff, SM — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-nc-sm` (brake_sensor) Teaching Normally-closed brake cutoff, SM — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-no-kt` (brake_sensor) Teaching Normally-open brake cutoff, KT — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-nc-kt` (brake_sensor) Teaching Normally-closed brake cutoff, KT — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-no-hydraulic` (brake_sensor) Teaching Hydraulic reed cutoff, normally-open, Julet — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-nc-hydraulic` (brake_sensor) Teaching Hydraulic reed cutoff, normally-closed, Julet — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-no-bullet` (brake_sensor) Teaching Normally-open brake cutoff, bullets — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `brake-sensor-tongsheng` (brake_sensor) Teaching Tongsheng brake cutoff, normally-open — Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family.
+- `speed-julet` (speed_sensor) Teaching Spoke-magnet speed sensor, Julet — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-sm` (speed_sensor) Teaching Spoke-magnet speed sensor, SM — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-kt` (speed_sensor) Teaching Spoke-magnet speed sensor, KT — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-bullet` (speed_sensor) Teaching Spoke-magnet speed sensor, bullets — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-tongsheng` (speed_sensor) Teaching Spoke-magnet speed sensor, Tongsheng — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-disc-julet` (speed_sensor) Teaching Disc-magnet speed sensor, Julet — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-disc-sm` (speed_sensor) Teaching Disc-magnet speed sensor, SM — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-internal-hall` (speed_sensor) Teaching Motor-hall speed tap, Julet — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-internal-hall-sm` (speed_sensor) Teaching Motor-hall speed tap, SM — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional.
+- `speed-wheel-12` (speed_sensor) Teaching 12-magnet wheel sensor, Julet — Draft speed_sensor. The sensor type and the plug both have to match. This part is optional. Still a spoke-magnet type. Magnet count on the wheel is not a second protocol.
+- `light-6v-julet` (light) Teaching 6 V light, Julet — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-6v-sm` (light) Teaching 6 V light, SM — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-6v-kt` (light) Teaching 6 V light, KT — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-6v-tongsheng` (light) Teaching 6 V light, Tongsheng — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-12v-sm` (light) Teaching 12 V light, SM — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-12v-julet` (light) Teaching 12 V light, Julet — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-36v-bullet` (light) Teaching 36 V pack-voltage light, bullets — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-48v-bullet` (light) Teaching 48 V pack-voltage light, bullets — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-6v-bullet` (light) Teaching 6 V light, bullets — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `light-12v-kt` (light) Teaching 12 V light, KT plug — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
 
 ## Open questions for Dr. Yazan
 

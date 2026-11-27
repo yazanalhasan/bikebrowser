@@ -3785,6 +3785,7 @@
           68,
           73
         ],
+        "position": "bottom",
         "motorType": "mid-drive",
         "voltage": 48,
         "powerW": 750
@@ -3823,6 +3824,7 @@
           68,
           73
         ],
+        "position": "bottom",
         "motorType": "mid-drive",
         "voltage": 36,
         "powerW": 500
@@ -3860,6 +3862,7 @@
         "bbWidths": [
           100
         ],
+        "position": "bottom",
         "motorType": "mid-drive",
         "voltage": 48,
         "powerW": 1000
@@ -3898,6 +3901,7 @@
           68,
           73
         ],
+        "position": "bottom",
         "motorType": "mid-drive",
         "voltage": 48,
         "powerW": 500
@@ -3929,6 +3933,7 @@
         "connector": null,
         "bbShells": [],
         "bbWidths": [],
+        "position": "rear",
         "motorType": "geared-hub",
         "voltage": 48,
         "powerW": 500
@@ -3960,6 +3965,7 @@
         "connector": null,
         "bbShells": [],
         "bbWidths": [],
+        "position": "rear",
         "motorType": "geared-hub",
         "voltage": 48,
         "powerW": 750
@@ -3991,6 +3997,7 @@
         "connector": null,
         "bbShells": [],
         "bbWidths": [],
+        "position": "rear",
         "motorType": "direct-drive-hub",
         "voltage": 48,
         "powerW": 1000
@@ -4022,6 +4029,7 @@
         "connector": null,
         "bbShells": [],
         "bbWidths": [],
+        "position": "rear",
         "motorType": "geared-hub",
         "voltage": 48,
         "powerW": 350
@@ -4117,10 +4125,26 @@
         "maxCurrent": 25,
         "powerW": 1000,
         "batteryConnector": "xt60",
-        "protocol": "uart"
+        "protocol": "uart",
+        "throttleSignal": "hall",
+        "throttleConnector": "julet-3",
+        "throttleProtocol": "analog",
+        "displayConnector": "julet-5",
+        "pasKind": "magnet",
+        "pasMagnets": [
+          8,
+          12
+        ],
+        "pasConnector": "julet-3",
+        "brakeSwitch": "normally-open",
+        "brakeConnector": "julet-2",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "julet-2",
+        "lightVoltage": 6,
+        "lightConnector": "julet-2"
       },
       "sourceUrl": "https://www.bafang-e.com/",
-      "sourceRef": "Draft controller. Accepts 48 V, 25 A, 1000 W, xt60, protocol uart."
+      "sourceRef": "Draft controller. Accepts 48 V, 25 A, 1000 W, battery plug xt60, data protocol uart. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
     },
     {
       "years": null,
@@ -4139,10 +4163,26 @@
         "maxCurrent": 15,
         "powerW": 500,
         "batteryConnector": "xt60",
-        "protocol": "uart"
+        "protocol": "uart",
+        "throttleSignal": "hall",
+        "throttleConnector": "julet-3",
+        "throttleProtocol": "analog",
+        "displayConnector": "julet-5",
+        "pasKind": "magnet",
+        "pasMagnets": [
+          8,
+          12
+        ],
+        "pasConnector": "julet-3",
+        "brakeSwitch": "normally-open",
+        "brakeConnector": "julet-2",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "julet-2",
+        "lightVoltage": 6,
+        "lightConnector": "julet-2"
       },
       "sourceUrl": "https://www.bafang-e.com/",
-      "sourceRef": "Draft controller. Accepts 36 V, 15 A, 500 W, xt60, protocol uart."
+      "sourceRef": "Draft controller. Accepts 36 V, 15 A, 500 W, battery plug xt60, data protocol uart. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
     },
     {
       "years": null,
@@ -4161,10 +4201,26 @@
         "maxCurrent": 25,
         "powerW": 1000,
         "batteryConnector": "xt60",
-        "protocol": "can"
+        "protocol": "can",
+        "throttleSignal": "hall",
+        "throttleConnector": "bafang-can-3",
+        "throttleProtocol": "analog",
+        "displayConnector": "bafang-can-5",
+        "pasKind": "magnet",
+        "pasMagnets": [
+          8,
+          12
+        ],
+        "pasConnector": "julet-3",
+        "brakeSwitch": "normally-open",
+        "brakeConnector": "julet-2",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "julet-2",
+        "lightVoltage": 6,
+        "lightConnector": "julet-2"
       },
       "sourceUrl": "https://www.bafang-e.com/",
-      "sourceRef": "Draft controller. Accepts 48 V, 25 A, 1000 W, xt60, protocol can."
+      "sourceRef": "Draft controller. Accepts 48 V, 25 A, 1000 W, battery plug xt60, data protocol can. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
     },
     {
       "years": null,
@@ -4183,10 +4239,26 @@
         "maxCurrent": 35,
         "powerW": 1500,
         "batteryConnector": "xt90",
-        "protocol": "uart"
+        "protocol": "uart",
+        "throttleSignal": "hall",
+        "throttleConnector": "julet-3",
+        "throttleProtocol": "analog",
+        "displayConnector": "julet-5",
+        "pasKind": "magnet",
+        "pasMagnets": [
+          8,
+          12
+        ],
+        "pasConnector": "julet-3",
+        "brakeSwitch": "normally-open",
+        "brakeConnector": "julet-2",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "julet-2",
+        "lightVoltage": 6,
+        "lightConnector": "julet-2"
       },
       "sourceUrl": "https://www.bafang-e.com/",
-      "sourceRef": "Draft controller. Accepts 48 V, 35 A, 1500 W, xt90, protocol uart."
+      "sourceRef": "Draft controller. Accepts 48 V, 35 A, 1500 W, battery plug xt90, data protocol uart. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
     },
     {
       "years": null,
@@ -4205,10 +4277,322 @@
         "maxCurrent": 18,
         "powerW": 500,
         "batteryConnector": "xt60",
-        "protocol": "tongsheng"
+        "protocol": "tongsheng",
+        "throttleSignal": "hall",
+        "throttleConnector": "tongsheng",
+        "throttleProtocol": "analog",
+        "displayConnector": "tongsheng",
+        "pasKind": "torque",
+        "pasMagnets": [],
+        "pasConnector": "tongsheng",
+        "brakeSwitch": "normally-open",
+        "brakeConnector": "tongsheng",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "tongsheng",
+        "lightVoltage": 6,
+        "lightConnector": "tongsheng"
       },
       "sourceUrl": "https://www.bafang-e.com/",
-      "sourceRef": "Draft controller. Accepts 48 V, 18 A, 500 W, xt60, protocol tongsheng."
+      "sourceRef": "Draft controller. Accepts 48 V, 18 A, 500 W, battery plug xt60, data protocol tongsheng. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "36",
+      "id": "controller-kt-36",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "KT 36 V controller",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          36
+        ],
+        "maxCurrent": 15,
+        "powerW": 500,
+        "batteryConnector": "xt60",
+        "protocol": "kt",
+        "throttleSignal": "hall",
+        "throttleConnector": "kt-3",
+        "throttleProtocol": "analog",
+        "displayConnector": "kt-5",
+        "pasKind": "magnet",
+        "pasMagnets": [
+          12
+        ],
+        "pasConnector": "kt-3",
+        "brakeSwitch": "normally-open",
+        "brakeConnector": "kt-2",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "kt-2",
+        "lightVoltage": 6,
+        "lightConnector": "kt-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 36 V, 15 A, 500 W, battery plug xt60, data protocol kt. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48",
+      "id": "controller-kt-48",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "KT 48 V controller",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          48
+        ],
+        "maxCurrent": 22,
+        "powerW": 750,
+        "batteryConnector": "xt60",
+        "protocol": "kt",
+        "throttleSignal": "hall",
+        "throttleConnector": "kt-3",
+        "throttleProtocol": "analog",
+        "displayConnector": "kt-5",
+        "pasKind": "magnet",
+        "pasMagnets": [
+          12
+        ],
+        "pasConnector": "kt-3",
+        "brakeSwitch": "normally-open",
+        "brakeConnector": "kt-2",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "kt-2",
+        "lightVoltage": 6,
+        "lightConnector": "kt-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 48 V, 22 A, 750 W, battery plug xt60, data protocol kt. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48",
+      "id": "controller-kt-48-nc",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "KT 48 V controller, normally-closed brakes",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          48
+        ],
+        "maxCurrent": 22,
+        "powerW": 750,
+        "batteryConnector": "xt60",
+        "protocol": "kt",
+        "throttleSignal": "hall",
+        "throttleConnector": "kt-3",
+        "throttleProtocol": "analog",
+        "displayConnector": "kt-5",
+        "pasKind": "magnet",
+        "pasMagnets": [
+          12
+        ],
+        "pasConnector": "kt-3",
+        "brakeSwitch": "normally-closed",
+        "brakeConnector": "kt-2",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "kt-2",
+        "lightVoltage": 6,
+        "lightConnector": "kt-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 48 V, 22 A, 750 W, battery plug xt60, data protocol kt. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48",
+      "id": "controller-km5s-48",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "Generic 48 V KM5S controller",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          48
+        ],
+        "maxCurrent": 18,
+        "powerW": 500,
+        "batteryConnector": "xt60",
+        "protocol": "km5s",
+        "throttleSignal": "hall",
+        "throttleConnector": "sm-3",
+        "throttleProtocol": "analog",
+        "displayConnector": "sm-5",
+        "pasKind": "magnet",
+        "pasMagnets": [
+          5,
+          12
+        ],
+        "pasConnector": "sm-3",
+        "brakeSwitch": "normally-open",
+        "brakeConnector": "sm-2",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "sm-2",
+        "lightVoltage": 12,
+        "lightConnector": "sm-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 48 V, 18 A, 500 W, battery plug xt60, data protocol km5s. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "36",
+      "id": "controller-km5s-36",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "Generic 36 V KM5S controller",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          36
+        ],
+        "maxCurrent": 15,
+        "powerW": 350,
+        "batteryConnector": "xt60",
+        "protocol": "km5s",
+        "throttleSignal": "hall",
+        "throttleConnector": "sm-3",
+        "throttleProtocol": "analog",
+        "displayConnector": "sm-5",
+        "pasKind": "magnet",
+        "pasMagnets": [
+          5,
+          12
+        ],
+        "pasConnector": "sm-3",
+        "brakeSwitch": "normally-open",
+        "brakeConnector": "sm-2",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "sm-2",
+        "lightVoltage": 12,
+        "lightConnector": "sm-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 36 V, 15 A, 350 W, battery plug xt60, data protocol km5s. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "36",
+      "id": "controller-bullet-36",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "36 V controller, bullet plugs",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          36
+        ],
+        "maxCurrent": 12,
+        "powerW": 350,
+        "batteryConnector": "bullet",
+        "protocol": "km5s",
+        "throttleSignal": "hall",
+        "throttleConnector": "bullet",
+        "throttleProtocol": "analog",
+        "displayConnector": "sm-5",
+        "pasKind": "magnet",
+        "pasMagnets": [
+          5
+        ],
+        "pasConnector": "bullet",
+        "brakeSwitch": "normally-open",
+        "brakeConnector": "bullet",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "bullet",
+        "lightVoltage": 36,
+        "lightConnector": "bullet"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 36 V, 12 A, 350 W, battery plug bullet, data protocol km5s. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48",
+      "id": "controller-pot-48",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "48 V controller, potentiometer throttle",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          48
+        ],
+        "maxCurrent": 15,
+        "powerW": 500,
+        "batteryConnector": "xt60",
+        "protocol": "km5s",
+        "throttleSignal": "potentiometer",
+        "throttleConnector": "sm-3",
+        "throttleProtocol": "analog",
+        "displayConnector": "sm-5",
+        "pasKind": "magnet",
+        "pasMagnets": [
+          8
+        ],
+        "pasConnector": "sm-3",
+        "brakeSwitch": "normally-closed",
+        "brakeConnector": "sm-2",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "sm-2",
+        "lightVoltage": 6,
+        "lightConnector": "sm-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 48 V, 15 A, 500 W, battery plug xt60, data protocol km5s. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48",
+      "id": "controller-uart-bus-throttle",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "48 V UART controller, bus throttle port",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          48
+        ],
+        "maxCurrent": 25,
+        "powerW": 1000,
+        "batteryConnector": "xt60",
+        "protocol": "uart",
+        "throttleSignal": "hall",
+        "throttleConnector": "julet-3",
+        "throttleProtocol": "uart",
+        "displayConnector": "julet-5",
+        "pasKind": "magnet",
+        "pasMagnets": [
+          8,
+          12
+        ],
+        "pasConnector": "julet-3",
+        "brakeSwitch": "normally-open",
+        "brakeConnector": "julet-2",
+        "speedSensor": "spoke-magnet",
+        "speedConnector": "julet-2",
+        "lightVoltage": 6,
+        "lightConnector": "julet-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 48 V, 25 A, 1000 W, battery plug xt60, data protocol uart. Throttle fit is signal + plug + analog-or-bus, not pack voltage."
     },
     {
       "years": null,
@@ -4218,13 +4602,14 @@
       "id": "display-uart",
       "category": "display",
       "brand": "Teaching",
-      "model": "UART display",
+      "model": "UART display, Julet 5-pin",
       "modelCode": null,
       "specs": {
-        "protocol": "uart"
+        "protocol": "uart",
+        "connector": "julet-5"
       },
       "sourceUrl": "https://www.bafang-e.com/",
-      "sourceRef": "Draft display. Protocol uart. It only matches a controller with the same protocol."
+      "sourceRef": "Draft display. Protocol uart, plug julet-5. Both have to match the controller."
     },
     {
       "years": null,
@@ -4234,13 +4619,14 @@
       "id": "display-can",
       "category": "display",
       "brand": "Teaching",
-      "model": "CAN display",
+      "model": "CAN display, Bafang CAN plug",
       "modelCode": null,
       "specs": {
-        "protocol": "can"
+        "protocol": "can",
+        "connector": "bafang-can-5"
       },
       "sourceUrl": "https://www.bafang-e.com/",
-      "sourceRef": "Draft display. Protocol can. It only matches a controller with the same protocol."
+      "sourceRef": "Draft display. Protocol can, plug bafang-can-5. Both have to match the controller."
     },
     {
       "years": null,
@@ -4253,10 +4639,164 @@
       "model": "Tongsheng display",
       "modelCode": null,
       "specs": {
-        "protocol": "tongsheng"
+        "protocol": "tongsheng",
+        "connector": "tongsheng"
       },
       "sourceUrl": "https://www.bafang-e.com/",
-      "sourceRef": "Draft display. Protocol tongsheng. It only matches a controller with the same protocol."
+      "sourceRef": "Draft display. Protocol tongsheng, plug tongsheng. Both have to match the controller."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "uart",
+      "id": "display-850c",
+      "category": "display",
+      "brand": "Teaching",
+      "model": "850C-style UART display",
+      "modelCode": null,
+      "specs": {
+        "protocol": "uart",
+        "connector": "julet-5"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft display. Protocol uart, plug julet-5. Both have to match the controller."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "uart",
+      "id": "display-500c",
+      "category": "display",
+      "brand": "Teaching",
+      "model": "500C-style UART display",
+      "modelCode": null,
+      "specs": {
+        "protocol": "uart",
+        "connector": "julet-5"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft display. Protocol uart, plug julet-5. Both have to match the controller."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "uart",
+      "id": "display-dpc14",
+      "category": "display",
+      "brand": "Teaching",
+      "model": "DPC-14-style UART display",
+      "modelCode": null,
+      "specs": {
+        "protocol": "uart",
+        "connector": "julet-5"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft display. Protocol uart, plug julet-5. Both have to match the controller."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "can",
+      "id": "display-dpc18",
+      "category": "display",
+      "brand": "Teaching",
+      "model": "DP C18-style CAN display",
+      "modelCode": null,
+      "specs": {
+        "protocol": "can",
+        "connector": "bafang-can-5"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft display. Protocol can, plug bafang-can-5. Both have to match the controller."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "uart",
+      "id": "display-uart-sm",
+      "category": "display",
+      "brand": "Teaching",
+      "model": "UART display with an SM plug",
+      "modelCode": null,
+      "specs": {
+        "protocol": "uart",
+        "connector": "sm-5"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft display. Protocol uart, plug sm-5. Both have to match the controller."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "kt",
+      "id": "display-kt-lcd3",
+      "category": "display",
+      "brand": "Teaching",
+      "model": "KT LCD3",
+      "modelCode": null,
+      "specs": {
+        "protocol": "kt",
+        "connector": "kt-5"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft display. Protocol kt, plug kt-5. Both have to match the controller."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "kt",
+      "id": "display-kt-lcd8",
+      "category": "display",
+      "brand": "Teaching",
+      "model": "KT LCD8H",
+      "modelCode": null,
+      "specs": {
+        "protocol": "kt",
+        "connector": "kt-5"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft display. Protocol kt, plug kt-5. Both have to match the controller."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "kt",
+      "id": "display-kt-lcd1",
+      "category": "display",
+      "brand": "Teaching",
+      "model": "KT LCD1",
+      "modelCode": null,
+      "specs": {
+        "protocol": "kt",
+        "connector": "kt-5"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft display. Protocol kt, plug kt-5. Both have to match the controller."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "km5s",
+      "id": "display-sw900",
+      "category": "display",
+      "brand": "Teaching",
+      "model": "SW900-style KM5S display",
+      "modelCode": null,
+      "specs": {
+        "protocol": "km5s",
+        "connector": "sm-5"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft display. Protocol km5s, plug sm-5. Both have to match the controller."
     },
     {
       "years": null,
@@ -4595,6 +5135,1064 @@
       },
       "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
       "sourceRef": "Draft torque arm noted for a Boost thru-axle hub motor."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "36 V QR 135",
+      "category": "motor",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "id": "motor-hub-geared-36",
+      "brand": "Bafang",
+      "model": "36 V geared rear hub, QR 135, HG",
+      "modelCode": null,
+      "specs": {
+        "chainrings": [],
+        "ringCount": 1,
+        "speeds": 9,
+        "chainType": "standard",
+        "spindle": null,
+        "freehub": "hg-m",
+        "rotorMount": "6-bolt",
+        "axle": "qr-135",
+        "sprocket": "cassette",
+        "protocol": "uart",
+        "connector": null,
+        "bbShells": [],
+        "bbWidths": [],
+        "position": "rear",
+        "motorType": "geared-hub",
+        "voltage": 36,
+        "powerW": 350
+      },
+      "sourceRef": "Draft 36 V geared hub. It does not match a 48 V-only controller."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "CAN mid-drive",
+      "category": "motor",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "id": "motor-m620-can",
+      "brand": "Bafang",
+      "model": "M620-style 48 V CAN mid-drive",
+      "modelCode": "M620",
+      "specs": {
+        "chainrings": [
+          46
+        ],
+        "ringCount": 1,
+        "speeds": 9,
+        "chainType": "standard",
+        "spindle": null,
+        "freehub": null,
+        "rotorMount": null,
+        "axle": null,
+        "sprocket": null,
+        "protocol": "can",
+        "connector": null,
+        "bbShells": null,
+        "bbWidths": null,
+        "position": "bottom",
+        "motorType": "mid-drive",
+        "voltage": 48,
+        "powerW": 1000
+      },
+      "sourceRef": "Draft. CAN mid-drive. Shell and width are left blank so a guessed bottom bracket cannot pass."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "front hub QR 100",
+      "category": "motor",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "id": "motor-front-hub-36",
+      "brand": "Teaching",
+      "model": "36 V geared front hub, QR 100",
+      "modelCode": null,
+      "specs": {
+        "chainrings": [],
+        "ringCount": 1,
+        "speeds": 1,
+        "chainType": "standard",
+        "spindle": null,
+        "freehub": null,
+        "rotorMount": "6-bolt",
+        "axle": "qr-100",
+        "sprocket": "single",
+        "protocol": "uart",
+        "connector": null,
+        "bbShells": [],
+        "bbWidths": [],
+        "position": "front",
+        "motorType": "geared-hub",
+        "voltage": 36,
+        "powerW": 250
+      },
+      "sourceRef": "Draft front hub motor. It covers the front hub, not the rear hub. QR 100."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "KT hub",
+      "category": "motor",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "id": "motor-hub-kt-48",
+      "brand": "Teaching",
+      "model": "48 V geared rear hub, KT protocol, QR 135",
+      "modelCode": null,
+      "specs": {
+        "chainrings": [],
+        "ringCount": 1,
+        "speeds": 9,
+        "chainType": "standard",
+        "spindle": null,
+        "freehub": "hg-m",
+        "rotorMount": "6-bolt",
+        "axle": "qr-135",
+        "sprocket": "cassette",
+        "protocol": "kt",
+        "connector": null,
+        "bbShells": [],
+        "bbWidths": [],
+        "position": "rear",
+        "motorType": "geared-hub",
+        "voltage": 48,
+        "powerW": 500
+      },
+      "sourceRef": "Draft hub motor that speaks KT, not Bafang UART."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hall julet-3 analog",
+      "id": "throttle-hall-thumb-julet",
+      "category": "throttle",
+      "brand": "Teaching",
+      "model": "Hall thumb throttle, Julet 3-pin",
+      "modelCode": null,
+      "specs": {
+        "signal": "hall",
+        "connector": "julet-3",
+        "protocol": "analog",
+        "style": "thumb"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hall julet-3 analog",
+      "id": "throttle-hall-twist-julet",
+      "category": "throttle",
+      "brand": "Teaching",
+      "model": "Hall twist throttle, Julet 3-pin",
+      "modelCode": null,
+      "specs": {
+        "signal": "hall",
+        "connector": "julet-3",
+        "protocol": "analog",
+        "style": "twist"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hall julet-3 analog",
+      "id": "throttle-hall-half-julet",
+      "category": "throttle",
+      "brand": "Teaching",
+      "model": "Hall half-twist throttle, Julet 3-pin",
+      "modelCode": null,
+      "specs": {
+        "signal": "hall",
+        "connector": "julet-3",
+        "protocol": "analog",
+        "style": "half-twist"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hall can analog",
+      "id": "throttle-hall-thumb-can",
+      "category": "throttle",
+      "brand": "Teaching",
+      "model": "Hall thumb throttle, Bafang CAN plug",
+      "modelCode": null,
+      "specs": {
+        "signal": "hall",
+        "connector": "bafang-can-3",
+        "protocol": "analog",
+        "style": "thumb"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hall can analog",
+      "id": "throttle-hall-twist-can",
+      "category": "throttle",
+      "brand": "Teaching",
+      "model": "Hall twist throttle, Bafang CAN plug",
+      "modelCode": null,
+      "specs": {
+        "signal": "hall",
+        "connector": "bafang-can-3",
+        "protocol": "analog",
+        "style": "twist"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hall kt-3 analog",
+      "id": "throttle-hall-thumb-kt",
+      "category": "throttle",
+      "brand": "Teaching",
+      "model": "Hall thumb throttle, KT 3-pin",
+      "modelCode": null,
+      "specs": {
+        "signal": "hall",
+        "connector": "kt-3",
+        "protocol": "analog",
+        "style": "thumb"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hall kt-3 analog",
+      "id": "throttle-hall-twist-kt",
+      "category": "throttle",
+      "brand": "Teaching",
+      "model": "Hall twist throttle, KT 3-pin",
+      "modelCode": null,
+      "specs": {
+        "signal": "hall",
+        "connector": "kt-3",
+        "protocol": "analog",
+        "style": "twist"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hall sm-3 analog",
+      "id": "throttle-hall-thumb-sm",
+      "category": "throttle",
+      "brand": "Teaching",
+      "model": "Hall thumb throttle, SM 3-pin",
+      "modelCode": null,
+      "specs": {
+        "signal": "hall",
+        "connector": "sm-3",
+        "protocol": "analog",
+        "style": "thumb"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hall bullet analog",
+      "id": "throttle-hall-thumb-bullet",
+      "category": "throttle",
+      "brand": "Teaching",
+      "model": "Hall thumb throttle, bullet wires",
+      "modelCode": null,
+      "specs": {
+        "signal": "hall",
+        "connector": "bullet",
+        "protocol": "analog",
+        "style": "thumb"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "potentiometer sm-3",
+      "id": "throttle-pot-twist-sm",
+      "category": "throttle",
+      "brand": "Teaching",
+      "model": "Potentiometer twist throttle, SM 3-pin",
+      "modelCode": null,
+      "specs": {
+        "signal": "potentiometer",
+        "connector": "sm-3",
+        "protocol": "analog",
+        "style": "twist"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hall tongsheng analog",
+      "id": "throttle-hall-tongsheng",
+      "category": "throttle",
+      "brand": "Teaching",
+      "model": "Hall thumb throttle, Tongsheng plug",
+      "modelCode": null,
+      "specs": {
+        "signal": "hall",
+        "connector": "tongsheng",
+        "protocol": "analog",
+        "style": "thumb"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "uart bus",
+      "id": "throttle-uart-bus",
+      "category": "throttle",
+      "brand": "Teaching",
+      "model": "UART bus thumb throttle",
+      "modelCode": null,
+      "specs": {
+        "signal": "hall",
+        "connector": "julet-3",
+        "protocol": "uart",
+        "style": "thumb"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft throttle. Fit is signal (hall or potentiometer), plug, and analog versus bus. Thumb versus twist is only the shape in the hand. This one speaks UART. It does not fit an analog throttle port."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "8 julet",
+      "id": "pas-8-julet",
+      "category": "pas",
+      "brand": "Teaching",
+      "model": "8-magnet PAS, Julet",
+      "modelCode": null,
+      "specs": {
+        "kind": "magnet",
+        "magnetCount": 8,
+        "connector": "julet-3"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12 julet",
+      "id": "pas-12-julet",
+      "category": "pas",
+      "brand": "Teaching",
+      "model": "12-magnet PAS, Julet",
+      "modelCode": null,
+      "specs": {
+        "kind": "magnet",
+        "magnetCount": 12,
+        "connector": "julet-3"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "5 julet",
+      "id": "pas-5-julet",
+      "category": "pas",
+      "brand": "Teaching",
+      "model": "5-magnet PAS, Julet",
+      "modelCode": null,
+      "specs": {
+        "kind": "magnet",
+        "magnetCount": 5,
+        "connector": "julet-3"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12 kt",
+      "id": "pas-12-kt",
+      "category": "pas",
+      "brand": "Teaching",
+      "model": "12-magnet PAS, KT plug",
+      "modelCode": null,
+      "specs": {
+        "kind": "magnet",
+        "magnetCount": 12,
+        "connector": "kt-3"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "8 kt",
+      "id": "pas-8-kt",
+      "category": "pas",
+      "brand": "Teaching",
+      "model": "8-magnet PAS, KT plug",
+      "modelCode": null,
+      "specs": {
+        "kind": "magnet",
+        "magnetCount": 8,
+        "connector": "kt-3"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12 sm",
+      "id": "pas-12-sm",
+      "category": "pas",
+      "brand": "Teaching",
+      "model": "12-magnet PAS, SM plug",
+      "modelCode": null,
+      "specs": {
+        "kind": "magnet",
+        "magnetCount": 12,
+        "connector": "sm-3"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "5 sm",
+      "id": "pas-5-sm",
+      "category": "pas",
+      "brand": "Teaching",
+      "model": "5-magnet PAS, SM plug",
+      "modelCode": null,
+      "specs": {
+        "kind": "magnet",
+        "magnetCount": 5,
+        "connector": "sm-3"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "8 sm",
+      "id": "pas-8-sm",
+      "category": "pas",
+      "brand": "Teaching",
+      "model": "8-magnet PAS, SM plug",
+      "modelCode": null,
+      "specs": {
+        "kind": "magnet",
+        "magnetCount": 8,
+        "connector": "sm-3"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "5 bullet",
+      "id": "pas-5-bullet",
+      "category": "pas",
+      "brand": "Teaching",
+      "model": "5-magnet PAS, bullet wires",
+      "modelCode": null,
+      "specs": {
+        "kind": "magnet",
+        "magnetCount": 5,
+        "connector": "bullet"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "torque",
+      "id": "pas-torque-tongsheng",
+      "category": "pas",
+      "brand": "Teaching",
+      "model": "Tongsheng torque sensor lead",
+      "modelCode": null,
+      "specs": {
+        "kind": "torque",
+        "magnetCount": null,
+        "connector": "tongsheng"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pas. Magnet discs have to be a count the controller lists. A torque sensor is a different kind."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "NO julet",
+      "id": "brake-sensor-no-julet",
+      "category": "brake_sensor",
+      "brand": "Teaching",
+      "model": "Normally-open brake cutoff, Julet",
+      "modelCode": null,
+      "specs": {
+        "switchType": "normally-open",
+        "connector": "julet-2",
+        "style": "lever"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "NC julet",
+      "id": "brake-sensor-nc-julet",
+      "category": "brake_sensor",
+      "brand": "Teaching",
+      "model": "Normally-closed brake cutoff, Julet",
+      "modelCode": null,
+      "specs": {
+        "switchType": "normally-closed",
+        "connector": "julet-2",
+        "style": "lever"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "NO sm",
+      "id": "brake-sensor-no-sm",
+      "category": "brake_sensor",
+      "brand": "Teaching",
+      "model": "Normally-open brake cutoff, SM",
+      "modelCode": null,
+      "specs": {
+        "switchType": "normally-open",
+        "connector": "sm-2",
+        "style": "lever"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "NC sm",
+      "id": "brake-sensor-nc-sm",
+      "category": "brake_sensor",
+      "brand": "Teaching",
+      "model": "Normally-closed brake cutoff, SM",
+      "modelCode": null,
+      "specs": {
+        "switchType": "normally-closed",
+        "connector": "sm-2",
+        "style": "lever"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "NO kt",
+      "id": "brake-sensor-no-kt",
+      "category": "brake_sensor",
+      "brand": "Teaching",
+      "model": "Normally-open brake cutoff, KT",
+      "modelCode": null,
+      "specs": {
+        "switchType": "normally-open",
+        "connector": "kt-2",
+        "style": "lever"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "NC kt",
+      "id": "brake-sensor-nc-kt",
+      "category": "brake_sensor",
+      "brand": "Teaching",
+      "model": "Normally-closed brake cutoff, KT",
+      "modelCode": null,
+      "specs": {
+        "switchType": "normally-closed",
+        "connector": "kt-2",
+        "style": "lever"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "NO hydraulic",
+      "id": "brake-sensor-no-hydraulic",
+      "category": "brake_sensor",
+      "brand": "Teaching",
+      "model": "Hydraulic reed cutoff, normally-open, Julet",
+      "modelCode": null,
+      "specs": {
+        "switchType": "normally-open",
+        "connector": "julet-2",
+        "style": "hydraulic"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "NC hydraulic",
+      "id": "brake-sensor-nc-hydraulic",
+      "category": "brake_sensor",
+      "brand": "Teaching",
+      "model": "Hydraulic reed cutoff, normally-closed, Julet",
+      "modelCode": null,
+      "specs": {
+        "switchType": "normally-closed",
+        "connector": "julet-2",
+        "style": "hydraulic"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "NO bullet",
+      "id": "brake-sensor-no-bullet",
+      "category": "brake_sensor",
+      "brand": "Teaching",
+      "model": "Normally-open brake cutoff, bullets",
+      "modelCode": null,
+      "specs": {
+        "switchType": "normally-open",
+        "connector": "bullet",
+        "style": "lever"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "NO tongsheng",
+      "id": "brake-sensor-tongsheng",
+      "category": "brake_sensor",
+      "brand": "Teaching",
+      "model": "Tongsheng brake cutoff, normally-open",
+      "modelCode": null,
+      "specs": {
+        "switchType": "normally-open",
+        "connector": "tongsheng",
+        "style": "lever"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft brake_sensor. Open versus closed has to match the controller. The plug is a second check. Hydraulic versus lever is the shape, not a separate electrical family."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "spoke julet",
+      "id": "speed-julet",
+      "category": "speed_sensor",
+      "brand": "Teaching",
+      "model": "Spoke-magnet speed sensor, Julet",
+      "modelCode": null,
+      "specs": {
+        "sensorType": "spoke-magnet",
+        "connector": "julet-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft speed_sensor. The sensor type and the plug both have to match. This part is optional."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "spoke sm",
+      "id": "speed-sm",
+      "category": "speed_sensor",
+      "brand": "Teaching",
+      "model": "Spoke-magnet speed sensor, SM",
+      "modelCode": null,
+      "specs": {
+        "sensorType": "spoke-magnet",
+        "connector": "sm-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft speed_sensor. The sensor type and the plug both have to match. This part is optional."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "spoke kt",
+      "id": "speed-kt",
+      "category": "speed_sensor",
+      "brand": "Teaching",
+      "model": "Spoke-magnet speed sensor, KT",
+      "modelCode": null,
+      "specs": {
+        "sensorType": "spoke-magnet",
+        "connector": "kt-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft speed_sensor. The sensor type and the plug both have to match. This part is optional."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "spoke bullet",
+      "id": "speed-bullet",
+      "category": "speed_sensor",
+      "brand": "Teaching",
+      "model": "Spoke-magnet speed sensor, bullets",
+      "modelCode": null,
+      "specs": {
+        "sensorType": "spoke-magnet",
+        "connector": "bullet"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft speed_sensor. The sensor type and the plug both have to match. This part is optional."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "spoke tongsheng",
+      "id": "speed-tongsheng",
+      "category": "speed_sensor",
+      "brand": "Teaching",
+      "model": "Spoke-magnet speed sensor, Tongsheng",
+      "modelCode": null,
+      "specs": {
+        "sensorType": "spoke-magnet",
+        "connector": "tongsheng"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft speed_sensor. The sensor type and the plug both have to match. This part is optional."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "disc julet",
+      "id": "speed-disc-julet",
+      "category": "speed_sensor",
+      "brand": "Teaching",
+      "model": "Disc-magnet speed sensor, Julet",
+      "modelCode": null,
+      "specs": {
+        "sensorType": "disc-magnet",
+        "connector": "julet-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft speed_sensor. The sensor type and the plug both have to match. This part is optional."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "disc sm",
+      "id": "speed-disc-sm",
+      "category": "speed_sensor",
+      "brand": "Teaching",
+      "model": "Disc-magnet speed sensor, SM",
+      "modelCode": null,
+      "specs": {
+        "sensorType": "disc-magnet",
+        "connector": "sm-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft speed_sensor. The sensor type and the plug both have to match. This part is optional."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "motor-hall",
+      "id": "speed-internal-hall",
+      "category": "speed_sensor",
+      "brand": "Teaching",
+      "model": "Motor-hall speed tap, Julet",
+      "modelCode": null,
+      "specs": {
+        "sensorType": "motor-hall",
+        "connector": "julet-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft speed_sensor. The sensor type and the plug both have to match. This part is optional."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "motor-hall sm",
+      "id": "speed-internal-hall-sm",
+      "category": "speed_sensor",
+      "brand": "Teaching",
+      "model": "Motor-hall speed tap, SM",
+      "modelCode": null,
+      "specs": {
+        "sensorType": "motor-hall",
+        "connector": "sm-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft speed_sensor. The sensor type and the plug both have to match. This part is optional."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "spoke julet",
+      "id": "speed-wheel-12",
+      "category": "speed_sensor",
+      "brand": "Teaching",
+      "model": "12-magnet wheel sensor, Julet",
+      "modelCode": null,
+      "specs": {
+        "sensorType": "spoke-magnet",
+        "connector": "julet-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft speed_sensor. The sensor type and the plug both have to match. This part is optional. Still a spoke-magnet type. Magnet count on the wheel is not a second protocol."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "6 V julet",
+      "id": "light-6v-julet",
+      "category": "light",
+      "brand": "Teaching",
+      "model": "6 V light, Julet",
+      "modelCode": null,
+      "specs": {
+        "voltage": 6,
+        "connector": "julet-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "6 V sm",
+      "id": "light-6v-sm",
+      "category": "light",
+      "brand": "Teaching",
+      "model": "6 V light, SM",
+      "modelCode": null,
+      "specs": {
+        "voltage": 6,
+        "connector": "sm-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "6 V kt",
+      "id": "light-6v-kt",
+      "category": "light",
+      "brand": "Teaching",
+      "model": "6 V light, KT",
+      "modelCode": null,
+      "specs": {
+        "voltage": 6,
+        "connector": "kt-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "6 V tongsheng",
+      "id": "light-6v-tongsheng",
+      "category": "light",
+      "brand": "Teaching",
+      "model": "6 V light, Tongsheng",
+      "modelCode": null,
+      "specs": {
+        "voltage": 6,
+        "connector": "tongsheng"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12 V sm",
+      "id": "light-12v-sm",
+      "category": "light",
+      "brand": "Teaching",
+      "model": "12 V light, SM",
+      "modelCode": null,
+      "specs": {
+        "voltage": 12,
+        "connector": "sm-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12 V julet",
+      "id": "light-12v-julet",
+      "category": "light",
+      "brand": "Teaching",
+      "model": "12 V light, Julet",
+      "modelCode": null,
+      "specs": {
+        "voltage": 12,
+        "connector": "julet-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "36 V bullet",
+      "id": "light-36v-bullet",
+      "category": "light",
+      "brand": "Teaching",
+      "model": "36 V pack-voltage light, bullets",
+      "modelCode": null,
+      "specs": {
+        "voltage": 36,
+        "connector": "bullet"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48 V bullet",
+      "id": "light-48v-bullet",
+      "category": "light",
+      "brand": "Teaching",
+      "model": "48 V pack-voltage light, bullets",
+      "modelCode": null,
+      "specs": {
+        "voltage": 48,
+        "connector": "bullet"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "6 V bullet",
+      "id": "light-6v-bullet",
+      "category": "light",
+      "brand": "Teaching",
+      "model": "6 V light, bullets",
+      "modelCode": null,
+      "specs": {
+        "voltage": 6,
+        "connector": "bullet"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12 V kt",
+      "id": "light-12v-kt",
+      "category": "light",
+      "brand": "Teaching",
+      "model": "12 V light, KT plug",
+      "modelCode": null,
+      "specs": {
+        "voltage": 12,
+        "connector": "kt-2"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage."
     }
   ]
 }

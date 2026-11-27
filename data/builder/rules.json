@@ -779,6 +779,7 @@
         "op": "and",
         "args": [
           { "op": "in", "left": "slot.motor.specs.motorType", "right": ["geared-hub", "direct-drive-hub"] },
+          { "op": "not", "arg": { "op": "eq", "left": "slot.motor.specs.position", "right": "front" } },
           { "op": "slot_filled", "slot": "hub" }
         ]
       },
@@ -798,6 +799,7 @@
         "op": "and",
         "args": [
           { "op": "in", "left": "slot.motor.specs.motorType", "right": ["geared-hub", "direct-drive-hub"] },
+          { "op": "not", "arg": { "op": "eq", "left": "slot.motor.specs.position", "right": "front" } },
           { "op": "slot_filled", "slot": "hub" },
           { "op": "not", "arg": { "op": "eq", "left": "slot.motor.specs.axle", "right": "slot.frame.specs.rearAxle" } }
         ]
@@ -820,6 +822,7 @@
         "op": "and",
         "args": [
           { "op": "eq", "left": "slot.motor.specs.sprocket", "right": "single" },
+          { "op": "not", "arg": { "op": "eq", "left": "slot.motor.specs.position", "right": "front" } },
           { "op": "slot_filled", "slot": "cassette" }
         ]
       },
@@ -1078,6 +1081,262 @@
       "fix": "Pick the wheel size written on the frame, or a frame made for this wheel.",
       "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
       "sourceRef": "Runs only when the frame record includes wheelSize. Tire clearance is still a separate cannot-verify."
+    },
+    {
+      "id": "throttle-signal",
+      "version": 1,
+      "slots": ["throttle", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.throttle.specs.signal", "right": "slot.controller.specs.throttleSignal" }
+      },
+      "messageAdult": "The throttle signal does not match the controller. A hall throttle (about 0.8 V to 4.2 V on a 5 V supply) is not a potentiometer throttle. Pack voltage is not the test.",
+      "messageKid": "This grip and this controller do not use the same kind of signal, so the throttle will not read correctly.",
+      "fix": "Match hall with a hall input, or potentiometer with a potentiometer input.",
+      "messageKidByStatus": { "cannot_verify": "We do not know the throttle signal yet." },
+      "messageAdultByStatus": { "cannot_verify": "Throttle signal or controller throttle signal is blank. Blank is not a match." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft. Hall and potentiometer throttles are different electrically. Both are powered at about 5 V by the controller, so 36 V and 48 V packs do not by themselves make a throttle fit or not."
+    },
+    {
+      "id": "throttle-connector",
+      "version": 1,
+      "slots": ["throttle", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.throttle.specs.connector", "right": "slot.controller.specs.throttleConnector" }
+      },
+      "messageAdult": "The throttle plug does not match the controller's throttle plug. Julet 3-pin, KT, Tongsheng, CAN, SM, and loose bullets do not mate.",
+      "messageKid": "This throttle's plug is a different shape from the controller's plug.",
+      "fix": "Use the plug this controller's throttle port expects. Do not force a different plug.",
+      "messageKidByStatus": { "cannot_verify": "We need both plug names." },
+      "messageAdultByStatus": { "cannot_verify": "Throttle connector or controller throttle connector is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Connector family has to match. A shared hall signal is not enough when the plug is different."
+    },
+    {
+      "id": "throttle-protocol",
+      "version": 1,
+      "slots": ["throttle", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.throttle.specs.protocol", "right": "slot.controller.specs.throttleProtocol" }
+      },
+      "messageAdult": "The throttle talk-type does not match. An analog hall grip is not a UART or CAN bus throttle.",
+      "messageKid": "This throttle talks in a different way than the controller is listening for.",
+      "fix": "Use an analog throttle on an analog throttle port, or a bus throttle on a controller that speaks that bus.",
+      "messageKidByStatus": { "cannot_verify": "We do not know how this throttle talks." },
+      "messageAdultByStatus": { "cannot_verify": "Throttle protocol or controller throttle protocol is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Analog throttles ignore the display bus. Bus throttles have to match UART, CAN, or the maker's own bus."
+    },
+    {
+      "id": "display-connector",
+      "version": 1,
+      "slots": ["display", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.display.specs.connector", "right": "slot.controller.specs.displayConnector" }
+      },
+      "messageAdult": "The display plug does not match the controller, even if the protocol name is the same.",
+      "messageKid": "This screen speaks the right language, but the plug does not fit the controller.",
+      "fix": "Match both the protocol and the display plug.",
+      "messageKidByStatus": { "cannot_verify": "We need both display plugs." },
+      "messageAdultByStatus": { "cannot_verify": "Display connector or controller display connector is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Protocol match is not enough. The display connector is a separate check."
+    },
+    {
+      "id": "pas-kind",
+      "version": 1,
+      "slots": ["pas", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.pas.specs.kind", "right": "slot.controller.specs.pasKind" }
+      },
+      "messageAdult": "The pedal sensor kind does not match. A magnet disc is not the torque sensor built into a Tongsheng motor.",
+      "messageKid": "This pedal sensor is not the kind this controller is built for.",
+      "fix": "Use a magnet PAS on a controller that expects one, or leave the external sensor off a motor that has its own torque sensor.",
+      "messageKidByStatus": { "cannot_verify": "We do not know the pedal-sensor kind yet." },
+      "messageAdultByStatus": { "cannot_verify": "PAS kind or controller PAS kind is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "kind is magnet or torque. Tongsheng TSDZ2 uses an internal torque sensor."
+    },
+    {
+      "id": "pas-magnets",
+      "version": 1,
+      "slots": ["pas", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "eq", "left": "slot.pas.specs.kind", "right": "magnet" },
+          { "op": "not", "arg": { "op": "in", "left": "slot.pas.specs.magnetCount", "right": "slot.controller.specs.pasMagnets" } }
+        ]
+      },
+      "messageAdult": "The PAS magnet count is not in the controller's list. 5, 8, and 12 magnet discs are not interchangeable unless the controller lists that count.",
+      "messageKid": "This pedal disc has the wrong number of magnets for this controller.",
+      "fix": "Use a disc whose magnet count the controller lists.",
+      "messageKidByStatus": { "cannot_verify": "We need the magnet count and the controller's list." },
+      "messageAdultByStatus": { "cannot_verify": "Magnet count or the controller magnet list is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Runs for magnet PAS only. A torque sensor skips this check."
+    },
+    {
+      "id": "pas-connector",
+      "version": 1,
+      "slots": ["pas", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.pas.specs.connector", "right": "slot.controller.specs.pasConnector" }
+      },
+      "messageAdult": "The PAS plug does not match the controller.",
+      "messageKid": "This pedal sensor's plug does not fit the controller.",
+      "fix": "Match the PAS plug.",
+      "messageKidByStatus": { "cannot_verify": "We need both PAS plugs." },
+      "messageAdultByStatus": { "cannot_verify": "PAS connector is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "PAS connector is separate from magnet count."
+    },
+    {
+      "id": "brake-sensor-logic",
+      "version": 1,
+      "slots": ["brake_sensor", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.brake_sensor.specs.switchType", "right": "slot.controller.specs.brakeSwitch" }
+      },
+      "messageAdult": "The brake cutoff is normally-open or normally-closed, and the controller expects the other one. The motor can then either refuse to start or refuse to cut.",
+      "messageKid": "This brake switch works backwards for this controller, so it is not a safe pair.",
+      "fix": "Match normally-open with a normally-open input, or normally-closed with a normally-closed input.",
+      "messageKidByStatus": { "cannot_verify": "We do not know if this brake switch is the open or closed kind." },
+      "messageAdultByStatus": { "cannot_verify": "Brake switch type or controller brake input is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Normally-open and normally-closed cutoffs are not interchangeable."
+    },
+    {
+      "id": "brake-sensor-connector",
+      "version": 1,
+      "slots": ["brake_sensor", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.brake_sensor.specs.connector", "right": "slot.controller.specs.brakeConnector" }
+      },
+      "messageAdult": "The brake-cutoff plug does not match the controller.",
+      "messageKid": "This brake switch's plug does not fit the controller.",
+      "fix": "Match the brake-cutoff plug.",
+      "messageKidByStatus": { "cannot_verify": "We need both brake-switch plugs." },
+      "messageAdultByStatus": { "cannot_verify": "Brake connector is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Plug match is separate from open versus closed."
+    },
+    {
+      "id": "speed-sensor-type",
+      "version": 1,
+      "slots": ["speed_sensor", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.speed_sensor.specs.sensorType", "right": "slot.controller.specs.speedSensor" }
+      },
+      "messageAdult": "The speed sensor type does not match the controller's speed input.",
+      "messageKid": "This speed sensor is not the kind this controller reads.",
+      "fix": "Match a spoke-magnet sensor to a spoke-magnet input.",
+      "messageKidByStatus": { "cannot_verify": "We do not know the speed-sensor kind." },
+      "messageAdultByStatus": { "cannot_verify": "Speed sensor type or controller speed input is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "External speed sensors are optional. The check runs only when one is selected."
+    },
+    {
+      "id": "speed-sensor-connector",
+      "version": 1,
+      "slots": ["speed_sensor", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.speed_sensor.specs.connector", "right": "slot.controller.specs.speedConnector" }
+      },
+      "messageAdult": "The speed-sensor plug does not match the controller.",
+      "messageKid": "This speed sensor's plug does not fit.",
+      "fix": "Match the speed-sensor plug.",
+      "messageKidByStatus": { "cannot_verify": "We need both speed-sensor plugs." },
+      "messageAdultByStatus": { "cannot_verify": "Speed connector is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Connector check for an external speed sensor."
+    },
+    {
+      "id": "light-voltage",
+      "version": 1,
+      "slots": ["light", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.light.specs.voltage", "right": "slot.controller.specs.lightVoltage" }
+      },
+      "messageAdult": "The light voltage does not match the controller's light port. A 6 V port is not a 12 V port and is not the full pack voltage.",
+      "messageKid": "This light wants a different voltage than the controller's light plug provides.",
+      "fix": "Match the light voltage to the controller's light port.",
+      "messageKidByStatus": { "cannot_verify": "We need both light voltages." },
+      "messageAdultByStatus": { "cannot_verify": "Light voltage or controller light voltage is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Controller light outputs are commonly 6 V. Pack-voltage lamps do not belong on that port."
+    },
+    {
+      "id": "light-connector",
+      "version": 1,
+      "slots": ["light", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.light.specs.connector", "right": "slot.controller.specs.lightConnector" }
+      },
+      "messageAdult": "The light plug does not match the controller's light port.",
+      "messageKid": "This light's plug does not fit the controller.",
+      "fix": "Match the light plug.",
+      "messageKidByStatus": { "cannot_verify": "We need both light plugs." },
+      "messageAdultByStatus": { "cannot_verify": "Light connector is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Light connector is separate from light voltage."
+    },
+    {
+      "id": "front-hub-motor-replaces-front-hub",
+      "version": 1,
+      "slots": ["motor"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "eq", "left": "slot.motor.specs.position", "right": "front" },
+          { "op": "slot_filled", "slot": "front_hub" }
+        ]
+      },
+      "messageAdult": "A front hub motor and a separate front hub are both selected. The motor is the front hub.",
+      "messageKid": "This motor is the front wheel's hub. Do not also pick a separate front hub.",
+      "fix": "Remove the separate front hub, or remove the front hub motor.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "A front hub motor covers the front hub slot when no separate front hub is chosen."
     }
   ]
 }
