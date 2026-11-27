@@ -78,8 +78,8 @@
     },
     "scene_title": {
       "x": 450,
-      "y": 30,
-      "_note": "Original: x = width / 2 (900)."
+      "y": 52,
+      "_note": "Down off the top edge: at y<=30 the title was clipped on a window taller than the room, and on Home Street it met the HUD. 52 matches Desert Edge."
     },
     "exit_zone_south": {
       "x": 450,

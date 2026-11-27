@@ -166,8 +166,11 @@ function _handleHazardContact(scene, obstacle) {
   const count = (_failureCounts.get(obstacle.id) || 0) + 1;
   _failureCounts.set(obstacle.id, count);
 
-  // Visual feedback — flash red
-  scene.cameras.main.flash(200, 255, 100, 100, false);
+  // A shimmer over the hazard itself, not a full-screen red flash. The
+  // Scorching Pavement sits on the natural route to the Workshop and the
+  // GPS, so a child walking that way got the whole screen flashed red
+  // over and over. This marks the thing that stopped them instead.
+  _shimmerHazard(scene, obstacle);
 
   // Show fail message on first contact
   if (count === 1) {
@@ -339,6 +342,33 @@ function _solvePuzzle(scene, puzzle, state) {
   scene.registry.set('gameState', updated);
   saveGame(updated);
   return updated;
+}
+
+/**
+ * A short warm pulse over the obstacle, replacing a camera-wide flash.
+ *
+ * @param {object} scene
+ * @param {{x?: number, y?: number, width?: number, height?: number}} obstacle
+ */
+function _shimmerHazard(scene, obstacle) {
+  const cam = scene.cameras?.main;
+  if (!cam || !scene.add) return;
+
+  const x = Number.isFinite(obstacle?.x) ? obstacle.x : cam.scrollX + cam.width / 2;
+  const y = Number.isFinite(obstacle?.y) ? obstacle.y : cam.scrollY + cam.height / 2;
+  const w = Number.isFinite(obstacle?.width) ? obstacle.width : 120;
+  const h = Number.isFinite(obstacle?.height) ? obstacle.height : 80;
+
+  const pulse = scene.add.rectangle(x, y, w + 16, h + 16, 0xf97316, 0.42).setDepth(14);
+  scene.tweens?.add({
+    targets: pulse,
+    alpha: 0,
+    scaleX: 1.08,
+    scaleY: 1.08,
+    duration: 420,
+    ease: 'Quad.easeOut',
+    onComplete: () => pulse.destroy(),
+  });
 }
 
 function _markSolved(scene, obstacleId) {

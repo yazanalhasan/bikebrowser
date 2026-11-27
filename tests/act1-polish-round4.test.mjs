@@ -190,3 +190,42 @@ test('the explainer instruction box clears the PATCH tile', () => {
   assert.ok(instructionLeft - patchRight >= 24,
     `only ${instructionLeft - patchRight}px between the tile and the box`);
 });
+
+// ── P11 / P13 / O7 ─────────────────────────────────────────────────────────
+
+test('a hazard shimmers where it is, instead of flashing the screen red', () => {
+  const obs = read('src/renderer/game/systems/obstacleSystem.js');
+  assert.doesNotMatch(obs, /cameras\.main\.flash/,
+    'the Scorching Pavement sits on the way to the Workshop; it flashed the whole screen every pass');
+  assert.match(obs, /function _shimmerHazard/);
+});
+
+test('scene titles are off the top edge', () => {
+  for (const file of ['copper-mine', 'desert-foraging', 'dry-wash', 'mountain', 'salt-river', 'desert-edge']) {
+    const objs = JSON.parse(read(`public/layouts/${file}.layout.json`)).objects;
+    for (const [key, value] of Object.entries(objs)) {
+      if (!/title|scene_label/.test(key) || typeof value?.y !== 'number') continue;
+      assert.ok(value.y >= 46, `${file}/${key} sits at y=${value.y}, where it gets clipped`);
+    }
+  }
+});
+
+test('panels keep their own header and footer opaque', () => {
+  const c = read('src/renderer/game/GameContainer.jsx');
+  assert.match(c, /shrink-0 rounded-b-xl bg-white px-3 py-1\.5 border-t/,
+    'the crafting footer must not let the last card show through');
+  assert.match(c, /shrink-0 rounded-t-xl bg-white flex items-center justify-between/,
+    'the assistant header must not let the feed scroll through it');
+});
+
+test('the assistant feed collapses a repeated line', () => {
+  const c = read('src/renderer/game/GameContainer.jsx');
+  assert.match(c, /prev\[prev\.length - 1\]\.message === value\.message/);
+  assert.match(c, /repeats: \(last\.repeats \|\| 1\) \+ 1/);
+});
+
+test('no alert title is a raw id', () => {
+  const c = read('src/renderer/game/GameContainer.jsx');
+  assert.match(c, /\['side_quest_', '📜 Side quest'\]/);
+  assert.match(c, /\['challenge_', '🧠 Challenge'\]/);
+});

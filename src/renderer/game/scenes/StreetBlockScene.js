@@ -291,7 +291,9 @@ export default class StreetBlockScene extends LocalSceneBase {
     // North exit → Overworld
     {
       const o = this.layout.exit_zone_north;
-      this._drawTopNeighborhoodSign(o.x, 24);
+      // Clear of the top edge: at y=24 the board's top was clipped on a
+      // window taller than the street.
+      this._drawTopNeighborhoodSign(o.x, 46);
       this.addExit({
         x: o.x, y: o.y,
         width: o.w, height: o.h,

@@ -742,6 +742,16 @@ export default function GameContainer() {
       // Assistant panel message (persistent feed)
       setAssistantMessages((prev) => {
         if (prev.some((m) => m.id === value.id && Date.now() - m.timestamp < 10000)) return prev;
+        // The feed was a wall of the same line: every pass over the
+        // Scorching Pavement added another "Extreme heat! Seek shade or
+        // hydrate." Repeating the newest entry says nothing new.
+        if (prev.length && prev[prev.length - 1].message === value.message) {
+          const last = prev[prev.length - 1];
+          return [
+            ...prev.slice(0, -1),
+            { ...last, timestamp: Date.now(), repeats: (last.repeats || 1) + 1 },
+          ];
+        }
         const msg = {
           id: value.id,
           type: value.id.startsWith('ai_') ? value.id.replace('ai_', '') : 'system',
@@ -2256,8 +2266,9 @@ function CraftingPanel({ state, craftResult, onCraft, onClose }) {
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="px-3 py-1.5 border-t border-gray-100 text-[10px] text-gray-400 text-center">
+      {/* Footer. Opaque and outside the scroll area: the last recipe card
+          used to show through it. */}
+      <div className="shrink-0 rounded-b-xl bg-white px-3 py-1.5 border-t border-gray-100 text-[10px] text-gray-400 text-center">
         Forage plants to get materials · Combine to craft
       </div>
     </div>
@@ -2279,7 +2290,25 @@ function getAlertTitle(id) {
     obstacle_hint: '🧩 Obstacle',
     craft_success: '⚗️ Crafted',
   };
-  return titles[id] || '🧠 Assistant';
+  if (titles[id]) return titles[id];
+
+  // Ids built from a quest or challenge name reached the feed raw
+  // ("bridge_collapse"). Match the family, never print the id.
+  const byPrefix = [
+    ['side_quest_complete_', '🏅 Side quest done'],
+    ['side_quest_fail_', '🧩 Not yet'],
+    ['side_quest_', '📜 Side quest'],
+    ['challenge_fail_', '🧩 Try again'],
+    ['challenge_', '🧠 Challenge'],
+    ['craft_blocked_', '⚗️ Crafting'],
+    ['dialog_hint_', '💡 Hint'],
+    ['sub_scene_arrival', '🧭 Arrived'],
+  ];
+  for (const [prefix, title] of byPrefix) {
+    if (id.startsWith(prefix)) return title;
+  }
+
+  return '🧠 Assistant';
 }
 
 // ---------------------------------------------------------------------------
@@ -2324,8 +2353,9 @@ function AIAssistantPanel({ messages, status, onClose, onClear }) {
 
   return (
     <div className="absolute top-14 z-20 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-[min(18rem,calc(100vw-4rem))] max-h-[calc(100vh-5rem)] flex flex-col" style={HUD_PANEL_STYLE}>
-      {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100">
+      {/* Header. Opaque: the feed scrolled under it and the title was
+          printed over by the messages. */}
+      <div className="shrink-0 rounded-t-xl bg-white flex items-center justify-between px-3 py-2 border-b border-gray-100">
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-gray-700">🧠 Assistant</span>
           <span className={`flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full text-white ${st.color}`}>
