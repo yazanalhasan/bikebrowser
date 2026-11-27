@@ -91,18 +91,25 @@ test('MUST5: walking rooms still use cover fit', () => {
   assert.equal(fit.fillsWidth, true);
 });
 
-test('MUST4: a phone fits the room by shrinking it, which is where bands broke', () => {
-  // The frame used to paint letterbox bands with setScrollFactor(0), which
-  // Phaser still scales by zoom about the viewport centre. Below zoom 1 the
-  // bands collapsed inward into a block over the middle of the room. This
-  // test pins the condition that exposed it: phone zoom really is < 1.
-  const garage = localCameraFit({ camWidth: 390, camHeight: 844, ...GARAGE });
-  const street = localCameraFit({ camWidth: 390, camHeight: 844, ...STREET });
-  assert.ok(garage.zoom < 1, `garage phone zoom ${garage.zoom} must be below 1`);
-  assert.ok(street.zoom < 1, `street phone zoom ${street.zoom} must be below 1`);
-  // And the room must still be fully across the screen at that zoom.
-  assert.ok(garage.viewWidth >= GARAGE.worldWidth);
-  assert.ok(street.viewWidth >= STREET.worldWidth);
+test('MUST4: no walking room is ever shrunk below 1x', () => {
+  // The letterbox bands that covered the room are deleted outright, so the
+  // mechanism is gone. What remains worth pinning is the owner's 2026-11-27
+  // rule that replaced the sub-1x width fit which exposed them: a walking
+  // room never renders below 1x on any screen, portrait or landscape.
+  for (const size of [
+    { camWidth: 390, camHeight: 844 },
+    { camWidth: 320, camHeight: 800 },
+    { camWidth: 1024, camHeight: 484 },
+    { camWidth: 1280, camHeight: 720 },
+  ]) {
+    for (const [name, world] of [['garage', GARAGE], ['street', STREET]]) {
+      const fit = localCameraFit({ ...size, ...world });
+      assert.ok(
+        fit.zoom >= 1,
+        `${name} at ${size.camWidth}x${size.camHeight}: zoom ${fit.zoom} is below 1x`,
+      );
+    }
+  }
 });
 
 // ── MUST 3: one press, one item; one solve, one payout ──────────────────────

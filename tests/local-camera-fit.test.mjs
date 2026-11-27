@@ -1,14 +1,19 @@
 /**
  * Local scene camera framing.
  *
- * Owner request + review MUST (2026-11-26): the room must fill the screen
- * width — no side bands on a landscape window, and a phone must show the
- * whole room across rather than a zoomed-in slice of it.
+ * Two owner decisions, in order:
  *
- * The old contain-fit left 320px of band on a 1280x720 garage and cropped
- * the room to 390px of its 800px width on a phone. These tests pin the new
- * behaviour at the three aspect ratios the review called out: wide, short
- * and phone.
+ * - 2026-11-26: the room must fill the screen width — no side bands on a
+ *   landscape window. The old contain fit left 320px of band on a 1280x720
+ *   garage.
+ * - 2026-11-27 (**supersedes the phone half of the above**): on a phone held
+ *   upright the camera zooms in and follows Zuzu. Only larger screens —
+ *   desktop, tablet, landscape — keep showing the full room width. Fitting a
+ *   1000px room into 390px meant zoom 0.39, Zuzu about 15px tall and two
+ *   thirds of the screen empty.
+ *
+ * Both decisions are recorded in the review handoff, not given to me
+ * directly. These tests pin each branch.
  */
 
 import assert from 'node:assert/strict';
@@ -17,7 +22,9 @@ import test from 'node:test';
 import {
   localCameraFit,
   localCameraCenter,
+  isPortrait,
   MAX_FIT_ZOOM,
+  MIN_PORTRAIT_ZOOM,
 } from '../src/renderer/game/utils/localCameraFit.js';
 
 const GARAGE = { worldWidth: 800, worldHeight: 600 };
@@ -31,11 +38,12 @@ function sideBandPx(camWidth, fit, worldWidth) {
 
 // ── Width is always filled ──────────────────────────────────────────────────
 
+// Landscape only — a portrait phone deliberately does not fill the width.
 for (const [label, size] of [
   ['wide 1280x720', { camWidth: 1280, camHeight: 720 }],
   ['short 1024x484', { camWidth: 1024, camHeight: 484 }],
-  ['phone 390x844', { camWidth: 390, camHeight: 844 }],
   ['laptop 1440x900', { camWidth: 1440, camHeight: 900 }],
+  ['big 1920x911', { camWidth: 1920, camHeight: 911 }],
 ]) {
   for (const [room, world] of [['garage', GARAGE], ['Home Street', STREET], ['Desert Edge', DESERT]]) {
     test(`${room} fills the width at ${label} — no side bands`, () => {
@@ -51,29 +59,49 @@ for (const [label, size] of [
 
 // ── Phones see the whole room across ────────────────────────────────────────
 
-test('a phone shows the whole garage width, not a slice of it', () => {
-  const fit = localCameraFit({ camWidth: 390, camHeight: 844, ...GARAGE });
-  // The visible world width must cover the room. Before this change the
-  // camera sat at zoom 1 and showed 390 of the room's 800px.
-  assert.ok(
-    fit.viewWidth >= GARAGE.worldWidth,
-    `view ${fit.viewWidth} must cover the ${GARAGE.worldWidth}px room`,
-  );
-  // A phone is tall, so the whole room fits vertically too — nothing to follow.
-  assert.equal(fit.followY, false);
-
-  const { centerX, centerY } = localCameraCenter({
-    fit, worldWidth: GARAGE.worldWidth, worldHeight: GARAGE.worldHeight,
-    focusX: 400, focusY: 350,
-  });
-  // Centred on the room, which puts equal spare space on each side.
-  assert.equal(centerX, GARAGE.worldWidth / 2, 'room centred horizontally');
-  assert.equal(centerY, GARAGE.worldHeight / 2, 'room centred vertically');
+test('a portrait phone zooms in and follows instead of shrinking the room', () => {
+  for (const [name, world] of [['garage', GARAGE], ['Home Street', STREET]]) {
+    const fit = localCameraFit({ camWidth: 390, camHeight: 844, ...world });
+    assert.equal(fit.portrait, true, `${name}: 390x844 is a portrait phone`);
+    assert.ok(
+      fit.zoom >= MIN_PORTRAIT_ZOOM,
+      `${name}: zoom ${fit.zoom} must not shrink below ${MIN_PORTRAIT_ZOOM} — `
+      + 'that is what left Zuzu 15px tall',
+    );
+    assert.equal(fit.followX, true, `${name}: the camera follows across`);
+    assert.equal(fit.fillsWidth, false, `${name}: portrait does not fill the width`);
+  }
 });
 
-test('a phone shows the whole Home Street width too', () => {
+test('a portrait phone keeps Zuzu in view and never shows past a wall', () => {
   const fit = localCameraFit({ camWidth: 390, camHeight: 844, ...STREET });
-  assert.ok(fit.viewWidth >= STREET.worldWidth);
+  for (let x = 0; x <= STREET.worldWidth; x += 50) {
+    const { centerX } = localCameraCenter({
+      fit, worldWidth: STREET.worldWidth, worldHeight: STREET.worldHeight,
+      focusX: x, focusY: 350,
+    });
+    const left = centerX - fit.viewWidth / 2;
+    assert.ok(left >= -1e-9, `view must not run past the west wall at x=${x}`);
+    assert.ok(
+      left + fit.viewWidth <= STREET.worldWidth + 1e-9,
+      `view must not run past the east wall at x=${x}`,
+    );
+  }
+});
+
+test('a tablet in portrait is treated as a phone, a laptop is not', () => {
+  assert.equal(isPortrait(768, 1024), true, 'tablet upright');
+  assert.equal(isPortrait(390, 844), true, 'phone upright');
+  assert.equal(isPortrait(1024, 484), false, 'short laptop');
+  assert.equal(isPortrait(1280, 720), false, 'desktop');
+  assert.equal(isPortrait(1024, 1024), false, 'square is not portrait');
+});
+
+test('a phone in landscape goes back to the full-width fit', () => {
+  // Turning the phone sideways is a landscape screen and gets landscape rules.
+  const fit = localCameraFit({ camWidth: 844, camHeight: 390, ...STREET });
+  assert.equal(fit.portrait, false);
+  assert.equal(fit.fillsWidth, true);
 });
 
 // ── Wide/short windows follow vertically, clamped ───────────────────────────

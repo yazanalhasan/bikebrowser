@@ -36,6 +36,30 @@
  */
 export const MAX_FIT_ZOOM = 3;
 
+/**
+ * Aspect ratio at or below which a screen counts as a phone held upright.
+ * A 390x844 phone is 0.46; a 1024x484 laptop is 2.1; a tablet in portrait is
+ * about 0.75. 0.85 keeps tablets and square-ish windows on the landscape
+ * path, which is what the owner asked for.
+ */
+export const PORTRAIT_ASPECT = 0.85;
+
+/**
+ * Smallest zoom a portrait phone may use.
+ *
+ * Fitting a 1000px room into 390px needs zoom 0.39, which leaves Zuzu about
+ * 15px tall and two thirds of a tall screen empty. The owner's decision
+ * (2026-11-27, recorded in the review handoff) is that a portrait phone
+ * zooms in and follows Zuzu instead, and only larger screens show the whole
+ * room width. 1 keeps sprites at their drawn size.
+ */
+export const MIN_PORTRAIT_ZOOM = 1;
+
+/** True when this viewport is a phone held upright. */
+export function isPortrait(camWidth, camHeight) {
+  return Math.max(1, camWidth) / Math.max(1, camHeight) <= PORTRAIT_ASPECT;
+}
+
 export function localCameraFit({
   camWidth, camHeight, worldWidth, worldHeight, mode = 'cover',
 }) {
@@ -45,6 +69,7 @@ export function localCameraFit({
   const worldH = Math.max(1, worldHeight);
 
   const widthZoom = width / worldW;
+  const portrait = isPortrait(width, height);
 
   // `contain` is for rooms that are really a control panel — the Materials
   // Lab and the Thermal Lab. Filling the width there crops the room
@@ -52,23 +77,37 @@ export function localCameraFit({
   // START TEST button are never on screen at the same time and the child has
   // to walk the room to reach a button. Those scenes show everything at once
   // and never follow.
-  const zoom = mode === 'contain'
-    ? Math.min(Math.min(widthZoom, height / worldH), MAX_FIT_ZOOM)
-    : Math.min(widthZoom, MAX_FIT_ZOOM);
+  //
+  // On a portrait phone a contain fit is still the right call for a rig —
+  // the controls have to stay reachable — but the width fit used elsewhere
+  // would shrink a walking room to a stamp, so portrait takes the zoom-in
+  // branch below instead.
+  let zoom;
+  if (mode === 'contain') {
+    zoom = Math.min(Math.min(widthZoom, height / worldH), MAX_FIT_ZOOM);
+  } else if (portrait) {
+    // Zoom in and follow. Never below MIN_PORTRAIT_ZOOM, so sprites stay
+    // their drawn size however narrow the phone is.
+    zoom = Math.min(Math.max(widthZoom, MIN_PORTRAIT_ZOOM), MAX_FIT_ZOOM);
+  } else {
+    zoom = Math.min(widthZoom, MAX_FIT_ZOOM);
+  }
 
   const viewWidth = width / zoom;
   const viewHeight = height / zoom;
 
   return {
     mode,
+    portrait,
     zoom,
-    // Only follow when the room is genuinely taller than what fits, and
-    // never in contain mode — there the whole room is on screen by
-    // construction.
+    // Follow on whichever axis the room overflows. Never in contain mode —
+    // there the whole room is on screen by construction.
     followY: mode !== 'contain' && viewHeight < worldH,
+    followX: mode !== 'contain' && viewWidth < worldW,
     viewWidth,
     viewHeight,
-    fillsWidth: mode !== 'contain' && zoom === widthZoom,
+    // Landscape still fills the width exactly; portrait deliberately does not.
+    fillsWidth: mode !== 'contain' && !portrait && zoom === widthZoom,
     // True when the entire room is visible on both axes.
     showsWholeRoom: viewWidth >= worldW - 1e-9 && viewHeight >= worldH - 1e-9,
   };
