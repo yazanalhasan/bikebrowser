@@ -80,6 +80,7 @@ export default class MaterialLabScene extends LabRigBase {
   constructor() { super(SCENE_KEY); }
 
   preload() {
+    super.preload();
     this.load.json(LAYOUT_KEY, 'layouts/material-lab.layout.json');
   }
 

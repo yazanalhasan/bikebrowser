@@ -25,6 +25,7 @@ import LocalSceneBase from './LocalSceneBase.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { addArt, addGround } from '../../../game/assets/act1Art.js';
+import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
 
 // Defaults (subclasses can override via getWorldSize / hooks).
 const DEFAULT_WORLD_W = 800;
@@ -238,6 +239,22 @@ export default class LabRigBase extends LocalSceneBase {
   getTestDurationMs() { return DEFAULT_TEST_DURATION_MS; }
 
   /** Default world size — 800×600 unless overridden. */
+  /**
+   * Load the Act 1 art this rig draws with.
+   *
+   * The rigs only loaded their own layout JSON. That worked when the child
+   * walked in from the garage, because Phaser's texture cache is global and
+   * the garage had already loaded everything — but entering a rig directly
+   * (a save that was made in one, or a scene jump) left
+   * `materiallab_floor`, `materiallab_wall_backdrop` and `ui.badge_check`
+   * missing, and the loader logged "texture ... is not loaded" for each.
+   * Loading them here is idempotent: Phaser skips keys it already has.
+   */
+  preload() {
+    super.preload?.();
+    preloadGameAssets(this);
+  }
+
   getWorldSize() { return { width: DEFAULT_WORLD_W, height: DEFAULT_WORLD_H }; }
 
   /**
@@ -257,6 +274,21 @@ export default class LabRigBase extends LocalSceneBase {
   // ─────────────────────────────────────────────────────────────────────
 
   createWorld() {
+    // Phaser reuses the scene object between visits, so every cached
+    // display-object handle still points at last visit's destroyed object.
+    // `_ensureModeToggle` guards with `if (!this._modeToggleBg)`, saw a
+    // truthy dead Rectangle, skipped creating a live one and then called
+    // `setInteractive()` on it — "Cannot read properties of undefined
+    // (reading 'sys')" and a broken lab on the second visit.
+    for (const handle of [
+      '_apparatusLayer', '_specimenLayer', '_effectsLayer',
+      '_chartG', '_chartTitle', '_readoutText',
+      '_startBtnBg', '_startBtnLabel',
+      '_modeToggleBg', '_modeToggleLbl',
+    ]) {
+      this[handle] = null;
+    }
+
     const state = this.registry.get('gameState') || {};
     const world = this.getWorldSize();
     this._worldDim = { w: world.width, h: world.height };
