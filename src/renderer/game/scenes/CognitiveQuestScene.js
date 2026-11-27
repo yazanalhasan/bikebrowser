@@ -190,6 +190,22 @@ export default class CognitiveQuestScene extends Phaser.Scene {
     // The card's own label sits below it and says what the picture is.
   }
 
+  /**
+   * A short green glow around the chosen card, instead of flashing the
+   * whole screen at the child.
+   */
+  _pulseCard(bg, color) {
+    if (!bg || !this.add || !this.tweens) return;
+    const ring = this.add.rectangle(bg.x, bg.y, bg.width + 12, bg.height + 12)
+      .setStrokeStyle(5, color, 0.85)
+      .setFillStyle(color, 0)
+      .setDepth((bg.depth || 0) + 1);
+    this.tweens.add({
+      targets: ring, alpha: 0, duration: 520, ease: 'Quad.easeOut',
+      onComplete: () => ring.destroy(),
+    });
+  }
+
   _drawFeedback() {
     const f = this.layout.feedback;
     this.feedbackText = this.add.text(f.x, f.y, '', {
@@ -230,7 +246,9 @@ export default class CognitiveQuestScene extends Phaser.Scene {
       this.feedbackText.setColor('#166534').setText(this.quest.feedback?.correct || 'Correct.');
       this.continueButton.setVisible(true);
       this.registry.get('audioManager')?.playSfx?.('ui_success');
-      this.cameras.main.flash(120, 34, 197, 94, false);
+      // The card already turns green and says so. A full-screen flash
+      // on top of it is the thing a child flinches at.
+      this._pulseCard(bg, 0x16a34a);
       return;
     }
 

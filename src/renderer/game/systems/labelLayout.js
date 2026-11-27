@@ -50,11 +50,23 @@ export const PROP_CAPTION_OFFSET = -42;
 export const PROP_PROMPT_OFFSET = -24;
 
 /**
- * Depths. Characters sit at 6; a prompt drawn below that is covered by the
- * child standing at the very prop it belongs to.
+ * Depths — a label layer above every character.
+ *
+ * Characters are y-sorted (`10 + y / 26` in Player.js), so in a tall room
+ * the child's own depth reaches the high 30s. Labels at 11 and 12 were
+ * therefore still drawn underneath them: the Materials Lab caption, Mrs.
+ * Ramirez's talk prompt and the whole Mesquite caption all disappeared
+ * behind a sprite. A character at the bottom of a 1200px room reaches a
+ * depth of about 56, so the whole label stack starts above that.
  */
-export const PROP_CAPTION_DEPTH = 11;
-export const PROP_PROMPT_DEPTH = 12;
+export const PLAYER_LABEL_DEPTH = 61;
+export const NPC_LABEL_DEPTH = 62;
+export const PROP_CAPTION_DEPTH = 63;
+export const NPC_PROMPT_DEPTH = 64;
+export const PROP_PROMPT_DEPTH = 65;
+/** A companion's own name and her "Talk" chip sit on top of all of it. */
+export const COMPANION_LABEL_DEPTH = 66;
+export const COMPANION_PROMPT_DEPTH = 67;
 
 /** How much closer than the caption the player must be for the prompt. */
 export const NAME_LABEL_LEAD_PX = 34;

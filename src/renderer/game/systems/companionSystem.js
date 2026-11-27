@@ -28,6 +28,9 @@
 
 import { ACT1_CHARACTER_SHEETS, sheetFrame, groundDepth } from '../../../game/assets/act1Art.js';
 import { CHARACTER_PIXEL_SCALE } from '../../../game/art/artConfig.js';
+import {
+  COMPANION_LABEL_DEPTH, COMPANION_PROMPT_DEPTH,
+} from './labelLayout.js';
 
 /** How far behind the player the companion settles, in pixels. */
 const FOLLOW_DISTANCE = 56;
@@ -84,7 +87,7 @@ export function mountCompanion(scene, config) {
     color: '#1e293b',
     backgroundColor: 'rgba(255,255,255,0.85)',
     padding: { x: 5, y: 2 },
-  }).setOrigin(0.5, 0).setDepth(60);
+  }).setOrigin(0.5, 0).setDepth(COMPANION_LABEL_DEPTH);
 
   const prompt = scene.add.text(config.x, config.y - 70, 'Talk', {
     fontSize: '12px',
@@ -92,7 +95,7 @@ export function mountCompanion(scene, config) {
     color: '#ffffff',
     backgroundColor: '#1e293b',
     padding: { x: 6, y: 3 },
-  }).setOrigin(0.5).setDepth(61).setVisible(false);
+  }).setOrigin(0.5).setDepth(COMPANION_PROMPT_DEPTH).setVisible(false);
 
   const companion = {
     id: config.id,

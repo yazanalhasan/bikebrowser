@@ -383,12 +383,31 @@ export default class ExplainerScene extends Phaser.Scene {
     }
   }
 
+  /**
+   * A short green glow behind the feedback line, instead of flashing the
+   * whole screen at the child.
+   */
+  _pulseFeedback(color) {
+    const t = this.feedbackText;
+    if (!t || !this.add || !this.tweens) return;
+    const b = t.getBounds();
+    const ring = this.add.rectangle(b.centerX, b.centerY, b.width + 28, b.height + 18)
+      .setStrokeStyle(4, color, 0.85)
+      .setFillStyle(color, 0.12)
+      .setDepth((t.depth || 0) - 1);
+    this.tweens.add({
+      targets: ring, alpha: 0, duration: 520, ease: 'Quad.easeOut',
+      onComplete: () => ring.destroy(),
+    });
+  }
+
   _success(message) {
     if (this._advancing) return;
     this._advancing = true;
     this.feedbackText.setColor('#15803d').setText(message || 'Correct.');
     this.registry.get('audioManager')?.playSfx?.('ui_success');
-    this.cameras.main.flash(120, 34, 197, 94, false);
+    // Green text and the sound say 'correct' already; no screen flash.
+    this._pulseFeedback(0x16a34a);
     this.time.delayedCall(750, () => {
       this._stepIndex += 1;
       this._advancing = false;

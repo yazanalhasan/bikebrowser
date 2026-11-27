@@ -18,6 +18,7 @@ import { getNpcAppearance, DEFAULT_APPEARANCE } from '../data/npcAppearances.js'
 import { ACT1_CHARACTER_SHEETS, sheetFrame } from '../../../game/assets/act1Art.js';
 import { hasAtlasFrame } from '../../../game/assets/createAtlasSprite.js';
 import { CHARACTER_PIXEL_SCALE } from '../../../game/art/artConfig.js';
+import { NPC_LABEL_DEPTH, NPC_PROMPT_DEPTH } from '../systems/labelLayout.js';
 
 const NEIGHBORHOOD_ATLAS = 'neighborhood_atlas';
 
@@ -470,8 +471,12 @@ export default class Npc {
     const depth = 10 + feetY / 26;
     this.container.setDepth(depth);
     this.shadow.setDepth(depth - 0.5);
-    this.label.setDepth(depth + 0.1);
-    this.prompt.setDepth(depth + 0.2);
+    // The name and the prompt go on the label layer, not just above this
+    // NPC: the child's own depth is y-sorted too, so standing in front of
+    // Mrs. Ramirez put her name under Zuzu's feet and her talk prompt
+    // behind his head.
+    this.label.setDepth(NPC_LABEL_DEPTH);
+    this.prompt.setDepth(NPC_PROMPT_DEPTH);
   }
 
   /** Call from scene update(). Pass the player sprite so distance is checked. */
@@ -483,12 +488,16 @@ export default class Npc {
     this._nearby = dist < INTERACT_DISTANCE;
     this.prompt.setVisible(this._nearby);
 
-    // Re-apply depth each frame so label/prompt/shadow track the container
-    // even when a scene's depth-sort system rewrites container depth.
+    // Re-apply the shadow depth each frame so it tracks the container even
+    // when a scene's depth-sort system rewrites it. The name and the
+    // prompt do NOT follow the container: they belong on the label layer,
+    // above every character. This per-frame line used to put them back on
+    // `container.depth + 0.1`, which is why raising them in `_applyDepth`
+    // changed nothing on screen.
     const base = this.container.depth;
     this.shadow.setDepth(base - 0.5);
-    this.label.setDepth(base + 0.1);
-    this.prompt.setDepth(base + 0.2);
+    this.label.setDepth(NPC_LABEL_DEPTH);
+    this.prompt.setDepth(NPC_PROMPT_DEPTH);
   }
 
   isNearby() { return this._nearby; }

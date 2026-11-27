@@ -11,7 +11,9 @@
 import Phaser from 'phaser';
 import { createZuzu } from '../../../game/characters/createZuzu.js';
 import { CHARACTER_PIXEL_SCALE } from '../../../game/art/artConfig.js';
-import { feetOffset, nameTagOffset } from '../systems/labelLayout.js';
+import {
+  feetOffset, nameTagOffset, PLAYER_LABEL_DEPTH,
+} from '../systems/labelLayout.js';
 
 const SPEED = 300;
 
@@ -463,7 +465,9 @@ export default class Player {
     this.container.setDepth(depth);
     this.sprite.setDepth(depth);
     this._shadow.setDepth(depth - 0.5);
-    this.label.setDepth(depth + 0.1);
+    // The name tag is on the shared label layer, not just above Zuzu: at
+    // `depth + 0.1` an NPC standing below him drew over it.
+    this.label.setDepth(PLAYER_LABEL_DEPTH);
 
     // Shadow scales subtly with bob to reinforce grounding
     const shadowScale = 1.0 + this._limbOffsets.bob * 0.03;

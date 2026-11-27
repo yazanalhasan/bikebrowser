@@ -2087,7 +2087,9 @@ export default function GameContainer() {
       )}
 
       {/* ---- Action button (interact with NPCs) ---- */}
-      {phase === 'playing' && !paused && !dialog && (
+      {/* Hidden while a panel is open: on a phone it sat on the
+          Crafting panel's footer. */}
+      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && (
         <button
           type="button"
           aria-label="Talk or use the thing you are standing next to"
