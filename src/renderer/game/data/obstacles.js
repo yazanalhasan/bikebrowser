@@ -34,7 +34,15 @@ export const SCENE_OBSTACLES = {
         icon: '',
         description: 'The pavement is scorching hot. You need protection to cross.',
         damage: { stat: 'health', amount: 0.05, interval: 500 },
-        passCondition: { type: 'item', item: 'sun_balm', message: 'Apply sun balm to resist the heat.' },
+        // Either protection works. It only accepted sun balm, so a child
+        // carrying the Protective Coating they had just crafted still got
+        // the full-screen flash and "you need some kind of heat
+        // protection".
+        passCondition: {
+          type: 'itemAny',
+          items: ['sun_balm', 'protective_coating'],
+          message: 'Sun balm or a protective coating will get you across.',
+        },
         failMessage: 'Ouch! The pavement burns! You need some kind of heat protection...',
         successMessage: 'The sun balm protects your skin. You cross the hot zone safely!',
         hintDelay: 2, // show AI hint after 2 failures
@@ -300,6 +308,16 @@ export function checkObstacleCondition(obstacle, gameState) {
         passed: gameState.inventory?.includes(cond.item),
         reason: cond.message || `Need item: ${cond.item}`,
       };
+
+    // Any one of several items will do — a hazard you can cross with
+    // whichever protection you happen to have made.
+    case 'itemAny': {
+      const options = Array.isArray(cond.items) ? cond.items : [];
+      return {
+        passed: options.some((id) => gameState.inventory?.includes(id)),
+        reason: cond.message || `Need one of: ${options.join(', ')}`,
+      };
+    }
     case 'quest':
       return {
         passed: gameState.completedQuests?.includes(cond.quest),

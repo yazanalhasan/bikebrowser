@@ -224,6 +224,8 @@ const QUESTS = {
       {
         id: 'use_salve',
         type: 'use_item',
+        // Needs the patient present: the salve goes on Mrs. Ramirez's arm.
+        requiresGiver: true,
         text: 'Apply the healing salve to help Mrs. Ramirez\'s arm.',
         requiredItem: 'healing_salve',
         hint: 'Use the salve you just crafted.',
@@ -893,6 +895,8 @@ const QUESTS = {
       {
         id: 'treat_infection',
         type: 'use_item',
+        // Needs the patient present: the creosote treats a person, not an object.
+        requiresGiver: true,
         text: 'Apply creosote\'s antimicrobial compounds to treat the infection.',
         requiredItem: 'creosote_leaves',
         hint: 'Use the creosote leaves you harvested.',

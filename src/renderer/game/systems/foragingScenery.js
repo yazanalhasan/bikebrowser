@@ -211,6 +211,19 @@ function unsolvedPuzzleItems(scene, state) {
   return wanted;
 }
 
+/**
+ * Is the step after the current one a conversation with the quest giver?
+ *
+ * Used to decide whether "bring this back to X" is true. Anything else —
+ * another forage, a craft, a trip to the mine — means it is not.
+ */
+function nextStepIsGiverTalk(state) {
+  const quest = QUESTS[state?.activeQuest?.id];
+  if (!quest) return false;
+  const next = quest.steps?.[(state.activeQuest.stepIndex ?? 0) + 1];
+  return next?.type === 'dialogue' || next?.type === 'complete';
+}
+
 /** The active quest's current step, but only if it is a forage step. */
 function currentForageStep(state) {
   if (!state.activeQuest) return null;
@@ -278,10 +291,13 @@ export function handlePlantInteract(scene, species, label, plantX, plantY) {
     saveGame(updated);
     audioMgr?.playSfx('item_pickup');
 
-    // Name whoever actually asked for it. This used to say "Mrs. Ramirez"
-    // for every plant in the game, which is wrong for all of Mr. Chen's
-    // quests. With no giver we leave the sentence out entirely.
-    const giver = advancesCurrentStep ? activeQuestGiverName(state) : null;
+    // Only promise a trip back when the very next thing really is talking
+    // to the giver. It used to say "Bring this back to Mrs. Ramirez" and
+    // then immediately instruct something else ("Mine copper ore..."),
+    // which contradicts itself in the same breath.
+    const giver = advancesCurrentStep && nextStepIsGiverTalk(state)
+      ? activeQuestGiverName(state)
+      : null;
     const found = `Found ${grantedItem.replace(/_/g, ' ')}! ${desc}`;
 
     scene.registry.set('dialogEvent', {

@@ -968,6 +968,13 @@ export default class LocalSceneBase extends Phaser.Scene {
   }
 
   _savePosition(pos) {
+    // Not while leaving. `transitionTo` writes the destination's named spawn
+    // into `state.player` and then fades out — during which this scene is
+    // still updating, and one more autosave would stamp the OLD scene and
+    // the OLD position straight over it. The target then sees
+    // `player.scene !== its own key`, falls back to `default`, and the child
+    // arrives in the middle of the street instead of at the garage door.
+    if (this._transitioning) return;
     const state = this.registry.get('gameState');
     if (!state) return;
     const updated = {

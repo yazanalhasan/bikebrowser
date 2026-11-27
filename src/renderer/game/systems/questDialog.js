@@ -24,6 +24,19 @@ export const NARRATOR = "Zuzu's notebook";
 const GIVER_PRESENT_STEPS = new Set(['dialogue', 'complete']);
 
 /**
+ * Does this step need the giver standing there?
+ *
+ * Conversations always do. So does any step marked `requiresGiver` in the
+ * quest data — used for treatments, because "apply the healing salve to help
+ * Mrs. Ramirez's arm" could be completed alone in the desert, nowhere near
+ * the arm. Other `use_item` steps (a tyre lever, chain lube) are things you
+ * do to an object and are fine anywhere.
+ */
+function needsGiverHere(step) {
+  return Boolean(step?.requiresGiver) || GIVER_PRESENT_STEPS.has(step?.type);
+}
+
+/**
  * The dialog to show for the step the player has just arrived at.
  *
  * Every step type gets a dialog except `explainer`, which opens its own
@@ -71,7 +84,7 @@ export function dialogForStep(step, state, giverName, options = {}) {
   // desert_healer, the infection quest and the coating quest could all be
   // finished out in the desert or in the garage, with "Mrs. Ramirez"
   // speaking in a scene she is not in — and the child never walked back.
-  if (!giverPresent && GIVER_PRESENT_STEPS.has(step.type)) {
+  if (!giverPresent && needsGiverHere(step)) {
     return {
       speaker: NARRATOR,
       // No pronoun. There is no pronoun field on an NPC profile, and

@@ -20,6 +20,9 @@ import { getNextQuestForNPC } from '../src/renderer/game/data/questBoard.js';
 import QUESTS from '../src/renderer/game/data/quests.js';
 import { getNpcProfile } from '../src/renderer/game/data/npcProfiles.js';
 import { MATERIALS } from '../src/renderer/game/systems/materials/materialDatabase.js';
+import {
+  SCENE_OBSTACLES, checkObstacleCondition,
+} from '../src/renderer/game/data/obstacles.js';
 
 const GARAGE = { worldWidth: 800, worldHeight: 600 };
 const STREET = { worldWidth: 1000, worldHeight: 700 };
@@ -203,4 +206,49 @@ test('MUST6: the final choice follows the strength-per-weight story', () => {
   const correct = step.choices.find((c) => c.correct);
   assert.equal(correct.materialId, best.materialId,
     `correct is "${correct.label}" but "${best.label}" has the best strength per weight`);
+});
+
+// ── SHOULDs ────────────────────────────────────────────────────────────────
+
+test('SHOULD: a treatment cannot be applied away from the patient', () => {
+  // "Apply the healing salve to help Mrs. Ramirez's arm" used to complete
+  // alone in the desert, nowhere near the arm.
+  for (const [questId, stepId] of [
+    ['desert_healer', 'use_salve'],
+    ['desert_infection', 'treat_infection'],
+  ]) {
+    const step = QUESTS[questId].steps.find((s) => s.id === stepId);
+    assert.ok(step, `${questId}/${stepId} exists`);
+    assert.equal(step.requiresGiver, true, `${stepId} must need the patient`);
+
+    const away = dialogForStep(step, { activeQuest: { id: questId, stepIndex: 0 } },
+      'Mrs. Ramirez', { giverPresent: false });
+    assert.equal(away.step, null, `${stepId} must not be completable away`);
+    assert.equal(away.objective, true);
+  }
+});
+
+test('SHOULD: ordinary use_item steps still work anywhere', () => {
+  // A tyre lever acts on an object, not a person.
+  const step = QUESTS.flat_tire_repair.steps.find((s) => s.id === 'use_lever');
+  assert.notEqual(step.requiresGiver, true);
+  const away = dialogForStep(step, { activeQuest: { id: 'flat_tire_repair', stepIndex: 0 } },
+    'Mrs. Ramirez', { giverPresent: false });
+  assert.ok(away.step, 'still completable at the bike');
+});
+
+test('SHOULD: the heat hazard accepts either protection', () => {
+  const heat = SCENE_OBSTACLES.StreetBlockScene.obstacles
+    .find((o) => o.id === 'heat_zone');
+  assert.equal(heat.passCondition.type, 'itemAny');
+  for (const item of ['sun_balm', 'protective_coating']) {
+    assert.equal(
+      checkObstacleCondition(heat, { inventory: [item] }).passed, true,
+      `${item} must get the child across`,
+    );
+  }
+  assert.equal(
+    checkObstacleCondition(heat, { inventory: [] }).passed, false,
+    'and nothing still blocks',
+  );
 });
