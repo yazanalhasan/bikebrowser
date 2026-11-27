@@ -125,7 +125,7 @@ export function spawnObstacles(scene) {
       label: puzzle.label,
       icon: puzzle.icon,
       radius: 60,
-      onInteract: () => _handlePuzzleInteract(scene, puzzle),
+      onInteract: () => _handlePuzzleInteract(scene, puzzle, interactable),
     });
 
     spawned.puzzles.push({ def: puzzle, interactable, solved: false });
@@ -232,8 +232,23 @@ function _handleGateInteract(scene, obstacle) {
 
 // ── Puzzle Interaction Handler ────────────────────────────────────────────────
 
-function _handlePuzzleInteract(scene, puzzle) {
+function _handlePuzzleInteract(scene, puzzle, interactable = null) {
   const state = scene.registry.get('gameState') || {};
+
+  // Already solved. `spawnObstacles` skips solved puzzles on entry, but
+  // within a single visit the hotspot stayed live after a solve: pressing E
+  // again with a second fruit re-solved it, paid the reward a second time and
+  // ate the fruit. The solve removes the hotspot now; this guard covers a
+  // press that was already queued, and gives the child a sensible line.
+  if ((state.solvedObstacles || []).includes(puzzle.id)) {
+    scene.registry.set('dialogEvent', {
+      speaker: 'Zuzu',
+      text: puzzle.solvedMessage || 'Already done — nothing more to do here.',
+      choices: null, step: null,
+    });
+    return;
+  }
+
   const check = checkObstacleCondition(puzzle, state);
 
   if (check.passed) {
@@ -243,6 +258,8 @@ function _handlePuzzleInteract(scene, puzzle) {
       choices: null, step: null,
     });
     _solvePuzzle(scene, puzzle, state);
+    // Spent: take the hotspot away so the prompt stops inviting a press.
+    scene.removeInteractable?.(interactable);
   } else {
     const count = (_failureCounts.get(puzzle.id) || 0) + 1;
     _failureCounts.set(puzzle.id, count);

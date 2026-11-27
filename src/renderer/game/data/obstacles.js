@@ -86,6 +86,7 @@ export const SCENE_OBSTACLES = {
         // the signed gap in the fence, and promising one sends a child
         // hunting for something that does not exist.
         successMessage: 'The prickly pear juice soaks in and the plant perks up. Its leaves go green again!',
+        solvedMessage: 'The plant is green again. It looks much happier.',
         reward: { xp: 15, zuzubucks: 10 },
         learnSystem: 'foraging',
       },

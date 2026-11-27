@@ -125,6 +125,14 @@ export function mountLayoutFlora(scene, plants = [], options = {}) {
     y: p.y,
     spawnedBy: 'static',
     interactionRadius: p.radius,
+    // The scene's own forage flow (`handlePlantInteract` below) is the single
+    // path that puts an item in the bag. Left unset, `registerEntity` defaults
+    // this from SCENE_ITEM_GRANTS and `emitForage` grants it a SECOND time —
+    // one E press, two items, for every plant in the game. Still forageable,
+    // so queries and the forage event stream are unchanged; it just does not
+    // write inventory.
+    grantsItemId: null,
+    forageable: true,
   }));
   const entities = registerEntities(scene, configs);
   const index = new Map();
