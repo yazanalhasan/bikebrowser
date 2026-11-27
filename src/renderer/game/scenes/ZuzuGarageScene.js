@@ -12,6 +12,8 @@
  * World size: 800×600 (viewport-scale, no scrolling needed)
  */
 
+import Phaser from 'phaser';
+
 import LocalSceneBase from './LocalSceneBase.js';
 import { saveGame } from '../systems/saveSystem.js';
 import QUESTS from '../data/quests.js';
@@ -27,6 +29,21 @@ import {
 } from '../data/workbenchRecipes.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
+
+/**
+ * Ambient lift for the garage interior (see `_liftInteriorLight`).
+ *
+ * Warm cream, added not multiplied. At alpha 0.18 this adds roughly +45 to
+ * red, +41 to green and +31 to blue wherever it covers, which takes the
+ * room's mean luma from about 81 into the low 120s while keeping the
+ * colour warm rather than grey.
+ */
+const GARAGE_AMBIENT_TINT = 0xffe1ac;
+const GARAGE_AMBIENT_ALPHA = 0.18;
+
+/** Daylight spilling through the open south door. */
+const GARAGE_DAYLIGHT_TINT = 0xfff2cc;
+const GARAGE_DAYLIGHT_ALPHA = 0.3;
 
 function saveStateToRegistry(scene, state) {
   scene.registry.set('gameState', state);
@@ -113,6 +130,54 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     );
   }
 
+  /**
+   * Warm the room up without touching the art.
+   *
+   * Phaser's tint multiplies, so it can only darken a texture — brightening
+   * has to be additive. Two ADD-blended washes do the work:
+   *
+   *   1. An even warm wash over the whole room, which lifts the floor and
+   *      the stucco walls (most of the pixels on screen).
+   *   2. A stronger pool inside the south doorway, so the lift reads as
+   *      daylight coming in through the open door rather than as a flat
+   *      filter over everything.
+   *
+   * Both sit above the floor (depth 0) and the wall bands (depth 1) but
+   * below the props (depth 2+), so the workbench, bike and tools keep their
+   * own contrast and the room does not look washed out.
+   *
+   * @param {number} width world width
+   * @param {number} height world height
+   * @private
+   */
+  _liftInteriorLight(width, height) {
+    const ambient = this.add.graphics().setDepth(1.6);
+    ambient.fillStyle(GARAGE_AMBIENT_TINT, 1);
+    ambient.fillRect(0, 0, width, height);
+    ambient.setAlpha(GARAGE_AMBIENT_ALPHA);
+    ambient.setBlendMode(Phaser.BlendModes.ADD);
+
+    // Daylight pool at the door. Drawn as a few stacked, inset bands so the
+    // edge falls off instead of ending on a hard line.
+    const doorway = this.layout.sun_glow;
+    if (doorway) {
+      const pool = this.add.graphics().setDepth(1.65);
+      pool.setBlendMode(Phaser.BlendModes.ADD);
+      const bands = 4;
+      for (let i = 0; i < bands; i += 1) {
+        const inset = i * 26;
+        pool.fillStyle(GARAGE_DAYLIGHT_TINT, GARAGE_DAYLIGHT_ALPHA / bands);
+        pool.fillRect(
+          doorway.x - inset,
+          doorway.y - inset * 1.6,
+          doorway.w + inset * 2,
+          doorway.h + inset * 1.6,
+        );
+      }
+    }
+    return ambient;
+  }
+
   createWorld() {
     this.layout = loadLayout(this, 'zuzuGarageLayout');
     const { width, height } = this.getWorldSize();
@@ -129,6 +194,13 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     for (const key of ['wall_top', 'wall_left', 'wall_right', 'wall_bottom_left', 'wall_bottom_right']) {
       this._wallBand(this.layout[key]);
     }
+
+    // === AMBIENT LIGHT LIFT ===
+    // The painted floor and wall plates read too dark for the very first
+    // room a child sees (measured mean luma ~81 on the 01-zuzu-garage
+    // capture). Brightened here in code rather than by regenerating the
+    // art, so the plates stay exactly as delivered.
+    this._liftInteriorLight(width, height);
 
     // === STRING LIGHTS (ceiling ambience) ===
     // Ambience art from the bundle (slot `garage_lights`) — strung along the
@@ -619,6 +691,10 @@ export default class ZuzuGarageScene extends LocalSceneBase {
       x: this.layout.interact_bike.x, y: this.layout.interact_bike.y,
       label: "Zuzu's Bike",
       icon: null, // Zuzu's bike is already drawn above; no second copy
+      // The scene draws "⭐ Zuzu's Bike ⭐" above the rack, and the player
+      // spawns just below it — so the hotspot's own caption landed on
+      // Zuzu's torso as a second, half-hidden "Zuzu's Bike".
+      showNameLabel: false,
       radius: 80,
       onInteract: () => {
         const s = this.registry.get('gameState');
@@ -731,7 +807,7 @@ export default class ZuzuGarageScene extends LocalSceneBase {
         this.addProp(ART.lightbulb, o.x, o.y + 10, { maxPx: 34, depth: 3 });
       }
       const glowGfx = this.add.graphics();
-      glowGfx.fillStyle(0xfef3c7, 0.12);
+      glowGfx.fillStyle(0xfef3c7, 0.18);
       {
         const o = this.layout.upgrade_work_light_glow;
         glowGfx.fillCircle(o.x, o.y, o.r);
@@ -766,7 +842,7 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     // === EXIT (south door → street) ===
     // Sunlight glow at door
     const sunGfx = this.add.graphics();
-    sunGfx.fillStyle(0xfbbf24, 0.12);
+    sunGfx.fillStyle(0xfbbf24, 0.2);
     {
       const o = this.layout.sun_glow;
       sunGfx.fillRect(o.x, o.y, o.w, o.h);
