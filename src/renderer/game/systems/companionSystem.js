@@ -126,7 +126,13 @@ export function mountCompanion(scene, config) {
       const dist = Math.sqrt(dx * dx + dy * dy);
 
       this._nearby = dist < 90;
-      prompt.setVisible(this._nearby);
+      // She follows Zuzu everywhere, so her "Talk" chip was permanently in
+      // the same patch of screen as whatever prop prompt was showing — and
+      // it promised an action E would not perform, because a prop you walk
+      // up to beats a friend who walks up to you (see
+      // LocalSceneBase._handleActionKey). Yield while a prop is prompting.
+      const propPrompting = scene.registry?.get?.('propPromptVisible') === true;
+      prompt.setVisible(this._nearby && !propPrompting);
 
       // Close enough: stand still and face the player.
       if (dist <= FOLLOW_DISTANCE) {

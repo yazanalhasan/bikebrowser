@@ -258,7 +258,10 @@ export default class StreetBlockScene extends LocalSceneBase {
       const o = this.layout.chen_bike_icon;
       this._drawBike(o.x, o.y, { color: 0xef4444, accent: 0x111827, depth: groundDepth(o.y) });
       this._chenBike = chenBikeIcon
-        ? this._drawBikeBadge(o.x + 44, o.y - 7, chenBikeIcon, chenQuestDone)
+        // Further out to the side: at x+44 the badge clipped the right
+        // edge of the interact prompt, and dropping it instead put it on
+        // Zuzu's name tag.
+        ? this._drawBikeBadge(o.x + 62, o.y - 7, chenBikeIcon, chenQuestDone)
         : null;
       this.addInteractable({
         x: o.x,
@@ -294,7 +297,9 @@ export default class StreetBlockScene extends LocalSceneBase {
         width: o.w, height: o.h,
         targetScene: 'OverworldScene',
         targetSpawn: 'fromStreet',
-        label: 'Neighborhood north',
+        // The carved sign above already says "Neighborhood ↑"; an exit
+        // label here printed a second one across it.
+        label: null,
       });
     }
 

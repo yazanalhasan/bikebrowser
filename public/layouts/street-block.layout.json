@@ -260,8 +260,8 @@
     },
     "street_sign": {
       "x": 500,
-      "y": 275,
-      "_note": "Original: x = width / 2 (1000)."
+      "y": 292,
+      "_note": "Down at the kerb: at y=275 the board sat in the band where Mrs. Ramirez's talk prompt appears, and the two printed over each other whenever Zuzu walked up to her."
     },
     "npc_mrs_ramirez": {
       "x": 550,
@@ -297,16 +297,16 @@
       "_note": "Original: x = width / 2 (1000)."
     },
     "interact_gps": {
-      "x": 820,
+      "x": 740,
       "y": 300,
-      "_note": "Original: x = width - 60 (1000-60)."
+      "_note": "Moved off x=820: the Bike GPS sat under the blue house, so its caption and interact prompt printed across the Workshop door sign at (850, 282)."
     },
     "gps_post": {
-      "x": 820,
+      "x": 740,
       "y": 310,
       "w": 8,
       "h": 40,
-      "_note": "Original: x = width - 60 (1000-60)."
+      "_note": "Moved off x=820: the Bike GPS sat under the blue house, so its caption and interact prompt printed across the Workshop door sign at (850, 282)."
     },
     "gps_top": {
       "x": 940,

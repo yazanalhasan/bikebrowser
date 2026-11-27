@@ -11,6 +11,7 @@
 import Phaser from 'phaser';
 import { createZuzu } from '../../../game/characters/createZuzu.js';
 import { CHARACTER_PIXEL_SCALE } from '../../../game/art/artConfig.js';
+import { feetOffset, nameTagOffset } from '../systems/labelLayout.js';
 
 const SPEED = 300;
 
@@ -25,10 +26,7 @@ const ANIM_SPEED_MAX = 2.0;    // fastest animation multiplier
 const IDLE_LERP = 0.15;        // how fast limbs return to rest (0–1)
 const DUST_INTERVAL = 260;     // ms between dust puffs
 
-/** Feet line, matching the shadow. */
-const PLAYER_FEET_OFFSET = 24;
-/** Name tag sits just under the feet, as NPC labels do. */
-const PLAYER_LABEL_OFFSET = PLAYER_FEET_OFFSET + 10;
+
 
 export default class Player {
   /**
@@ -57,8 +55,13 @@ export default class Player {
     this.container.setScale(this._bodyScale);
     this.container.setDepth(6);
 
+    // The art is anchored on its feet baseline, the hitbox is not; see
+    // systems/labelLayout.js.
+    this._feetOffset = feetOffset(this._usesAtlasAvatar);
+    this._labelOffset = nameTagOffset(this._usesAtlasAvatar);
+
     // Shadow under character for grounding
-    this._shadow = scene.add.ellipse(x, y + 24, 28, 8, 0x000000, 0.18);
+    this._shadow = scene.add.ellipse(x, y + this._feetOffset, 28, 8, 0x000000, 0.18);
     this._shadow.setDepth(5);
 
     // Invisible physics hitbox
@@ -70,7 +73,7 @@ export default class Player {
     // Name label, just under the feet — the same relationship `Npc.js`
     // uses (FEET_OFFSET + 10). At +42 it floated clear of the sprite and
     // landed on other labels, Lina's among them.
-    this.label = scene.add.text(x, y + PLAYER_LABEL_OFFSET, 'Zuzu', {
+    this.label = scene.add.text(x, y + this._labelOffset, 'Zuzu', {
       fontSize: '13px',
       fontFamily: 'sans-serif',
       fontStyle: 'bold',
@@ -449,10 +452,10 @@ export default class Player {
     // ── Position sync ──
     // Container (visual) follows physics sprite, with walk bob applied
     this.container.setPosition(this.sprite.x, this.sprite.y + this._limbOffsets.bob);
-    this.label.setPosition(this.sprite.x, this.sprite.y + PLAYER_LABEL_OFFSET);
+    this.label.setPosition(this.sprite.x, this.sprite.y + this._labelOffset);
 
     // Shadow stays flat on ground under character
-    this._shadow.setPosition(this.sprite.x, this.sprite.y + 24);
+    this._shadow.setPosition(this.sprite.x, this.sprite.y + this._feetOffset);
     // Y-sort the player into the same band the props and NPCs use
     // (systems/depthSort.js), so he walks in front of what is above him and
     // behind what is below. A fixed depth left him under every prop.
@@ -472,8 +475,8 @@ export default class Player {
   setPosition(x, y) {
     this.sprite.setPosition(x, y);
     this.container.setPosition(x, y);
-    this.label.setPosition(x, y + PLAYER_LABEL_OFFSET);
-    this._shadow.setPosition(x, y + 24);
+    this.label.setPosition(x, y + this._labelOffset);
+    this._shadow.setPosition(x, y + this._feetOffset);
   }
 
   destroy() {

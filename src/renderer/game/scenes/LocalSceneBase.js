@@ -45,6 +45,9 @@ import {
   pickCompanionLine,
   markCompanionMet,
 } from '../data/companions.js';
+import {
+  PROP_CAPTION_OFFSET, PROP_PROMPT_OFFSET, NAME_LABEL_LEAD_PX, firstLabelClash,
+} from '../systems/labelLayout.js';
 
 // Default world size for local scenes (viewport-scale, not overworld-scale)
 const DEFAULT_WORLD = { width: 800, height: 600 };
@@ -75,7 +78,8 @@ const DEFAULT_BIOME = { fill: 0x2a2422, accent: 0x4a4030, label: 'unknown' };
  * How much further than the interaction radius a prop's name stays
  * visible. Gives the child the name just before the interact prompt.
  */
-const NAME_LABEL_LEAD_PX = 34;
+// Label geometry lives in systems/labelLayout.js so the prop caption and
+// the player's name tag cannot drift into each other again.
 
 export default class LocalSceneBase extends Phaser.Scene {
   constructor(sceneKey) {
@@ -657,15 +661,18 @@ export default class LocalSceneBase extends Phaser.Scene {
     // 2026-11-26). `_updateInteractablePrompts` drives the visibility, using
     // a slightly wider radius than the interact prompt so the name arrives
     // first and the child knows what they are walking up to.
+    // Above the prop, stacked over the interact prompt. Below it is where
+    // Zuzu's own name tag lands when he walks up, and the two collided:
+    // "Flat Tire" sat across "Zuzu" the moment the caption appeared.
     const nameLabel = showNameLabel
-      ? this.add.text(x, y + 24, label, {
+      ? this.add.text(x, y + PROP_CAPTION_OFFSET, label, {
         fontSize: '11px', fontFamily: 'sans-serif', color: '#374151',
         fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 2,
       }).setOrigin(0.5).setDepth(4).setVisible(false)
       : null;
 
     // Prompt (hidden by default)
-    const prompt = this.add.text(x, y - 24, '💬 Interact', {
+    const prompt = this.add.text(x, y + PROP_PROMPT_OFFSET, '💬 Interact', {
       fontSize: '12px', fontFamily: 'sans-serif', color: '#ffffff',
       backgroundColor: '#1e293b', padding: { x: 4, y: 2 },
     }).setOrigin(0.5).setDepth(5).setVisible(false);
@@ -815,6 +822,7 @@ export default class LocalSceneBase extends Phaser.Scene {
     const px = this.player.sprite.x;
     const py = this.player.sprite.y;
 
+    let anyPrompting = false;
     for (const prop of this._interactables) {
       const dx = px - prop.x;
       const dy = py - prop.y;
@@ -822,11 +830,65 @@ export default class LocalSceneBase extends Phaser.Scene {
       prop._nearby = dist < prop.radius;
       prop._distanceToPlayer = dist;
       prop.prompt.setVisible(prop._nearby);
+      if (prop._nearby) anyPrompting = true;
       // The name shows a little before the prompt does, and only if the
       // prop actually has a name.
       if (prop.nameLabel) {
         prop.nameLabel.setVisible(Boolean(prop.label) && dist < prop.radius + NAME_LABEL_LEAD_PX);
       }
+    }
+
+    // A companion's "Talk" chip hides while a prop is prompting: she walks
+    // with Zuzu, so her chip sat on every prop prompt, and E would have
+    // used the prop anyway.
+    this.registry.set('propPromptVisible', anyPrompting);
+
+    this._keepNameTagsClear();
+  }
+
+  /**
+   * Hide a walking name tag when it lands on another label.
+   *
+   * Signs stay where they are drawn and the child walks wherever they like,
+   * so sooner or later a tag crosses one — "Workshop" and "E Trailside"
+   * both ended up with "Zuzu" printed through them, and Lina parks next to
+   * whatever Zuzu is looking at. A sign is telling the child something;
+   * whose feet they belong to is already obvious from the sprite, so the
+   * walking tag is what gives way. Checked a few times a second.
+   */
+  _keepNameTagsClear() {
+    const now = this.time.now;
+    if (now - (this._lastTagClearanceCheck || 0) < 120) return;
+    this._lastTagClearanceCheck = now;
+
+    // Zuzu's tag yields first, then the companions': two tags that land on
+    // each other should not both vanish.
+    const yielding = [this.player?.label, ...(this._companions || []).map((c) => c.label)]
+      .filter((tag) => tag && tag.scene);
+    if (!yielding.length) return;
+
+    // Measure every tag as if shown, so one can come back when it clears.
+    for (const tag of yielding) tag.setVisible(true);
+
+    const fixed = [];
+    const collect = (list) => {
+      for (const obj of list) {
+        if (obj.list) collect(obj.list);
+        if (obj.type !== 'Text' || !obj.visible || !obj.text) continue;
+        if (yielding.includes(obj)) continue;
+        // Screen-space HUD text has no meaningful world box.
+        if (obj.scrollFactorX === 0 && obj.scrollFactorY === 0) continue;
+        fixed.push(obj.getBounds());
+      }
+    };
+    collect(this.children.list);
+
+    const shown = [];
+    for (const tag of yielding) {
+      const box = tag.getBounds();
+      const clear = !firstLabelClash(box, fixed) && !firstLabelClash(box, shown);
+      tag.setVisible(clear);
+      if (clear) shown.push(box);
     }
   }
 

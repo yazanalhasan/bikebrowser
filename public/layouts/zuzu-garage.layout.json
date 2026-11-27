@@ -214,8 +214,8 @@
     },
     "bike_label": {
       "x": 400,
-      "y": 230,
-      "_note": "Original: bikeX, bikeY + 60."
+      "y": 200,
+      "_note": "Above the bike's interact prompt (interact_bike.y - 24 = 226). This sign is 16px, taller than an ordinary prop caption, so it needs the extra clearance."
     },
     "bike_collision": {
       "x": 400,
