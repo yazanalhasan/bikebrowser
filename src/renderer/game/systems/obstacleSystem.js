@@ -86,7 +86,11 @@ export function spawnObstacles(scene) {
         repeat: -1,
       });
 
-      createWorldLabel(scene, obs.x, obs.y - obs.height / 2 - 14, obs.label, {
+      // Below the hazard, not above it. Above, the Scorching Pavement's
+      // name reached into the band where Mrs. Ramirez stands and the two
+      // names touched at 1024x484 and on a phone. The road below it is
+      // empty.
+      createWorldLabel(scene, obs.x, obs.y + obs.height / 2 + 14, obs.label, {
         fontSize: 10,
         maxWidth: 140,
         depth: 700,
