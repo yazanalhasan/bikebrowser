@@ -1240,27 +1240,43 @@ for (const size of [140, 160, 180, 203, 220]) {
   }
 }
 
-function frame(id, model, hanger, brakeStyle, caliperMount, maxRotorMm, sourceRef) {
+function frame(id, model, hanger, brakeStyle, caliperMount, maxRotorMm, sourceRef, fit = {}) {
   add({
     id,
     category: 'frame',
     brand: 'Teaching',
     model,
     modelCode: null,
-    specs: { hanger, brakeStyle, caliperMount, maxRotorMm, phase: 'minimal' },
+    specs: {
+      hanger,
+      brakeStyle,
+      caliperMount,
+      maxRotorMm,
+      phase: 'minimal',
+      bbShell: fit.bbShell ?? 'bsa',
+      bbWidthMm: fit.bbWidthMm ?? 73,
+      rearAxle: fit.rearAxle ?? 'qr-135',
+      frontAxle: fit.frontAxle ?? 'qr-100',
+      headset: fit.headset ?? 'zs44-ec44',
+      seatpostMm: fit.seatpostMm ?? 30.9,
+      wheelSize: fit.wheelSize ?? null,
+    },
     sourceUrl: 'https://www.sram.com/en/learn/understanding-udh-and-full-mount',
     sourceRef,
     quote: hanger,
   });
 }
-frame('frame-mtb-standard-post-180', 'Mountain frame, standard hanger, post mount, 180 mm max', 'standard', 'disc', 'post-mount', 180, 'Minimal phase 1 frame. Max rotor is a teaching limit, not a measured bike.');
-frame('frame-mtb-standard-post-203', 'Mountain frame, standard hanger, post mount, 203 mm max', 'standard', 'disc', 'post-mount', 203, 'Minimal phase 1 frame.');
-frame('frame-mtb-udh-post-203', 'Mountain frame, UDH, post mount, 203 mm max', 'udh', 'disc', 'post-mount', 203, 'UDH frame for Full Mount derailleurs. SRAM UDH explainer.');
-frame('frame-road-flat-160', 'Road frame, standard hanger, flat mount, 160 mm max', 'standard', 'disc', 'flat-mount', 160, 'Minimal phase 1 road disc frame.');
-frame('frame-road-rim', 'Road frame, rim brakes, standard hanger', 'standard', 'rim', null, null, 'Rim-brake frame. No rotor maximum.');
-frame('frame-direct-mount-post-180', 'Frame, direct-mount hanger, post mount, 180 mm max', 'direct-mount', 'disc', 'post-mount', 180, 'Direct-mount hanger is not UDH and does not take Full Mount.');
-frame('frame-gravel-flat-180', 'Gravel frame, standard hanger, flat mount, 180 mm max', 'standard', 'disc', 'flat-mount', 180, 'Minimal phase 1 gravel frame.');
-frame('frame-mtb-post-140', 'Mountain frame, standard hanger, post mount, 140 mm max', 'standard', 'disc', 'post-mount', 140, 'Small-rotor teaching frame.');
+const mtbFit = { bbShell: 'bsa', bbWidthMm: 73, rearAxle: 'qr-135', frontAxle: 'qr-100', headset: 'zs44-ec44', seatpostMm: 30.9 };
+frame('frame-mtb-standard-post-180', 'Mountain frame, standard hanger, post mount, 180 mm max', 'standard', 'disc', 'post-mount', 180, 'Teaching hardtail. BSA 73 mm, QR 135 rear, QR 100 front. Not a measured bike.', mtbFit);
+frame('frame-mtb-standard-post-203', 'Mountain frame, standard hanger, post mount, 203 mm max', 'standard', 'disc', 'post-mount', 203, 'Teaching hardtail. BSA 73 mm, QR 135 rear.', mtbFit);
+frame('frame-mtb-udh-post-203', 'Mountain frame, UDH, post mount, 203 mm max', 'udh', 'disc', 'post-mount', 203, 'UDH boost teaching frame. 12x148 rear, 15x110 front, BSA 73 mm.', { bbShell: 'bsa', bbWidthMm: 73, rearAxle: '12x148', frontAxle: '15x110', headset: 'zs44-ec44', seatpostMm: 31.6 });
+frame('frame-road-flat-160', 'Road frame, standard hanger, flat mount, 160 mm max', 'standard', 'disc', 'flat-mount', 160, 'Teaching road disc frame. BB86, 12x142 rear, 12x100 front, 27.2 mm post.', { bbShell: 'bb86', bbWidthMm: 86, rearAxle: '12x142', frontAxle: '12x100', headset: 'integrated-is42', seatpostMm: 27.2 });
+frame('frame-road-rim', 'Road frame, rim brakes, standard hanger', 'standard', 'rim', null, null, 'Teaching rim-brake road frame. BSA 68 mm, QR 130 rear.', { bbShell: 'bsa', bbWidthMm: 68, rearAxle: 'qr-130', frontAxle: 'qr-100', headset: 'ec34', seatpostMm: 27.2 });
+frame('frame-direct-mount-post-180', 'Frame, direct-mount hanger, post mount, 180 mm max', 'direct-mount', 'disc', 'post-mount', 180, 'Direct-mount hanger is not UDH. BSA 73, QR 135.', mtbFit);
+frame('frame-gravel-flat-180', 'Gravel frame, standard hanger, flat mount, 180 mm max', 'standard', 'disc', 'flat-mount', 180, 'Teaching gravel frame. T47 internal, 12x142, 12x100.', { bbShell: 't47', bbWidthMm: 86, rearAxle: '12x142', frontAxle: '12x100', headset: 'integrated-is42', seatpostMm: 27.2 });
+frame('frame-mtb-post-140', 'Mountain frame, standard hanger, post mount, 140 mm max', 'standard', 'disc', 'post-mount', 140, 'Small-rotor teaching frame. BSA 73, QR 135.', mtbFit);
+frame('frame-pf30-135', 'Press-fit PF30 frame, QR 135', 'standard', 'disc', 'post-mount', 180, 'PF30 shell. A BSA mid-drive does not pass on this frame.', { bbShell: 'pf30', bbWidthMm: 73, rearAxle: 'qr-135', frontAxle: 'qr-100', headset: 'zs44-ec44', seatpostMm: 30.9 });
+frame('frame-bb100', 'BSA 100 mm shell frame, QR 135', 'standard', 'disc', 'post-mount', 180, 'Teaching 100 mm BSA shell for a 100 mm mid-drive. Draft width.', { bbShell: 'bsa', bbWidthMm: 100, rearAxle: 'qr-135', frontAxle: 'qr-100', headset: 'zs44-ec44', seatpostMm: 30.9 });
 
 add({
   id: 'extender-vg-sports',
@@ -1283,6 +1299,280 @@ add({
   sourceUrl: BIKEGREMLIN,
   sourceRef: 'Teaching name for a road hanger extender. Not a shop listing.',
   quote: 'hanger extender',
+});
+
+const HUB_AXLE = {
+  'hub-hg-m-6bolt': 'qr-135',
+  'hub-hg-m-centerlock': '12x142',
+  'hub-hg-l-centerlock': '12x142',
+  'hub-hg-l2-centerlock': '12x142',
+  'hub-hg-s-6bolt': 'qr-135',
+  'hub-microspline-centerlock': '12x148',
+  'hub-microspline-6bolt': '12x148',
+  'hub-xd-6bolt': '12x148',
+  'hub-xd-centerlock': '12x148',
+  'hub-xdr-centerlock': '12x142',
+  'hub-campagnolo-centerlock': '12x142',
+  'hub-n3w-centerlock': '12x142',
+  'hub-linkglide-centerlock': 'qr-135',
+};
+for (const part of parts) {
+  if (HUB_AXLE[part.id]) part.specs.axle = HUB_AXLE[part.id];
+  if (part.category === 'crankset' && part.specs.spindle == null) {
+    if (part.id.includes('campagnolo')) part.specs.spindle = 'campagnolo';
+    else if (part.id.includes('sram') || part.id.includes('mtb-30')) part.specs.spindle = 'sram-dub';
+    else part.specs.spindle = 'shimano-24';
+  }
+}
+
+const BAFANG = 'https://www.bafang-e.com/';
+const PARK_BB = 'https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards';
+const PARK_WHEEL = 'https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation';
+
+function motor(entry) {
+  add({
+    category: 'motor',
+    reviewStatus: 'draft',
+    sourceUrl: BAFANG,
+    ...entry,
+    specs: {
+      chainrings: [],
+      ringCount: 1,
+      speeds: null,
+      chainType: 'standard',
+      spindle: null,
+      freehub: null,
+      rotorMount: null,
+      axle: null,
+      sprocket: null,
+      protocol: null,
+      connector: null,
+      bbShells: [],
+      bbWidths: [],
+      ...entry.specs,
+    },
+  });
+}
+motor({
+  id: 'motor-bbs02-48',
+  brand: 'Bafang',
+  model: 'BBS02 48 V mid-drive',
+  modelCode: 'BBS02',
+  specs: { motorType: 'mid-drive', voltage: 48, powerW: 750, protocol: 'uart', bbShells: ['bsa'], bbWidths: [68, 73], chainrings: [46], ringCount: 1, speeds: 9, chainType: 'standard' },
+  sourceRef: 'Draft. BBS02 is a mid-drive for a threaded BSA shell, 68 or 73 mm, in a 48 V version. It replaces the crank. Confirm the label on the unit. 36 V BBS02 is a different motor.',
+  quote: 'BSA 68-73 mm, 48 V',
+});
+motor({
+  id: 'motor-bbs02-36',
+  brand: 'Bafang',
+  model: 'BBS02 36 V mid-drive',
+  modelCode: 'BBS02',
+  specs: { motorType: 'mid-drive', voltage: 36, powerW: 500, protocol: 'uart', bbShells: ['bsa'], bbWidths: [68, 73], chainrings: [44], ringCount: 1, speeds: 9, chainType: 'standard' },
+  sourceRef: 'Draft. 36 V BBS02 is not the 48 V motor. Same BSA 68/73 shell.',
+  quote: '36 V',
+});
+motor({
+  id: 'motor-bbshd-100',
+  brand: 'Bafang',
+  model: 'BBSHD 100 mm 48 V mid-drive',
+  modelCode: 'BBSHD',
+  specs: { motorType: 'mid-drive', voltage: 48, powerW: 1000, protocol: 'uart', bbShells: ['bsa'], bbWidths: [100], chainrings: [42], ringCount: 1, speeds: 9, chainType: 'standard' },
+  sourceRef: 'Draft. This record is the 100 mm BBSHD only. It does not pass on a 68 or 73 mm shell.',
+  quote: '100 mm',
+});
+motor({
+  id: 'motor-tsdz2-48',
+  brand: 'Tongsheng',
+  model: 'TSDZ2 48 V mid-drive',
+  modelCode: 'TSDZ2',
+  specs: { motorType: 'mid-drive', voltage: 48, powerW: 500, protocol: 'tongsheng', bbShells: ['bsa'], bbWidths: [68, 73], chainrings: [42], ringCount: 1, speeds: 9, chainType: 'standard' },
+  sourceRef: 'Draft. TSDZ2 installs in a BSA 68/73 mm shell and uses its own protocol, not Bafang UART.',
+  quote: 'BSA 68-73',
+});
+motor({
+  id: 'motor-hub-geared-135',
+  brand: 'Bafang',
+  model: '48 V geared rear hub, QR 135, HG',
+  modelCode: null,
+  specs: { motorType: 'geared-hub', voltage: 48, powerW: 500, protocol: 'uart', axle: 'qr-135', freehub: 'hg-m', rotorMount: '6-bolt', sprocket: 'cassette', speeds: 9 },
+  sourceRef: 'Draft teaching geared hub motor: 135 mm quick release, HG cassette body, 6-bolt rotor, 48 V. Confirm the axle stamped on the real motor.',
+  quote: 'QR 135, HG',
+});
+motor({
+  id: 'motor-hub-geared-148',
+  brand: 'Bafang',
+  model: '48 V geared rear hub, 12x148 Boost, HG',
+  modelCode: null,
+  specs: { motorType: 'geared-hub', voltage: 48, powerW: 750, protocol: 'uart', axle: '12x148', freehub: 'hg-m', rotorMount: '6-bolt', sprocket: 'cassette', speeds: 9 },
+  sourceRef: 'Draft. 12x148 Boost hub motor. It does not fit a QR 135 frame.',
+  quote: '12x148',
+});
+motor({
+  id: 'motor-hub-direct-135',
+  brand: 'Teaching',
+  model: '48 V direct-drive rear hub, QR 135, HG',
+  modelCode: null,
+  specs: { motorType: 'direct-drive-hub', voltage: 48, powerW: 1000, protocol: 'uart', axle: 'qr-135', freehub: 'hg-m', rotorMount: '6-bolt', sprocket: 'cassette', speeds: 9 },
+  sourceRef: 'Draft direct-drive hub. Same axle and cassette checks as a geared hub. Torque arm still applies.',
+  quote: 'direct-drive QR 135',
+});
+motor({
+  id: 'motor-hub-single-135',
+  brand: 'Teaching',
+  model: '48 V rear hub, single sprocket, QR 135',
+  modelCode: null,
+  specs: { motorType: 'geared-hub', voltage: 48, powerW: 350, protocol: 'uart', axle: 'qr-135', freehub: null, rotorMount: '6-bolt', sprocket: 'single', speeds: 1, chainType: 'standard' },
+  sourceRef: 'Draft single-sprocket hub motor. A cassette does not mount. Shifter and derailleur are not required.',
+  quote: 'single sprocket',
+});
+
+function battery(id, voltage, amps, connector, model) {
+  add({
+    id,
+    category: 'battery',
+    brand: 'Teaching',
+    model,
+    modelCode: null,
+    specs: { voltage, maxCurrent: amps, connector },
+    sourceUrl: BAFANG,
+    sourceRef: `Draft pack. Nominal ${voltage} V, BMS ${amps} A, ${connector} plug. No capacity claim and no shop listing.`,
+    quote: `${voltage} V ${connector}`,
+  });
+}
+battery('battery-36-xt60', 36, 20, 'xt60', '36 V pack, XT60, 20 A BMS');
+battery('battery-48-xt60', 48, 30, 'xt60', '48 V pack, XT60, 30 A BMS');
+battery('battery-48-xt90', 48, 40, 'xt90', '48 V pack, XT90, 40 A BMS');
+battery('battery-52-xt60', 52, 30, 'xt60', '52 V pack, XT60, 30 A BMS');
+
+function controller(id, voltages, amps, powerW, connector, protocol, model) {
+  add({
+    id,
+    category: 'controller',
+    brand: 'Teaching',
+    model,
+    modelCode: null,
+    specs: { acceptedVoltages: voltages, maxCurrent: amps, powerW, batteryConnector: connector, protocol },
+    sourceUrl: BAFANG,
+    sourceRef: `Draft controller. Accepts ${voltages.join('/')} V, ${amps} A, ${powerW} W, ${connector}, protocol ${protocol}.`,
+    quote: voltages.join('/'),
+  });
+}
+controller('controller-48-uart-xt60', [48], 25, 1000, 'xt60', 'uart', '48 V UART controller, 25 A, XT60');
+controller('controller-36-uart-xt60', [36], 15, 500, 'xt60', 'uart', '36 V UART controller, 15 A, XT60');
+controller('controller-48-can-xt60', [48], 25, 1000, 'xt60', 'can', '48 V CAN controller, 25 A, XT60');
+controller('controller-48-uart-xt90', [48], 35, 1500, 'xt90', 'uart', '48 V UART controller, 35 A, XT90');
+controller('controller-tongsheng-48', [48], 18, 500, 'xt60', 'tongsheng', '48 V Tongsheng controller, 18 A, XT60');
+
+function display(id, protocol, model) {
+  add({
+    id,
+    category: 'display',
+    brand: 'Teaching',
+    model,
+    modelCode: null,
+    specs: { protocol },
+    sourceUrl: BAFANG,
+    sourceRef: `Draft display. Protocol ${protocol}. It only matches a controller with the same protocol.`,
+    quote: protocol,
+  });
+}
+display('display-uart', 'uart', 'UART display');
+display('display-can', 'can', 'CAN display');
+display('display-tongsheng', 'tongsheng', 'Tongsheng display');
+
+function bb(id, shell, spindle, widths, model) {
+  add({
+    id,
+    category: 'bottom_bracket',
+    brand: 'Teaching',
+    model,
+    modelCode: null,
+    specs: { shell, spindle, widths },
+    sourceUrl: PARK_BB,
+    sourceRef: `Draft bottom bracket. Shell ${shell}, spindle ${spindle}, widths ${widths.join('/')} mm.`,
+    quote: `${shell} ${spindle}`,
+  });
+}
+bb('bb-bsa-shimano-24', 'bsa', 'shimano-24', [68, 73], 'BSA bottom bracket for 24 mm spindle');
+bb('bb-bsa-68-shimano-24', 'bsa', 'shimano-24', [68], 'BSA 68 mm bottom bracket for 24 mm spindle');
+bb('bb-bsa-dub', 'bsa', 'sram-dub', [68, 73], 'BSA bottom bracket for SRAM DUB');
+bb('bb-bb86-shimano-24', 'bb86', 'shimano-24', [86], 'BB86 bottom bracket for 24 mm spindle');
+bb('bb-t47-shimano-24', 't47', 'shimano-24', [86], 'T47 bottom bracket for 24 mm spindle');
+bb('bb-pf30-30', 'pf30', '30mm', [68, 73], 'PF30 bottom bracket for 30 mm spindle');
+bb('bb-bsa-square', 'bsa', 'square-taper', [68, 73], 'BSA square-taper bottom bracket');
+
+for (const [id, axle, model] of [
+  ['front-hub-qr-100', 'qr-100', 'Front hub, quick release 100 mm'],
+  ['front-hub-12x100', '12x100', 'Front hub, 12x100 thru-axle'],
+  ['front-hub-15x100', '15x100', 'Front hub, 15x100 thru-axle'],
+  ['front-hub-15x110', '15x110', 'Front hub, 15x110 Boost'],
+]) {
+  add({
+    id,
+    category: 'front_hub',
+    brand: 'Teaching',
+    model,
+    modelCode: null,
+    specs: { axle },
+    sourceUrl: PARK_WHEEL,
+    sourceRef: `Draft front hub. Axle ${axle}.`,
+    quote: axle,
+  });
+}
+
+for (const [id, standard, model] of [
+  ['headset-zs44-ec44', 'zs44-ec44', 'Headset, ZS44 upper / EC44 lower'],
+  ['headset-integrated-is42', 'integrated-is42', 'Integrated headset, IS42'],
+  ['headset-ec34', 'ec34', 'Headset, EC34 threaded-style external'],
+]) {
+  add({
+    id,
+    category: 'headset',
+    brand: 'Teaching',
+    model,
+    modelCode: null,
+    specs: { standard },
+    sourceUrl: 'https://www.parktool.com/en-us/blog/repair-help/headset-standards',
+    sourceRef: `Draft headset. SHIS-style id ${standard}.`,
+    quote: standard,
+  });
+}
+
+for (const diameter of [27.2, 30.9, 31.6]) {
+  add({
+    id: `seatpost-${String(diameter).replace('.', '-')}`,
+    category: 'seatpost',
+    brand: 'Teaching',
+    model: `${diameter} mm seatpost`,
+    modelCode: null,
+    specs: { diameterMm: diameter },
+    sourceUrl: 'https://www.parktool.com/en-us/blog/repair-help/seatpost-installation',
+    sourceRef: `Draft seatpost diameter ${diameter} mm. A larger post does not fit. A smaller post is a shim warning.`,
+    quote: `${diameter} mm`,
+  });
+}
+
+add({
+  id: 'torque-arm-qr-135',
+  category: 'torque_arm',
+  brand: 'Teaching',
+  model: 'Torque arm for a QR 135 hub motor',
+  modelCode: null,
+  specs: { style: 'torque-arm', axle: 'qr-135' },
+  sourceUrl: PARK_WHEEL,
+  sourceRef: 'Draft torque arm for a quick-release hub motor. The checker treats any torque arm as present. The axle match is still the frame rule.',
+  quote: 'torque arm',
+});
+add({
+  id: 'torque-arm-12x148',
+  category: 'torque_arm',
+  brand: 'Teaching',
+  model: 'Torque arm for a 12x148 hub motor',
+  modelCode: null,
+  specs: { style: 'torque-arm', axle: '12x148' },
+  sourceUrl: PARK_WHEEL,
+  sourceRef: 'Draft torque arm noted for a Boost thru-axle hub motor.',
+  quote: 'torque arm',
 });
 
 const ids = parts.map((part) => part.id);
@@ -1326,6 +1616,9 @@ lines.push(
   '- Campagnolo N3W with older cassettes is "can\'t verify", not a pass.',
   '- RD-M5120\'s chart mentions 10-speed and 11-speed cog ranges. It is seeded as 11-speed only so a 10-speed mix cannot pass by accident.',
   '- Gear inches use nominal wheel diameters (700c assumes a 28 mm tire).',
+  '- E-bike voltages, BB shells, and axle sizes on the new motor, battery, and frame records are draft. A 52 V pack does not pass on a 48 V-only controller. BBS02 is BSA 68/73 only. The 100 mm BBSHD does not pass on a 73 mm shell.',
+  '- Hub motors cover the rear hub slot when no separate hub is chosen, so the cassette, axle, and rotor checks use the motor. A torque arm is a warning, not optional silence.',
+  '- Headset, seatpost, front axle, and bottom bracket are checked when those parts are chosen. Tire clearance is still not measured.',
   '',
 );
 writeFileSync(join(root, 'docs', 'bike-builder', 'DATA_REVIEW.md'), lines.join('\n'));
