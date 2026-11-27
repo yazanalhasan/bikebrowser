@@ -18,6 +18,8 @@ import { drawPlant } from '../utils/plantRenderer.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { startInteraction } from '../systems/interactionManager.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { groundDepth } from '../../../game/assets/act1Art.js';
 
 const INTERACTIVE_PLANT_SCALE = 1.65;
 
@@ -96,7 +98,7 @@ export default class DogParkScene extends LocalSceneBase {
 
     // === TREES ===
     for (const { x: tx, y: ty } of this.layout.trees) {
-      this.add.text(tx, ty, '🌳', { fontSize: '32px' }).setOrigin(0.5).setDepth(3);
+      this.addProp(ART.shade_tree, tx, ty + 20, { maxPx: 96, depth: groundDepth(ty) });
       this.addWall(tx, ty, 20, 20);
     }
 
@@ -150,7 +152,7 @@ export default class DogParkScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_water_bowl.x, y: this.layout.interact_water_bowl.y,
       label: 'Water Bowl',
-      icon: '🥣',
+      icon: ART.water_bowl,
       radius: this.layout.interact_water_bowl.radius,
       onInteract: () => {
         this.registry.set('dialogEvent', {
@@ -165,7 +167,7 @@ export default class DogParkScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_tennis_ball.x, y: this.layout.interact_tennis_ball.y,
       label: 'Tennis Ball',
-      icon: '🎾',
+      icon: ART.tennis_ball,
       radius: this.layout.interact_tennis_ball.radius,
       onInteract: () => {
         startInteraction(this, {
@@ -187,13 +189,13 @@ export default class DogParkScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_lost_collar.x, y: this.layout.interact_lost_collar.y,
       label: 'Lost Collar',
-      icon: '📿',
+      icon: ART.lost_collar,
       radius: this.layout.interact_lost_collar.radius,
       onInteract: () => {
         startInteraction(this, {
           type: 'inspect',
           title: 'Lost collar',
-          icon: '🐕',
+          icon: ART.dog_brown,
           text: 'The name on the tag is worn off. I will remember the collar and ask the neighbors. I am not starting a new job until I know whose dog it is.',
         });
       },

@@ -2,6 +2,10 @@ import { DEPTHS } from '../art/artConfig.js';
 import { hasAtlasFrame } from '../assets/createAtlasSprite.js';
 import { createSoftShadow } from '../rendering/createSoftShadow.js';
 
+// The zuzu atlas uses 96x112 cells with the feet on y=107.
+const ZUZU_FRAME_H = 112;
+const ZUZU_FEET_BASELINE_Y = 107;
+
 const ZUZU_FRAMES = {
   down: 'zuzu_idle_down',
   up: 'zuzu_idle_up',
@@ -21,8 +25,11 @@ export function createZuzu(scene, x, y, options = {}) {
   } = options;
 
   if (useAtlas && scene.textures.exists('zuzu_atlas') && hasAtlasFrame(scene, 'zuzu_atlas', ZUZU_FRAMES.down)) {
+    // Origin sits on the sheet's feet baseline (y=107 of the 112 px cell),
+    // not the frame bottom, so Zuzu's soles land exactly on his world y and
+    // line up with Mariam and Lina, whose sheets use the same convention.
     const sprite = scene.add.sprite(x, y, 'zuzu_atlas', ZUZU_FRAMES.down)
-      .setOrigin(0.5, 1)
+      .setOrigin(0.5, ZUZU_FEET_BASELINE_Y / ZUZU_FRAME_H)
       .setDepth(DEPTHS.characters)
       .setScale(scale);
     if (interactive) sprite.setInteractive({ useHandCursor: true });

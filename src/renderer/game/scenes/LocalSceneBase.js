@@ -32,6 +32,15 @@ import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
 import { interpolateStepText } from '../systems/questTemplating.js';
 import { getPhysicsState, wireCameraToMCP } from '../systems/physicsbridge.js';
 import { localCameraFit } from '../utils/localCameraFit.js';
+import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
+import { preloadEcologyAssets } from '../systems/ecology/ecologyAssetManifest.js';
+import { addArt, addGround, addBackdrop, hasArt } from '../../../game/assets/act1Art.js';
+import { mountCompanion } from '../systems/companionSystem.js';
+import {
+  getCompanionsForScene,
+  pickCompanionLine,
+  markCompanionMet,
+} from '../data/companions.js';
 
 // Default world size for local scenes (viewport-scale, not overworld-scale)
 const DEFAULT_WORLD = { width: 800, height: 600 };
@@ -66,6 +75,25 @@ export default class LocalSceneBase extends Phaser.Scene {
   // ---------------------------------------------------------------------------
   // Override points
   // ---------------------------------------------------------------------------
+
+  // ---------------------------------------------------------------------------
+  // Asset loading
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Load the shared Act 1 art for every local scene and sub-scene.
+   *
+   * Subclasses that define their own preload() call `super.preload?.()` first,
+   * so every scene in the Act 1 chain gets the atlases, the Sonoran tileset,
+   * the character sheets, the scene grounds, the world props and the ecology
+   * sprites without repeating the list. Loads are idempotent — Phaser skips a
+   * key that is already in the texture cache, so scene-to-scene transitions
+   * do not re-fetch.
+   */
+  preload() {
+    preloadGameAssets(this);
+    preloadEcologyAssets(this);
+  }
 
   /** Override to define the scene key. */
   getSceneKey() { return this._sceneKey; }
@@ -206,6 +234,9 @@ export default class LocalSceneBase extends Phaser.Scene {
 
     this.player = new Player(this, px, py);
 
+    // --- Companions (Lina in the neighborhood and the desert) ---
+    this._mountCompanions(px, py);
+
     // --- Wire exit zones ---
     for (const exit of this._exits) {
       this.physics.add.overlap(this.player.sprite, exit.zone, () => {
@@ -275,6 +306,11 @@ export default class LocalSceneBase extends Phaser.Scene {
     // Update NPCs
     Object.values(this._npcs).forEach(npc => npc.update(this.player.sprite));
 
+    // Walk companions along behind the player
+    for (const companion of this._companions || []) {
+      companion.update(this.player.sprite, this.game.loop.delta);
+    }
+
     const liveState = this.registry.get('gameState');
     const liveStep = getCurrentStep(liveState);
     const autoQuizKey = liveStep?.type === 'quiz'
@@ -321,6 +357,30 @@ export default class LocalSceneBase extends Phaser.Scene {
   // ---------------------------------------------------------------------------
 
   /**
+   * Place an Act 1 art sprite by texture key. Thin pass-through to the art
+   * helper so scenes never touch sprite origins or file paths directly.
+   * @see src/game/assets/act1Art.js
+   */
+  addProp(key, x, y, opts = {}) {
+    return addArt(this, key, x, y, opts);
+  }
+
+  /** Tile a seamless scene-ground texture over a rectangle (top-left anchored). */
+  addGroundTexture(key, x, y, w, h, opts = {}) {
+    return addGround(this, key, x, y, w, h, opts);
+  }
+
+  /** Stretch a painted backdrop plate over a rectangle (top-left anchored). */
+  addBackdropTexture(key, x, y, w, h, opts = {}) {
+    return addBackdrop(this, key, x, y, w, h, opts);
+  }
+
+  /** True when an Act 1 texture is loaded in this scene. */
+  hasArtTexture(key) {
+    return hasArt(this, key);
+  }
+
+  /**
    * Add a rectangular collision wall.
    * @returns {Phaser.GameObjects.Rectangle}
    */
@@ -333,14 +393,33 @@ export default class LocalSceneBase extends Phaser.Scene {
   }
 
   /**
-   * Add a visible wall with color.
+   * Add a visible wall.
+   *
+   * Pass `textureKey` to surface the wall with a tiled Act 1 texture instead
+   * of a flat fill — a cliff face reads as rock, not as a grey box. The flat
+   * colour stays as the fallback for walls that have no art (fences, mine
+   * timbers), and as the backing behind a texture with any transparency.
+   *
+   * @param {string} [textureKey] Act 1 tile texture to face the wall with
    */
-  addVisibleWall(x, y, w, h, color, strokeColor) {
+  addVisibleWall(x, y, w, h, color, strokeColor, textureKey = null) {
     const wall = this.add.rectangle(x, y, w, h, color);
     if (strokeColor) wall.setStrokeStyle(2, strokeColor);
     this.physics.add.existing(wall, true);
     if (!this._collisionBodies) this._collisionBodies = [];
     this._collisionBodies.push(wall);
+
+    if (textureKey && hasArt(this, textureKey)) {
+      wall.setFillStyle(color, 0);
+      const face = addGround(this, textureKey, x - w / 2, y - h / 2, w, h,
+        { depth: wall.depth });
+      if (face && strokeColor) {
+        this.add.rectangle(x, y, w, h)
+          .setStrokeStyle(2, strokeColor)
+          .setDepth(wall.depth + 0.1);
+      }
+      if (!face) wall.setFillStyle(color, 1);
+    }
     return wall;
   }
 
@@ -394,6 +473,45 @@ export default class LocalSceneBase extends Phaser.Scene {
   }
 
   /**
+   * Mount every companion whose data lists this scene, a short way behind
+   * the player's spawn. Companions are friends, not quest-givers: talking
+   * to one shows a line and nothing else changes.
+   * @private
+   */
+  _mountCompanions(px, py) {
+    this._companions = [];
+    const state = this.registry.get('gameState');
+    for (const def of getCompanionsForScene(this.getSceneKey(), state)) {
+      const companion = mountCompanion(this, {
+        id: def.id,
+        name: def.name,
+        walkSheet: def.walkSheet,
+        idleSheet: def.idleSheet,
+        x: px - 44,
+        y: py + 10,
+        onInteract: () => {
+          const live = this.registry.get('gameState');
+          const line = pickCompanionLine(def, live);
+          if (!line) return;
+          // Meeting her is what lets her follow Zuzu out of the neighborhood.
+          const next = markCompanionMet(live, def.id);
+          if (next !== live) {
+            this.registry.set('gameState', next);
+            saveGame(next);
+          }
+          this.registry.set('dialogEvent', {
+            speaker: def.name,
+            text: line.text,
+            choices: null,
+            step: null,
+          });
+        },
+      });
+      if (companion) this._companions.push(companion);
+    }
+  }
+
+  /**
    * Add an NPC to the scene.
    * @param {object} config — same as Npc constructor config + questId
    * @returns {Npc}
@@ -406,18 +524,39 @@ export default class LocalSceneBase extends Phaser.Scene {
 
   /**
    * Add an interactable prop (non-NPC object the player can interact with).
+   *
+   * `icon` is an Act 1 art texture key (see src/game/assets/act1ArtRegistry.js).
+   * A string that is not a known art key is drawn as text, which keeps
+   * non-Act-1 callers working; for Act 1 that path is a bug, so it warns.
+   *
    * @param {object} config
    * @param {number} config.x
    * @param {number} config.y
    * @param {string} config.label — display name
-   * @param {string} config.icon — emoji
+   * @param {string|null} config.icon — art texture key, or null when the
+   *   scene has already drawn the prop (legacy: an emoji glyph)
+   * @param {number} [config.iconMaxPx] — cap the icon's longest side
    * @param {number} [config.radius=60] — interaction radius
    * @param {function} config.onInteract — called when player interacts
    */
   addInteractable(config) {
     const { x, y, label, icon, radius = 60, onInteract } = config;
 
-    const text = this.add.text(x, y, icon, { fontSize: '28px' }).setOrigin(0.5).setDepth(4);
+    // Three cases:
+    //  - an art key      -> draw the sprite
+    //  - null/'' icon    -> draw nothing, because the scene already drew the
+    //                       prop this hotspot sits on (no doubled art)
+    //  - any other string -> legacy text glyph
+    let text = null;
+    if (hasArt(this, icon)) {
+      text = addArt(this, icon, x, y, {
+        anchor: 'icon',
+        depth: 4,
+        maxPx: config.iconMaxPx,
+      });
+    } else if (icon) {
+      text = this.add.text(x, y, icon, { fontSize: '28px' }).setOrigin(0.5).setDepth(4);
+    }
     const nameLabel = this.add.text(x, y + 24, label, {
       fontSize: '11px', fontFamily: 'sans-serif', color: '#374151',
       fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 2,
@@ -472,6 +611,14 @@ export default class LocalSceneBase extends Phaser.Scene {
         return true;
       }
     }
+    // Then a companion standing next to you
+    for (const companion of this._companions || []) {
+      if (companion.isNearby()) {
+        companion.interact();
+        return true;
+      }
+    }
+
     // Then interactable props
     const nearestProp = this._getNearbyInteractables()[0];
     if (nearestProp) {
@@ -589,11 +736,19 @@ export default class LocalSceneBase extends Phaser.Scene {
 
     // On-screen room size after zoom and scroll. Bands fill whatever the
     // room does not cover, including a phone letterbox.
+    //
+    // The room's screen origin comes from the camera's worldView, not from
+    // scrollX/scrollY: when the viewport is wider than the world the camera
+    // centres the view, and scrollX does not carry that offset. Using it put
+    // the left band hundreds of pixels too far in, painting the biome fill
+    // straight over the west side of the room - in the garage that hid the
+    // whole workbench wall.
     const zoom = cam.zoom || 1;
     const displayW = world.width * zoom;
     const displayH = world.height * zoom;
-    const originX = -cam.scrollX * zoom;
-    const originY = -cam.scrollY * zoom;
+    const view = cam.worldView;
+    const originX = (0 - view.x) * zoom;
+    const originY = (0 - view.y) * zoom;
     const offsetX = Math.max(0, originX);
     const offsetY = Math.max(0, originY);
     const rightGap = Math.max(0, cam.width - (originX + displayW));

@@ -37,6 +37,16 @@ import {
   preloadEcologyAssets,
   ECOLOGY_ASSET_KEYS,
 } from '../systems/ecology/ecologyAssetManifest.js';
+import {
+  LANGUAGE_CARDS,
+  practiceLanguageTerm,
+  getMentorLine,
+} from '../systems/languageLayer.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { groundDepth } from '../../../game/assets/act1Art.js';
+import { hasAtlasFrame } from '../../../game/assets/createAtlasSprite.js';
+
+const NEIGHBORHOOD_ATLAS = 'neighborhood_atlas';
 
 const PLANT_GRANTS = {
   mesquite: ['mesquite_pods', 'mesquite_wood_sample', 'bio_sample_bacteria'],
@@ -105,37 +115,9 @@ export default class StreetBlockScene extends LocalSceneBase {
     }
 
     // === ZUZU'S HOUSE (left side, north of road) ===
-    // House body
-    {
-      const o = this.layout.zuzu_house_body;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0xd4a574).setStrokeStyle(3, 0xc4945e).setDepth(1);
-    }
-    // Roof
-    const roofGfx = this.add.graphics();
-    roofGfx.fillStyle(0x8d6e63);
-    {
-      const o = this.layout.zuzu_house_roof;
-      roofGfx.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
-    }
-    roofGfx.setDepth(2);
-    // Door
-    {
-      const o = this.layout.zuzu_house_door;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
-    }
-    {
-      const o = this.layout.zuzu_house_doorknob;
-      this.add.circle(o.x, o.y, o.r, 0xfdd835).setDepth(3);
-    }
-    // Windows
-    {
-      const o = this.layout.zuzu_house_window_left;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
-    }
-    {
-      const o = this.layout.zuzu_house_window_right;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
-    }
+    // The facade is a painted neighborhood-atlas frame, drawn by
+    // _skinNeighborhoodHouses() below. Only the label, the collision body
+    // and the driveway are built here.
     // Label
     {
       const o = this.layout.zuzu_house_label;
@@ -147,40 +129,14 @@ export default class StreetBlockScene extends LocalSceneBase {
       this.addWall(o.x, o.y, o.w, o.h);
     }
 
-    // Driveway
+    // Driveway — same concrete as the sidewalk.
     {
       const o = this.layout.zuzu_driveway;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x9e9e9e);
+      this.addGroundTexture(ART.streetblock_sidewalk, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h,
+        { depth: -1 });
     }
 
     // === NEIGHBOR HOUSE — Mrs. Ramirez (center-right, north of road) ===
-    {
-      const o = this.layout.ramirez_house_body;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0xef9a9a).setStrokeStyle(3, 0xe57373).setDepth(1);
-    }
-    const roofGfx2 = this.add.graphics();
-    roofGfx2.fillStyle(0xc62828);
-    {
-      const o = this.layout.ramirez_house_roof;
-      roofGfx2.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
-    }
-    roofGfx2.setDepth(2);
-    {
-      const o = this.layout.ramirez_house_door;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
-    }
-    {
-      const o = this.layout.ramirez_house_doorknob;
-      this.add.circle(o.x, o.y, o.r, 0xfdd835).setDepth(3);
-    }
-    {
-      const o = this.layout.ramirez_house_window_left;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
-    }
-    {
-      const o = this.layout.ramirez_house_window_right;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
-    }
     {
       const o = this.layout.ramirez_house_label;
       this._drawMapLabel(o.x, o.y, 'Ramirez House', { depth: 9 });
@@ -190,22 +146,7 @@ export default class StreetBlockScene extends LocalSceneBase {
       this.addWall(o.x, o.y, o.w, o.h);
     }
 
-    // === NEIGHBOR HOUSE — far right (decorative) ===
-    {
-      const o = this.layout.blue_house_body;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x90caf9).setStrokeStyle(3, 0x64b5f6).setDepth(1);
-    }
-    const roofGfx3 = this.add.graphics();
-    roofGfx3.fillStyle(0x1565c0);
-    {
-      const o = this.layout.blue_house_roof;
-      roofGfx3.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
-    }
-    roofGfx3.setDepth(2);
-    {
-      const o = this.layout.blue_house_door;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
-    }
+    // === NEIGHBOR HOUSE — far right (the workshop) ===
     {
       const o = this.layout.blue_house_collision;
       this.addWall(o.x, o.y, o.w, o.h);
@@ -213,39 +154,8 @@ export default class StreetBlockScene extends LocalSceneBase {
 
     // === SOUTH SIDE — more houses ===
     {
-      const o = this.layout.green_house_body;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0xc8e6c9).setStrokeStyle(3, 0xa5d6a7).setDepth(1);
-    }
-    const roofGfx4 = this.add.graphics();
-    roofGfx4.fillStyle(0x2e7d32);
-    {
-      const o = this.layout.green_house_roof;
-      roofGfx4.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
-    }
-    roofGfx4.setDepth(2);
-    {
-      const o = this.layout.green_house_door;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
-    }
-    {
       const o = this.layout.green_house_collision;
       this.addWall(o.x, o.y, o.w, o.h);
-    }
-
-    {
-      const o = this.layout.yellow_house_body;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0xfff9c4).setStrokeStyle(3, 0xfff176).setDepth(1);
-    }
-    const roofGfx5 = this.add.graphics();
-    roofGfx5.fillStyle(0xf9a825);
-    {
-      const o = this.layout.yellow_house_roof;
-      roofGfx5.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
-    }
-    roofGfx5.setDepth(2);
-    {
-      const o = this.layout.yellow_house_door;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
     }
     {
       const o = this.layout.yellow_house_collision;
@@ -263,11 +173,23 @@ export default class StreetBlockScene extends LocalSceneBase {
     this._ecologyPlants = [];
 
     for (const p of this.layout.plants) {
-      // Draw visual plant (graphics-based, not emoji)
-      const plantContainer = drawPlant(this, p.species, p.x, p.y, {
-        scale: p.visualScale || INTERACTIVE_PLANT_SCALE,
-      });
-      plantContainer.setDepth(4); // background decoration, below player (depth 6)
+      // Painted plant sprite, keyed by species so a species added to
+      // data/ecology.js picks up its art with no code change. The ecology
+      // pack is the source; drawPlant() stays as the fallback for any
+      // species that has no sprite yet.
+      const plantKey = ECOLOGY_ASSET_KEYS.plants[p.species];
+      const plantSprite = plantKey && this.hasArtTexture(plantKey)
+        ? this.addProp(plantKey, p.x, p.y + 14, {
+          displayHeight: 96 * ((p.visualScale || INTERACTIVE_PLANT_SCALE) / INTERACTIVE_PLANT_SCALE),
+          depth: groundDepth(p.y),
+        })
+        : null;
+      if (!plantSprite) {
+        const plantContainer = drawPlant(this, p.species, p.x, p.y, {
+          scale: p.visualScale || INTERACTIVE_PLANT_SCALE,
+        });
+        plantContainer.setDepth(4); // background decoration, below player (depth 6)
+      }
 
       // Add invisible interaction zone (uses existing addInteractable for prompt/hitbox)
       this.addInteractable({
@@ -318,7 +240,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     for (const a of this.layout.animals) {
       const key = ECOLOGY_ASSET_KEYS.animals[a.speciesId];
       if (!key) continue;
-      this.add.image(a.x, a.y, key).setOrigin(0.5).setDepth(4).setDisplaySize(48, 48);
+      this.addProp(key, a.x, a.y + 12, { displayHeight: 52, depth: groundDepth(a.y) });
       this._drawMapLabel(a.x, a.y + 34, this._formatAnimalLabel(a), {
         depth: 14,
         fontSize: 10,
@@ -374,6 +296,7 @@ export default class StreetBlockScene extends LocalSceneBase {
       x: this.layout.npc_mrs_ramirez.x,
       y: this.layout.npc_mrs_ramirez.y,
       color: ramirezData?.color || 0xb45309,
+      atlasFrame: 'npc_mrs_ramirez_idle',
       onInteract: () => this._handleNpcInteract('mrs_ramirez', 'flat_tire_repair'),
     });
 
@@ -381,7 +304,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     const questDone = state.completedQuests?.includes('flat_tire_repair');
     {
       const o = this.layout.ramirez_bike_icon;
-      this._drawBike(o.x, o.y, { color: 0x2563eb, accent: 0xef4444, flat: !questDone, depth: 38 });
+      this._drawBike(o.x, o.y, { color: 0x2563eb, accent: 0xef4444, flat: !questDone, depth: groundDepth(o.y) });
       if (!questDone) createInteractionMarker(this, o.x + 58, o.y - 10, 'blocked', { pulse: true });
       this._ramirezBike = this._drawBikeBadge(o.x + 48, o.y - 8, questDone ? 'OK' : '', questDone);
     }
@@ -396,6 +319,19 @@ export default class StreetBlockScene extends LocalSceneBase {
       onInteract: () => this._handleRamirezBikeInteract(),
     });
 
+    // === MARIAM NPC (Act 1 Levantine Arabic mentor) ===
+    // A grown-up neighbor in her own front yard, same placement pattern as
+    // Mrs. Ramirez. She is a mentor, not a quest-giver: talking to her
+    // teaches one of the three briefed Arabic words and nothing else.
+    this.addNpc({
+      id: 'mariam',
+      name: 'Mariam',
+      x: this.layout.npc_mariam.x,
+      y: this.layout.npc_mariam.y,
+      sheet: 'mariam_idle',
+      onInteract: () => this._handleMariamInteract(),
+    });
+
     // === MR. CHEN NPC ===
     const chenData = NPC_PLACEMENTS.find(n => n.id === 'mr_chen');
     this.addNpc({
@@ -404,6 +340,7 @@ export default class StreetBlockScene extends LocalSceneBase {
       x: this.layout.npc_mr_chen.x,
       y: this.layout.npc_mr_chen.y,
       color: chenData?.color || 0x2563eb,
+      atlasFrame: 'npc_mr_chen_idle',
       onInteract: () => this._handleNpcInteract('mr_chen', 'chain_repair'),
     });
 
@@ -419,7 +356,7 @@ export default class StreetBlockScene extends LocalSceneBase {
         : 'FIX';
     {
       const o = this.layout.chen_bike_icon;
-      this._drawBike(o.x, o.y, { color: 0xef4444, accent: 0x111827, depth: 38 });
+      this._drawBike(o.x, o.y, { color: 0xef4444, accent: 0x111827, depth: groundDepth(o.y) });
       this._chenBike = this._drawBikeBadge(o.x + 44, o.y - 7, chenBikeIcon, chenQuestDone);
       this.addInteractable({
         x: o.x,
@@ -516,34 +453,18 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawGrassField(o) {
-    this.add.rectangle(o.x, o.y, o.w, o.h, 0x7fb13d).setDepth(-10);
-
-    const gfx = this.add.graphics().setDepth(-9);
-    for (let i = 0; i < 210; i++) {
-      const x = (i * 67) % o.w;
-      const y = (i * 43) % o.h;
-      const color = i % 3 === 0 ? 0x96c65a : i % 3 === 1 ? 0x6c9c31 : 0xb4d36a;
-      const alpha = i % 5 === 0 ? 0.5 : 0.28;
-      gfx.fillStyle(color, alpha);
-      gfx.fillEllipse(x, y, 10 + (i % 4) * 2, 4 + (i % 3));
-    }
-
-    gfx.lineStyle(1, 0x5f8f28, 0.14);
-    for (let y = 12; y < o.h; y += 28) {
-      gfx.lineBetween(0, y, o.w, y + ((y / 28) % 2 ? 3 : -3));
-    }
+    // Painted lawn texture. The 210 hand-scattered grass ellipses and the
+    // mower stripes are gone — that variation lives in the art.
+    this.addGroundTexture(ART.lakeedge_grass, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h,
+      { depth: -10 });
   }
 
   _drawRoadway(o, width) {
-    this.add.rectangle(o.x, o.y, o.w, o.h, 0x3f4548).setDepth(-5);
+    // Painted asphalt. Lane markings stay as graphics: they are road
+    // *information* a child reads, and they have to line up with the layout.
+    this.addGroundTexture(ART.streetblock_road, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h,
+      { depth: -5 });
     const gfx = this.add.graphics().setDepth(-4);
-
-    gfx.fillStyle(0x2f3437, 0.22);
-    for (let i = 0; i < 180; i++) {
-      const x = (i * 53) % width;
-      const y = o.y - o.h / 2 + ((i * 29) % o.h);
-      gfx.fillCircle(x, y, i % 4 === 0 ? 1.4 : 0.8);
-    }
 
     gfx.lineStyle(3, 0xe8e2d6, 0.65);
     gfx.lineBetween(0, o.y - o.h / 2, width, o.y - o.h / 2);
@@ -556,18 +477,15 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawSidewalk(o) {
-    this.add.rectangle(o.x, o.y, o.w, o.h, 0xd7d3ca).setDepth(-2);
-    const gfx = this.add.graphics().setDepth(-1);
-    gfx.lineStyle(1, 0xa9a39a, 0.45);
-    gfx.strokeRect(o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
-    for (let x = o.x - o.w / 2; x <= o.x + o.w / 2; x += 42) {
-      gfx.lineBetween(x, o.y - o.h / 2, x + 7, o.y + o.h / 2);
-    }
+    // Painted concrete; the slab joints are in the texture.
+    this.addGroundTexture(ART.streetblock_sidewalk, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h,
+      { depth: -2 });
   }
 
   _skinNeighborhoodHouses() {
     this._drawHouseSkin({
       body: this.layout.zuzu_house_body,
+      atlasFrame: 'house_zuzu',
       roof: this.layout.zuzu_house_roof,
       door: this.layout.zuzu_house_door,
       knob: this.layout.zuzu_house_doorknob,
@@ -579,6 +497,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     });
     this._drawHouseSkin({
       body: this.layout.ramirez_house_body,
+      atlasFrame: 'house_ramirez',
       roof: this.layout.ramirez_house_roof,
       door: this.layout.ramirez_house_door,
       knob: this.layout.ramirez_house_doorknob,
@@ -590,6 +509,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     });
     this._drawHouseSkin({
       body: this.layout.blue_house_body,
+      atlasFrame: 'building_workshop',
       roof: this.layout.blue_house_roof,
       door: this.layout.blue_house_door,
       windows: [],
@@ -602,6 +522,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     });
     this._drawHouseSkin({
       body: this.layout.green_house_body,
+      atlasFrame: 'house_ramirez',
       roof: this.layout.green_house_roof,
       door: this.layout.green_house_door,
       windows: [],
@@ -612,6 +533,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     });
     this._drawHouseSkin({
       body: this.layout.yellow_house_body,
+      atlasFrame: 'house_zuzu',
       roof: this.layout.yellow_house_roof,
       door: this.layout.yellow_house_door,
       windows: [],
@@ -634,8 +556,22 @@ export default class StreetBlockScene extends LocalSceneBase {
     shutterColor,
     garage = false,
     label = null,
+    atlasFrame = null,
   }) {
     this.add.ellipse(body.x + 8, body.y + body.h / 2 + 10, body.w * 0.9, 24, 0x1f2937, 0.18).setDepth(1.4);
+
+    // Painted facade from the neighborhood atlas. The frame already carries
+    // the walls, roof, door and windows, so the vector skin below is skipped
+    // entirely; only the ground shadow and the map label stay.
+    if (atlasFrame && hasAtlasFrame(this, NEIGHBORHOOD_ATLAS, atlasFrame)) {
+      const facadeH = body.h + Math.abs(body.y - roof.y2);
+      this.add.image(body.x, body.y + body.h / 2, NEIGHBORHOOD_ATLAS, atlasFrame)
+        .setOrigin(0.5, 1)
+        .setDisplaySize(body.w, facadeH)
+        .setDepth(3);
+      if (label) this._drawMapLabel(label.x, label.y, label.text, { icon: label.icon, depth: 10 });
+      return;
+    }
 
     const house = this.add.graphics().setDepth(2.6);
     house.fillStyle(bodyColor, 1);
@@ -728,25 +664,13 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawTree(x, y, scale = 1) {
+    // Painted cottonwood. The ground shadow stays so the tree still sits on
+    // the lawn; the vector trunk and the six canopy blobs are gone.
     this.add.ellipse(x + 4, y + 20 * scale, 58 * scale, 18 * scale, 0x1f2937, 0.18).setDepth(2);
-    const gfx = this.add.graphics().setDepth(4);
-    gfx.fillStyle(0x6b3d1f, 1);
-    gfx.fillRoundedRect(x - 5 * scale, y + 4 * scale, 10 * scale, 31 * scale, 4 * scale);
-    gfx.lineStyle(2 * scale, 0x442412, 0.6);
-    gfx.lineBetween(x, y + 10 * scale, x - 16 * scale, y + 24 * scale);
-    gfx.lineBetween(x + 2 * scale, y + 13 * scale, x + 18 * scale, y + 25 * scale);
-    const blobs = [
-      [-19, -3, 16, 0x4f8d2e], [0, -12, 20, 0x6dac39], [18, -3, 17, 0x4f8d2e],
-      [-9, 9, 19, 0x79b84a], [12, 10, 19, 0x5f9d35], [0, 1, 23, 0x72b343],
-    ];
-    for (const [dx, dy, r, color] of blobs) {
-      gfx.fillStyle(color, 1);
-      gfx.fillCircle(x + dx * scale, y + dy * scale, r * scale);
-    }
-    gfx.fillStyle(0xc7df72, 0.75);
-    for (let i = 0; i < 9; i++) {
-      gfx.fillCircle(x - 20 * scale + i * 5 * scale, y - 10 * scale + ((i * 7) % 24) * scale, 2 * scale);
-    }
+    this.addProp(ART.shade_tree, x, y + 24 * scale, {
+      displayHeight: Math.round(110 * scale),
+      depth: groundDepth(y),
+    });
   }
 
   _drawMapLabel(x, y, text, { icon = '', depth = 12, fontSize = 11, maxWidth = 150 } = {}) {
@@ -801,6 +725,16 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawBike(x, y, { color = 0x2563eb, accent = 0xef4444, flat = false, depth = 38 } = {}) {
+    // Painted bike from the neighborhood atlas. The flat-tyre and
+    // on-the-stand frames are separate art, so `flat` picks the frame
+    // instead of stroking a red ring over a vector drawing.
+    const frame = flat ? 'prop_flat_tire_bike' : 'prop_mr_chen_bike';
+    if (hasAtlasFrame(this, NEIGHBORHOOD_ATLAS, frame)) {
+      this.add.image(x, y + 30, NEIGHBORHOOD_ATLAS, frame)
+        .setOrigin(0.5, 1)
+        .setDepth(depth);
+      return;
+    }
     const gfx = this.add.graphics().setDepth(depth);
     gfx.lineStyle(4, 0x111827, 0.9);
     gfx.strokeCircle(x - 22, y + 12, 18);
@@ -859,6 +793,12 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawGpsPost(x, y) {
+    if (hasAtlasFrame(this, NEIGHBORHOOD_ATLAS, 'prop_bike_gps')) {
+      this.add.image(x, y + 60, NEIGHBORHOOD_ATLAS, 'prop_bike_gps')
+        .setOrigin(0.5, 1)
+        .setDepth(7);
+      return;
+    }
     const gfx = this.add.graphics().setDepth(7);
     gfx.lineStyle(5, 0x64748b, 1);
     gfx.lineBetween(x, y + 10, x, y + 60);
@@ -870,6 +810,49 @@ export default class StreetBlockScene extends LocalSceneBase {
     gfx.lineBetween(x - 5, y + 4, x + 5, y - 6);
     gfx.lineStyle(2, 0x2563eb, 1);
     gfx.lineBetween(x - 4, y - 12, x + 4, y - 16);
+  }
+
+  // ── Mariam: Levantine Arabic mentor ──────────────────────────────────────────
+
+  /**
+   * Teach the next of Mariam's three briefed words.
+   *
+   * Order is fixed (hello, then water, then repair) and each word is taught
+   * until the child has practised it, so she never races ahead. Once all
+   * three are known she greets and offers a refresher. Content comes from
+   * `systems/languageLayer.js`, which holds the owner-approved lines — this
+   * method must not author Arabic of its own.
+   * @private
+   */
+  _handleMariamInteract() {
+    let state = this.registry.get('gameState') || {};
+    const audioMgr = this.registry.get('audioManager');
+
+    const practice = state.languagePractice || {};
+    const next = LANGUAGE_CARDS.find((card) => !practice[card.id]?.practiced)
+      || LANGUAGE_CARDS[(Object.values(practice).reduce((n, r) => n + (r.practiced || 0), 0))
+        % LANGUAGE_CARDS.length];
+
+    const result = practiceLanguageTerm(state, next.id);
+    if (!result.ok) return;
+
+    state = result.state;
+    this.registry.set('gameState', state);
+    saveGame(state);
+    audioMgr?.playSfx?.('interaction_ping');
+
+    const line = getMentorLine(next.id);
+    this.registry.set('dialogEvent', {
+      speaker: 'Mariam',
+      // Script first, then the kid transliteration, then the English
+      // caption — the brief's rule is that rank 1 never hides the script.
+      text: `${line.script}
+${line.transliteration}
+
+${line.caption}`,
+      choices: null,
+      step: null,
+    });
   }
 
   // ── Plant Interaction ────────────────────────────────────────────────────────

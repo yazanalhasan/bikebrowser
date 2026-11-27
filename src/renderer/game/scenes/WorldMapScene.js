@@ -23,6 +23,9 @@ import {
   _drainPendingReveals as _drainPendingQuestReveals,
   triggerQuestRevealsForState,
 } from '../systems/discoveryBridge.js';
+import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { addArt, addBackdrop } from '../../../game/assets/act1Art.js';
 
 const SCENE_KEY = 'WorldMapScene';
 
@@ -109,6 +112,11 @@ export default class WorldMapScene extends Phaser.Scene {
     this._originSpawn = data?.originSpawn || 'default';
   }
 
+  preload() {
+    // Act 1 art: map node icons, the padlock and the sky plate.
+    preloadGameAssets(this);
+  }
+
   create() {
     const state = this.registry.get('gameState');
     const { width, height } = this.cameras.main;
@@ -117,7 +125,9 @@ export default class WorldMapScene extends Phaser.Scene {
     setBusy('inMenu', true);
 
     // ── Background ──
-    this.add.rectangle(width / 2, height / 2, width, height, 0x2d1b0e).setDepth(-300);
+    // Painted daytime sky behind the parchment instead of a flat brown fill.
+    addBackdrop(this, ART.worldmap_sky_day, 0, 0, width, height, { depth: -300 })
+      || this.add.rectangle(width / 2, height / 2, width, height, 0x2d1b0e).setDepth(-300);
 
     // Parchment/map overlay
     const mapW = width * 0.88;
@@ -337,10 +347,10 @@ export default class WorldMapScene extends Phaser.Scene {
       circle.setInteractive({ useHandCursor: unlocked });
       circle.setDepth(1);
 
-      // Icon — depth 1
-      const icon = this.add.text(x, y, unlocked ? loc.icon : '🔒', {
-        fontSize: '20px',
-      }).setOrigin(0.5).setDepth(1);
+      // Icon — depth 1. Painted node art; locked nodes show the padlock art.
+      const icon = addArt(this, unlocked ? loc.iconArt : ART.map_lock, x, y, {
+        anchor: 'icon', maxPx: 30, depth: 1,
+      });
 
       // Name label — depth 1, inactive at 0.7 alpha
       const nameLabel = this.add.text(x, y + 32, loc.name, {
@@ -404,7 +414,7 @@ export default class WorldMapScene extends Phaser.Scene {
     // ── Neighborhood marker (home base) ──
     // homeX / homeY declared above (before _renderPathLayer call).
     const homeCircle = this.add.circle(homeX, homeY, 18, 0x22c55e).setStrokeStyle(3, 0xffffff).setDepth(1);
-    this.add.text(homeX, homeY, '🏠', { fontSize: '18px' }).setOrigin(0.5).setDepth(1);
+    addArt(this, ART.map_home, homeX, homeY, { anchor: 'icon', maxPx: 26, depth: 1 });
     const homeLabel = this.add.text(homeX, homeY + 28, 'Neighborhood', {
       fontSize: '11px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#166534', stroke: '#f5e6c8', strokeThickness: 2,
@@ -1528,10 +1538,10 @@ export default class WorldMapScene extends Phaser.Scene {
     container.add(circle);
 
     // Icon — at local (0, 0).
-    const icon = this.add.text(0, 0, unlocked ? loc.icon : '🔒', {
-      fontSize: '20px',
-    }).setOrigin(0.5);
-    container.add(icon);
+    const icon = addArt(this, unlocked ? loc.iconArt : ART.map_lock, 0, 0, {
+      anchor: 'icon', maxPx: 30, depth: 1,
+    });
+    if (icon) container.add(icon);
 
     // Name label — at local (0, 32).
     const nameLabel = this.add.text(0, 32, loc.name, {

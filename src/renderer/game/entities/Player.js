@@ -10,6 +10,7 @@
 
 import Phaser from 'phaser';
 import { createZuzu } from '../../../game/characters/createZuzu.js';
+import { CHARACTER_PIXEL_SCALE } from '../../../game/art/artConfig.js';
 
 const SPEED = 300;
 
@@ -45,7 +46,10 @@ export default class Player {
     // Container holds all body parts
     this.container = scene.add.container(x, y);
     this._buildCharacter();
-    this.container.setScale(1.65);
+    // Pixel-art Zuzu is drawn at the shared character scale; the vector
+    // fallback keeps its own 1.65 tuning.
+    this._bodyScale = this._usesAtlasAvatar ? CHARACTER_PIXEL_SCALE : 1.65;
+    this.container.setScale(this._bodyScale);
     this.container.setDepth(6);
 
     // Shadow under character for grounding
@@ -409,8 +413,12 @@ export default class Player {
     if (vy < 0) this.facing = 'up';
     else if (vy > 0) this.facing = 'down';
 
-    if (vx < 0) this.container.setScale(-1.8, 1.8);
-    else if (vx > 0) this.container.setScale(1.8, 1.8);
+    // Horizontal flip. The atlas sheets carry their own left/right rows, so
+    // only the vector avatar is mirrored (and at its own walking scale).
+    if (!this._usesAtlasAvatar) {
+      if (vx < 0) this.container.setScale(-1.8, 1.8);
+      else if (vx > 0) this.container.setScale(1.8, 1.8);
+    }
 
     // Normalize diagonal speed
     const len = Math.sqrt(vx * vx + vy * vy) || 1;
@@ -438,6 +446,15 @@ export default class Player {
 
     // Shadow stays flat on ground under character
     this._shadow.setPosition(this.sprite.x, this.sprite.y + 24);
+    // Y-sort the player into the same band the props and NPCs use
+    // (systems/depthSort.js), so he walks in front of what is above him and
+    // behind what is below. A fixed depth left him under every prop.
+    const depth = 10 + Math.min(39, this.container.y / 26);
+    this.container.setDepth(depth);
+    this.sprite.setDepth(depth);
+    this._shadow.setDepth(depth - 0.5);
+    this.label.setDepth(depth + 0.1);
+
     // Shadow scales subtly with bob to reinforce grounding
     const shadowScale = 1.0 + this._limbOffsets.bob * 0.03;
     this._shadow.setScale(shadowScale, 1);

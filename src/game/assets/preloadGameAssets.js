@@ -23,6 +23,19 @@ export function preloadGameAssets(scene) {
     }
   }
 
+  // Tilesets load as spritesheets so individual tiles are addressable by
+  // frame index as well as usable as a tilemap tileset image.
+  for (const tileset of ASSET_MANIFEST.tilesets || []) {
+    if (!scene.textures.exists(tileset.key)) {
+      scene.load.spritesheet(tileset.key, tileset.path, {
+        frameWidth: tileset.tileWidth,
+        frameHeight: tileset.tileHeight,
+        margin: tileset.margin || 0,
+        spacing: tileset.spacing || 0,
+      });
+    }
+  }
+
   for (const sheet of ASSET_MANIFEST.spritesheets || []) {
     if (!scene.textures.exists(sheet.key)) {
       scene.load.spritesheet(sheet.key, sheet.path, {

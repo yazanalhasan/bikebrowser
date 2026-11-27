@@ -1,4 +1,5 @@
 import { evaluateAct1 } from '../systems/act1Progress.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
 
 /**
  * World Map Data — defines explorable regions and locations beyond the neighborhood.
@@ -22,6 +23,7 @@ export const REGIONS = {
     name: 'Arizona Desert',
     description: 'The Sonoran Desert surrounding the neighborhood — plants, mines, and waterways.',
     icon: '🏜️',
+    iconArt: ART.map_desert,
     mapPos: { x: 0.5, y: 0.5 },  // normalized position on world map (0-1)
     unlockReq: null,               // always available
   },
@@ -31,6 +33,7 @@ export const REGIONS = {
     name: 'Superstition Mountains',
     description: 'Rugged peaks with rare minerals and ancient trails.',
     icon: '⛰️',
+    iconArt: ART.map_mountain,
     mapPos: { x: 0.8, y: 0.2 },
     unlockReq: { reputation: 50, questsAny: ['bridge_collapse'] },
     educationalDomain: 'force and gravity on an incline',
@@ -40,6 +43,7 @@ export const REGIONS = {
     name: 'Beyond the Desert',
     description: 'The road out of the neighborhood. Same tools, a bigger map.',
     icon: '🗺️',
+    iconArt: ART.map_road,
     mapPos: { x: 0.15, y: 0.15 },
     unlockReq: { act1Complete: true },
     educationalDomain: 'systems thinking — tools travel with you',
@@ -54,6 +58,7 @@ export const WORLD_LOCATIONS = {
     name: 'Sonoran Foraging Grounds',
     description: 'Rich desert ecosystem — harvest plants, manage water, learn ethnobotany.',
     icon: '🌵',
+    iconArt: ART.map_desert,
     region: 'arizona_desert',
     type: 'resource',          // resource | material | biology | exploration
     difficulty: 1,
@@ -63,6 +68,7 @@ export const WORLD_LOCATIONS = {
     rewards: ['fibers', 'resins', 'solvents', 'ethnobotany_knowledge'],
     travelTime: 'Short ride',
     travelIcon: '🚲',
+    travelIconArt: ART.map_travel_bike,
   },
 
   copper_mine: {
@@ -70,6 +76,7 @@ export const WORLD_LOCATIONS = {
     name: 'Abandoned Copper Mine',
     description: 'An old mine with exposed copper veins — learn about conductivity and materials science.',
     icon: '⛏️',
+    iconArt: ART.map_mine,
     region: 'arizona_desert',
     type: 'material',
     difficulty: 2,
@@ -79,6 +86,7 @@ export const WORLD_LOCATIONS = {
     rewards: ['copper_ore', 'wire_samples', 'conductivity_knowledge'],
     travelTime: 'Medium ride',
     travelIcon: '🚲',
+    travelIconArt: ART.map_travel_bike,
   },
 
   salt_river: {
@@ -86,6 +94,7 @@ export const WORLD_LOCATIONS = {
     name: 'Salt River Basin',
     description: 'A desert waterway teeming with life — study fluid dynamics and ecological balance.',
     icon: '🏞️',
+    iconArt: ART.map_lake,
     region: 'arizona_desert',
     type: 'biology',
     difficulty: 2,
@@ -95,6 +104,7 @@ export const WORLD_LOCATIONS = {
     rewards: ['organic_compounds', 'microbial_samples', 'fluid_dynamics_knowledge'],
     travelTime: 'Long ride',
     travelIcon: '🚲',
+    travelIconArt: ART.map_travel_bike,
   },
 
   dry_wash: {
@@ -103,6 +113,7 @@ export const WORLD_LOCATIONS = {
     description:
       'A flash-flood arroyo with broken bridge remnants — the bridge-building site.',
     icon: '🏜️',
+    iconArt: ART.map_desert,
     region: 'arizona_desert',
     type: 'exploration',
     difficulty: 1,
@@ -117,6 +128,7 @@ export const WORLD_LOCATIONS = {
     rewards: ['bridge_construction_knowledge'],
     travelTime: 'Short ride',
     travelIcon: '🚲',
+    travelIconArt: ART.map_travel_bike,
   },
 
   wider_earth_gate: {
@@ -124,6 +136,7 @@ export const WORLD_LOCATIONS = {
     name: 'Road Beyond the Desert',
     description: 'The bike can leave the neighborhood. Act 2 is the next journey.',
     icon: '🗺️',
+    iconArt: ART.map_road,
     region: 'wider_earth',
     type: 'exploration',
     difficulty: 1,
@@ -137,6 +150,7 @@ export const WORLD_LOCATIONS = {
     rewards: ['regional_travel'],
     travelTime: 'The next journey',
     travelIcon: '🚲',
+    travelIconArt: ART.map_travel_bike,
   },
 };
 

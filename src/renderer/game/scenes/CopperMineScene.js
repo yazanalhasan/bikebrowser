@@ -11,6 +11,7 @@ import { saveGame } from '../systems/saveSystem.js';
 import QUESTS from '../data/quests.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
 
 const SCENE_KEY = 'CopperMineScene';
 
@@ -49,13 +50,21 @@ export default class CopperMineScene extends BaseSubScene {
     // does not affect the side-quest `collect_copper_samples`.
     this._mintCopperOreSampleIfNeeded();
 
-    // ── Ground layers ── mine entrance transitions to underground
-    // Surface (top third)
-    this.add.rectangle(this.layout.ground_surface.x, this.layout.ground_surface.y, this.layout.ground_surface.w, this.layout.ground_surface.h, 0xb8956a);
-    // Mine entrance (transition zone)
-    this.add.rectangle(this.layout.ground_entrance.x, this.layout.ground_entrance.y, this.layout.ground_entrance.w, this.layout.ground_entrance.h, 0x6b5b4f);
-    // Underground (bottom two-thirds)
-    this.add.rectangle(this.layout.ground_underground.x, this.layout.ground_underground.y, this.layout.ground_underground.w, this.layout.ground_underground.h, 0x3d3329);
+    // ── Ground layers ── mine entrance transitions to underground.
+    // Desert surface above, the cut rock face at the mouth, then the mine
+    // floor you actually walk on. All three are painted textures.
+    {
+      const o = this.layout.ground_surface;
+      this.addGroundTexture('ecology.terrain.desert_ground', o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
+    {
+      const o = this.layout.ground_entrance;
+      this.addGroundTexture(ART.coppermine_wall_backdrop, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
+    {
+      const o = this.layout.ground_underground;
+      this.addGroundTexture(ART.coppermine_floor, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
 
     // ── Mine entrance arch ──
     const arch = this.add.graphics();
@@ -88,7 +97,8 @@ export default class CopperMineScene extends BaseSubScene {
     veins.beginPath(); veins.moveTo(300, 680); veins.lineTo(400, 700); veins.lineTo(480, 690); veins.stroke();
     // Sparkle on veins
     for (const s of this.layout.sparkles) {
-      const sparkle = this.add.text(s.x, s.y, '✨', { fontSize: '14px' }).setOrigin(0.5).setAlpha(0.6);
+      const sparkle = this.addProp(ART.sparkle, s.x, s.y, { maxPx: 20, depth: 2, alpha: 0.6 });
+      if (!sparkle) continue;
       this.tweens.add({
         targets: sparkle, alpha: 0.2, duration: 1500,
         yoyo: true, repeat: -1, ease: 'Sine.easeInOut',
@@ -107,13 +117,13 @@ export default class CopperMineScene extends BaseSubScene {
     }
 
     // ── Mine cart (decoration) ──
-    this.add.text(this.layout.mine_cart.x, this.layout.mine_cart.y, '🚃', { fontSize: '30px' }).setOrigin(0.5);
+    this.addProp(ART.mine_cart, this.layout.mine_cart.x, this.layout.mine_cart.y + 20, { depth: 3 });
     this.addWall(this.layout.mine_cart.x, this.layout.mine_cart.y, 50, 30);
 
     // ── Lanterns ──
     for (const l of this.layout.lanterns) {
       const glow = this.add.circle(l.x, l.y, 30, 0xfbbf24, 0.15).setDepth(0);
-      this.add.text(l.x, l.y, '🏮', { fontSize: '18px' }).setOrigin(0.5).setDepth(2);
+      this.addProp(ART.lantern, l.x, l.y + 12, { maxPx: 32, depth: 2 });
       this.tweens.add({
         targets: glow, alpha: 0.08, duration: 2000,
         yoyo: true, repeat: -1, ease: 'Sine.easeInOut',
@@ -127,19 +137,19 @@ export default class CopperMineScene extends BaseSubScene {
 
     // ── Resources ──
     this.addResource({
-      x: this.layout.resource_surface_copper.x, y: this.layout.resource_surface_copper.y, icon: '🟤', label: 'Surface Copper',
+      x: this.layout.resource_surface_copper.x, y: this.layout.resource_surface_copper.y, icon: ART.surface_copper, label: 'Surface Copper',
       itemId: 'surface_copper',
       description: 'Oxidized copper ore from the surface — greenish patina (verdigris).',
       onAfterCollect: () => this._mintCopperOreSampleIfNeeded(),
     });
     this.addResource({
-      x: this.layout.resource_deep_copper.x, y: this.layout.resource_deep_copper.y, icon: '🔶', label: 'Deep Copper Ore',
+      x: this.layout.resource_deep_copper.x, y: this.layout.resource_deep_copper.y, icon: ART.deep_copper, label: 'Deep Copper Ore',
       itemId: 'deep_copper',
       description: 'Pure chalcopyrite from deep in the mine — higher conductivity.',
       onAfterCollect: () => this._mintCopperOreSampleIfNeeded(),
     });
     this.addResource({
-      x: this.layout.resource_wire_spool.x, y: this.layout.resource_wire_spool.y, icon: '🔌', label: 'Wire Sample',
+      x: this.layout.resource_wire_spool.x, y: this.layout.resource_wire_spool.y, icon: ART.wire_spool, label: 'Wire Sample',
       itemId: 'wire_spool',
       description: 'A spool of hand-drawn copper wire left by old miners.',
     });
@@ -164,7 +174,7 @@ export default class CopperMineScene extends BaseSubScene {
     // Embedded challenge 1: Conductivity comparison
     this.addChallenge({
       x: this.layout.challenge_conductivity.x, y: this.layout.challenge_conductivity.y,
-      icon: '⚡',
+      icon: ART.ch_conductivity,
       label: 'Conductivity Test',
       question: 'Copper conducts 59 million siemens/meter. Aluminum conducts 37 million. What fraction of copper\'s conductivity does aluminum have? (Round to nearest tenth)',
       choices: [
@@ -181,7 +191,7 @@ export default class CopperMineScene extends BaseSubScene {
     // Embedded challenge 2: Mine cart load
     this.addChallenge({
       x: this.layout.challenge_mine_cart.x, y: this.layout.challenge_mine_cart.y,
-      icon: '⚖️',
+      icon: ART.load_calc,
       label: 'Load Calculation',
       question: 'A mine cart holds 200 kg max. Each copper ore chunk weighs 12.5 kg. How many chunks fit safely?',
       choices: [
@@ -198,7 +208,7 @@ export default class CopperMineScene extends BaseSubScene {
     // Embedded challenge 3: Mine shaft depth
     this.addChallenge({
       x: this.layout.challenge_mine_shaft.x, y: this.layout.challenge_mine_shaft.y,
-      icon: '📏',
+      icon: ART.ch_depth,
       label: 'Depth Check',
       question: 'A dropped rock takes 2 seconds to hit the bottom. Distance = 5 × time². How deep is the shaft?',
       choices: [

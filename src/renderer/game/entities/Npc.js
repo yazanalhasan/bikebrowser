@@ -15,6 +15,14 @@
  */
 
 import { getNpcAppearance, DEFAULT_APPEARANCE } from '../data/npcAppearances.js';
+import { ACT1_CHARACTER_SHEETS, sheetFrame } from '../../../game/assets/act1Art.js';
+import { hasAtlasFrame } from '../../../game/assets/createAtlasSprite.js';
+import { CHARACTER_PIXEL_SCALE } from '../../../game/art/artConfig.js';
+
+const NEIGHBORHOOD_ATLAS = 'neighborhood_atlas';
+
+// Row order shared by the Act 1 NPC sheets (MrsRamirez convention).
+const SHEET_ROWS = { down: 0, left: 1, right: 2, up: 3 };
 
 const INTERACT_DISTANCE = 90;
 const BODY_SCALE = 1.8;      // matches Player
@@ -44,8 +52,20 @@ export default class Npc {
 
     // Body container
     this.container = scene.add.container(config.x, config.y);
-    this._buildHumanoid(appearance);
-    this.container.setScale(BODY_SCALE);
+
+    // Painted NPCs come from either a 4x4 character sheet (config.sheet, e.g.
+    // Mariam) or a frame on the neighborhood atlas (config.atlasFrame, e.g.
+    // Mr Chen and Mrs Ramirez). Both anchor on the art's own feet baseline so
+    // every character in a scene stands on the same line. NPCs with neither —
+    // or whose art has not loaded — fall back to the procedural humanoid.
+    this.sprite = this._buildSprite(config);
+    if (this.sprite) {
+      this.container.add(this.sprite);
+      this.container.setScale(1);
+    } else {
+      this._buildHumanoid(appearance);
+      this.container.setScale(BODY_SCALE);
+    }
 
     // Name label (below feet)
     this.label = scene.add.text(config.x, config.y + FEET_OFFSET + 10, config.name, {
@@ -73,6 +93,49 @@ export default class Npc {
 
     this._nearby = false;
     this._applyDepth();
+  }
+
+  // ── Painted sprite construction ──────────────────────────────────────────
+
+  /**
+   * Build the NPC's sprite from a character sheet or an atlas frame.
+   * Returns null when no art is configured or the texture is not loaded,
+   * which sends the constructor down the procedural path.
+   * @private
+   */
+  _buildSprite(config) {
+    const scene = this.scene;
+
+    if (config.sheet) {
+      const sheet = ACT1_CHARACTER_SHEETS[config.sheet];
+      if (sheet && scene.textures.exists(sheet.key)) {
+        this._sheet = sheet;
+        const frame = sheetFrame(config.sheet, config.sheetRow ?? 0, config.sheetCol ?? 0);
+        return scene.add.sprite(0, FEET_OFFSET, sheet.key, frame)
+          .setOrigin(0.5, sheet.feetY / sheet.frameHeight)
+          .setScale(CHARACTER_PIXEL_SCALE);
+      }
+    }
+
+    if (config.atlasFrame && hasAtlasFrame(scene, NEIGHBORHOOD_ATLAS, config.atlasFrame)) {
+      // Neighborhood atlas cells are 160x120 with the base line on y=117.
+      return scene.add.image(0, FEET_OFFSET, NEIGHBORHOOD_ATLAS, config.atlasFrame)
+        .setOrigin(0.5, 117 / 120)
+        .setScale(CHARACTER_PIXEL_SCALE);
+    }
+
+    return null;
+  }
+
+  /**
+   * Face a direction. Only meaningful for sheet-backed NPCs; the row order
+   * comes from the sheet's own convention (down, left, right, up).
+   */
+  setFacing(direction) {
+    if (!this.sprite || !this._sheet) return;
+    const row = SHEET_ROWS[direction];
+    if (row === undefined) return;
+    this.sprite.setFrame(row * this._sheet.cols);
   }
 
   // ── Humanoid construction ────────────────────────────────────────────────

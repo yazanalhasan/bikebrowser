@@ -18,13 +18,17 @@ import {
 } from '../systems/materials/thermalRigDatabase.js';
 import { runThermalTest } from '../systems/materials/thermalRigEngine.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { addArt } from '../../../game/assets/act1Art.js';
 
 const SCENE_KEY = 'ThermalRigScene';
 
 // Apparatus geometry — rod lays HORIZONTAL across the rig (left → right).
 const RIG_X = 220;             // center x
 const RIG_Y = 320;             // rod's vertical centerline
-const ROD_BASE_PX_PER_MM = 3;  // 100 mm rod → 300 px wide
+const ROD_BASE_PX_PER_MM = 3;
+// Burner-flame art is 28x48; half scale seats it in the 60x24 burner box.
+const FLAME_BASE_SCALE = 0.5;  // 100 mm rod → 300 px wide
 const ROD_HEIGHT_PX = 16;
 const SUPPORT_W = 28;
 const SUPPORT_H = 70;
@@ -128,18 +132,22 @@ export default class ThermalRigScene extends LabRigBase {
     const flameBox = this.add.rectangle(RIG_X, RIG_Y + 40, 60, 24, 0x14151a)
       .setStrokeStyle(2, 0x4a4d55).setDepth(2);
     layer.add(flameBox);
-    this._flameText = this.add.text(RIG_X, RIG_Y + 40, '🔥', { fontSize: '22px' })
-      .setOrigin(0.5).setDepth(4);
-    layer.add(this._flameText);
+    // Painted burner flame. FLAME_BASE_SCALE fits the 28x48 art into the
+    // 60x24 burner box; the heat pulse below multiplies this base so the
+    // flame grows with temperature without snapping back to native size.
+    this._flameText = addArt(this, ART.burner_flame, RIG_X, RIG_Y + 46, {
+      anchor: 'ground', depth: 4, scale: FLAME_BASE_SCALE,
+    });
+    if (this._flameText) layer.add(this._flameText);
 
     // Temperature dial graphic on the right.
     const dial = this.add.circle(RIG_X + 175, RIG_Y - 10, 22, 0x14151a)
       .setStrokeStyle(2, 0x4a4d55).setDepth(2);
     layer.add(dial);
-    const dialFace = this.add.text(RIG_X + 175, RIG_Y - 10, '🌡️', {
-      fontSize: '18px',
-    }).setOrigin(0.5).setDepth(3);
-    layer.add(dialFace);
+    const dialFace = addArt(this, ART.ch_heat_math, RIG_X + 175, RIG_Y - 10, {
+      anchor: 'icon', maxPx: 26, depth: 3,
+    });
+    if (dialFace) layer.add(dialFace);
     this._dialText = this.add.text(RIG_X + 175, RIG_Y + 18, '25°C', {
       fontSize: '10px', fontFamily: 'monospace', color: '#10b981',
       fontStyle: 'bold',
@@ -169,7 +177,10 @@ export default class ThermalRigScene extends LabRigBase {
 
     // Reset readout to home temperature.
     if (this._dialText) this._dialText.setText('25°C');
-    if (this._flameText) this._flameText.setAlpha(0.6);
+    if (this._flameText) {
+      this._flameText.setAlpha(0.6);
+      this._flameText.setScale(FLAME_BASE_SCALE * 0.95);
+    }
 
     // Reset any heat-haze emitted last test.
     this._hazeEls = [];
@@ -194,7 +205,7 @@ export default class ThermalRigScene extends LabRigBase {
     // 3. Heat haze + flame intensity.
     if (this._flameText) {
       this._flameText.setAlpha(0.6 + 0.4 * t);
-      this._flameText.setScale(0.95 + 0.15 * t);
+      this._flameText.setScale(FLAME_BASE_SCALE * (0.95 + 0.15 * t));
     }
     if (this._dialText) {
       this._dialText.setText(`${tempC.toFixed(0)}°C`);
@@ -236,7 +247,7 @@ export default class ThermalRigScene extends LabRigBase {
       this.tweens.add({
         targets: this._flameText,
         alpha: 0.6,
-        scale: 0.95,
+        scale: FLAME_BASE_SCALE * 0.95,
         duration: 700,
       });
     }

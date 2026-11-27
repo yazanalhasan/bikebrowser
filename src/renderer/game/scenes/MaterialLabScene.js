@@ -24,6 +24,7 @@ import { createCalipers } from '../systems/lab/calipers.js';
 import { createDensitySlate } from '../systems/lab/densitySlate.js';
 import { renderDensityChart } from '../systems/lab/densityChart.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
 
 // Sample-id → inventory item mapping. The scale enables a button only
 // when the player owns the corresponding sample item.
@@ -832,17 +833,17 @@ export default class MaterialLabScene extends LabRigBase {
     // can walk up and press E. Click-to-interact stays available too.
     this.addInteractable({
       x: layout.scaleX, y: layout.scaleDisplayY, radius: 70,
-      icon: '⚖️', label: 'Scale',
+      icon: ART.lab_scale, label: 'Scale',
       onInteract: () => { /* scale buttons handle their own clicks */ },
     });
     this.addInteractable({
       x: layout.calipersX, y: layout.calipersY, radius: 60,
-      icon: '🧪', label: 'Coupons',
+      icon: ART.lab_coupons, label: 'Coupons',
       onInteract: () => this._onCalipersClick(),
     });
     this.addInteractable({
       x: layout.slateX, y: layout.slateY, radius: 60,
-      icon: '📋', label: 'Density Slate',
+      icon: ART.clipboard, label: 'Density Slate',
       onInteract: () => this._slate?.openPanel?.(),
     });
   }

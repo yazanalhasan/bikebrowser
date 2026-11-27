@@ -175,7 +175,7 @@ function runLesson(scene, config) {
 
 function runLanguagePractice(scene, config) {
   const state = scene.registry.get('gameState') || {};
-  const result = practiceLanguageTerm(state, config.termId || 'placeholder_repair');
+  const result = practiceLanguageTerm(state, config.termId || 'ar_fix');
   if (!result.ok) {
     scene.registry.set('dialogEvent', {
       speaker: 'Zuzu',

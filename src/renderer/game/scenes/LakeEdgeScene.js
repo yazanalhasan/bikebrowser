@@ -18,6 +18,8 @@ import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
 import { saveGame } from '../systems/saveSystem.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { groundDepth } from '../../../game/assets/act1Art.js';
 
 function isBoatPuzzleDockMode(state, step) {
   if (state?.activeQuest?.id !== 'boat_puzzle') return false;
@@ -52,27 +54,22 @@ export default class LakeEdgeScene extends LocalSceneBase {
     const isRaftDockMode = isBoatPuzzleDockMode(state, currentStep);
 
     // === GROUND ===
-    // Grass (southern half)
-    this.add.rectangle(this.layout.ground_grass.x, this.layout.ground_grass.y, this.layout.ground_grass.w, this.layout.ground_grass.h, 0x7cb342);
-    // Sand/tan strip (middle)
-    this.add.rectangle(this.layout.ground_sand.x, this.layout.ground_sand.y, this.layout.ground_sand.w, this.layout.ground_sand.h, 0xe8d5a3);
-    // Water (northern portion)
-    this.add.rectangle(this.layout.water.x, this.layout.water.y, this.layout.water.w, this.layout.water.h, 0x42a5f5);
-
-    // Shoreline edge detail
-    const shoreGfx = this.add.graphics();
-    shoreGfx.fillStyle(0xc8b88a, 0.5);
-    for (let x = 0; x < width; x += 60) {
-      shoreGfx.fillEllipse(x + 30, this.layout.shore_ripple_y.y, 70, 20);
+    // Grass, shoreline sand and the painted lake plate. The ripple and
+    // shoreline graphics are gone — that detail is in the art.
+    {
+      const o = this.layout.ground_grass;
+      this.addGroundTexture(ART.lakeedge_grass, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
     }
-
-    // Water ripples (decorative)
-    const waterGfx = this.add.graphics();
-    waterGfx.lineStyle(1, 0x90caf9, 0.4);
-    for (let y = 40; y < 190; y += 30) {
-      for (let x = 50; x < width; x += 120) {
-        waterGfx.strokeEllipse(x, y, 40, 8);
-      }
+    {
+      const o = this.layout.ground_sand;
+      this.addGroundTexture('ecology.terrain.sand', o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
+    {
+      // The lake plate is a horizon painting (open water receding to a far
+      // shore), so it is stretched across the water band rather than tiled —
+      // tiling would repeat its sky corner over the whole lake.
+      const o = this.layout.water;
+      this.addBackdropTexture(ART.lakeedge_water_backdrop, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
     }
 
     // === WATER COLLISION (top zone) ===
@@ -101,11 +98,12 @@ export default class LakeEdgeScene extends LocalSceneBase {
     this.addWall(this.layout.dock_wall_right.x, this.layout.dock_wall_right.y, this.layout.dock_wall_right.w, this.layout.dock_wall_right.h);
 
     if (isRaftDockMode) {
-      this.add.text(this.layout.interact_fishing_spot.x, this.layout.interact_fishing_spot.y - 34, '🚣', {
-        fontSize: '34px',
-        stroke: '#ffffff',
-        strokeThickness: 3,
-      }).setOrigin(0.5).setDepth(4);
+      this.addProp(
+        ART.rowboat,
+        this.layout.interact_fishing_spot.x,
+        this.layout.interact_fishing_spot.y - 10,
+        { depth: 4 },
+      );
       this.add.text(this.layout.interact_fishing_spot.x, this.layout.interact_fishing_spot.y + 28, 'Raft Test Dock', {
         fontSize: '15px',
         fontFamily: 'sans-serif',
@@ -118,18 +116,18 @@ export default class LakeEdgeScene extends LocalSceneBase {
 
     // === ROCKS ===
     for (const { x: rx, y: ry } of this.layout.rocks) {
-      this.add.text(rx, ry, '🪨', { fontSize: '24px' }).setOrigin(0.5).setDepth(3);
+      this.addProp(ART.rock_boulder, rx, ry + 12, { maxPx: 36, depth: groundDepth(ry) });
       this.addWall(rx, ry, 22, 18);
     }
 
     // === REEDS ===
     for (const { x: rx, y: ry } of this.layout.reeds) {
-      this.add.text(rx, ry, '🌾', { fontSize: '20px' }).setOrigin(0.5).setDepth(3);
+      this.addProp(ART.reeds, rx, ry + 12, { maxPx: 40, depth: groundDepth(ry) });
     }
 
     // === TREES ===
     for (const { x: tx, y: ty } of this.layout.trees) {
-      this.add.text(tx, ty, '🌳', { fontSize: '32px' }).setOrigin(0.5).setDepth(3);
+      this.addProp(ART.shade_tree, tx, ty + 20, { maxPx: 96, depth: groundDepth(ty) });
       this.addWall(tx, ty, 20, 20);
     }
 
@@ -144,7 +142,7 @@ export default class LakeEdgeScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_fishing_spot.x, y: this.layout.interact_fishing_spot.y,
       label: isRaftDockMode ? 'Raft Test Dock' : 'Fishing Spot',
-      icon: isRaftDockMode ? '🚣' : '🎣',
+      icon: isRaftDockMode ? ART.rowboat : ART.fishing_spot,
       radius: isRaftDockMode ? 95 : 55,
       metadata: { questObservation: 'buoyancy_test_passed' },
       onInteract: () => {
@@ -252,7 +250,7 @@ export default class LakeEdgeScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_cave_entrance.x, y: this.layout.interact_cave_entrance.y,
       label: 'Cave Entrance',
-      icon: '🕳️',
+      icon: ART.cave_entrance,
       radius: 55,
       onInteract: () => {
         startInteraction(this, {
@@ -274,7 +272,7 @@ export default class LakeEdgeScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_seashell.x, y: this.layout.interact_seashell.y,
       label: 'Seashell',
-      icon: '🐚',
+      icon: ART.seashell,
       radius: 50,
       onInteract: () => {
         this.registry.set('dialogEvent', {

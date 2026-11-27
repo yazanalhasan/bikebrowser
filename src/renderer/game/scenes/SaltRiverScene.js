@@ -9,6 +9,8 @@
 import BaseSubScene from './BaseSubScene.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { groundDepth } from '../../../game/assets/act1Art.js';
 
 const SCENE_KEY = 'SaltRiverScene';
 
@@ -35,36 +37,37 @@ export default class SaltRiverScene extends BaseSubScene {
     this.layout = loadLayout(this, 'saltRiverLayout');
     const { width, height } = this.getWorldSize();
 
-    // ── Terrain layers ──
-    // Southern bank (grass)
-    this.add.rectangle(this.layout.terrain_south_grass.x, this.layout.terrain_south_grass.y, this.layout.terrain_south_grass.w, this.layout.terrain_south_grass.h, 0x7caa55);
-    // Sandy riverbank
-    this.add.rectangle(this.layout.terrain_sandy_riverbank.x, this.layout.terrain_sandy_riverbank.y, this.layout.terrain_sandy_riverbank.w, this.layout.terrain_sandy_riverbank.h, 0xd4b896);
-    // River (flowing water)
-    this.add.rectangle(this.layout.terrain_river.x, this.layout.terrain_river.y, this.layout.terrain_river.w, this.layout.terrain_river.h, 0x4a90d9);
-    // Northern bank
-    this.add.rectangle(this.layout.terrain_north_grass.x, this.layout.terrain_north_grass.y, this.layout.terrain_north_grass.w, this.layout.terrain_north_grass.h, 0x8bbc6a);
-    // Sandy shore (north)
-    this.add.rectangle(this.layout.terrain_north_sandy_shore.x, this.layout.terrain_north_sandy_shore.y, this.layout.terrain_north_sandy_shore.w, this.layout.terrain_north_sandy_shore.h, 0xd4b896);
-
-    // ── Water animation (ripples) ──
-    const waterGraphics = this.add.graphics();
-    waterGraphics.setDepth(1);
-    for (let i = 0; i < 12; i++) {
-      const rx = 80 + Math.random() * (width - 160);
-      const ry = 280 + Math.random() * 220;
-      waterGraphics.lineStyle(1, 0x7cb8e8, 0.4);
-      waterGraphics.strokeEllipse(rx, ry, 40 + Math.random() * 30, 8);
+    // ── Terrain layers ── painted river water between textured banks.
+    {
+      const o = this.layout.terrain_south_grass;
+      this.addGroundTexture(ART.lakeedge_grass, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
+    {
+      const o = this.layout.terrain_sandy_riverbank;
+      this.addGroundTexture(ART.saltriver_bank, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
+    {
+      const o = this.layout.terrain_river;
+      this.addGroundTexture(ART.saltriver_water, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
+    {
+      const o = this.layout.terrain_north_grass;
+      this.addGroundTexture(ART.lakeedge_grass, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
+    {
+      const o = this.layout.terrain_north_sandy_shore;
+      this.addGroundTexture(ART.saltriver_bank, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
     }
 
     // Flowing water particles (horizontal drift)
     for (let i = 0; i < 8; i++) {
-      const leaf = this.add.text(
+      const leaf = this.addProp(
+        i % 2 === 0 ? ART.reeds : ART.river_debris,
         Math.random() * width,
         290 + Math.random() * 200,
-        i % 2 === 0 ? '🍃' : '🪵',
-        { fontSize: '14px' }
-      ).setOrigin(0.5).setAlpha(0.6).setDepth(2);
+        { maxPx: 26, depth: 2, alpha: 0.7, anchor: 'icon' },
+      );
+      if (!leaf) continue;
       this.tweens.add({
         targets: leaf, x: width + 50, duration: 8000 + Math.random() * 6000,
         repeat: -1, ease: 'Linear',
@@ -81,21 +84,21 @@ export default class SaltRiverScene extends BaseSubScene {
 
     // ── Trees (north bank) ──
     for (const t of this.layout.trees) {
-      this.add.text(t.x, t.y, '🌳', { fontSize: '32px' }).setOrigin(0.5);
+      this.addProp(ART.shade_tree, t.x, t.y + 20, { maxPx: 96, depth: groundDepth(t.y) });
       this.addWall(t.x, t.y, 30, 30);
     }
 
     // ── Reeds along riverbank ──
     for (const r of this.layout.reeds) {
-      this.add.text(r.x, r.y, '🌾', { fontSize: '18px' }).setOrigin(0.5);
+      this.addProp(ART.reeds, r.x, r.y + 12, { maxPx: 38, depth: groundDepth(r.y) });
     }
 
     // ── Wildlife ──
     // Fish in water
     for (let i = 0; i < 4; i++) {
-      const fish = this.add.text(200 + i * 200, 340 + Math.random() * 100, '🐟', {
-        fontSize: '16px',
-      }).setOrigin(0.5).setDepth(2);
+      const fish = this.addProp(ART.fish, 200 + i * 200, 340 + Math.random() * 100,
+        { maxPx: 34, depth: 3, anchor: 'icon' });
+      if (!fish) continue;
       this.tweens.add({
         targets: fish, x: fish.x + 80, y: fish.y + 20,
         duration: 3000 + Math.random() * 2000,
@@ -104,14 +107,14 @@ export default class SaltRiverScene extends BaseSubScene {
     }
 
     // Heron on shore
-    const heron = this.add.text(this.layout.heron.x, this.layout.heron.y, '🦩', { fontSize: '28px' }).setOrigin(0.5);
+    const heron = this.addProp(ART.heron, this.layout.heron.x, this.layout.heron.y + 18, { maxPx: 58, depth: 4 });
     this.tweens.add({
       targets: heron, y: 245, duration: 3000,
       yoyo: true, repeat: -1, ease: 'Sine.easeInOut',
     });
 
     // Frog
-    const frog = this.add.text(this.layout.frog.x, this.layout.frog.y, '🐸', { fontSize: '20px' }).setOrigin(0.5);
+    const frog = this.addProp(ART.frog, this.layout.frog.x, this.layout.frog.y + 10, { maxPx: 34, depth: 4 });
     this.tweens.add({
       targets: frog, x: 340, y: 500, duration: 2000,
       yoyo: true, repeat: -1, ease: 'Quad.easeInOut',
@@ -141,22 +144,22 @@ export default class SaltRiverScene extends BaseSubScene {
 
     // ── Resources ──
     this.addResource({
-      x: this.layout.resource_algae_sample.x, y: this.layout.resource_algae_sample.y, icon: '🧪', label: 'Algae Sample',
+      x: this.layout.resource_algae_sample.x, y: this.layout.resource_algae_sample.y, icon: ART.algae, label: 'Algae Sample',
       itemId: 'algae_sample',
       description: 'Green algae from the river — could produce organic compounds.',
     });
     this.addResource({
-      x: this.layout.resource_microbial_sample.x, y: this.layout.resource_microbial_sample.y, icon: '🔬', label: 'Microbial Sample',
+      x: this.layout.resource_microbial_sample.x, y: this.layout.resource_microbial_sample.y, icon: ART.microbial, label: 'Microbial Sample',
       itemId: 'microbial_sample',
       description: 'Microorganisms from river sediment — potential for bio-production.',
     });
     this.addResource({
-      x: this.layout.resource_mineral_deposit.x, y: this.layout.resource_mineral_deposit.y, icon: '💎', label: 'Mineral Deposit',
+      x: this.layout.resource_mineral_deposit.x, y: this.layout.resource_mineral_deposit.y, icon: ART.mineral_deposit, label: 'Mineral Deposit',
       itemId: 'river_minerals',
       description: 'Dissolved minerals deposited along the riverbed.',
     });
     this.addResource({
-      x: this.layout.resource_reed_fiber.x, y: this.layout.resource_reed_fiber.y, icon: '🌿', label: 'River Reed Fiber',
+      x: this.layout.resource_reed_fiber.x, y: this.layout.resource_reed_fiber.y, icon: ART.reed_fiber, label: 'River Reed Fiber',
       itemId: 'reed_fiber',
       description: 'Tough natural fiber from river reeds — good for weaving.',
     });
@@ -181,7 +184,7 @@ export default class SaltRiverScene extends BaseSubScene {
     // Embedded challenge 1: Flow rate
     this.addChallenge({
       x: this.layout.challenge_flow_rate.x, y: this.layout.challenge_flow_rate.y,
-      icon: '🌊',
+      icon: ART.ch_flow_rate,
       label: 'Flow Rate',
       question: 'The river moves 120 liters of water past this point every minute. How many liters flow past in 2.5 minutes?',
       choices: [
@@ -198,7 +201,7 @@ export default class SaltRiverScene extends BaseSubScene {
     // Embedded challenge 2: Ecosystem balance
     this.addChallenge({
       x: this.layout.challenge_food_chain.x, y: this.layout.challenge_food_chain.y,
-      icon: '🔄',
+      icon: ART.ch_food_chain,
       label: 'Food Chain',
       question: 'In this river, 1 heron eats 5 fish, and each fish eats 20 insects. If there are 3 herons, how many insects are needed to support them?',
       choices: [
@@ -215,7 +218,7 @@ export default class SaltRiverScene extends BaseSubScene {
     // Embedded challenge 3: Water distribution
     this.addChallenge({
       x: this.layout.challenge_irrigation.x, y: this.layout.challenge_irrigation.y,
-      icon: '💧',
+      icon: ART.ch_irrigation,
       label: 'Irrigation Math',
       question: 'The river provides 900 liters/hour. Channel A needs 1/3, Channel B needs 1/4. How much is left for Channel C?',
       choices: [

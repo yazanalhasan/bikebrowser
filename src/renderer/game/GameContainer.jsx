@@ -44,6 +44,7 @@ import { gameplayReportsEnabled } from './utils/gameplayReports.js';
 import { getCurrentStep, initDiscoveryQuestBridge } from './systems/questSystem.js';
 import { interpolateStepText } from './systems/questTemplating.js';
 import { triggerQuestRevealsForState } from './systems/discoveryBridge.js';
+import { LANGUAGE_CARDS } from './systems/languageLayer.js';
 
 const GAMEPLAY_REPORTS_KEY = 'bikebrowser_gameplay_reports';
 const GAMEPLAY_REPORTS_ENABLED = gameplayReportsEnabled(import.meta.env);
@@ -1387,6 +1388,35 @@ export default function GameContainer() {
             }
             return null;
           })}
+
+          {/* ---- Words Mariam taught (Act 1 Levantine Arabic cards) ----
+              Script, kid transliteration and English caption all stay
+              visible: the language brief's rule is that rank 1 never hides
+              the Arabic. Practice counts come from state.languagePractice. */}
+          <div className="mt-3 pt-2 border-t border-gray-200">
+            <div className="font-bold text-gray-700 mb-1 text-xs">
+              Words Mariam taught
+            </div>
+            {LANGUAGE_CARDS.map((card) => {
+              const practiced = gameState?.languagePractice?.[card.id]?.practiced || 0;
+              return (
+                <div key={card.id} className="py-1 border-b border-gray-100 last:border-0">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span dir="rtl" lang="ar" className="text-base text-gray-800 font-semibold">
+                      {card.script}
+                    </span>
+                    <span className="text-[10px] text-gray-500 shrink-0">
+                      {practiced > 0 ? `practiced ${practiced}×` : 'not practiced yet'}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    {card.transliteration} — {card.english}
+                  </div>
+                  <div className="text-[10px] text-gray-500 italic">{card.caption}</div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 

@@ -422,6 +422,11 @@
         "interactionRadius": 65,
         "_note": "Predator roaming near the east mesquite, with space from the player path and other animals"
       }
-    ]
+    ],
+    "npc_mariam": {
+      "x": 700,
+      "y": 470,
+      "_note": "Mariam, the Act 1 Levantine Arabic mentor. Stands in her front yard between the south sidewalk (y=420) and the yellow house (y=550), clear of Mrs. Ramirez (550,310) and Mr. Chen (313,402)."
+    }
   }
 }

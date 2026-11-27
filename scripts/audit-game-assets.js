@@ -46,7 +46,13 @@ function scanScenes() {
 
 function extractManifestAssets() {
   const text = fs.existsSync(manifestPath) ? fs.readFileSync(manifestPath, 'utf8') : '';
-  const paths = [...text.matchAll(/(?:image|json|path):\s*['"`]([^'"`]+)['"`]/g)].map((m) => m[1]);
+  const paths = [...text.matchAll(/(?:image|json|path):\s*['"`]([^'"`]+)['"`]/g)]
+    .map((m) => m[1])
+    // The Act 1 art entries are built from act1ArtRegistry.js, so their paths
+    // are template literals like `/${r.path}` that this text scan cannot
+    // resolve. tests/act1-art-registry.test.mjs checks every one of those on
+    // disk instead; skip them here rather than report a phantom miss.
+    .filter((p) => !p.includes('${'));
   for (const publicPath of paths) {
     const diskPath = path.join(root, 'public', publicPath.replace(/^\/+/, ''));
     if (!fs.existsSync(diskPath)) warn(manifestPath, null, `manifest references missing asset: ${publicPath}`);

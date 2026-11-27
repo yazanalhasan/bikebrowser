@@ -16,6 +16,7 @@ import LocalSceneBase from './LocalSceneBase.js';
 import { startInteraction } from '../systems/interactionManager.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
 
 export default class CommunityPoolScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -40,25 +41,27 @@ export default class CommunityPoolScene extends LocalSceneBase {
     this.layout = loadLayout(this, 'communityPoolLayout');
 
     // === GROUND ===
-    // Concrete deck (full background)
-    this.add.rectangle(this.layout.ground_deck.x, this.layout.ground_deck.y, this.layout.ground_deck.w, this.layout.ground_deck.h, 0xd6d2c4);
-
-    // Grass border outside the fence
-    const grassGfx = this.add.graphics();
-    grassGfx.fillStyle(0x7cb342, 1);
-    grassGfx.fillRect(this.layout.grass_border_top.x, this.layout.grass_border_top.y, this.layout.grass_border_top.w, this.layout.grass_border_top.h);
-    grassGfx.fillRect(this.layout.grass_border_bottom.x, this.layout.grass_border_bottom.y, this.layout.grass_border_bottom.w, this.layout.grass_border_bottom.h);
-    grassGfx.fillRect(this.layout.grass_border_left.x, this.layout.grass_border_left.y, this.layout.grass_border_left.w, this.layout.grass_border_left.h);
-    grassGfx.fillRect(this.layout.grass_border_right.x, this.layout.grass_border_right.y, this.layout.grass_border_right.w, this.layout.grass_border_right.h);
-
-    // Pool deck (lighter area around pool)
-    this.add.rectangle(this.layout.pool_deck.x, this.layout.pool_deck.y, this.layout.pool_deck.w, this.layout.pool_deck.h, 0xe8e0d0);
+    // Painted concrete deck over the whole scene, then a mown-grass border
+    // outside the fence. Both are textures now, not flat fills.
+    {
+      const o = this.layout.ground_deck;
+      this.addGroundTexture(ART.communitypool_deck, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
+    for (const key of ['grass_border_top', 'grass_border_bottom', 'grass_border_left', 'grass_border_right']) {
+      const o = this.layout[key];
+      // These layout rects are top-left anchored (they came from fillRect).
+      this.addGroundTexture(ART.lakeedge_grass, o.x, o.y, o.w, o.h, { depth: 0 });
+    }
+    {
+      const o = this.layout.pool_deck;
+      this.addGroundTexture(ART.communitypool_deck, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h, { depth: 0 });
+    }
 
     // === POOL (water collision) ===
     const poolX = this.layout.pool_water.x, poolY = this.layout.pool_water.y;
     const poolW = this.layout.pool_water.w, poolH = this.layout.pool_water.h;
     // Pool water
-    this.add.rectangle(poolX, poolY, poolW, poolH, 0x42a5f5);
+    this.addGroundTexture(ART.communitypool_pool_water, poolX - poolW / 2, poolY - poolH / 2, poolW, poolH, { depth: 0 });
     // Pool border
     const poolGfx = this.add.graphics();
     poolGfx.lineStyle(4, 0x90caf9, 1);
@@ -101,17 +104,17 @@ export default class CommunityPoolScene extends LocalSceneBase {
 
     // === LIFEGUARD CHAIR (east side) ===
     this.add.rectangle(this.layout.lifeguard_chair.x, this.layout.lifeguard_chair.y, this.layout.lifeguard_chair.w, this.layout.lifeguard_chair.h, 0xffa726).setStrokeStyle(2, 0xf57c00).setDepth(2);
-    this.add.text(this.layout.lifeguard_label.x, this.layout.lifeguard_label.y, '🏖️', { fontSize: '18px' }).setOrigin(0.5).setDepth(3);
+    this.addProp(ART.lifeguard_chair, this.layout.lifeguard_label.x, this.layout.lifeguard_label.y + 24, { depth: 3 });
     this.addWall(this.layout.lifeguard_chair.x, this.layout.lifeguard_chair.y, this.layout.lifeguard_chair.w, this.layout.lifeguard_chair.h);
 
     // === SLIDE (north side of pool) ===
     this.add.rectangle(this.layout.slide.x, this.layout.slide.y, this.layout.slide.w, this.layout.slide.h, 0x42a5f5).setStrokeStyle(2, 0x1e88e5).setDepth(2);
-    this.add.text(this.layout.slide.x, this.layout.slide.y, '🛝', { fontSize: '22px' }).setOrigin(0.5).setDepth(3);
+    this.addProp(ART.pool_slide, this.layout.slide.x, this.layout.slide.y + 26, { depth: 3 });
     this.addWall(this.layout.slide.x, this.layout.slide.y, this.layout.slide.w, this.layout.slide.h);
 
     // === UMBRELLA (decorative) ===
-    this.add.text(this.layout.umbrella_left.x, this.layout.umbrella_left.y, '⛱️', { fontSize: '28px' }).setOrigin(0.5).setDepth(3);
-    this.add.text(this.layout.umbrella_right.x, this.layout.umbrella_right.y, '⛱️', { fontSize: '28px' }).setOrigin(0.5).setDepth(3);
+    this.addProp(ART.umbrella, this.layout.umbrella_left.x, this.layout.umbrella_left.y + 30, { depth: 3 });
+    this.addProp(ART.umbrella, this.layout.umbrella_right.x, this.layout.umbrella_right.y + 30, { depth: 3 });
 
     // === INTERACTABLES ===
 
@@ -119,7 +122,7 @@ export default class CommunityPoolScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_pool_rules.x, y: this.layout.interact_pool_rules.y,
       label: 'Pool Rules',
-      icon: '📋',
+      icon: ART.clipboard,
       radius: 55,
       onInteract: () => {
         this.registry.set('dialogEvent', {
@@ -134,7 +137,7 @@ export default class CommunityPoolScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_diving_board.x, y: this.layout.interact_diving_board.y,
       label: 'Diving Board',
-      icon: '🤿',
+      icon: ART.diving_board,
       radius: 55,
       onInteract: () => {
         startInteraction(this, {
@@ -156,7 +159,7 @@ export default class CommunityPoolScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_towel_rack.x, y: this.layout.interact_towel_rack.y,
       label: 'Towel Rack',
-      icon: '🧴',
+      icon: ART.towel_rack,
       radius: 50,
       onInteract: () => {
         this.registry.set('dialogEvent', {

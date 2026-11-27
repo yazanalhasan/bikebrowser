@@ -116,6 +116,13 @@ export function createGameConfig(parent, width, height, startScene) {
     width,
     height,
     backgroundColor: '#333333',
+    // The Act 1 art is 16-bit pixel art authored at its on-screen size.
+    // pixelArt disables texture smoothing so sprites stay crisp instead of
+    // being bilinear-filtered into mush. On the CANVAS renderer this clears
+    // imageSmoothingEnabled on the 2D context; roundPixels keeps sprites on
+    // whole-pixel positions so they don't shimmer while the camera scrolls.
+    pixelArt: true,
+    roundPixels: true,
     audio: { noAudio: true }, // We use our own AudioManager; avoid a second AudioContext
     scale: {
       mode: Phaser.Scale.RESIZE,

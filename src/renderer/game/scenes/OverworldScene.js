@@ -26,8 +26,15 @@ import MCPSystem from '../systems/MCPSystem.js';
 import { getUnlockProgress } from '../systems/sceneRegistry.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { addArt } from '../../../game/assets/act1Art.js';
+import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
 
 const SCENE_KEY = 'OverworldScene';
+
+// The Sonoran tileset frames used to lay the overworld ground.
+const SONORAN_TILES = 'sonoran_tiles';
+const TILE = { grass: 1, road: 2, kerb: 4, sand: 6 };
 const ENTER_RADIUS = 70; // how close player must be to enter a location
 
 export default class OverworldScene extends Phaser.Scene {
@@ -42,9 +49,38 @@ export default class OverworldScene extends Phaser.Scene {
 
   preload() {
     this.load.json('overworldLayout', 'layouts/overworld.layout.json');
-    if (!this.textures.exists(WORLD.mapAsset)) {
-      this.load.image(WORLD.mapAsset, WORLD.mapPath);
+    // Act 1 art: marker icons, props and the Sonoran tileset that builds the
+    // neighborhood ground below.
+    preloadGameAssets(this);
+  }
+
+  /**
+   * Lay the overworld ground from the Sonoran tileset: sand base, grass
+   * blocks, then the road cross with concrete kerbs. Tile indices are the
+   * tileset's own frames (0/1 grass, 2 road, 4 kerb, 6 sand).
+   * @private
+   */
+  _buildGround() {
+    const L = this.layout;
+    const tile = (frame, x, y, w, h, depth) => {
+      if (!this.textures.exists(SONORAN_TILES)) return null;
+      return this.add.tileSprite(x, y, w, h, SONORAN_TILES, frame)
+        .setOrigin(0, 0)
+        .setDepth(depth);
+    };
+
+    const base = L.ground_desert_margin;
+    tile(TILE.sand, base.x, base.y, base.w, base.h, 0);
+    for (const b of L.ground_grass_blocks || []) {
+      tile(TILE.grass, b.x, b.y, b.w, b.h, 1);
     }
+    for (const s of L.sidewalks || []) {
+      tile(TILE.kerb, s.x, s.y, s.w, s.h, 2);
+    }
+    const rv = L.road_vertical;
+    const rh = L.road_horizontal;
+    tile(TILE.road, rv.x, rv.y, rv.w, rv.h, 3);
+    tile(TILE.road, rh.x, rh.y, rh.w, rh.h, 3);
   }
 
   create() {
@@ -61,9 +97,10 @@ export default class OverworldScene extends Phaser.Scene {
     );
 
     // --- World map ---
-    this.add.image(WORLD.width / 2, WORLD.height / 2, WORLD.mapAsset)
-      .setDisplaySize(WORLD.width, WORLD.height)
-      .setDepth(0);
+    // Built from the 8-tile Sonoran tileset rather than a single painted
+    // plate: `neighborhood_world_v1.png` was never in the repo, so this used
+    // to render as a missing texture. Geometry lives in the layout JSON.
+    this._buildGround();
 
     // --- Location markers ---
     this._locationMarkers = [];
@@ -80,10 +117,11 @@ export default class OverworldScene extends Phaser.Scene {
         .setStrokeStyle(this.layout.marker_circle.stroke_width, unlocked ? 0xf59e0b : 0x4b5563)
         .setDepth(10);
 
-      // Icon
-      const icon = this.add.text(x, y, unlocked ? sceneDef.icon : '🔒', {
-        fontSize: '18px',
-      }).setOrigin(0.5).setDepth(11);
+      // Icon — painted marker art; the lock is art too when the scene is shut.
+      const iconKey = unlocked ? sceneDef.iconArt : ART.map_lock;
+      const icon = addArt(this, iconKey, x, y, {
+        anchor: 'icon', maxPx: 30, depth: 11,
+      });
 
       // Name label
       const label = this.add.text(x, y + this.layout.marker_label.y_offset, sceneDef.name, {
@@ -105,7 +143,7 @@ export default class OverworldScene extends Phaser.Scene {
       } else {
         // Show lock requirements
         const progress = getUnlockProgress(sceneDef.key, state);
-        prompt = this.add.text(x, y + this.layout.marker_prompt.y_offset, `🔒 ${progress.hint}`, {
+        prompt = this.add.text(x, y + this.layout.marker_prompt.y_offset, progress.hint, {
           fontSize: '10px', fontFamily: 'sans-serif',
           color: '#ffffff',
           backgroundColor: '#6b7280',
@@ -125,9 +163,12 @@ export default class OverworldScene extends Phaser.Scene {
       const hasQuest = this._hasQuestAt(sceneDef.key, state);
       let questMarker = null;
       if (hasQuest && unlocked) {
-        questMarker = this.add.text(x + this.layout.marker_quest_indicator.x_offset, y + this.layout.marker_quest_indicator.y_offset, '❗', {
-          fontSize: '16px',
-        }).setOrigin(0.5).setDepth(12);
+        questMarker = addArt(
+          this, ART.ui_exclaim,
+          x + this.layout.marker_quest_indicator.x_offset,
+          y + this.layout.marker_quest_indicator.y_offset,
+          { anchor: 'icon', maxPx: 24, depth: 12 },
+        );
       }
 
       this._locationMarkers.push({

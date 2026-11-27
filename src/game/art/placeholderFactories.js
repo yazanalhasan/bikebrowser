@@ -1,5 +1,8 @@
 import { DEPTHS, PALETTE } from './artConfig.js';
 import { createSoftShadow } from '../rendering/createSoftShadow.js';
+import { hasAtlasFrame } from '../assets/createAtlasSprite.js';
+
+const NEIGHBORHOOD_ATLAS = 'neighborhood_atlas';
 
 function container(scene, x, y, depth = DEPTHS.props) {
   return scene.add.container(x, y).setDepth(depth);
@@ -395,6 +398,12 @@ export function createBikeGpsPlaceholder(scene, x, y) {
 
 export function createScorchingPavementPlaceholder(scene, x, y) {
   const c = container(scene, x, y, DEPTHS.groundDecor);
+  // Painted heat-shimmer plate from the neighborhood atlas when it is
+  // loaded. The animated vector waves below are the fallback.
+  if (hasAtlasFrame(scene, NEIGHBORHOOD_ATLAS, 'prop_scorching_pavement')) {
+    c.add(scene.add.image(0, 0, NEIGHBORHOOD_ATLAS, 'prop_scorching_pavement').setOrigin(0.5));
+    return c;
+  }
   const g = graphics(scene);
   for (let i = 0; i < 5; i++) {
     const wave = scene.add.graphics();
@@ -417,6 +426,19 @@ export function createScorchingPavementPlaceholder(scene, x, y) {
 export function createGarageLeftSignPlaceholder(scene, x, y) {
   const c = container(scene, x, y, DEPTHS.props);
   createSoftShadow(scene, x, y + 18, 'small');
+  // Painted signpost from the atlas; the board is blank in the art and the
+  // UI writes the wording over it (style guide: no text inside sprites).
+  if (hasAtlasFrame(scene, NEIGHBORHOOD_ATLAS, 'sign_garage_left')) {
+    c.add(scene.add.image(0, 6, NEIGHBORHOOD_ATLAS, 'sign_garage_left')
+      .setOrigin(0.5, 1).setScale(0.75));
+    c.add(scene.add.text(0, -26, '← Garage', {
+      fontFamily: 'sans-serif',
+      fontSize: '13px',
+      fontStyle: 'bold',
+      color: '#1F2937',
+    }).setOrigin(0.5));
+    return c;
+  }
   const g = graphics(scene);
   g.fillStyle(0xfff7e8, 0.98);
   g.fillRoundedRect(-46, -14, 92, 28, 6);

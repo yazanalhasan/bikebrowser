@@ -23,6 +23,8 @@
 
 import LocalSceneBase from './LocalSceneBase.js';
 import { saveGame } from '../systems/saveSystem.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { addArt, addGround } from '../../../game/assets/act1Art.js';
 
 // Defaults (subclasses can override via getWorldSize / hooks).
 const DEFAULT_WORLD_W = 800;
@@ -308,12 +310,18 @@ export default class LabRigBase extends LocalSceneBase {
 
   _drawBackground() {
     const w = this._worldDim.w, h = this._worldDim.h;
-    this.add.rectangle(w / 2, h / 2, w, h, COL_BG);
+    // Painted lab wall and bench floor. The faint instrument grid stays on
+    // top — it is rig chrome that helps read the apparatus, not scenery.
+    if (!addGround(this, ART.materiallab_wall_backdrop, 0, 0, w, h, { depth: -1 })) {
+      this.add.rectangle(w / 2, h / 2, w, h, COL_BG);
+    }
     const grid = this.add.graphics();
     grid.lineStyle(1, COL_GRID, 0.25);
     for (let x = 0; x <= w; x += 40) grid.lineBetween(x, 60, x, h - 40);
     for (let y = 60; y <= h - 40; y += 40) grid.lineBetween(0, y, w, y);
-    this.add.rectangle(w / 2, h - 30, w, 50, COL_FLOOR).setDepth(0);
+    if (!addGround(this, ART.materiallab_floor, 0, h - 55, w, 55, { depth: 0 })) {
+      this.add.rectangle(w / 2, h - 30, w, 50, COL_FLOOR).setDepth(0);
+    }
   }
 
   _drawTitle() {
@@ -388,11 +396,12 @@ export default class LabRigBase extends LocalSceneBase {
         }).setDepth(3);
       }
 
-      const check = this.add.text(
-        SELECTOR_X + SELECTOR_W - 18, sy + SELECTOR_H / 2, '✓',
-        { fontSize: '18px', fontFamily: 'sans-serif', color: '#22c55e', fontStyle: 'bold' },
-      ).setOrigin(0.5).setDepth(4)
-        .setVisible(this._testedIds.has(s.id));
+      const check = addArt(
+        this, ART.ui_check,
+        SELECTOR_X + SELECTOR_W - 18, sy + SELECTOR_H / 2,
+        { anchor: 'icon', maxPx: 22, depth: 4 },
+      );
+      check?.setVisible(this._testedIds.has(s.id));
 
       bg.on('pointerdown', () => this._selectSample(s.id));
 
@@ -407,7 +416,7 @@ export default class LabRigBase extends LocalSceneBase {
     for (const slot of this._slots) {
       const isActive = slot.id === this._activeSampleId;
       slot.bg.setStrokeStyle(isActive ? 3 : 2, isActive ? 0xfbbf24 : COL_PANEL_EDGE);
-      slot.check.setVisible(this._testedIds.has(slot.id));
+      slot.check?.setVisible(this._testedIds.has(slot.id));
     }
   }
 

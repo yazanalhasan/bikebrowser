@@ -35,6 +35,7 @@ import {
   performSeamlessTransition,
 } from '../systems/seamlessTraversal.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
 
 const SCENE_KEY = 'DryWashScene';
 
@@ -121,11 +122,20 @@ export default class DryWashScene extends LocalSceneBase {
     }
 
     // ── Sky / background ──
-    this.add.rectangle(this.layout.sky.x, this.layout.sky.y, this.layout.sky.w, this.layout.sky.h, 0xf2c98f);
+    {
+      const o = this.layout.sky;
+      this.addGroundTexture(ART.worldmap_sky_day, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
     // ── Sandy near-side ground ──
-    this.add.rectangle(this.layout.ground_near.x, this.layout.ground_near.y, this.layout.ground_near.w, this.layout.ground_near.h, 0xc8a274);
-    // ── Far-side ground (slightly different tone to read as "across") ──
-    this.add.rectangle(this.layout.ground_far.x, this.layout.ground_far.y, this.layout.ground_far.w, this.layout.ground_far.h, 0xb89368);
+    {
+      const o = this.layout.ground_near;
+      this.addGroundTexture(ART.drywash_ground, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
+    // ── Far-side ground — the bank texture reads as "across the wash" ──
+    {
+      const o = this.layout.ground_far;
+      this.addGroundTexture(ART.drywash_bank, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
 
     // ── Wash channel (jagged tan-brown arroyo at y≈400) ──
     this._renderWashChannel(width);
@@ -139,10 +149,10 @@ export default class DryWashScene extends LocalSceneBase {
     mesa.fillTriangle(this.layout.mesa_3.x1, this.layout.mesa_3.y1, this.layout.mesa_3.x2, this.layout.mesa_3.y2, this.layout.mesa_3.x3, this.layout.mesa_3.y3);
 
     // ── Decorative cacti / brush ──
-    this.add.text(this.layout.cactus_left.x, this.layout.cactus_left.y, '🌵', { fontSize: '34px' }).setOrigin(0.5).setDepth(2);
-    this.add.text(this.layout.cactus_right.x, this.layout.cactus_right.y, '🌵', { fontSize: '28px' }).setOrigin(0.5).setDepth(2);
-    this.add.text(this.layout.brush_right.x, this.layout.brush_right.y, '🌿', { fontSize: '22px' }).setOrigin(0.5).setDepth(2);
-    this.add.text(this.layout.brush_left.x, this.layout.brush_left.y, '🌿', { fontSize: '18px' }).setOrigin(0.5).setDepth(2);
+    this.addProp(ART.saguaro, this.layout.cactus_left.x, this.layout.cactus_left.y + 22, { depth: 2 });
+    this.addProp(ART.saguaro, this.layout.cactus_right.x, this.layout.cactus_right.y + 18, { maxPx: 76, depth: 2 });
+    this.addProp(ART.desert_shrub, this.layout.brush_right.x, this.layout.brush_right.y + 12, { maxPx: 40, depth: 2 });
+    this.addProp(ART.desert_shrub, this.layout.brush_left.x, this.layout.brush_left.y + 10, { maxPx: 32, depth: 2 });
 
     // ── Monsoon warning sign ──
     this._renderMonsoonSign(this.layout.monsoon_sign.x, this.layout.monsoon_sign.y);
@@ -267,7 +277,7 @@ export default class DryWashScene extends LocalSceneBase {
       x: basin.x,
       y: basin.y,
       label: 'Living Basin',
-      icon: '💧',
+      icon: ART.living_basin,
       radius: basin.interactionRadius || 140,
       metadata: { questObservation: 'fluid_zone_found' },
       onInteract: () => this._handleLivingBasinInteract(),
@@ -437,12 +447,9 @@ export default class DryWashScene extends LocalSceneBase {
    * @private
    */
   _renderMonsoonSign(x, y) {
-    // Post
-    this.add.rectangle(x, y + 30, 6, 60, 0x6b4423).setDepth(2);
-    // Sign face
-    const sign = this.add.rectangle(x, y, 64, 36, 0x8b6234).setStrokeStyle(2, 0x4a2e16).setDepth(2);
-    sign.setOrigin(0.5);
-    this.add.text(x, y - 4, '⚠', { fontSize: '14px' }).setOrigin(0.5).setDepth(3);
+    // The painted monsoon sign carries the post, the board and the warning
+    // mark; the UI still writes the word so it stays legible and localisable.
+    this.addProp(ART.warning_sign, x, y + 60, { displayHeight: 96, depth: 2 });
     this.add.text(x, y + 9, 'MONSOON', {
       fontSize: '7px', fontFamily: 'sans-serif',
       fontStyle: 'bold', color: '#fef3c7',
@@ -458,8 +465,8 @@ export default class DryWashScene extends LocalSceneBase {
     g.lineTo(this.layout.locked_trail_mid.x, this.layout.locked_trail_mid.y);
     g.lineTo(this.layout.locked_trail_end.x, this.layout.locked_trail_end.y);
     g.strokePath();
-    this.add.text(this.layout.locked_trail_lock_icon.x, this.layout.locked_trail_lock_icon.y, '🔒', { fontSize: '20px' })
-      .setOrigin(0.5).setDepth(3).setAlpha(0.85);
+    this.addProp(ART.trail_lock, this.layout.locked_trail_lock_icon.x,
+      this.layout.locked_trail_lock_icon.y + 12, { maxPx: 34, depth: 3, alpha: 0.85 });
     this.add.text(this.layout.locked_trail_label.x, this.layout.locked_trail_label.y, 'Far Trail', {
       fontSize: '10px', fontFamily: 'sans-serif',
       color: '#4a3520', fontStyle: 'bold',
@@ -674,11 +681,11 @@ export default class DryWashScene extends LocalSceneBase {
     bike.strokeRoundedRect(-37, -12, 18, 16, 3);
     bike.strokeRoundedRect(15, -18, 18, 18, 3);
 
-    const rider = scene.add.text(-4, -33, '🧒', {
-      fontSize: '30px',
-      stroke: '#1f2937',
-      strokeThickness: 2,
-    }).setOrigin(0.5);
+    // Zuzu himself rides the load test, straight off his atlas.
+    const rider = scene.textures.exists('zuzu_atlas')
+      ? scene.add.image(-4, -33, 'zuzu_atlas', 'zuzu_idle_down')
+        .setOrigin(0.5, 1).setDisplaySize(26, 30)
+      : scene.add.rectangle(-4, -33, 20, 30, 0x1f3a5f).setOrigin(0.5, 1);
 
     const label = scene.add.text(0, 42, '100 kg load test', {
       fontSize: '13px',

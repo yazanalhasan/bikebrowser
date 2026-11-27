@@ -25,6 +25,8 @@ import {
   getKnownWorkbenchRecipes,
   getWorkbenchRecipe,
 } from '../data/workbenchRecipes.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { groundDepth } from '../../../game/assets/act1Art.js';
 
 function saveStateToRegistry(scene, state) {
   scene.registry.set('gameState', state);
@@ -94,45 +96,45 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     this.load.json('zuzuGarageLayout', 'layouts/zuzu-garage.layout.json');
   }
 
+  /**
+   * A perimeter wall: invisible collision body plus a band of the painted
+   * wall plate. `o` is a layout rect given as centre x/y with w/h.
+   * @private
+   */
+  _wallBand(o) {
+    if (!o) return;
+    this.addWall(o.x, o.y, o.w, o.h);
+    // tileSprite (not a stretched image) so the plate is sampled at native
+    // resolution and the stucco grain keeps its scale in a thin band.
+    this.addGroundTexture(
+      ART.zuzugarage_wall_backdrop,
+      o.x - o.w / 2, o.y - o.h / 2, o.w, o.h,
+      { depth: 1 },
+    );
+  }
+
   createWorld() {
     this.layout = loadLayout(this, 'zuzuGarageLayout');
     const { width, height } = this.getWorldSize();
     const state = this.registry.get('gameState');
 
     // === FLOOR ===
-    {
-      const o = this.layout.floor;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0xbfb8a8);
-    }
-    const floorGfx = this.add.graphics();
-    floorGfx.lineStyle(1, 0xa8a090, 0.3);
-    for (let x = 0; x < width; x += 60) floorGfx.lineBetween(x, 0, x, height);
-    for (let y = 0; y < height; y += 60) floorGfx.lineBetween(0, y, width, y);
+    // Painted concrete floor. The slab seams are in the texture, so the
+    // graphics grid that stood in for them is gone.
+    this.addGroundTexture(ART.zuzugarage_floor, 0, 0, width, height);
 
-    // === WALLS (collision) ===
-    // Top wall
-    {
-      const o = this.layout.wall_top;
-      this.addVisibleWall(o.x, o.y, o.w, o.h, 0xd4a574, 0xc4945e);
+    // === WALLS (collision + painted surface) ===
+    // The wall backdrop plate supplies the stucco surface; each perimeter
+    // band samples it, so the walls are art rather than a flat 0xd4a574 fill.
+    for (const key of ['wall_top', 'wall_left', 'wall_right', 'wall_bottom_left', 'wall_bottom_right']) {
+      this._wallBand(this.layout[key]);
     }
-    // Left wall
-    {
-      const o = this.layout.wall_left;
-      this.addVisibleWall(o.x, o.y, o.w, o.h, 0xd4a574, 0xc4945e);
-    }
-    // Right wall
-    {
-      const o = this.layout.wall_right;
-      this.addVisibleWall(o.x, o.y, o.w, o.h, 0xd4a574, 0xc4945e);
-    }
-    // Bottom wall (with door gap)
-    {
-      const o = this.layout.wall_bottom_left;
-      this.addVisibleWall(o.x, o.y, o.w, o.h, 0xd4a574, 0xc4945e);
-    }
-    {
-      const o = this.layout.wall_bottom_right;
-      this.addVisibleWall(o.x, o.y, o.w, o.h, 0xd4a574, 0xc4945e);
+
+    // === STRING LIGHTS (ceiling ambience) ===
+    // Ambience art from the bundle (slot `garage_lights`) — strung along the
+    // top wall so the garage reads as somewhere a kid actually works.
+    for (let i = 0; i < Math.ceil(width / 128); i += 1) {
+      this.addProp(ART.garage_lights, i * 128 + 64, 46, { depth: 4 });
     }
 
     // === WINDOWS (right wall decorative) ===
@@ -154,45 +156,39 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     }
 
     // === PEG BOARD (top wall) ===
+    // One painted pegboard replaces the brown rectangle plus its row of
+    // tool glyphs — the hanging tools are in the art.
     {
       const o = this.layout.peg_board;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x8b7355).setDepth(1);
-    }
-    {
-      const o = this.layout.peg_board_tools;
-      this.add.text(o.x, o.y, '⚙️  🪚  📏  🔩  🪛', { fontSize: '16px' }).setOrigin(0.5).setDepth(2);
+      this.addProp(ART.tool_wall, o.x, o.y + o.h / 2, { displayWidth: o.w, depth: 2 });
     }
 
     // === WORKBENCH (left side) ===
     this._workbenchX = this.layout.workbench.x;
     this._workbenchY = this.layout.workbench.y;
     {
+      // The workbench sprite carries the top, the legs and the clutter, so
+      // the three rectangles that stood in for them are gone.
       const o = this.layout.workbench;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x7c5c3c).setStrokeStyle(3, 0x5a3e28).setDepth(1);
-    }
-    {
-      const o = this.layout.workbench_leg_left;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5a3e28).setDepth(1);
-    }
-    {
-      const o = this.layout.workbench_leg_right;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5a3e28).setDepth(1);
+      const legs = this.layout.workbench_leg_left;
+      const baseY = legs ? legs.y + legs.h / 2 : o.y + o.h / 2;
+      this.addProp(ART.workbench, o.x, baseY, { displayWidth: o.w, depth: 2 });
     }
     {
       const o = this.layout.workbench_wrench;
-      this.add.text(o.x, o.y, '🔧', { fontSize: '24px' }).setOrigin(0.5).setDepth(2);
+      this.addProp(ART.wrench, o.x, o.y + 10, { maxPx: 34, depth: 3 });
     }
     {
       const o = this.layout.workbench_screwdriver;
-      this.add.text(o.x, o.y, '🪛', { fontSize: '24px' }).setOrigin(0.5).setDepth(2);
+      this.addProp(ART.screwdriver, o.x, o.y + 10, { maxPx: 34, depth: 3 });
     }
     {
       const o = this.layout.workbench_toolbox;
-      this.add.text(o.x, o.y, '🧰', { fontSize: '24px' }).setOrigin(0.5).setDepth(2);
+      this.addProp(ART.toolbox, o.x, o.y + 12, { maxPx: 38, depth: 3 });
     }
     {
       const o = this.layout.workbench_steel_sample;
-      this.add.text(o.x, o.y, '🔩', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
+      this.addProp(ART.bolts, o.x, o.y + 10, { maxPx: 28, depth: 3 });
     }
     // Workbench collision body
     {
@@ -203,7 +199,7 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_workbench.x, y: this.layout.interact_workbench.y,
       label: 'Workbench',
-      icon: '🔧',
+      icon: null, // the workbench sprite is already drawn above; no second copy
       radius: 70,
       metadata: { questObservation: 'composite_created' },
       onInteract: () => {
@@ -468,13 +464,13 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     }
     {
       const o = this.layout.lab_door_glyph;
-      this.add.text(o.x, o.y, '🧪', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
+      this.addProp(ART.materials_lab_marker, o.x, o.y + 10, { maxPx: 36, depth: 3 });
     }
 
     this.addInteractable({
       x: this.layout.interact_lab.x, y: this.layout.interact_lab.y,
       label: 'Materials Lab',
-      icon: '🧪',
+      icon: null, // the beaker is already drawn above; no second copy
       radius: 70,
       onInteract: () => {
         const s = this.registry.get('gameState') || {};
@@ -530,14 +526,14 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     }
     {
       const o = this.layout.thermal_door_glyph;
-      this.add.text(o.x, o.y, '🌡️', { fontSize: '20px' })
+      this.addProp(ART.ch_heat_math, o.x, o.y, { maxPx: 36, depth: 3 })
         .setOrigin(0.5).setDepth(2);
     }
 
     this.addInteractable({
       x: this.layout.interact_thermal.x, y: this.layout.interact_thermal.y,
       label: 'Thermal Lab',
-      icon: '🌡️',
+      icon: null, // the thermometer is already drawn above; no second copy
       radius: 70,
       onInteract: () => {
         const s = this.registry.get('gameState') || {};
@@ -597,7 +593,7 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     // Bike
     {
       const o = this.layout.bike_glyph;
-      this.add.text(o.x, o.y, '🚲', { fontSize: '72px' }).setOrigin(0.5).setDepth(2);
+      this.addProp(ART.zuzu_bike, o.x, o.y + 40, { depth: 3 });
     }
     // Glow
     const bikeGlow = this.add.graphics();
@@ -622,7 +618,7 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_bike.x, y: this.layout.interact_bike.y,
       label: "Zuzu's Bike",
-      icon: '🚲',
+      icon: null, // Zuzu's bike is already drawn above; no second copy
       radius: 80,
       onInteract: () => {
         const s = this.registry.get('gameState');
@@ -645,11 +641,11 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     }
     {
       const o = this.layout.notebook_glyph;
-      this.add.text(o.x, o.y, '📓', { fontSize: '30px' }).setOrigin(0.5).setDepth(2);
+      this.addProp(ART.notebook, o.x, o.y, { maxPx: 40, depth: 3 });
     }
     {
       const o = this.layout.notebook_pencil;
-      this.add.text(o.x, o.y, '✏️', { fontSize: '22px' }).setOrigin(0.5).setDepth(2);
+      this.addProp(ART.pencil, o.x, o.y, { maxPx: 26, depth: 3 });
     }
     {
       const o = this.layout.notebook_collision;
@@ -659,7 +655,7 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_notebook.x, y: this.layout.interact_notebook.y,
       label: 'Notebook',
-      icon: '📓',
+      icon: null, // the notebook is already drawn above; no second copy
       radius: 70,
       onInteract: () => {
         this.registry.set('dialogEvent', {
@@ -685,44 +681,42 @@ export default class ZuzuGarageScene extends LocalSceneBase {
 
     // Tires against left wall
     {
+      // Spare wheels leaning on the wall — the bundle's wheel art (cut from
+      // the same bike sprite) stands in for a dedicated spare-tyre asset.
       const o = this.layout.tire_left_top;
-      this.add.text(o.x, o.y, '⭕', { fontSize: '34px' }).setOrigin(0.5).setDepth(1);
+      this.addProp(ART.map_travel_bike, o.x, o.y + 17, { maxPx: 44, depth: 2 });
     }
     {
       const o = this.layout.tire_left_bottom;
-      this.add.text(o.x, o.y, '⭕', { fontSize: '28px' }).setOrigin(0.5).setDepth(1);
+      this.addProp(ART.map_travel_bike, o.x, o.y + 14, { maxPx: 36, depth: 2 });
     }
 
     // Tools on left wall
     {
       const o = this.layout.wall_tool_top;
-      this.add.text(o.x, o.y, '🔩', { fontSize: '22px' }).setOrigin(0.5).setDepth(1);
+      this.addProp(ART.bolts, o.x, o.y + 11, { maxPx: 28, depth: 2 });
     }
     {
       const o = this.layout.wall_tool_bottom;
-      this.add.text(o.x, o.y, '🪛', { fontSize: '22px' }).setOrigin(0.5).setDepth(1);
+      this.addProp(ART.screwdriver, o.x, o.y + 11, { maxPx: 30, depth: 2 });
     }
 
     // Water bottle
     {
       const o = this.layout.water_bottle;
-      this.add.text(o.x, o.y, '🧃', { fontSize: '22px' }).setOrigin(0.5).setDepth(1);
+      this.addProp(ART.water_bottle, o.x, o.y, { maxPx: 30, depth: 2 });
     }
 
     // === STATE-DEPENDENT UPGRADES ===
     const upgrades = new Set(state?.upgrades || []);
     if (upgrades.has('tool_rack')) {
       {
-        const o = this.layout.upgrade_tool_rack_shelf;
-        this.add.rectangle(o.x, o.y, o.w, o.h, 0x6b5430).setStrokeStyle(2, 0x4a3520).setDepth(1);
-      }
-      {
         const o = this.layout.upgrade_tool_rack_glyph;
-        this.add.text(o.x, o.y, '🗄️', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
+        this.addProp(ART.cabinet, o.x, o.y + 14, { maxPx: 46, depth: 2 });
       }
       {
         const o = this.layout.upgrade_tool_rack_tools;
-        this.add.text(o.x, o.y, '🔧🪛', { fontSize: '12px' }).setOrigin(0.5).setDepth(2);
+        this.addProp(ART.tool_wall, o.x, o.y + 8, { maxPx: 44, depth: 3 });
       }
       {
         const o = this.layout.upgrade_tool_rack_label;
@@ -734,7 +728,7 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     if (upgrades.has('work_light')) {
       {
         const o = this.layout.upgrade_work_light_glyph;
-        this.add.text(o.x, o.y, '💡', { fontSize: '20px' }).setOrigin(0.5).setDepth(2);
+        this.addProp(ART.lightbulb, o.x, o.y + 10, { maxPx: 34, depth: 3 });
       }
       const glowGfx = this.add.graphics();
       glowGfx.fillStyle(0xfef3c7, 0.12);

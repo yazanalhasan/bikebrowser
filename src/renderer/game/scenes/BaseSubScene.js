@@ -24,6 +24,8 @@ import LocalSceneBase from './LocalSceneBase.js';
 import { setBusy, resetBusyState } from '../systems/gameplayArbiter.js';
 import { getSideQuestsForLocation, startSideQuest, getCurrentSideStep, advanceSideQuest } from '../systems/sideQuestSystem.js';
 import { saveGame } from '../systems/saveSystem.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { addArt } from '../../../game/assets/act1Art.js';
 
 export default class BaseSubScene extends LocalSceneBase {
   constructor(sceneKey) {
@@ -203,7 +205,7 @@ export default class BaseSubScene extends LocalSceneBase {
    * @param {object} config
    * @param {number} config.x
    * @param {number} config.y
-   * @param {string} config.icon — emoji marker
+   * @param {string} config.icon — Act 1 art texture key (see act1ArtRegistry.js)
    * @param {string} config.label — display name
    * @param {string} config.question — the challenge question
    * @param {Array} config.choices — answer choices
@@ -218,7 +220,7 @@ export default class BaseSubScene extends LocalSceneBase {
 
     if (solved) {
       // Show completed marker
-      this.add.text(config.x, config.y, '✅', { fontSize: '24px' }).setOrigin(0.5).setDepth(4);
+      addArt(this, ART.ui_check, config.x, config.y, { anchor: 'icon', maxPx: 30, depth: 4 });
       this.add.text(config.x, config.y + 20, config.label, {
         fontSize: '10px', fontFamily: 'sans-serif', color: '#16a34a',
         stroke: '#ffffff', strokeThickness: 2,
@@ -229,7 +231,7 @@ export default class BaseSubScene extends LocalSceneBase {
     this.addInteractable({
       x: config.x,
       y: config.y,
-      icon: config.icon || '❓',
+      icon: config.icon || ART.ui_question,
       label: config.label || 'Challenge',
       radius: 70,
       onInteract: () => {
@@ -323,9 +325,9 @@ export default class BaseSubScene extends LocalSceneBase {
 
     if (collected) {
       // Show collected marker
-      this.add.text(config.x, config.y, '✓', {
-        fontSize: '16px', color: '#16a34a', fontStyle: 'bold',
-      }).setOrigin(0.5).setDepth(4).setAlpha(0.5);
+      addArt(this, ART.ui_check, config.x, config.y, {
+        anchor: 'icon', maxPx: 22, depth: 4, alpha: 0.5,
+      });
       return;
     }
 

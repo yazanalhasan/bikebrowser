@@ -35,6 +35,85 @@
       "x": 768,
       "y": 1010,
       "_note": "Static scene label at bottom-center. Original: x = WORLD.width / 2 (1536/2=768), y = WORLD.height - 14 (1024-14=1010)."
+    },
+    "ground_desert_margin": {
+      "x": 0,
+      "y": 0,
+      "w": 1536,
+      "h": 1024,
+      "_note": "Desert sand base for the whole overworld, drawn from the Sonoran tileset (tile 6). Outer margin shows through around the grassy blocks."
+    },
+    "ground_grass_blocks": [
+      {
+        "x": 64,
+        "y": 96,
+        "w": 512,
+        "h": 320
+      },
+      {
+        "x": 64,
+        "y": 544,
+        "w": 512,
+        "h": 384
+      },
+      {
+        "x": 704,
+        "y": 96,
+        "w": 448,
+        "h": 320
+      },
+      {
+        "x": 704,
+        "y": 544,
+        "w": 512,
+        "h": 384
+      }
+    ],
+    "ground_grass_blocks_note": {
+      "_note": "Mown neighborhood blocks (Sonoran tileset tile 1) laid either side of the road cross."
+    },
+    "road_vertical": {
+      "x": 600,
+      "y": 0,
+      "w": 96,
+      "h": 1024,
+      "_note": "Main north-south road (tileset tile 2). Matches the cross at ~x=640 described in data/neighborhoodLayout.js."
+    },
+    "road_horizontal": {
+      "x": 0,
+      "y": 432,
+      "w": 1536,
+      "h": 96,
+      "_note": "Main east-west road (tileset tile 2) at ~y=470."
+    },
+    "sidewalks": [
+      {
+        "x": 576,
+        "y": 0,
+        "w": 24,
+        "h": 1024
+      },
+      {
+        "x": 696,
+        "y": 0,
+        "w": 24,
+        "h": 1024
+      },
+      {
+        "x": 0,
+        "y": 408,
+        "w": 1536,
+        "h": 24
+      },
+      {
+        "x": 0,
+        "y": 528,
+        "w": 1536,
+        "h": 24
+      }
+    ],
+    "sidewalks_note": {
+      "_note": "Concrete kerbs flanking both roads (tileset tile 4)."
     }
   }
 }
