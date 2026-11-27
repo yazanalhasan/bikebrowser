@@ -30,7 +30,9 @@ import MCPSystem from '../systems/MCPSystem.js';
 import { spawnObstacles } from '../systems/obstacleSystem.js';
 import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
 import { interpolateStepText } from '../systems/questTemplating.js';
-import { dialogForStep, listenerOpenedDialog, sfxForStep } from '../systems/questDialog.js';
+import {
+  dialogForStep, listenerOpenedDialog, sfxForStep, NARRATOR,
+} from '../systems/questDialog.js';
 import { getPhysicsState, wireCameraToMCP } from '../systems/physicsbridge.js';
 import { localCameraFit, localCameraCenter } from '../utils/localCameraFit.js';
 import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
@@ -174,7 +176,7 @@ export default class LocalSceneBase extends Phaser.Scene {
         return;
       }
       this.registry.set('dialogEvent', {
-        speaker: 'System',
+        speaker: NARRATOR,
         text: result.message,
         choices: null,
         step: getCurrentStep(state),

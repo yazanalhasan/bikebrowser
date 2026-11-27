@@ -321,6 +321,12 @@ export default function GameContainer() {
   // lab rigs. The quest card sat across the Force / Strain / Stress
   // readout, which is the one thing the child is meant to be watching.
   const [sceneOwnsHud, setSceneOwnsHud] = useState(false);
+  // True while Zuzu is standing at something he can use. The quest column
+  // fades out of the way: in the garage it covered the workbench's own
+  // caption and prompt, and the doors to both labs. Same rule the game
+  // already uses for Lina's chip and for the walking name tags — the thing
+  // you walked up to wins.
+  const [atProp, setAtProp] = useState(false);
   const [paused, setPaused] = useState(false);
   const [showInventory, setShowInventory] = useState(false);
   const [showNotebook, setShowNotebook] = useState(false);
@@ -844,6 +850,9 @@ export default function GameContainer() {
 
       const ownsHud = Boolean(registry.get('sceneOwnsHud'));
       setSceneOwnsHud((prev) => (prev === ownsHud ? prev : ownsHud));
+
+      const nearProp = Boolean(registry.get('propPromptVisible'));
+      setAtProp((prev) => (prev === nearProp ? prev : nearProp));
 
       // Mirror `dialogEvent` for the same reason. The garage's welcome
       // message is written ~600ms into the first scene, and if that single
@@ -1374,8 +1383,13 @@ export default function GameContainer() {
       {phase === 'playing' && !overlayOpen && !sceneOwnsHud && (
         <div className="absolute left-0 right-0 pointer-events-none z-10" style={{ top: 'calc(max(0.5rem, env(safe-area-inset-top)) + 3rem)' }}>
           <div className="flex items-start justify-between px-2 gap-2">
-            {/* Quest tracker + Zuzubucks */}
-            <div className="flex flex-col gap-1.5 max-w-[55%]">
+            {/* Quest tracker + Zuzubucks. Fades while Zuzu is at a prop so
+                it stops covering that prop's own caption and prompt. */}
+            <div
+              className={`flex flex-col gap-1.5 max-w-[55%] transition-opacity duration-200 ${
+                atProp ? 'opacity-0' : 'opacity-100'
+              }`}
+            >
               {gameState && (
                 <Act1Checklist state={gameState} />
               )}

@@ -26,6 +26,7 @@ import {
 import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { addArt, addBackdrop } from '../../../game/assets/act1Art.js';
+import { NARRATOR } from '../systems/questDialog.js';
 
 const SCENE_KEY = 'WorldMapScene';
 
@@ -162,8 +163,11 @@ export default class WorldMapScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // ── Subtitle with region ──
+    // The same parchment stroke the title uses. Without it this line is
+    // dark brown on open sky and a child cannot read it.
     this.add.text(width / 2, 55, 'Tap a location to travel there', {
-      fontSize: '12px', fontFamily: 'sans-serif', color: '#8b6914',
+      fontSize: '12px', fontFamily: 'sans-serif', color: '#6b4f10',
+      stroke: '#f5e6c8', strokeThickness: 3,
     }).setOrigin(0.5);
 
     // ── Location Markers ──
@@ -365,10 +369,13 @@ export default class WorldMapScene extends Phaser.Scene {
         nameLabel.setAlpha(0.7);
       }
 
-      // Difficulty stars — depth 1
+      // Difficulty stars — under the name, wherever the name ended. A
+      // fixed y+48 printed them through the second line of a name that
+      // wrapped ("Abandoned Copper Mine").
       if (unlocked) {
         const stars = '⭐'.repeat(loc.difficulty);
-        this.add.text(x, y + 48, stars, { fontSize: '10px' }).setOrigin(0.5).setDepth(1);
+        this.add.text(x, nameLabel.y + nameLabel.height + 2, stars, { fontSize: '10px' })
+          .setOrigin(0.5, 0).setDepth(1);
       }
 
       // Side quest indicators — depth 1
@@ -431,10 +438,13 @@ export default class WorldMapScene extends Phaser.Scene {
     homeHitZone.on('pointerdown', () => this._returnToNeighborhood());
 
     // ── Back button ──
-    const backBtn = this.add.text(60, height - 35, '← Back to Neighborhood', {
+    // Left-anchored and clear of the on-screen arrow pad, which sits in
+    // the bottom-left corner: centred at x=60 the first word ran off the
+    // left edge and the ↓ key was printed through "Neighborhood".
+    const backBtn = this.add.text(190, height - 35, '← Back to Neighborhood', {
       fontSize: '14px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#ffffff', backgroundColor: '#475569', padding: { x: 10, y: 6 },
-    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });
 
     backBtn.on('pointerdown', () => this._returnToNeighborhood());
     backBtn.on('pointerover', () => backBtn.setBackgroundColor('#334155'));
@@ -442,9 +452,11 @@ export default class WorldMapScene extends Phaser.Scene {
 
     // ── Legend ──
     const legendY = height - 35;
-    const legendX = width - 140;
+    // Clear of the right-hand toolbar, which the legend used to run under.
+    const legendX = width - 260;
     this.add.text(legendX, legendY, '🟢 Resource  🔵 Material  🟤 Biology', {
-      fontSize: '9px', fontFamily: 'sans-serif', color: '#8b6914',
+      fontSize: '10px', fontFamily: 'sans-serif', color: '#5c3d10',
+      stroke: '#f5e6c8', strokeThickness: 3,
     }).setOrigin(0.5);
 
     // ── Camera vignette overlay ────────────────────────────────────────────
@@ -1394,7 +1406,7 @@ export default class WorldMapScene extends Phaser.Scene {
     if (req.reputation) hints.push(`Need ${req.reputation} reputation (you have ${state?.reputation || 0})`);
     if (req.questsAny) hints.push(`Complete a quest: ${req.questsAny.join(' or ')}`);
     this.registry.set('dialogEvent', {
-      speaker: 'System',
+      speaker: NARRATOR,
       text: `${loc.name} is locked. ${hints.join('. ') || 'Keep exploring!'}`,
       choices: null, step: null,
     });
@@ -1553,10 +1565,14 @@ export default class WorldMapScene extends Phaser.Scene {
     if (!unlocked) nameLabel.setAlpha(0.7);
     container.add(nameLabel);
 
-    // Difficulty stars — at local (0, 48).
+    // Difficulty stars — under the name, wherever the name ended (see the
+    // note on the other node renderer above).
     if (unlocked) {
       const stars = '⭐'.repeat(loc.difficulty);
-      container.add(this.add.text(0, 48, stars, { fontSize: '10px' }).setOrigin(0.5));
+      container.add(
+        this.add.text(0, nameLabel.y + nameLabel.height + 2, stars, { fontSize: '10px' })
+          .setOrigin(0.5, 0),
+      );
     }
 
     // Make the circle interactive. Because the circle is inside a container,

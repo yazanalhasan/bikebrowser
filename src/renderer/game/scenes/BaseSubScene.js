@@ -26,6 +26,8 @@ import {
   startSideQuest, getCurrentSideStep, advanceSideQuest,
   getOfferableSideQuests, getActiveSideQuestAt, sideQuestDialogAction,
 } from '../systems/sideQuestSystem.js';
+import { challengeDialogAction } from '../systems/subSceneDialog.js';
+import { NARRATOR } from '../systems/questDialog.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { addArt } from '../../../game/assets/act1Art.js';
@@ -189,7 +191,20 @@ export default class BaseSubScene extends LocalSceneBase {
    * advanced.
    */
   advanceFromDialog(choiceIndex) {
-    const action = sideQuestDialogAction(this.registry.get('dialogEvent'), choiceIndex);
+    const dialog = this.registry.get('dialogEvent');
+
+    // An embedded challenge grades itself. `resolveChallenge` had no
+    // callers at all, so a wrong answer in the mine was never marked wrong:
+    // the box went straight to the next step of whatever main quest was
+    // running.
+    const challenge = challengeDialogAction(dialog, choiceIndex);
+    if (challenge) {
+      this.registry.set('dialogEvent', null);
+      this.resolveChallenge(challenge.challengeId, challenge.choiceIndex);
+      return undefined;
+    }
+
+    const action = sideQuestDialogAction(dialog, choiceIndex);
     if (!action) return super.advanceFromDialog(choiceIndex);
 
     this.registry.set('dialogEvent', null);
@@ -309,7 +324,9 @@ export default class BaseSubScene extends LocalSceneBase {
       radius: 70,
       onInteract: () => {
         this.registry.set('dialogEvent', {
-          speaker: 'Challenge',
+          // "Challenge" is not a person. The notebook is how the game
+          // already talks to the child when nobody is speaking.
+          speaker: NARRATOR,
           text: config.question,
           choices: config.choices,
           step: {

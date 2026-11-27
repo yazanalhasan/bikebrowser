@@ -9,6 +9,7 @@
 
 import { saveGame } from './saveSystem.js';
 import { SCENE_MAP, getSpawn, isSceneUnlocked } from './sceneRegistry.js';
+import { NARRATOR } from './questDialog.js';
 
 const FADE_MS = 350;
 
@@ -35,7 +36,7 @@ export function transitionTo(currentScene, targetSceneKey, spawnName = 'default'
   if (!isSceneUnlocked(targetSceneKey, state)) {
     currentScene._transitioning = false;
     currentScene.registry.set('dialogEvent', {
-      speaker: 'System',
+      speaker: NARRATOR,
       text: 'This area is not yet accessible. Keep building your reputation!',
       choices: null,
       step: null,

@@ -1195,6 +1195,20 @@ const QUESTS = {
           'Weight matters for a bridge — too heavy and the supports can\'t hold it up."',
       },
       {
+        // Chen says "let's weigh them" and the quiz followed immediately,
+        // so a child who had never opened the lab was shown "You weighed
+        // each sample. (no measurements yet)" and asked which was
+        // lightest. This mirrors `test_material` before the strength
+        // quiz: the lab already records 'masses_measured' once all three
+        // are on the scale.
+        id: 'weigh_samples',
+        type: 'observe',
+        text: 'Weigh all three samples on the lab scale.',
+        requiredObservation: 'masses_measured',
+        hint: 'The scale is in the Materials Lab, through the garage door.',
+        scene: 'MaterialLabScene',
+      },
+      {
         id: 'quiz_weight',
         type: 'quiz',
         // Template tokens resolved by NeighborhoodScene._emitEnrichedDialog

@@ -43,6 +43,7 @@ import { initDepthSort, updateDepthSort, applyDepth } from '../systems/depthSort
 import { FLORA_MAP } from '../data/flora.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { attachEdgeSensor, performSeamlessTransition } from '../systems/seamlessTraversal.js';
+import { NARRATOR } from '../systems/questDialog.js';
 
 const SCENE_KEY = 'NeighborhoodScene';
 
@@ -501,7 +502,7 @@ export default class NeighborhoodScene extends NeighborhoodSceneBase {
     if (!result.ok) {
       audioMgr?.playSfx('ui_error');
       this.registry.set('dialogEvent', {
-        speaker: 'System',
+        speaker: NARRATOR,
         text: result.message,
         choices: null,
         step: getCurrentStep(state),

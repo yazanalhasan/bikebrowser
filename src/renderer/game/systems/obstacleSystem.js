@@ -24,6 +24,7 @@ import { saveGame } from './saveSystem.js';
 import { createWorldLabel } from '../../../game/ui/WorldLabel.js';
 import { createInteractionMarker } from '../../../game/ui/InteractionMarker.js';
 import { createScorchingPavementPlaceholder } from '../../../game/art/placeholderFactories.js';
+import { NARRATOR } from './questDialog.js';
 
 // ── Per-session failure tracking (resets on app restart) ─────────────────────
 const _failureCounts = new Map();
@@ -152,7 +153,7 @@ function _handleHazardContact(scene, obstacle) {
     if (!_failureCounts.has(`success_${obstacle.id}`)) {
       _failureCounts.set(`success_${obstacle.id}`, true);
       scene.registry.set('dialogEvent', {
-        speaker: 'System',
+        speaker: NARRATOR,
         text: obstacle.successMessage,
         choices: null, step: null,
       });
@@ -171,7 +172,7 @@ function _handleHazardContact(scene, obstacle) {
   // Show fail message on first contact
   if (count === 1) {
     scene.registry.set('dialogEvent', {
-      speaker: 'System',
+      speaker: NARRATOR,
       text: obstacle.failMessage,
       choices: null, step: null,
     });
@@ -200,7 +201,7 @@ function _handleGateInteract(scene, obstacle) {
 
   if (check.passed) {
     scene.registry.set('dialogEvent', {
-      speaker: 'System',
+      speaker: NARRATOR,
       text: obstacle.successMessage,
       choices: null, step: null,
     });
@@ -210,7 +211,7 @@ function _handleGateInteract(scene, obstacle) {
     _failureCounts.set(obstacle.id, count);
 
     scene.registry.set('dialogEvent', {
-      speaker: 'System',
+      speaker: NARRATOR,
       text: obstacle.failMessage,
       choices: null, step: null,
     });
@@ -253,7 +254,7 @@ function _handlePuzzleInteract(scene, puzzle, interactable = null) {
 
   if (check.passed) {
     scene.registry.set('dialogEvent', {
-      speaker: 'System',
+      speaker: NARRATOR,
       text: puzzle.successMessage,
       choices: null, step: null,
     });
@@ -265,7 +266,7 @@ function _handlePuzzleInteract(scene, puzzle, interactable = null) {
     _failureCounts.set(puzzle.id, count);
 
     scene.registry.set('dialogEvent', {
-      speaker: 'System',
+      speaker: NARRATOR,
       text: puzzle.failMessage,
       choices: null, step: null,
     });
