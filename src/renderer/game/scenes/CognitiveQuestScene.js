@@ -9,6 +9,7 @@ import {
   recordCognitiveAnswer,
   shouldShowHint,
 } from '../systems/cognitiveQuestSystem.js';
+import { applyOverlayCameraFit, stretchOverlayDim } from '../utils/overlayCameraFit.js';
 
 export default class CognitiveQuestScene extends Phaser.Scene {
   constructor() {
@@ -42,14 +43,37 @@ export default class CognitiveQuestScene extends Phaser.Scene {
     this.mensaMode = isMensaModeEnabled(this.state);
     this.optionCards = new Map();
 
+    this.registry.set('overlayOpen', true);
+    this.events.once('shutdown', () => this.registry.set('overlayOpen', false));
+    this.scale.on('resize', this._refit, this);
+    this.events.once('shutdown', () => this.scale.off('resize', this._refit, this));
+
     this._drawFrame();
     this._drawOptions();
     this._drawFeedback();
   }
 
+  /** Re-centre and re-scale when the window changes size. */
+  _refit() {
+    const fit = applyOverlayCameraFit(this);
+    // The dim is sized in design units, so it has to grow with the viewport
+    // or a resize leaves the game showing around it.
+    stretchOverlayDim(this._dimRect, fit);
+  }
+
   _drawFrame() {
-    const b = this.layout.backdrop;
-    this.add.rectangle(b.x, b.y, b.w, b.h, 0x000000, 0.68).setDepth(200);
+    // Same treatment as the explainer: centre the fixed design space and
+    // scale it, then dim the whole viewport rather than the design rect.
+    const fit = applyOverlayCameraFit(this);
+    const b = fit ? fit.cover : {
+      x: this.layout.backdrop.x - this.layout.backdrop.w / 2,
+      y: this.layout.backdrop.y - this.layout.backdrop.h / 2,
+      width: this.layout.backdrop.w,
+      height: this.layout.backdrop.h,
+    };
+    this._dimRect = this.add.rectangle(
+      b.x + b.width / 2, b.y + b.height / 2, b.width, b.height, 0x000000, 0.68,
+    ).setDepth(200);
 
     const p = this.layout.panel;
     this.add.rectangle(p.x, p.y, p.w, p.h, 0xf8fafc, 0.98)

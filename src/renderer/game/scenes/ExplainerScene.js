@@ -5,6 +5,7 @@ import {
   cancelInteractiveExplainer,
   completeInteractiveExplainer,
 } from '../systems/interactiveExplainerSystem.js';
+import { applyOverlayCameraFit, stretchOverlayDim } from '../utils/overlayCameraFit.js';
 
 export default class ExplainerScene extends Phaser.Scene {
   constructor() {
@@ -39,6 +40,13 @@ export default class ExplainerScene extends Phaser.Scene {
     this._zones = new Map();
     this._solvedElements = new Set();
 
+    // The React HUD hides its quest card while this is set — it was sitting
+    // over the question and the first answer.
+    this.registry.set('overlayOpen', true);
+    this.events.once('shutdown', () => this.registry.set('overlayOpen', false));
+    this.scale.on('resize', this._refit, this);
+    this.events.once('shutdown', () => this.scale.off('resize', this._refit, this));
+
     this._drawFrame();
     this._drawWheel();
     this._createElementZones();
@@ -47,9 +55,32 @@ export default class ExplainerScene extends Phaser.Scene {
     this._renderStep();
   }
 
+  /** Re-centre and re-scale when the window changes size. */
+  _refit() {
+    const fit = applyOverlayCameraFit(this);
+    // The dim is sized in design units, so it has to grow with the viewport
+    // or a resize leaves the game showing around it.
+    stretchOverlayDim(this._dimRect, fit);
+  }
+
   _drawFrame() {
-    const b = this.layout.backdrop;
-    this.add.rectangle(b.x, b.y, b.w, b.h, 0x020617, 0.72).setDepth(100);
+    // Centre the 800x600 design space and scale it to the window. Without
+    // this the panel sat in the top-left corner with the street showing
+    // beside it at 1280x720, and ran off the bottom at 1024x484.
+    const fit = applyOverlayCameraFit(this);
+
+    // Dim the WHOLE viewport, not the design rect: once the design space is
+    // centred, a backdrop sized to it leaves the game visible around the
+    // edges. `fit.cover` is the viewport expressed in design units.
+    const b = fit ? fit.cover : {
+      x: this.layout.backdrop.x - this.layout.backdrop.w / 2,
+      y: this.layout.backdrop.y - this.layout.backdrop.h / 2,
+      width: this.layout.backdrop.w,
+      height: this.layout.backdrop.h,
+    };
+    this._dimRect = this.add.rectangle(
+      b.x + b.width / 2, b.y + b.height / 2, b.width, b.height, 0x020617, 0.72,
+    ).setDepth(100);
 
     const p = this.layout.panel;
     this._drawRoundedPanel(p.x + 8, p.y + 10, p.w, p.h, p.r || 18, 0x020617, 0.22, 0x020617, 0, 101);

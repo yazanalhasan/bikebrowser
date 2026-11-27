@@ -23,6 +23,10 @@ import { MATERIALS } from '../src/renderer/game/systems/materials/materialDataba
 import {
   SCENE_OBSTACLES, checkObstacleCondition,
 } from '../src/renderer/game/data/obstacles.js';
+import {
+  overlayCameraFit, stretchOverlayDim,
+  OVERLAY_DESIGN_WIDTH, OVERLAY_DESIGN_HEIGHT, OVERLAY_MAX_ZOOM,
+} from '../src/renderer/game/utils/overlayCameraFit.js';
 
 const GARAGE = { worldWidth: 800, worldHeight: 600 };
 const STREET = { worldWidth: 1000, worldHeight: 700 };
@@ -251,4 +255,80 @@ test('SHOULD: the heat hazard accepts either protection', () => {
     checkObstacleCondition(heat, { inventory: [] }).passed, false,
     'and nothing still blocks',
   );
+});
+
+// ── POLISH #1: the overlays must fit every screen ──────────────────────────
+
+test('POLISH1: the explainer panel fits on every screen', () => {
+  // Authored at 800x600 and drawn straight into it: at 1280x720 the panel
+  // sat top-left with the street beside it, at 1024x484 the answers and
+  // Continue were off the bottom, and half of it was off a phone.
+  for (const [w, h] of [[1280, 720], [1024, 484], [1920, 1080], [390, 844]]) {
+    const fit = overlayCameraFit({ camWidth: w, camHeight: h });
+    const shownW = OVERLAY_DESIGN_WIDTH * fit.zoom;
+    const shownH = OVERLAY_DESIGN_HEIGHT * fit.zoom;
+    assert.ok(shownW <= w + 1e-6, `${w}x${h}: panel ${shownW} wider than the screen`);
+    assert.ok(shownH <= h + 1e-6, `${w}x${h}: panel ${shownH} taller than the screen`);
+  }
+});
+
+test('POLISH1: the overlay is centred, so nothing hangs off one edge', () => {
+  for (const [w, h] of [[1280, 720], [1024, 484], [390, 844]]) {
+    const fit = overlayCameraFit({ camWidth: w, camHeight: h });
+    assert.equal(fit.centerX, OVERLAY_DESIGN_WIDTH / 2);
+    assert.equal(fit.centerY, OVERLAY_DESIGN_HEIGHT / 2);
+  }
+});
+
+test('POLISH1: the dim covers the whole viewport at every aspect', () => {
+  for (const [w, h] of [[1280, 720], [1024, 484], [1920, 1080], [390, 844]]) {
+    const fit = overlayCameraFit({ camWidth: w, camHeight: h });
+    // `cover` is the viewport in design units; it must reach past the design
+    // space on whichever axis has spare room, or the game shows around it.
+    assert.ok(fit.cover.width >= OVERLAY_DESIGN_WIDTH - 1e-6
+      || fit.cover.height >= OVERLAY_DESIGN_HEIGHT - 1e-6,
+    `${w}x${h}: dim does not reach the edges`);
+    assert.ok(fit.cover.width * fit.zoom >= w - 1e-6, `${w}x${h}: dim too narrow`);
+    assert.ok(fit.cover.height * fit.zoom >= h - 1e-6, `${w}x${h}: dim too short`);
+  }
+});
+
+test('POLISH1: a huge display does not blow the card up absurdly', () => {
+  const fit = overlayCameraFit({ camWidth: 3840, camHeight: 2160 });
+  assert.equal(fit.zoom, OVERLAY_MAX_ZOOM);
+});
+
+/** The least Phaser Rectangle the dim-stretcher needs. */
+function fakeRect() {
+  return {
+    scene: {},
+    width: 0, height: 0, x: 0, y: 0,
+    setSize(w, h) { this.width = w; this.height = h; },
+    setPosition(x, y) { this.x = x; this.y = y; },
+  };
+}
+
+test('POLISH1: the dim grows when the window is resized under it', () => {
+  // The dim is sized in design units, so it went stale the moment the shape
+  // changed: open the explainer on a landscape window, turn the phone, and
+  // the game showed above and below the dim.
+  const rect = fakeRect();
+  stretchOverlayDim(rect, overlayCameraFit({ camWidth: 1280, camHeight: 720 }));
+  const landscape = { w: rect.width, h: rect.height };
+
+  const tall = overlayCameraFit({ camWidth: 390, camHeight: 844 });
+  stretchOverlayDim(rect, tall);
+  assert.ok(rect.height > landscape.h, 'the dim did not grow taller');
+  assert.ok(rect.height * tall.zoom >= 844 - 1e-6, 'the dim still falls short of the screen');
+  assert.equal(rect.y, tall.cover.y + tall.cover.height / 2);
+});
+
+test('POLISH1: a destroyed dim handle is left alone', () => {
+  // Phaser reuses the scene object across visits, so `_dimRect` can point at
+  // a corpse while a resize comes in.
+  const dead = fakeRect();
+  dead.scene = null;
+  stretchOverlayDim(dead, overlayCameraFit({ camWidth: 800, camHeight: 600 }));
+  assert.equal(dead.width, 0);
+  assert.doesNotThrow(() => stretchOverlayDim(null, null));
 });
