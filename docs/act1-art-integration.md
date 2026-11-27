@@ -160,7 +160,7 @@ Both groups are listed in the handover notes at the end of this document.
 
 ## Mariam and Lina
 
-**Mariam** (`mariam`) is the Act 1 Levantine Arabic mentor: a grown-up
+**Mariam** (`mariam`) is the Act 1 Arabic mentor: a grown-up
 neighbour in her own front yard on Zuzu's street, placed with the same pattern
 as Mrs. Ramirez. She is a mentor, not a quest-giver — talking to her teaches
 one of three Arabic words and changes nothing else. She uses only
@@ -181,32 +181,38 @@ adding a later companion is a data row.
 `systems/languageLayer.js` previously held three English placeholders
 (`placeholder_hello` / `_water` / `_repair`, each `languageSlot: 'und'`, each
 reading "[needs a human language brief]"). They are now Mariam's three
-Levantine Arabic cards, `languageSlot: 'ar'`, copied verbatim from
-`bb-briefs/levantine-arabic.md`:
+**Modern Standard Arabic** cards, `languageSlot: 'ar'`, read from the
+canonical `ar_*` rows in `data/languages.js`:
 
 | id | script | transliteration | English |
 | --- | --- | --- | --- |
-| `ar_hello` | مرحبا | mar7aba | hello |
-| `ar_water` | مي | mayy | water |
-| `ar_fix` | صلّح | salli7 | repair |
+| `ar_hello` | مرحبا | marhaba | hello |
+| `ar_water` | ماء | maa' | water |
+| `ar_fix` | إصلاح | islaah | repair / fix |
 
-Each card carries the full line Mariam speaks, the kid transliteration and a
-short English caption. Script, transliteration and caption are all shown
-together — the brief's rule is that rank 1 never hides the script. The cards
-appear in Zuzu's notebook in `GameContainer.jsx` under "Words Mariam taught",
-with the Arabic set `dir="rtl"`, and practice counts come from
-`state.languagePractice`. The old placeholder ids still resolve, so saved
-practice is not lost.
+> **History.** Between the art-integration commit and 2026-11-26 this table
+> listed colloquial Levantine fills (`mar7aba` / `mayy` / `salli7`) and a
+> Spanish greeting for Lina. Both were withdrawn — the colloquial fills were
+> never owner-authorised, and the Southwest Spanish brief is not approved.
+> See the "Follow-up pass" section at the top of this document. If you are
+> copying a word from anywhere, copy it from `data/languages.js`.
+
+Mariam says the word itself and then its English caption — which is all the
+MSA decision sanctions her saying. Script, transliteration and caption are
+shown together: rank 1 never hides the script. The cards appear in Zuzu's
+notebook in `GameContainer.jsx` under "Words Mariam taught", with the Arabic
+set `dir="rtl"`, and practice counts come from `state.languagePractice`. The
+old placeholder ids still resolve, so saved practice is not lost.
 
 **Scope held deliberately.** `tests/act1-progress.test.mjs` asserts these
 limits so they cannot be widened by accident:
 
-- Exactly these three terms. The brief's wider 21-term starter deck is **not**
-  added to `data/languages.js`.
-- No Spanish cards, and no new Spanish vocabulary. Lina's one Spanish line
-  ("¡Vamos, Zuzu!") is the line the Spanish brief marks decided.
-- The existing MSA-leaning `ar_*` entries in `data/languages.js` are **not**
-  rewritten — brief questions 1, 2 and 4 are still open.
+- Exactly these three terms. The wider 21-term starter deck is **not** added.
+- **No Spanish at all.** The Southwest Spanish brief is not approved, so Lina
+  greets in English and carries no Spanish vocabulary. A test fails if any
+  reappears.
+- No card may carry a script, transliteration or gloss that differs from its
+  `data/languages.js` row — that file is the only source.
 - No Indigenous lore was added or changed.
 - No `cultural:` knowledge ids are marked from the language layer.
 

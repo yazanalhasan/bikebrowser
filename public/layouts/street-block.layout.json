@@ -319,7 +319,7 @@
     "npc_mariam": {
       "x": 700,
       "y": 470,
-      "_note": "Mariam, the Act 1 Levantine Arabic mentor. Stands in her front yard between the south sidewalk (y=420) and the yellow house (y=550), clear of Mrs. Ramirez (550,310) and Mr. Chen (313,402)."
+      "_note": "Mariam, the Act 1 Arabic mentor (Modern Standard, per data/languages.js). Stands in her front yard between the south sidewalk (y=420) and the yellow house (y=550), clear of Mrs. Ramirez (550,310) and Mr. Chen (313,402)."
     },
     "plants_note": "Desert flora moved to desert-edge.layout.json (owner request 2026-11-26: the street was too crowded for a young child). Kept as an empty array so the scene's layout contract is unchanged and a plant can be added back by data alone.",
     "animals_note": "Desert fauna moved to desert-edge.layout.json. See plants_note.",

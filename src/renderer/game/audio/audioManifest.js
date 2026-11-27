@@ -378,7 +378,9 @@ export const SCENE_MUSIC = {
   NeighborhoodScene: 'pixel_pedal_parade_v2',
   OverworldScene: 'pixel_pedal_parade_v2',
   StreetBlockScene: 'pixel_pedal_parade_v2',
-  DesertEdgeScene: 'desert_discovery',
+  // NOT 'desert_discovery' — see the note above; that file is a 0-byte
+  // placeholder and the scene would fade out and stay silent.
+  DesertEdgeScene: 'qanun_jar_lid',
   DogParkScene: 'neighborhood_hybrid_ride',
   LakeEdgeScene: 'warm_hands_quiet_gears',
   SportsFieldsScene: 'neighborhood_hybrid_ride',

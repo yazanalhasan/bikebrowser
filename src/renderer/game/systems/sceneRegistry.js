@@ -175,7 +175,7 @@ const SCENES = {
     },
     unlockReq: null,
     region: 'neighborhood',
-    defaultMusic: 'desert_discovery',
+    defaultMusic: 'qanun_jar_lid',
   },
 
   DogParkScene: {
