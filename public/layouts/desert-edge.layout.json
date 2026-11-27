@@ -30,9 +30,9 @@
       "_note": "Left of the gate. Not on the spawn (530,90), and well inside the area the viewport frame leaves visible on a wide window - at x=760 the board was cut off by the right-hand band."
     },
     "scene_label": {
-      "x": 170,
+      "x": 640,
       "y": 52,
-      "_note": "Top-left, out of the gate corridor: at (530,128) it landed exactly on the arrival spawn (530,120) and printed over Zuzu."
+      "_note": "Top centre-right. At (170,52) it sat under the HUD Goals chip in the top-left corner; clear of the Home Street sign at x=400 (which spans 308-492) and of the right-hand toolbar."
     },
     "decor": [
       {

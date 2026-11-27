@@ -31,7 +31,11 @@ test('MUST1: a giver-conversation step does not chain when the giver is absent',
       { giverPresent: false });
     assert.equal(away.step, null, `${type}: no step, so Continue cannot advance it`);
     assert.equal(away.objective, true, `${type}: it is an objective reminder`);
-    assert.match(away.text, /Go back to Mrs\. Ramirez/);
+    // Names the person, carries no pronoun — there is no pronoun field on
+    // an NPC profile and a name is not one.
+    assert.match(away.text, /Go back and tell Mrs\. Ramirez/);
+    assert.doesNotMatch(away.text, /(them|her|him|they|she|he)/i,
+      'no guessed pronoun for a named person');
     assert.equal(away.speaker, NARRATOR, 'an absent NPC must not speak');
   }
 });

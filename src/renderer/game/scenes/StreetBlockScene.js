@@ -24,7 +24,7 @@
 
 import LocalSceneBase from './LocalSceneBase.js';
 import { startQuest, getCurrentStep, advanceQuest } from '../systems/questSystem.js';
-import { questOfferDialog, resumeParkedQuest } from '../systems/questDialog.js';
+import { questOfferDialog, resumeParkedQuest, dialogForStep } from '../systems/questDialog.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { NPC_PLACEMENTS } from '../data/neighborhoodLayout.js';
 import { getNextQuestForNPC } from '../data/questBoard.js';
@@ -816,12 +816,11 @@ ${line.caption}`,
             startInteractiveExplainer(this, step.explainerId);
             return;
           }
-          this.registry.set('dialogEvent', {
-            speaker: step.type === 'quiz' ? 'Zuzu (thinking)' : npcName,
-            text: step.text,
-            choices: step.type === 'quiz' ? step.choices : null,
-            step,
-          });
+          // Through the shared rules, so a step whose text names this NPC
+          // goes to the notebook and template tokens are interpolated. This
+          // path printed `step.text` raw with the NPC as speaker.
+          this.registry.set('dialogEvent',
+            dialogForStep(step, state, npcName, { giverPresent: true }));
           return;
         }
       }
@@ -831,7 +830,10 @@ ${line.caption}`,
       // how an auto-started side quest from Mrs. Ramirez locked Mr. Chen's
       // main quest out entirely. Now this NPC may still offer, and accepting
       // parks the other quest at the step it reached.
-      const offer = this._findNextQuestForNPC(npcId, state)
+      // `ignoreActive` so this asks what the NPC *would* offer if the child
+      // were free. The plain call returns null whenever anything is running,
+      // which is why the switch path never fired.
+      const offer = getNextQuestForNPC(npcId, state, { ignoreActive: true })
         || (!state.completedQuests?.includes(primaryQuestId) ? primaryQuestId : null);
       const offered = offer && offer !== state.activeQuest.id ? QUESTS[offer] : null;
       if (offered) {
@@ -861,11 +863,10 @@ ${line.caption}`,
       saveGame(state);
       const resumed = getCurrentStep(state);
       if (resumed) {
+        const resumedLine = dialogForStep(resumed, state, npcName, { giverPresent: true });
         this.registry.set('dialogEvent', {
-          speaker: npcName,
-          text: `Back to "${QUESTS[parkedId].title}", then.\n\n${resumed.text}`,
-          choices: resumed.type === 'quiz' ? resumed.choices : null,
-          step: resumed,
+          ...resumedLine,
+          text: `Back to it, then.\n\n${resumedLine.text}`,
         });
         return;
       }

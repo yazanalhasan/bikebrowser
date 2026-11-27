@@ -1203,9 +1203,9 @@ const QUESTS = {
           'Which is lightest per cm³?',
         templateVars: ['massTable'],
         choices: [
-          { label: 'Mesquite wood (0.83 g/cm³)', correct: true },
-          { label: 'Copper (8.9 g/cm³)', correct: false },
-          { label: 'Steel (7.8 g/cm³)', correct: false },
+          { label: 'Mesquite wood (0.85 g/cm3)', correct: true },
+          { label: 'Copper (8.96 g/cm3)', correct: false },
+          { label: 'Steel (7.85 g/cm3)', correct: false },
           { label: 'They all weigh the same', correct: false },
         ],
       },
@@ -1264,9 +1264,9 @@ const QUESTS = {
         type: 'dialogue',
         text:
           '📖 Here\'s the engineer\'s dilemma:\n' +
-          '  Steel: strongest (85%) but very heavy (7.8 g/cm³)\n' +
-          '  Mesquite: medium strength (55%) and light (0.83 g/cm³)\n' +
-          '  Copper: weakest (35%) and heavy (8.9 g/cm³) — worst of both!\n\n' +
+          '  Steel: strongest (75%) but very heavy (7.85 g/cm3)\n' +
+          '  Mesquite: least strong (17%) but far the lightest (0.85 g/cm3)\n' +
+          '  Copper: in between for strength (42%) and the heaviest (8.96 g/cm3) - worst of both!\n\n' +
           'Strength-to-weight ratio tells the real story.',
       },
       {
@@ -1277,9 +1277,13 @@ const QUESTS = {
           'A heavy bridge needs stronger supports. ' +
           'Given the data, which is the BEST choice for this bridge?',
         choices: [
-          { label: 'Mesquite — strong enough (55%) and 10× lighter than steel', correct: true },
-          { label: 'Steel — strongest, weight doesn\'t matter', correct: false },
-          { label: 'Copper — good conductor so it must be strong', correct: false },
+          // No figures in the labels: the dilemma step above quotes the
+          // lab's own numbers, and two sets of percentages is exactly how
+          // this contradicted itself. Mesquite wins on strength per weight
+          // (100MPa / 0.85 = 118, vs steel 57 and copper 28).
+          { label: 'Mesquite - strong enough, and about 9x lighter than steel', materialId: 'mesquite_wood', correct: true },
+          { label: 'Steel - strongest, but weight does matter here', materialId: 'structural_steel', correct: false },
+          { label: 'Copper - good conductor so it must be strong', materialId: 'copper', correct: false },
           { label: 'Mix all three together', correct: false },
         ],
       },

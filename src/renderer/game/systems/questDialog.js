@@ -74,8 +74,12 @@ export function dialogForStep(step, state, giverName, options = {}) {
   if (!giverPresent && GIVER_PRESENT_STEPS.has(step.type)) {
     return {
       speaker: NARRATOR,
+      // No pronoun. There is no pronoun field on an NPC profile, and
+      // guessing one from a name is exactly the wrong way to get it — "tell
+      // them" about a named person read as a mistake, and "tell her" would
+      // be a guess. Naming the person twice is clearer than either.
       text: giverName
-        ? `Go back to ${giverName} and tell them.`
+        ? `Go back and tell ${giverName} what happened.`
         : 'Go back and tell them what happened.',
       choices: null,
       // No `step`: this is an objective reminder, not the step itself, so
@@ -162,10 +166,11 @@ export function sfxForStep(step) {
  */
 export function questOfferDialog(quest, npcName, active = null) {
   const swapping = Boolean(active && active.id !== quest.id);
+  const asking = offerPhrase(quest.title, npcName);
   const text = swapping
-    ? `Want to help with "${quest.title}"?\n\n`
-      + `You can come back to "${active.title}" after — I'll remember where you got to.`
-    : `Want to help with "${quest.title}"?`;
+    ? `${asking}\n\nYou can come back to "${active.title}" after — `
+      + `I'll remember where you got to.`
+    : asking;
 
   return {
     speaker: npcName,
@@ -214,4 +219,40 @@ export function resumeParkedQuest(state, questId) {
     activeQuest: { id: questId, stepIndex: parked },
     pausedQuests: rest,
   };
+}
+
+/**
+ * How an NPC asks for help without naming themselves.
+ *
+ * Quest titles are written from the outside — "Fix Mrs. Ramirez's Flat
+ * Tire", "Fix Mr. Chen's Slipped Chain" — so quoting one back as the offer
+ * made Mrs. Ramirez say her own name to the child. When the title names the
+ * speaker, their possessive becomes "my" and the result is spoken plainly;
+ * otherwise the title is quoted as before.
+ *
+ * @param {string} title the quest title
+ * @param {string|null} npcName who is doing the asking
+ * @returns {string} the question to put to the child
+ */
+export function offerPhrase(title, npcName) {
+  const clean = String(title || '').trim();
+  if (!clean) return 'Can you help me with something?';
+  if (!npcName || !clean.includes(npcName)) {
+    return `Want to help with "${clean}"?`;
+  }
+
+  // "Fix Mrs. Ramirez's Flat Tire" -> "fix my flat tire"
+  let phrase = clean
+    .replace(new RegExp(`${escapeForRegExp(npcName)}'s`, 'g'), 'my')
+    .replace(new RegExp(escapeForRegExp(npcName), 'g'), 'me')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+  if (!phrase) return 'Can you help me with something?';
+  return `Can you help me ${phrase}?`;
+}
+
+/** Escape a name so it can sit inside a RegExp. */
+function escapeForRegExp(text) {
+  return String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

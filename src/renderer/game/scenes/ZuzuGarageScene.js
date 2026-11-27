@@ -20,6 +20,7 @@ import QUESTS from '../data/quests.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
+import { dialogForStep, NARRATOR } from '../systems/questDialog.js';
 import {
   formatMissingWorkbenchIngredients,
   formatWorkbenchMemoryLine,
@@ -494,12 +495,22 @@ export default class ZuzuGarageScene extends LocalSceneBase {
             saveStateToRegistry(this, updated);
             const audioMgr = this.registry.get('audioManager');
             audioMgr?.playSfx('item_pickup');
-            this.registry.set('dialogEvent', {
-              speaker: nextStep ? 'Mr. Chen' : 'Zuzu',
-              text: nextStep?.text ||
+            // Mr. Chen is not in the garage. This used to hard-code him as
+            // the speaker and chain straight into his next step, so the
+            // weigh instruction and the weigh quiz both ran without him.
+            // Route it through the shared rules with `giverPresent: false`:
+            // a conversation step becomes a "go back and tell him" objective
+            // that carries no step, and anything else is narrated.
+            const bracketLine = nextStep
+              ? dialogForStep(nextStep, updated, this._activeQuestGiverName(updated),
+                { giverPresent: false })
+              : null;
+            this.registry.set('dialogEvent', bracketLine || {
+              speaker: 'Zuzu',
+              text:
                 "Found a steel bracket on the workbench!\n\n🔩 Got: Steel Bracket\n\nHeavy but really strong. Let's see how it compares to the other materials.",
-              choices: nextStep?.type === 'quiz' ? nextStep.choices : null,
-              step: nextStep || null,
+              choices: null,
+              step: null,
             });
             return;
           }
@@ -578,8 +589,9 @@ export default class ZuzuGarageScene extends LocalSceneBase {
         if (!inv.includes('copper_ore_sample')) missing.push('🟠 copper');
         if (!inv.includes('steel_sample')) missing.push('⚙️ steel');
         const list = missing.length ? `\n\nMissing: ${missing.join(', ')}` : '';
+        // The door is not Mr. Chen. He is on the street.
         this.registry.set('dialogEvent', {
-          speaker: 'Mr. Chen',
+          speaker: NARRATOR,
           text: `The materials lab is through here.\n\n` +
             `Bring me all three samples first — wood, copper, and steel — ` +
             `and I'll show you the testing machine.${list}`,
@@ -627,8 +639,9 @@ export default class ZuzuGarageScene extends LocalSceneBase {
           return;
         }
 
+        // Likewise: this is the thermal lab door, not Mrs. Ramirez.
         this.registry.set('dialogEvent', {
-          speaker: 'Mrs. Ramirez',
+          speaker: NARRATOR,
           text:
             "Come back when you've talked through the heat failure problem. " +
             "Once you understand why hot materials fail, I'll let you run the " +

@@ -1,3 +1,6 @@
+/** Characters that fit a scale button before the labels collide. */
+const MAX_BUTTON_CHARS = 7;
+
 /**
  * scaleStation — interactive scale + sample slot + Record button.
  *
@@ -59,6 +62,7 @@ export function createScaleStation(scene, cfg) {
   // ── Sample buttons (3) ───────────────────────────────────────────────
   const BTN_Y = platformY + 40;
   const BTN_DX = 50;
+  // 42px wide at 9px bold fits about 7 characters before neighbours touch.
   const buttons = samples.map((s, idx) => {
     const bx = x + (idx - 1) * BTN_DX;
     const enabled = !!s.hasItem;
@@ -181,13 +185,20 @@ export function createScaleStation(scene, cfg) {
   return { refresh, destroy };
 }
 
-/** "Mesquite Wood" → "MESQUITE", "Structural Steel (A36-like)" → "STRUCTURAL". */
+/**
+ * A name that fits a 42px button: "Mesquite Wood" -> "Wood",
+ * "Structural Steel (A36-like)" -> "Steel", "Copper (Annealed)" -> "Copper".
+ *
+ * First it was `slice(0, 5)` ("MESQU", "STRUC", "COPPE"); then I used the
+ * first whole word, which gave "MESQUITE" and "STRUCTURAL" — 8 and 10
+ * characters at 9px in a 42px button, so the three labels ran together as
+ * "MESQUITESTRUCTURALCOPPER". The last word is the kind of name a child
+ * would use anyway.
+ */
 function shortName(name) {
   if (!name) return '?';
-  const s = name.split(' ')[0].toUpperCase();
-  // Was slice(0, 5), which printed "MESQU", "STRUC" and "COPPE" on the
-  // scale buttons. Keep the first word instead — "Mesquite", "Steel",
-  // "Copper" — and only clip if that is still very long.
-  const firstWord = String(s).trim().split(/\s+/)[0] || String(s);
-  return firstWord.length > 10 ? firstWord.slice(0, 10) : firstWord;
+  const withoutParens = String(name).replace(/\([^)]*\)/g, ' ').trim();
+  const words = withoutParens.split(/\s+/).filter(Boolean);
+  const pick = words.length ? words[words.length - 1] : String(name);
+  return pick.slice(0, MAX_BUTTON_CHARS).toUpperCase();
 }

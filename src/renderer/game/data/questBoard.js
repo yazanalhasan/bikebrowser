@@ -455,15 +455,29 @@ export function getQuestUnlocks(questId) {
   return entry?.unlocks || [];
 }
 
-/** Get the next available quest for an NPC. */
-export function getNextQuestForNPC(npcId, state) {
+/**
+ * Get the next available quest for an NPC.
+ *
+ * By default an NPC offers nothing while any quest is running. Pass
+ * `{ ignoreActive: true }` to ask the different question "what would you
+ * offer if I were free?" — which is what the switch/park flow needs. Without
+ * it, an NPC holding the only remaining main quest answered "nothing new"
+ * forever as soon as the child had accepted a side quest from someone else,
+ * and the switch path could never fire.
+ *
+ * @param {string} npcId
+ * @param {object} state
+ * @param {{ ignoreActive?: boolean }} [options]
+ */
+export function getNextQuestForNPC(npcId, state, options = {}) {
   const completedIds = new Set(state?.completedQuests || []);
   const activeId = state?.activeQuest?.id || null;
-  if (activeId) return null;
+  if (activeId && !options.ignoreActive) return null;
 
   for (const entry of QUEST_TREE) {
     if ((entry.giver || QUESTS[entry.id]?.giver) !== npcId) continue;
     if (completedIds.has(entry.id)) continue;
+    if (entry.id === activeId) continue; // already on it
     const prereqsMet = entry.prerequisites.every((p) => completedIds.has(p));
     if (prereqsMet) return entry.id;
   }

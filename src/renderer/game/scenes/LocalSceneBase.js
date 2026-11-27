@@ -944,7 +944,13 @@ export default class LocalSceneBase extends Phaser.Scene {
     });
     this._cameraFit = fit;
     // `follow` means the update loop keeps re-framing as Zuzu walks.
-    this._cameraMode = fit.followY ? 'follow' : 'fit';
+    //
+    // Must consider BOTH axes. A portrait phone zooms in and overflows
+    // horizontally, so it has followX true and followY false — testing only
+    // followY left the camera pinned and Zuzu walked straight off the side
+    // of the screen, with the lab doors, the workbench, the GPS and the
+    // Desert Edge exit all out of sight while walking to them.
+    this._cameraMode = (fit.followX || fit.followY) ? 'follow' : 'fit';
 
     // Safety net: paint the camera's own background in this scene's biome
     // colour. Anything the room does not cover then reads as a themed

@@ -608,7 +608,7 @@ export default class MaterialLabScene extends LabRigBase {
     };
   }
 
-  // ── Completion dialog: append "take the data back to Mr. Chen" + add
+  // ── Completion dialog: append the "bring the data back" line + add
   //   structured journal entry on first all-tested completion. ──────────
   _emitCompletionDialog(result) {
     super._emitCompletionDialog(result);
@@ -711,7 +711,9 @@ export default class MaterialLabScene extends LabRigBase {
     return {
       ...base,
       text: base.text +
-        "\n\n📓 Take the data back to Mr. Chen — he'll want to see the numbers.",
+        // First person: Mr. Chen is the speaker here, so "take it back to
+        // Mr. Chen" was him talking about himself. No pronoun either.
+        "\n\n📓 Bring the data back to me - I'll want to see the numbers.",
     };
   }
 

@@ -2003,7 +2003,7 @@ export default function GameContainer() {
       {/* Hidden while a dialog is open: a hint floating over the conversation
           it is hinting about is just noise. */}
       {phase === 'playing' && !dialog && aiToasts.length > 0 && (
-        <div className="absolute bottom-24 left-2 z-25 flex flex-col gap-2 pointer-events-none max-w-[min(22rem,calc(100vw-5rem))]">
+        <div className="absolute bottom-[11rem] left-2 z-25 flex flex-col gap-2 pointer-events-none max-w-[min(22rem,calc(100vw-5rem))]">
           {aiToasts.map((toast) => {
             const bg = toast.severity === 'critical' ? 'bg-red-500/90'
               : toast.severity === 'warning' ? 'bg-amber-500/90'

@@ -273,21 +273,39 @@ export default class LabRigBase extends LocalSceneBase {
   // LocalSceneBase hook — base owns the entire build.
   // ─────────────────────────────────────────────────────────────────────
 
-  createWorld() {
-    // Phaser reuses the scene object between visits, so every cached
-    // display-object handle still points at last visit's destroyed object.
-    // `_ensureModeToggle` guards with `if (!this._modeToggleBg)`, saw a
-    // truthy dead Rectangle, skipped creating a live one and then called
-    // `setInteractive()` on it — "Cannot read properties of undefined
-    // (reading 'sys')" and a broken lab on the second visit.
-    for (const handle of [
-      '_apparatusLayer', '_specimenLayer', '_effectsLayer',
-      '_chartG', '_chartTitle', '_readoutText',
-      '_startBtnBg', '_startBtnLabel',
-      '_modeToggleBg', '_modeToggleLbl',
-    ]) {
-      this[handle] = null;
+  /**
+   * Drop every cached handle whose object died with the last visit.
+   *
+   * Phaser reuses the scene object between visits, so a field like
+   * `this._modeToggleBg` still points at the previous visit's destroyed
+   * Rectangle. The rigs are full of `if (!this._x) { create it }` guards,
+   * and a truthy dead object makes every one of them skip creation and then
+   * use the corpse — `setInteractive()` of undefined, `drawImage` of null,
+   * and a lab that only breaks on the *second* visit.
+   *
+   * I fixed this once with a hand-written list of ten handles and it was
+   * wrong the next day: MaterialLabScene has its own
+   * `_teachingCalloutBg` / `_teachingCalloutText`, ThermalRigScene has
+   * `_dialText` and `_rodRect`. So this sweeps instead of listing — any
+   * own `_`-prefixed field holding a destroyed Phaser object (one with a
+   * `destroy` method whose `scene` back-reference is gone) is nulled, and
+   * the guards rebuild it. Subclass fields are covered automatically.
+   * @private
+   */
+  _clearDeadHandles() {
+    for (const key of Object.keys(this)) {
+      if (key.charCodeAt(0) !== 95) continue; // "_"
+      const value = this[key];
+      if (!value || typeof value !== 'object' || Array.isArray(value)) continue;
+      if (typeof value.destroy !== 'function') continue;
+      if (!('scene' in value)) continue;
+      if (value.scene) continue; // still alive
+      this[key] = null;
     }
+  }
+
+  createWorld() {
+    this._clearDeadHandles();
 
     const state = this.registry.get('gameState') || {};
     const world = this.getWorldSize();
