@@ -361,7 +361,7 @@ test('every rule has a source, both messages, and a known predicate', () => {
   const ops = new Set([
     'always', 'exists', 'slot_empty', 'slot_filled', 'all_empty', 'eq', 'gt', 'gte', 'lt', 'lte', 'in',
     'and', 'or', 'not', 'same_family', 'same_ecosystem', 'requires_standard', 'capacity_sum_lte',
-    'speeds_match', 'chain_types_match', 'brake_frame_match', 'same_fluid', 'rd_max_cog', 'adapter_allowed',
+    'speeds_match', 'chain_types_match', 'brake_frame_match', 'same_fluid', 'rd_max_cog', 'adapter_allowed', 'abs_diff_gt',
   ]);
   const provenances = new Set(['manufacturer_spec', 'industry_standard', 'practitioner_rule']);
   const walk = (predicate) => {

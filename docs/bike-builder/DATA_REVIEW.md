@@ -1,6 +1,6 @@
 # Parts needing review
 
-Generated 2026-11-27. 281 parts. Approved means the numbers were copied from a manufacturer specification table during this build. Draft means a person still needs to check them before anyone trusts a real build.
+Generated 2026-11-27. 353 parts. Approved means the numbers were copied from a manufacturer specification table during this build. Draft means a person still needs to check them before anyone trusts a real build.
 
 A draft part can still appear in the builder. If a number is blank, the engine says "can't verify" instead of "fits".
 
@@ -290,6 +290,78 @@ A draft part can still appear in the builder. If a number is blank, the engine s
 - `light-48v-bullet` (light) Teaching 48 V pack-voltage light, bullets — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
 - `light-6v-bullet` (light) Teaching 6 V light, bullets — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
 - `light-12v-kt` (light) Teaching 12 V light, KT plug — Draft light. Light voltage has to match the controller light port. A 6 V port is not pack voltage.
+- `frame-surron-light-bee-x` (frame) Sur-Ron Light Bee X frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current Sur-Ron sheet.
+- `frame-talaria-sting` (frame) Talaria Sting frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current Talaria sheet.
+- `frame-segway-x260` (frame) Segway X260 frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current Segway sheet.
+- `frame-stark-varg` (frame) Stark Varg frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current Stark sheet.
+- `frame-ktm-freeride-e` (frame) KTM Freeride E frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current KTM sheet.
+- `frame-stacyc-16` (frame) STACYC 16 eDRIVE frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current STACYC sheet.
+- `frame-oset-16` (frame) OSET 16.0 Racing frame — Draft e-dirt frame. Axles, hub widths, rim sizes, bay, and power class need confirmation on the current OSET sheet.
+- `wheel-surron-front-19` (dirt_wheel) Teaching Sur-Ron front wheel 19 in — Draft wheel. Axle diameter, hub width, rim size, and sprocket bolts need confirmation.
+- `wheel-surron-rear-18` (dirt_wheel) Teaching Sur-Ron rear wheel 18 in — Draft wheel. Axle diameter, hub width, rim size, and sprocket bolts need confirmation.
+- `wheel-talaria-rear-19` (dirt_wheel) Teaching Talaria rear wheel 19 in — Draft wheel. Axle diameter, hub width, rim size, and sprocket bolts need confirmation.
+- `wheel-stark-front-21` (dirt_wheel) Teaching Stark front wheel 21 in — Draft wheel. Axle diameter, hub width, rim size, and sprocket bolts need confirmation.
+- `wheel-stacyc-front-16` (dirt_wheel) Teaching STACYC front wheel 16 in — Draft wheel. Axle diameter, hub width, rim size, and sprocket bolts need confirmation.
+- `wheel-blank-axle` (dirt_wheel) Teaching Front wheel, axle not recorded — Draft wheel. Axle diameter, hub width, rim size, and sprocket bolts need confirmation.
+- `tire-surron-front` (dirt_tire) Teaching 70 mm tire for 19 in rim — Draft tire. Rim diameter and the rim-width window need confirmation.
+- `tire-surron-rear` (dirt_tire) Teaching 80 mm tire for 18 in rim — Draft tire. Rim diameter and the rim-width window need confirmation.
+- `tire-wide-rear` (dirt_tire) Teaching 120 mm tire for 18 in rim — Draft tire. Rim diameter and the rim-width window need confirmation.
+- `tire-stacyc-16` (dirt_tire) Teaching 50 mm tire for 16 in rim — Draft tire. Rim diameter and the rim-width window need confirmation.
+- `chain-pitch-420` (chain) Teaching 420 chain — Draft 420 roller chain. 420, 428, and 520 do not mix. Confirm the series on the chain stamp.
+- `chain-pitch-428` (chain) Teaching 428 chain — Draft 428 roller chain. 420, 428, and 520 do not mix. Confirm the series on the chain stamp.
+- `chain-pitch-520` (chain) Teaching 520 chain — Draft 520 roller chain. 420, 428, and 520 do not mix. Confirm the series on the chain stamp.
+- `sprocket-surron-cs` (sprocket) Teaching countershaft sprocket 420 13T — Draft sprocket. Pitch, bolt pattern or spline, and chainline need confirmation.
+- `sprocket-surron-rear` (sprocket) Teaching rear sprocket 420 48T — Draft sprocket. Pitch, bolt pattern or spline, and chainline need confirmation.
+- `sprocket-520-rear` (sprocket) Teaching rear sprocket 520 48T — Draft sprocket. Pitch, bolt pattern or spline, and chainline need confirmation.
+- `sprocket-talaria-rear` (sprocket) Teaching rear sprocket 420 48T — Draft sprocket. Pitch, bolt pattern or spline, and chainline need confirmation.
+- `primary-surron-belt` (primary_drive) Sur-Ron Light Bee belt primary — Draft. Light Bee primary is recorded here as a belt. Confirm on the bike.
+- `primary-chain` (primary_drive) Teaching Chain primary — Draft chain primary. It does not match a belt-primary motor.
+- `controller-surron-lbx` (controller) Sur-Ron Light Bee controller — Draft Sur-Ron controller. Voltage, current, phase plug, hall plug, and firmware family need confirmation.
+- `controller-stark-varg` (controller) Stark Varg controller — Draft Stark controller. Voltage, current, phase plug, hall plug, and firmware family need confirmation.
+- `controller-stacyc` (controller) STACYC 16 eDRIVE controller — Draft STACYC controller. Voltage, current, phase plug, hall plug, and firmware family need confirmation.
+- `motor-surron-lbx` (motor) Sur-Ron Light Bee motor — Draft Sur-Ron motor. Voltage, current, plugs, and primary drive need confirmation. Not a bicycle bottom-bracket mid-drive.
+- `motor-stark-varg` (motor) Stark Varg motor — Draft Stark motor. Voltage, current, plugs, and primary drive need confirmation. Not a bicycle bottom-bracket mid-drive.
+- `motor-stacyc` (motor) STACYC 16 eDRIVE motor — Draft STACYC motor. Voltage, current, plugs, and primary drive need confirmation. Not a bicycle bottom-bracket mid-drive.
+- `motor-surron-power-unknown` (motor) Sur-Ron Light Bee motor, peak current not recorded — Draft Sur-Ron motor. Voltage, current, plugs, and primary drive need confirmation. Not a bicycle bottom-bracket mid-drive.
+- `battery-surron-60` (battery) Sur-Ron 60 V Light Bee pack — Draft pack. Voltage, BMS current, connector, chemistry, and bay size need confirmation.
+- `battery-stark-360` (battery) Stark Varg pack — Draft pack. Voltage, BMS current, connector, chemistry, and bay size need confirmation.
+- `battery-stacyc-36` (battery) STACYC 36 V kids pack — Draft pack. Voltage, BMS current, connector, chemistry, and bay size need confirmation.
+- `battery-surron-too-big` (battery) Teaching 60 V pack, too big for a Light Bee bay — Draft pack. Voltage, BMS current, connector, chemistry, and bay size need confirmation.
+- `charger-surron-60` (charger) Sur-Ron 60 V charger — Draft charger. Voltage, chemistry, and charge plug need confirmation.
+- `charger-36` (charger) Teaching 36 V charger — Draft 36 V charger. It does not match a 60 V pack.
+- `rotor-surron-front-203` (dirt_rotor) Teaching 203 mm front rotor — Draft rotor diameter and mount. Confirm the millimeter size.
+- `rotor-surron-rear-203` (dirt_rotor) Teaching 203 mm rear rotor — Draft rotor diameter and mount. Confirm the millimeter size.
+- `rotor-oversize-270` (dirt_rotor) Teaching 270 mm rotor — Draft rotor diameter and mount. Confirm the millimeter size.
+- `dirt-rotor-centerlock-203` (dirt_rotor) Teaching 203 mm centerlock rotor — Draft rotor diameter and mount. Confirm the millimeter size.
+- `caliper-surron-front` (dirt_caliper) Teaching Front post-mount caliper, DOT — Draft caliper. Mount and fluid (DOT or mineral) need confirmation. Do not mix fluids.
+- `caliper-surron-rear` (dirt_caliper) Teaching Rear post-mount caliper, DOT — Draft caliper. Mount and fluid (DOT or mineral) need confirmation. Do not mix fluids.
+- `caliper-mineral-radial` (dirt_caliper) Teaching Radial caliper, mineral oil — Draft caliper. Mount and fluid (DOT or mineral) need confirmation. Do not mix fluids.
+- `fork-surron` (fork) Sur-Ron Light Bee fork — Draft fork. Travel, steerer, offset, and axle need confirmation.
+- `fork-long` (fork) Teaching Fork, 250 mm travel — Draft long fork. Travel is over a Light Bee frame maximum.
+- `shock-surron` (shock) Sur-Ron Light Bee shock — Draft shock. Eye-to-eye, stroke, mount, and rider window need confirmation.
+- `shock-wrong-length` (shock) Teaching Shock, 290 mm eye-to-eye — Draft shock that does not match a Light Bee eye-to-eye length.
+- `stem-surron-fat` (stem) Sur-Ron Fat-bar clamps — Draft 28.6 mm fat-bar clamps. Confirm the clamp diameter.
+- `bar-fat-28-6` (handlebar) Teaching 28.6 mm fat handlebar — Draft 28.6 mm bar center.
+- `bar-22-2` (handlebar) Teaching 22.2 mm handlebar — Draft 22.2 mm (7/8 in) bar. It does not clamp in a 28.6 mm fat-bar mount.
+- `peg-surron` (footpeg) Sur-Ron Light Bee footpegs — Draft peg mount. Confirm the bolt pattern.
+- `brake-sensor-surron` (brake_sensor) Sur-Ron Light Bee brake switch — Draft normally-open brake cutoff on the Light Bee plug.
+- `throttle-surron` (throttle) Sur-Ron Light Bee hall thumb throttle — Draft hall throttle on the Light Bee plug. Pack voltage is not the fit test.
+- `display-surron` (display) Sur-Ron Light Bee display — Draft display. Protocol and plug need confirmation.
+- `dcdc-surron-12` (dc_dc) Sur-Ron 60 V to 12 V converter — Draft DC-DC. Input is pack nominal voltage. Output is the light voltage.
+- `light-surron-12` (light) Sur-Ron 12 V light — Draft 12 V light on the Sur-Ron light plug.
+- `sprocket-wrong-spline` (sprocket) Teaching Front sprocket, other spline — Draft front sprocket whose spline is not the Light Bee shaft.
+- `sprocket-chainline-off` (sprocket) Teaching Rear sprocket, chainline 50 mm — Draft rear sprocket. Bolts match a Light Bee hub. Chainline is 8 mm off.
+- `controller-locked-other` (controller) Teaching Locked controller, other family — Draft locked controller from a different firmware family than the Varg motor.
+- `controller-surron-soft` (controller) Teaching Light Bee controller, low peak current — Draft controller whose peak current is below the Light Bee motor peak. Warning only.
+- `charger-lfp-60` (charger) Teaching 60 V LFP charger — Draft charger for a different lithium chemistry than an NMC pack.
+- `fork-offset-only` (fork) Teaching Fork, offset 40 mm — Draft fork with the Light Bee travel and axle, and a different offset.
+- `fork-axle-17` (fork) Teaching Fork, 17 mm axle — Draft fork whose axle is not the Light Bee front axle.
+- `stem-other` (stem) Teaching Clamps for a different steerer — Draft clamps that do not match the Light Bee steerer.
+- `shock-stroke-only` (shock) Teaching Shock, stroke 80 mm — Draft shock with the Light Bee length and a different stroke.
+- `shock-mount-only` (shock) Teaching Shock, other mount — Draft shock with the Light Bee length and different hardware.
+- `peg-talaria` (footpeg) Talaria Sting footpegs — Draft pegs that do not use the Light Bee mount.
+- `dcdc-36-12` (dc_dc) Teaching 36 V to 12 V converter — Draft DC-DC for a 36 V pack. It does not match a 60 V battery.
+- `motor-kids-too-strong` (motor) Teaching 3000 W motor on a kids mount — Draft motor whose power is over a STACYC-class frame limit. Used to show the kids power warning.
 
 ## Open questions for Dr. Yazan
 
@@ -306,3 +378,5 @@ A draft part can still appear in the builder. If a number is blank, the engine s
 - E-bike voltages, BB shells, and axle sizes on the new motor, battery, and frame records are draft. A 52 V pack does not pass on a 48 V-only controller. BBS02 is BSA 68/73 only. The 100 mm BBSHD does not pass on a 73 mm shell.
 - Hub motors cover the rear hub slot when no separate hub is chosen, so the cassette, axle, and rotor checks use the motor. A torque arm is a warning, not optional silence.
 - Headset, seatpost, front axle, and bottom bracket are checked when those parts are chosen. Tire clearance is still not measured.
+- E-dirt and gas-dirt axle, hub, sprocket, voltage, and bay numbers are draft teaching records. They are internally consistent so a mismatch fails, and they still need a human to confirm each one against the current maker sheet. A blank field does not pass.
+- Kids' e-moto power and wheel-size checks are warnings. They are not a legal ruling and they are not a lecture.

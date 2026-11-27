@@ -4,6 +4,7 @@ import rulesFile from '../../../../data/builder/rules.json';
 import zuzuBike from '../../../../data/builder/bikes/zuzu-bike.json';
 import midDriveKit from '../../../../data/builder/bikes/mid-drive-48.json';
 import hubMotorKit from '../../../../data/builder/bikes/hub-motor-48.json';
+import eDirtKit from '../../../../data/builder/bikes/e-dirt-light-bee.json';
 import { checkBuild, classifyCandidates } from '../../../builder/engine.js';
 import { formatGear, gearRange, WHEEL_SIZES } from '../../../builder/gearMath.js';
 import { presentFinding } from '../../../builder/present.js';
@@ -24,6 +25,8 @@ const BIKE_TYPES = [
   { id: 'ebike', label: 'E-bike' },
   { id: 'conversion-mid', label: 'Mid-drive kit' },
   { id: 'conversion-hub', label: 'Hub-motor kit' },
+  { id: 'e-dirt', label: 'E-dirt' },
+  { id: 'dirt', label: 'Gas dirt' },
 ];
 
 const BANNER = {
@@ -207,9 +210,6 @@ export default function BuilderPage() {
                 {type.label}
               </button>
             ))}
-            <button type="button" disabled className="min-h-11 cursor-not-allowed rounded-xl border border-slate-300 bg-slate-100 px-4 py-2 font-semibold text-slate-600">
-              Dirt bike coming soon
-            </button>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
             <button type="button" onClick={startFromZuzu} className="min-h-11 rounded-xl bg-amber-400 px-4 py-2 font-bold text-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-900">
@@ -220,6 +220,9 @@ export default function BuilderPage() {
             </button>
             <button type="button" onClick={() => loadBike(hubMotorKit, 'Loaded a 48 V hub-motor kit. The motor is the rear hub, and a torque arm is included.')} className="min-h-11 rounded-xl border border-slate-400 bg-white px-4 py-2 font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900">
               Start from a hub motor
+            </button>
+            <button type="button" onClick={() => loadBike(eDirtKit, 'Loaded an e-dirt teaching kit. The numbers are still drafts. A grown-up confirms them before a real bike is built.')} className="min-h-11 rounded-xl border border-slate-400 bg-white px-4 py-2 font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900">
+              Start from an e-dirt bike
             </button>
             <button type="button" onClick={saveBuild} className="min-h-11 rounded-xl border border-slate-400 bg-white px-4 py-2 font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900">
               Save this build
@@ -243,7 +246,7 @@ export default function BuilderPage() {
           <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" aria-label="Parts on this bike">
             <h2 className="px-1 text-xl font-bold">Parts</h2>
             <ul className="mt-2">
-              {SLOTS.map((slot) => {
+              {SLOTS.filter((slot) => !slot.bikes || slot.bikes.includes(build.bikeType)).map((slot) => {
                 const state = slotState(build, slot.id);
                 return (
                   <li key={slot.id} className="border-t border-slate-100 py-2">

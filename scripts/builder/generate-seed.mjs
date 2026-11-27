@@ -6,6 +6,7 @@
 import { writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { addDirtParts } from './dirt-seed.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const CHECKED = '2026-11-27';
@@ -1792,6 +1793,8 @@ accessory('light', [
   { id: 'light-12v-kt', model: '12 V light, KT plug', specs: { voltage: 12, connector: 'kt-2' }, quote: '12 V kt' },
 ], 'Light voltage has to match the controller light port. A 6 V port is not pack voltage.');
 
+addDirtParts(add);
+
 const ids = parts.map((part) => part.id);
 const dupes = ids.filter((id, index) => ids.indexOf(id) !== index);
 if (dupes.length) {
@@ -1836,6 +1839,8 @@ lines.push(
   '- E-bike voltages, BB shells, and axle sizes on the new motor, battery, and frame records are draft. A 52 V pack does not pass on a 48 V-only controller. BBS02 is BSA 68/73 only. The 100 mm BBSHD does not pass on a 73 mm shell.',
   '- Hub motors cover the rear hub slot when no separate hub is chosen, so the cassette, axle, and rotor checks use the motor. A torque arm is a warning, not optional silence.',
   '- Headset, seatpost, front axle, and bottom bracket are checked when those parts are chosen. Tire clearance is still not measured.',
+  '- E-dirt and gas-dirt axle, hub, sprocket, voltage, and bay numbers are draft teaching records. They are internally consistent so a mismatch fails, and they still need a human to confirm each one against the current maker sheet. A blank field does not pass.',
+  '- Kids\' e-moto power and wheel-size checks are warnings. They are not a legal ruling and they are not a lecture.',
   '',
 );
 writeFileSync(join(root, 'docs', 'bike-builder', 'DATA_REVIEW.md'), lines.join('\n'));

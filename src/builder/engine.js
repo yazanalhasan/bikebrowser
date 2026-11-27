@@ -245,6 +245,13 @@ function evalBool(predicate, ctx) {
       return brakeFrameMatch(predicate, ctx);
     case 'same_fluid':
       return sameFluid(predicate, ctx);
+    case 'abs_diff_gt': {
+      const left = asNumber(resolveOperand(predicate.left, ctx));
+      const right = asNumber(resolveOperand(predicate.right, ctx));
+      const limit = Number(predicate.limit);
+      if (left == null || right == null || !Number.isFinite(limit)) return 'missing';
+      return Math.abs(left - right) > limit;
+    }
     default:
       return 'missing';
   }
@@ -497,7 +504,12 @@ export function checkBuild(build, catalog, rules) {
   const ctx = {
     slots,
     derived,
-    build: { bikeType: build?.bikeType || null, wheelSize: build?.wheelSize || null },
+    build: {
+      bikeType: build?.bikeType || null,
+      wheelSize: build?.wheelSize || null,
+      riderWeightKg: build?.riderWeightKg ?? null,
+      modelYear: build?.modelYear ?? build?.year ?? null,
+    },
     slot: Object.fromEntries(
       Object.entries(slots).map(([slot, resolved]) => [slot, resolved.part || null])
     ),
@@ -513,6 +525,13 @@ export function checkBuild(build, catalog, rules) {
     skipCore.add('rear_derailleur');
     skipCore.add('shifter');
   }
+  if (build?.bikeType === 'e-dirt' || build?.bikeType === 'dirt') {
+    skipCore.add('hub');
+    skipCore.add('cassette');
+    skipCore.add('rear_derailleur');
+    skipCore.add('shifter');
+    skipCore.add('crankset');
+  }
   for (const slot of CORE_SLOTS) {
     if (skipCore.has(slot)) continue;
     const resolved = slots[slot];
@@ -521,7 +540,7 @@ export function checkBuild(build, catalog, rules) {
   }
 
   const electrical = ['motor', 'battery', 'controller'];
-  const ebikeType = build?.bikeType === 'ebike' || build?.bikeType === 'conversion-mid' || build?.bikeType === 'conversion-hub';
+  const ebikeType = build?.bikeType === 'ebike' || build?.bikeType === 'conversion-mid' || build?.bikeType === 'conversion-hub' || build?.bikeType === 'e-dirt';
   const anyElectrical = electrical.some((slot) => {
     const state = slots[slot]?.state;
     return state === 'part' || state === 'unknown' || state === 'missing-id';
