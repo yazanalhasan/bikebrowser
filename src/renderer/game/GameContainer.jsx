@@ -278,6 +278,10 @@ export default function GameContainer() {
   const gameRef = useRef(null);
   const [containerReady, setContainerReady] = useState(false);
   const prevCompletedRef = useRef(new Set());
+  // Act 1 finishing is a moment, not a checklist row — fire it once.
+  const act1CelebratedRef = useRef(false);
+  // Last `dialogEvent` value adopted from the registry (see the mirror below).
+  const lastDialogRef = useRef(null);
   const navigate = useNavigate();
   const recordQuestComplete = useLearningStore((s) => s.recordQuestComplete);
 
@@ -423,6 +427,7 @@ export default function GameContainer() {
     setCraftResult(null);
     setDialog(null);
     prevCompletedRef.current = new Set();
+    act1CelebratedRef.current = false;
 
     // Force Phaser re-mount via key bump
     setBootKey((k) => k + 1);
@@ -583,6 +588,7 @@ export default function GameContainer() {
     // Seed registry with saved state
     game.registry.set('gameState', savedState);
     prevCompletedRef.current = new Set(savedState.completedQuests || []);
+    act1CelebratedRef.current = evaluateAct1(savedState || {}).complete;
 
     // Inject audio manager into registry so scenes can use it
     game.registry.set('audioManager', null); // set after unlock
@@ -600,6 +606,23 @@ export default function GameContainer() {
     // Listen for registry changes to keep HUD in sync
     game.registry.events.on('changedata-gameState', (_parent, value) => {
       refreshHud(value);
+
+      // Finishing Act 1 gets its own dialog. It used to be announced only by
+      // a small HUD card that sat under the AI toasts, so the end of the act
+      // could pass a child by completely.
+      if (!act1CelebratedRef.current && evaluateAct1(value || {}).complete) {
+        act1CelebratedRef.current = true;
+        game.registry.set('dialogEvent', {
+          speaker: 'Zuzu',
+          text:
+            'I did it!\n\nMy bike rolls, the bridge holds, and I tested the '
+            + 'materials instead of guessing. The neighbors trust me now.\n\n'
+            + 'The road out of the desert is open — look for "Road Beyond the '
+            + 'Desert" on the Bike GPS map.',
+          choices: null,
+          step: null,
+        });
+      }
 
       // Detect newly completed quests → update learning + knowledge + quest tree
       const completed = new Set(value?.completedQuests || []);
@@ -682,6 +705,7 @@ export default function GameContainer() {
 
     // Listen for dialog events from scenes
     game.registry.events.on('changedata-dialogEvent', (_parent, value) => {
+      lastDialogRef.current = value ?? null;
       setDialog(value);
     });
 
@@ -796,11 +820,25 @@ export default function GameContainer() {
   useEffect(() => {
     if (phase !== 'playing') return undefined;
     const sync = () => {
-      const key = gameRef.current?.registry?.get?.('activeSceneKey') || null;
+      const registry = gameRef.current?.registry;
+      if (!registry) return;
+
+      const key = registry.get('activeSceneKey') || null;
       setActiveSceneKey((prev) => (prev === key ? prev : key));
+
+      // Mirror `dialogEvent` for the same reason. The garage's welcome
+      // message is written ~600ms into the first scene, and if that single
+      // write is missed the first thing a child sees never appears at all.
+      // Comparing against the last value we adopted means closing a dialog
+      // (which nulls the registry) does not re-open it.
+      const pending = registry.get('dialogEvent') ?? null;
+      if (pending !== lastDialogRef.current) {
+        lastDialogRef.current = pending;
+        setDialog(pending);
+      }
     };
     sync();
-    const timer = setInterval(sync, 500);
+    const timer = setInterval(sync, 400);
     return () => clearInterval(timer);
   }, [phase]);
 
@@ -980,14 +1018,18 @@ export default function GameContainer() {
       }
     }
     if (!handled) {
-      // Simple dialog (no quest advancement) — just close
+      // Simple dialog (no quest advancement) — just close. Clear the registry
+      // as well: leaving a stale `dialogEvent` there makes React and Phaser
+      // disagree about whether a dialog is open.
       setDialog(null);
+      gameRef.current?.registry?.set('dialogEvent', null);
     }
   }, [audio, dialog]);
 
   const handleDialogClose = useCallback(() => {
     cancelSpeech();
     resetLastSpoken();
+    lastDialogRef.current = null;
     setDialog(null);
     gameRef.current?.registry?.set('dialogEvent', null);
   }, []);
@@ -2267,8 +2309,18 @@ function AIAssistantPanel({ messages, status, onClose, onClear }) {
   );
 }
 
+/**
+ * Act 1 goals.
+ *
+ * Collapsed to a single tappable line by default. Expanded, this is a
+ * six-row card pinned to the top-left of the play area, and at 1280x720 it
+ * covered the garage workbench and Zuzu standing at it — the child could not
+ * see the thing the goals were telling them to use.
+ */
 function Act1Checklist({ state }) {
   const report = evaluateAct1(state);
+  const [open, setOpen] = useState(false);
+
   if (report.complete) {
     return (
       <div className="bg-emerald-50 rounded-lg px-3 py-2 shadow text-xs pointer-events-auto" data-testid="act1-complete">
@@ -2277,9 +2329,39 @@ function Act1Checklist({ state }) {
       </div>
     );
   }
+
+  const done = report.rows.filter((r) => r.done).length;
+  const total = report.rows.length;
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="bg-white/90 rounded-lg px-3 py-1.5 shadow text-xs font-bold text-gray-800
+                   pointer-events-auto flex items-center gap-2 cursor-pointer hover:bg-white"
+        data-testid="act1-checklist-collapsed"
+        aria-expanded="false"
+        aria-label={`Neighborhood goals, ${done} of ${total} done. Tap to show the list.`}
+      >
+        <span>🎯 Goals {done}/{total}</span>
+        <span aria-hidden="true" className="text-gray-400">▸</span>
+      </button>
+    );
+  }
+
   return (
     <div className="bg-white/90 rounded-lg px-3 py-2 shadow text-xs pointer-events-auto" data-testid="act1-checklist">
-      <div className="font-bold text-gray-800">Neighborhood goals</div>
+      <button
+        type="button"
+        onClick={() => setOpen(false)}
+        className="font-bold text-gray-800 flex items-center gap-2 cursor-pointer w-full text-left"
+        aria-expanded="true"
+        aria-label="Hide the neighborhood goals list"
+      >
+        <span>Neighborhood goals</span>
+        <span aria-hidden="true" className="text-gray-400 ml-auto">▾</span>
+      </button>
       {report.rows.map((row) => (
         <div key={row.id} className={row.done ? 'text-emerald-700' : 'text-gray-600'}>
           {row.done ? '✅' : '⬜'} {row.label}

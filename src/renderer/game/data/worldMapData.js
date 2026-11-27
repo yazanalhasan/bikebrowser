@@ -144,7 +144,12 @@ export const WORLD_LOCATIONS = {
     ceremony: true,
     ceremonyText:
       'The wider map is open. Your bike rolls, the bridge holds, and you tested materials instead of guessing. Neighbors trust you. The next lands are Act 2 — same tools, new places.',
-    mapPos: { x: 0.18, y: 0.18 },
+    // Far corner, deliberately. At (0.18, 0.18) this sat under the
+    // Neighborhood home marker, whose hit zone is ~150x86 centred on
+    // (0.15, 0.20) — so the labels smeared together and clicking the
+    // ceremony icon sent the child home instead of ending Act 1. Only
+    // the top few pixels were actually clickable.
+    mapPos: { x: 0.85, y: 0.78 },
     unlockReq: { act1Complete: true },
     educationalDomain: 'systems thinking — tools travel with you',
     rewards: ['regional_travel'],
