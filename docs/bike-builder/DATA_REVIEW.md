@@ -1,6 +1,6 @@
 # Parts needing review
 
-Generated 2026-11-27. 166 parts. Approved means the numbers were copied from a manufacturer specification table during this build. Draft means a person still needs to check them before anyone trusts a real build.
+Generated 2026-11-27. 207 parts. Approved means the numbers were copied from a manufacturer specification table during this build. Draft means a person still needs to check them before anyone trusts a real build.
 
 A draft part can still appear in the builder. If a number is blank, the engine says "can't verify" instead of "fits".
 
@@ -165,16 +165,57 @@ A draft part can still appear in the builder. If a number is blank, the engine s
 - `rotor-centerlock-203` (rotor) Standard 203 mm center-lock rotor — Generic 203 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
 - `rotor-6bolt-220` (rotor) Standard 220 mm 6-bolt rotor — Generic 220 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
 - `rotor-centerlock-220` (rotor) Standard 220 mm center-lock rotor — Generic 220 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
-- `frame-mtb-standard-post-180` (frame) Teaching Mountain frame, standard hanger, post mount, 180 mm max — Minimal phase 1 frame. Max rotor is a teaching limit, not a measured bike.
-- `frame-mtb-standard-post-203` (frame) Teaching Mountain frame, standard hanger, post mount, 203 mm max — Minimal phase 1 frame.
-- `frame-mtb-udh-post-203` (frame) Teaching Mountain frame, UDH, post mount, 203 mm max — UDH frame for Full Mount derailleurs. SRAM UDH explainer.
-- `frame-road-flat-160` (frame) Teaching Road frame, standard hanger, flat mount, 160 mm max — Minimal phase 1 road disc frame.
-- `frame-road-rim` (frame) Teaching Road frame, rim brakes, standard hanger — Rim-brake frame. No rotor maximum.
-- `frame-direct-mount-post-180` (frame) Teaching Frame, direct-mount hanger, post mount, 180 mm max — Direct-mount hanger is not UDH and does not take Full Mount.
-- `frame-gravel-flat-180` (frame) Teaching Gravel frame, standard hanger, flat mount, 180 mm max — Minimal phase 1 gravel frame.
-- `frame-mtb-post-140` (frame) Teaching Mountain frame, standard hanger, post mount, 140 mm max — Small-rotor teaching frame.
+- `frame-mtb-standard-post-180` (frame) Teaching Mountain frame, standard hanger, post mount, 180 mm max — Teaching hardtail. BSA 73 mm, QR 135 rear, QR 100 front. Not a measured bike.
+- `frame-mtb-standard-post-203` (frame) Teaching Mountain frame, standard hanger, post mount, 203 mm max — Teaching hardtail. BSA 73 mm, QR 135 rear.
+- `frame-mtb-udh-post-203` (frame) Teaching Mountain frame, UDH, post mount, 203 mm max — UDH boost teaching frame. 12x148 rear, 15x110 front, BSA 73 mm.
+- `frame-road-flat-160` (frame) Teaching Road frame, standard hanger, flat mount, 160 mm max — Teaching road disc frame. BB86, 12x142 rear, 12x100 front, 27.2 mm post.
+- `frame-road-rim` (frame) Teaching Road frame, rim brakes, standard hanger — Teaching rim-brake road frame. BSA 68 mm, QR 130 rear.
+- `frame-direct-mount-post-180` (frame) Teaching Frame, direct-mount hanger, post mount, 180 mm max — Direct-mount hanger is not UDH. BSA 73, QR 135.
+- `frame-gravel-flat-180` (frame) Teaching Gravel frame, standard hanger, flat mount, 180 mm max — Teaching gravel frame. T47 internal, 12x142, 12x100.
+- `frame-mtb-post-140` (frame) Teaching Mountain frame, standard hanger, post mount, 140 mm max — Small-rotor teaching frame. BSA 73, QR 135.
+- `frame-pf30-135` (frame) Teaching Press-fit PF30 frame, QR 135 — PF30 shell. A BSA mid-drive does not pass on this frame.
+- `frame-bb100` (frame) Teaching BSA 100 mm shell frame, QR 135 — Teaching 100 mm BSA shell for a 100 mm mid-drive. Draft width.
 - `extender-vg-sports` (hanger_extender) VG Sports Derailleur hanger extender from the 9-speed kit — The owner's VG Sports 9-speed kit (ASIN B09VBNTGCD) includes a derailleur hanger extender. No shop link. The extender does not change the published max cog; the 8-tooth window is a practitioner rule.
 - `extender-roadlink-style` (hanger_extender) Teaching RoadLink-style hanger extender — Teaching name for a road hanger extender. Not a shop listing.
+- `motor-bbs02-48` (motor) Bafang BBS02 48 V mid-drive — Draft. BBS02 is a mid-drive for a threaded BSA shell, 68 or 73 mm, in a 48 V version. It replaces the crank. Confirm the label on the unit. 36 V BBS02 is a different motor.
+- `motor-bbs02-36` (motor) Bafang BBS02 36 V mid-drive — Draft. 36 V BBS02 is not the 48 V motor. Same BSA 68/73 shell.
+- `motor-bbshd-100` (motor) Bafang BBSHD 100 mm 48 V mid-drive — Draft. This record is the 100 mm BBSHD only. It does not pass on a 68 or 73 mm shell.
+- `motor-tsdz2-48` (motor) Tongsheng TSDZ2 48 V mid-drive — Draft. TSDZ2 installs in a BSA 68/73 mm shell and uses its own protocol, not Bafang UART.
+- `motor-hub-geared-135` (motor) Bafang 48 V geared rear hub, QR 135, HG — Draft teaching geared hub motor: 135 mm quick release, HG cassette body, 6-bolt rotor, 48 V. Confirm the axle stamped on the real motor.
+- `motor-hub-geared-148` (motor) Bafang 48 V geared rear hub, 12x148 Boost, HG — Draft. 12x148 Boost hub motor. It does not fit a QR 135 frame.
+- `motor-hub-direct-135` (motor) Teaching 48 V direct-drive rear hub, QR 135, HG — Draft direct-drive hub. Same axle and cassette checks as a geared hub. Torque arm still applies.
+- `motor-hub-single-135` (motor) Teaching 48 V rear hub, single sprocket, QR 135 — Draft single-sprocket hub motor. A cassette does not mount. Shifter and derailleur are not required.
+- `battery-36-xt60` (battery) Teaching 36 V pack, XT60, 20 A BMS — Draft pack. Nominal 36 V, BMS 20 A, xt60 plug. No capacity claim and no shop listing.
+- `battery-48-xt60` (battery) Teaching 48 V pack, XT60, 30 A BMS — Draft pack. Nominal 48 V, BMS 30 A, xt60 plug. No capacity claim and no shop listing.
+- `battery-48-xt90` (battery) Teaching 48 V pack, XT90, 40 A BMS — Draft pack. Nominal 48 V, BMS 40 A, xt90 plug. No capacity claim and no shop listing.
+- `battery-52-xt60` (battery) Teaching 52 V pack, XT60, 30 A BMS — Draft pack. Nominal 52 V, BMS 30 A, xt60 plug. No capacity claim and no shop listing.
+- `controller-48-uart-xt60` (controller) Teaching 48 V UART controller, 25 A, XT60 — Draft controller. Accepts 48 V, 25 A, 1000 W, xt60, protocol uart.
+- `controller-36-uart-xt60` (controller) Teaching 36 V UART controller, 15 A, XT60 — Draft controller. Accepts 36 V, 15 A, 500 W, xt60, protocol uart.
+- `controller-48-can-xt60` (controller) Teaching 48 V CAN controller, 25 A, XT60 — Draft controller. Accepts 48 V, 25 A, 1000 W, xt60, protocol can.
+- `controller-48-uart-xt90` (controller) Teaching 48 V UART controller, 35 A, XT90 — Draft controller. Accepts 48 V, 35 A, 1500 W, xt90, protocol uart.
+- `controller-tongsheng-48` (controller) Teaching 48 V Tongsheng controller, 18 A, XT60 — Draft controller. Accepts 48 V, 18 A, 500 W, xt60, protocol tongsheng.
+- `display-uart` (display) Teaching UART display — Draft display. Protocol uart. It only matches a controller with the same protocol.
+- `display-can` (display) Teaching CAN display — Draft display. Protocol can. It only matches a controller with the same protocol.
+- `display-tongsheng` (display) Teaching Tongsheng display — Draft display. Protocol tongsheng. It only matches a controller with the same protocol.
+- `bb-bsa-shimano-24` (bottom_bracket) Teaching BSA bottom bracket for 24 mm spindle — Draft bottom bracket. Shell bsa, spindle shimano-24, widths 68/73 mm.
+- `bb-bsa-68-shimano-24` (bottom_bracket) Teaching BSA 68 mm bottom bracket for 24 mm spindle — Draft bottom bracket. Shell bsa, spindle shimano-24, widths 68 mm.
+- `bb-bsa-dub` (bottom_bracket) Teaching BSA bottom bracket for SRAM DUB — Draft bottom bracket. Shell bsa, spindle sram-dub, widths 68/73 mm.
+- `bb-bb86-shimano-24` (bottom_bracket) Teaching BB86 bottom bracket for 24 mm spindle — Draft bottom bracket. Shell bb86, spindle shimano-24, widths 86 mm.
+- `bb-t47-shimano-24` (bottom_bracket) Teaching T47 bottom bracket for 24 mm spindle — Draft bottom bracket. Shell t47, spindle shimano-24, widths 86 mm.
+- `bb-pf30-30` (bottom_bracket) Teaching PF30 bottom bracket for 30 mm spindle — Draft bottom bracket. Shell pf30, spindle 30mm, widths 68/73 mm.
+- `bb-bsa-square` (bottom_bracket) Teaching BSA square-taper bottom bracket — Draft bottom bracket. Shell bsa, spindle square-taper, widths 68/73 mm.
+- `front-hub-qr-100` (front_hub) Teaching Front hub, quick release 100 mm — Draft front hub. Axle qr-100.
+- `front-hub-12x100` (front_hub) Teaching Front hub, 12x100 thru-axle — Draft front hub. Axle 12x100.
+- `front-hub-15x100` (front_hub) Teaching Front hub, 15x100 thru-axle — Draft front hub. Axle 15x100.
+- `front-hub-15x110` (front_hub) Teaching Front hub, 15x110 Boost — Draft front hub. Axle 15x110.
+- `headset-zs44-ec44` (headset) Teaching Headset, ZS44 upper / EC44 lower — Draft headset. SHIS-style id zs44-ec44.
+- `headset-integrated-is42` (headset) Teaching Integrated headset, IS42 — Draft headset. SHIS-style id integrated-is42.
+- `headset-ec34` (headset) Teaching Headset, EC34 threaded-style external — Draft headset. SHIS-style id ec34.
+- `seatpost-27-2` (seatpost) Teaching 27.2 mm seatpost — Draft seatpost diameter 27.2 mm. A larger post does not fit. A smaller post is a shim warning.
+- `seatpost-30-9` (seatpost) Teaching 30.9 mm seatpost — Draft seatpost diameter 30.9 mm. A larger post does not fit. A smaller post is a shim warning.
+- `seatpost-31-6` (seatpost) Teaching 31.6 mm seatpost — Draft seatpost diameter 31.6 mm. A larger post does not fit. A smaller post is a shim warning.
+- `torque-arm-qr-135` (torque_arm) Teaching Torque arm for a QR 135 hub motor — Draft torque arm for a quick-release hub motor. The checker treats any torque arm as present. The axle match is still the frame rule.
+- `torque-arm-12x148` (torque_arm) Teaching Torque arm for a 12x148 hub motor — Draft torque arm noted for a Boost thru-axle hub motor.
 
 ## Open questions for Dr. Yazan
 
@@ -188,3 +229,6 @@ A draft part can still appear in the builder. If a number is blank, the engine s
 - Campagnolo N3W with older cassettes is "can't verify", not a pass.
 - RD-M5120's chart mentions 10-speed and 11-speed cog ranges. It is seeded as 11-speed only so a 10-speed mix cannot pass by accident.
 - Gear inches use nominal wheel diameters (700c assumes a 28 mm tire).
+- E-bike voltages, BB shells, and axle sizes on the new motor, battery, and frame records are draft. A 52 V pack does not pass on a 48 V-only controller. BBS02 is BSA 68/73 only. The 100 mm BBSHD does not pass on a 73 mm shell.
+- Hub motors cover the rear hub slot when no separate hub is chosen, so the cassette, axle, and rotor checks use the motor. A torque arm is a warning, not optional silence.
+- Headset, seatpost, front axle, and bottom bracket are checked when those parts are chosen. Tire clearance is still not measured.

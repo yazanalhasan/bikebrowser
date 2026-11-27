@@ -325,8 +325,15 @@ export const CHAIN_TYPES = {
 export const SPEEDS = [7, 8, 9, 10, 11, 12, 13];
 
 export const SLOTS = [
-  { id: 'frame', category: 'frame', label: 'Frame', kid: 'The frame decides the hanger and how the brakes bolt on.', phase: 'minimal' },
+  { id: 'frame', category: 'frame', label: 'Frame', kid: 'The frame decides the hanger, the axles, the bottom bracket, and how the brakes bolt on.', phase: 'minimal' },
+  { id: 'bottom_bracket', category: 'bottom_bracket', label: 'Bottom bracket', kid: 'The bearings that join the crank to the frame. The shell and the spindle both have to match.' },
+  { id: 'motor', category: 'motor', label: 'Motor', kid: 'A mid-drive takes the place of the crank. A hub motor takes the place of the rear wheel hub.' },
+  { id: 'battery', category: 'battery', label: 'Battery', kid: 'The battery voltage and plug have to match the controller.' },
+  { id: 'controller', category: 'controller', label: 'Controller', kid: 'The controller is the brain between the battery and the motor. Voltage, current, and the plug all have to match.' },
+  { id: 'display', category: 'display', label: 'Display', kid: 'The screen on the bar. It has to speak the same language as the controller.' },
+  { id: 'torque_arm', category: 'torque_arm', label: 'Torque arm', kid: 'A hub motor can twist a normal dropout. A torque arm helps hold it.' },
   { id: 'hub', category: 'hub', label: 'Rear hub', kid: 'The hub is the part of the rear wheel the cassette slides onto.' },
+  { id: 'front_hub', category: 'front_hub', label: 'Front hub', kid: 'The front hub axle has to match the fork.' },
   { id: 'cassette', category: 'cassette', label: 'Cassette', kid: 'The stack of cogs on the rear wheel.' },
   { id: 'chain', category: 'chain', label: 'Chain', kid: 'The chain has to match the speeds and the special systems.' },
   { id: 'rear_derailleur', category: 'rear_derailleur', label: 'Rear derailleur', kid: 'The rear derailleur moves the chain across the cogs.' },
@@ -336,6 +343,8 @@ export const SLOTS = [
   { id: 'brake_lever', category: 'brake_lever', label: 'Brake lever', kid: 'The lever at the bar. It has to match the caliper and the fluid.' },
   { id: 'brake_caliper', category: 'brake_caliper', label: 'Brake caliper', kid: 'The part that squeezes the rotor or the rim.' },
   { id: 'rotor', category: 'rotor', label: 'Brake rotor', kid: 'The disc on the wheel. Its size has to fit the frame.' },
+  { id: 'headset', category: 'headset', label: 'Headset', kid: 'The bearings in the head tube. The standard has to match the frame.' },
+  { id: 'seatpost', category: 'seatpost', label: 'Seatpost', kid: 'The post diameter has to match the frame. A smaller post can use a shim. A bigger post does not fit.' },
   { id: 'hanger_extender', category: 'hanger_extender', label: 'Hanger extender', kid: 'A small piece that drops the derailleur so a bigger cog can fit. Optional.' },
 ];
 

@@ -579,6 +579,505 @@
       "fix": "Add a lever, a caliper, and a rotor when you are ready to check the brakes.",
       "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
       "sourceRef": "Phase 1: an empty brake section is cannot_verify, not a pass."
+    },
+    {
+      "id": "rear-axle-match",
+      "version": 1,
+      "slots": ["hub", "frame"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.hub.specs.axle", "right": "slot.frame.specs.rearAxle" }
+      },
+      "messageAdult": "The rear hub axle does not match the frame's rear dropout. A hub motor standing in for the hub uses the motor's axle.",
+      "messageKid": "This rear wheel's axle and the frame's dropouts are different sizes, so the wheel does not drop in.",
+      "fix": "Match the axle: quick release 135 mm, 12x142, or 12x148 Boost are different and do not swap.",
+      "messageKidByStatus": { "cannot_verify": "We need both axle sizes before we can say the wheel fits the frame." },
+      "messageAdultByStatus": { "cannot_verify": "Rear axle is blank on the hub or the frame. Blank is not a match." },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "QR 135, 12x142, and 12x148 Boost are different rear standards. A hub motor covers the hub slot when no separate hub is chosen."
+    },
+    {
+      "id": "front-axle-match",
+      "version": 1,
+      "slots": ["front_hub", "frame"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.front_hub.specs.axle", "right": "slot.frame.specs.frontAxle" }
+      },
+      "messageAdult": "The front hub axle does not match the fork end recorded on the frame.",
+      "messageKid": "The front wheel axle and the fork do not match.",
+      "fix": "Match quick release 100 mm, 12x100, 15x100, or 15x110 Boost.",
+      "messageKidByStatus": { "cannot_verify": "We need the front axle and the fork axle before this can pass." },
+      "messageAdultByStatus": { "cannot_verify": "Front axle is blank on the hub or the frame." },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Front axle standards: QR 100, 12x100, 15x100, 15x110 Boost."
+    },
+    {
+      "id": "bottom-bracket-shell",
+      "version": 1,
+      "slots": ["bottom_bracket", "frame"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.bottom_bracket.specs.shell", "right": "slot.frame.specs.bbShell" }
+      },
+      "messageAdult": "The bottom bracket shell does not match the frame shell. BSA, T47, BB86, and PF30 are different.",
+      "messageKid": "This bottom bracket and this frame use different shapes, so it will not thread or press in.",
+      "fix": "Choose a bottom bracket made for this frame's shell.",
+      "messageKidByStatus": { "cannot_verify": "We do not know both shell types yet." },
+      "messageAdultByStatus": { "cannot_verify": "Bottom bracket shell or frame shell is blank." },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Shell standards: BSA threaded, T47, BB86/BB92, PF30. A mid-drive does not use a separate bottom bracket."
+    },
+    {
+      "id": "bottom-bracket-spindle",
+      "version": 1,
+      "slots": ["bottom_bracket", "crankset"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.bottom_bracket.specs.spindle", "right": "slot.crankset.specs.spindle" }
+      },
+      "messageAdult": "The bottom bracket spindle does not match the crank. Shimano 24 mm, SRAM DUB, 30 mm, and Campagnolo spindles are different.",
+      "messageKid": "The crank's axle and this bottom bracket are different, so the crank will not sit in the bearings.",
+      "fix": "Pair the crank's spindle with a bottom bracket made for that spindle and for the frame shell.",
+      "messageKidByStatus": { "cannot_verify": "We need the crank spindle and the bottom bracket spindle." },
+      "messageAdultByStatus": { "cannot_verify": "Spindle is blank on the crank or the bottom bracket." },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "The bottom bracket has to fit the frame shell and the crank spindle at the same time."
+    },
+    {
+      "id": "bottom-bracket-width",
+      "version": 1,
+      "slots": ["bottom_bracket", "frame"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "in", "left": "slot.frame.specs.bbWidthMm", "right": "slot.bottom_bracket.specs.widths" }
+      },
+      "messageAdult": "The frame's bottom-bracket width is not in this bottom bracket's width list.",
+      "messageKid": "This bottom bracket is the wrong width for the frame.",
+      "fix": "Use a bottom bracket that lists this frame's shell width. 68 mm and 73 mm often share a BSA unit with spacers. 100 mm does not.",
+      "messageKidByStatus": { "cannot_verify": "We need the shell width and the bottom bracket's width list." },
+      "messageAdultByStatus": { "cannot_verify": "Shell width or the bottom bracket width list is blank." },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Width has to be one of the widths the bottom bracket lists."
+    },
+    {
+      "id": "needs-bottom-bracket",
+      "version": 1,
+      "slots": ["crankset", "frame"],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "slot_filled", "slot": "crankset" },
+          { "op": "slot_empty", "slot": "bottom_bracket" }
+        ]
+      },
+      "messageAdult": "A separate crank is selected and no bottom bracket is selected. The shell and spindle are not checked yet.",
+      "messageKid": "The crank still needs a bottom bracket that fits this frame. We will not say the crank fits until that is chosen. A mid-drive brings its own bearings.",
+      "fix": "Choose a bottom bracket whose shell matches the frame and whose spindle matches the crank.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Fires only when the rider picked a crank. A mid-drive covers the crank slot and does not ask for a second bottom bracket."
+    },
+    {
+      "id": "mid-drive-bb-shell",
+      "version": 1,
+      "slots": ["motor", "frame"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "eq", "left": "slot.motor.specs.motorType", "right": "mid-drive" },
+          { "op": "not", "arg": { "op": "in", "left": "slot.frame.specs.bbShell", "right": "slot.motor.specs.bbShells" } }
+        ]
+      },
+      "messageAdult": "This mid-drive does not list the frame's bottom-bracket shell. Bafang BBS02 and TSDZ2 are BSA threaded. A press-fit shell is not a pass.",
+      "messageKid": "This mid-drive motor does not fit this frame's bottom bracket shape.",
+      "fix": "Use a frame with a shell this motor lists, usually a threaded BSA shell of 68 or 73 mm.",
+      "messageKidByStatus": { "cannot_verify": "We need the motor's shell list and the frame's shell." },
+      "messageAdultByStatus": { "cannot_verify": "Mid-drive shell list or frame shell is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "BBS02 and TSDZ2 install in a threaded BSA shell, 68 or 73 mm. BBSHD 100 mm is a different width. Draft until the maker's current manual is re-checked. Press-fit shells are not treated as a fit."
+    },
+    {
+      "id": "mid-drive-bb-width",
+      "version": 1,
+      "slots": ["motor", "frame"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "eq", "left": "slot.motor.specs.motorType", "right": "mid-drive" },
+          { "op": "not", "arg": { "op": "in", "left": "slot.frame.specs.bbWidthMm", "right": "slot.motor.specs.bbWidths" } }
+        ]
+      },
+      "messageAdult": "The frame's bottom-bracket width is not in this mid-drive's width list.",
+      "messageKid": "This motor is the wrong width for the frame's bottom bracket.",
+      "fix": "Match a 68/73 mm motor to a 68 or 73 mm shell. A 100 mm BBSHD needs a 100 mm shell.",
+      "messageKidByStatus": { "cannot_verify": "We need both widths." },
+      "messageAdultByStatus": { "cannot_verify": "Mid-drive width list or frame width is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Width lists are draft from the published BBS02 68-73 mm fit and the separate BBSHD 100 mm version."
+    },
+    {
+      "id": "mid-drive-replaces-crank",
+      "version": 1,
+      "slots": ["motor"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "eq", "left": "slot.motor.specs.motorType", "right": "mid-drive" },
+          { "op": "slot_filled", "slot": "crankset" }
+        ]
+      },
+      "messageAdult": "A mid-drive and a separate crank are both selected. The mid-drive replaces the crank and the bottom bracket.",
+      "messageKid": "A mid-drive motor takes the place of the crank. Take the extra crank off the build.",
+      "fix": "Remove the separate crank, or remove the mid-drive.",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "BBS and TSDZ mid-drives install through the bottom bracket and include their own chainring."
+    },
+    {
+      "id": "mid-drive-no-separate-bb",
+      "version": 1,
+      "slots": ["motor"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "eq", "left": "slot.motor.specs.motorType", "right": "mid-drive" },
+          { "op": "slot_filled", "slot": "bottom_bracket" }
+        ]
+      },
+      "messageAdult": "A mid-drive and a separate bottom bracket are both selected. The motor's bearings replace the bottom bracket.",
+      "messageKid": "The mid-drive has its own bearings. Do not also add a bottom bracket.",
+      "fix": "Remove the separate bottom bracket.",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "The mid-drive unit is the bottom bracket."
+    },
+    {
+      "id": "hub-motor-replaces-hub",
+      "version": 1,
+      "slots": ["motor"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "in", "left": "slot.motor.specs.motorType", "right": ["geared-hub", "direct-drive-hub"] },
+          { "op": "slot_filled", "slot": "hub" }
+        ]
+      },
+      "messageAdult": "A hub motor and a separate rear hub are both selected. The motor is the rear hub.",
+      "messageKid": "A hub motor is the rear wheel's hub. Do not also pick a separate hub.",
+      "fix": "Remove the separate rear hub, or remove the hub motor.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "When no separate hub is chosen, the motor covers the hub slot so the cassette, axle, and rotor checks use the motor."
+    },
+    {
+      "id": "hub-motor-axle",
+      "version": 1,
+      "slots": ["motor", "frame"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "in", "left": "slot.motor.specs.motorType", "right": ["geared-hub", "direct-drive-hub"] },
+          { "op": "slot_filled", "slot": "hub" },
+          { "op": "not", "arg": { "op": "eq", "left": "slot.motor.specs.axle", "right": "slot.frame.specs.rearAxle" } }
+        ]
+      },
+      "messageAdult": "The hub motor's axle does not match the frame, and a separate hub is also selected.",
+      "messageKid": "This hub motor's axle does not match the frame.",
+      "fix": "Choose a motor whose axle matches the frame, and do not keep a second hub.",
+      "messageKidByStatus": { "cannot_verify": "We need the motor axle and the frame axle." },
+      "messageAdultByStatus": { "cannot_verify": "Hub-motor axle or frame axle is blank." },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Used when a separate hub is also selected. Otherwise rear-axle-match reads the motor through the covered hub slot."
+    },
+    {
+      "id": "single-speed-hub-no-cassette",
+      "version": 1,
+      "slots": ["motor"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "eq", "left": "slot.motor.specs.sprocket", "right": "single" },
+          { "op": "slot_filled", "slot": "cassette" }
+        ]
+      },
+      "messageAdult": "This hub motor has a single sprocket. A cassette does not mount on it.",
+      "messageKid": "This motor wheel has one cog. A cassette stack does not go on it.",
+      "fix": "Use the single cog and a single-speed chain, or choose a cassette hub motor.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Single-sprocket hub motors skip the cassette, shifter, and derailleur prompts."
+    },
+    {
+      "id": "torque-arm-for-hub-motor",
+      "version": 1,
+      "slots": ["motor"],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "in", "left": "slot.motor.specs.motorType", "right": ["geared-hub", "direct-drive-hub"] },
+          { "op": "slot_empty", "slot": "torque_arm" }
+        ]
+      },
+      "messageAdult": "A hub motor is selected without a torque arm. The axle can twist a normal dropout. This is a warning, not a pass.",
+      "messageKid": "A hub motor can twist the frame's dropouts. Add a torque arm, then a grown-up checks that the axle sits flat.",
+      "fix": "Add a torque arm that fits this axle, and recheck the axle nuts or thru-axle after the first ride.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Practitioner rule: a hub motor in a standard dropout should use a torque arm. Not a manufacturer pass."
+    },
+    {
+      "id": "battery-controller-voltage",
+      "version": 1,
+      "slots": ["battery", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "in", "left": "slot.battery.specs.voltage", "right": "slot.controller.specs.acceptedVoltages" }
+      },
+      "messageAdult": "The battery nominal voltage is not in the controller's accepted list. 36 V, 48 V, and 52 V are not interchangeable unless the controller lists that voltage.",
+      "messageKid": "This battery and this controller use different voltages, so they are not a pair.",
+      "fix": "Choose a battery whose nominal voltage is listed on the controller.",
+      "messageKidByStatus": { "cannot_verify": "We need the battery voltage and the controller's voltage list." },
+      "messageAdultByStatus": { "cannot_verify": "Battery voltage or controller acceptedVoltages is blank. A blank list does not mean every pack fits." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Nominal pack voltage must be one of the controller's accepted voltages. 52 V on a 48 V-only controller does not pass."
+    },
+    {
+      "id": "motor-controller-voltage",
+      "version": 1,
+      "slots": ["motor", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "in", "left": "slot.motor.specs.voltage", "right": "slot.controller.specs.acceptedVoltages" }
+      },
+      "messageAdult": "The motor's nominal voltage is not in the controller's accepted list.",
+      "messageKid": "This motor and this controller want different voltages.",
+      "fix": "Pair a 36 V motor with a 36 V controller, or a 48 V motor with a controller that lists 48 V.",
+      "messageKidByStatus": { "cannot_verify": "We need both voltage numbers." },
+      "messageAdultByStatus": { "cannot_verify": "Motor voltage or the controller voltage list is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Bafang 36 V and 48 V motors are different models. Do not mix them."
+    },
+    {
+      "id": "battery-current-covers-controller",
+      "version": 1,
+      "slots": ["battery", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "lte",
+          "left": "slot.controller.specs.maxCurrent",
+          "right": { "path": "slot.battery.specs.maxCurrent" }
+        }
+      },
+      "messageAdult": "The controller can ask for more current than this battery's BMS allows.",
+      "messageKid": "This battery cannot supply the current the controller may ask for.",
+      "fix": "Use a battery whose continuous current is at least the controller's current, or a controller with a lower current limit.",
+      "messageKidByStatus": { "cannot_verify": "We need both current numbers before this can pass." },
+      "messageAdultByStatus": { "cannot_verify": "Battery max current or controller max current is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Battery BMS current must be greater than or equal to the controller current. Missing current does not pass."
+    },
+    {
+      "id": "controller-power-vs-motor",
+      "version": 1,
+      "slots": ["controller", "motor"],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "lt",
+        "left": "slot.controller.specs.powerW",
+        "right": { "path": "slot.motor.specs.powerW" }
+      },
+      "messageAdult": "The controller's listed power is below the motor's listed power. The motor may not reach that power. This is a warning.",
+      "messageKid": "This controller is smaller than the motor's listed power. The bike can still run, but it may feel softer than the motor's number.",
+      "fix": "Use a controller rated at or above the motor, or accept that the controller is the limit.",
+      "messageKidByStatus": { "cannot_verify": "We need both power numbers." },
+      "messageAdultByStatus": { "cannot_verify": "Controller power or motor power is blank, so this is not a pass." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Practitioner rule: controller power below motor power is a warning. It is not treated as incompatible, and a blank number is not a pass."
+    },
+    {
+      "id": "battery-connector",
+      "version": 1,
+      "slots": ["battery", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.battery.specs.connector", "right": "slot.controller.specs.batteryConnector" }
+      },
+      "messageAdult": "The battery plug and the controller's battery plug are different. XT60 and XT90 do not mate.",
+      "messageKid": "These plugs are different shapes, so the battery does not plug into the controller.",
+      "fix": "Match the plug, or have a grown-up fit a proper adapter lead made for these two plugs. Do not force a plug.",
+      "messageKidByStatus": { "cannot_verify": "We do not know both plugs yet." },
+      "messageAdultByStatus": { "cannot_verify": "Battery connector or controller battery connector is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Connector names must match. An adapter is not assumed."
+    },
+    {
+      "id": "motor-controller-protocol",
+      "version": 1,
+      "slots": ["motor", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.motor.specs.protocol", "right": "slot.controller.specs.protocol" }
+      },
+      "messageAdult": "The motor and controller use different data protocols. Bafang UART and CAN do not talk to each other.",
+      "messageKid": "This motor and this controller do not speak the same language.",
+      "fix": "Keep UART with UART and CAN with CAN.",
+      "messageKidByStatus": { "cannot_verify": "We do not know the protocol yet, so we will not say they talk." },
+      "messageAdultByStatus": { "cannot_verify": "Protocol is blank on the motor or the controller." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Bafang UART kits and CAN kits are different generations. Draft the protocol on each part."
+    },
+    {
+      "id": "display-protocol",
+      "version": 1,
+      "slots": ["display", "controller"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.display.specs.protocol", "right": "slot.controller.specs.protocol" }
+      },
+      "messageAdult": "The display protocol does not match the controller.",
+      "messageKid": "This screen and this controller do not speak the same language.",
+      "fix": "Match the display protocol to the controller.",
+      "messageKidByStatus": { "cannot_verify": "We need both protocols." },
+      "messageAdultByStatus": { "cannot_verify": "Display or controller protocol is blank." },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Display and controller protocols must match."
+    },
+    {
+      "id": "brake-cutoff-on-bike",
+      "version": 1,
+      "slots": ["motor"],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": { "op": "always" },
+      "messageAdult": "The motor brake cutoff still has to be wired and tested on the bike. The parts list cannot pass that.",
+      "messageKid": "The motor still needs its brake switch tested on the real bike. We cannot do that from the parts list.",
+      "fix": "Squeeze each brake and confirm the motor stops helping before you ride.",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Always-on when a motor is selected."
+    },
+    {
+      "id": "ebike-class-not-checked",
+      "version": 1,
+      "slots": ["motor"],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": { "op": "always" },
+      "messageAdult": "This checker does not decide e-bike class or local riding rules. A power number is not a legal class.",
+      "messageKid": "A grown-up still checks the local rules for where this motor bike can ride. We do not decide that here.",
+      "fix": "Ask a grown-up to check the local class rules before riding on a path or a street.",
+      "sourceUrl": "https://www.ecfr.gov/",
+      "sourceRef": "No statute is copied here. Class and path rules vary. The checker refuses to call a motor legal."
+    },
+    {
+      "id": "headset-standard",
+      "version": 1,
+      "slots": ["headset", "frame"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "not",
+        "arg": { "op": "eq", "left": "slot.headset.specs.standard", "right": "slot.frame.specs.headset" }
+      },
+      "messageAdult": "The headset standard does not match the frame (SHIS).",
+      "messageKid": "This headset and the frame's head tube are different sizes.",
+      "fix": "Match the headset standard to the frame. ZS44/EC44 and integrated IS42 are different.",
+      "messageKidByStatus": { "cannot_verify": "We need both headset standards." },
+      "messageAdultByStatus": { "cannot_verify": "Headset standard or frame headset is blank." },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/headset-standards",
+      "sourceRef": "SHIS headset standards. Mismatch is incompatible."
+    },
+    {
+      "id": "seatpost-too-large",
+      "version": 1,
+      "slots": ["seatpost", "frame"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "gt",
+        "left": "slot.seatpost.specs.diameterMm",
+        "right": { "path": "slot.frame.specs.seatpostMm" }
+      },
+      "messageAdult": "The seatpost is larger than the frame's seat tube. It does not fit.",
+      "messageKid": "This seatpost is too big for the frame.",
+      "fix": "Use a post the same size as the frame, or a smaller post with a shim. A larger post does not go in.",
+      "messageKidByStatus": { "cannot_verify": "We need both diameters." },
+      "messageAdultByStatus": { "cannot_verify": "Seatpost diameter or frame seatpost size is blank." },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/seatpost-installation",
+      "sourceRef": "A larger post is incompatible. A smaller post is the shim warning."
+    },
+    {
+      "id": "seatpost-needs-shim",
+      "version": 1,
+      "slots": ["seatpost", "frame"],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "lt",
+        "left": "slot.seatpost.specs.diameterMm",
+        "right": { "path": "slot.frame.specs.seatpostMm" }
+      },
+      "messageAdult": "The seatpost is smaller than the frame. A shim can fill the gap. This is a warning, not a native fit.",
+      "messageKid": "This post is a little small. A grown-up can add a shim so it is snug. Do not ride it loose.",
+      "fix": "Fit a shim sized for this post and this frame, and check that the post does not slip.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/seatpost-installation",
+      "sourceRef": "Practitioner rule: a smaller post can be shimmed. Equal diameters pass with no finding."
+    },
+    {
+      "id": "wheel-size-match",
+      "version": 1,
+      "slots": ["frame"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "exists", "path": "slot.frame.specs.wheelSize" },
+          { "op": "exists", "path": "build.wheelSize" },
+          { "op": "not", "arg": { "op": "eq", "left": "slot.frame.specs.wheelSize", "right": "build.wheelSize" } }
+        ]
+      },
+      "messageAdult": "The chosen wheel size does not match the wheel size recorded on the frame.",
+      "messageKid": "This frame is built for a different wheel size than the one you picked.",
+      "fix": "Pick the wheel size written on the frame, or a frame made for this wheel.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Runs only when the frame record includes wheelSize. Tire clearance is still a separate cannot-verify."
     }
   ]
 }

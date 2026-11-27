@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import catalogFile from '../../../../data/builder/parts.json';
 import rulesFile from '../../../../data/builder/rules.json';
 import zuzuBike from '../../../../data/builder/bikes/zuzu-bike.json';
+import midDriveKit from '../../../../data/builder/bikes/mid-drive-48.json';
+import hubMotorKit from '../../../../data/builder/bikes/hub-motor-48.json';
 import { checkBuild, filterCandidates } from '../../../builder/engine.js';
 import { formatGear, gearRange, WHEEL_SIZES } from '../../../builder/gearMath.js';
 import { presentFinding } from '../../../builder/present.js';
@@ -19,6 +21,9 @@ const BIKE_TYPES = [
   { id: 'mountain', label: 'Mountain' },
   { id: 'road', label: 'Road' },
   { id: 'gravel', label: 'Gravel' },
+  { id: 'ebike', label: 'E-bike' },
+  { id: 'conversion-mid', label: 'Mid-drive kit' },
+  { id: 'conversion-hub', label: 'Hub-motor kit' },
 ];
 
 const BANNER = {
@@ -54,11 +59,17 @@ function slotState(build, slotId) {
   return { kind: 'empty', label: 'Choose a part' };
 }
 
+function partBySlot(build, slot) {
+  const value = build.slots?.[slot];
+  return typeof value === 'string' ? PARTS_BY_ID.get(value) : null;
+}
+
 function gearInput(build) {
-  const crank = PARTS_BY_ID.get(build.slots?.crankset);
-  const cassette = PARTS_BY_ID.get(build.slots?.cassette);
+  const motor = partBySlot(build, 'motor');
+  const crank = partBySlot(build, 'crankset') || (motor?.specs?.motorType === 'mid-drive' ? motor : null);
+  const cassette = partBySlot(build, 'cassette');
   const chainrings = crank?.specs?.chainrings || [];
-  const cogs = cassette?.specs?.cogs || [];
+  const cogs = cassette?.specs?.cogs || (motor?.specs?.sprocket === 'single' ? [motor.specs.cogTeeth || 16] : []);
   return gearRange({ chainrings, cogs, wheelSize: build.wheelSize });
 }
 
@@ -126,14 +137,18 @@ export default function BuilderPage() {
     });
   }
 
-  function startFromZuzu() {
+  function loadBike(bike, noteText) {
     setBuild({
-      name: zuzuBike.name,
-      bikeType: zuzuBike.bikeType,
-      wheelSize: zuzuBike.wheelSize,
-      slots: { ...zuzuBike.slots },
+      name: bike.name,
+      bikeType: bike.bikeType,
+      wheelSize: bike.wheelSize,
+      slots: { ...bike.slots },
     });
-    setNote('Loaded Zuzu’s bike. The rear derailleur model is still blank, so nothing about it can pass yet.');
+    setNote(noteText);
+  }
+
+  function startFromZuzu() {
+    loadBike(zuzuBike, 'Loaded Zuzu’s bike. The rear derailleur model is still blank, so nothing about it can pass yet.');
   }
 
   function saveBuild() {
@@ -195,12 +210,18 @@ export default function BuilderPage() {
               </button>
             ))}
             <button type="button" disabled className="min-h-11 cursor-not-allowed rounded-xl border border-slate-300 bg-slate-100 px-4 py-2 font-semibold text-slate-600">
-              E-bike coming soon
+              Dirt bike coming soon
             </button>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
             <button type="button" onClick={startFromZuzu} className="min-h-11 rounded-xl bg-amber-400 px-4 py-2 font-bold text-slate-950 focus:outline-none focus:ring-2 focus:ring-slate-900">
               Start from Zuzu’s bike
+            </button>
+            <button type="button" onClick={() => loadBike(midDriveKit, 'Loaded a 48 V mid-drive kit. The motor takes the place of the crank.')} className="min-h-11 rounded-xl border border-slate-400 bg-white px-4 py-2 font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900">
+              Start from a mid-drive
+            </button>
+            <button type="button" onClick={() => loadBike(hubMotorKit, 'Loaded a 48 V hub-motor kit. The motor is the rear hub, and a torque arm is included.')} className="min-h-11 rounded-xl border border-slate-400 bg-white px-4 py-2 font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900">
+              Start from a hub motor
             </button>
             <button type="button" onClick={saveBuild} className="min-h-11 rounded-xl border border-slate-400 bg-white px-4 py-2 font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900">
               Save this build

@@ -74,7 +74,7 @@ function resolveOperand(operand, ctx) {
   if (operand && typeof operand === 'object' && typeof operand.path === 'string') {
     return readPath(operand.path, ctx);
   }
-  if (typeof operand === 'string' && (operand.startsWith('derived.') || operand.startsWith('slot.'))) {
+  if (typeof operand === 'string' && (operand.startsWith('derived.') || operand.startsWith('slot.') || operand.startsWith('build.'))) {
     return readPath(operand, ctx);
   }
   return { missing: false, value: operand };
@@ -146,11 +146,13 @@ function evalBool(predicate, ctx) {
       if (reading.missing || reading.value == null || reading.value === '') return false;
       return true;
     }
-    case 'slot_empty':
-      return ctx.slots[predicate.slot]?.state === 'empty';
-    case 'slot_filled': {
+    case 'slot_empty': {
       const state = ctx.slots[predicate.slot]?.state;
-      return state === 'part' || state === 'present';
+      return state == null || state === 'empty';
+    }
+    case 'slot_filled': {
+      const resolved = ctx.slots[predicate.slot];
+      return (resolved?.state === 'part' || resolved?.state === 'present') && !resolved.covered;
     }
     case 'all_empty':
       return (predicate.slots || []).every((slot) => ctx.slots[slot]?.state === 'empty');
@@ -378,6 +380,24 @@ function sourceFor(rule, data) {
   return rule.sourceUrl;
 }
 
+function motorType(slots) {
+  return slots.motor?.part?.specs?.motorType || null;
+}
+
+function isHubMotorType(type) {
+  return type === 'geared-hub' || type === 'direct-drive-hub';
+}
+
+function applyDriveCovers(slots) {
+  const type = motorType(slots);
+  if (slots.hub?.state === 'empty' && isHubMotorType(type)) {
+    slots.hub = { state: 'part', slot: 'hub', part: slots.motor.part, covered: true };
+  }
+  if (slots.crankset?.state === 'empty' && type === 'mid-drive') {
+    slots.crankset = { state: 'part', slot: 'crankset', part: slots.motor.part, covered: true };
+  }
+}
+
 function ruleBlocked(rule, slots) {
   const optional = new Set(rule.optionalSlots || []);
   for (const slot of rule.slots || []) {
@@ -468,10 +488,12 @@ export function checkBuild(build, catalog, rules) {
     if (!slot) continue;
     slots[slot] = resolveSlot(build, slot, byId);
   }
+  applyDriveCovers(slots);
   const derived = computeDerived(slots);
   const ctx = {
     slots,
     derived,
+    build: { bikeType: build?.bikeType || null, wheelSize: build?.wheelSize || null },
     slot: Object.fromEntries(
       Object.entries(slots).map(([slot, resolved]) => [slot, resolved.part || null])
     ),
@@ -480,10 +502,31 @@ export function checkBuild(build, catalog, rules) {
   // readPath walks ctx, and "slot.cassette.specs" needs ctx.slot.cassette.
   const findings = [];
 
+  const skipCore = new Set();
+  if (slots.motor?.part?.specs?.sprocket === 'single') {
+    skipCore.add('cassette');
+    skipCore.add('rear_derailleur');
+    skipCore.add('shifter');
+  }
   for (const slot of CORE_SLOTS) {
+    if (skipCore.has(slot)) continue;
     const resolved = slots[slot];
     if (!resolved || resolved.state === 'part' || resolved.state === 'present') continue;
     findings.push(slotFinding(slot, resolved.state, resolved.id));
+  }
+
+  const electrical = ['motor', 'battery', 'controller'];
+  const ebikeType = build?.bikeType === 'ebike' || build?.bikeType === 'conversion-mid' || build?.bikeType === 'conversion-hub';
+  const anyElectrical = electrical.some((slot) => {
+    const state = slots[slot]?.state;
+    return state === 'part' || state === 'unknown' || state === 'missing-id';
+  });
+  if (ebikeType || anyElectrical) {
+    for (const slot of electrical) {
+      const resolved = slots[slot];
+      if (!resolved || resolved.state === 'part' || resolved.state === 'present') continue;
+      findings.push(slotFinding(slot, resolved.state, resolved.id));
+    }
   }
 
   const brakeSlots = ['brake_lever', 'brake_caliper', 'rotor'];

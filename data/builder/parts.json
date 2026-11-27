@@ -13,7 +13,8 @@
       "modelCode": null,
       "specs": {
         "freehub": "hg-m",
-        "rotorMount": "6-bolt"
+        "rotorMount": "6-bolt",
+        "axle": "qr-135"
       },
       "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
       "sourceRef": "Shimano C-731: HG spline M is the 10/9/8/7 and MTB 11-speed body, outer length 34.9 mm."
@@ -30,7 +31,8 @@
       "modelCode": null,
       "specs": {
         "freehub": "hg-m",
-        "rotorMount": "center-lock"
+        "rotorMount": "center-lock",
+        "axle": "12x142"
       },
       "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
       "sourceRef": "Shimano C-731 HG spline M. Center Lock is Shimano's rotor spline."
@@ -47,7 +49,8 @@
       "modelCode": null,
       "specs": {
         "freehub": "hg-l",
-        "rotorMount": "center-lock"
+        "rotorMount": "center-lock",
+        "axle": "12x142"
       },
       "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
       "sourceRef": "Shimano C-731: HG spline L, road 12/11-speed, outer length 36.75 mm."
@@ -64,7 +67,8 @@
       "modelCode": null,
       "specs": {
         "freehub": "hg-l2",
-        "rotorMount": "center-lock"
+        "rotorMount": "center-lock",
+        "axle": "12x142"
       },
       "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
       "sourceRef": "Shimano C-731: HG spline L2, road 12-speed dedicated, outer length 37.65 mm."
@@ -81,7 +85,8 @@
       "modelCode": null,
       "specs": {
         "freehub": "hg-s",
-        "rotorMount": "6-bolt"
+        "rotorMount": "6-bolt",
+        "axle": "qr-135"
       },
       "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
       "sourceRef": "Shimano C-731: HG spline S, 7-speed, outer length 31 mm."
@@ -98,7 +103,8 @@
       "modelCode": null,
       "specs": {
         "freehub": "microspline",
-        "rotorMount": "center-lock"
+        "rotorMount": "center-lock",
+        "axle": "12x148"
       },
       "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
       "sourceRef": "Shimano C-731: Micro Spline, 23 spline teeth, outer length 26 mm, MTB 12-speed."
@@ -115,7 +121,8 @@
       "modelCode": null,
       "specs": {
         "freehub": "microspline",
-        "rotorMount": "6-bolt"
+        "rotorMount": "6-bolt",
+        "axle": "12x148"
       },
       "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
       "sourceRef": "Shimano C-731 Micro Spline body with a 6-bolt rotor mount."
@@ -132,7 +139,8 @@
       "modelCode": "XD",
       "specs": {
         "freehub": "xd",
-        "rotorMount": "6-bolt"
+        "rotorMount": "6-bolt",
+        "axle": "12x148"
       },
       "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
       "sourceRef": "SRAM XD driver. Draft: confirm the exact hub model before a real build."
@@ -149,7 +157,8 @@
       "modelCode": "XD",
       "specs": {
         "freehub": "xd",
-        "rotorMount": "center-lock"
+        "rotorMount": "center-lock",
+        "axle": "12x148"
       },
       "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
       "sourceRef": "SRAM XD driver. Draft."
@@ -166,7 +175,8 @@
       "modelCode": "XDR",
       "specs": {
         "freehub": "xdr",
-        "rotorMount": "center-lock"
+        "rotorMount": "center-lock",
+        "axle": "12x142"
       },
       "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
       "sourceRef": "SRAM XDR is the longer road driver. An XD cassette needs a 1.85 mm spacer."
@@ -183,7 +193,8 @@
       "modelCode": null,
       "specs": {
         "freehub": "campagnolo",
-        "rotorMount": "center-lock"
+        "rotorMount": "center-lock",
+        "axle": "12x142"
       },
       "sourceUrl": "https://www.campagnolo.com/en",
       "sourceRef": "Campagnolo uses its own spline. Draft generic body, not a specific hub model."
@@ -200,7 +211,8 @@
       "modelCode": "N3W",
       "specs": {
         "freehub": "n3w",
-        "rotorMount": "center-lock"
+        "rotorMount": "center-lock",
+        "axle": "12x142"
       },
       "sourceUrl": "https://www.campagnolo.com/en",
       "sourceRef": "Campagnolo N3W. Older Campagnolo cassettes are marked unknown here, not a pass."
@@ -217,7 +229,8 @@
       "modelCode": null,
       "specs": {
         "freehub": "linkglide",
-        "rotorMount": "center-lock"
+        "rotorMount": "center-lock",
+        "axle": "qr-135"
       },
       "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
       "sourceRef": "C-731 says its table does not include Linkglide cassettes. This body is separate from HG. Draft."
@@ -2501,7 +2514,8 @@
         "chainrings": [
           32
         ],
-        "chainType": "standard"
+        "chainType": "standard",
+        "spindle": "shimano-24"
       },
       "sourceUrl": "https://wisewheeling.com/rear-derailleur-capacity/",
       "sourceRef": "Teaching 1x ring. Front difference is 0. Not a branded crank."
@@ -2520,7 +2534,8 @@
         "speeds": 9,
         "ringCount": 1,
         "chainrings": [],
-        "chainType": "standard"
+        "chainType": "standard",
+        "spindle": "shimano-24"
       },
       "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
       "sourceRef": "Zuzu's VG Sports kit did not record the chainring size. ringCount 1 is an assumption from the 11-42 wide-range cassette. Confirm on the bike."
@@ -2542,7 +2557,8 @@
           50,
           34
         ],
-        "chainType": "standard"
+        "chainType": "standard",
+        "spindle": "shimano-24"
       },
       "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
       "sourceRef": "Pedal Brief CC BY 4.0: 105 R7000 chainrings include 50-34.",
@@ -2565,7 +2581,8 @@
           52,
           36
         ],
-        "chainType": "standard"
+        "chainType": "standard",
+        "spindle": "shimano-24"
       },
       "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
       "sourceRef": "Pedal Brief CC BY 4.0: 105 R7000 chainrings include 52-36.",
@@ -2588,7 +2605,8 @@
           46,
           36
         ],
-        "chainType": "standard"
+        "chainType": "standard",
+        "spindle": "shimano-24"
       },
       "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
       "sourceRef": "Pedal Brief maker_wording includes FC-RS510 46-36T.",
@@ -2611,7 +2629,8 @@
           46,
           30
         ],
-        "chainType": "standard"
+        "chainType": "standard",
+        "spindle": "shimano-24"
       },
       "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
       "sourceRef": "Common GRX 2x ratio. Draft against the current GRX lineup page."
@@ -2632,7 +2651,8 @@
         "chainrings": [
           36
         ],
-        "chainType": "standard"
+        "chainType": "standard",
+        "spindle": "shimano-24"
       },
       "sourceUrl": "https://wisewheeling.com/rear-derailleur-capacity/",
       "sourceRef": "Teaching 1x ring."
@@ -2653,7 +2673,8 @@
         "chainrings": [
           30
         ],
-        "chainType": "eagle"
+        "chainType": "eagle",
+        "spindle": "sram-dub"
       },
       "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
       "sourceRef": "Teaching Eagle 1x ring. Draft."
@@ -2674,7 +2695,8 @@
         "chainrings": [
           32
         ],
-        "chainType": "eagle"
+        "chainType": "eagle",
+        "spindle": "sram-dub"
       },
       "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
       "sourceRef": "Draft Eagle chainring."
@@ -2695,7 +2717,8 @@
         "chainrings": [
           32
         ],
-        "chainType": "t-type"
+        "chainType": "t-type",
+        "spindle": "sram-dub"
       },
       "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
       "sourceRef": "Draft T-Type ring."
@@ -2717,7 +2740,8 @@
           48,
           31
         ],
-        "chainType": "standard"
+        "chainType": "standard",
+        "spindle": "shimano-24"
       },
       "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
       "sourceRef": "Teaching sub-compact. Not a specific groupset row."
@@ -2739,7 +2763,8 @@
           50,
           34
         ],
-        "chainType": "campagnolo"
+        "chainType": "campagnolo",
+        "spindle": "campagnolo"
       },
       "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
       "sourceRef": "Pedal Brief lists 50/34 on several Campagnolo road groups. Draft.",
@@ -3441,10 +3466,17 @@
         "brakeStyle": "disc",
         "caliperMount": "post-mount",
         "maxRotorMm": 180,
-        "phase": "minimal"
+        "phase": "minimal",
+        "bbShell": "bsa",
+        "bbWidthMm": 73,
+        "rearAxle": "qr-135",
+        "frontAxle": "qr-100",
+        "headset": "zs44-ec44",
+        "seatpostMm": 30.9,
+        "wheelSize": null
       },
       "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
-      "sourceRef": "Minimal phase 1 frame. Max rotor is a teaching limit, not a measured bike."
+      "sourceRef": "Teaching hardtail. BSA 73 mm, QR 135 rear, QR 100 front. Not a measured bike."
     },
     {
       "years": null,
@@ -3461,10 +3493,17 @@
         "brakeStyle": "disc",
         "caliperMount": "post-mount",
         "maxRotorMm": 203,
-        "phase": "minimal"
+        "phase": "minimal",
+        "bbShell": "bsa",
+        "bbWidthMm": 73,
+        "rearAxle": "qr-135",
+        "frontAxle": "qr-100",
+        "headset": "zs44-ec44",
+        "seatpostMm": 30.9,
+        "wheelSize": null
       },
       "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
-      "sourceRef": "Minimal phase 1 frame."
+      "sourceRef": "Teaching hardtail. BSA 73 mm, QR 135 rear."
     },
     {
       "years": null,
@@ -3481,10 +3520,17 @@
         "brakeStyle": "disc",
         "caliperMount": "post-mount",
         "maxRotorMm": 203,
-        "phase": "minimal"
+        "phase": "minimal",
+        "bbShell": "bsa",
+        "bbWidthMm": 73,
+        "rearAxle": "12x148",
+        "frontAxle": "15x110",
+        "headset": "zs44-ec44",
+        "seatpostMm": 31.6,
+        "wheelSize": null
       },
       "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
-      "sourceRef": "UDH frame for Full Mount derailleurs. SRAM UDH explainer."
+      "sourceRef": "UDH boost teaching frame. 12x148 rear, 15x110 front, BSA 73 mm."
     },
     {
       "years": null,
@@ -3501,10 +3547,17 @@
         "brakeStyle": "disc",
         "caliperMount": "flat-mount",
         "maxRotorMm": 160,
-        "phase": "minimal"
+        "phase": "minimal",
+        "bbShell": "bb86",
+        "bbWidthMm": 86,
+        "rearAxle": "12x142",
+        "frontAxle": "12x100",
+        "headset": "integrated-is42",
+        "seatpostMm": 27.2,
+        "wheelSize": null
       },
       "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
-      "sourceRef": "Minimal phase 1 road disc frame."
+      "sourceRef": "Teaching road disc frame. BB86, 12x142 rear, 12x100 front, 27.2 mm post."
     },
     {
       "years": null,
@@ -3521,10 +3574,17 @@
         "brakeStyle": "rim",
         "caliperMount": null,
         "maxRotorMm": null,
-        "phase": "minimal"
+        "phase": "minimal",
+        "bbShell": "bsa",
+        "bbWidthMm": 68,
+        "rearAxle": "qr-130",
+        "frontAxle": "qr-100",
+        "headset": "ec34",
+        "seatpostMm": 27.2,
+        "wheelSize": null
       },
       "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
-      "sourceRef": "Rim-brake frame. No rotor maximum."
+      "sourceRef": "Teaching rim-brake road frame. BSA 68 mm, QR 130 rear."
     },
     {
       "years": null,
@@ -3541,10 +3601,17 @@
         "brakeStyle": "disc",
         "caliperMount": "post-mount",
         "maxRotorMm": 180,
-        "phase": "minimal"
+        "phase": "minimal",
+        "bbShell": "bsa",
+        "bbWidthMm": 73,
+        "rearAxle": "qr-135",
+        "frontAxle": "qr-100",
+        "headset": "zs44-ec44",
+        "seatpostMm": 30.9,
+        "wheelSize": null
       },
       "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
-      "sourceRef": "Direct-mount hanger is not UDH and does not take Full Mount."
+      "sourceRef": "Direct-mount hanger is not UDH. BSA 73, QR 135."
     },
     {
       "years": null,
@@ -3561,10 +3628,17 @@
         "brakeStyle": "disc",
         "caliperMount": "flat-mount",
         "maxRotorMm": 180,
-        "phase": "minimal"
+        "phase": "minimal",
+        "bbShell": "t47",
+        "bbWidthMm": 86,
+        "rearAxle": "12x142",
+        "frontAxle": "12x100",
+        "headset": "integrated-is42",
+        "seatpostMm": 27.2,
+        "wheelSize": null
       },
       "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
-      "sourceRef": "Minimal phase 1 gravel frame."
+      "sourceRef": "Teaching gravel frame. T47 internal, 12x142, 12x100."
     },
     {
       "years": null,
@@ -3581,10 +3655,71 @@
         "brakeStyle": "disc",
         "caliperMount": "post-mount",
         "maxRotorMm": 140,
-        "phase": "minimal"
+        "phase": "minimal",
+        "bbShell": "bsa",
+        "bbWidthMm": 73,
+        "rearAxle": "qr-135",
+        "frontAxle": "qr-100",
+        "headset": "zs44-ec44",
+        "seatpostMm": 30.9,
+        "wheelSize": null
       },
       "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
-      "sourceRef": "Small-rotor teaching frame."
+      "sourceRef": "Small-rotor teaching frame. BSA 73, QR 135."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "standard",
+      "id": "frame-pf30-135",
+      "category": "frame",
+      "brand": "Teaching",
+      "model": "Press-fit PF30 frame, QR 135",
+      "modelCode": null,
+      "specs": {
+        "hanger": "standard",
+        "brakeStyle": "disc",
+        "caliperMount": "post-mount",
+        "maxRotorMm": 180,
+        "phase": "minimal",
+        "bbShell": "pf30",
+        "bbWidthMm": 73,
+        "rearAxle": "qr-135",
+        "frontAxle": "qr-100",
+        "headset": "zs44-ec44",
+        "seatpostMm": 30.9,
+        "wheelSize": null
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "PF30 shell. A BSA mid-drive does not pass on this frame."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "standard",
+      "id": "frame-bb100",
+      "category": "frame",
+      "brand": "Teaching",
+      "model": "BSA 100 mm shell frame, QR 135",
+      "modelCode": null,
+      "specs": {
+        "hanger": "standard",
+        "brakeStyle": "disc",
+        "caliperMount": "post-mount",
+        "maxRotorMm": 180,
+        "phase": "minimal",
+        "bbShell": "bsa",
+        "bbWidthMm": 100,
+        "rearAxle": "qr-135",
+        "frontAxle": "qr-100",
+        "headset": "zs44-ec44",
+        "seatpostMm": 30.9,
+        "wheelSize": null
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Teaching 100 mm BSA shell for a 100 mm mid-drive. Draft width."
     },
     {
       "years": null,
@@ -3617,6 +3752,849 @@
       },
       "sourceUrl": "https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/",
       "sourceRef": "Teaching name for a road hanger extender. Not a shop listing."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "BSA 68-73 mm, 48 V",
+      "category": "motor",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "id": "motor-bbs02-48",
+      "brand": "Bafang",
+      "model": "BBS02 48 V mid-drive",
+      "modelCode": "BBS02",
+      "specs": {
+        "chainrings": [
+          46
+        ],
+        "ringCount": 1,
+        "speeds": 9,
+        "chainType": "standard",
+        "spindle": null,
+        "freehub": null,
+        "rotorMount": null,
+        "axle": null,
+        "sprocket": null,
+        "protocol": "uart",
+        "connector": null,
+        "bbShells": [
+          "bsa"
+        ],
+        "bbWidths": [
+          68,
+          73
+        ],
+        "motorType": "mid-drive",
+        "voltage": 48,
+        "powerW": 750
+      },
+      "sourceRef": "Draft. BBS02 is a mid-drive for a threaded BSA shell, 68 or 73 mm, in a 48 V version. It replaces the crank. Confirm the label on the unit. 36 V BBS02 is a different motor."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "36 V",
+      "category": "motor",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "id": "motor-bbs02-36",
+      "brand": "Bafang",
+      "model": "BBS02 36 V mid-drive",
+      "modelCode": "BBS02",
+      "specs": {
+        "chainrings": [
+          44
+        ],
+        "ringCount": 1,
+        "speeds": 9,
+        "chainType": "standard",
+        "spindle": null,
+        "freehub": null,
+        "rotorMount": null,
+        "axle": null,
+        "sprocket": null,
+        "protocol": "uart",
+        "connector": null,
+        "bbShells": [
+          "bsa"
+        ],
+        "bbWidths": [
+          68,
+          73
+        ],
+        "motorType": "mid-drive",
+        "voltage": 36,
+        "powerW": 500
+      },
+      "sourceRef": "Draft. 36 V BBS02 is not the 48 V motor. Same BSA 68/73 shell."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "100 mm",
+      "category": "motor",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "id": "motor-bbshd-100",
+      "brand": "Bafang",
+      "model": "BBSHD 100 mm 48 V mid-drive",
+      "modelCode": "BBSHD",
+      "specs": {
+        "chainrings": [
+          42
+        ],
+        "ringCount": 1,
+        "speeds": 9,
+        "chainType": "standard",
+        "spindle": null,
+        "freehub": null,
+        "rotorMount": null,
+        "axle": null,
+        "sprocket": null,
+        "protocol": "uart",
+        "connector": null,
+        "bbShells": [
+          "bsa"
+        ],
+        "bbWidths": [
+          100
+        ],
+        "motorType": "mid-drive",
+        "voltage": 48,
+        "powerW": 1000
+      },
+      "sourceRef": "Draft. This record is the 100 mm BBSHD only. It does not pass on a 68 or 73 mm shell."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "BSA 68-73",
+      "category": "motor",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "id": "motor-tsdz2-48",
+      "brand": "Tongsheng",
+      "model": "TSDZ2 48 V mid-drive",
+      "modelCode": "TSDZ2",
+      "specs": {
+        "chainrings": [
+          42
+        ],
+        "ringCount": 1,
+        "speeds": 9,
+        "chainType": "standard",
+        "spindle": null,
+        "freehub": null,
+        "rotorMount": null,
+        "axle": null,
+        "sprocket": null,
+        "protocol": "tongsheng",
+        "connector": null,
+        "bbShells": [
+          "bsa"
+        ],
+        "bbWidths": [
+          68,
+          73
+        ],
+        "motorType": "mid-drive",
+        "voltage": 48,
+        "powerW": 500
+      },
+      "sourceRef": "Draft. TSDZ2 installs in a BSA 68/73 mm shell and uses its own protocol, not Bafang UART."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "QR 135, HG",
+      "category": "motor",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "id": "motor-hub-geared-135",
+      "brand": "Bafang",
+      "model": "48 V geared rear hub, QR 135, HG",
+      "modelCode": null,
+      "specs": {
+        "chainrings": [],
+        "ringCount": 1,
+        "speeds": 9,
+        "chainType": "standard",
+        "spindle": null,
+        "freehub": "hg-m",
+        "rotorMount": "6-bolt",
+        "axle": "qr-135",
+        "sprocket": "cassette",
+        "protocol": "uart",
+        "connector": null,
+        "bbShells": [],
+        "bbWidths": [],
+        "motorType": "geared-hub",
+        "voltage": 48,
+        "powerW": 500
+      },
+      "sourceRef": "Draft teaching geared hub motor: 135 mm quick release, HG cassette body, 6-bolt rotor, 48 V. Confirm the axle stamped on the real motor."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12x148",
+      "category": "motor",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "id": "motor-hub-geared-148",
+      "brand": "Bafang",
+      "model": "48 V geared rear hub, 12x148 Boost, HG",
+      "modelCode": null,
+      "specs": {
+        "chainrings": [],
+        "ringCount": 1,
+        "speeds": 9,
+        "chainType": "standard",
+        "spindle": null,
+        "freehub": "hg-m",
+        "rotorMount": "6-bolt",
+        "axle": "12x148",
+        "sprocket": "cassette",
+        "protocol": "uart",
+        "connector": null,
+        "bbShells": [],
+        "bbWidths": [],
+        "motorType": "geared-hub",
+        "voltage": 48,
+        "powerW": 750
+      },
+      "sourceRef": "Draft. 12x148 Boost hub motor. It does not fit a QR 135 frame."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "direct-drive QR 135",
+      "category": "motor",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "id": "motor-hub-direct-135",
+      "brand": "Teaching",
+      "model": "48 V direct-drive rear hub, QR 135, HG",
+      "modelCode": null,
+      "specs": {
+        "chainrings": [],
+        "ringCount": 1,
+        "speeds": 9,
+        "chainType": "standard",
+        "spindle": null,
+        "freehub": "hg-m",
+        "rotorMount": "6-bolt",
+        "axle": "qr-135",
+        "sprocket": "cassette",
+        "protocol": "uart",
+        "connector": null,
+        "bbShells": [],
+        "bbWidths": [],
+        "motorType": "direct-drive-hub",
+        "voltage": 48,
+        "powerW": 1000
+      },
+      "sourceRef": "Draft direct-drive hub. Same axle and cassette checks as a geared hub. Torque arm still applies."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "single sprocket",
+      "category": "motor",
+      "sourceUrl": "https://www.bafang-e.com/",
+      "id": "motor-hub-single-135",
+      "brand": "Teaching",
+      "model": "48 V rear hub, single sprocket, QR 135",
+      "modelCode": null,
+      "specs": {
+        "chainrings": [],
+        "ringCount": 1,
+        "speeds": 1,
+        "chainType": "standard",
+        "spindle": null,
+        "freehub": null,
+        "rotorMount": "6-bolt",
+        "axle": "qr-135",
+        "sprocket": "single",
+        "protocol": "uart",
+        "connector": null,
+        "bbShells": [],
+        "bbWidths": [],
+        "motorType": "geared-hub",
+        "voltage": 48,
+        "powerW": 350
+      },
+      "sourceRef": "Draft single-sprocket hub motor. A cassette does not mount. Shifter and derailleur are not required."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "36 V xt60",
+      "id": "battery-36-xt60",
+      "category": "battery",
+      "brand": "Teaching",
+      "model": "36 V pack, XT60, 20 A BMS",
+      "modelCode": null,
+      "specs": {
+        "voltage": 36,
+        "maxCurrent": 20,
+        "connector": "xt60"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pack. Nominal 36 V, BMS 20 A, xt60 plug. No capacity claim and no shop listing."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48 V xt60",
+      "id": "battery-48-xt60",
+      "category": "battery",
+      "brand": "Teaching",
+      "model": "48 V pack, XT60, 30 A BMS",
+      "modelCode": null,
+      "specs": {
+        "voltage": 48,
+        "maxCurrent": 30,
+        "connector": "xt60"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pack. Nominal 48 V, BMS 30 A, xt60 plug. No capacity claim and no shop listing."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48 V xt90",
+      "id": "battery-48-xt90",
+      "category": "battery",
+      "brand": "Teaching",
+      "model": "48 V pack, XT90, 40 A BMS",
+      "modelCode": null,
+      "specs": {
+        "voltage": 48,
+        "maxCurrent": 40,
+        "connector": "xt90"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pack. Nominal 48 V, BMS 40 A, xt90 plug. No capacity claim and no shop listing."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "52 V xt60",
+      "id": "battery-52-xt60",
+      "category": "battery",
+      "brand": "Teaching",
+      "model": "52 V pack, XT60, 30 A BMS",
+      "modelCode": null,
+      "specs": {
+        "voltage": 52,
+        "maxCurrent": 30,
+        "connector": "xt60"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft pack. Nominal 52 V, BMS 30 A, xt60 plug. No capacity claim and no shop listing."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48",
+      "id": "controller-48-uart-xt60",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "48 V UART controller, 25 A, XT60",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          48
+        ],
+        "maxCurrent": 25,
+        "powerW": 1000,
+        "batteryConnector": "xt60",
+        "protocol": "uart"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 48 V, 25 A, 1000 W, xt60, protocol uart."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "36",
+      "id": "controller-36-uart-xt60",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "36 V UART controller, 15 A, XT60",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          36
+        ],
+        "maxCurrent": 15,
+        "powerW": 500,
+        "batteryConnector": "xt60",
+        "protocol": "uart"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 36 V, 15 A, 500 W, xt60, protocol uart."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48",
+      "id": "controller-48-can-xt60",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "48 V CAN controller, 25 A, XT60",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          48
+        ],
+        "maxCurrent": 25,
+        "powerW": 1000,
+        "batteryConnector": "xt60",
+        "protocol": "can"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 48 V, 25 A, 1000 W, xt60, protocol can."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48",
+      "id": "controller-48-uart-xt90",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "48 V UART controller, 35 A, XT90",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          48
+        ],
+        "maxCurrent": 35,
+        "powerW": 1500,
+        "batteryConnector": "xt90",
+        "protocol": "uart"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 48 V, 35 A, 1500 W, xt90, protocol uart."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48",
+      "id": "controller-tongsheng-48",
+      "category": "controller",
+      "brand": "Teaching",
+      "model": "48 V Tongsheng controller, 18 A, XT60",
+      "modelCode": null,
+      "specs": {
+        "acceptedVoltages": [
+          48
+        ],
+        "maxCurrent": 18,
+        "powerW": 500,
+        "batteryConnector": "xt60",
+        "protocol": "tongsheng"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft controller. Accepts 48 V, 18 A, 500 W, xt60, protocol tongsheng."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "uart",
+      "id": "display-uart",
+      "category": "display",
+      "brand": "Teaching",
+      "model": "UART display",
+      "modelCode": null,
+      "specs": {
+        "protocol": "uart"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft display. Protocol uart. It only matches a controller with the same protocol."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "can",
+      "id": "display-can",
+      "category": "display",
+      "brand": "Teaching",
+      "model": "CAN display",
+      "modelCode": null,
+      "specs": {
+        "protocol": "can"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft display. Protocol can. It only matches a controller with the same protocol."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "tongsheng",
+      "id": "display-tongsheng",
+      "category": "display",
+      "brand": "Teaching",
+      "model": "Tongsheng display",
+      "modelCode": null,
+      "specs": {
+        "protocol": "tongsheng"
+      },
+      "sourceUrl": "https://www.bafang-e.com/",
+      "sourceRef": "Draft display. Protocol tongsheng. It only matches a controller with the same protocol."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "bsa shimano-24",
+      "id": "bb-bsa-shimano-24",
+      "category": "bottom_bracket",
+      "brand": "Teaching",
+      "model": "BSA bottom bracket for 24 mm spindle",
+      "modelCode": null,
+      "specs": {
+        "shell": "bsa",
+        "spindle": "shimano-24",
+        "widths": [
+          68,
+          73
+        ]
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Draft bottom bracket. Shell bsa, spindle shimano-24, widths 68/73 mm."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "bsa shimano-24",
+      "id": "bb-bsa-68-shimano-24",
+      "category": "bottom_bracket",
+      "brand": "Teaching",
+      "model": "BSA 68 mm bottom bracket for 24 mm spindle",
+      "modelCode": null,
+      "specs": {
+        "shell": "bsa",
+        "spindle": "shimano-24",
+        "widths": [
+          68
+        ]
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Draft bottom bracket. Shell bsa, spindle shimano-24, widths 68 mm."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "bsa sram-dub",
+      "id": "bb-bsa-dub",
+      "category": "bottom_bracket",
+      "brand": "Teaching",
+      "model": "BSA bottom bracket for SRAM DUB",
+      "modelCode": null,
+      "specs": {
+        "shell": "bsa",
+        "spindle": "sram-dub",
+        "widths": [
+          68,
+          73
+        ]
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Draft bottom bracket. Shell bsa, spindle sram-dub, widths 68/73 mm."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "bb86 shimano-24",
+      "id": "bb-bb86-shimano-24",
+      "category": "bottom_bracket",
+      "brand": "Teaching",
+      "model": "BB86 bottom bracket for 24 mm spindle",
+      "modelCode": null,
+      "specs": {
+        "shell": "bb86",
+        "spindle": "shimano-24",
+        "widths": [
+          86
+        ]
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Draft bottom bracket. Shell bb86, spindle shimano-24, widths 86 mm."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "t47 shimano-24",
+      "id": "bb-t47-shimano-24",
+      "category": "bottom_bracket",
+      "brand": "Teaching",
+      "model": "T47 bottom bracket for 24 mm spindle",
+      "modelCode": null,
+      "specs": {
+        "shell": "t47",
+        "spindle": "shimano-24",
+        "widths": [
+          86
+        ]
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Draft bottom bracket. Shell t47, spindle shimano-24, widths 86 mm."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "pf30 30mm",
+      "id": "bb-pf30-30",
+      "category": "bottom_bracket",
+      "brand": "Teaching",
+      "model": "PF30 bottom bracket for 30 mm spindle",
+      "modelCode": null,
+      "specs": {
+        "shell": "pf30",
+        "spindle": "30mm",
+        "widths": [
+          68,
+          73
+        ]
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Draft bottom bracket. Shell pf30, spindle 30mm, widths 68/73 mm."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "bsa square-taper",
+      "id": "bb-bsa-square",
+      "category": "bottom_bracket",
+      "brand": "Teaching",
+      "model": "BSA square-taper bottom bracket",
+      "modelCode": null,
+      "specs": {
+        "shell": "bsa",
+        "spindle": "square-taper",
+        "widths": [
+          68,
+          73
+        ]
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/bottom-bracket-standards",
+      "sourceRef": "Draft bottom bracket. Shell bsa, spindle square-taper, widths 68/73 mm."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "qr-100",
+      "id": "front-hub-qr-100",
+      "category": "front_hub",
+      "brand": "Teaching",
+      "model": "Front hub, quick release 100 mm",
+      "modelCode": null,
+      "specs": {
+        "axle": "qr-100"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Draft front hub. Axle qr-100."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12x100",
+      "id": "front-hub-12x100",
+      "category": "front_hub",
+      "brand": "Teaching",
+      "model": "Front hub, 12x100 thru-axle",
+      "modelCode": null,
+      "specs": {
+        "axle": "12x100"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Draft front hub. Axle 12x100."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "15x100",
+      "id": "front-hub-15x100",
+      "category": "front_hub",
+      "brand": "Teaching",
+      "model": "Front hub, 15x100 thru-axle",
+      "modelCode": null,
+      "specs": {
+        "axle": "15x100"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Draft front hub. Axle 15x100."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "15x110",
+      "id": "front-hub-15x110",
+      "category": "front_hub",
+      "brand": "Teaching",
+      "model": "Front hub, 15x110 Boost",
+      "modelCode": null,
+      "specs": {
+        "axle": "15x110"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Draft front hub. Axle 15x110."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "zs44-ec44",
+      "id": "headset-zs44-ec44",
+      "category": "headset",
+      "brand": "Teaching",
+      "model": "Headset, ZS44 upper / EC44 lower",
+      "modelCode": null,
+      "specs": {
+        "standard": "zs44-ec44"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/headset-standards",
+      "sourceRef": "Draft headset. SHIS-style id zs44-ec44."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "integrated-is42",
+      "id": "headset-integrated-is42",
+      "category": "headset",
+      "brand": "Teaching",
+      "model": "Integrated headset, IS42",
+      "modelCode": null,
+      "specs": {
+        "standard": "integrated-is42"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/headset-standards",
+      "sourceRef": "Draft headset. SHIS-style id integrated-is42."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "ec34",
+      "id": "headset-ec34",
+      "category": "headset",
+      "brand": "Teaching",
+      "model": "Headset, EC34 threaded-style external",
+      "modelCode": null,
+      "specs": {
+        "standard": "ec34"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/headset-standards",
+      "sourceRef": "Draft headset. SHIS-style id ec34."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "27.2 mm",
+      "id": "seatpost-27-2",
+      "category": "seatpost",
+      "brand": "Teaching",
+      "model": "27.2 mm seatpost",
+      "modelCode": null,
+      "specs": {
+        "diameterMm": 27.2
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/seatpost-installation",
+      "sourceRef": "Draft seatpost diameter 27.2 mm. A larger post does not fit. A smaller post is a shim warning."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "30.9 mm",
+      "id": "seatpost-30-9",
+      "category": "seatpost",
+      "brand": "Teaching",
+      "model": "30.9 mm seatpost",
+      "modelCode": null,
+      "specs": {
+        "diameterMm": 30.9
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/seatpost-installation",
+      "sourceRef": "Draft seatpost diameter 30.9 mm. A larger post does not fit. A smaller post is a shim warning."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "31.6 mm",
+      "id": "seatpost-31-6",
+      "category": "seatpost",
+      "brand": "Teaching",
+      "model": "31.6 mm seatpost",
+      "modelCode": null,
+      "specs": {
+        "diameterMm": 31.6
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/seatpost-installation",
+      "sourceRef": "Draft seatpost diameter 31.6 mm. A larger post does not fit. A smaller post is a shim warning."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "torque arm",
+      "id": "torque-arm-qr-135",
+      "category": "torque_arm",
+      "brand": "Teaching",
+      "model": "Torque arm for a QR 135 hub motor",
+      "modelCode": null,
+      "specs": {
+        "style": "torque-arm",
+        "axle": "qr-135"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Draft torque arm for a quick-release hub motor. The checker treats any torque arm as present. The axle match is still the frame rule."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "torque arm",
+      "id": "torque-arm-12x148",
+      "category": "torque_arm",
+      "brand": "Teaching",
+      "model": "Torque arm for a 12x148 hub motor",
+      "modelCode": null,
+      "specs": {
+        "style": "torque-arm",
+        "axle": "12x148"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Draft torque arm noted for a Boost thru-axle hub motor."
     }
   ]
 }
