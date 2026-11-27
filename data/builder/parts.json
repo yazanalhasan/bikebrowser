@@ -5106,7 +5106,7 @@
       "years": null,
       "reviewStatus": "draft",
       "checkedAt": "2026-11-27",
-      "quote": "torque arm",
+      "quote": "qr-135 10 mm",
       "id": "torque-arm-qr-135",
       "category": "torque_arm",
       "brand": "Teaching",
@@ -5114,16 +5114,19 @@
       "modelCode": null,
       "specs": {
         "style": "torque-arm",
-        "axle": "qr-135"
+        "axle": "qr-135",
+        "axleType": "quick-release",
+        "diameterMm": 10,
+        "flats": "qr-dropout"
       },
       "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
-      "sourceRef": "Draft torque arm for a quick-release hub motor. The checker treats any torque arm as present. The axle match is still the frame rule."
+      "sourceRef": "Draft. QR 135 mm dropout, 10 mm axle with flats. The arm has to name the same axle as the hub motor. A 12 mm thru-axle arm does not fit."
     },
     {
       "years": null,
       "reviewStatus": "draft",
       "checkedAt": "2026-11-27",
-      "quote": "torque arm",
+      "quote": "12x148 12 mm",
       "id": "torque-arm-12x148",
       "category": "torque_arm",
       "brand": "Teaching",
@@ -5131,10 +5134,33 @@
       "modelCode": null,
       "specs": {
         "style": "torque-arm",
-        "axle": "12x148"
+        "axle": "12x148",
+        "axleType": "thru-axle",
+        "diameterMm": 12,
+        "flats": "none"
       },
       "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
-      "sourceRef": "Draft torque arm noted for a Boost thru-axle hub motor."
+      "sourceRef": "Draft. 12x148 Boost thru-axle, 12 mm, no QR flats. It does not fit a QR 135 hub motor."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "",
+      "id": "torque-arm-axle-unknown",
+      "category": "torque_arm",
+      "brand": "Teaching",
+      "model": "Torque arm, axle not recorded",
+      "modelCode": null,
+      "specs": {
+        "style": "torque-arm",
+        "axle": null,
+        "axleType": null,
+        "diameterMm": null,
+        "flats": null
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Draft. Axle standard was not recorded. The checker returns cannot_verify and does not call this a fit."
     },
     {
       "years": null,

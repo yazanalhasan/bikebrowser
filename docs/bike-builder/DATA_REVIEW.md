@@ -1,6 +1,6 @@
 # Parts needing review
 
-Generated 2026-11-27. 280 parts. Approved means the numbers were copied from a manufacturer specification table during this build. Draft means a person still needs to check them before anyone trusts a real build.
+Generated 2026-11-27. 281 parts. Approved means the numbers were copied from a manufacturer specification table during this build. Draft means a person still needs to check them before anyone trusts a real build.
 
 A draft part can still appear in the builder. If a number is blank, the engine says "can't verify" instead of "fits".
 
@@ -231,8 +231,9 @@ A draft part can still appear in the builder. If a number is blank, the engine s
 - `seatpost-27-2` (seatpost) Teaching 27.2 mm seatpost — Draft seatpost diameter 27.2 mm. A larger post does not fit. A smaller post is a shim warning.
 - `seatpost-30-9` (seatpost) Teaching 30.9 mm seatpost — Draft seatpost diameter 30.9 mm. A larger post does not fit. A smaller post is a shim warning.
 - `seatpost-31-6` (seatpost) Teaching 31.6 mm seatpost — Draft seatpost diameter 31.6 mm. A larger post does not fit. A smaller post is a shim warning.
-- `torque-arm-qr-135` (torque_arm) Teaching Torque arm for a QR 135 hub motor — Draft torque arm for a quick-release hub motor. The checker treats any torque arm as present. The axle match is still the frame rule.
-- `torque-arm-12x148` (torque_arm) Teaching Torque arm for a 12x148 hub motor — Draft torque arm noted for a Boost thru-axle hub motor.
+- `torque-arm-qr-135` (torque_arm) Teaching Torque arm for a QR 135 hub motor — Draft. QR 135 mm dropout, 10 mm axle with flats. The arm has to name the same axle as the hub motor. A 12 mm thru-axle arm does not fit.
+- `torque-arm-12x148` (torque_arm) Teaching Torque arm for a 12x148 hub motor — Draft. 12x148 Boost thru-axle, 12 mm, no QR flats. It does not fit a QR 135 hub motor.
+- `torque-arm-axle-unknown` (torque_arm) Teaching Torque arm, axle not recorded — Draft. Axle standard was not recorded. The checker returns cannot_verify and does not call this a fit.
 - `motor-hub-geared-36` (motor) Bafang 36 V geared rear hub, QR 135, HG — Draft 36 V geared hub. It does not match a 48 V-only controller.
 - `motor-m620-can` (motor) Bafang M620-style 48 V CAN mid-drive — Draft. CAN mid-drive. Shell and width are left blank so a guessed bottom bracket cannot pass.
 - `motor-front-hub-36` (motor) Teaching 36 V geared front hub, QR 100 — Draft front hub motor. It covers the front hub, not the rear hub. QR 100.

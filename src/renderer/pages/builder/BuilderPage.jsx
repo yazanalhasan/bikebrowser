@@ -4,7 +4,7 @@ import rulesFile from '../../../../data/builder/rules.json';
 import zuzuBike from '../../../../data/builder/bikes/zuzu-bike.json';
 import midDriveKit from '../../../../data/builder/bikes/mid-drive-48.json';
 import hubMotorKit from '../../../../data/builder/bikes/hub-motor-48.json';
-import { checkBuild, filterCandidates } from '../../../builder/engine.js';
+import { checkBuild, classifyCandidates } from '../../../builder/engine.js';
 import { formatGear, gearRange, WHEEL_SIZES } from '../../../builder/gearMath.js';
 import { presentFinding } from '../../../builder/present.js';
 import { describeActuation, SLOTS } from '../../../builder/standards.js';
@@ -101,27 +101,25 @@ export default function BuilderPage() {
     return PARTS.filter((part) => part.category === pickerSlot.category);
   }, [pickerSlot]);
 
-  const fitting = useMemo(() => {
-    if (!pickerSlot) return [];
-    return filterCandidates(pickerSlot.id, build, catalogFile, rulesFile);
+  const groupedParts = useMemo(() => {
+    if (!pickerSlot) return { fits: [], cannotCheck: [], blocked: [] };
+    return classifyCandidates(pickerSlot.id, build, catalogFile, rulesFile);
   }, [pickerSlot, build]);
 
   const reasons = useMemo(() => {
     if (!pickerSlot) return {};
-    const fitIds = new Set(fitting.map((part) => part.id));
     const next = {};
-    for (const part of pickerParts) {
-      if (fitIds.has(part.id)) continue;
+    for (const part of [...groupedParts.cannotCheck, ...groupedParts.blocked]) {
       const trial = checkBuild(
         { ...build, slots: { ...build.slots, [pickerSlot.id]: part.id } },
         catalogFile,
         rulesFile,
       );
-      const blocking = trial.findings.find((finding) => finding.severity === 'incompatible' && finding.slots.includes(pickerSlot.id));
-      next[part.id] = blocking ? (grownup ? blocking.messageAdult : blocking.messageKid) : '';
+      const open = trial.findings.find((finding) => finding.slots.includes(pickerSlot.id) && (finding.severity === 'cannot_verify' || finding.severity === 'incompatible'));
+      next[part.id] = open ? (grownup ? open.messageAdult : open.messageKid) : '';
     }
     return next;
-  }, [pickerSlot, pickerParts, fitting, build, grownup]);
+  }, [pickerSlot, groupedParts, build, grownup]);
 
   function choosePart(partId) {
     setBuild((current) => ({ ...current, slots: { ...current.slots, [pickerSlot.id]: partId } }));
@@ -394,7 +392,8 @@ export default function BuilderPage() {
         <PartPicker
           slot={pickerSlot}
           parts={pickerParts}
-          fittingIds={fitting.map((part) => part.id)}
+          fittingIds={groupedParts.fits.map((part) => part.id)}
+          cannotCheckIds={groupedParts.cannotCheck.map((part) => part.id)}
           reasons={reasons}
           grownup={grownup}
           onChoose={choosePart}

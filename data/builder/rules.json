@@ -821,6 +821,7 @@
       "predicate": {
         "op": "and",
         "args": [
+          { "op": "in", "left": "slot.motor.specs.motorType", "right": ["geared-hub", "direct-drive-hub"] },
           { "op": "eq", "left": "slot.motor.specs.sprocket", "right": "single" },
           { "op": "not", "arg": { "op": "eq", "left": "slot.motor.specs.position", "right": "front" } },
           { "op": "slot_filled", "slot": "cassette" }
@@ -849,7 +850,32 @@
       "messageKid": "A hub motor can twist the frame's dropouts. Add a torque arm, then a grown-up checks that the axle sits flat.",
       "fix": "Add a torque arm that fits this axle, and recheck the axle nuts or thru-axle after the first ride.",
       "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
-      "sourceRef": "Practitioner rule: a hub motor in a standard dropout should use a torque arm. Not a manufacturer pass."
+      "sourceRef": "Practitioner rule: a hub motor in a standard dropout should use a torque arm. Not a manufacturer pass. Axle match is a separate rule."
+    },
+    {
+      "id": "torque-arm-axle",
+      "version": 1,
+      "slots": ["torque_arm", "motor"],
+      "severity": "incompatible",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "in", "left": "slot.motor.specs.motorType", "right": ["geared-hub", "direct-drive-hub"] },
+          { "op": "not", "arg": { "op": "eq", "left": "slot.torque_arm.specs.axle", "right": "slot.motor.specs.axle" } }
+        ]
+      },
+      "messageAdult": "This torque arm's dropout standard does not match the hub motor axle. A QR 135 mm (10 mm axle with flats) arm does not fit a 12x148 thru-axle, and the reverse does not fit either.",
+      "messageKid": "This torque arm is made for a different axle than the hub motor, so it will not sit on the dropout.",
+      "fix": "Use a torque arm listed for this motor's axle (the same QR or thru-axle standard).",
+      "messageAdultByStatus": {
+        "cannot_verify": "The torque arm axle or the hub motor axle is blank, so this pair does not pass."
+      },
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know this torque arm's axle yet, so we will not say it fits."
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/wheel-removal-and-installation",
+      "sourceRef": "Dropout standards differ: QR 135 uses a 10 mm axle with flats; 12x148 Boost is a 12 mm thru-axle. The arm has to name the same standard as the motor. A blank axle is cannot_verify, not a pass."
     },
     {
       "id": "battery-controller-voltage",

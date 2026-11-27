@@ -1644,10 +1644,10 @@ add({
   brand: 'Teaching',
   model: 'Torque arm for a QR 135 hub motor',
   modelCode: null,
-  specs: { style: 'torque-arm', axle: 'qr-135' },
+  specs: { style: 'torque-arm', axle: 'qr-135', axleType: 'quick-release', diameterMm: 10, flats: 'qr-dropout' },
   sourceUrl: PARK_WHEEL,
-  sourceRef: 'Draft torque arm for a quick-release hub motor. The checker treats any torque arm as present. The axle match is still the frame rule.',
-  quote: 'torque arm',
+  sourceRef: 'Draft. QR 135 mm dropout, 10 mm axle with flats. The arm has to name the same axle as the hub motor. A 12 mm thru-axle arm does not fit.',
+  quote: 'qr-135 10 mm',
 });
 add({
   id: 'torque-arm-12x148',
@@ -1655,10 +1655,21 @@ add({
   brand: 'Teaching',
   model: 'Torque arm for a 12x148 hub motor',
   modelCode: null,
-  specs: { style: 'torque-arm', axle: '12x148' },
+  specs: { style: 'torque-arm', axle: '12x148', axleType: 'thru-axle', diameterMm: 12, flats: 'none' },
   sourceUrl: PARK_WHEEL,
-  sourceRef: 'Draft torque arm noted for a Boost thru-axle hub motor.',
-  quote: 'torque arm',
+  sourceRef: 'Draft. 12x148 Boost thru-axle, 12 mm, no QR flats. It does not fit a QR 135 hub motor.',
+  quote: '12x148 12 mm',
+});
+add({
+  id: 'torque-arm-axle-unknown',
+  category: 'torque_arm',
+  brand: 'Teaching',
+  model: 'Torque arm, axle not recorded',
+  modelCode: null,
+  specs: { style: 'torque-arm', axle: null, axleType: null, diameterMm: null, flats: null },
+  sourceUrl: PARK_WHEEL,
+  sourceRef: 'Draft. Axle standard was not recorded. The checker returns cannot_verify and does not call this a fit.',
+  quote: '',
 });
 
 motor({

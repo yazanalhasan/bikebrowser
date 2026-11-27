@@ -5,7 +5,7 @@
  * checkBuild(build, catalog, rules). There is no React and no DOM here.
  * Phase 1 does not call the engine from the game.
  */
-export { checkBuild, filterCandidates } from './engine.js';
+export { checkBuild, classifyCandidates, filterCandidates } from './engine.js';
 export { gearRange, formatGear, WHEEL_SIZES } from './gearMath.js';
 export {
   ACTUATION_FAMILIES,

@@ -585,19 +585,32 @@ function SLOTS_FROM_RULES(ruleList) {
 }
 
 /**
- * Parts for one slot that do not produce an incompatible finding on that slot.
- * Warnings and cannot_verify stay in the list. A cannot_verify is not a pass,
- * and the picker should say the numbers are still open.
+ * Split a slot's parts by the findings that name that slot.
+ * fits: no incompatible and no cannot_verify (warnings are allowed).
+ * cannotCheck: a needed number is missing. This is not a fit.
+ * blocked: incompatible.
  */
-export function filterCandidates(slot, build, catalog, rules) {
+export function classifyCandidates(slot, build, catalog, rules) {
   const category = categoryForSlot(slot);
   const parts = partsList(catalog).filter((part) => part.category === category);
-  return parts.filter((part) => {
+  const fits = [];
+  const cannotCheck = [];
+  const blocked = [];
+  for (const part of parts) {
     const next = {
       ...build,
       slots: { ...(build?.slots || {}), [slot]: part.id },
     };
     const result = checkBuild(next, catalog, rules);
-    return !result.findings.some((finding) => finding.severity === 'incompatible' && finding.slots.includes(slot));
-  });
+    const onSlot = result.findings.filter((finding) => finding.slots.includes(slot));
+    if (onSlot.some((finding) => finding.severity === 'incompatible')) blocked.push(part);
+    else if (onSlot.some((finding) => finding.severity === 'cannot_verify')) cannotCheck.push(part);
+    else fits.push(part);
+  }
+  return { fits, cannotCheck, blocked };
+}
+
+/** Parts that fit this slot. Missing data is not included. */
+export function filterCandidates(slot, build, catalog, rules) {
+  return classifyCandidates(slot, build, catalog, rules).fits;
 }

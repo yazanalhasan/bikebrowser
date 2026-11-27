@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { checkBuild, filterCandidates } from '../src/builder/engine.js';
+import { checkBuild, classifyCandidates, filterCandidates } from '../src/builder/engine.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const catalog = JSON.parse(readFileSync(join(root, 'data/builder/parts.json'), 'utf8'));
@@ -22,6 +22,7 @@ function withSlots(base, slots) {
 
 test('a 48 V mid-drive kit has no incompatible or warning fitment', () => {
   const result = checkBuild(midDrive, catalog, rules);
+  assert.equal(findings(result, 'single-speed-hub-no-cassette').length, 0);
   assert.equal(findings(result, 'mid-drive-bb-shell', 'incompatible').length, 0);
   assert.equal(findings(result, 'battery-controller-voltage', 'incompatible').length, 0);
   assert.equal(findings(result, 'motor-controller-voltage', 'incompatible').length, 0);
@@ -217,6 +218,26 @@ test('a weak battery current does not pass, and a small controller warns', () =>
   const power = checkBuild(withSlots(hubMotor, { motor: 'motor-hub-direct-135', controller: 'controller-tongsheng-48' }), catalog, rules);
   assert.equal(findings(power, 'controller-power-vs-motor', 'warning').length, 1);
   assert.equal(findings(power, 'motor-controller-protocol', 'incompatible').length, 1);
+});
+
+test('a torque arm has to match the hub motor axle', () => {
+  const matched = checkBuild(hubMotor, catalog, rules);
+  assert.equal(findings(matched, 'torque-arm-axle').length, 0);
+  const wrong = checkBuild(withSlots(hubMotor, { torque_arm: 'torque-arm-12x148' }), catalog, rules);
+  assert.equal(findings(wrong, 'torque-arm-axle', 'incompatible').length, 1);
+  const unknown = checkBuild(withSlots(hubMotor, { torque_arm: 'torque-arm-axle-unknown' }), catalog, rules);
+  assert.equal(findings(unknown, 'torque-arm-axle', 'cannot_verify').length, 1);
+  assert.equal(findings(unknown, 'torque-arm-axle', 'incompatible').length, 0);
+});
+
+test('parts we cannot check are not listed as fitting', () => {
+  const groups = classifyCandidates('torque_arm', hubMotor, catalog, rules);
+  const fitIds = filterCandidates('torque_arm', hubMotor, catalog, rules).map((part) => part.id);
+  assert.ok(fitIds.includes('torque-arm-qr-135'));
+  assert.equal(fitIds.includes('torque-arm-12x148'), false);
+  assert.equal(fitIds.includes('torque-arm-axle-unknown'), false);
+  assert.ok(groups.cannotCheck.some((part) => part.id === 'torque-arm-axle-unknown'));
+  assert.ok(groups.blocked.some((part) => part.id === 'torque-arm-12x148'));
 });
 
 test('Boost frames hide quick-release hubs from the fitting list', () => {

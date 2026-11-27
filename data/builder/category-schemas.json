@@ -18,7 +18,7 @@
     "brake_sensor": ["switchType", "connector", "style"],
     "speed_sensor": ["sensorType", "connector"],
     "light": ["voltage", "connector"],
-    "torque_arm": ["style"],
+    "torque_arm": ["style", "axle", "axleType", "diameterMm", "flats"],
     "front_hub": ["axle"],
     "headset": ["standard"],
     "seatpost": ["diameterMm"],
