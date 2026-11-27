@@ -1237,11 +1237,24 @@ const QUESTS = {
           'Load test results: {strengthTable}\n\n' +
           'Which holds up best?',
         templateVars: ['strengthTable'],
+        // No percentages in the labels. They used to read 85/55/35, taken
+        // from `data/materials.js` `structural.strength`, while the table
+        // above is built from `systems/materials/materialDatabase.js`
+        // `ultimateStrengthMPa` and reads 17/75/42. Two sources, two sets of
+        // numbers, and by the printed table copper beat mesquite while the
+        // choices said otherwise. The table is what the child is asked to
+        // read, so the labels now just name the material and the table
+        // supplies the figures — they cannot disagree again.
+        //
+        // `materialId` ties each choice to its row so a test can assert the
+        // choice marked correct really is the strongest material in the load
+        // test (owner decision 2026-11-27: steel or mesquite is fine, but the
+        // lab numbers, the choices and the correct flag must all agree).
         choices: [
-          { label: 'Steel (85% strength)', correct: true },
-          { label: 'Mesquite wood (55% strength)', correct: false },
-          { label: 'Copper (35% strength)', correct: false },
-          { label: 'They\'re all the same under load', correct: false },
+          { label: 'Steel', materialId: 'structural_steel', correct: true },
+          { label: 'Mesquite wood', materialId: 'mesquite_wood', correct: false },
+          { label: 'Copper', materialId: 'copper', correct: false },
+          { label: 'They are all the same under load', correct: false },
         ],
       },
 
