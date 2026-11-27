@@ -201,7 +201,9 @@ export default class StreetBlockScene extends LocalSceneBase {
       // to the clutter, so a finished bike now simply looks fixed.
       // Above the bike, not beside it: at x+58 the marker landed inside the
       // "E Trailside" street sign board (which spans x 452-548).
-      if (!questDone) createInteractionMarker(this, o.x, o.y - 56, 'blocked', { pulse: true });
+      this._ramirezMarker = questDone
+        ? null
+        : createInteractionMarker(this, o.x, o.y - 56, 'blocked', { pulse: true });
     }
 
     const ramirezBikeInteract = this.layout.ramirez_bike_icon;
@@ -1154,6 +1156,12 @@ ${line.caption}`,
    */
   _refreshBikeBadges() {
     const state = this.registry.get('gameState') || {};
+    // The blocked marker used to sit on a fixed bike until the scene
+    // reloaded, still telling the child something was wrong.
+    if (state.completedQuests?.includes('flat_tire_repair') && this._ramirezMarker) {
+      this._ramirezMarker.destroy?.();
+      this._ramirezMarker = null;
+    }
     if (state.completedQuests?.includes('chain_repair') && this._chenBike) {
       this._chenBike.destroy();
       this._chenBike = null;

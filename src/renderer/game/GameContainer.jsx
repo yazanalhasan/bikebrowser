@@ -43,6 +43,7 @@ import { runRuntimeAudit } from './systems/runtimeAudit.js';
 import { gameplayReportsEnabled } from './utils/gameplayReports.js';
 import { getCurrentStep, initDiscoveryQuestBridge, startQuest } from './systems/questSystem.js';
 import { acceptQuestOffer, dialogForStep } from './systems/questDialog.js';
+import { describeCondition } from './systems/milestoneText.js';
 import QUEST_DEFS from './data/quests.js';
 import { getNpcProfile } from './data/npcProfiles.js';
 import { interpolateStepText } from './systems/questTemplating.js';
@@ -717,10 +718,12 @@ export default function GameContainer() {
       if (!value) return;
 
       // Toast notification (ephemeral)
+      // One at a time. Three stacked toasts at the top centre covered Zuzu,
+      // the NPCs and the signs, and on a phone they sat over the toolbar.
+      // The newest wins; the others were never read anyway.
       setAiToasts((prev) => {
         if (prev.some((t) => t.id === value.id)) return prev;
-        const next = [...prev, { ...value, shownAt: Date.now() }];
-        return next.slice(-3);
+        return [{ ...value, shownAt: Date.now() }];
       });
 
       // Assistant panel message (persistent feed)
@@ -1353,7 +1356,7 @@ export default function GameContainer() {
 
       {/* ---- HUD overlay ---- */}
       {phase === 'playing' && (
-        <div className="absolute left-0 right-0 pointer-events-none z-10" style={{ top: 'calc(max(0.5rem, env(safe-area-inset-top)) + 2.5rem)' }}>
+        <div className="absolute left-0 right-0 pointer-events-none z-10" style={{ top: 'calc(max(0.5rem, env(safe-area-inset-top)) + 3rem)' }}>
           <div className="flex items-start justify-between px-2 gap-2">
             {/* Quest tracker + Zuzubucks */}
             <div className="flex flex-col gap-1.5 max-w-[55%]">
@@ -1947,7 +1950,7 @@ export default function GameContainer() {
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xl">📐</span>
               <span className="font-bold text-blue-700 text-sm">Physics Challenge!</span>
-              <span className="text-[10px] text-gray-400 ml-auto">T{physicsHUD?.tier || 1}</span>
+              {/* The tier number is for us, not for a seven-year-old. */}
             </div>
             <div className="text-gray-700 text-sm mb-3 leading-relaxed">
               {physicsQuestion.question}
@@ -1997,8 +2000,10 @@ export default function GameContainer() {
       )}
 
       {/* ---- AI Toast Notifications ---- */}
-      {phase === 'playing' && aiToasts.length > 0 && (
-        <div className="absolute top-[120px] left-1/2 -translate-x-1/2 z-25 flex flex-col gap-2 pointer-events-none max-w-sm w-full px-2">
+      {/* Hidden while a dialog is open: a hint floating over the conversation
+          it is hinting about is just noise. */}
+      {phase === 'playing' && !dialog && aiToasts.length > 0 && (
+        <div className="absolute bottom-24 left-2 z-25 flex flex-col gap-2 pointer-events-none max-w-[min(22rem,calc(100vw-5rem))]">
           {aiToasts.map((toast) => {
             const bg = toast.severity === 'critical' ? 'bg-red-500/90'
               : toast.severity === 'warning' ? 'bg-amber-500/90'
@@ -2658,7 +2663,7 @@ function MilestonesPanel({ state, onClose }) {
             }`}
             title={`${PHASE_NAMES[phase]}: ${data.completed}/${data.total}`}
           >
-            {PHASE_NAMES[phase]?.slice(0, 5) || phase}
+            {PHASE_NAMES[phase] || phase}
           </div>
         ))}
       </div>
@@ -2698,7 +2703,7 @@ function MilestonesPanel({ state, onClose }) {
                 <div className="mt-1 flex flex-wrap gap-1">
                   {m.conditions.filter(c => !c.met).map((c, i) => (
                     <span key={i} className="text-[9px] bg-red-50 text-red-500 px-1 rounded border border-red-200">
-                      {c.type}: {c.target || ''} ({c.current}/{c.required})
+                      {describeCondition(c)}
                     </span>
                   ))}
                 </div>

@@ -18,6 +18,9 @@ import {
 import QUESTS from '../src/renderer/game/data/quests.js';
 import { getNpcProfile } from '../src/renderer/game/data/npcProfiles.js';
 import { MATERIALS } from '../src/renderer/game/systems/materials/materialDatabase.js';
+import { getAvailableMilestones } from '../src/renderer/game/systems/milestoneEngine.js';
+import { describeCondition } from '../src/renderer/game/systems/milestoneText.js';
+import { INDOOR_SCENES, prettyName } from '../src/renderer/game/systems/sceneAmbience.js';
 
 // ── MUST 1: a quest cannot be finished away from its giver ─────────────────
 
@@ -176,5 +179,51 @@ test('OWNER: the choice labels carry no percentages to contradict the table', ()
   const step = QUESTS.bridge_collapse.steps.find((s) => s.id === 'quiz_strength');
   for (const c of step.choices) {
     assert.doesNotMatch(c.label, /\d+\s*%/, `"${c.label}" must not state a figure`);
+  }
+});
+
+// ── Polish items with testable logic ───────────────────────────────────────
+
+test('POLISH13: mining copper satisfies the first-mine milestone', () => {
+  // The mine scenes grant `surface_copper` / `deep_copper` into the
+  // inventory, but the milestone counted `state.minedResources.copper_ore`,
+  // which only `miningSystem.mine()` writes. It read 0/1 forever.
+  const probe = (inventory) => {
+    const list = getAvailableMilestones({
+      inventory, completedQuests: [], milestones: { completed: ['ms_first_repair'] },
+    });
+    const ms = list.find((m) => m.id === 'ms_first_mine');
+    return ms?.conditions?.find((c) => c.type === 'mine');
+  };
+  assert.equal(probe([]).met, false, 'not met with nothing mined');
+  assert.equal(probe(['surface_copper']).met, true, 'surface copper counts');
+  assert.equal(probe(['deep_copper']).met, true, 'deep copper counts');
+  assert.equal(probe(['copper_ore']).met, true, 'the raw id still counts');
+});
+
+test('POLISH12: milestone requirements read as words, not records', () => {
+  const list = getAvailableMilestones({
+    inventory: [], completedQuests: [], milestones: { completed: ['ms_first_repair'] },
+  });
+  const ms = list.find((m) => m.id === 'ms_first_mine');
+  const condition = ms.conditions.find((c) => c.type === 'mine');
+  const text = describeCondition(condition);
+  assert.doesNotMatch(text, /^mine:/, 'no raw "mine: copper_ore" form');
+  assert.match(text, /copper ore/i, 'the thing to find is named in words');
+});
+
+test('POLISH4: plant ids are prettified before a child sees them', () => {
+  assert.equal(prettyName('desert_lavender'), 'Desert lavender');
+  assert.equal(prettyName('mesquite'), 'Mesquite');
+  assert.equal(prettyName(''), 'A plant');
+  assert.equal(prettyName(undefined), 'A plant');
+});
+
+test('POLISH4: the heat warning is an outdoor cue', () => {
+  for (const indoor of ['ZuzuGarageScene', 'MaterialLabScene', 'ThermalRigScene', 'CopperMineScene']) {
+    assert.equal(INDOOR_SCENES.has(indoor), true, `${indoor} is indoors`);
+  }
+  for (const outdoor of ['StreetBlockScene', 'DesertEdgeScene', 'DryWashScene']) {
+    assert.equal(INDOOR_SCENES.has(outdoor), false, `${outdoor} is outdoors`);
   }
 });

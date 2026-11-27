@@ -297,12 +297,12 @@
       "_note": "Original: x = width / 2 (1000)."
     },
     "interact_gps": {
-      "x": 940,
+      "x": 820,
       "y": 300,
       "_note": "Original: x = width - 60 (1000-60)."
     },
     "gps_post": {
-      "x": 940,
+      "x": 820,
       "y": 310,
       "w": 8,
       "h": 40,

@@ -181,9 +181,13 @@ export function createScaleStation(scene, cfg) {
   return { refresh, destroy };
 }
 
-/** "Mesquite Wood" → "MESQ", "Structural Steel (A36-like)" → "STEEL", etc. */
+/** "Mesquite Wood" → "MESQUITE", "Structural Steel (A36-like)" → "STRUCTURAL". */
 function shortName(name) {
   if (!name) return '?';
   const s = name.split(' ')[0].toUpperCase();
-  return s.length > 5 ? s.slice(0, 5) : s;
+  // Was slice(0, 5), which printed "MESQU", "STRUC" and "COPPE" on the
+  // scale buttons. Keep the first word instead — "Mesquite", "Steel",
+  // "Copper" — and only clip if that is still very long.
+  const firstWord = String(s).trim().split(/\s+/)[0] || String(s);
+  return firstWord.length > 10 ? firstWord.slice(0, 10) : firstWord;
 }

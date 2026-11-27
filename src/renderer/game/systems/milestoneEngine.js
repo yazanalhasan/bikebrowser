@@ -26,6 +26,17 @@ function debugLog(...args) {
 /**
  * Default milestone state. Added to save schema.
  */
+/**
+ * Items that count as having mined a given raw resource.
+ *
+ * The mine scenes grant concrete item ids; the milestones are written
+ * against the raw resource. Without this bridge a milestone can never be
+ * met, however much the child mines.
+ */
+const MINE_EQUIVALENTS = {
+  copper_ore: ['copper_ore', 'surface_copper', 'deep_copper', 'copper_ore_sample'],
+};
+
 export function defaultMilestoneState() {
   return {
     completed: [],      // milestone IDs
@@ -101,8 +112,17 @@ function evaluateCondition(condition, state, milestoneState) {
     }
 
     case 'mine': {
+      // `state.minedResources` is only written by `systems/miningSystem.js`.
+      // CopperMineScene does not use it — its nodes put `surface_copper` and
+      // `deep_copper` straight into the inventory — so "mine: copper_ore"
+      // sat at 0/1 even after the child had mined copper and finished the
+      // Copper Mine quest. Count what they are actually carrying too.
       const mined = state.minedResources?.[target] || 0;
-      return { met: mined >= (value || 1), current: mined, required: value || 1 };
+      const inventory = Array.isArray(state.inventory) ? state.inventory : [];
+      const accepted = MINE_EQUIVALENTS[target] || [target];
+      const carried = inventory.filter((item) => accepted.includes(item)).length;
+      const total = mined + carried;
+      return { met: total >= (value || 1), current: total, required: value || 1 };
     }
 
     case 'refine': {
