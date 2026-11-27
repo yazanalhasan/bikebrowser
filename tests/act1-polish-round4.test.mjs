@@ -18,7 +18,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 import { challengeDialogAction } from '../src/renderer/game/systems/subSceneDialog.js';
-import { NARRATOR } from '../src/renderer/game/systems/questDialog.js';
+import { NARRATOR, speakerFor } from '../src/renderer/game/systems/questDialog.js';
 import QUESTS from '../src/renderer/game/data/quests.js';
 
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
@@ -123,4 +123,27 @@ test('the quest column fades while Zuzu is at something he can use', () => {
   const base = read('src/renderer/game/scenes/LocalSceneBase.js');
   assert.match(base, /registry\.set\('propPromptVisible', anyPrompting\)/,
     'the scene must publish it for the HUD to read');
+});
+
+// ── banded captions obey the self-naming rule ──────────────────────────────
+
+test('a caption that names the NPC is read by the notebook', () => {
+  // The quest-completion caption is written as narration: "The tire is
+  // fixed! Mrs. Ramirez is so happy." Spoken BY her it reads as someone
+  // talking about herself. `_emitEnrichedDialog` used to assign the NPC
+  // directly and skip the rule that already existed for this.
+  const line = 'The tire is fixed! Mrs. Ramirez is so happy.';
+  assert.equal(speakerFor({ type: 'dialogue' }, line, 'Mrs. Ramirez', true), NARRATOR);
+});
+
+test('a line in her own voice is still hers', () => {
+  const line = '"Thank you so much, Zuzu! You\'re a real bike mechanic!"';
+  assert.equal(speakerFor({ type: 'dialogue' }, line, 'Mrs. Ramirez', true), 'Mrs. Ramirez');
+});
+
+test('the scene routes every caption through the rule', () => {
+  const scene = read('src/renderer/game/scenes/NeighborhoodScene.js');
+  assert.match(scene, /speakerFor\(step, text, npcName, true\)/);
+  const direct = scene.match(/speaker,\n\s+text: (?:immediateText|enrichedText)/g) || [];
+  assert.equal(direct.length, 0, 'a caption still assigns the speaker directly');
 });

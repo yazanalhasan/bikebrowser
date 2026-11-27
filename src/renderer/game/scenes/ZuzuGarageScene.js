@@ -708,6 +708,11 @@ export default class ZuzuGarageScene extends LocalSceneBase {
       // spawns just below it — so the hotspot's own caption landed on
       // Zuzu's torso as a second, half-hidden "Zuzu's Bike".
       showNameLabel: false,
+      // Below Zuzu's feet, not above the rack. The bike sits against the
+      // top wall, so the child stands in front of it: everything between
+      // the bike art and their soles is covered by their own sprite. The
+      // sign stays where it was drawn and the prompt clears the child.
+      promptOffset: 52,
       radius: 80,
       onInteract: () => {
         const s = this.registry.get('gameState');

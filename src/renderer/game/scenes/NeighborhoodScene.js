@@ -43,7 +43,7 @@ import { initDepthSort, updateDepthSort, applyDepth } from '../systems/depthSort
 import { FLORA_MAP } from '../data/flora.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { attachEdgeSensor, performSeamlessTransition } from '../systems/seamlessTraversal.js';
-import { NARRATOR } from '../systems/questDialog.js';
+import { NARRATOR, speakerFor } from '../systems/questDialog.js';
 
 const SCENE_KEY = 'NeighborhoodScene';
 
@@ -365,7 +365,14 @@ export default class NeighborhoodScene extends NeighborhoodSceneBase {
   _emitEnrichedDialog(npcId, questId, step, state) {
     const profile = getNpcProfile(npcId);
     const npcName = profile.name;
-    const speaker = step.type === 'quiz' ? 'Zuzu (thinking)' : npcName;
+    // Who says it is decided per line, not per step: the banded captions
+    // include ones written as narration ("The tire is fixed! Mrs. Ramirez
+    // is so happy."), and spoken by her those read as someone talking
+    // about herself. `speakerFor` sends those to the notebook. This emit
+    // used to assign the NPC directly and skip that rule entirely.
+    const lineSpeaker = (text) => (
+      step.type === 'quiz' ? 'Zuzu (thinking)' : speakerFor(step, text, npcName, true)
+    );
     const { band } = this._getDifficultyBand(state, questId);
 
     // Get immediate fallback content
@@ -384,7 +391,7 @@ export default class NeighborhoodScene extends NeighborhoodSceneBase {
 
     // Emit fallback immediately so dialog appears without delay
     this.registry.set('dialogEvent', {
-      speaker,
+      speaker: lineSpeaker(immediateText),
       text: immediateText,
       choices: immediateChoices,
       step,
@@ -421,7 +428,7 @@ export default class NeighborhoodScene extends NeighborhoodSceneBase {
         ? interpolateStepText(enrichedRaw, step.templateVars, liveState)
         : enrichedRaw;
       this.registry.set('dialogEvent', {
-        speaker,
+        speaker: lineSpeaker(enrichedText),
         text: enrichedText,
         choices: enrichedChoices,
         step,
