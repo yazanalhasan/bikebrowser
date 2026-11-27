@@ -259,9 +259,9 @@
       "_note": "Moved east from x=610 to spread the top-sidewalk props."
     },
     "street_sign": {
-      "x": 500,
-      "y": 292,
-      "_note": "Down at the kerb: at y=275 the board sat in the band where Mrs. Ramirez's talk prompt appears, and the two printed over each other whenever Zuzu walked up to her."
+      "x": 300,
+      "y": 272,
+      "_note": "Moved along the kerb rather than down it. At (500,275) the board sat in the band where Mrs. Ramirez's talk prompt appears; dropping it to y=292 put the board across her sprite instead. This spot is clear of both."
     },
     "npc_mrs_ramirez": {
       "x": 550,

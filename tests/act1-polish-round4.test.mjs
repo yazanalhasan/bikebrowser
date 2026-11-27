@@ -20,6 +20,9 @@ import { readFileSync } from 'node:fs';
 import { challengeDialogAction } from '../src/renderer/game/systems/subSceneDialog.js';
 import { NARRATOR, speakerFor } from '../src/renderer/game/systems/questDialog.js';
 import QUESTS from '../src/renderer/game/data/quests.js';
+import {
+  PROP_CAPTION_DEPTH, PROP_PROMPT_DEPTH,
+} from '../src/renderer/game/systems/labelLayout.js';
 
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
 const SRC = [
@@ -146,4 +149,44 @@ test('the scene routes every caption through the rule', () => {
   assert.match(scene, /speakerFor\(step, text, npcName, true\)/);
   const direct = scene.match(/speaker,\n\s+text: (?:immediateText|enrichedText)/g) || [];
   assert.equal(direct.length, 0, 'a caption still assigns the speaker directly');
+});
+
+// ── the polish tail ────────────────────────────────────────────────────────
+
+test('only the closest prop prompts', () => {
+  // Two "💬 Interact" chips side by side at the lab doors told the child
+  // they could press E on either; E only ever uses the nearest.
+  const base = read('src/renderer/game/scenes/LocalSceneBase.js');
+  assert.match(base, /prop\.prompt\.setVisible\(prop === nearest\)/);
+  assert.doesNotMatch(base, /prop\.prompt\.setVisible\(prop\._nearby\)/);
+});
+
+test('a prompt is drawn above the child standing at it', () => {
+  assert.ok(PROP_PROMPT_DEPTH > 6, 'characters are at depth 6');
+  assert.ok(PROP_CAPTION_DEPTH > 6);
+  assert.ok(PROP_PROMPT_DEPTH > PROP_CAPTION_DEPTH, 'the prompt is the one to read first');
+});
+
+test('the HUD chips stay off an open overlay or panel', () => {
+  const c = read('src/renderer/game/GameContainer.jsx');
+  assert.match(c, /const anyPanelOpen = /);
+  // the 💬 button, the first-room hint, the action hint, the physics pop-up
+  const gated = c.match(/!anyPanelOpen/g) || [];
+  assert.ok(gated.length >= 4, `only ${gated.length} HUD pieces honour the panels`);
+  assert.match(c, /physicsQuestion && !dialog && !paused && !overlayOpen && !craftResult/);
+});
+
+test("the quiz cards have no empty caption bar", () => {
+  const cq = read('src/renderer/game/scenes/CognitiveQuestScene.js');
+  assert.doesNotMatch(cq, /fillRoundedRect\(-56, captionY/,
+    'the blank pale-blue bar is back');
+});
+
+test('the explainer instruction box clears the PATCH tile', () => {
+  const layout = JSON.parse(read('public/layouts/flat-tire-explainer.layout.json')).objects;
+  const patchRight = layout.patch.x + layout.patch.w / 2;
+  const instructionLeft = layout.instruction.x - layout.instruction.w / 2;
+  // The drawn box is its border and padding wider than `w`.
+  assert.ok(instructionLeft - patchRight >= 24,
+    `only ${instructionLeft - patchRight}px between the tile and the box`);
 });

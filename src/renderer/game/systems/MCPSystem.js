@@ -17,7 +17,7 @@
  */
 
 import { getEnvironment } from './ecologyEngine.js';
-import { computeForagingRisk, detectForageables } from './foragingSystem.js';
+import { computeForagingRisk, nextForageable } from './foragingSystem.js';
 import { getPhysicsState, computeMovementStress } from './physicsbridge.js';
 import { initAISystem } from './ai/MCPAIAdapter.js';
 import PhysicsEducationSystem from './education/physicsEducationSystem.js';
@@ -249,9 +249,11 @@ export default class MCPSystem {
     // ── Plant proximity (ecology objects) ──
     const ecologyPlants = scene._ecologyPlants || [];
     if (ecologyPlants.length > 0 && sprite) {
-      const nearby = detectForageables(sprite.x, sprite.y, ecologyPlants);
-      this.state.player.nearPlant = nearby.length > 0;
-      this.state.player.nearestPlantSpecies = nearby[0]?.species || null;
+      // The one a child would actually pick: closest, and not still
+      // regrowing. The hint named the wrong plant on both counts.
+      const next = nextForageable(sprite.x, sprite.y, ecologyPlants);
+      this.state.player.nearPlant = Boolean(next);
+      this.state.player.nearestPlantSpecies = next?.species || null;
     } else {
       this.state.player.nearPlant = false;
       this.state.player.nearestPlantSpecies = null;

@@ -42,12 +42,36 @@ const FORAGE_RADIUS = 80; // pixels — how close player must be
  * @returns {object[]} harvestable plants within range
  */
 export function detectForageables(playerX, playerY, worldPlants) {
-  return worldPlants.filter((plant) => {
-    const dx = plant.x - playerX;
-    const dy = plant.y - playerY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    return dist <= FORAGE_RADIUS && HARVEST_TABLE[plant.species];
-  });
+  // Closest first. This used to return them in world order, so the hint
+  // beside a plant named whichever one happened to be earlier in the
+  // list: "Prickly pear nearby" while the child stood at the wilted
+  // plant, and "Mesquite nearby" right after foraging the mesquite.
+  return worldPlants
+    .map((plant) => {
+      const dx = plant.x - playerX;
+      const dy = plant.y - playerY;
+      return { plant, dist: Math.sqrt(dx * dx + dy * dy) };
+    })
+    .filter(({ plant, dist }) => dist <= FORAGE_RADIUS && HARVEST_TABLE[plant.species])
+    .sort((a, b) => a.dist - b.dist)
+    .map(({ plant }) => plant);
+}
+
+/**
+ * The plant a child standing here would pick: the closest one that has
+ * something to give right now.
+ *
+ * The forage hint used to name `detectForageables()[0]`, which was world
+ * order, not distance — "Prickly pear nearby" while standing at the wilted
+ * plant. It also named plants that were still regrowing.
+ *
+ * @returns {object|null}
+ */
+export function nextForageable(playerX, playerY, worldPlants) {
+  for (const plant of detectForageables(playerX, playerY, worldPlants)) {
+    if (canHarvest(plantKey(plant))) return plant;
+  }
+  return null;
 }
 
 // ── Quality computation ──────────────────────────────────────────────────────
@@ -250,12 +274,8 @@ export function attemptForage(playerX, playerY, worldPlants, timeOfDay = 'day') 
     return { success: false, message: 'No plants nearby to forage.' };
   }
 
-  // Pick the closest harvestable plant
-  const sorted = nearby
-    .map((p) => ({ ...p, dist: Math.sqrt((p.x - playerX) ** 2 + (p.y - playerY) ** 2) }))
-    .sort((a, b) => a.dist - b.dist);
-
-  for (const plant of sorted) {
+  // `detectForageables` already returns them closest first.
+  for (const plant of nearby) {
     const key = plantKey(plant);
     if (!canHarvest(key)) continue;
 

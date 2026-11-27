@@ -48,7 +48,8 @@ import {
   markCompanionMet,
 } from '../data/companions.js';
 import {
-  PROP_CAPTION_OFFSET, PROP_PROMPT_OFFSET, NAME_LABEL_LEAD_PX, firstLabelClash,
+  PROP_CAPTION_OFFSET, PROP_PROMPT_OFFSET, PROP_CAPTION_DEPTH, PROP_PROMPT_DEPTH,
+  NAME_LABEL_LEAD_PX, firstLabelClash,
 } from '../systems/labelLayout.js';
 
 // Default world size for local scenes (viewport-scale, not overworld-scale)
@@ -676,14 +677,17 @@ export default class LocalSceneBase extends Phaser.Scene {
       ? this.add.text(x, y + PROP_CAPTION_OFFSET, label, {
         fontSize: '11px', fontFamily: 'sans-serif', color: '#374151',
         fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 2,
-      }).setOrigin(0.5).setDepth(4).setVisible(false)
+      }).setOrigin(0.5).setDepth(PROP_CAPTION_DEPTH).setVisible(false)
       : null;
 
     // Prompt (hidden by default)
     const prompt = this.add.text(x, y + promptOffset, '💬 Interact', {
       fontSize: '12px', fontFamily: 'sans-serif', color: '#ffffff',
       backgroundColor: '#1e293b', padding: { x: 4, y: 2 },
-    }).setOrigin(0.5).setDepth(5).setVisible(false);
+      // Above the characters (depth 6). At depth 5 the child's own sprite
+      // covered the prompt for the thing they were standing at — the
+      // wilted plant most of all.
+    }).setOrigin(0.5).setDepth(PROP_PROMPT_DEPTH).setVisible(false);
 
     const interactable = {
       x,
@@ -830,15 +834,23 @@ export default class LocalSceneBase extends Phaser.Scene {
     const px = this.player.sprite.x;
     const py = this.player.sprite.y;
 
-    let anyPrompting = false;
+    // Measure everything first: only the closest prop in range gets the
+    // prompt. Two "💬 Interact" chips side by side at the lab doors told
+    // the child they could press E on either, and E only ever uses one.
+    let nearest = null;
     for (const prop of this._interactables) {
       const dx = px - prop.x;
       const dy = py - prop.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
       prop._nearby = dist < prop.radius;
       prop._distanceToPlayer = dist;
-      prop.prompt.setVisible(prop._nearby);
-      if (prop._nearby) anyPrompting = true;
+      if (prop._nearby && (!nearest || dist < nearest._distanceToPlayer)) nearest = prop;
+    }
+
+    const anyPrompting = Boolean(nearest);
+    for (const prop of this._interactables) {
+      const dist = prop._distanceToPlayer;
+      prop.prompt.setVisible(prop === nearest);
       // The name shows a little before the prompt does, and only if the
       // prop actually has a name.
       if (prop.nameLabel) {

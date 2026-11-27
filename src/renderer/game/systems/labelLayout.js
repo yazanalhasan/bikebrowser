@@ -49,6 +49,13 @@ export function nameTagOffset(usesAtlasAvatar) {
 export const PROP_CAPTION_OFFSET = -42;
 export const PROP_PROMPT_OFFSET = -24;
 
+/**
+ * Depths. Characters sit at 6; a prompt drawn below that is covered by the
+ * child standing at the very prop it belongs to.
+ */
+export const PROP_CAPTION_DEPTH = 11;
+export const PROP_PROMPT_DEPTH = 12;
+
 /** How much closer than the caption the player must be for the prompt. */
 export const NAME_LABEL_LEAD_PX = 34;
 

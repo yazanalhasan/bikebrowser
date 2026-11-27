@@ -1117,6 +1117,13 @@ export default function GameContainer() {
   const [speechOn, setSpeechOn] = useState(() => isSpeechEnabled());
   const [showGameSettings, setShowGameSettings] = useState(false);
 
+  // A panel is covering the game. The 💬 button used to sit on top of
+  // Crafting, Inventory and Milestones — including their own buttons —
+  // and the physics pop-up appeared over whatever was already open.
+  const anyPanelOpen = showQuestBoard || showShop || showInventory || showNotebook
+    || showCrafting || showMilestones || showAssistant || showReportPanel
+    || showAudioSettings || showGameSettings;
+
   // Initialize speech service from saved game settings
   useEffect(() => {
     const saved = loadGame();
@@ -1973,8 +1980,13 @@ export default function GameContainer() {
         >📊</button>
       )}
 
-      {/* ---- Physics Question Popup ---- */}
-      {physicsQuestion && (
+      {/* ---- Physics Question Popup ----
+          Held back while something else has the screen. It used to appear
+          over the flat-tire reward, unprompted, the moment the quest
+          finished. The question stays in state and shows once the screen
+          is the child's again. */}
+      {physicsQuestion && !dialog && !paused && !overlayOpen && !craftResult
+        && !anyPanelOpen && (
         <div className="absolute inset-0 z-40 bg-black/40 flex items-center justify-center">
           <div className="bg-white rounded-2xl shadow-2xl p-5 max-w-sm mx-4 border-2 border-blue-300">
             <div className="flex items-center gap-2 mb-2">
@@ -2058,7 +2070,9 @@ export default function GameContainer() {
       )}
 
       {/* ---- Virtual joystick (always visible for accessibility) ---- */}
-      {phase === 'playing' && !paused && !dialog && (
+      {/* Hidden while a panel is open: the button covered the bottom of
+          Crafting, Inventory and Milestones, including their buttons. */}
+      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && (
         <VirtualJoystick onMove={setJoystick} onAction={triggerWorldAction} />
       )}
 
@@ -2081,14 +2095,22 @@ export default function GameContainer() {
       )}
       {/* First-room hint. Garage only: "the door at the bottom goes outside"
           is only true in the garage, and on the street or in the desert it
-          pointed a child at a wall. */}
-      {phase === 'playing' && !dialog && !paused && activeSceneKey === 'ZuzuGarageScene'
+          pointed a child at a wall. It sits above the arrow pad: at top-20
+          it covered the bike and the "Zuzu's Garage" title. */}
+      {phase === 'playing' && !dialog && !paused && !overlayOpen && !anyPanelOpen
+        && activeSceneKey === 'ZuzuGarageScene'
         && !gameState?.activeQuest && !evaluateAct1(gameState || {}).complete && (
-        <div className="pointer-events-none absolute left-1/2 top-20 z-20 w-[min(18rem,calc(100%-7rem))] -translate-x-1/2 rounded-xl bg-white/95 px-3 py-2 text-center text-sm font-semibold text-gray-800 shadow-lg">
+        <div
+          className="pointer-events-none absolute left-1/2 bottom-28 z-20 w-[min(18rem,calc(100%-7rem))] -translate-x-1/2 rounded-xl bg-white/95 px-3 py-2 text-center text-sm font-semibold text-gray-800 shadow-lg"
+          style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
+        >
           Arrows or the pad to walk. The door at the bottom goes outside.
         </div>
       )}
-      {phase === 'playing' && actionHint && (
+      {/* Same rule as the rest of the HUD: nothing prints over an open
+          overlay or panel. */}
+      {phase === 'playing' && actionHint && !dialog && !paused && !overlayOpen
+        && !anyPanelOpen && (
         <div
           role="status"
           className="absolute bottom-24 right-6 z-20 max-w-[14rem] rounded-xl bg-white/95 px-3 py-2 text-sm text-gray-800 shadow-lg"

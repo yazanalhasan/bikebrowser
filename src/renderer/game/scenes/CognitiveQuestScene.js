@@ -135,7 +135,7 @@ export default class CognitiveQuestScene extends Phaser.Scene {
       const bg = this.add.rectangle(0, 0, area.w, area.h, 0xffffff, 1)
         .setStrokeStyle(3, 0xcbd5e1);
       const visual = this.add.graphics();
-      this._drawOptionVisual(visual, option.visual, area);
+      this._drawOptionVisual(visual, option.visual);
       const label = this.add.text(0, area.h / 2 - 36, option.label, {
         fontSize: '15px',
         fontFamily: 'sans-serif',
@@ -155,7 +155,7 @@ export default class CognitiveQuestScene extends Phaser.Scene {
     }
   }
 
-  _drawOptionVisual(gfx, visual, area) {
+  _drawOptionVisual(gfx, visual) {
     const centerY = -24;
     gfx.lineStyle(12, 0x111827, 1);
     gfx.strokeCircle(0, centerY, 48);
@@ -185,9 +185,9 @@ export default class CognitiveQuestScene extends Phaser.Scene {
       gfx.lineBetween(26, centerY + 48, 44, centerY + 32);
     }
 
-    const captionY = area.h / 2 - 70;
-    gfx.fillStyle(0xe0f2fe, 0.9);
-    gfx.fillRoundedRect(-56, captionY, 112, 18, 6);
+    // No empty caption bar. It was a pale blue rounded rect with nothing in
+    // it under every card — a child reads that as text that failed to load.
+    // The card's own label sits below it and says what the picture is.
   }
 
   _drawFeedback() {
