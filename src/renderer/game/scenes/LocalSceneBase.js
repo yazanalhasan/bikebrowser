@@ -639,7 +639,13 @@ export default class LocalSceneBase extends Phaser.Scene {
    * @param {function} config.onInteract — called when player interacts
    */
   addInteractable(config) {
-    const { x, y, label, icon, radius = 60, onInteract, showNameLabel = true } = config;
+    const {
+      x, y, label, icon, radius = 60, onInteract, showNameLabel = true,
+      // Above the prop by default. A station that already prints its own
+      // sign there (the lab's SCALE) passes a positive offset to put the
+      // prompt underneath instead.
+      promptOffset = PROP_PROMPT_OFFSET,
+    } = config;
 
     // Three cases:
     //  - an art key      -> draw the sprite
@@ -672,7 +678,7 @@ export default class LocalSceneBase extends Phaser.Scene {
       : null;
 
     // Prompt (hidden by default)
-    const prompt = this.add.text(x, y + PROP_PROMPT_OFFSET, '💬 Interact', {
+    const prompt = this.add.text(x, y + promptOffset, '💬 Interact', {
       fontSize: '12px', fontFamily: 'sans-serif', color: '#ffffff',
       backgroundColor: '#1e293b', padding: { x: 4, y: 2 },
     }).setOrigin(0.5).setDepth(5).setVisible(false);

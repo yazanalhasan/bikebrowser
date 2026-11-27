@@ -728,16 +728,31 @@ export default class MaterialLabScene extends LabRigBase {
       'Mesquite: strong enough and light for the bridge.',
     ];
     const panel = this.add.container(0, 0).setDepth(8);
-    panel.add(this.add.rectangle(cfg.x, cfg.y, cfg.w, cfg.h, 0x111827, 0.92)
-      .setStrokeStyle(2, 0xfbbf24));
-    panel.add(this.add.text(cfg.x, cfg.y - 18, 'Engineering takeaway', {
+
+    // Measure, then place. The heading sat at a fixed -18 and the three
+    // lines at +6, so the body's first line printed through "Engineering
+    // takeaway". Lay them out from their real heights and size the card to
+    // whatever they come to.
+    const heading = this.add.text(0, 0, 'Engineering takeaway', {
       fontSize: '11px', fontFamily: 'sans-serif', color: '#fbbf24',
       fontStyle: 'bold',
-    }).setOrigin(0.5));
-    panel.add(this.add.text(cfg.x, cfg.y + 6, lines.join('\n'), {
+    }).setOrigin(0.5, 0);
+    const body = this.add.text(0, 0, lines.join('\n'), {
       fontSize: '10px', fontFamily: 'sans-serif', color: '#f8fafc',
       align: 'center', lineSpacing: 2, wordWrap: { width: cfg.w - 18 },
-    }).setOrigin(0.5));
+    }).setOrigin(0.5, 0);
+
+    const padding = 8;
+    const gap = 5;
+    const height = Math.max(cfg.h, padding * 2 + heading.height + gap + body.height);
+    const top = cfg.y - height / 2 + padding;
+    heading.setPosition(cfg.x, top);
+    body.setPosition(cfg.x, top + heading.height + gap);
+
+    panel.add(this.add.rectangle(cfg.x, cfg.y, cfg.w, height, 0x111827, 0.92)
+      .setStrokeStyle(2, 0xfbbf24));
+    panel.add(heading);
+    panel.add(body);
     this._comparisonPanel = panel;
   }
 
@@ -834,19 +849,28 @@ export default class MaterialLabScene extends LabRigBase {
 
     // Also expose each as a proximity-prompt interactable so the player
     // can walk up and press E. Click-to-interact stays available too.
+    // Each station prints its own sign — "SCALE", "Coupons: 10 cm³
+    // uniform", "Density Slate" — so the generic caption was a second copy
+    // of the same word landing on the chart's axis label and on the
+    // neighbouring station's note. The scale's sign sits exactly where the
+    // interact prompt goes, so that one prompt hangs below the display.
     this.addInteractable({
       x: layout.scaleX, y: layout.scaleDisplayY, radius: 70,
       icon: ART.lab_scale, label: 'Scale',
+      showNameLabel: false,
+      promptOffset: 34,
       onInteract: () => { /* scale buttons handle their own clicks */ },
     });
     this.addInteractable({
       x: layout.calipersX, y: layout.calipersY, radius: 60,
       icon: ART.lab_coupons, label: 'Coupons',
+      showNameLabel: false,
       onInteract: () => this._onCalipersClick(),
     });
     this.addInteractable({
       x: layout.slateX, y: layout.slateY, radius: 60,
       icon: ART.clipboard, label: 'Density Slate',
+      showNameLabel: false,
       onInteract: () => this._slate?.openPanel?.(),
     });
   }

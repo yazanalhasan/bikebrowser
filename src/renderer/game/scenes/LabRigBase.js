@@ -307,6 +307,13 @@ export default class LabRigBase extends LocalSceneBase {
   createWorld() {
     this._clearDeadHandles();
 
+    // A lab rig draws its own instrument panel across the whole screen, so
+    // the React quest card has nowhere to sit: it landed across the
+    // Force / Strain / Stress readout, which is the one thing the child is
+    // meant to be watching. The rig owns the HUD while it is open.
+    this.registry.set('sceneOwnsHud', true);
+    this.events.once('shutdown', () => this.registry.set('sceneOwnsHud', false));
+
     const state = this.registry.get('gameState') || {};
     const world = this.getWorldSize();
     this._worldDim = { w: world.width, h: world.height };
@@ -447,13 +454,16 @@ export default class LabRigBase extends LocalSceneBase {
         22, 36, hexToInt(s.color),
       ).setStrokeStyle(1, 0x111114).setDepth(3);
 
-      const nameTxt = this.add.text(SELECTOR_X + 38, sy + 12, s.name || s.id, {
+      const nameTxt = this.add.text(SELECTOR_X + 38, sy + 10, s.name || s.id, {
         fontSize: '11px', fontFamily: 'sans-serif', color: COL_TEXT,
         fontStyle: 'bold', wordWrap: { width: SELECTOR_W - 50 },
       }).setDepth(3);
 
       if (s.category || s.subtitle) {
-        this.add.text(SELECTOR_X + 38, sy + 28, s.category || s.subtitle, {
+        // Under whatever the name actually took, not a fixed +28: a name
+        // that wraps to two lines ("Structural Steel (A36-like)") ran
+        // straight through the category word sitting below it.
+        this.add.text(SELECTOR_X + 38, nameTxt.y + nameTxt.height + 1, s.category || s.subtitle, {
           fontSize: '9px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
         }).setDepth(3);
       }

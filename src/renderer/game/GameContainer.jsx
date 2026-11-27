@@ -317,6 +317,10 @@ export default function GameContainer() {
   // True while the explainer or cognitive-quest overlay is up. The HUD
   // quest card sat over the question and the first answer.
   const [overlayOpen, setOverlayOpen] = useState(false);
+  // True in a scene that draws its own full-screen instrument panel — the
+  // lab rigs. The quest card sat across the Force / Strain / Stress
+  // readout, which is the one thing the child is meant to be watching.
+  const [sceneOwnsHud, setSceneOwnsHud] = useState(false);
   const [paused, setPaused] = useState(false);
   const [showInventory, setShowInventory] = useState(false);
   const [showNotebook, setShowNotebook] = useState(false);
@@ -837,6 +841,9 @@ export default function GameContainer() {
 
       const overlay = Boolean(registry.get('overlayOpen'));
       setOverlayOpen((prev) => (prev === overlay ? prev : overlay));
+
+      const ownsHud = Boolean(registry.get('sceneOwnsHud'));
+      setSceneOwnsHud((prev) => (prev === ownsHud ? prev : ownsHud));
 
       // Mirror `dialogEvent` for the same reason. The garage's welcome
       // message is written ~600ms into the first scene, and if that single
@@ -1364,7 +1371,7 @@ export default function GameContainer() {
           Hidden while a full-screen overlay is up: the goals chip and the
           quest card were drawn over the explainer's question and its first
           answer, which is the very first quest a child plays. */}
-      {phase === 'playing' && !overlayOpen && (
+      {phase === 'playing' && !overlayOpen && !sceneOwnsHud && (
         <div className="absolute left-0 right-0 pointer-events-none z-10" style={{ top: 'calc(max(0.5rem, env(safe-area-inset-top)) + 3rem)' }}>
           <div className="flex items-start justify-between px-2 gap-2">
             {/* Quest tracker + Zuzubucks */}

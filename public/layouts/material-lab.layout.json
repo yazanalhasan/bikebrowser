@@ -48,10 +48,10 @@
     },
     "comparison_panel": {
       "x": 320,
-      "y": 548,
+      "y": 516,
       "w": 350,
       "h": 58,
-      "_note": "Compact all-material comparison takeaway after all UTM tests."
+      "_note": "Compact all-material comparison takeaway after all UTM tests. Raised from y=548: the panel's bottom edge (y+h/2 = 577) printed over the ⬅ Back to Garage label at y=582."
     }
   }
 }
