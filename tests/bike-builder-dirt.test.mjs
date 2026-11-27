@@ -11,6 +11,7 @@ const catalog = JSON.parse(readFileSync(join(root, 'data/builder/parts.json'), '
 const rules = JSON.parse(readFileSync(join(root, 'data/builder/rules.json'), 'utf8'));
 const dirtRules = JSON.parse(readFileSync(join(root, 'data/builder/dirt-rules.json'), 'utf8'));
 const kit = JSON.parse(readFileSync(join(root, 'data/builder/bikes/e-dirt-light-bee.json'), 'utf8'));
+const gasKit = JSON.parse(readFileSync(join(root, 'data/builder/bikes/dirt-ktm-sx-125.json'), 'utf8'));
 
 const ALWAYS = new Set([
   'chain-length-on-bike',
@@ -111,4 +112,64 @@ test('e-dirt mismatches fail one family at a time and blank data does not pass',
   }), catalog, rules);
   assert.equal(findings(kids, 'dirt-power-class', 'warning').length, 1);
   assert.equal(findings(kids, 'dirt-age-wheel', 'warning').length, 1);
+});
+
+function gasSwap(slots) {
+  return { ...gasKit, slots: { ...gasKit.slots, ...slots } };
+}
+
+test('the SX 125 teaching kit has no dirt-rule failures', () => {
+  const result = checkBuild(gasKit, catalog, rules);
+  const allowed = new Set(['chain-length-on-bike', 'tire-clearance-not-checked']);
+  const unexpected = result.findings.filter((finding) => !allowed.has(finding.ruleId));
+  assert.deepEqual(unexpected.map((finding) => `${finding.ruleId}:${finding.severity}`), []);
+  assert.equal(result.findings.some((finding) => finding.severity === 'incompatible'), false);
+  assert.equal(result.findings.some((finding) => finding.severity === 'warning'), false);
+  assert.equal(result.verdict, 'cannot_verify');
+});
+
+test('gas dirt mismatches cover engine, years, fuel, and the shared wheel rules', () => {
+  const cases = [
+    ['dirt-engine-family', { engine: 'engine-honda-crf250f' }, 'incompatible'],
+    ['dirt-engine-displacement', { engine: 'engine-honda-crf250f' }, 'incompatible'],
+    ['dirt-engine-years', { engine: 'engine-ktm-sx-125-2016' }, 'incompatible'],
+    ['dirt-engine-spline', { countershaft_sprocket: 'sprocket-honda-cs' }, 'incompatible'],
+    ['dirt-intake-family', { intake: 'intake-ktm-sx-efi', frame: 'frame-honda-crf250f' }, 'incompatible'],
+    ['dirt-intake-induction', { intake: 'intake-ktm-sx-efi' }, 'incompatible'],
+    ['dirt-intake-years', { intake: 'intake-ktm-sx-2016' }, 'incompatible'],
+    ['dirt-exhaust-family', { exhaust: 'exhaust-honda-crf' }, 'incompatible'],
+    ['dirt-exhaust-years', { exhaust: 'exhaust-ktm-sx-2016' }, 'incompatible'],
+    ['dirt-plastics-family', { plastics: 'plastics-honda-crf' }, 'incompatible'],
+    ['dirt-plastics-years', { plastics: 'plastics-ktm-sx-2024' }, 'incompatible'],
+    ['dirt-air-filter', { air_filter: 'filter-honda-crf' }, 'incompatible'],
+    ['dirt-plug-thread', { spark_plug: 'plug-short-reach', engine: 'engine-honda-crf250f' }, 'incompatible'],
+    ['dirt-plug-reach', { spark_plug: 'plug-short-reach' }, 'incompatible'],
+    ['dirt-plug-heat', { spark_plug: 'plug-br7' }, 'warning'],
+    ['dirt-fuel-stroke', { fuel: 'fuel-gasoline-10w40' }, 'incompatible'],
+    ['dirt-premix-ratio', { fuel: 'fuel-premix-40' }, 'incompatible'],
+    ['dirt-oil-spec', { engine: 'engine-honda-crf250f', fuel: 'fuel-gasoline-10w50' }, 'incompatible'],
+    ['dirt-chain-pitch-front', { chain: 'chain-pitch-420' }, 'incompatible'],
+    ['dirt-front-axle-diameter', { front_wheel: 'wheel-surron-front-19' }, 'incompatible'],
+    ['dirt-bar-clamp', { handlebar: 'bar-fat-28-6' }, 'incompatible'],
+  ];
+  for (const [ruleId, slots, severity] of cases) {
+    const result = checkBuild(gasSwap(slots), catalog, rules);
+    assert.equal(findings(result, ruleId, severity).length, 1, ruleId);
+  }
+
+  const premixOnFourStroke = checkBuild(gasSwap({
+    engine: 'engine-honda-crf250f',
+    fuel: 'fuel-premix-32',
+  }), catalog, rules);
+  assert.equal(findings(premixOnFourStroke, 'dirt-fuel-stroke', 'incompatible').length, 1);
+
+  const blankPipe = checkBuild(gasSwap({ exhaust: 'exhaust-year-blank' }), catalog, rules);
+  assert.equal(findings(blankPipe, 'dirt-exhaust-years', 'cannot_verify').length, 1);
+  assert.equal(findings(blankPipe, 'dirt-exhaust-years', 'incompatible').length, 0);
+
+  const blankFrameYear = checkBuild(gasSwap({ frame: 'frame-ktm-sx-125-year-blank' }), catalog, rules);
+  assert.equal(findings(blankFrameYear, 'dirt-exhaust-years', 'cannot_verify').length, 1);
+  assert.equal(findings(blankFrameYear, 'dirt-plastics-years', 'cannot_verify').length, 1);
+  assert.equal(findings(blankFrameYear, 'dirt-engine-years', 'cannot_verify').length, 1);
+  assert.equal(findings(blankFrameYear, 'dirt-exhaust-years', 'incompatible').length, 0);
 });

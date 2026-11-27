@@ -3357,6 +3357,667 @@
       },
       "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
       "sourceRef": "Rear post mount and radial mount are different. A mismatch is a warning only when an adapter is the usual path."
+    },
+    {
+      "id": "dirt-engine-family",
+      "version": 1,
+      "slots": [
+        "engine",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.engine.specs.family",
+          "right": "slot.frame.specs.engineFamily"
+        }
+      },
+      "messageAdult": "The engine family does not match the frame. A different model is not a pass just because the displacement looks close.",
+      "messageKid": "This engine is for a different bike than this frame.",
+      "fix": "Use the engine family the frame lists.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both engine family names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Engine family is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Engine family is model-specific. Draft until the current maker sheet is confirmed."
+    },
+    {
+      "id": "dirt-engine-displacement",
+      "version": 1,
+      "slots": [
+        "engine",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.engine.specs.displacementCc",
+          "right": "slot.frame.specs.displacementCc"
+        }
+      },
+      "messageAdult": "Engine displacement does not match the frame's recorded displacement.",
+      "messageKid": "This engine is a different size than this frame lists.",
+      "fix": "Match the cubic centimeters.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both engine sizes."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Displacement is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Displacement is a first-class fitment field. Draft."
+    },
+    {
+      "id": "dirt-engine-years",
+      "version": 1,
+      "slots": [
+        "engine",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.engine.specs.yearSensitive",
+            "right": true
+          },
+          {
+            "op": "or",
+            "args": [
+              {
+                "op": "lt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.engine.specs.yearMin"
+                }
+              },
+              {
+                "op": "gt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.engine.specs.yearMax"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "messageAdult": "This engine's model years do not include the frame's model year.",
+      "messageKid": "This engine is for different years than this frame.",
+      "fix": "Use an engine whose year range includes the frame year.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the frame year and the engine's year range."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Model year is blank. A blank year does not pass."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Year-sensitive parts fail outside yearMin–yearMax. A blank year is cannot_verify, not a pass and not a hard fail by itself."
+    },
+    {
+      "id": "dirt-engine-spline",
+      "version": 1,
+      "slots": [
+        "countershaft_sprocket",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.countershaft_sprocket.specs.spline",
+          "right": "slot.engine.specs.countershaftSpline"
+        }
+      },
+      "messageAdult": "The front sprocket spline does not match the engine countershaft.",
+      "messageKid": "The front sprocket does not slide onto this engine.",
+      "fix": "Match the countershaft spline.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both spline names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Countershaft spline is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Gas bikes compare the sprocket spline to the engine, not to an electric motor. Draft."
+    },
+    {
+      "id": "dirt-intake-family",
+      "version": 1,
+      "slots": [
+        "intake",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.intake.specs.engineFamily",
+          "right": "slot.frame.specs.engineFamily"
+        }
+      },
+      "messageAdult": "The intake is listed for a different engine family.",
+      "messageKid": "This carburetor or injector is for a different bike.",
+      "fix": "Match the intake to the engine family.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both family names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Intake family is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Carburetor and EFI manifolds are family-specific. Draft."
+    },
+    {
+      "id": "dirt-intake-induction",
+      "version": 1,
+      "slots": [
+        "intake",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.intake.specs.induction",
+          "right": "slot.engine.specs.induction"
+        }
+      },
+      "messageAdult": "Carburetor and fuel injection do not interchange.",
+      "messageKid": "This air-and-fuel part is the wrong kind for this engine.",
+      "fix": "Use a carburetor on a carbureted engine, or EFI on an EFI engine.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need to know if each part is a carburetor or fuel injection."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Induction type is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://powersports.honda.com/",
+      "sourceRef": "Carb and EFI are different systems. Draft per model year."
+    },
+    {
+      "id": "dirt-intake-years",
+      "version": 1,
+      "slots": [
+        "intake",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.intake.specs.yearSensitive",
+            "right": true
+          },
+          {
+            "op": "or",
+            "args": [
+              {
+                "op": "lt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.intake.specs.yearMin"
+                }
+              },
+              {
+                "op": "gt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.intake.specs.yearMax"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "messageAdult": "This intake's model years do not include the frame year.",
+      "messageKid": "This carburetor or injector is for different years.",
+      "fix": "Use an intake whose year range includes the frame year.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the frame year and the intake's year range."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Intake year range is blank. A blank year does not pass."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Intake fitment is year-ranged. Draft."
+    },
+    {
+      "id": "dirt-exhaust-family",
+      "version": 1,
+      "slots": [
+        "exhaust",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.exhaust.specs.engineFamily",
+          "right": "slot.frame.specs.engineFamily"
+        }
+      },
+      "messageAdult": "The exhaust header is listed for a different engine family.",
+      "messageKid": "This pipe is for a different bike.",
+      "fix": "Match the exhaust to the engine family.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both family names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Exhaust family is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Header and pipe fitment follow the engine family. Draft."
+    },
+    {
+      "id": "dirt-exhaust-years",
+      "version": 1,
+      "slots": [
+        "exhaust",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.exhaust.specs.yearSensitive",
+            "right": true
+          },
+          {
+            "op": "or",
+            "args": [
+              {
+                "op": "lt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.exhaust.specs.yearMin"
+                }
+              },
+              {
+                "op": "gt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.exhaust.specs.yearMax"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "messageAdult": "This exhaust's model years do not include the frame year.",
+      "messageKid": "This pipe is for different years than this frame.",
+      "fix": "Use a pipe whose year range includes the frame year.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the frame year and the pipe's year range."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Exhaust year range is blank. A blank year does not pass."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Header and pipe fitment is year-ranged. A 2016–2018 pipe does not pass on a 2022 frame. Draft ranges."
+    },
+    {
+      "id": "dirt-plastics-family",
+      "version": 1,
+      "slots": [
+        "plastics",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.plastics.specs.engineFamily",
+          "right": "slot.frame.specs.engineFamily"
+        }
+      },
+      "messageAdult": "These plastics are listed for a different model.",
+      "messageKid": "These body panels are for a different bike.",
+      "fix": "Match the plastics to the model.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both model names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Plastics model is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Plastics follow the model family. Draft."
+    },
+    {
+      "id": "dirt-plastics-years",
+      "version": 1,
+      "slots": [
+        "plastics",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.plastics.specs.yearSensitive",
+            "right": true
+          },
+          {
+            "op": "or",
+            "args": [
+              {
+                "op": "lt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.plastics.specs.yearMin"
+                }
+              },
+              {
+                "op": "gt",
+                "left": "slot.frame.specs.modelYear",
+                "right": {
+                  "path": "slot.plastics.specs.yearMax"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "messageAdult": "These plastics' model years do not include the frame year.",
+      "messageKid": "These body panels are for different years.",
+      "fix": "Use plastics whose year range includes the frame year.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the frame year and the plastics' year range."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Plastics year range is blank. A blank year does not pass."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Plastic kits are year-ranged. Draft."
+    },
+    {
+      "id": "dirt-air-filter",
+      "version": 1,
+      "slots": [
+        "air_filter",
+        "frame"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.air_filter.specs.airbox",
+          "right": "slot.frame.specs.airbox"
+        }
+      },
+      "messageAdult": "The air filter does not match this airbox.",
+      "messageKid": "This air filter does not fit this bike's air box.",
+      "fix": "Match the air filter to the airbox.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both airbox names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Airbox is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Air-filter shape follows the airbox. Draft."
+    },
+    {
+      "id": "dirt-plug-thread",
+      "version": 1,
+      "slots": [
+        "spark_plug",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.spark_plug.specs.thread",
+          "right": "slot.engine.specs.plugThread"
+        }
+      },
+      "messageAdult": "Spark plug thread does not match the engine.",
+      "messageKid": "This spark plug does not screw into this engine.",
+      "fix": "Match the thread.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both thread sizes."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Spark plug thread is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Thread and reach are hard fitment. Draft plug codes."
+    },
+    {
+      "id": "dirt-plug-reach",
+      "version": 1,
+      "slots": [
+        "spark_plug",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.spark_plug.specs.reach",
+          "right": "slot.engine.specs.plugReach"
+        }
+      },
+      "messageAdult": "Spark plug reach does not match the engine.",
+      "messageKid": "This spark plug is the wrong length for this engine.",
+      "fix": "Match the reach.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both reach numbers."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Spark plug reach is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Reach is separate from thread. Draft."
+    },
+    {
+      "id": "dirt-plug-heat",
+      "version": 1,
+      "slots": [
+        "spark_plug",
+        "engine"
+      ],
+      "severity": "warning",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.spark_plug.specs.heatRange",
+          "right": "slot.engine.specs.plugHeat"
+        }
+      },
+      "messageAdult": "Spark plug heat range differs from the engine's listed plug. Thread and reach can still match. This is a warning.",
+      "messageKid": "This spark plug is hotter or colder than the one this engine lists. A grown-up should check it.",
+      "fix": "Use the heat range the engine lists, or have a grown-up confirm a different range.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both heat-range names."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Heat range is blank. Blank is not a pass."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Heat range is a warning when thread and reach already match. Draft codes."
+    },
+    {
+      "id": "dirt-fuel-stroke",
+      "version": 1,
+      "slots": [
+        "fuel",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "or",
+        "args": [
+          {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "left": "slot.engine.specs.stroke",
+                "right": "2"
+              },
+              {
+                "op": "not",
+                "arg": {
+                  "op": "eq",
+                  "left": "slot.fuel.specs.kind",
+                  "right": "premix"
+                }
+              }
+            ]
+          },
+          {
+            "op": "and",
+            "args": [
+              {
+                "op": "eq",
+                "left": "slot.engine.specs.stroke",
+                "right": "4"
+              },
+              {
+                "op": "eq",
+                "left": "slot.fuel.specs.kind",
+                "right": "premix"
+              }
+            ]
+          }
+        ]
+      },
+      "messageAdult": "2-stroke engines need premix. 4-stroke engines do not use premix in the fuel.",
+      "messageKid": "This fuel mix does not match this engine. A 2-stroke needs oil in the gas. A 4-stroke does not.",
+      "fix": "Use premix for a 2-stroke, and plain gasoline plus the listed crankcase oil for a 4-stroke.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need to know if the engine is a 2-stroke or a 4-stroke, and what kind of fuel this is."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Stroke or fuel kind is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "2-stroke premix and 4-stroke gasoline are not interchangeable. Draft."
+    },
+    {
+      "id": "dirt-premix-ratio",
+      "version": 1,
+      "slots": [
+        "fuel",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.engine.specs.stroke",
+            "right": "2"
+          },
+          {
+            "op": "eq",
+            "left": "slot.fuel.specs.kind",
+            "right": "premix"
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.fuel.specs.premixRatio",
+              "right": "slot.engine.specs.premixRatio"
+            }
+          }
+        ]
+      },
+      "messageAdult": "Premix ratio does not match the ratio the engine lists.",
+      "messageKid": "The oil-in-gas mix is a different amount than this engine lists.",
+      "fix": "Mix the ratio the engine lists.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both mix ratios."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Premix ratio is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://www.ktm.com/",
+      "sourceRef": "Premix ratio is model-specific. A different ratio does not pass. Draft."
+    },
+    {
+      "id": "dirt-oil-spec",
+      "version": 1,
+      "slots": [
+        "fuel",
+        "engine"
+      ],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          {
+            "op": "eq",
+            "left": "slot.engine.specs.stroke",
+            "right": "4"
+          },
+          {
+            "op": "not",
+            "arg": {
+              "op": "eq",
+              "left": "slot.fuel.specs.oilSpec",
+              "right": "slot.engine.specs.oilSpec"
+            }
+          }
+        ]
+      },
+      "messageAdult": "Crankcase oil does not match the 4-stroke engine's listed oil.",
+      "messageKid": "This oil is not the kind this engine lists.",
+      "fix": "Use the oil grade the engine lists.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need both oil grades."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Oil grade is blank. Blank is not a match."
+      },
+      "sourceUrl": "https://powersports.honda.com/",
+      "sourceRef": "4-stroke oil grade is separate from premix. Draft."
     }
   ]
 }

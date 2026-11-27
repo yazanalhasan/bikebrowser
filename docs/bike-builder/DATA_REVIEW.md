@@ -1,6 +1,6 @@
 # Parts needing review
 
-Generated 2026-11-27. 353 parts. Approved means the numbers were copied from a manufacturer specification table during this build. Draft means a person still needs to check them before anyone trusts a real build.
+Generated 2026-11-27. 393 parts. Approved means the numbers were copied from a manufacturer specification table during this build. Draft means a person still needs to check them before anyone trusts a real build.
 
 A draft part can still appear in the builder. If a number is blank, the engine says "can't verify" instead of "fits".
 
@@ -362,6 +362,46 @@ A draft part can still appear in the builder. If a number is blank, the engine s
 - `peg-talaria` (footpeg) Talaria Sting footpegs — Draft pegs that do not use the Light Bee mount.
 - `dcdc-36-12` (dc_dc) Teaching 36 V to 12 V converter — Draft DC-DC for a 36 V pack. It does not match a 60 V battery.
 - `motor-kids-too-strong` (motor) Teaching 3000 W motor on a kids mount — Draft motor whose power is over a STACYC-class frame limit. Used to show the kids power warning.
+- `frame-ktm-sx-125-2022` (frame) KTM 2022 SX 125 frame — Draft 2022 SX 125 frame. Model year, engine family, axles, and airbox need confirmation on the current KTM sheet.
+- `frame-ktm-sx-125-year-blank` (frame) KTM SX 125 frame, year not recorded — Draft frame with the SX 125 geometry and a blank model year. Year-sensitive parts cannot pass.
+- `frame-honda-crf250f` (frame) Honda CRF250F frame — Draft CRF250F frame. 4-stroke trail geometry is separate from the SX 125. Confirm on the Honda sheet.
+- `wheel-ktm-sx-front-21` (dirt_wheel) KTM KTM SX front wheel 21 in — Draft SX wheel. Axle, hub width, rim, sprocket bolts, and rotor mount need confirmation.
+- `wheel-ktm-sx-rear-19` (dirt_wheel) KTM KTM SX rear wheel 19 in — Draft SX wheel. Axle, hub width, rim, sprocket bolts, and rotor mount need confirmation.
+- `tire-ktm-sx-front` (dirt_tire) KTM 80 mm tire for 21 in rim — Draft front tire for the SX teaching kit.
+- `tire-ktm-sx-rear` (dirt_tire) KTM 90 mm tire for 19 in rim — Draft rear tire for the SX teaching kit.
+- `sprocket-ktm-cs` (sprocket) KTM SX countershaft sprocket 520 13T — Draft 520 countershaft sprocket. Spline needs confirmation.
+- `sprocket-ktm-rear` (sprocket) KTM SX rear sprocket 520 50T — Draft 520 rear sprocket. Bolt pattern needs confirmation.
+- `sprocket-honda-cs` (sprocket) Honda CRF countershaft sprocket — Draft sprocket with a Honda countershaft spline. It does not fit the SX shaft.
+- `engine-ktm-sx-125-2022` (engine) KTM 2022 SX 125 engine — Draft 2-stroke 125. Family, years, premix, plug, and spline need confirmation. Not a 4-stroke.
+- `engine-ktm-sx-125-2016` (engine) KTM 2016 SX 125 engine — Draft earlier SX 125. Same family, years that do not include 2022.
+- `engine-honda-crf250f` (engine) Honda CRF250F engine — Draft 4-stroke EFI trail engine. It does not match an SX 125 carbureted 2-stroke.
+- `intake-ktm-sx-carb` (intake) KTM SX 125 carburetor — Draft carburetor for the SX 125 teaching years.
+- `intake-ktm-sx-2016` (intake) KTM SX 125 carburetor, 2016-2018 — Draft earlier carburetor. Same family, years that do not include 2022.
+- `intake-ktm-sx-efi` (intake) Teaching SX 125 fuel injection — Draft EFI intake. It does not match the carbureted SX 125 engine.
+- `exhaust-ktm-sx-2019` (exhaust) KTM SX 125 pipe, 2019-2022 — Draft header and pipe for 2019-2022. Confirm the year range on the KTM sheet.
+- `exhaust-ktm-sx-2016` (exhaust) KTM SX 125 pipe, 2016-2018 — Draft earlier pipe. It does not fit a 2022 frame.
+- `exhaust-year-blank` (exhaust) KTM SX 125 pipe, years not recorded — Draft pipe with a blank year range. It cannot pass.
+- `exhaust-honda-crf` (exhaust) Honda CRF250F pipe — Draft CRF pipe. Wrong family on an SX frame even when the year overlaps.
+- `plastics-ktm-sx-2019` (plastics) KTM SX 125 plastics, 2019-2022 — Draft plastic kit for 2019-2022.
+- `plastics-ktm-sx-2024` (plastics) KTM SX 125 plastics, 2024-2025 — Draft later plastics. They do not fit a 2022 frame.
+- `plastics-honda-crf` (plastics) Honda CRF250F plastics — Draft CRF plastics. Wrong model on an SX frame.
+- `filter-ktm-sx` (air_filter) KTM SX 125 air filter — Draft filter for the SX 125 airbox.
+- `filter-honda-crf` (air_filter) Honda CRF250F air filter — Draft CRF filter. It does not fit the SX airbox.
+- `plug-br8` (spark_plug) Teaching BR8, reach 19 — Draft plug matching the SX 125 teaching spec. Confirm the code.
+- `plug-short-reach` (spark_plug) Teaching BR8, reach 12 — Draft plug with the listed thread and a shorter reach.
+- `plug-br7` (spark_plug) Teaching BR7, reach 19 — Draft hotter or colder plug. Thread and reach match. Heat range is a warning.
+- `fuel-premix-32` (fuel) Teaching Premix 32:1 — Draft 2-stroke premix at 32:1. Confirm the ratio on the engine sheet.
+- `fuel-premix-40` (fuel) Teaching Premix 40:1 — Draft premix at a different ratio than the SX 125 teaching spec.
+- `fuel-gasoline-10w40` (fuel) Teaching Gasoline and 10W-40 — Draft 4-stroke fuel and crankcase oil. It is not premix.
+- `fuel-gasoline-10w50` (fuel) Teaching Gasoline and 10W-50 — Draft gasoline with a different oil grade than the CRF teaching spec.
+- `rotor-ktm-front-220` (dirt_rotor) KTM 220 mm front rotor — Draft 220 mm rotor under the SX front maximum.
+- `rotor-ktm-rear-200` (dirt_rotor) KTM 200 mm rear rotor — Draft 200 mm rotor under the SX rear maximum.
+- `caliper-ktm-front` (dirt_caliper) KTM SX front caliper, DOT — Draft DOT post-mount caliper. Confirm the fluid.
+- `caliper-ktm-rear` (dirt_caliper) KTM SX rear caliper, DOT — Draft DOT post-mount caliper. Confirm the fluid.
+- `fork-ktm-sx` (fork) KTM SX fork — Draft SX fork. Travel, steerer, offset, and axle need confirmation.
+- `shock-ktm-sx` (shock) KTM SX shock — Draft SX shock. Length, stroke, mount, and rider window need confirmation.
+- `stem-ktm-22` (stem) KTM 22.2 mm bar clamps — Draft 22.2 mm (7/8 in) clamps.
+- `peg-ktm` (footpeg) KTM SX footpegs — Draft SX peg mount.
 
 ## Open questions for Dr. Yazan
 

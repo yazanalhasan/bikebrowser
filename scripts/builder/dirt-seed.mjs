@@ -447,4 +447,267 @@ export function addDirtParts(add) {
     sourceRef: 'Draft motor whose power is over a STACYC-class frame limit. Used to show the kids power warning.',
     quote: '3000 W',
   });
+
+  addGasParts(add);
+}
+
+function engineSpecs(overrides) {
+  return {
+    family: null,
+    displacementCc: null,
+    stroke: null,
+    induction: null,
+    premixRatio: null,
+    oilSpec: null,
+    plugThread: null,
+    plugReach: null,
+    plugHeat: null,
+    countershaftSpline: null,
+    yearMin: null,
+    yearMax: null,
+    yearSensitive: true,
+    ...overrides,
+  };
+}
+
+function addGasParts(add) {
+  const sx = {
+    frontAxleDiameterMm: 20, frontHubWidthMm: 110, rearAxleDiameterMm: 20, rearHubWidthMm: 180,
+    frontRimIn: 21, rearRimIn: 19, maxTireWidthMm: 110, chainlineMm: 52,
+    bayLengthMm: null, bayWidthMm: null, bayHeightMm: null,
+    maxFrontRotorMm: 260, maxRearRotorMm: 220, frontCaliperMount: 'post-mount', rearCaliperMount: 'post-mount',
+    maxForkTravelMm: 310, tripleOffsetMm: 22, shockEyeMm: 280, shockStrokeMm: 72, shockMount: 'ktm-pin',
+    footpegMount: 'ktm-peg', ageClass: 'teen', maxPowerW: null, maxKidsWheelIn: null,
+    modelYear: 2022, engineFamily: 'ktm-sx-125', displacementCc: 125, airbox: 'ktm-sx-125-airbox',
+  };
+  part(add, {
+    id: 'frame-ktm-sx-125-2022', category: 'frame', brand: 'KTM', model: '2022 SX 125 frame', sourceUrl: KTM,
+    specs: { ...FRAME_BASE, ...sx },
+    sourceRef: 'Draft 2022 SX 125 frame. Model year, engine family, axles, and airbox need confirmation on the current KTM sheet.',
+    quote: '2022 SX 125',
+  });
+  part(add, {
+    id: 'frame-ktm-sx-125-year-blank', category: 'frame', brand: 'KTM', model: 'SX 125 frame, year not recorded', sourceUrl: KTM,
+    specs: { ...FRAME_BASE, ...sx, modelYear: null },
+    sourceRef: 'Draft frame with the SX 125 geometry and a blank model year. Year-sensitive parts cannot pass.',
+    quote: 'year blank',
+  });
+  part(add, {
+    id: 'frame-honda-crf250f', category: 'frame', brand: 'Honda', model: 'CRF250F frame', sourceUrl: HONDA,
+    specs: {
+      ...FRAME_BASE,
+      frontAxleDiameterMm: 20, frontHubWidthMm: 110, rearAxleDiameterMm: 20, rearHubWidthMm: 175,
+      frontRimIn: 21, rearRimIn: 18, maxTireWidthMm: 110, chainlineMm: 50,
+      maxFrontRotorMm: 240, maxRearRotorMm: 220, frontCaliperMount: 'post-mount', rearCaliperMount: 'post-mount',
+      maxForkTravelMm: 240, tripleOffsetMm: 24, shockEyeMm: 270, shockStrokeMm: 68, shockMount: 'honda-pin',
+      footpegMount: 'honda-peg', ageClass: 'teen', maxPowerW: null, maxKidsWheelIn: null,
+      modelYear: 2023, engineFamily: 'honda-crf250f', displacementCc: 250, airbox: 'honda-crf250f-airbox',
+    },
+    sourceRef: 'Draft CRF250F frame. 4-stroke trail geometry is separate from the SX 125. Confirm on the Honda sheet.',
+    quote: 'CRF250F',
+  });
+
+  const wheels = [
+    ['wheel-ktm-sx-front-21', 'front', 20, 110, 21, 25, null, '6-bolt', 'KTM SX front wheel 21 in'],
+    ['wheel-ktm-sx-rear-19', 'rear', 20, 180, 19, 32, 'ktm-6x100', '6-bolt', 'KTM SX rear wheel 19 in'],
+  ];
+  for (const [id, position, axle, hub, rim, rimWidth, bolts, rotorMount, model] of wheels) {
+    part(add, {
+      id, category: 'dirt_wheel', brand: 'KTM', model, sourceUrl: KTM,
+      specs: { position, axleDiameterMm: axle, hubWidthMm: hub, rimDiameterIn: rim, rimWidthMm: rimWidth, sprocketBoltPattern: bolts, rotorMount },
+      sourceRef: 'Draft SX wheel. Axle, hub width, rim, sprocket bolts, and rotor mount need confirmation.',
+      quote: String(rim),
+    });
+  }
+  part(add, {
+    id: 'tire-ktm-sx-front', category: 'dirt_tire', brand: 'KTM', model: '80 mm tire for 21 in rim', sourceUrl: KTM,
+    specs: { rimDiameterIn: 21, widthMm: 80, rimWidthMinMm: 21, rimWidthMaxMm: 32 },
+    sourceRef: 'Draft front tire for the SX teaching kit.', quote: '21 in',
+  });
+  part(add, {
+    id: 'tire-ktm-sx-rear', category: 'dirt_tire', brand: 'KTM', model: '90 mm tire for 19 in rim', sourceUrl: KTM,
+    specs: { rimDiameterIn: 19, widthMm: 90, rimWidthMinMm: 28, rimWidthMaxMm: 40 },
+    sourceRef: 'Draft rear tire for the SX teaching kit.', quote: '19 in',
+  });
+
+  part(add, {
+    id: 'sprocket-ktm-cs', category: 'sprocket', brand: 'KTM', model: 'SX countershaft sprocket 520 13T', sourceUrl: KTM,
+    specs: { position: 'countershaft', pitch: 520, boltPattern: null, spline: 'ktm-cs', chainlineMm: 52, teeth: 13 },
+    sourceRef: 'Draft 520 countershaft sprocket. Spline needs confirmation.', quote: '520',
+  });
+  part(add, {
+    id: 'sprocket-ktm-rear', category: 'sprocket', brand: 'KTM', model: 'SX rear sprocket 520 50T', sourceUrl: KTM,
+    specs: { position: 'rear', pitch: 520, boltPattern: 'ktm-6x100', spline: null, chainlineMm: 52, teeth: 50 },
+    sourceRef: 'Draft 520 rear sprocket. Bolt pattern needs confirmation.', quote: '520',
+  });
+  part(add, {
+    id: 'sprocket-honda-cs', category: 'sprocket', brand: 'Honda', model: 'CRF countershaft sprocket', sourceUrl: HONDA,
+    specs: { position: 'countershaft', pitch: 520, boltPattern: null, spline: 'honda-cs', chainlineMm: 52, teeth: 13 },
+    sourceRef: 'Draft sprocket with a Honda countershaft spline. It does not fit the SX shaft.', quote: 'honda-cs',
+  });
+
+  const sxEngine = engineSpecs({
+    family: 'ktm-sx-125', displacementCc: 125, stroke: '2', induction: 'carb', premixRatio: '32:1',
+    plugThread: 'M14x1.25', plugReach: 19, plugHeat: 'BR8', countershaftSpline: 'ktm-cs',
+    yearMin: 2019, yearMax: 2022,
+  });
+  part(add, {
+    id: 'engine-ktm-sx-125-2022', category: 'engine', brand: 'KTM', model: '2022 SX 125 engine', sourceUrl: KTM,
+    specs: sxEngine,
+    sourceRef: 'Draft 2-stroke 125. Family, years, premix, plug, and spline need confirmation. Not a 4-stroke.',
+    quote: '125 2-stroke',
+  });
+  part(add, {
+    id: 'engine-ktm-sx-125-2016', category: 'engine', brand: 'KTM', model: '2016 SX 125 engine', sourceUrl: KTM,
+    specs: engineSpecs({ ...sxEngine, yearMin: 2016, yearMax: 2018 }),
+    sourceRef: 'Draft earlier SX 125. Same family, years that do not include 2022.',
+    quote: '2016-2018',
+  });
+  part(add, {
+    id: 'engine-honda-crf250f', category: 'engine', brand: 'Honda', model: 'CRF250F engine', sourceUrl: HONDA,
+    specs: engineSpecs({
+      family: 'honda-crf250f', displacementCc: 250, stroke: '4', induction: 'efi', oilSpec: '10w-40',
+      plugThread: 'M12x1.25', plugReach: 19, plugHeat: 'CR8', countershaftSpline: 'honda-cs',
+      yearMin: 2019, yearMax: 2024,
+    }),
+    sourceRef: 'Draft 4-stroke EFI trail engine. It does not match an SX 125 carbureted 2-stroke.',
+    quote: '250 4-stroke',
+  });
+
+  part(add, {
+    id: 'intake-ktm-sx-carb', category: 'intake', brand: 'KTM', model: 'SX 125 carburetor', sourceUrl: KTM,
+    specs: { engineFamily: 'ktm-sx-125', induction: 'carb', yearMin: 2019, yearMax: 2022, yearSensitive: true },
+    sourceRef: 'Draft carburetor for the SX 125 teaching years.', quote: 'carb',
+  });
+  part(add, {
+    id: 'intake-ktm-sx-2016', category: 'intake', brand: 'KTM', model: 'SX 125 carburetor, 2016-2018', sourceUrl: KTM,
+    specs: { engineFamily: 'ktm-sx-125', induction: 'carb', yearMin: 2016, yearMax: 2018, yearSensitive: true },
+    sourceRef: 'Draft earlier carburetor. Same family, years that do not include 2022.', quote: '2016-2018',
+  });
+  part(add, {
+    id: 'intake-ktm-sx-efi', category: 'intake', brand: 'Teaching', model: 'SX 125 fuel injection', sourceUrl: KTM,
+    specs: { engineFamily: 'ktm-sx-125', induction: 'efi', yearMin: 2019, yearMax: 2022, yearSensitive: true },
+    sourceRef: 'Draft EFI intake. It does not match the carbureted SX 125 engine.', quote: 'efi',
+  });
+  part(add, {
+    id: 'exhaust-ktm-sx-2019', category: 'exhaust', brand: 'KTM', model: 'SX 125 pipe, 2019-2022', sourceUrl: KTM,
+    specs: { engineFamily: 'ktm-sx-125', yearMin: 2019, yearMax: 2022, yearSensitive: true },
+    sourceRef: 'Draft header and pipe for 2019-2022. Confirm the year range on the KTM sheet.', quote: '2019-2022',
+  });
+  part(add, {
+    id: 'exhaust-ktm-sx-2016', category: 'exhaust', brand: 'KTM', model: 'SX 125 pipe, 2016-2018', sourceUrl: KTM,
+    specs: { engineFamily: 'ktm-sx-125', yearMin: 2016, yearMax: 2018, yearSensitive: true },
+    sourceRef: 'Draft earlier pipe. It does not fit a 2022 frame.', quote: '2016-2018',
+  });
+  part(add, {
+    id: 'exhaust-year-blank', category: 'exhaust', brand: 'KTM', model: 'SX 125 pipe, years not recorded', sourceUrl: KTM,
+    specs: { engineFamily: 'ktm-sx-125', yearMin: null, yearMax: null, yearSensitive: true },
+    sourceRef: 'Draft pipe with a blank year range. It cannot pass.', quote: 'year blank',
+  });
+  part(add, {
+    id: 'exhaust-honda-crf', category: 'exhaust', brand: 'Honda', model: 'CRF250F pipe', sourceUrl: HONDA,
+    specs: { engineFamily: 'honda-crf250f', yearMin: 2019, yearMax: 2024, yearSensitive: true },
+    sourceRef: 'Draft CRF pipe. Wrong family on an SX frame even when the year overlaps.', quote: 'CRF',
+  });
+  part(add, {
+    id: 'plastics-ktm-sx-2019', category: 'plastics', brand: 'KTM', model: 'SX 125 plastics, 2019-2022', sourceUrl: KTM,
+    specs: { engineFamily: 'ktm-sx-125', yearMin: 2019, yearMax: 2022, yearSensitive: true },
+    sourceRef: 'Draft plastic kit for 2019-2022.', quote: '2019-2022',
+  });
+  part(add, {
+    id: 'plastics-ktm-sx-2024', category: 'plastics', brand: 'KTM', model: 'SX 125 plastics, 2024-2025', sourceUrl: KTM,
+    specs: { engineFamily: 'ktm-sx-125', yearMin: 2024, yearMax: 2025, yearSensitive: true },
+    sourceRef: 'Draft later plastics. They do not fit a 2022 frame.', quote: '2024-2025',
+  });
+  part(add, {
+    id: 'plastics-honda-crf', category: 'plastics', brand: 'Honda', model: 'CRF250F plastics', sourceUrl: HONDA,
+    specs: { engineFamily: 'honda-crf250f', yearMin: 2019, yearMax: 2024, yearSensitive: true },
+    sourceRef: 'Draft CRF plastics. Wrong model on an SX frame.', quote: 'CRF',
+  });
+  part(add, {
+    id: 'filter-ktm-sx', category: 'air_filter', brand: 'KTM', model: 'SX 125 air filter', sourceUrl: KTM,
+    specs: { airbox: 'ktm-sx-125-airbox' },
+    sourceRef: 'Draft filter for the SX 125 airbox.', quote: 'sx airbox',
+  });
+  part(add, {
+    id: 'filter-honda-crf', category: 'air_filter', brand: 'Honda', model: 'CRF250F air filter', sourceUrl: HONDA,
+    specs: { airbox: 'honda-crf250f-airbox' },
+    sourceRef: 'Draft CRF filter. It does not fit the SX airbox.', quote: 'crf airbox',
+  });
+  part(add, {
+    id: 'plug-br8', category: 'spark_plug', brand: 'Teaching', model: 'BR8, reach 19', sourceUrl: KTM,
+    specs: { thread: 'M14x1.25', reach: 19, heatRange: 'BR8' },
+    sourceRef: 'Draft plug matching the SX 125 teaching spec. Confirm the code.', quote: 'BR8',
+  });
+  part(add, {
+    id: 'plug-short-reach', category: 'spark_plug', brand: 'Teaching', model: 'BR8, reach 12', sourceUrl: KTM,
+    specs: { thread: 'M14x1.25', reach: 12, heatRange: 'BR8' },
+    sourceRef: 'Draft plug with the listed thread and a shorter reach.', quote: 'reach 12',
+  });
+  part(add, {
+    id: 'plug-br7', category: 'spark_plug', brand: 'Teaching', model: 'BR7, reach 19', sourceUrl: KTM,
+    specs: { thread: 'M14x1.25', reach: 19, heatRange: 'BR7' },
+    sourceRef: 'Draft hotter or colder plug. Thread and reach match. Heat range is a warning.', quote: 'BR7',
+  });
+  part(add, {
+    id: 'fuel-premix-32', category: 'fuel', brand: 'Teaching', model: 'Premix 32:1', sourceUrl: KTM,
+    specs: { kind: 'premix', premixRatio: '32:1', oilSpec: null },
+    sourceRef: 'Draft 2-stroke premix at 32:1. Confirm the ratio on the engine sheet.', quote: '32:1',
+  });
+  part(add, {
+    id: 'fuel-premix-40', category: 'fuel', brand: 'Teaching', model: 'Premix 40:1', sourceUrl: KTM,
+    specs: { kind: 'premix', premixRatio: '40:1', oilSpec: null },
+    sourceRef: 'Draft premix at a different ratio than the SX 125 teaching spec.', quote: '40:1',
+  });
+  part(add, {
+    id: 'fuel-gasoline-10w40', category: 'fuel', brand: 'Teaching', model: 'Gasoline and 10W-40', sourceUrl: HONDA,
+    specs: { kind: 'gasoline', premixRatio: null, oilSpec: '10w-40' },
+    sourceRef: 'Draft 4-stroke fuel and crankcase oil. It is not premix.', quote: '10w-40',
+  });
+  part(add, {
+    id: 'fuel-gasoline-10w50', category: 'fuel', brand: 'Teaching', model: 'Gasoline and 10W-50', sourceUrl: HONDA,
+    specs: { kind: 'gasoline', premixRatio: null, oilSpec: '10w-50' },
+    sourceRef: 'Draft gasoline with a different oil grade than the CRF teaching spec.', quote: '10w-50',
+  });
+
+  part(add, {
+    id: 'rotor-ktm-front-220', category: 'dirt_rotor', brand: 'KTM', model: '220 mm front rotor', sourceUrl: KTM,
+    specs: { sizeMm: 220, mount: '6-bolt' },
+    sourceRef: 'Draft 220 mm rotor under the SX front maximum.', quote: '220',
+  });
+  part(add, {
+    id: 'rotor-ktm-rear-200', category: 'dirt_rotor', brand: 'KTM', model: '200 mm rear rotor', sourceUrl: KTM,
+    specs: { sizeMm: 200, mount: '6-bolt' },
+    sourceRef: 'Draft 200 mm rotor under the SX rear maximum.', quote: '200',
+  });
+  part(add, {
+    id: 'caliper-ktm-front', category: 'dirt_caliper', brand: 'KTM', model: 'SX front caliper, DOT', sourceUrl: KTM,
+    specs: { caliperMount: 'post-mount', fluid: 'dot' },
+    sourceRef: 'Draft DOT post-mount caliper. Confirm the fluid.', quote: 'dot',
+  });
+  part(add, {
+    id: 'caliper-ktm-rear', category: 'dirt_caliper', brand: 'KTM', model: 'SX rear caliper, DOT', sourceUrl: KTM,
+    specs: { caliperMount: 'post-mount', fluid: 'dot' },
+    sourceRef: 'Draft DOT post-mount caliper. Confirm the fluid.', quote: 'dot',
+  });
+  part(add, {
+    id: 'fork-ktm-sx', category: 'fork', brand: 'KTM', model: 'SX fork', sourceUrl: KTM,
+    specs: { travelMm: 300, steerer: 'ktm-triple', offsetMm: 22, axleDiameterMm: 20 },
+    sourceRef: 'Draft SX fork. Travel, steerer, offset, and axle need confirmation.', quote: '300 mm',
+  });
+  part(add, {
+    id: 'shock-ktm-sx', category: 'shock', brand: 'KTM', model: 'SX shock', sourceUrl: KTM,
+    specs: { eyeToEyeMm: 280, strokeMm: 72, mount: 'ktm-pin', minRiderKg: 45, maxRiderKg: 85 },
+    sourceRef: 'Draft SX shock. Length, stroke, mount, and rider window need confirmation.', quote: '280 mm',
+  });
+  part(add, {
+    id: 'stem-ktm-22', category: 'stem', brand: 'KTM', model: '22.2 mm bar clamps', sourceUrl: KTM,
+    specs: { steerer: 'ktm-triple', barClampMm: 22.2 },
+    sourceRef: 'Draft 22.2 mm (7/8 in) clamps.', quote: '22.2',
+  });
+  part(add, {
+    id: 'peg-ktm', category: 'footpeg', brand: 'KTM', model: 'SX footpegs', sourceUrl: KTM,
+    specs: { mount: 'ktm-peg' },
+    sourceRef: 'Draft SX peg mount.', quote: 'ktm-peg',
+  });
 }

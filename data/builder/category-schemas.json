@@ -40,6 +40,13 @@
     "stem": ["steerer", "barClampMm"],
     "handlebar": ["clampMm"],
     "footpeg": ["mount"],
-    "dc_dc": ["inputVoltage", "outputVoltage"]
+    "dc_dc": ["inputVoltage", "outputVoltage"],
+    "engine": ["family", "displacementCc", "stroke", "induction", "premixRatio", "oilSpec", "plugThread", "plugReach", "plugHeat", "countershaftSpline", "yearMin", "yearMax", "yearSensitive"],
+    "intake": ["engineFamily", "induction", "yearMin", "yearMax", "yearSensitive"],
+    "exhaust": ["engineFamily", "yearMin", "yearMax", "yearSensitive"],
+    "plastics": ["engineFamily", "yearMin", "yearMax", "yearSensitive"],
+    "air_filter": ["airbox"],
+    "spark_plug": ["thread", "reach", "heatRange"],
+    "fuel": ["kind", "premixRatio", "oilSpec"]
   }
 }

@@ -5,6 +5,7 @@ import zuzuBike from '../../../../data/builder/bikes/zuzu-bike.json';
 import midDriveKit from '../../../../data/builder/bikes/mid-drive-48.json';
 import hubMotorKit from '../../../../data/builder/bikes/hub-motor-48.json';
 import eDirtKit from '../../../../data/builder/bikes/e-dirt-light-bee.json';
+import gasDirtKit from '../../../../data/builder/bikes/dirt-ktm-sx-125.json';
 import { checkBuild, classifyCandidates } from '../../../builder/engine.js';
 import { formatGear, gearRange, WHEEL_SIZES } from '../../../builder/gearMath.js';
 import { presentFinding } from '../../../builder/present.js';
@@ -223,6 +224,9 @@ export default function BuilderPage() {
             </button>
             <button type="button" onClick={() => loadBike(eDirtKit, 'Loaded an e-dirt teaching kit. The numbers are still drafts. A grown-up confirms them before a real bike is built.')} className="min-h-11 rounded-xl border border-slate-400 bg-white px-4 py-2 font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900">
               Start from an e-dirt bike
+            </button>
+            <button type="button" onClick={() => loadBike(gasDirtKit, 'Loaded a gas dirt teaching kit. Model years are drafts. A 2-stroke needs premix. A grown-up confirms the sheet before a real bike is built.')} className="min-h-11 rounded-xl border border-slate-400 bg-white px-4 py-2 font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900">
+              Start from a gas dirt bike
             </button>
             <button type="button" onClick={saveBuild} className="min-h-11 rounded-xl border border-slate-400 bg-white px-4 py-2 font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900">
               Save this build
