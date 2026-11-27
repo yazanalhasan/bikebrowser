@@ -1,0 +1,584 @@
+{
+  "version": 1,
+  "notes": "Declarative fitment rules. A predicate that evaluates true is a problem. Missing values become cannot_verify inside the engine. Unknown never passes.",
+  "rules": [
+    {
+      "id": "cassette-freehub-driver",
+      "version": 1,
+      "slots": ["hub", "cassette"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "adapter_allowed",
+        "mode": "freehub",
+        "driver": "slot.hub.specs.freehub",
+        "fits": "slot.cassette.specs.freehubFit"
+      },
+      "messageAdult": "This cassette does not fit this freehub body.",
+      "messageKid": "This cassette and this wheel use different splines, so the cassette cannot slide on.",
+      "fix": "Choose a cassette made for this freehub, or a wheel with the matching driver.",
+      "messageAdultByStatus": {
+        "warning": "This cassette fits this {driver} freehub only with a {spacerMm} mm spacer.",
+        "cannot_verify": "The freehub or the cassette spline list is missing, so this pair does not pass.",
+        "incompatible": "This cassette does not fit a {driver} freehub."
+      },
+      "messageKidByStatus": {
+        "warning": "These can work together if a grown-up adds a thin {spacerMm} mm spacer.",
+        "cannot_verify": "We do not know the splines yet, so we will not say the cassette fits the wheel.",
+        "incompatible": "This cassette and this wheel use different splines, so the cassette cannot slide on."
+      },
+      "fixByStatus": {
+        "warning": "Add the {spacerMm} mm spacer the maker specifies, then check that the cassette sits flat and the lockring tightens.",
+        "incompatible": "Choose a cassette made for this freehub, or a wheel with the matching driver.",
+        "cannot_verify": "Fill in the freehub body and the cassette's spline list."
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceUrlByDriver": {
+        "xd": "https://support.sram.com/hc/en-us/sections/6129171904667",
+        "xdr": "https://support.sram.com/hc/en-us/sections/6129171904667"
+      },
+      "sourceRef": "Shimano C-731 freehub table (HG-S/M/L/L2, Micro Spline, 1.85 mm spacer notes). SRAM XD on XDR uses a 1.85 mm spacer; XDR does not fit XD."
+    },
+    {
+      "id": "speed-count",
+      "version": 1,
+      "slots": ["shifter", "rear_derailleur", "cassette", "chain"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "speeds_match",
+          "paths": [
+            "slot.shifter.specs.speeds",
+            "slot.rear_derailleur.specs.speeds",
+            "slot.cassette.specs.speeds",
+            "slot.chain.specs.speeds"
+          ],
+          "relax": [
+            {
+              "path": "slot.rear_derailleur.specs.speeds",
+              "whenFamily": "slot.rear_derailleur.specs.actuationFamily",
+              "family": "shimano-road-6-9-10",
+              "allowed": [6, 7, 8, 9],
+              "othersMustBeInAllowed": true
+            }
+          ]
+        }
+      },
+      "messageAdult": "Speed counts do not match across the shifter, rear derailleur, cassette, and chain. Shimano classic-cable rear derailleurs of 6, 7, 8, and 9 speeds are the recorded exception: the shifter, cassette, and chain still have to match each other.",
+      "messageKid": "The clicker, the derailleur, the cassette, and the chain need the same number of speeds. Right now they do not.",
+      "messageKidByStatus": {
+        "cannot_verify": "We are missing a speed count, so we will not say the speeds match."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "A speed count is missing on the shifter, derailleur, cassette, or chain. Missing is not a match."
+      },
+      "fix": "Use one speed count for the shifter, cassette, and chain. On the older Shimano cable pull, a 6, 7, 8, or 9-speed rear derailleur can be the exception.",
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Shimano drivetrain compatibility charts group parts by speed. The 6–9 speed rear-derailleur exception is the shared classic cable pull, described at https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/"
+    },
+    {
+      "id": "actuation-family",
+      "version": 1,
+      "slots": ["shifter", "rear_derailleur"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "same_family",
+          "left": "slot.shifter.specs.actuationFamily",
+          "right": "slot.rear_derailleur.specs.actuationFamily"
+        }
+      },
+      "messageAdult": "The shifter and the rear derailleur are in different actuation families, so each click pulls a different amount of cable (or they are different electronic systems).",
+      "messageKid": "The shifter and the derailleur speak different languages, so the clicks will not land on the cogs.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know the click family yet, so we will not say the shifter and derailleur match."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Actuation family is missing. Close pull-ratio numbers are not treated as a match."
+      },
+      "fix": "Pair a shifter and a rear derailleur from the same family. Pull-ratio measurements live in standards.js from boothinator/derailleur-analysis (MIT).",
+      "sourceUrl": "https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/",
+      "sourceRef": "Actuation families follow manufacturer compatibility plus measured pull ratios from boothinator/derailleur-analysis (MIT), https://github.com/boothinator/derailleur-analysis"
+    },
+    {
+      "id": "rd-max-cog",
+      "version": 1,
+      "slots": ["cassette", "rear_derailleur"],
+      "optionalSlots": ["hanger_extender"],
+      "severity": "incompatible",
+      "provenance": "practitioner_rule",
+      "predicate": {
+        "op": "rd_max_cog",
+        "extenderWindowTeeth": 8
+      },
+      "messageAdult": "The largest cog is {largestCog}T and this derailleur is published to {maxCog}T.",
+      "messageKid": "The biggest cog is taller than this derailleur was built for.",
+      "fix": "Add a hanger extender (for example a Wolf Tooth GoatLink or RoadLink style extender) and set the B-screw, or choose a long-cage rear derailleur rated for this cog.",
+      "messageAdultByStatus": {
+        "warning": "Largest cog is {largestCog}T. This derailleur is published to {maxCog}T, which is {overBy}T over the spec. A hanger extender is in the build, inside the 8-tooth practitioner window.",
+        "incompatible": "Largest cog is {largestCog}T. This derailleur is published to {maxCog}T ({overBy}T over). That is outside the published max, and it is not inside the 8-tooth hanger-extender window.",
+        "cannot_verify": "The cassette's largest cog or the derailleur's published max cog is missing, so the big-cog check does not pass."
+      },
+      "messageKidByStatus": {
+        "warning": "The biggest cog is a bit taller than this derailleur's published limit. A hanger extender is on the bike, so a grown-up can try it after setting the B-screw.",
+        "incompatible": "The biggest cog is too tall for this derailleur. A hanger extender is not in the build, or the cog is still too tall even with one.",
+        "cannot_verify": "We need the biggest cog and the derailleur's max cog before we can check this."
+      },
+      "fixByStatus": {
+        "warning": "Keep the hanger extender. Set the B-screw so the upper pulley clears the largest cog, then shift through every gear on the bike.",
+        "incompatible": "Add a hanger extender (for example a Wolf Tooth GoatLink or RoadLink style extender) and set the B-screw, or choose a long-cage rear derailleur rated for this cog.",
+        "cannot_verify": "Enter the derailleur's published maximum sprocket and the cassette's largest cog."
+      },
+      "sourceUrl": "https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/",
+      "sourceRef": "Published max cog is the manufacturer limit on each derailleur record. The ≤8T window with a hanger extender is a phase 1 practitioner rule, not a Shimano or SRAM specification."
+    },
+    {
+      "id": "rd-min-largest-cog",
+      "version": 1,
+      "slots": ["cassette", "rear_derailleur"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "exists", "path": "slot.rear_derailleur.specs.minLargestCog" },
+          {
+            "op": "lt",
+            "left": "slot.cassette.specs.largestCog",
+            "right": { "path": "slot.rear_derailleur.specs.minLargestCog" }
+          }
+        ]
+      },
+      "messageAdult": "The largest cog is {largestCog}T, below this derailleur's published minimum of {minLargestCog}T.",
+      "messageKid": "This derailleur wants a bigger largest cog than the one on this cassette.",
+      "fix": "Use a cassette whose largest cog is at least {minLargestCog}T, or a derailleur rated for this cassette.",
+      "messageKidByStatus": {
+        "cannot_verify": "We cannot check the derailleur's smallest allowed big cog until both numbers are filled in."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Minimum largest-cog check is missing a number. If the maker did not publish a minimum, the part record leaves it empty and this rule stays quiet."
+      },
+      "sourceUrl": "https://bike.shimano.com/en-EU/product/component/alivio-m3100/RD-M3100-SGS.html",
+      "sourceRef": "Example of a published minimum: RD-M3100-SGS low sprocket min 32T. The rule runs only when the part record includes minLargestCog."
+    },
+    {
+      "id": "rd-total-capacity",
+      "version": 1,
+      "slots": ["rear_derailleur", "cassette", "crankset"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "capacity_sum_lte",
+          "capacity": "slot.rear_derailleur.specs.capacity",
+          "frontDiff": "derived.frontDiff",
+          "cogRange": "derived.cogRange"
+        }
+      },
+      "messageAdult": "Chain wrap is {capacityNeeded}T ((big ring − small ring) + (big cog − small cog)). This derailleur's published capacity is {rdCapacity}T.",
+      "messageKid": "The chain has to wrap more difference than this derailleur can take up.",
+      "fix": "Choose a derailleur with more total capacity, or a closer chainring pair, or a closer cassette.",
+      "messageKidByStatus": {
+        "cannot_verify": "We are missing a tooth count or the derailleur's capacity, so we will not say the chain wrap is okay."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Total capacity needs the derailleur capacity, the chainring difference, and the cassette range. A blank capacity does not pass."
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/articles/6496285693339",
+      "sourceRef": "Capacity = (big ring − small ring) + (big cog − small cog). Also explained at https://wisewheeling.com/rear-derailleur-capacity/"
+    },
+    {
+      "id": "rd-max-front-diff",
+      "version": 1,
+      "slots": ["rear_derailleur", "crankset"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "gt", "left": "derived.ringCount", "right": 1 },
+          {
+            "op": "not",
+            "arg": {
+              "op": "lte",
+              "left": "derived.frontDiff",
+              "right": { "path": "slot.rear_derailleur.specs.maxFrontDiff" }
+            }
+          }
+        ]
+      },
+      "messageAdult": "The chainring difference is {frontDiff}T and this derailleur's published maximum front difference is {maxFrontDiff}T.",
+      "messageKid": "The two chainrings are farther apart than this derailleur can handle.",
+      "fix": "Use a closer chainring pair or a derailleur rated for this front difference.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the chainring sizes and the derailleur's max front difference before this can pass."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Front-difference check is missing chainring teeth or the derailleur's published max front difference."
+      },
+      "sourceUrl": "https://wisewheeling.com/rear-derailleur-capacity/",
+      "sourceRef": "On a 2x bike the front difference also has to sit inside the derailleur's published maximum front difference."
+    },
+    {
+      "id": "electronic-ecosystem",
+      "version": 1,
+      "slots": ["shifter", "rear_derailleur"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "same_ecosystem",
+          "left": "slot.shifter.specs.eEcosystem",
+          "right": "slot.rear_derailleur.specs.eEcosystem"
+        }
+      },
+      "messageAdult": "Electronic ecosystems do not mix. Di2, AXS, and Campagnolo electronic parts stay inside their own system. A cable part and an electronic part do not mix either.",
+      "messageKid": "These shifters and derailleurs are from different electronic families, so they do not talk to each other.",
+      "messageKidByStatus": {
+        "cannot_verify": "We cannot tell if these are cable or electronic yet."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "eEcosystem is missing on the shifter or the derailleur. Leave it null only for a cable part."
+      },
+      "fix": "Keep Di2 with Di2, AXS with AXS, and Campagnolo electronic with Campagnolo electronic. Generations still have to match on speed and actuation family.",
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/road/axs-components-compatibility-map.pdf",
+      "sourceRef": "SRAM AXS components compatibility map. Shimano Di2 and Campagnolo electronic are separate ecosystems and are not on that map."
+    },
+    {
+      "id": "full-mount-needs-udh",
+      "version": 1,
+      "slots": ["rear_derailleur", "frame"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "requires_standard",
+          "whenPath": "slot.rear_derailleur.specs.mount",
+          "whenValue": "full-mount",
+          "standardPath": "slot.frame.specs.hanger",
+          "standard": "udh"
+        }
+      },
+      "messageAdult": "This is a Full Mount rear derailleur (Eagle Transmission or XPLR AXS). SRAM requires a UDH frame.",
+      "messageKid": "This derailleur bolts to a Universal Derailleur Hanger. This frame has a different hanger.",
+      "fix": "Use this derailleur on a UDH frame, or choose a derailleur that uses this frame's hanger.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the derailleur mount and the frame hanger before we can check Full Mount."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Full Mount check is missing derailleur mount or frame hanger. It does not pass while either is blank."
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "SRAM: Full Mount derailleurs (Eagle Transmission, XPLR AXS) require a UDH frame."
+    },
+    {
+      "id": "chain-type",
+      "version": 1,
+      "slots": ["chain", "cassette", "rear_derailleur", "shifter"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "chain_types_match",
+          "paths": [
+            "slot.chain.specs.chainType",
+            "slot.cassette.specs.chainType",
+            "slot.rear_derailleur.specs.chainType",
+            "slot.shifter.specs.chainType"
+          ]
+        }
+      },
+      "messageAdult": "Chain type does not match across the chain, cassette, rear derailleur, and shifter. Flattop, T-Type, Linkglide, Eagle, and Campagnolo chains stay with their own systems.",
+      "messageKid": "This chain is made for one special drivetrain. The other parts are not that drivetrain.",
+      "fix": "Use the chain that belongs to this drivetrain.",
+      "messageKidByStatus": {
+        "cannot_verify": "A chain type is missing, so we will not say this chain belongs with these parts."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "chainType is missing on the chain, cassette, derailleur, or shifter."
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "SRAM T-Type (Transmission) and Flattop are dedicated chains. Shimano Linkglide uses its own chain. Eagle mechanical uses an Eagle chain. Ordinary HG chains stay with HG systems."
+    },
+    {
+      "id": "brake-type-match",
+      "version": 1,
+      "slots": ["brake_lever", "brake_caliper"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.brake_lever.specs.brakeType",
+          "right": "slot.brake_caliper.specs.brakeType"
+        }
+      },
+      "messageAdult": "The brake lever and the caliper are different systems (rim, V-brake, cantilever, mechanical disc, or hydraulic disc).",
+      "messageKid": "This lever and this brake are different kinds, so they are not a pair.",
+      "fix": "Use a lever and a caliper from the same brake system.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know the brake type yet."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Brake type is missing on the lever or the caliper."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "Lever and caliper have to be the same brake system. Hydraulic pairings are on the SRAM hydraulic compatibility map; Shimano publishes its own mineral-oil pairings."
+    },
+    {
+      "id": "brake-frame-match",
+      "version": 1,
+      "slots": ["frame", "brake_caliper"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "brake_frame_match",
+          "frame": "slot.frame.specs.brakeStyle",
+          "part": "slot.brake_caliper.specs.brakeType"
+        }
+      },
+      "messageAdult": "The frame's brake style (rim or disc) does not match this caliper.",
+      "messageKid": "This frame and this brake are not the same kind. A rim frame does not take a disc caliper, and a disc frame does not take a rim brake.",
+      "fix": "Match a disc caliper to a disc frame, or a rim brake to a rim frame.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know if this frame is set up for rim brakes or disc brakes."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Frame brake style or caliper brake type is missing."
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/chain-compatibility",
+      "sourceRef": "Phase 1 brake-style check: rim frames take rim brakes, disc frames take disc calipers. Park Tool is cited for general service context; the frame record supplies brakeStyle."
+    },
+    {
+      "id": "brake-fluid",
+      "version": 1,
+      "slots": ["brake_lever", "brake_caliper"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "same_fluid",
+          "leverType": "slot.brake_lever.specs.brakeType",
+          "caliperType": "slot.brake_caliper.specs.brakeType",
+          "left": "slot.brake_lever.specs.fluid",
+          "right": "slot.brake_caliper.specs.fluid"
+        }
+      },
+      "messageAdult": "Hydraulic lever and caliper use different fluids. Mineral oil and DOT fluid are never mixed. Shimano and Campagnolo use mineral oil. Most SRAM brakes use DOT fluid. SRAM Maven uses mineral oil.",
+      "messageKid": "This lever and this caliper need the same brake fluid. These two use different kinds, so they are not a pair.",
+      "fix": "Choose a caliper that uses the same fluid as the lever.",
+      "messageKidByStatus": {
+        "cannot_verify": "We do not know the brake fluid yet, so we will not say these brakes match."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Fluid is blank on a hydraulic lever or caliper. Blank fluid does not pass."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "SRAM hydraulic lever/caliper map. Mineral vs DOT is a hard stop. SRAM Maven is mineral oil; Code, Level, and Guide are DOT."
+    },
+    {
+      "id": "caliper-mount",
+      "version": 1,
+      "slots": ["brake_caliper", "frame"],
+      "severity": "warning",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "adapter_allowed",
+        "mode": "mount",
+        "left": "slot.brake_caliper.specs.caliperMount",
+        "right": "slot.frame.specs.caliperMount"
+      },
+      "messageAdult": "The caliper mount and the frame mount are different.",
+      "messageKid": "The brake and the frame use different bolt patterns.",
+      "fix": "Use a matching mount, or add the correct adapter and check that the wheel still spins freely.",
+      "messageAdultByStatus": {
+        "warning": "Caliper mount is {leftMount} and the frame mount is {rightMount}. An adapter can bridge them. Confirm the adapter, the bolt length, and rotor clearance on the bike.",
+        "cannot_verify": "Caliper mount or frame mount is missing, so the mount check does not pass."
+      },
+      "messageKidByStatus": {
+        "warning": "The mounts do not match. A grown-up can add an adapter, then check that the wheel still spins freely.",
+        "cannot_verify": "We do not know both bolt patterns yet."
+      },
+      "fixByStatus": {
+        "warning": "Fit the correct mount adapter. Check bolt length and that the rotor sits in the middle of the pads.",
+        "cannot_verify": "Enter the caliper mount and the frame mount."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "Post mount, flat mount, and IS are different patterns. A mismatch is a warning when an adapter is the usual fix, not a silent pass."
+    },
+    {
+      "id": "rotor-size",
+      "version": 1,
+      "slots": ["rotor", "frame"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "lte",
+          "left": "slot.rotor.specs.sizeMm",
+          "right": { "path": "slot.frame.specs.maxRotorMm" }
+        }
+      },
+      "messageAdult": "Rotor size exceeds the frame's published maximum.",
+      "messageKid": "This rotor is bigger than the frame has room for.",
+      "fix": "Choose a rotor at or under the frame's maximum, or a frame rated for this rotor.",
+      "messageKidByStatus": {
+        "cannot_verify": "We need the rotor size and the frame's biggest allowed rotor."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Rotor size or frame max rotor is missing. Missing does not mean the rotor fits."
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "Rotor diameter has to be less than or equal to the frame or fork maximum stored on the frame record. Phase 1 uses one max for the frame."
+    },
+    {
+      "id": "rotor-mount",
+      "version": 1,
+      "slots": ["rotor", "hub"],
+      "severity": "warning",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "adapter_allowed",
+        "mode": "mount",
+        "left": "slot.rotor.specs.rotorMount",
+        "right": "slot.hub.specs.rotorMount"
+      },
+      "messageAdult": "The rotor mount and the hub mount are different.",
+      "messageKid": "This rotor and this hub do not use the same mounting style.",
+      "fix": "Use a matching rotor, or the correct 6-bolt / Center Lock adapter, and check that it locks tight.",
+      "messageAdultByStatus": {
+        "warning": "Rotor mount is {leftMount} and the hub is {rightMount}. An adapter exists for this pair. It is a warning, not a native fit.",
+        "cannot_verify": "Rotor mount or hub mount is missing."
+      },
+      "messageKidByStatus": {
+        "warning": "A grown-up can add an adapter so this rotor fits this hub. Check that it locks tight.",
+        "cannot_verify": "We do not know if this rotor and hub use 6-bolt or Center Lock."
+      },
+      "fixByStatus": {
+        "warning": "Add the correct 6-bolt to Center Lock adapter (or the other way around) and torque it to the maker's spec.",
+        "cannot_verify": "Enter the rotor mount and the hub's rotor mount."
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "6-bolt and Center Lock are different rotor interfaces. An adapter is a warning."
+    },
+    {
+      "id": "two-by-needs-front-derailleur",
+      "version": 1,
+      "slots": ["crankset"],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "gt", "left": "derived.ringCount", "right": 1 },
+          { "op": "slot_empty", "slot": "front_derailleur" }
+        ]
+      },
+      "messageAdult": "This crank has more than one chainring and no front derailleur is selected.",
+      "messageKid": "Two chainrings need a front derailleur. We have not picked one yet, so this does not pass.",
+      "fix": "Add a front derailleur for this 2x crank, or switch to a single chainring.",
+      "sourceUrl": "https://wisewheeling.com/rear-derailleur-capacity/",
+      "sourceRef": "Phase 1 models front derailleurs for 2x only."
+    },
+    {
+      "id": "one-by-with-front-derailleur",
+      "version": 1,
+      "slots": ["crankset", "front_derailleur"],
+      "severity": "warning",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "and",
+        "args": [
+          { "op": "eq", "left": "derived.ringCount", "right": 1 },
+          { "op": "slot_filled", "slot": "front_derailleur" }
+        ]
+      },
+      "messageAdult": "A front derailleur is selected on a single-chainring crank.",
+      "messageKid": "A bike with one chainring does not use a front derailleur.",
+      "fix": "Leave the front derailleur off a 1x bike.",
+      "sourceUrl": "https://wisewheeling.com/rear-derailleur-capacity/",
+      "sourceRef": "1x setups do not use a front derailleur."
+    },
+    {
+      "id": "front-derailleur-speed",
+      "version": 1,
+      "slots": ["front_derailleur", "shifter"],
+      "severity": "incompatible",
+      "provenance": "manufacturer_spec",
+      "predicate": {
+        "op": "not",
+        "arg": {
+          "op": "eq",
+          "left": "slot.front_derailleur.specs.speeds",
+          "right": "slot.shifter.specs.speeds"
+        }
+      },
+      "messageAdult": "The front derailleur speed count does not match the shifter.",
+      "messageKid": "The front derailleur and the shifter are built for different numbers of speeds.",
+      "fix": "Match the front derailleur to the shifter's speed count.",
+      "messageKidByStatus": {
+        "cannot_verify": "We are missing a speed count on the front derailleur or the shifter."
+      },
+      "messageAdultByStatus": {
+        "cannot_verify": "Front derailleur speed or shifter speed is missing."
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Front derailleurs are grouped by speed in the Shimano compatibility charts."
+    },
+    {
+      "id": "chain-length-on-bike",
+      "version": 1,
+      "slots": [],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": { "op": "always" },
+      "messageAdult": "Chain length has to be sized on the bike after the cassette and chainrings are installed. The parts list cannot pass that check.",
+      "messageKid": "The chain still has to be sized on the real bike. We cannot do that from the parts list.",
+      "fix": "Size the chain on the bike with the big ring and the big cog, then leave a little extra as the maker shows.",
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/chain-compatibility",
+      "sourceRef": "Always-on phase 1 note. Chain length is a workshop step."
+    },
+    {
+      "id": "tire-clearance-not-checked",
+      "version": 1,
+      "slots": [],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": { "op": "always" },
+      "messageAdult": "Tire and frame clearance are not checked in phase 1. Do not read a compatible drivetrain as a tire fit.",
+      "messageKid": "We are not checking whether the tire fits the frame yet. A grown-up still looks at that on the real bike.",
+      "fix": "Check tire clearance at the fork, the chainstays, and the seatstays before riding.",
+      "sourceUrl": "https://pedalbrief.com/data/",
+      "sourceRef": "Phase 1 scope limit. Pedal Brief's gravel tire-clearance dataset is a later-phase source, not applied here."
+    },
+    {
+      "id": "brakes-not-in-build",
+      "version": 1,
+      "slots": [],
+      "severity": "cannot_verify",
+      "provenance": "industry_standard",
+      "predicate": {
+        "op": "all_empty",
+        "slots": ["brake_lever", "brake_caliper", "rotor"]
+      },
+      "messageAdult": "No brake lever, caliper, or rotor is selected, so brakes were not checked.",
+      "messageKid": "Brakes are not in this build yet, so we have not checked them.",
+      "fix": "Add a lever, a caliper, and a rotor when you are ready to check the brakes.",
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "Phase 1: an empty brake section is cannot_verify, not a pass."
+    }
+  ]
+}

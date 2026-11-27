@@ -1,0 +1,18 @@
+{
+  "partRequired": ["id", "category", "brand", "model", "reviewStatus", "specs", "sourceUrl", "sourceRef", "checkedAt"],
+  "reviewStatus": ["draft", "approved"],
+  "categories": {
+    "hub": ["freehub", "rotorMount"],
+    "cassette": ["speeds", "smallestCog", "largestCog", "freehubFit", "chainType"],
+    "chain": ["speeds", "chainType"],
+    "rear_derailleur": ["speeds", "actuationFamily", "chainType", "mount", "maxCog", "capacity", "eEcosystem"],
+    "shifter": ["speeds", "actuationFamily", "chainType", "eEcosystem"],
+    "crankset": ["speeds", "ringCount", "chainrings", "chainType"],
+    "front_derailleur": ["speeds", "maxRing", "chainType"],
+    "brake_lever": ["brakeType", "fluid"],
+    "brake_caliper": ["brakeType", "fluid", "caliperMount"],
+    "rotor": ["sizeMm", "rotorMount"],
+    "frame": ["hanger", "brakeStyle", "caliperMount", "maxRotorMm"],
+    "hanger_extender": ["style"]
+  }
+}

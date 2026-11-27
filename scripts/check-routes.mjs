@@ -9,6 +9,7 @@ const ROUTES = [
   { path: '/youtube/search?q=bike+repair', name: 'YouTube Search', expect: 'Search' },
   { path: '/project-builder', name: 'Project Builder', expect: 'Project' },
   { path: '/build-planner', name: 'Build Planner', expect: 'Build' },
+  { path: '/builder', name: 'Bike Builder', expect: 'Bike Builder' },
   { path: '/shop', name: 'Shopping', expect: 'Shop' },
   { path: '/saved-notes', name: 'Saved Notes', expect: 'Notes' },
   { path: '/safe-search', name: 'Safe Search', expect: 'Search' },

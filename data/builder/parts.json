@@ -1,0 +1,3622 @@
+{
+  "version": 1,
+  "parts": [
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "HG spline M, outer body length 34.9 mm",
+      "id": "hub-hg-m-6bolt",
+      "category": "hub",
+      "brand": "Standard",
+      "model": "Rear hub, HG spline M, 6-bolt",
+      "modelCode": null,
+      "specs": {
+        "freehub": "hg-m",
+        "rotorMount": "6-bolt"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "Shimano C-731: HG spline M is the 10/9/8/7 and MTB 11-speed body, outer length 34.9 mm."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "HG spline M",
+      "id": "hub-hg-m-centerlock",
+      "category": "hub",
+      "brand": "Standard",
+      "model": "Rear hub, HG spline M, Center Lock",
+      "modelCode": null,
+      "specs": {
+        "freehub": "hg-m",
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "Shimano C-731 HG spline M. Center Lock is Shimano's rotor spline."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "HG spline L, outer body length 36.75 mm",
+      "id": "hub-hg-l-centerlock",
+      "category": "hub",
+      "brand": "Standard",
+      "model": "Rear hub, HG spline L, Center Lock",
+      "modelCode": null,
+      "specs": {
+        "freehub": "hg-l",
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "Shimano C-731: HG spline L, road 12/11-speed, outer length 36.75 mm."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "HG spline L2, outer body length 37.65 mm",
+      "id": "hub-hg-l2-centerlock",
+      "category": "hub",
+      "brand": "Standard",
+      "model": "Rear hub, HG spline L2, Center Lock",
+      "modelCode": null,
+      "specs": {
+        "freehub": "hg-l2",
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "Shimano C-731: HG spline L2, road 12-speed dedicated, outer length 37.65 mm."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "HG spline S, outer body length 31 mm",
+      "id": "hub-hg-s-6bolt",
+      "category": "hub",
+      "brand": "Standard",
+      "model": "Rear hub, HG spline S, 6-bolt",
+      "modelCode": null,
+      "specs": {
+        "freehub": "hg-s",
+        "rotorMount": "6-bolt"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "Shimano C-731: HG spline S, 7-speed, outer length 31 mm."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "MICRO SPLINE, 23 effective spline teeth, 26 mm",
+      "id": "hub-microspline-centerlock",
+      "category": "hub",
+      "brand": "Standard",
+      "model": "Rear hub, Micro Spline, Center Lock",
+      "modelCode": null,
+      "specs": {
+        "freehub": "microspline",
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "Shimano C-731: Micro Spline, 23 spline teeth, outer length 26 mm, MTB 12-speed."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "MICRO SPLINE",
+      "id": "hub-microspline-6bolt",
+      "category": "hub",
+      "brand": "Standard",
+      "model": "Rear hub, Micro Spline, 6-bolt",
+      "modelCode": null,
+      "specs": {
+        "freehub": "microspline",
+        "rotorMount": "6-bolt"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "Shimano C-731 Micro Spline body with a 6-bolt rotor mount."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "XD",
+      "id": "hub-xd-6bolt",
+      "category": "hub",
+      "brand": "SRAM",
+      "model": "XD driver rear hub, 6-bolt",
+      "modelCode": "XD",
+      "specs": {
+        "freehub": "xd",
+        "rotorMount": "6-bolt"
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "SRAM XD driver. Draft: confirm the exact hub model before a real build."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "XD",
+      "id": "hub-xd-centerlock",
+      "category": "hub",
+      "brand": "SRAM",
+      "model": "XD driver rear hub, Center Lock",
+      "modelCode": "XD",
+      "specs": {
+        "freehub": "xd",
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "SRAM XD driver. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "XDR",
+      "id": "hub-xdr-centerlock",
+      "category": "hub",
+      "brand": "SRAM",
+      "model": "XDR driver rear hub, Center Lock",
+      "modelCode": "XDR",
+      "specs": {
+        "freehub": "xdr",
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "SRAM XDR is the longer road driver. An XD cassette needs a 1.85 mm spacer."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "",
+      "id": "hub-campagnolo-centerlock",
+      "category": "hub",
+      "brand": "Campagnolo",
+      "model": "Campagnolo freehub, Center Lock",
+      "modelCode": null,
+      "specs": {
+        "freehub": "campagnolo",
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://www.campagnolo.com/en",
+      "sourceRef": "Campagnolo uses its own spline. Draft generic body, not a specific hub model."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "",
+      "id": "hub-n3w-centerlock",
+      "category": "hub",
+      "brand": "Campagnolo",
+      "model": "N3W freehub, Center Lock",
+      "modelCode": "N3W",
+      "specs": {
+        "freehub": "n3w",
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://www.campagnolo.com/en",
+      "sourceRef": "Campagnolo N3W. Older Campagnolo cassettes are marked unknown here, not a pass."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "The table below does not include LINKGLIDE cassette.",
+      "id": "hub-linkglide-centerlock",
+      "category": "hub",
+      "brand": "Shimano",
+      "model": "Linkglide freehub, Center Lock",
+      "modelCode": null,
+      "specs": {
+        "freehub": "linkglide",
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "C-731 says its table does not include Linkglide cassettes. This body is separate from HG. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "9-speed on HG spline M",
+      "category": "cassette",
+      "id": "cassette-vg-sports-9-11-42",
+      "brand": "VG Sports",
+      "model": "9-speed cassette 11-42T",
+      "modelCode": null,
+      "specs": {
+        "chainType": "standard",
+        "speeds": 9,
+        "smallestCog": 11,
+        "largestCog": 42,
+        "cogs": [
+          11,
+          42
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "Tooth count 11-42T is the owner's VG Sports 9-speed kit (ASIN B09VBNTGCD). No shop link. Freehub: 9-speed HG uses HG spline M natively and HG spline L with a 1.85 mm spacer (C-731)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "CS-HG400-9 (11-36T)",
+      "category": "cassette",
+      "id": "cassette-shimano-hg400-9-11-36",
+      "brand": "Shimano",
+      "model": "CS-HG400-9 11-36T",
+      "modelCode": "CS-HG400-9",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 9,
+        "smallestCog": 11,
+        "largestCog": 36,
+        "cogs": [
+          11,
+          36
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Shimano 2025-2026 compatibility v037 lists CS-HG400-9 11-36T with 9-speed HG derailleurs."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "CS-HG400-9",
+      "category": "cassette",
+      "id": "cassette-shimano-hg400-9-11-34",
+      "brand": "Shimano",
+      "model": "CS-HG400-9 11-34T",
+      "modelCode": "CS-HG400-9",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 9,
+        "smallestCog": 11,
+        "largestCog": 34,
+        "cogs": [
+          11,
+          34
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "CS-HG400-9 is a 9-speed HG cassette family. 11-34T is a common ratio in that family. Draft the exact tooth board."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "CS-HG400-9",
+      "category": "cassette",
+      "id": "cassette-shimano-hg400-9-11-32",
+      "brand": "Shimano",
+      "model": "CS-HG400-9 11-32T",
+      "modelCode": "CS-HG400-9",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 9,
+        "smallestCog": 11,
+        "largestCog": 32,
+        "cogs": [
+          11,
+          32
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "9-speed HG cassette. Draft exact ratio."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "CS-HG400-8",
+      "category": "cassette",
+      "id": "cassette-shimano-hg-8-11-32",
+      "brand": "Shimano",
+      "model": "8-speed HG cassette 11-32T",
+      "modelCode": "CS-HG400-8",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 8,
+        "smallestCog": 11,
+        "largestCog": 32,
+        "cogs": [
+          11,
+          32
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart lists CS-HG400-8. Draft the 11-32 ratio."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Only CS-HG210-7 and CS-HG400-7 are compatible (HG spline M).",
+      "category": "cassette",
+      "id": "cassette-shimano-hg-7-12-28",
+      "brand": "Shimano",
+      "model": "CS-HG400-7 12-28T",
+      "modelCode": "CS-HG400-7",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 7,
+        "smallestCog": 12,
+        "largestCog": 28,
+        "cogs": [
+          12,
+          28
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-s",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "C-731 *6: CS-HG400-7 fits HG spline M. *7 lists other 7-speed cassettes on HG spline S. Draft which exact 7-speed model is native on S."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "10/9/8-speed on HG spline M",
+      "category": "cassette",
+      "id": "cassette-shimano-hg-10-11-36",
+      "brand": "Shimano",
+      "model": "10-speed HG cassette 11-36T",
+      "modelCode": "CS-HG500-10",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 10,
+        "smallestCog": 11,
+        "largestCog": 36,
+        "cogs": [
+          11,
+          36
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "10/9/8-speed cassettes are marked compatible with HG spline M, and with HG spline L using a 1.85 mm spacer (C-731 *2). Draft model code."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Need 1.0 mm spacer for the 10-speed road cassettes.",
+      "category": "cassette",
+      "id": "cassette-shimano-road-10-11-28",
+      "brand": "Shimano",
+      "model": "10-speed road HG cassette 11-28T",
+      "modelCode": "CS-5700",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 10,
+        "smallestCog": 11,
+        "largestCog": 28,
+        "cogs": [
+          11,
+          28
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "spacer",
+            "spacerMm": 1,
+            "note": "C-731 *5 1.0 mm spacer for named 10-speed road cassettes."
+          },
+          {
+            "driver": "hg-l",
+            "fit": "spacer",
+            "spacerMm": 1.85,
+            "note": "C-731 *2 also calls for the 1.0 mm spacer on the named cassettes."
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "C-731 *5 and *2 name CS-5700 among 10-speed road cassettes that need spacers. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "CS-M5100-11 (11-42T)",
+      "category": "cassette",
+      "id": "cassette-shimano-mtb-11-11-42",
+      "brand": "Shimano",
+      "model": "CS-M5100-11 11-42T",
+      "modelCode": "CS-M5100-11",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 11,
+        "smallestCog": 11,
+        "largestCog": 42,
+        "cogs": [
+          11,
+          42
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart lists CS-M5100-11 (11-42T). MTB 11-speed uses the HG spline M body (C-731) and needs a 1.85 mm spacer on HG spline L."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-46T",
+      "category": "cassette",
+      "id": "cassette-shimano-mtb-11-11-46",
+      "brand": "Shimano",
+      "model": "11-speed MTB cassette 11-46T",
+      "modelCode": "CS-M7000-11",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 11,
+        "smallestCog": 11,
+        "largestCog": 46,
+        "cogs": [
+          11,
+          46
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart lists CS-M7000-11 11-46T among 11-speed MTB cassettes. Draft which exact SKU."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "CS-M5100-11 (11-51T)",
+      "category": "cassette",
+      "id": "cassette-shimano-mtb-11-11-51",
+      "brand": "Shimano",
+      "model": "CS-M5100-11 11-51T",
+      "modelCode": "CS-M5100-11",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 11,
+        "smallestCog": 11,
+        "largestCog": 51,
+        "cogs": [
+          11,
+          51
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart lists CS-M5100-11 (11-51T)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-28, 11-30, 11-32, 11-34, 12-25",
+      "category": "cassette",
+      "id": "cassette-shimano-r7000-11-28",
+      "brand": "Shimano",
+      "model": "105 CS-R7000 11-28T",
+      "modelCode": "CS-R7000",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 11,
+        "smallestCog": 11,
+        "largestCog": 28,
+        "cogs": [
+          11,
+          28
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-l",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
+      "sourceRef": "Pedal Brief CC BY 4.0, groupset 105 R7000, Cassettes, checked 2026-10-20. stated: 11-28, 11-30, 11-32, 11-34, 12-25. Standard 11-speed road cassettes other than CS-HG700/HG800/RS400 need HG spline L (C-731).",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-32",
+      "category": "cassette",
+      "id": "cassette-shimano-r7000-11-32",
+      "brand": "Shimano",
+      "model": "105 CS-R7000 11-32T",
+      "modelCode": "CS-R7000",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 11,
+        "smallestCog": 11,
+        "largestCog": 32,
+        "cogs": [
+          11,
+          32
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-l",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
+      "sourceRef": "Pedal Brief CC BY 4.0, 105 R7000 cassettes include 11-32. HG spline L native.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "CS-HG700 of ROAD 11-speed are compatible with HG spline M",
+      "category": "cassette",
+      "id": "cassette-shimano-hg700-11-34",
+      "brand": "Shimano",
+      "model": "CS-HG700-11 11-34T",
+      "modelCode": "CS-HG700-11",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 11,
+        "smallestCog": 11,
+        "largestCog": 34,
+        "cogs": [
+          11,
+          34
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "C-731 *4: CS-HG700 of road 11-speed fits HG spline M. *3: the same cassette fits HG spline L with a 1.85 mm spacer. Pedal Brief lists 11-34 on the 105 R7000 chart as CS-HG700-11."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-34, 11-36",
+      "category": "cassette",
+      "id": "cassette-shimano-r7100-11-34",
+      "brand": "Shimano",
+      "model": "105 12-speed cassette 11-34T",
+      "modelCode": "CS-R7101",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 12,
+        "smallestCog": 11,
+        "largestCog": 34,
+        "cogs": [
+          11,
+          34
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-l2",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7100-2x12",
+      "sourceRef": "Pedal Brief CC BY 4.0, 105 R7100 cassettes stated 11-34, 11-36. C-731: road 12-speed fits HG spline L2 and HG spline L.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-36",
+      "category": "cassette",
+      "id": "cassette-shimano-r7100-11-36",
+      "brand": "Shimano",
+      "model": "105 12-speed cassette 11-36T",
+      "modelCode": "CS-HG710-12",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 12,
+        "smallestCog": 11,
+        "largestCog": 36,
+        "cogs": [
+          11,
+          36
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-l2",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7100-2x12",
+      "sourceRef": "Pedal Brief CC BY 4.0, 105 R7100 cassettes include 11-36. Model code draft.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-30, 11-34",
+      "category": "cassette",
+      "id": "cassette-shimano-r8100-11-30",
+      "brand": "Shimano",
+      "model": "Ultegra 12-speed cassette 11-30T",
+      "modelCode": "CS-R8101",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 12,
+        "smallestCog": 11,
+        "largestCog": 30,
+        "cogs": [
+          11,
+          30
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-l2",
+            "fit": "native"
+          },
+          {
+            "driver": "hg-l",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/ultegra-r8100-2x12-di2",
+      "sourceRef": "Pedal Brief CC BY 4.0, Ultegra R8100 cassettes stated 11-30, 11-34. Road 12 freehubs per C-731.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "CS-M6100-12 (10-51T)",
+      "category": "cassette",
+      "id": "cassette-shimano-m6100-10-51",
+      "brand": "Shimano",
+      "model": "CS-M6100-12 10-51T",
+      "modelCode": "CS-M6100-12",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 12,
+        "smallestCog": 10,
+        "largestCog": 51,
+        "cogs": [
+          10,
+          51
+        ],
+        "freehubFit": [
+          {
+            "driver": "microspline",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart lists CS-M6100-12 (10-51T) with 12-speed MTB derailleurs. Micro Spline only (C-731)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "CS-M7100-12 (10-45T)",
+      "category": "cassette",
+      "id": "cassette-shimano-m7100-10-45",
+      "brand": "Shimano",
+      "model": "CS-M7100-12 10-45T",
+      "modelCode": "CS-M7100-12",
+      "specs": {
+        "chainType": "standard",
+        "speeds": 12,
+        "smallestCog": 10,
+        "largestCog": 45,
+        "cogs": [
+          10,
+          45
+        ],
+        "freehubFit": [
+          {
+            "driver": "microspline",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart lists CS-M7100-12 (10-45T). Micro Spline."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-50",
+      "category": "cassette",
+      "id": "cassette-sram-nx-11-50",
+      "brand": "SRAM",
+      "model": "NX Eagle PG-1230 11-50T",
+      "modelCode": "PG-1230",
+      "specs": {
+        "chainType": "eagle",
+        "speeds": 12,
+        "smallestCog": 11,
+        "largestCog": 50,
+        "cogs": [
+          11,
+          50
+        ],
+        "freehubFit": [
+          {
+            "driver": "hg-m",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "NX Eagle uses a Shimano HG driver, not XD. Draft: confirm 11-50 against the current SRAM PG-1230 page."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "10-52 XD",
+      "category": "cassette",
+      "id": "cassette-sram-gx-10-52",
+      "brand": "SRAM",
+      "model": "GX Eagle XG-1275 10-52T",
+      "modelCode": "XG-1275",
+      "specs": {
+        "chainType": "eagle",
+        "speeds": 12,
+        "smallestCog": 10,
+        "largestCog": 52,
+        "cogs": [
+          10,
+          52
+        ],
+        "freehubFit": [
+          {
+            "driver": "xd",
+            "fit": "native"
+          },
+          {
+            "driver": "xdr",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "GX Eagle 10-52 uses an XD driver. XD on XDR needs a 1.85 mm spacer. Draft the current model code."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "10-50",
+      "category": "cassette",
+      "id": "cassette-sram-xg-10-50",
+      "brand": "SRAM",
+      "model": "Eagle cassette 10-50T",
+      "modelCode": "XG-1275",
+      "specs": {
+        "chainType": "eagle",
+        "speeds": 12,
+        "smallestCog": 10,
+        "largestCog": 50,
+        "cogs": [
+          10,
+          50
+        ],
+        "freehubFit": [
+          {
+            "driver": "xd",
+            "fit": "native"
+          },
+          {
+            "driver": "xdr",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "Earlier Eagle 10-50 cassettes use XD. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "XDR",
+      "category": "cassette",
+      "id": "cassette-sram-force-xdr-10-36",
+      "brand": "SRAM",
+      "model": "Force AXS cassette 10-36T",
+      "modelCode": "XG-1270",
+      "specs": {
+        "chainType": "flattop",
+        "speeds": 12,
+        "smallestCog": 10,
+        "largestCog": 36,
+        "cogs": [
+          10,
+          36
+        ],
+        "freehubFit": [
+          {
+            "driver": "xdr",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/road/axs-components-compatibility-map.pdf",
+      "sourceRef": "Road AXS cassettes use XDR and a Flattop chain. Draft the 10-36 ratio."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "T-Type",
+      "category": "cassette",
+      "id": "cassette-sram-transmission-10-52",
+      "brand": "SRAM",
+      "model": "GX Eagle Transmission XS-1275 10-52T",
+      "modelCode": "XS-1275",
+      "specs": {
+        "chainType": "t-type",
+        "speeds": 12,
+        "smallestCog": 10,
+        "largestCog": 52,
+        "cogs": [
+          10,
+          52
+        ],
+        "freehubFit": [
+          {
+            "driver": "xd",
+            "fit": "native"
+          },
+          {
+            "driver": "xdr",
+            "fit": "spacer",
+            "spacerMm": 1.85
+          }
+        ]
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Transmission cassettes are T-Type and use an XD driver body. Draft model code."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Flattop",
+      "category": "cassette",
+      "id": "cassette-sram-flattop-10-33",
+      "brand": "SRAM",
+      "model": "Red/Force AXS cassette 10-33T",
+      "modelCode": "XG-1290",
+      "specs": {
+        "chainType": "flattop",
+        "speeds": 12,
+        "smallestCog": 10,
+        "largestCog": 33,
+        "cogs": [
+          10,
+          33
+        ],
+        "freehubFit": [
+          {
+            "driver": "xdr",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/road/axs-components-compatibility-map.pdf",
+      "sourceRef": "Flattop road cassette on XDR. Draft ratio."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "LINKGLIDE",
+      "category": "cassette",
+      "id": "cassette-shimano-linkglide-11-46",
+      "brand": "Shimano",
+      "model": "Linkglide cassette 11-46T",
+      "modelCode": "CS-LG400-11",
+      "specs": {
+        "chainType": "linkglide",
+        "speeds": 11,
+        "smallestCog": 11,
+        "largestCog": 46,
+        "cogs": [
+          11,
+          46
+        ],
+        "freehubFit": [
+          {
+            "driver": "linkglide",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "Linkglide is excluded from the C-731 HG table. Draft tooth count and model code."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-34",
+      "category": "cassette",
+      "id": "cassette-campagnolo-12-11-34",
+      "brand": "Campagnolo",
+      "model": "12-speed cassette 11-34T",
+      "modelCode": null,
+      "specs": {
+        "chainType": "campagnolo",
+        "speeds": 12,
+        "smallestCog": 11,
+        "largestCog": 34,
+        "cogs": [
+          11,
+          34
+        ],
+        "freehubFit": [
+          {
+            "driver": "campagnolo",
+            "fit": "native"
+          },
+          {
+            "driver": "n3w",
+            "fit": "unknown"
+          }
+        ]
+      },
+      "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
+      "sourceRef": "Pedal Brief CC BY 4.0 lists Chorus 12 cassettes including 11-34. N3W cross-fit is unknown, not a pass.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "10-29",
+      "category": "cassette",
+      "id": "cassette-campagnolo-13-10-29",
+      "brand": "Campagnolo",
+      "model": "Super Record 13 cassette 10-29T",
+      "modelCode": null,
+      "specs": {
+        "chainType": "campagnolo",
+        "speeds": 13,
+        "smallestCog": 10,
+        "largestCog": 29,
+        "cogs": [
+          10,
+          29
+        ],
+        "freehubFit": [
+          {
+            "driver": "n3w",
+            "fit": "native"
+          }
+        ]
+      },
+      "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
+      "sourceRef": "Pedal Brief CC BY 4.0, Super Record 13 cassettes include 10-29. N3W native. Draft.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "7-speed standard",
+      "id": "chain-shimano-hg-7",
+      "category": "chain",
+      "brand": "Shimano",
+      "model": "7-speed HG chain",
+      "modelCode": null,
+      "specs": {
+        "speeds": 7,
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/chain-compatibility",
+      "sourceRef": "Match chain speed to the drivetrain. Draft model."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "8-speed standard",
+      "id": "chain-shimano-hg-8",
+      "category": "chain",
+      "brand": "Shimano",
+      "model": "8-speed HG chain",
+      "modelCode": null,
+      "specs": {
+        "speeds": 8,
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/chain-compatibility",
+      "sourceRef": "Match chain speed to the drivetrain. Draft model."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "9-speed standard",
+      "id": "chain-shimano-hg-9",
+      "category": "chain",
+      "brand": "Shimano",
+      "model": "CN-HG53 9-speed chain",
+      "modelCode": null,
+      "specs": {
+        "speeds": 9,
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/chain-compatibility",
+      "sourceRef": "9-speed HG chain for the 9-speed kit. Draft the exact Shimano chain code on the bike."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "10-speed standard",
+      "id": "chain-shimano-hg-10",
+      "category": "chain",
+      "brand": "Shimano",
+      "model": "10-speed HG chain",
+      "modelCode": null,
+      "specs": {
+        "speeds": 10,
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://www.parktool.com/en-us/blog/repair-help/chain-compatibility",
+      "sourceRef": "Draft model."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-speed standard",
+      "id": "chain-shimano-hg-11",
+      "category": "chain",
+      "brand": "Shimano",
+      "model": "CN-HG601-11 chain",
+      "modelCode": null,
+      "specs": {
+        "speeds": 11,
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart lists CN-HG601-11 with 11-speed road groups."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12-speed standard",
+      "id": "chain-shimano-hg-12",
+      "category": "chain",
+      "brand": "Shimano",
+      "model": "12-speed HG chain",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "12-speed Shimano mountain and road HG chains. Draft the exact code (CN-M7100 / CN-M8100)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12-speed eagle",
+      "id": "chain-sram-eagle-12",
+      "category": "chain",
+      "brand": "SRAM",
+      "model": "Eagle 12-speed chain",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "chainType": "eagle"
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "Eagle mechanical uses an Eagle chain. Draft model (GX/NX/SX)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12-speed flattop",
+      "id": "chain-sram-flattop-12",
+      "category": "chain",
+      "brand": "SRAM",
+      "model": "Flattop 12-speed chain",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "chainType": "flattop"
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/road/axs-components-compatibility-map.pdf",
+      "sourceRef": "Road AXS uses a Flattop chain."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12-speed t-type",
+      "id": "chain-sram-ttype-12",
+      "category": "chain",
+      "brand": "SRAM",
+      "model": "T-Type Transmission chain",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "chainType": "t-type"
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Eagle Transmission uses a T-Type chain."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-speed linkglide",
+      "id": "chain-shimano-linkglide",
+      "category": "chain",
+      "brand": "Shimano",
+      "model": "Linkglide chain",
+      "modelCode": null,
+      "specs": {
+        "speeds": 11,
+        "chainType": "linkglide"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "Linkglide chain stays with Linkglide. Speed draft: many CUES bikes are 9, 10, or 11."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12-speed campagnolo",
+      "id": "chain-campagnolo-12",
+      "category": "chain",
+      "brand": "Campagnolo",
+      "model": "12-speed chain",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "chainType": "campagnolo"
+      },
+      "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
+      "sourceRef": "Pedal Brief CC BY 4.0 Chorus / Super Record 12 mechanical. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "13-speed campagnolo",
+      "id": "chain-campagnolo-13",
+      "category": "chain",
+      "brand": "Campagnolo",
+      "model": "13-speed chain",
+      "modelCode": null,
+      "specs": {
+        "speeds": 13,
+        "chainType": "campagnolo"
+      },
+      "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
+      "sourceRef": "Pedal Brief CC BY 4.0 Super Record 13. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "approved",
+      "checkedAt": "2026-11-27",
+      "quote": "Max. low sprocket: 36T. Total capacity: 45T. Low sprocket min: 32T.",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-m3100-sgs",
+      "brand": "Shimano",
+      "model": "Alivio RD-M3100-SGS",
+      "modelCode": "RD-M3100-SGS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 36,
+        "minLargestCog": 32,
+        "capacity": 45,
+        "maxFrontDiff": 22,
+        "speeds": 9,
+        "actuationFamily": "shimano-road-6-9-10",
+        "cage": "SGS"
+      },
+      "sourceUrl": "https://bike.shimano.com/en-EU/product/component/alivio-m3100/RD-M3100-SGS.html",
+      "sourceRef": "PRODUCT SPECIFICATIONS table, copied 2026-11-27. Rear speeds 9. Max low sprocket 36T. Min low sprocket 32T. Total capacity 45T. Max front difference 22T."
+    },
+    {
+      "years": null,
+      "reviewStatus": "approved",
+      "checkedAt": "2026-11-27",
+      "quote": "Low sprocket max 34T. Total capacity 45T.",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-m370-sgs",
+      "brand": "Shimano",
+      "model": "Altus RD-M370-SGS",
+      "modelCode": "RD-M370-SGS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 34,
+        "minLargestCog": 28,
+        "capacity": 45,
+        "maxFrontDiff": 22,
+        "speeds": 9,
+        "actuationFamily": "shimano-road-6-9-10",
+        "cage": "SGS"
+      },
+      "sourceUrl": "https://bike.shimano.com/en-EU/product/component/altus-m370/RD-M370-SGS.html",
+      "sourceRef": "PRODUCT SPECIFICATIONS table, copied 2026-11-27. Max low sprocket 34T. Min 28T. Total capacity 45T. Max front difference 22T. Rear speeds 9."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "6-9 speed derailleurs share cable pull",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-classic-8",
+      "brand": "Shimano",
+      "model": "8-speed rear derailleur, classic cable pull",
+      "modelCode": null,
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 34,
+        "minLargestCog": 28,
+        "capacity": 43,
+        "maxFrontDiff": null,
+        "speeds": 8,
+        "actuationFamily": "shimano-road-6-9-10"
+      },
+      "sourceUrl": "https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/",
+      "sourceRef": "Teaching part for the 6–9 speed interchange exception. Not a specific current model. Draft the max cog."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "42T≤Largest sprocket≤46T",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-m5120-sgs",
+      "brand": "Shimano",
+      "model": "Deore RD-M5120-SGS",
+      "modelCode": "RD-M5120-SGS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 46,
+        "minLargestCog": 42,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 11,
+        "actuationFamily": "shimano-mtb-11"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart: RD-M5120-SGS, 42T ≤ largest sprocket ≤ 46T for 1x11 and 1x10. Seeded as 11-speed mountain actuation so a 10-speed mix does not pass. Needs review."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "51T≤Largest sprocket≤51T",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-m5100-sgs",
+      "brand": "Shimano",
+      "model": "Deore RD-M5100-SGS",
+      "modelCode": "RD-M5100-SGS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 51,
+        "minLargestCog": 51,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 11,
+        "actuationFamily": "shimano-mtb-11"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart: RD-M5100-SGS (51T ≤ largest sprocket ≤ 51T for 1x11-speed)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "40T≤Largest sprocket≤46T for 1x11-speed",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-m8000-sgs",
+      "brand": "Shimano",
+      "model": "XT RD-M8000-SGS",
+      "modelCode": "RD-M8000-SGS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 46,
+        "minLargestCog": 40,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 11,
+        "actuationFamily": "shimano-mtb-11"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart: RD-M8000-SGS, 40T ≤ largest ≤ 46T for 1x11-speed. Capacity not on that row, left blank."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "RD-M6100-SGS (1x12-speed)",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-m6100-sgs",
+      "brand": "Shimano",
+      "model": "Deore RD-M6100-SGS",
+      "modelCode": "RD-M6100-SGS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 51,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 12,
+        "actuationFamily": "shimano-mtb-12"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart pairs RD-M6100-SGS (1x12-speed) with CS-M6100-12 (10-51T). Capacity not copied."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "RD-M7100-SGS (1x12-speed)",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-m7100-sgs",
+      "brand": "Shimano",
+      "model": "SLX RD-M7100-SGS",
+      "modelCode": "RD-M7100-SGS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 51,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 12,
+        "actuationFamily": "shimano-mtb-12"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart pairs RD-M7100-SGS (1x12-speed) with 10-51 cassettes. Capacity blank."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "RD-M8100-SGS (1x12-speed)",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-m8100-sgs",
+      "brand": "Shimano",
+      "model": "XT RD-M8100-SGS",
+      "modelCode": "RD-M8100-SGS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 51,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 12,
+        "actuationFamily": "shimano-mtb-12"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart pairs RD-M8100-SGS (1x12-speed) with 10-51 cassettes. Capacity blank."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-m4100-10",
+      "brand": "Shimano",
+      "model": "Deore 10-speed rear derailleur",
+      "modelCode": "RD-M4100",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": null,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 10,
+        "actuationFamily": "shimano-mtb-10"
+      },
+      "sourceUrl": "https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/",
+      "sourceRef": "10-speed mountain (Dyna-Sys) is its own actuation family. Max cog left blank on purpose."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "25T≤Largest sprocket≤30T",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-r7000-ss",
+      "brand": "Shimano",
+      "model": "105 RD-R7000-SS",
+      "modelCode": "RD-R7000-SS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 30,
+        "minLargestCog": 25,
+        "capacity": null,
+        "maxFrontDiff": 16,
+        "speeds": 11,
+        "actuationFamily": "shimano-road-11"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart: RD-R7000-SS (25T ≤ largest sprocket ≤ 30T). Capacity not on that row."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "RD-R7000-GS",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-r7000-gs",
+      "brand": "Shimano",
+      "model": "105 RD-R7000-GS",
+      "modelCode": "RD-R7000-GS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 34,
+        "minLargestCog": 30,
+        "capacity": null,
+        "maxFrontDiff": 16,
+        "speeds": 11,
+        "actuationFamily": "shimano-road-11"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart lists RD-R7000-GS beside a 30–34T largest-sprocket note. The OCR of that row is messy, so capacity is blank and this stays draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "25T≤Largest sprocket≤30T",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-r8000-ss",
+      "brand": "Shimano",
+      "model": "Ultegra RD-R8000-SS",
+      "modelCode": "RD-R8000-SS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 30,
+        "minLargestCog": 25,
+        "capacity": null,
+        "maxFrontDiff": 16,
+        "speeds": 11,
+        "actuationFamily": "shimano-road-11"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart: RD-R8000-SS (25T ≤ largest sprocket ≤ 30T)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "28T≤Largest sprocket≤34T",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-r8000-gs",
+      "brand": "Shimano",
+      "model": "Ultegra RD-R8000-GS",
+      "modelCode": "RD-R8000-GS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 34,
+        "minLargestCog": 28,
+        "capacity": null,
+        "maxFrontDiff": 16,
+        "speeds": 11,
+        "actuationFamily": "shimano-road-11"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart: RD-R8000-GS (28T ≤ largest sprocket ≤ 34T)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Tiagra 4700",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-4700-gs",
+      "brand": "Shimano",
+      "model": "Tiagra RD-4700-GS",
+      "modelCode": "RD-4700-GS",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 34,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 10,
+        "actuationFamily": "shimano-tiagra-4700"
+      },
+      "sourceUrl": "https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/",
+      "sourceRef": "Tiagra 4700 uses the newer road cable pull, not classic 10-speed. Max cog draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-r7100",
+      "brand": "Shimano",
+      "model": "105 RD-R7100",
+      "modelCode": "RD-R7100",
+      "specs": {
+        "eEcosystem": "shimano-di2",
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 36,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 12,
+        "actuationFamily": "shimano-di2-12-wireless"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7100-2x12",
+      "sourceRef": "Pedal Brief CC BY 4.0: 105 R7100 is 12-speed. Mechanical and Di2 both exist; this record is the Di2 generation and stays draft until the mechanical twin is split out.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Electronic (Di2)",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-r8150",
+      "brand": "Shimano",
+      "model": "Ultegra RD-R8150",
+      "modelCode": "RD-R8150",
+      "specs": {
+        "eEcosystem": "shimano-di2",
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 34,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 12,
+        "actuationFamily": "shimano-di2-12-wireless"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/ultegra-r8100-2x12-di2",
+      "sourceRef": "Pedal Brief CC BY 4.0: Ultegra R8100 Di2, 12-speed, cassettes to 11-34. Draft max cog.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "25T≤Largest sprocket≤30T",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-r8050",
+      "brand": "Shimano",
+      "model": "Ultegra RD-R8050-SS",
+      "modelCode": "RD-R8050-SS",
+      "specs": {
+        "eEcosystem": "shimano-di2",
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 30,
+        "minLargestCog": 25,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 11,
+        "actuationFamily": "shimano-di2-etube"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart: RD-R8050-SS (25T ≤ largest sprocket ≤ 30T). Wired Di2 generation."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "LINKGLIDE",
+      "category": "rear_derailleur",
+      "id": "shimano-rd-u6000",
+      "brand": "Shimano",
+      "model": "CUES RD-U6000",
+      "modelCode": "RD-U6000",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "linkglide",
+        "mount": "hanger",
+        "maxCog": null,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 10,
+        "actuationFamily": "shimano-linkglide"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "CUES / Linkglide is its own family. Speed and max cog left for review. A 10-speed CUES derailleur measured pull ratio 1.06 in derailleur-analysis."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Pull Ratio: 1.08",
+      "category": "rear_derailleur",
+      "id": "sram-rd-sx-eagle",
+      "brand": "SRAM",
+      "model": "SX Eagle rear derailleur",
+      "modelCode": "RD-SX-1-B1",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "eagle",
+        "mount": "hanger",
+        "maxCog": 50,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 12,
+        "actuationFamily": "sram-eagle-12"
+      },
+      "sourceUrl": "https://github.com/boothinator/derailleur-analysis",
+      "sourceRef": "Measured pull ratio 1.08 on RD-SX-1-B1 (MIT). Max cog 50T is draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Eagle",
+      "category": "rear_derailleur",
+      "id": "sram-rd-nx-eagle",
+      "brand": "SRAM",
+      "model": "NX Eagle rear derailleur",
+      "modelCode": "RD-NX-1",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "eagle",
+        "mount": "hanger",
+        "maxCog": 50,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 12,
+        "actuationFamily": "sram-eagle-12"
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "NX Eagle mechanical 12-speed. Max cog draft 50T."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Eagle",
+      "category": "rear_derailleur",
+      "id": "sram-rd-gx-eagle",
+      "brand": "SRAM",
+      "model": "GX Eagle rear derailleur",
+      "modelCode": "RD-GX-1",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "eagle",
+        "mount": "hanger",
+        "maxCog": 52,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 12,
+        "actuationFamily": "sram-eagle-12"
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "GX Eagle mechanical. Max cog draft 52T."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "AXS",
+      "category": "rear_derailleur",
+      "id": "sram-rd-gx-axs",
+      "brand": "SRAM",
+      "model": "GX Eagle AXS rear derailleur",
+      "modelCode": "RD-GX-1-E",
+      "specs": {
+        "eEcosystem": "sram-axs",
+        "chainType": "eagle",
+        "mount": "hanger",
+        "maxCog": 52,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 12,
+        "actuationFamily": "sram-axs"
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/road/axs-components-compatibility-map.pdf",
+      "sourceRef": "AXS ecosystem. Eagle AXS uses an Eagle chain, not Flattop. Draft max cog."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Full Mount",
+      "category": "rear_derailleur",
+      "id": "sram-rd-xx-transmission",
+      "brand": "SRAM",
+      "model": "GX Eagle Transmission rear derailleur",
+      "modelCode": "RD-GX-ES1",
+      "specs": {
+        "eEcosystem": "sram-axs",
+        "chainType": "t-type",
+        "mount": "full-mount",
+        "maxCog": 52,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 12,
+        "actuationFamily": "sram-axs"
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Full Mount Transmission derailleur requires a UDH frame and a T-Type chain."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12",
+      "category": "rear_derailleur",
+      "id": "sram-rd-apex-xplr-axs",
+      "brand": "SRAM",
+      "model": "Apex XPLR AXS rear derailleur",
+      "modelCode": null,
+      "specs": {
+        "eEcosystem": "sram-axs",
+        "chainType": "flattop",
+        "mount": "full-mount",
+        "maxCog": 44,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 12,
+        "actuationFamily": "sram-axs"
+      },
+      "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
+      "sourceRef": "Pedal Brief CC BY 4.0: Apex AXS XPLR is 12-speed electronic, cassette 11-44. Newer XPLR derailleurs are Full Mount. Draft the mount if this exact Apex is hanger-mount.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Pull Ratio: 1.33",
+      "category": "rear_derailleur",
+      "id": "sram-rd-gx-10",
+      "brand": "SRAM",
+      "model": "GX 10-speed rear derailleur",
+      "modelCode": "RD-GX-T21-A1",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 36,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 10,
+        "actuationFamily": "sram-1to1-exact"
+      },
+      "sourceUrl": "https://github.com/boothinator/derailleur-analysis",
+      "sourceRef": "Measured pull ratio 1.33 (MIT). Max cog draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Pull Ratio: 1.22",
+      "category": "rear_derailleur",
+      "id": "sram-rd-apex-11",
+      "brand": "SRAM",
+      "model": "Apex 1 rear derailleur",
+      "modelCode": "RD-APX-1-A1",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 42,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 11,
+        "actuationFamily": "sram-x-actuation-11"
+      },
+      "sourceUrl": "https://github.com/boothinator/derailleur-analysis",
+      "sourceRef": "Measured pull ratio 1.22 (MIT). Max cog draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Mechanical",
+      "category": "rear_derailleur",
+      "id": "campagnolo-rd-chorus-12",
+      "brand": "Campagnolo",
+      "model": "Chorus 12 mechanical rear derailleur",
+      "modelCode": null,
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "campagnolo",
+        "mount": "hanger",
+        "maxCog": 34,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 12,
+        "actuationFamily": "campagnolo-mech-12"
+      },
+      "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
+      "sourceRef": "Pedal Brief CC BY 4.0: Chorus 12 mechanical, cassettes include 11-34. Draft max cog.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Advent",
+      "category": "rear_derailleur",
+      "id": "microshift-rd-advent",
+      "brand": "microSHIFT",
+      "model": "Advent 9-speed rear derailleur",
+      "modelCode": "RD-M6195M",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 46,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 9,
+        "actuationFamily": "microshift-advent"
+      },
+      "sourceUrl": "https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/",
+      "sourceRef": "Advent is not Shimano 9-speed actuation. Max cog draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Pull Ratio: 1.05",
+      "category": "rear_derailleur",
+      "id": "microshift-rd-advent-x",
+      "brand": "microSHIFT",
+      "model": "Advent X RD-M6205AM",
+      "modelCode": "RD-M6205AM",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "mount": "hanger",
+        "maxCog": 48,
+        "minLargestCog": null,
+        "capacity": null,
+        "maxFrontDiff": null,
+        "speeds": 10,
+        "actuationFamily": "microshift-advent-x"
+      },
+      "sourceUrl": "https://github.com/boothinator/derailleur-analysis",
+      "sourceRef": "Measured pull ratio 1.05 (MIT). Max cog draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "SL-M370-R",
+      "category": "shifter",
+      "id": "shifter-shimano-altus-m370-9",
+      "brand": "Shimano",
+      "model": "Altus SL-M370 9-speed",
+      "modelCode": "SL-M370-R",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "speeds": 9,
+        "actuationFamily": "shimano-road-6-9-10"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart lists SL-M370-R with 9-speed Altus derailleurs. Used as the 9-speed Shimano shifter stand-in. Confirm the shifter actually on Zuzu's bike."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "SL-M3100-R",
+      "category": "shifter",
+      "id": "shifter-shimano-alivio-m3100-9",
+      "brand": "Shimano",
+      "model": "Alivio SL-M3100 9-speed",
+      "modelCode": "SL-M3100-R",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "speeds": 9,
+        "actuationFamily": "shimano-road-6-9-10"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart lists SL-M3100-R with RD-M3100-SGS."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "",
+      "category": "shifter",
+      "id": "shifter-shimano-classic-8",
+      "brand": "Shimano",
+      "model": "8-speed Shimano shifter, classic cable",
+      "modelCode": null,
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "speeds": 8,
+        "actuationFamily": "shimano-road-6-9-10"
+      },
+      "sourceUrl": "https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/",
+      "sourceRef": "Teaching shifter for the 6–9 interchange. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Cable Pull: 3.48 mm/shift",
+      "category": "shifter",
+      "id": "shifter-shimano-deore-m4100-10",
+      "brand": "Shimano",
+      "model": "Deore SL-M4100 10-speed",
+      "modelCode": "SL-M4100",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "speeds": 10,
+        "actuationFamily": "shimano-mtb-10"
+      },
+      "sourceUrl": "https://github.com/boothinator/derailleur-analysis",
+      "sourceRef": "Cable pull about 3.48 mm/shift measured on SL-M4100 (MIT)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Cable Pull: 3.40 mm/shift",
+      "category": "shifter",
+      "id": "shifter-shimano-deore-m5100-11",
+      "brand": "Shimano",
+      "model": "Deore SL-M5100 11-speed",
+      "modelCode": "SL-M5100",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "speeds": 11,
+        "actuationFamily": "shimano-mtb-11"
+      },
+      "sourceUrl": "https://github.com/boothinator/derailleur-analysis",
+      "sourceRef": "Cable pull about 3.40 mm/shift measured on SL-M5100 (MIT)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Cable Pull: 3.19 mm/shift",
+      "category": "shifter",
+      "id": "shifter-shimano-slx-m7100-12",
+      "brand": "Shimano",
+      "model": "SLX SL-M7100 12-speed",
+      "modelCode": "SL-M7100",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "speeds": 12,
+        "actuationFamily": "shimano-mtb-12"
+      },
+      "sourceUrl": "https://github.com/boothinator/derailleur-analysis",
+      "sourceRef": "Cable pull about 3.19 mm/shift measured on SL-M7100 (MIT)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "SL-M6100",
+      "category": "shifter",
+      "id": "shifter-shimano-deore-m6100-12",
+      "brand": "Shimano",
+      "model": "Deore SL-M6100 12-speed",
+      "modelCode": "SL-M6100",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "speeds": 12,
+        "actuationFamily": "shimano-mtb-12"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart lists SL-M6100 with RD-M6100."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Mechanical",
+      "category": "shifter",
+      "id": "shifter-shimano-105-r7000",
+      "brand": "Shimano",
+      "model": "105 ST-R7000 11-speed",
+      "modelCode": "ST-R7000",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "speeds": 11,
+        "actuationFamily": "shimano-road-11"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
+      "sourceRef": "Pedal Brief CC BY 4.0: 105 R7000 mechanical, 11-speed. maker_wording names ST-R7000-R.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Cable Pull: 2.65 mm/shift",
+      "category": "shifter",
+      "id": "shifter-shimano-tiagra-4700",
+      "brand": "Shimano",
+      "model": "Tiagra ST-4700",
+      "modelCode": "ST-4700",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "speeds": 10,
+        "actuationFamily": "shimano-tiagra-4700"
+      },
+      "sourceUrl": "https://github.com/boothinator/derailleur-analysis",
+      "sourceRef": "Cable pull about 2.65 mm/shift measured on ST-4700 (MIT)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Electronic (Di2)",
+      "category": "shifter",
+      "id": "shifter-shimano-ultegra-r8170",
+      "brand": "Shimano",
+      "model": "Ultegra ST-R8170 Di2",
+      "modelCode": "ST-R8170",
+      "specs": {
+        "eEcosystem": "shimano-di2",
+        "chainType": "standard",
+        "speeds": 12,
+        "actuationFamily": "shimano-di2-12-wireless"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/ultegra-r8100-2x12-di2",
+      "sourceRef": "Pedal Brief CC BY 4.0: Ultegra R8100 Di2, 12-speed, wireless disc levers.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Di2",
+      "category": "shifter",
+      "id": "shifter-shimano-ultegra-r8050",
+      "brand": "Shimano",
+      "model": "Ultegra ST-R8050 Di2",
+      "modelCode": "ST-R8050",
+      "specs": {
+        "eEcosystem": "shimano-di2",
+        "chainType": "standard",
+        "speeds": 11,
+        "actuationFamily": "shimano-di2-etube"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "11-speed wired Di2 shifter. Draft the exact lever code."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Cable Pull: 3.58 mm/shift",
+      "category": "shifter",
+      "id": "shifter-shimano-cues-u6000",
+      "brand": "Shimano",
+      "model": "CUES SL-U6000 10-speed",
+      "modelCode": "SL-U6000-10R",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "linkglide",
+        "speeds": 10,
+        "actuationFamily": "shimano-linkglide"
+      },
+      "sourceUrl": "https://github.com/boothinator/derailleur-analysis",
+      "sourceRef": "Cable pull about 3.58 mm/shift measured on SL-U6000-10R (MIT)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Cable Pull: 3.25 mm/shift",
+      "category": "shifter",
+      "id": "shifter-sram-sx-eagle",
+      "brand": "SRAM",
+      "model": "SX Eagle shifter",
+      "modelCode": "SL-SX-1-A1",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "eagle",
+        "speeds": 12,
+        "actuationFamily": "sram-eagle-12"
+      },
+      "sourceUrl": "https://github.com/boothinator/derailleur-analysis",
+      "sourceRef": "Cable pull about 3.25 mm/shift measured on SL-SX-1-A1 (MIT)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Eagle",
+      "category": "shifter",
+      "id": "shifter-sram-gx-eagle",
+      "brand": "SRAM",
+      "model": "GX Eagle shifter",
+      "modelCode": "SL-GX-1",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "eagle",
+        "speeds": 12,
+        "actuationFamily": "sram-eagle-12"
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "Mechanical Eagle 12-speed shifter. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Eagle",
+      "category": "shifter",
+      "id": "shifter-sram-nx-eagle",
+      "brand": "SRAM",
+      "model": "NX Eagle shifter",
+      "modelCode": "SL-NX-1",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "eagle",
+        "speeds": 12,
+        "actuationFamily": "sram-eagle-12"
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "Mechanical Eagle 12-speed shifter. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "AXS",
+      "category": "shifter",
+      "id": "shifter-sram-gx-axs",
+      "brand": "SRAM",
+      "model": "GX Eagle AXS controller",
+      "modelCode": null,
+      "specs": {
+        "eEcosystem": "sram-axs",
+        "chainType": "eagle",
+        "speeds": 12,
+        "actuationFamily": "sram-axs"
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/road/axs-components-compatibility-map.pdf",
+      "sourceRef": "AXS pod. Eagle AXS, not road Flattop."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "AXS",
+      "category": "shifter",
+      "id": "shifter-sram-force-axs",
+      "brand": "SRAM",
+      "model": "Force AXS shifter",
+      "modelCode": null,
+      "specs": {
+        "eEcosystem": "sram-axs",
+        "chainType": "flattop",
+        "speeds": 12,
+        "actuationFamily": "sram-axs"
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/road/axs-components-compatibility-map.pdf",
+      "sourceRef": "Road AXS, Flattop chain. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Transmission",
+      "category": "shifter",
+      "id": "shifter-sram-transmission",
+      "brand": "SRAM",
+      "model": "Eagle Transmission AXS controller",
+      "modelCode": null,
+      "specs": {
+        "eEcosystem": "sram-axs",
+        "chainType": "t-type",
+        "speeds": 12,
+        "actuationFamily": "sram-axs"
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Transmission pod. T-Type chain and Full Mount derailleur."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Cable Pull: 3.00 mm/shift",
+      "category": "shifter",
+      "id": "shifter-sram-gx-10",
+      "brand": "SRAM",
+      "model": "GX 10-speed shifter",
+      "modelCode": "SL-GX-A1",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "speeds": 10,
+        "actuationFamily": "sram-1to1-exact"
+      },
+      "sourceUrl": "https://github.com/boothinator/derailleur-analysis",
+      "sourceRef": "Cable pull about 3.00 mm/shift measured on SL-GX-A1 (MIT)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Mechanical",
+      "category": "shifter",
+      "id": "shifter-campagnolo-chorus-12",
+      "brand": "Campagnolo",
+      "model": "Chorus 12 mechanical shifter",
+      "modelCode": null,
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "campagnolo",
+        "speeds": 12,
+        "actuationFamily": "campagnolo-mech-12"
+      },
+      "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
+      "sourceRef": "Pedal Brief CC BY 4.0: Chorus 12 mechanical.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Advent",
+      "category": "shifter",
+      "id": "shifter-microshift-advent",
+      "brand": "microSHIFT",
+      "model": "Advent 9-speed shifter",
+      "modelCode": null,
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "speeds": 9,
+        "actuationFamily": "microshift-advent"
+      },
+      "sourceUrl": "https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/",
+      "sourceRef": "Not a Shimano 9-speed match. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "Cable Pull: 3.41 mm/shift",
+      "category": "shifter",
+      "id": "shifter-microshift-advent-x",
+      "brand": "microSHIFT",
+      "model": "Advent X shifter",
+      "modelCode": "SB-M100A",
+      "specs": {
+        "eEcosystem": null,
+        "chainType": "standard",
+        "speeds": 10,
+        "actuationFamily": "microshift-advent-x"
+      },
+      "sourceUrl": "https://github.com/boothinator/derailleur-analysis",
+      "sourceRef": "Cable pull about 3.41 mm/shift (MIT)."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "32T",
+      "id": "crank-1x-32",
+      "category": "crankset",
+      "brand": "Teaching",
+      "model": "Single 32T chainring",
+      "modelCode": null,
+      "specs": {
+        "speeds": 9,
+        "ringCount": 1,
+        "chainrings": [
+          32
+        ],
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://wisewheeling.com/rear-derailleur-capacity/",
+      "sourceRef": "Teaching 1x ring. Front difference is 0. Not a branded crank."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "",
+      "id": "crank-zuzu-1x-unknown",
+      "category": "crankset",
+      "brand": "Unknown",
+      "model": "Single chainring, tooth count not recorded",
+      "modelCode": null,
+      "specs": {
+        "speeds": 9,
+        "ringCount": 1,
+        "chainrings": [],
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "Zuzu's VG Sports kit did not record the chainring size. ringCount 1 is an assumption from the 11-42 wide-range cassette. Confirm on the bike."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "50-34",
+      "id": "crank-shimano-105-50-34",
+      "category": "crankset",
+      "brand": "Shimano",
+      "model": "105 FC-R7000 50-34T",
+      "modelCode": "FC-R7000",
+      "specs": {
+        "speeds": 11,
+        "ringCount": 2,
+        "chainrings": [
+          50,
+          34
+        ],
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
+      "sourceRef": "Pedal Brief CC BY 4.0: 105 R7000 chainrings include 50-34.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "52-36",
+      "id": "crank-shimano-105-52-36",
+      "category": "crankset",
+      "brand": "Shimano",
+      "model": "105 FC-R7000 52-36T",
+      "modelCode": "FC-R7000",
+      "specs": {
+        "speeds": 11,
+        "ringCount": 2,
+        "chainrings": [
+          52,
+          36
+        ],
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
+      "sourceRef": "Pedal Brief CC BY 4.0: 105 R7000 chainrings include 52-36.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "46-36",
+      "id": "crank-shimano-105-46-36",
+      "category": "crankset",
+      "brand": "Shimano",
+      "model": "105 FC-RS510 46-36T",
+      "modelCode": "FC-RS510",
+      "specs": {
+        "speeds": 11,
+        "ringCount": 2,
+        "chainrings": [
+          46,
+          36
+        ],
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
+      "sourceRef": "Pedal Brief maker_wording includes FC-RS510 46-36T.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "46-30",
+      "id": "crank-shimano-grx-46-30",
+      "category": "crankset",
+      "brand": "Shimano",
+      "model": "GRX 46-30T",
+      "modelCode": null,
+      "specs": {
+        "speeds": 11,
+        "ringCount": 2,
+        "chainrings": [
+          46,
+          30
+        ],
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
+      "sourceRef": "Common GRX 2x ratio. Draft against the current GRX lineup page."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "36T",
+      "id": "crank-mtb-36",
+      "category": "crankset",
+      "brand": "Teaching",
+      "model": "Single 36T chainring",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "ringCount": 1,
+        "chainrings": [
+          36
+        ],
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://wisewheeling.com/rear-derailleur-capacity/",
+      "sourceRef": "Teaching 1x ring."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "30T",
+      "id": "crank-mtb-30",
+      "category": "crankset",
+      "brand": "Teaching",
+      "model": "Single 30T chainring",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "ringCount": 1,
+        "chainrings": [
+          30
+        ],
+        "chainType": "eagle"
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "Teaching Eagle 1x ring. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "32T",
+      "id": "crank-sram-gx-32",
+      "category": "crankset",
+      "brand": "SRAM",
+      "model": "GX Eagle 32T",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "ringCount": 1,
+        "chainrings": [
+          32
+        ],
+        "chainType": "eagle"
+      },
+      "sourceUrl": "https://support.sram.com/hc/en-us/sections/6129171904667",
+      "sourceRef": "Draft Eagle chainring."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "32T",
+      "id": "crank-sram-transmission-32",
+      "category": "crankset",
+      "brand": "SRAM",
+      "model": "Transmission 32T",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "ringCount": 1,
+        "chainrings": [
+          32
+        ],
+        "chainType": "t-type"
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Draft T-Type ring."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "48-31",
+      "id": "crank-road-48-31",
+      "category": "crankset",
+      "brand": "Teaching",
+      "model": "Gravel 48-31T",
+      "modelCode": null,
+      "specs": {
+        "speeds": 11,
+        "ringCount": 2,
+        "chainrings": [
+          48,
+          31
+        ],
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
+      "sourceRef": "Teaching sub-compact. Not a specific groupset row."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "50/34",
+      "id": "crank-campagnolo-50-34",
+      "category": "crankset",
+      "brand": "Campagnolo",
+      "model": "50-34T",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "ringCount": 2,
+        "chainrings": [
+          50,
+          34
+        ],
+        "chainType": "campagnolo"
+      },
+      "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
+      "sourceRef": "Pedal Brief lists 50/34 on several Campagnolo road groups. Draft.",
+      "attribution": "Pedal Brief, CC BY 4.0"
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-speed",
+      "id": "fd-shimano-r7000",
+      "category": "front_derailleur",
+      "brand": "Shimano",
+      "model": "105 FD-R7000",
+      "modelCode": null,
+      "specs": {
+        "speeds": 11,
+        "maxRing": 53,
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
+      "sourceRef": "Pedal Brief: 105 R7000 is 2x11 mechanical."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12-speed",
+      "id": "fd-shimano-r7100",
+      "category": "front_derailleur",
+      "brand": "Shimano",
+      "model": "105 12-speed front derailleur",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "maxRing": 52,
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7100-2x12",
+      "sourceRef": "Pedal Brief: 105 R7100 is 2x12. Draft model code."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-speed",
+      "id": "fd-shimano-grx-rx810",
+      "category": "front_derailleur",
+      "brand": "Shimano",
+      "model": "GRX FD-RX810",
+      "modelCode": null,
+      "specs": {
+        "speeds": 11,
+        "maxRing": 48,
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
+      "sourceRef": "Draft GRX front derailleur for 2x."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "11-speed",
+      "id": "fd-shimano-deore-m5100",
+      "category": "front_derailleur",
+      "brand": "Shimano",
+      "model": "Deore 2x11 front derailleur",
+      "modelCode": null,
+      "specs": {
+        "speeds": 11,
+        "maxRing": 38,
+        "chainType": "standard"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Draft. Only for a 2x mountain crank."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12-speed",
+      "id": "fd-sram-force-axs",
+      "category": "front_derailleur",
+      "brand": "SRAM",
+      "model": "Force AXS front derailleur",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "maxRing": 50,
+        "chainType": "flattop"
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/road/axs-components-compatibility-map.pdf",
+      "sourceRef": "Road AXS front derailleur. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "12-speed",
+      "id": "fd-campagnolo-chorus-12",
+      "category": "front_derailleur",
+      "brand": "Campagnolo",
+      "model": "Chorus 12 front derailleur",
+      "modelCode": null,
+      "specs": {
+        "speeds": 12,
+        "maxRing": 52,
+        "chainType": "campagnolo"
+      },
+      "sourceUrl": "https://pedalbrief.com/data/road-gravel-groupsets-2026",
+      "sourceRef": "Pedal Brief Chorus 12 mechanical. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hydraulic-disc mineral",
+      "id": "lever-shimano-bl-mt200",
+      "category": "brake_lever",
+      "brand": "Shimano",
+      "model": "BL-MT200",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "mineral"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Shimano MT200 lever. Mineral oil. Draft until the product page is re-opened."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "post-mount",
+      "id": "caliper-shimano-br-mt200",
+      "category": "brake_caliper",
+      "brand": "Shimano",
+      "model": "BR-MT200",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "mineral",
+        "caliperMount": "post-mount"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Chart lists BR-MT200 as hydraulic with BL-MT200. Mineral oil. Post mount. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hydraulic-disc mineral",
+      "id": "lever-shimano-bl-m6100",
+      "category": "brake_lever",
+      "brand": "Shimano",
+      "model": "Deore BL-M6100",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "mineral"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Deore hydraulic lever. Mineral oil. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "post-mount",
+      "id": "caliper-shimano-br-m6100",
+      "category": "brake_caliper",
+      "brand": "Shimano",
+      "model": "Deore BR-M6100",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "mineral",
+        "caliperMount": "post-mount"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Deore hydraulic caliper. Mineral oil. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hydraulic-disc mineral",
+      "id": "lever-shimano-bl-mt401",
+      "category": "brake_lever",
+      "brand": "Shimano",
+      "model": "BL-MT401",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "mineral"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Shimano MT401-series lever. Mineral oil. Draft the exact code."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "post-mount",
+      "id": "caliper-shimano-br-mt410",
+      "category": "brake_caliper",
+      "brand": "Shimano",
+      "model": "BR-MT410",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "mineral",
+        "caliperMount": "post-mount"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Draft mineral-oil caliper in the MT400 family."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hydraulic-disc dot",
+      "id": "lever-sram-level",
+      "category": "brake_lever",
+      "brand": "SRAM",
+      "model": "Level brake lever",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "dot"
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "SRAM Level uses DOT fluid. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "post-mount",
+      "id": "caliper-sram-level",
+      "category": "brake_caliper",
+      "brand": "SRAM",
+      "model": "Level caliper",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "dot",
+        "caliperMount": "post-mount"
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "SRAM Level DOT, post mount. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hydraulic-disc dot",
+      "id": "lever-sram-code",
+      "category": "brake_lever",
+      "brand": "SRAM",
+      "model": "Code brake lever",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "dot"
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "SRAM Code uses DOT fluid. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "post-mount",
+      "id": "caliper-sram-code",
+      "category": "brake_caliper",
+      "brand": "SRAM",
+      "model": "Code caliper",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "dot",
+        "caliperMount": "post-mount"
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "SRAM Code DOT, post mount. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hydraulic-disc mineral",
+      "id": "lever-sram-maven",
+      "category": "brake_lever",
+      "brand": "SRAM",
+      "model": "Maven brake lever",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "mineral"
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "SRAM Maven uses mineral oil, unlike Code and Level. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "post-mount",
+      "id": "caliper-sram-maven",
+      "category": "brake_caliper",
+      "brand": "SRAM",
+      "model": "Maven caliper",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "mineral",
+        "caliperMount": "post-mount"
+      },
+      "sourceUrl": "https://www.sram.com/globalassets/document-hierarchy/compatibility-map/mtb-and-road-hydraulic-disc-brake-lever-and-caliper-compatibility.pdf",
+      "sourceRef": "SRAM Maven mineral oil. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hydraulic-disc",
+      "id": "lever-tektro-hd-m275",
+      "category": "brake_lever",
+      "brand": "Tektro",
+      "model": "HD-M275 lever",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": null
+      },
+      "sourceUrl": "https://www.tektro.com/",
+      "sourceRef": "Fluid left blank so a missing fluid cannot pass as mineral or DOT. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "post-mount",
+      "id": "caliper-tektro-hd-m275",
+      "category": "brake_caliper",
+      "brand": "Tektro",
+      "model": "HD-M275 caliper",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": null,
+        "caliperMount": "post-mount"
+      },
+      "sourceUrl": "https://www.tektro.com/",
+      "sourceRef": "Fluid blank on purpose. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "mechanical-disc",
+      "id": "lever-avid-bb7",
+      "category": "brake_lever",
+      "brand": "Avid",
+      "model": "BB7 lever",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "mechanical-disc",
+        "fluid": null
+      },
+      "sourceUrl": "https://www.sram.com/en/sram",
+      "sourceRef": "Avid BB7 is a cable disc brake. No fluid."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "post-mount",
+      "id": "caliper-avid-bb7",
+      "category": "brake_caliper",
+      "brand": "Avid",
+      "model": "BB7 mechanical caliper",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "mechanical-disc",
+        "fluid": null,
+        "caliperMount": "post-mount"
+      },
+      "sourceUrl": "https://www.sram.com/en/sram",
+      "sourceRef": "Cable-actuated disc caliper. Draft mount: post-mount version."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hydraulic-disc mineral",
+      "id": "lever-shimano-st-r7020",
+      "category": "brake_lever",
+      "brand": "Shimano",
+      "model": "105 ST-R7020 hydraulic",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "mineral"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
+      "sourceRef": "Pedal Brief: 105 R7000 offers hydraulic disc. Mineral oil. Draft the lever code."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "flat-mount",
+      "id": "caliper-shimano-br-flat-105",
+      "category": "brake_caliper",
+      "brand": "Shimano",
+      "model": "105 hydraulic flat-mount caliper",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "mineral",
+        "caliperMount": "flat-mount"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
+      "sourceRef": "Flat-mount road caliper. Draft model code. Pedal Brief says the R7000 chart mentions a hydraulic disc brake."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "rim-caliper",
+      "id": "caliper-shimano-br-r7000-rim",
+      "category": "brake_caliper",
+      "brand": "Shimano",
+      "model": "105 BR-R7000 rim caliper",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "rim-caliper",
+        "fluid": null,
+        "caliperMount": null
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
+      "sourceRef": "Pedal Brief maker_wording: Caliper Brake BR-R7000."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "rim-caliper",
+      "id": "lever-shimano-st-r7000-rim",
+      "category": "brake_lever",
+      "brand": "Shimano",
+      "model": "105 ST-R7000 rim",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "rim-caliper",
+        "fluid": null
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/lineup/105-r7000-2x11",
+      "sourceRef": "Mechanical rim-brake lever pairing for BR-R7000. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "v-brake",
+      "id": "lever-vbrake",
+      "category": "brake_lever",
+      "brand": "Shimano",
+      "model": "V-brake lever",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "v-brake",
+        "fluid": null
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Linear-pull V-brake lever. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "v-brake",
+      "id": "caliper-vbrake",
+      "category": "brake_caliper",
+      "brand": "Shimano",
+      "model": "V-brake",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "v-brake",
+        "fluid": null,
+        "caliperMount": null
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "V-brake arms. No disc mount."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "post-mount",
+      "id": "caliper-shimano-br-post-105",
+      "category": "brake_caliper",
+      "brand": "Shimano",
+      "model": "105 hydraulic post-mount caliper",
+      "modelCode": null,
+      "specs": {
+        "brakeType": "hydraulic-disc",
+        "fluid": "mineral",
+        "caliperMount": "post-mount"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Post-mount mineral caliper used so a flat-mount frame can show the adapter warning. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "140 mm",
+      "id": "rotor-6bolt-140",
+      "category": "rotor",
+      "brand": "Standard",
+      "model": "140 mm 6-bolt rotor",
+      "modelCode": null,
+      "specs": {
+        "sizeMm": 140,
+        "rotorMount": "6-bolt"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Generic 140 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "140 mm",
+      "id": "rotor-centerlock-140",
+      "category": "rotor",
+      "brand": "Standard",
+      "model": "140 mm center-lock rotor",
+      "modelCode": null,
+      "specs": {
+        "sizeMm": 140,
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Generic 140 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "160 mm",
+      "id": "rotor-6bolt-160",
+      "category": "rotor",
+      "brand": "Standard",
+      "model": "160 mm 6-bolt rotor",
+      "modelCode": null,
+      "specs": {
+        "sizeMm": 160,
+        "rotorMount": "6-bolt"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Generic 160 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "160 mm",
+      "id": "rotor-centerlock-160",
+      "category": "rotor",
+      "brand": "Standard",
+      "model": "160 mm center-lock rotor",
+      "modelCode": null,
+      "specs": {
+        "sizeMm": 160,
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Generic 160 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "180 mm",
+      "id": "rotor-6bolt-180",
+      "category": "rotor",
+      "brand": "Standard",
+      "model": "180 mm 6-bolt rotor",
+      "modelCode": null,
+      "specs": {
+        "sizeMm": 180,
+        "rotorMount": "6-bolt"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Generic 180 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "180 mm",
+      "id": "rotor-centerlock-180",
+      "category": "rotor",
+      "brand": "Standard",
+      "model": "180 mm center-lock rotor",
+      "modelCode": null,
+      "specs": {
+        "sizeMm": 180,
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Generic 180 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "203 mm",
+      "id": "rotor-6bolt-203",
+      "category": "rotor",
+      "brand": "Standard",
+      "model": "203 mm 6-bolt rotor",
+      "modelCode": null,
+      "specs": {
+        "sizeMm": 203,
+        "rotorMount": "6-bolt"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Generic 203 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "203 mm",
+      "id": "rotor-centerlock-203",
+      "category": "rotor",
+      "brand": "Standard",
+      "model": "203 mm center-lock rotor",
+      "modelCode": null,
+      "specs": {
+        "sizeMm": 203,
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Generic 203 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "220 mm",
+      "id": "rotor-6bolt-220",
+      "category": "rotor",
+      "brand": "Standard",
+      "model": "220 mm 6-bolt rotor",
+      "modelCode": null,
+      "specs": {
+        "sizeMm": 220,
+        "rotorMount": "6-bolt"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Generic 220 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "220 mm",
+      "id": "rotor-centerlock-220",
+      "category": "rotor",
+      "brand": "Standard",
+      "model": "220 mm center-lock rotor",
+      "modelCode": null,
+      "specs": {
+        "sizeMm": 220,
+        "rotorMount": "center-lock"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/pdfs/product/archive/2025-2026_Compatibility_v037_en.pdf",
+      "sourceRef": "Generic 220 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "standard",
+      "id": "frame-mtb-standard-post-180",
+      "category": "frame",
+      "brand": "Teaching",
+      "model": "Mountain frame, standard hanger, post mount, 180 mm max",
+      "modelCode": null,
+      "specs": {
+        "hanger": "standard",
+        "brakeStyle": "disc",
+        "caliperMount": "post-mount",
+        "maxRotorMm": 180,
+        "phase": "minimal"
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Minimal phase 1 frame. Max rotor is a teaching limit, not a measured bike."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "standard",
+      "id": "frame-mtb-standard-post-203",
+      "category": "frame",
+      "brand": "Teaching",
+      "model": "Mountain frame, standard hanger, post mount, 203 mm max",
+      "modelCode": null,
+      "specs": {
+        "hanger": "standard",
+        "brakeStyle": "disc",
+        "caliperMount": "post-mount",
+        "maxRotorMm": 203,
+        "phase": "minimal"
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Minimal phase 1 frame."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "udh",
+      "id": "frame-mtb-udh-post-203",
+      "category": "frame",
+      "brand": "Teaching",
+      "model": "Mountain frame, UDH, post mount, 203 mm max",
+      "modelCode": null,
+      "specs": {
+        "hanger": "udh",
+        "brakeStyle": "disc",
+        "caliperMount": "post-mount",
+        "maxRotorMm": 203,
+        "phase": "minimal"
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "UDH frame for Full Mount derailleurs. SRAM UDH explainer."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "standard",
+      "id": "frame-road-flat-160",
+      "category": "frame",
+      "brand": "Teaching",
+      "model": "Road frame, standard hanger, flat mount, 160 mm max",
+      "modelCode": null,
+      "specs": {
+        "hanger": "standard",
+        "brakeStyle": "disc",
+        "caliperMount": "flat-mount",
+        "maxRotorMm": 160,
+        "phase": "minimal"
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Minimal phase 1 road disc frame."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "standard",
+      "id": "frame-road-rim",
+      "category": "frame",
+      "brand": "Teaching",
+      "model": "Road frame, rim brakes, standard hanger",
+      "modelCode": null,
+      "specs": {
+        "hanger": "standard",
+        "brakeStyle": "rim",
+        "caliperMount": null,
+        "maxRotorMm": null,
+        "phase": "minimal"
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Rim-brake frame. No rotor maximum."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "direct-mount",
+      "id": "frame-direct-mount-post-180",
+      "category": "frame",
+      "brand": "Teaching",
+      "model": "Frame, direct-mount hanger, post mount, 180 mm max",
+      "modelCode": null,
+      "specs": {
+        "hanger": "direct-mount",
+        "brakeStyle": "disc",
+        "caliperMount": "post-mount",
+        "maxRotorMm": 180,
+        "phase": "minimal"
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Direct-mount hanger is not UDH and does not take Full Mount."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "standard",
+      "id": "frame-gravel-flat-180",
+      "category": "frame",
+      "brand": "Teaching",
+      "model": "Gravel frame, standard hanger, flat mount, 180 mm max",
+      "modelCode": null,
+      "specs": {
+        "hanger": "standard",
+        "brakeStyle": "disc",
+        "caliperMount": "flat-mount",
+        "maxRotorMm": 180,
+        "phase": "minimal"
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Minimal phase 1 gravel frame."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "standard",
+      "id": "frame-mtb-post-140",
+      "category": "frame",
+      "brand": "Teaching",
+      "model": "Mountain frame, standard hanger, post mount, 140 mm max",
+      "modelCode": null,
+      "specs": {
+        "hanger": "standard",
+        "brakeStyle": "disc",
+        "caliperMount": "post-mount",
+        "maxRotorMm": 140,
+        "phase": "minimal"
+      },
+      "sourceUrl": "https://www.sram.com/en/learn/understanding-udh-and-full-mount",
+      "sourceRef": "Small-rotor teaching frame."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hanger extender",
+      "id": "extender-vg-sports",
+      "category": "hanger_extender",
+      "brand": "VG Sports",
+      "model": "Derailleur hanger extender from the 9-speed kit",
+      "modelCode": null,
+      "specs": {
+        "style": "hanger-extender"
+      },
+      "sourceUrl": "https://productinfo.shimano.com/en/compatibility/C-731",
+      "sourceRef": "The owner's VG Sports 9-speed kit (ASIN B09VBNTGCD) includes a derailleur hanger extender. No shop link. The extender does not change the published max cog; the 8-tooth window is a practitioner rule."
+    },
+    {
+      "years": null,
+      "reviewStatus": "draft",
+      "checkedAt": "2026-11-27",
+      "quote": "hanger extender",
+      "id": "extender-roadlink-style",
+      "category": "hanger_extender",
+      "brand": "Teaching",
+      "model": "RoadLink-style hanger extender",
+      "modelCode": null,
+      "specs": {
+        "style": "hanger-extender"
+      },
+      "sourceUrl": "https://bike.bikegremlin.com/1278/bicycle-rear-derailleur-compatibility/",
+      "sourceRef": "Teaching name for a road hanger extender. Not a shop listing."
+    }
+  ]
+}

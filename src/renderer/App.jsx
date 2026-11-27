@@ -19,6 +19,7 @@ const CurrentProjectsPage = lazy(() => import('./pages/CurrentProjectsPage'));
 const SafeSearchPage = lazy(() => import('./pages/SafeSearchPage'));
 const ShoppingPage = lazy(() => import('./pages/ShoppingPage'));
 const BuildPlannerPage = lazy(() => import('./pages/BuildPlannerPage'));
+const BuilderPage = lazy(() => import('./pages/builder/BuilderPage'));
 const AllProjectNotesPage = lazy(() => import('./pages/AllProjectNotesPage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
 const Game3DPage = lazy(() => import('./pages/Game3DPage'));
@@ -77,6 +78,7 @@ function AppContent() {
           <Route path="/project-builder" element={<ProjectBuilderPage />} />
           <Route path="/current-projects" element={<CurrentProjectsPage />} />
           <Route path="/build-planner" element={<BuildPlannerPage />} />
+          <Route path="/builder" element={<BuilderPage />} />
           <Route path="/saved-notes" element={<AllProjectNotesPage />} />
           <Route path="/shop" element={<ShoppingPage />} />
           <Route path="/safe-search" element={<SafeSearchPage />} />

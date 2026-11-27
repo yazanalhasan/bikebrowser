@@ -1,0 +1,26 @@
+{
+  "id": "zuzu-bike",
+  "name": "Zuzu's bike",
+  "rider": "Zuzu",
+  "bikeType": "mountain",
+  "wheelSize": null,
+  "kitName": "VG Sports 9-speed MTB kit",
+  "asin": "B09VBNTGCD",
+  "note": "The rear derailleur model was not recorded. A grown-up needs to read the number stamped on it. The kit name and ASIN identify the cassette, chain, and hanger extender. There is no shop link and no price.",
+  "slots": {
+    "hub": "hub-hg-m-6bolt",
+    "cassette": "cassette-vg-sports-9-11-42",
+    "chain": "chain-shimano-hg-9",
+    "rear_derailleur": {
+      "status": "owned-unknown",
+      "prompt": "Read the model number on the rear derailleur."
+    },
+    "shifter": "shifter-shimano-altus-m370-9",
+    "crankset": "crank-zuzu-1x-unknown",
+    "hanger_extender": "extender-vg-sports",
+    "frame": {
+      "status": "owned-unknown",
+      "prompt": "Frame hanger and brake mounts are not recorded."
+    }
+  }
+}

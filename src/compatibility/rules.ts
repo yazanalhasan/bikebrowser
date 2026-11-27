@@ -7,12 +7,14 @@ export type CompatibilityRuleResult = {
 
 type CompatibilityRule = {
   name: string;
+  pair: 'battery-controller' | 'motor-controller';
   check: (a?: ProjectItem, b?: ProjectItem) => CompatibilityRuleResult | null;
 };
 
 export const compatibilityRules: CompatibilityRule[] = [
   {
     name: 'Voltage Match',
+    pair: 'battery-controller',
     check: (battery, controller) => {
       if (!battery?.specs?.voltage || !controller?.specs?.voltage) return null;
 
@@ -26,6 +28,7 @@ export const compatibilityRules: CompatibilityRule[] = [
   },
   {
     name: 'Controller Current Limit',
+    pair: 'battery-controller',
     check: (battery, controller) => {
       if (!battery?.specs?.maxCurrent || !controller?.specs?.maxCurrent) return null;
 
@@ -39,6 +42,7 @@ export const compatibilityRules: CompatibilityRule[] = [
   },
   {
     name: 'Motor Power Compatibility',
+    pair: 'motor-controller',
     check: (motor, controller) => {
       if (!motor?.specs?.power || !controller?.specs?.power) return null;
 

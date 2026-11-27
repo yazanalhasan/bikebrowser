@@ -1,0 +1,190 @@
+# Parts needing review
+
+Generated 2026-11-27. 166 parts. Approved means the numbers were copied from a manufacturer specification table during this build. Draft means a person still needs to check them before anyone trusts a real build.
+
+A draft part can still appear in the builder. If a number is blank, the engine says "can't verify" instead of "fits".
+
+## Approved
+
+- `shimano-rd-m3100-sgs` Shimano Alivio RD-M3100-SGS — https://bike.shimano.com/en-EU/product/component/alivio-m3100/RD-M3100-SGS.html
+- `shimano-rd-m370-sgs` Shimano Altus RD-M370-SGS — https://bike.shimano.com/en-EU/product/component/altus-m370/RD-M370-SGS.html
+
+## Draft
+
+- `hub-hg-m-6bolt` (hub) Standard Rear hub, HG spline M, 6-bolt — Shimano C-731: HG spline M is the 10/9/8/7 and MTB 11-speed body, outer length 34.9 mm.
+- `hub-hg-m-centerlock` (hub) Standard Rear hub, HG spline M, Center Lock — Shimano C-731 HG spline M. Center Lock is Shimano's rotor spline.
+- `hub-hg-l-centerlock` (hub) Standard Rear hub, HG spline L, Center Lock — Shimano C-731: HG spline L, road 12/11-speed, outer length 36.75 mm.
+- `hub-hg-l2-centerlock` (hub) Standard Rear hub, HG spline L2, Center Lock — Shimano C-731: HG spline L2, road 12-speed dedicated, outer length 37.65 mm.
+- `hub-hg-s-6bolt` (hub) Standard Rear hub, HG spline S, 6-bolt — Shimano C-731: HG spline S, 7-speed, outer length 31 mm.
+- `hub-microspline-centerlock` (hub) Standard Rear hub, Micro Spline, Center Lock — Shimano C-731: Micro Spline, 23 spline teeth, outer length 26 mm, MTB 12-speed.
+- `hub-microspline-6bolt` (hub) Standard Rear hub, Micro Spline, 6-bolt — Shimano C-731 Micro Spline body with a 6-bolt rotor mount.
+- `hub-xd-6bolt` (hub) SRAM XD driver rear hub, 6-bolt — SRAM XD driver. Draft: confirm the exact hub model before a real build.
+- `hub-xd-centerlock` (hub) SRAM XD driver rear hub, Center Lock — SRAM XD driver. Draft.
+- `hub-xdr-centerlock` (hub) SRAM XDR driver rear hub, Center Lock — SRAM XDR is the longer road driver. An XD cassette needs a 1.85 mm spacer.
+- `hub-campagnolo-centerlock` (hub) Campagnolo Campagnolo freehub, Center Lock — Campagnolo uses its own spline. Draft generic body, not a specific hub model.
+- `hub-n3w-centerlock` (hub) Campagnolo N3W freehub, Center Lock — Campagnolo N3W. Older Campagnolo cassettes are marked unknown here, not a pass.
+- `hub-linkglide-centerlock` (hub) Shimano Linkglide freehub, Center Lock — C-731 says its table does not include Linkglide cassettes. This body is separate from HG. Draft.
+- `cassette-vg-sports-9-11-42` (cassette) VG Sports 9-speed cassette 11-42T — Tooth count 11-42T is the owner's VG Sports 9-speed kit (ASIN B09VBNTGCD). No shop link. Freehub: 9-speed HG uses HG spline M natively and HG spline L with a 1.85 mm spacer (C-731).
+- `cassette-shimano-hg400-9-11-36` (cassette) Shimano CS-HG400-9 11-36T — Shimano 2025-2026 compatibility v037 lists CS-HG400-9 11-36T with 9-speed HG derailleurs.
+- `cassette-shimano-hg400-9-11-34` (cassette) Shimano CS-HG400-9 11-34T — CS-HG400-9 is a 9-speed HG cassette family. 11-34T is a common ratio in that family. Draft the exact tooth board.
+- `cassette-shimano-hg400-9-11-32` (cassette) Shimano CS-HG400-9 11-32T — 9-speed HG cassette. Draft exact ratio.
+- `cassette-shimano-hg-8-11-32` (cassette) Shimano 8-speed HG cassette 11-32T — Chart lists CS-HG400-8. Draft the 11-32 ratio.
+- `cassette-shimano-hg-7-12-28` (cassette) Shimano CS-HG400-7 12-28T — C-731 *6: CS-HG400-7 fits HG spline M. *7 lists other 7-speed cassettes on HG spline S. Draft which exact 7-speed model is native on S.
+- `cassette-shimano-hg-10-11-36` (cassette) Shimano 10-speed HG cassette 11-36T — 10/9/8-speed cassettes are marked compatible with HG spline M, and with HG spline L using a 1.85 mm spacer (C-731 *2). Draft model code.
+- `cassette-shimano-road-10-11-28` (cassette) Shimano 10-speed road HG cassette 11-28T — C-731 *5 and *2 name CS-5700 among 10-speed road cassettes that need spacers. Draft.
+- `cassette-shimano-mtb-11-11-42` (cassette) Shimano CS-M5100-11 11-42T — Chart lists CS-M5100-11 (11-42T). MTB 11-speed uses the HG spline M body (C-731) and needs a 1.85 mm spacer on HG spline L.
+- `cassette-shimano-mtb-11-11-46` (cassette) Shimano 11-speed MTB cassette 11-46T — Chart lists CS-M7000-11 11-46T among 11-speed MTB cassettes. Draft which exact SKU.
+- `cassette-shimano-mtb-11-11-51` (cassette) Shimano CS-M5100-11 11-51T — Chart lists CS-M5100-11 (11-51T).
+- `cassette-shimano-r7000-11-28` (cassette) Shimano 105 CS-R7000 11-28T — Pedal Brief CC BY 4.0, groupset 105 R7000, Cassettes, checked 2026-10-20. stated: 11-28, 11-30, 11-32, 11-34, 12-25. Standard 11-speed road cassettes other than CS-HG700/HG800/RS400 need HG spline L (C-731).
+- `cassette-shimano-r7000-11-32` (cassette) Shimano 105 CS-R7000 11-32T — Pedal Brief CC BY 4.0, 105 R7000 cassettes include 11-32. HG spline L native.
+- `cassette-shimano-hg700-11-34` (cassette) Shimano CS-HG700-11 11-34T — C-731 *4: CS-HG700 of road 11-speed fits HG spline M. *3: the same cassette fits HG spline L with a 1.85 mm spacer. Pedal Brief lists 11-34 on the 105 R7000 chart as CS-HG700-11.
+- `cassette-shimano-r7100-11-34` (cassette) Shimano 105 12-speed cassette 11-34T — Pedal Brief CC BY 4.0, 105 R7100 cassettes stated 11-34, 11-36. C-731: road 12-speed fits HG spline L2 and HG spline L.
+- `cassette-shimano-r7100-11-36` (cassette) Shimano 105 12-speed cassette 11-36T — Pedal Brief CC BY 4.0, 105 R7100 cassettes include 11-36. Model code draft.
+- `cassette-shimano-r8100-11-30` (cassette) Shimano Ultegra 12-speed cassette 11-30T — Pedal Brief CC BY 4.0, Ultegra R8100 cassettes stated 11-30, 11-34. Road 12 freehubs per C-731.
+- `cassette-shimano-m6100-10-51` (cassette) Shimano CS-M6100-12 10-51T — Chart lists CS-M6100-12 (10-51T) with 12-speed MTB derailleurs. Micro Spline only (C-731).
+- `cassette-shimano-m7100-10-45` (cassette) Shimano CS-M7100-12 10-45T — Chart lists CS-M7100-12 (10-45T). Micro Spline.
+- `cassette-sram-nx-11-50` (cassette) SRAM NX Eagle PG-1230 11-50T — NX Eagle uses a Shimano HG driver, not XD. Draft: confirm 11-50 against the current SRAM PG-1230 page.
+- `cassette-sram-gx-10-52` (cassette) SRAM GX Eagle XG-1275 10-52T — GX Eagle 10-52 uses an XD driver. XD on XDR needs a 1.85 mm spacer. Draft the current model code.
+- `cassette-sram-xg-10-50` (cassette) SRAM Eagle cassette 10-50T — Earlier Eagle 10-50 cassettes use XD. Draft.
+- `cassette-sram-force-xdr-10-36` (cassette) SRAM Force AXS cassette 10-36T — Road AXS cassettes use XDR and a Flattop chain. Draft the 10-36 ratio.
+- `cassette-sram-transmission-10-52` (cassette) SRAM GX Eagle Transmission XS-1275 10-52T — Transmission cassettes are T-Type and use an XD driver body. Draft model code.
+- `cassette-sram-flattop-10-33` (cassette) SRAM Red/Force AXS cassette 10-33T — Flattop road cassette on XDR. Draft ratio.
+- `cassette-shimano-linkglide-11-46` (cassette) Shimano Linkglide cassette 11-46T — Linkglide is excluded from the C-731 HG table. Draft tooth count and model code.
+- `cassette-campagnolo-12-11-34` (cassette) Campagnolo 12-speed cassette 11-34T — Pedal Brief CC BY 4.0 lists Chorus 12 cassettes including 11-34. N3W cross-fit is unknown, not a pass.
+- `cassette-campagnolo-13-10-29` (cassette) Campagnolo Super Record 13 cassette 10-29T — Pedal Brief CC BY 4.0, Super Record 13 cassettes include 10-29. N3W native. Draft.
+- `chain-shimano-hg-7` (chain) Shimano 7-speed HG chain — Match chain speed to the drivetrain. Draft model.
+- `chain-shimano-hg-8` (chain) Shimano 8-speed HG chain — Match chain speed to the drivetrain. Draft model.
+- `chain-shimano-hg-9` (chain) Shimano CN-HG53 9-speed chain — 9-speed HG chain for the 9-speed kit. Draft the exact Shimano chain code on the bike.
+- `chain-shimano-hg-10` (chain) Shimano 10-speed HG chain — Draft model.
+- `chain-shimano-hg-11` (chain) Shimano CN-HG601-11 chain — Chart lists CN-HG601-11 with 11-speed road groups.
+- `chain-shimano-hg-12` (chain) Shimano 12-speed HG chain — 12-speed Shimano mountain and road HG chains. Draft the exact code (CN-M7100 / CN-M8100).
+- `chain-sram-eagle-12` (chain) SRAM Eagle 12-speed chain — Eagle mechanical uses an Eagle chain. Draft model (GX/NX/SX).
+- `chain-sram-flattop-12` (chain) SRAM Flattop 12-speed chain — Road AXS uses a Flattop chain.
+- `chain-sram-ttype-12` (chain) SRAM T-Type Transmission chain — Eagle Transmission uses a T-Type chain.
+- `chain-shimano-linkglide` (chain) Shimano Linkglide chain — Linkglide chain stays with Linkglide. Speed draft: many CUES bikes are 9, 10, or 11.
+- `chain-campagnolo-12` (chain) Campagnolo 12-speed chain — Pedal Brief CC BY 4.0 Chorus / Super Record 12 mechanical. Draft.
+- `chain-campagnolo-13` (chain) Campagnolo 13-speed chain — Pedal Brief CC BY 4.0 Super Record 13. Draft.
+- `shimano-rd-classic-8` (rear_derailleur) Shimano 8-speed rear derailleur, classic cable pull — Teaching part for the 6–9 speed interchange exception. Not a specific current model. Draft the max cog.
+- `shimano-rd-m5120-sgs` (rear_derailleur) Shimano Deore RD-M5120-SGS — Chart: RD-M5120-SGS, 42T ≤ largest sprocket ≤ 46T for 1x11 and 1x10. Seeded as 11-speed mountain actuation so a 10-speed mix does not pass. Needs review.
+- `shimano-rd-m5100-sgs` (rear_derailleur) Shimano Deore RD-M5100-SGS — Chart: RD-M5100-SGS (51T ≤ largest sprocket ≤ 51T for 1x11-speed).
+- `shimano-rd-m8000-sgs` (rear_derailleur) Shimano XT RD-M8000-SGS — Chart: RD-M8000-SGS, 40T ≤ largest ≤ 46T for 1x11-speed. Capacity not on that row, left blank.
+- `shimano-rd-m6100-sgs` (rear_derailleur) Shimano Deore RD-M6100-SGS — Chart pairs RD-M6100-SGS (1x12-speed) with CS-M6100-12 (10-51T). Capacity not copied.
+- `shimano-rd-m7100-sgs` (rear_derailleur) Shimano SLX RD-M7100-SGS — Chart pairs RD-M7100-SGS (1x12-speed) with 10-51 cassettes. Capacity blank.
+- `shimano-rd-m8100-sgs` (rear_derailleur) Shimano XT RD-M8100-SGS — Chart pairs RD-M8100-SGS (1x12-speed) with 10-51 cassettes. Capacity blank.
+- `shimano-rd-m4100-10` (rear_derailleur) Shimano Deore 10-speed rear derailleur — 10-speed mountain (Dyna-Sys) is its own actuation family. Max cog left blank on purpose.
+- `shimano-rd-r7000-ss` (rear_derailleur) Shimano 105 RD-R7000-SS — Chart: RD-R7000-SS (25T ≤ largest sprocket ≤ 30T). Capacity not on that row.
+- `shimano-rd-r7000-gs` (rear_derailleur) Shimano 105 RD-R7000-GS — Chart lists RD-R7000-GS beside a 30–34T largest-sprocket note. The OCR of that row is messy, so capacity is blank and this stays draft.
+- `shimano-rd-r8000-ss` (rear_derailleur) Shimano Ultegra RD-R8000-SS — Chart: RD-R8000-SS (25T ≤ largest sprocket ≤ 30T).
+- `shimano-rd-r8000-gs` (rear_derailleur) Shimano Ultegra RD-R8000-GS — Chart: RD-R8000-GS (28T ≤ largest sprocket ≤ 34T).
+- `shimano-rd-4700-gs` (rear_derailleur) Shimano Tiagra RD-4700-GS — Tiagra 4700 uses the newer road cable pull, not classic 10-speed. Max cog draft.
+- `shimano-rd-r7100` (rear_derailleur) Shimano 105 RD-R7100 — Pedal Brief CC BY 4.0: 105 R7100 is 12-speed. Mechanical and Di2 both exist; this record is the Di2 generation and stays draft until the mechanical twin is split out.
+- `shimano-rd-r8150` (rear_derailleur) Shimano Ultegra RD-R8150 — Pedal Brief CC BY 4.0: Ultegra R8100 Di2, 12-speed, cassettes to 11-34. Draft max cog.
+- `shimano-rd-r8050` (rear_derailleur) Shimano Ultegra RD-R8050-SS — Chart: RD-R8050-SS (25T ≤ largest sprocket ≤ 30T). Wired Di2 generation.
+- `shimano-rd-u6000` (rear_derailleur) Shimano CUES RD-U6000 — CUES / Linkglide is its own family. Speed and max cog left for review. A 10-speed CUES derailleur measured pull ratio 1.06 in derailleur-analysis.
+- `sram-rd-sx-eagle` (rear_derailleur) SRAM SX Eagle rear derailleur — Measured pull ratio 1.08 on RD-SX-1-B1 (MIT). Max cog 50T is draft.
+- `sram-rd-nx-eagle` (rear_derailleur) SRAM NX Eagle rear derailleur — NX Eagle mechanical 12-speed. Max cog draft 50T.
+- `sram-rd-gx-eagle` (rear_derailleur) SRAM GX Eagle rear derailleur — GX Eagle mechanical. Max cog draft 52T.
+- `sram-rd-gx-axs` (rear_derailleur) SRAM GX Eagle AXS rear derailleur — AXS ecosystem. Eagle AXS uses an Eagle chain, not Flattop. Draft max cog.
+- `sram-rd-xx-transmission` (rear_derailleur) SRAM GX Eagle Transmission rear derailleur — Full Mount Transmission derailleur requires a UDH frame and a T-Type chain.
+- `sram-rd-apex-xplr-axs` (rear_derailleur) SRAM Apex XPLR AXS rear derailleur — Pedal Brief CC BY 4.0: Apex AXS XPLR is 12-speed electronic, cassette 11-44. Newer XPLR derailleurs are Full Mount. Draft the mount if this exact Apex is hanger-mount.
+- `sram-rd-gx-10` (rear_derailleur) SRAM GX 10-speed rear derailleur — Measured pull ratio 1.33 (MIT). Max cog draft.
+- `sram-rd-apex-11` (rear_derailleur) SRAM Apex 1 rear derailleur — Measured pull ratio 1.22 (MIT). Max cog draft.
+- `campagnolo-rd-chorus-12` (rear_derailleur) Campagnolo Chorus 12 mechanical rear derailleur — Pedal Brief CC BY 4.0: Chorus 12 mechanical, cassettes include 11-34. Draft max cog.
+- `microshift-rd-advent` (rear_derailleur) microSHIFT Advent 9-speed rear derailleur — Advent is not Shimano 9-speed actuation. Max cog draft.
+- `microshift-rd-advent-x` (rear_derailleur) microSHIFT Advent X RD-M6205AM — Measured pull ratio 1.05 (MIT). Max cog draft.
+- `shifter-shimano-altus-m370-9` (shifter) Shimano Altus SL-M370 9-speed — Chart lists SL-M370-R with 9-speed Altus derailleurs. Used as the 9-speed Shimano shifter stand-in. Confirm the shifter actually on Zuzu's bike.
+- `shifter-shimano-alivio-m3100-9` (shifter) Shimano Alivio SL-M3100 9-speed — Chart lists SL-M3100-R with RD-M3100-SGS.
+- `shifter-shimano-classic-8` (shifter) Shimano 8-speed Shimano shifter, classic cable — Teaching shifter for the 6–9 interchange. Draft.
+- `shifter-shimano-deore-m4100-10` (shifter) Shimano Deore SL-M4100 10-speed — Cable pull about 3.48 mm/shift measured on SL-M4100 (MIT).
+- `shifter-shimano-deore-m5100-11` (shifter) Shimano Deore SL-M5100 11-speed — Cable pull about 3.40 mm/shift measured on SL-M5100 (MIT).
+- `shifter-shimano-slx-m7100-12` (shifter) Shimano SLX SL-M7100 12-speed — Cable pull about 3.19 mm/shift measured on SL-M7100 (MIT).
+- `shifter-shimano-deore-m6100-12` (shifter) Shimano Deore SL-M6100 12-speed — Chart lists SL-M6100 with RD-M6100.
+- `shifter-shimano-105-r7000` (shifter) Shimano 105 ST-R7000 11-speed — Pedal Brief CC BY 4.0: 105 R7000 mechanical, 11-speed. maker_wording names ST-R7000-R.
+- `shifter-shimano-tiagra-4700` (shifter) Shimano Tiagra ST-4700 — Cable pull about 2.65 mm/shift measured on ST-4700 (MIT).
+- `shifter-shimano-ultegra-r8170` (shifter) Shimano Ultegra ST-R8170 Di2 — Pedal Brief CC BY 4.0: Ultegra R8100 Di2, 12-speed, wireless disc levers.
+- `shifter-shimano-ultegra-r8050` (shifter) Shimano Ultegra ST-R8050 Di2 — 11-speed wired Di2 shifter. Draft the exact lever code.
+- `shifter-shimano-cues-u6000` (shifter) Shimano CUES SL-U6000 10-speed — Cable pull about 3.58 mm/shift measured on SL-U6000-10R (MIT).
+- `shifter-sram-sx-eagle` (shifter) SRAM SX Eagle shifter — Cable pull about 3.25 mm/shift measured on SL-SX-1-A1 (MIT).
+- `shifter-sram-gx-eagle` (shifter) SRAM GX Eagle shifter — Mechanical Eagle 12-speed shifter. Draft.
+- `shifter-sram-nx-eagle` (shifter) SRAM NX Eagle shifter — Mechanical Eagle 12-speed shifter. Draft.
+- `shifter-sram-gx-axs` (shifter) SRAM GX Eagle AXS controller — AXS pod. Eagle AXS, not road Flattop.
+- `shifter-sram-force-axs` (shifter) SRAM Force AXS shifter — Road AXS, Flattop chain. Draft.
+- `shifter-sram-transmission` (shifter) SRAM Eagle Transmission AXS controller — Transmission pod. T-Type chain and Full Mount derailleur.
+- `shifter-sram-gx-10` (shifter) SRAM GX 10-speed shifter — Cable pull about 3.00 mm/shift measured on SL-GX-A1 (MIT).
+- `shifter-campagnolo-chorus-12` (shifter) Campagnolo Chorus 12 mechanical shifter — Pedal Brief CC BY 4.0: Chorus 12 mechanical.
+- `shifter-microshift-advent` (shifter) microSHIFT Advent 9-speed shifter — Not a Shimano 9-speed match. Draft.
+- `shifter-microshift-advent-x` (shifter) microSHIFT Advent X shifter — Cable pull about 3.41 mm/shift (MIT).
+- `crank-1x-32` (crankset) Teaching Single 32T chainring — Teaching 1x ring. Front difference is 0. Not a branded crank.
+- `crank-zuzu-1x-unknown` (crankset) Unknown Single chainring, tooth count not recorded — Zuzu's VG Sports kit did not record the chainring size. ringCount 1 is an assumption from the 11-42 wide-range cassette. Confirm on the bike.
+- `crank-shimano-105-50-34` (crankset) Shimano 105 FC-R7000 50-34T — Pedal Brief CC BY 4.0: 105 R7000 chainrings include 50-34.
+- `crank-shimano-105-52-36` (crankset) Shimano 105 FC-R7000 52-36T — Pedal Brief CC BY 4.0: 105 R7000 chainrings include 52-36.
+- `crank-shimano-105-46-36` (crankset) Shimano 105 FC-RS510 46-36T — Pedal Brief maker_wording includes FC-RS510 46-36T.
+- `crank-shimano-grx-46-30` (crankset) Shimano GRX 46-30T — Common GRX 2x ratio. Draft against the current GRX lineup page.
+- `crank-mtb-36` (crankset) Teaching Single 36T chainring — Teaching 1x ring.
+- `crank-mtb-30` (crankset) Teaching Single 30T chainring — Teaching Eagle 1x ring. Draft.
+- `crank-sram-gx-32` (crankset) SRAM GX Eagle 32T — Draft Eagle chainring.
+- `crank-sram-transmission-32` (crankset) SRAM Transmission 32T — Draft T-Type ring.
+- `crank-road-48-31` (crankset) Teaching Gravel 48-31T — Teaching sub-compact. Not a specific groupset row.
+- `crank-campagnolo-50-34` (crankset) Campagnolo 50-34T — Pedal Brief lists 50/34 on several Campagnolo road groups. Draft.
+- `fd-shimano-r7000` (front_derailleur) Shimano 105 FD-R7000 — Pedal Brief: 105 R7000 is 2x11 mechanical.
+- `fd-shimano-r7100` (front_derailleur) Shimano 105 12-speed front derailleur — Pedal Brief: 105 R7100 is 2x12. Draft model code.
+- `fd-shimano-grx-rx810` (front_derailleur) Shimano GRX FD-RX810 — Draft GRX front derailleur for 2x.
+- `fd-shimano-deore-m5100` (front_derailleur) Shimano Deore 2x11 front derailleur — Draft. Only for a 2x mountain crank.
+- `fd-sram-force-axs` (front_derailleur) SRAM Force AXS front derailleur — Road AXS front derailleur. Draft.
+- `fd-campagnolo-chorus-12` (front_derailleur) Campagnolo Chorus 12 front derailleur — Pedal Brief Chorus 12 mechanical. Draft.
+- `lever-shimano-bl-mt200` (brake_lever) Shimano BL-MT200 — Shimano MT200 lever. Mineral oil. Draft until the product page is re-opened.
+- `caliper-shimano-br-mt200` (brake_caliper) Shimano BR-MT200 — Chart lists BR-MT200 as hydraulic with BL-MT200. Mineral oil. Post mount. Draft.
+- `lever-shimano-bl-m6100` (brake_lever) Shimano Deore BL-M6100 — Deore hydraulic lever. Mineral oil. Draft.
+- `caliper-shimano-br-m6100` (brake_caliper) Shimano Deore BR-M6100 — Deore hydraulic caliper. Mineral oil. Draft.
+- `lever-shimano-bl-mt401` (brake_lever) Shimano BL-MT401 — Shimano MT401-series lever. Mineral oil. Draft the exact code.
+- `caliper-shimano-br-mt410` (brake_caliper) Shimano BR-MT410 — Draft mineral-oil caliper in the MT400 family.
+- `lever-sram-level` (brake_lever) SRAM Level brake lever — SRAM Level uses DOT fluid. Draft.
+- `caliper-sram-level` (brake_caliper) SRAM Level caliper — SRAM Level DOT, post mount. Draft.
+- `lever-sram-code` (brake_lever) SRAM Code brake lever — SRAM Code uses DOT fluid. Draft.
+- `caliper-sram-code` (brake_caliper) SRAM Code caliper — SRAM Code DOT, post mount. Draft.
+- `lever-sram-maven` (brake_lever) SRAM Maven brake lever — SRAM Maven uses mineral oil, unlike Code and Level. Draft.
+- `caliper-sram-maven` (brake_caliper) SRAM Maven caliper — SRAM Maven mineral oil. Draft.
+- `lever-tektro-hd-m275` (brake_lever) Tektro HD-M275 lever — Fluid left blank so a missing fluid cannot pass as mineral or DOT. Draft.
+- `caliper-tektro-hd-m275` (brake_caliper) Tektro HD-M275 caliper — Fluid blank on purpose. Draft.
+- `lever-avid-bb7` (brake_lever) Avid BB7 lever — Avid BB7 is a cable disc brake. No fluid.
+- `caliper-avid-bb7` (brake_caliper) Avid BB7 mechanical caliper — Cable-actuated disc caliper. Draft mount: post-mount version.
+- `lever-shimano-st-r7020` (brake_lever) Shimano 105 ST-R7020 hydraulic — Pedal Brief: 105 R7000 offers hydraulic disc. Mineral oil. Draft the lever code.
+- `caliper-shimano-br-flat-105` (brake_caliper) Shimano 105 hydraulic flat-mount caliper — Flat-mount road caliper. Draft model code. Pedal Brief says the R7000 chart mentions a hydraulic disc brake.
+- `caliper-shimano-br-r7000-rim` (brake_caliper) Shimano 105 BR-R7000 rim caliper — Pedal Brief maker_wording: Caliper Brake BR-R7000.
+- `lever-shimano-st-r7000-rim` (brake_lever) Shimano 105 ST-R7000 rim — Mechanical rim-brake lever pairing for BR-R7000. Draft.
+- `lever-vbrake` (brake_lever) Shimano V-brake lever — Linear-pull V-brake lever. Draft.
+- `caliper-vbrake` (brake_caliper) Shimano V-brake — V-brake arms. No disc mount.
+- `caliper-shimano-br-post-105` (brake_caliper) Shimano 105 hydraulic post-mount caliper — Post-mount mineral caliper used so a flat-mount frame can show the adapter warning. Draft.
+- `rotor-6bolt-140` (rotor) Standard 140 mm 6-bolt rotor — Generic 140 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-centerlock-140` (rotor) Standard 140 mm center-lock rotor — Generic 140 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-6bolt-160` (rotor) Standard 160 mm 6-bolt rotor — Generic 160 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-centerlock-160` (rotor) Standard 160 mm center-lock rotor — Generic 160 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-6bolt-180` (rotor) Standard 180 mm 6-bolt rotor — Generic 180 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-centerlock-180` (rotor) Standard 180 mm center-lock rotor — Generic 180 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-6bolt-203` (rotor) Standard 203 mm 6-bolt rotor — Generic 203 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-centerlock-203` (rotor) Standard 203 mm center-lock rotor — Generic 203 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-6bolt-220` (rotor) Standard 220 mm 6-bolt rotor — Generic 220 mm 6-bolt rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `rotor-centerlock-220` (rotor) Standard 220 mm center-lock rotor — Generic 220 mm center-lock rotor. Common disc size, not a specific Shimano or SRAM model number. Draft.
+- `frame-mtb-standard-post-180` (frame) Teaching Mountain frame, standard hanger, post mount, 180 mm max — Minimal phase 1 frame. Max rotor is a teaching limit, not a measured bike.
+- `frame-mtb-standard-post-203` (frame) Teaching Mountain frame, standard hanger, post mount, 203 mm max — Minimal phase 1 frame.
+- `frame-mtb-udh-post-203` (frame) Teaching Mountain frame, UDH, post mount, 203 mm max — UDH frame for Full Mount derailleurs. SRAM UDH explainer.
+- `frame-road-flat-160` (frame) Teaching Road frame, standard hanger, flat mount, 160 mm max — Minimal phase 1 road disc frame.
+- `frame-road-rim` (frame) Teaching Road frame, rim brakes, standard hanger — Rim-brake frame. No rotor maximum.
+- `frame-direct-mount-post-180` (frame) Teaching Frame, direct-mount hanger, post mount, 180 mm max — Direct-mount hanger is not UDH and does not take Full Mount.
+- `frame-gravel-flat-180` (frame) Teaching Gravel frame, standard hanger, flat mount, 180 mm max — Minimal phase 1 gravel frame.
+- `frame-mtb-post-140` (frame) Teaching Mountain frame, standard hanger, post mount, 140 mm max — Small-rotor teaching frame.
+- `extender-vg-sports` (hanger_extender) VG Sports Derailleur hanger extender from the 9-speed kit — The owner's VG Sports 9-speed kit (ASIN B09VBNTGCD) includes a derailleur hanger extender. No shop link. The extender does not change the published max cog; the 8-tooth window is a practitioner rule.
+- `extender-roadlink-style` (hanger_extender) Teaching RoadLink-style hanger extender — Teaching name for a road hanger extender. Not a shop listing.
+
+## Open questions for Dr. Yazan
+
+- Zuzu's chainring tooth count was not recorded. The baseline uses one chainring and an unknown tooth count so capacity can be checked (front difference 0) and gear inches stay "can't verify" until the size is entered.
+- The exact 9-speed shifter on his bike was not recorded. The baseline uses an Altus SL-M370 stand-in. Please replace it with the model on the bike.
+- The rear derailleur model is owned-unknown on purpose.
+- Shimano mountain 10-speed and 11-speed are separate actuation families, even though one planning note wrote them as a single label. Mixing them does not pass.
+- Eagle, T-Type, Flattop, Linkglide, and Campagnolo are separate chain types. A blank chain type does not pass.
+- Most derailleur capacities are blank. Only RD-M3100-SGS and RD-M370-SGS capacities were copied from the product pages.
+- The 8-tooth hanger-extender window is a practitioner rule, not a manufacturer spec.
+- Campagnolo N3W with older cassettes is "can't verify", not a pass.
+- RD-M5120's chart mentions 10-speed and 11-speed cog ranges. It is seeded as 11-speed only so a 10-speed mix cannot pass by accident.
+- Gear inches use nominal wheel diameters (700c assumes a 28 mm tire).
