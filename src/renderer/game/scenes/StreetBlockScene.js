@@ -1051,7 +1051,12 @@ ${line.caption}`,
       }
 
       audioMgr?.playSfx('ui_success');
-      if (this._chenBike) this._chenBike.setText('OK').setColor('#16a34a');
+      // The OIL badge has done its job; the motor is clean. No "OK" badge
+      // replaces it — a finished bike just looks finished.
+      if (this._chenBike) {
+        this._chenBike.destroy();
+        this._chenBike = null;
+      }
       this.registry.set('dialogEvent', {
         speaker: 'Zuzu',
         text:
@@ -1080,70 +1085,43 @@ ${line.caption}`,
     });
   }
 
+  /**
+   * Street-only follow-up after a quest step advances.
+   *
+   * This scene used to carry a full copy of `advanceFromDialog`, which meant
+   * it never got the base class's fixes: a wrong quiz answer offered only
+   * "Continue", which then looped "Pick an answer first." forever; quiz text
+   * was emitted raw so the bridge quest showed the literal token
+   * "{strengthTable}"; and the no-active-quest and scene-active guards were
+   * missing (arc.md §8.6 — primitive fragmentation).
+   *
+   * The fork is gone. Its three real extras — use_item sounds, explainer
+   * routing and naming the quest giver — now live in LocalSceneBase, so every
+   * scene gets them. All that is left here is the bike art, which is genuinely
+   * street-only.
+   */
   advanceFromDialog(choiceIndex) {
-    let state = this.registry.get('gameState');
-    const audioMgr = this.registry.get('audioManager');
-    const result = advanceQuest(state, choiceIndex);
+    super.advanceFromDialog(choiceIndex);
+    this._refreshBikeBadges();
+  }
 
-    if (!result.ok) {
-      audioMgr?.playSfx('ui_error');
-      this.registry.set('dialogEvent', {
-        speaker: 'System',
-        text: result.message,
-        choices: null,
-        step: getCurrentStep(state),
-      });
-      return;
-    }
-
-    state = result.state;
-    this.registry.set('gameState', state);
-    saveGame(state);
-
-    const step = getCurrentStep(state);
-    if (step?.type === 'use_item') {
-      if (step.id === 'use_lever') audioMgr?.playSfx('wrench_turn', { vary: true });
-      else if (step.id === 'use_patch') audioMgr?.playSfx('patch_apply', { vary: true });
-      else audioMgr?.playSfx('item_pickup');
-    } else if (!step) {
-      audioMgr?.playStinger('reward_stinger');
-      this._showRewardCelebration(state);
-    } else {
-      audioMgr?.playSfx('ui_success');
-    }
-
-    // Update bike icons
-    if (state.completedQuests?.includes('flat_tire_repair') && this._ramirezBike) {
-      this._ramirezBike.setText('OK').setColor('#16a34a');
-    }
+  /**
+   * Keep the bikes in step with quest state.
+   *
+   * No "OK" badge: a finished bike simply looks fixed (owner request,
+   * 2026-11-26). Only an open job is badged, and the fork used to re-add the
+   * OK text here after the drawing code had stopped creating it.
+   * @private
+   */
+  _refreshBikeBadges() {
+    const state = this.registry.get('gameState') || {};
     if (state.completedQuests?.includes('chain_repair') && this._chenBike) {
-      this._chenBike.setText('OK').setColor('#16a34a');
-    }
-
-    const nextStep = getCurrentStep(state);
-    if (nextStep) {
-      if (nextStep.type === 'explainer' && nextStep.explainerId) {
-        startInteractiveExplainer(this, nextStep.explainerId);
-        return;
-      }
-      // Get speaker from quest giver
-      const NPC_NAMES = { mrs_ramirez: 'Mrs. Ramirez', mr_chen: 'Mr. Chen' };
-      const activeQuest = QUESTS[state.activeQuest?.id];
-      const speaker = nextStep.type === 'quiz'
-        ? 'Zuzu (thinking)'
-        : NPC_NAMES[activeQuest?.giver] || 'NPC';
-      this.registry.set('dialogEvent', {
-        speaker,
-        text: nextStep.text,
-        choices: nextStep.type === 'quiz' ? nextStep.choices : null,
-        step: nextStep,
-      });
-    } else {
-      this.registry.set('dialogEvent', null);
+      this._chenBike.destroy();
+      this._chenBike = null;
     }
   }
 
-  _showRewardCelebration(state) {
+  _showRewardCelebration(state, earned = {}) {
     // Guard: scene may be mid-shutdown when a quest-completion celebration is
     // triggered (e.g. final dialog handler runs after a scene transition has
     // started tearing down cameras). Without this guard, cam.scrollX throws
@@ -1163,8 +1141,14 @@ ${line.caption}`,
       color: '#ffffff', stroke: '#1e40af', strokeThickness: 4,
     }).setOrigin(0.5).setDepth(100);
 
+    // What this quest actually paid, not a hard-coded 25. The bridge pays
+    // 60 and the chain job 35, and both used to announce "+25".
     const bucks = state.zuzubucks || 0;
-    const bucksText = this.add.text(cx, cy + 40, `+25 Zuzubucks! (Total: ${bucks})`, {
+    const gained = earned.zuzubucks || 0;
+    const line = gained > 0
+      ? `+${gained} Zuzubucks! (Total: ${bucks})`
+      : `Total: ${bucks} Zuzubucks`;
+    const bucksText = this.add.text(cx, cy + 40, line, {
       fontSize: '18px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#fbbf24', stroke: '#78350f', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(100);

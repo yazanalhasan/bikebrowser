@@ -31,11 +31,14 @@ import { spawnObstacles } from '../systems/obstacleSystem.js';
 import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
 import { interpolateStepText } from '../systems/questTemplating.js';
 import { getPhysicsState, wireCameraToMCP } from '../systems/physicsbridge.js';
-import { localCameraFit } from '../utils/localCameraFit.js';
+import { localCameraFit, localCameraCenter } from '../utils/localCameraFit.js';
 import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
 import { preloadEcologyAssets } from '../systems/ecology/ecologyAssetManifest.js';
 import { addArt, addGround, addBackdrop, hasArt } from '../../../game/assets/act1Art.js';
 import { mountCompanion } from '../systems/companionSystem.js';
+import { startInteractiveExplainer } from '../systems/interactiveExplainerSystem.js';
+import { getNpcProfile } from '../data/npcProfiles.js';
+import QUESTS from '../data/quests.js';
 import {
   getCompanionsForScene,
   pickCompanionLine,
@@ -54,6 +57,7 @@ const SCENE_BIOMES = {
   GarageScene:        { fill: 0x6b4423, accent: 0x8b6914, label: 'urban'     },
   NeighborhoodScene:  { fill: 0x6b5b3a, accent: 0x8b7344, label: 'urban'     },
   StreetBlockScene:   { fill: 0xa08250, accent: 0xc4a26a, label: 'desert'    },
+  DesertEdgeScene:    { fill: 0xa08250, accent: 0xc4a26a, label: 'desert'    },
   DogParkScene:       { fill: 0x4a6b3a, accent: 0x6e8a4a, label: 'grassland' },
   SportsFieldsScene:  { fill: 0x5a7a4a, accent: 0x7a9a5a, label: 'grassland' },
   CommunityPoolScene: { fill: 0x4a6680, accent: 0x6a86a0, label: 'urban'     },
@@ -164,7 +168,9 @@ export default class LocalSceneBase extends Phaser.Scene {
       return;
     }
 
+    const zuzubucksBefore = state?.zuzubucks || 0;
     state = result.state;
+    const zuzubucksGained = (state?.zuzubucks || 0) - zuzubucksBefore;
     this.registry.set('gameState', state);
     saveGame(state);
 
@@ -173,10 +179,20 @@ export default class LocalSceneBase extends Phaser.Scene {
       // Quest completed
       audioMgr?.playStinger?.('reward_stinger');
       if (typeof this._showRewardCelebration === 'function') {
-        this._showRewardCelebration(state);
+        // Hand over what was actually earned. The celebration used to
+        // hard-code "+25 Zuzubucks!" whatever the quest paid.
+        this._showRewardCelebration(state, { zuzubucks: zuzubucksGained });
       }
     } else {
-      audioMgr?.playSfx?.('ui_success');
+      // Give the step's own action a sound. This lived only in the street's
+      // forked copy, so the same step played nothing anywhere else.
+      if (nextStep.type === 'use_item') {
+        if (nextStep.id === 'use_lever') audioMgr?.playSfx?.('wrench_turn', { vary: true });
+        else if (nextStep.id === 'use_patch') audioMgr?.playSfx?.('patch_apply', { vary: true });
+        else audioMgr?.playSfx?.('item_pickup');
+      } else {
+        audioMgr?.playSfx?.('ui_success');
+      }
     }
     // Close current dialog regardless — the next step's dialog will be
     // emitted by whichever interaction the player triggers next (NPC,
@@ -192,9 +208,27 @@ export default class LocalSceneBase extends Phaser.Scene {
         step: nextStep,
         questId: state?.activeQuest?.id,
       });
-    } else {
-      this.registry.set('dialogEvent', null);
+      return;
     }
+
+    // An explainer step opens its own overlay rather than a dialog box.
+    // Also street-only before this change.
+    if (nextStep?.type === 'explainer' && nextStep.explainerId) {
+      startInteractiveExplainer(this, nextStep.explainerId);
+      return;
+    }
+
+    this.registry.set('dialogEvent', null);
+  }
+
+  /**
+   * Display name of the NPC who gave the active quest, for dialog speakers.
+   * Reads `data/npcProfiles.js` rather than a per-scene name map, so a new
+   * quest giver needs no scene edit.
+   */
+  _activeQuestGiverName(state) {
+    const giver = QUESTS[state?.activeQuest?.id]?.giver;
+    return (giver && getNpcProfile(giver)?.name) || null;
   }
 
   // ---------------------------------------------------------------------------
@@ -202,6 +236,26 @@ export default class LocalSceneBase extends Phaser.Scene {
   // ---------------------------------------------------------------------------
 
   create() {
+    // Phaser reuses the scene *object* across visits, so every per-visit
+    // field has to be cleared here or it carries the last visit's destroyed
+    // objects into this one.
+    //
+    // `this.player` matters most. `createWorld()` runs before the new Player
+    // is constructed, and `systems/ecology` takes a fast path when
+    // `scene.player` already exists at registration time — on a revisit that
+    // was the *previous*, destroyed sprite, so every animal's proximity
+    // overlap was wired to an inactive object and observations silently
+    // stopped counting. That is what blocked "Follow the Food Chain" after
+    // the first visit to a scene. Clearing it forces the deferred path,
+    // which wires to the real player on the first update tick.
+    //
+    // `_collisionBodies` is the same bug with a smaller blast radius: it grew
+    // 7 -> 14 -> 21 across visits and re-added colliders for destroyed walls.
+    this.player = null;
+    this._companions = [];
+    this._collisionBodies = null;
+    this._obstacles = null;
+    this._ecologyEntityIndex = null;
     this._transitioning = false;
     this._npcs = {};
     this._exits = [];
@@ -499,8 +553,11 @@ export default class LocalSceneBase extends Phaser.Scene {
         name: def.name,
         walkSheet: def.walkSheet,
         idleSheet: def.idleSheet,
-        x: px - 44,
-        y: py + 10,
+        // Clear of the spawn point: at (-44, +10) she overlapped Zuzu on
+        // arrival, which on Home Street put her on top of him and the
+        // flat-tyre bike at once.
+        x: px - 62,
+        y: py + 26,
         onInteract: () => {
           const live = this.registry.get('gameState');
           const line = pickCompanionLine(def, live);
@@ -633,19 +690,25 @@ export default class LocalSceneBase extends Phaser.Scene {
         return true;
       }
     }
+    // Then interactable props — BEFORE the companion.
+    //
+    // Lina follows Zuzu everywhere, so with her in range she used to swallow
+    // every E press: standing at the wilted plant and pressing E replied
+    // "Marhaba! That's the one Mariam taught us" instead of using the fruit.
+    // A thing you walked up to beats a friend who walked up to you; she is
+    // still one press away as soon as you step off the prop.
+    const nearestProp = this._getNearbyInteractables()[0];
+    if (nearestProp) {
+      nearestProp.onInteract();
+      return true;
+    }
+
     // Then a companion standing next to you
     for (const companion of this._companions || []) {
       if (companion.isNearby()) {
         companion.interact();
         return true;
       }
-    }
-
-    // Then interactable props
-    const nearestProp = this._getNearbyInteractables()[0];
-    if (nearestProp) {
-      nearestProp.onInteract();
-      return true;
     }
     return false;
   }
@@ -778,8 +841,17 @@ export default class LocalSceneBase extends Phaser.Scene {
     const originY = (0 - view.y) * zoom;
     const offsetX = Math.max(0, originX);
     const offsetY = Math.max(0, originY);
-    const rightGap = Math.max(0, cam.width - (originX + displayW));
-    const bottomGap = Math.max(0, cam.height - (originY + displayH));
+
+    // Measure the gap against the *canvas*, not just the camera viewport.
+    // They are normally identical, but if the two ever disagree — a resize
+    // the cameras have not picked up yet, for instance — the difference is
+    // raw background colour on screen. Banding the larger of the two means
+    // a child never sees that, at the cost of a band nobody can see when
+    // the sizes do agree.
+    const surfaceW = Math.max(cam.width, this.scale?.gameSize?.width || 0);
+    const surfaceH = Math.max(cam.height, this.scale?.gameSize?.height || 0);
+    const rightGap = Math.max(0, surfaceW - (originX + displayW));
+    const bottomGap = Math.max(0, surfaceH - (originY + displayH));
     if (offsetX < 1 && offsetY < 1 && rightGap < 1 && bottomGap < 1) return;
 
     const sceneKey = this.getSceneKey();
@@ -790,10 +862,10 @@ export default class LocalSceneBase extends Phaser.Scene {
     frame.setScrollFactor(0);
     frame.setDepth(2000);
     frame.fillStyle(biome.fill, 1.0);
-    if (offsetX > 0) frame.fillRect(0, 0, offsetX, cam.height);
-    if (rightGap > 0) frame.fillRect(cam.width - rightGap, 0, rightGap, cam.height);
-    if (offsetY > 0) frame.fillRect(0, 0, cam.width, offsetY);
-    if (bottomGap > 0) frame.fillRect(0, cam.height - bottomGap, cam.width, bottomGap);
+    if (offsetX > 0) frame.fillRect(0, 0, offsetX, surfaceH);
+    if (rightGap > 0) frame.fillRect(surfaceW - rightGap, 0, rightGap, surfaceH);
+    if (offsetY > 0) frame.fillRect(0, 0, surfaceW, offsetY);
+    if (bottomGap > 0) frame.fillRect(0, surfaceH - bottomGap, surfaceW, bottomGap);
     frame.lineStyle(2, biome.accent, 0.85);
     frame.strokeRect(originX - 1, originY - 1, displayW + 2, displayH + 2);
     this._viewportFrame = frame;
@@ -832,56 +904,70 @@ export default class LocalSceneBase extends Phaser.Scene {
    * on axes where the window is taller or wider. Keeps a phone from pinning
    * the garage to the top of a tall screen.
    */
+  /**
+   * Scroll the camera for the current fit.
+   *
+   * The room always fills the screen width, so this is mostly about the
+   * vertical axis: follow Zuzu when the room is taller than the view, centre
+   * it when it is not. Falls back to the room centre before the player
+   * exists (a resize can land during `createWorld`).
+   * @private
+   */
   _frameFollowCamera() {
-    if (!this.cameras?.main || !this.player?.sprite) return;
-    const cam = this.cameras.main;
+    const cam = this.cameras?.main;
+    if (!cam || !this._cameraFit) return;
     const world = this.getWorldSize();
-    const viewW = cam.width / cam.zoom;
-    const viewH = cam.height / cam.zoom;
-    const maxX = world.width - viewW;
-    const maxY = world.height - viewH;
-    const scrollX = maxX <= 0
-      ? maxX / 2
-      : Phaser.Math.Clamp(this.player.sprite.x - viewW / 2, 0, maxX);
-    // Lift a letterboxed room so the south door sits above the on-screen pad.
-    const lift = maxY <= 0 ? Math.min(56, -maxY / 2) : 0;
-    const scrollY = maxY <= 0
-      ? maxY / 2 + lift
-      : Phaser.Math.Clamp(this.player.sprite.y - viewH / 2, 0, maxY);
-    cam.setScroll(scrollX, scrollY);
+    const sprite = this.player?.sprite;
+    const { centerX, centerY } = localCameraCenter({
+      fit: this._cameraFit,
+      worldWidth: world.width,
+      worldHeight: world.height,
+      focusX: sprite?.x ?? world.width / 2,
+      focusY: sprite?.y ?? world.height / 2,
+    });
+    // centerOn, not setScroll — see localCameraCenter for why.
+    cam.centerOn(centerX, centerY);
   }
 
   /**
    * Frame the room for the current viewport. Wired to `scale.resize` so a
    * phone rotation or a devtools dock does not leave the garage cropped.
    */
+  /**
+   * Size the camera to the room.
+   *
+   * One rule: fill the screen width (see `utils/localCameraFit.js`). The old
+   * contain-fit left side bands on every landscape window and cropped the
+   * room on phones, which is what the owner asked to have fixed.
+   * @private
+   */
   _fitLocalCamera() {
-    if (!this.cameras?.main) return;
+    const cam = this.cameras?.main;
+    if (!cam) return;
     const world = this.getWorldSize();
-    const cam = this.cameras.main;
+
     const fit = localCameraFit({
       camWidth: cam.width,
       camHeight: cam.height,
       worldWidth: world.width,
       worldHeight: world.height,
     });
+    this._cameraFit = fit;
+    // `follow` means the update loop keeps re-framing as Zuzu walks.
+    this._cameraMode = fit.followY ? 'follow' : 'fit';
 
-    if (fit.mode === 'follow') {
-      this._cameraMode = 'follow';
-      cam.stopFollow();
-      cam.setZoom(1);
-      if (cam.useBounds) cam.removeBounds();
-      this._frameFollowCamera();
-      this._renderViewportFrame();
-      return;
-    }
-
-    this._cameraMode = 'fit';
+    // Safety net: paint the camera's own background in this scene's biome
+    // colour. Anything the room does not cover then reads as a themed
+    // letterbox instead of the renderer's raw dark grey. The band graphics
+    // below still draw the accent edge; this just means a child never sees
+    // bare #333 if the drawn area and the camera ever disagree about size.
+    const biome = SCENE_BIOMES[this.getSceneKey()] || DEFAULT_BIOME;
+    cam.setBackgroundColor(biome.fill);
 
     cam.stopFollow();
     if (cam.useBounds) cam.removeBounds();
     cam.setZoom(fit.zoom);
-    cam.centerOn(world.width / 2, world.height / 2);
+    this._frameFollowCamera();
     this._renderViewportFrame();
   }
 
