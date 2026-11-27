@@ -30,6 +30,7 @@ import MCPSystem from '../systems/MCPSystem.js';
 import { spawnObstacles } from '../systems/obstacleSystem.js';
 import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
 import { interpolateStepText } from '../systems/questTemplating.js';
+import { dialogForStep, listenerOpenedDialog, sfxForStep } from '../systems/questDialog.js';
 import { getPhysicsState, wireCameraToMCP } from '../systems/physicsbridge.js';
 import { localCameraFit, localCameraCenter } from '../utils/localCameraFit.js';
 import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
@@ -114,6 +115,15 @@ export default class LocalSceneBase extends Phaser.Scene {
   /** Override to build the scene's visual world. Called after base setup. */
   createWorld() { /* subclass implements */ }
 
+  /**
+   * How this room should be framed: `'cover'` (fill the screen width, follow
+   * Zuzu vertically) or `'contain'` (show the whole room, never follow).
+   *
+   * Rooms that are really a control panel want `'contain'` — see
+   * `utils/localCameraFit.js`. Everything else is a place you walk around in.
+   */
+  getCameraFitMode() { return 'cover'; }
+
   /** Override for per-frame custom logic. */
   onUpdate(_dt) { /* subclass implements */ }
 
@@ -171,8 +181,19 @@ export default class LocalSceneBase extends Phaser.Scene {
     const zuzubucksBefore = state?.zuzubucks || 0;
     state = result.state;
     const zuzubucksGained = (state?.zuzubucks || 0) - zuzubucksBefore;
+
+    // Writing gameState runs every `changedata-gameState` listener
+    // SYNCHRONOUSLY, and one of them (the end-of-Act-1 celebration in
+    // GameContainer) opens a dialog. This method used to fall through and
+    // null `dialogEvent` immediately afterwards, wiping it — and because the
+    // celebration only fires once, it never came back. Remember what was
+    // there before so we can tell a listener's dialog from a stale one.
+    const dialogBeforeWrite = this.registry.get('dialogEvent');
     this.registry.set('gameState', state);
     saveGame(state);
+    const listenerKeptDialog = listenerOpenedDialog(
+      dialogBeforeWrite, this.registry.get('dialogEvent'),
+    );
 
     const nextStep = getCurrentStep(state);
     if (!nextStep) {
@@ -184,40 +205,26 @@ export default class LocalSceneBase extends Phaser.Scene {
         this._showRewardCelebration(state, { zuzubucks: zuzubucksGained });
       }
     } else {
-      // Give the step's own action a sound. This lived only in the street's
-      // forked copy, so the same step played nothing anywhere else.
-      if (nextStep.type === 'use_item') {
-        if (nextStep.id === 'use_lever') audioMgr?.playSfx?.('wrench_turn', { vary: true });
-        else if (nextStep.id === 'use_patch') audioMgr?.playSfx?.('patch_apply', { vary: true });
-        else audioMgr?.playSfx?.('item_pickup');
-      } else {
-        audioMgr?.playSfx?.('ui_success');
-      }
+      const sfx = sfxForStep(nextStep);
+      if (sfx) audioMgr?.playSfx?.(sfx.key, sfx.opts);
     }
-    // Close current dialog regardless — the next step's dialog will be
-    // emitted by whichever interaction the player triggers next (NPC,
-    // prop, scene transition).
-    if (nextStep?.type === 'quiz') {
-      const text = nextStep.templateVars
-        ? interpolateStepText(nextStep.text, nextStep.templateVars, state)
-        : nextStep.text;
-      this.registry.set('dialogEvent', {
-        speaker: 'Zuzu (thinking)',
-        text,
-        choices: nextStep.choices || null,
-        step: nextStep,
-        questId: state?.activeQuest?.id,
-      });
-      return;
-    }
-
     // An explainer step opens its own overlay rather than a dialog box.
-    // Also street-only before this change.
     if (nextStep?.type === 'explainer' && nextStep.explainerId) {
       startInteractiveExplainer(this, nextStep.explainerId);
       return;
     }
 
+    // Carry the conversation on. `systems/questDialog.js` decides what the
+    // box should say; this method only writes it.
+    const followOn = dialogForStep(nextStep, state, this._activeQuestGiverName(state));
+    if (followOn) {
+      this.registry.set('dialogEvent', followOn);
+      return;
+    }
+
+    // Nothing follows. Leave a dialog a listener opened during the state
+    // write above rather than wiping it.
+    if (listenerKeptDialog) return;
     this.registry.set('dialogEvent', null);
   }
 
@@ -665,6 +672,21 @@ export default class LocalSceneBase extends Phaser.Scene {
     return interactable;
   }
 
+  /**
+   * Remove an interactable and its on-screen parts.
+   *
+   * Used when a hotspot is spent — a solved puzzle, for instance — so the
+   * prompt stops inviting a press that no longer does anything.
+   */
+  removeInteractable(interactable) {
+    if (!interactable) return;
+    const at = this._interactables.indexOf(interactable);
+    if (at !== -1) this._interactables.splice(at, 1);
+    interactable.prompt?.destroy?.();
+    interactable.nameLabel?.destroy?.();
+    interactable.text?.destroy?.();
+  }
+
   // ---------------------------------------------------------------------------
   // Internal logic
   // ---------------------------------------------------------------------------
@@ -809,12 +831,28 @@ export default class LocalSceneBase extends Phaser.Scene {
    * outside the canvas entirely). Input passes through (Graphics has no
    * default hit area).
    */
+  /**
+   * Outline the room, and nothing else.
+   *
+   * This used to paint biome-coloured letterbox bands and a vignette with
+   * `setScrollFactor(0)`, on the assumption that scroll-factor-0 means screen
+   * coordinates. It does not: Phaser still scales those objects by the camera
+   * zoom, about the viewport centre. Above zoom 1 the bands drifted outward
+   * harmlessly, but a phone fits a 1000px room into 390px — zoom 0.39 — and
+   * the bands shrank inward into a solid block over the middle of the room,
+   * hiding Zuzu, Mrs. Ramirez and the whole street centre. Unplayable.
+   *
+   * The bands are gone. `_fitLocalCamera` sets the camera's own background to
+   * the biome colour, which fills every uncovered pixel correctly at any zoom
+   * and needs no geometry at all. What is left is a one-pixel accent edge
+   * drawn in WORLD space, so it scales with the room the way everything else
+   * in the scene does.
+   * @private
+   */
   _renderViewportFrame() {
     if (!this.cameras?.main) return;
     const world = this.getWorldSize();
-    const cam = this.cameras.main;
 
-    // Tear down any previous frame from a prior resize.
     if (this._viewportFrame) {
       this._viewportFrame.destroy();
       this._viewportFrame = null;
@@ -824,79 +862,14 @@ export default class LocalSceneBase extends Phaser.Scene {
       this._viewportVignette = null;
     }
 
-    // On-screen room size after zoom and scroll. Bands fill whatever the
-    // room does not cover, including a phone letterbox.
-    //
-    // The room's screen origin comes from the camera's worldView, not from
-    // scrollX/scrollY: when the viewport is wider than the world the camera
-    // centres the view, and scrollX does not carry that offset. Using it put
-    // the left band hundreds of pixels too far in, painting the biome fill
-    // straight over the west side of the room - in the garage that hid the
-    // whole workbench wall.
-    const zoom = cam.zoom || 1;
-    const displayW = world.width * zoom;
-    const displayH = world.height * zoom;
-    const view = cam.worldView;
-    const originX = (0 - view.x) * zoom;
-    const originY = (0 - view.y) * zoom;
-    const offsetX = Math.max(0, originX);
-    const offsetY = Math.max(0, originY);
+    const biome = SCENE_BIOMES[this.getSceneKey()] || DEFAULT_BIOME;
 
-    // Measure the gap against the *canvas*, not just the camera viewport.
-    // They are normally identical, but if the two ever disagree — a resize
-    // the cameras have not picked up yet, for instance — the difference is
-    // raw background colour on screen. Banding the larger of the two means
-    // a child never sees that, at the cost of a band nobody can see when
-    // the sizes do agree.
-    const surfaceW = Math.max(cam.width, this.scale?.gameSize?.width || 0);
-    const surfaceH = Math.max(cam.height, this.scale?.gameSize?.height || 0);
-    const rightGap = Math.max(0, surfaceW - (originX + displayW));
-    const bottomGap = Math.max(0, surfaceH - (originY + displayH));
-    if (offsetX < 1 && offsetY < 1 && rightGap < 1 && bottomGap < 1) return;
-
-    const sceneKey = this.getSceneKey();
-    const biome = SCENE_BIOMES[sceneKey] || DEFAULT_BIOME;
-
-    // ── Biome fill bands ──────────────────────────────────────────────────
+    // World-space edge: scrollFactor stays 1, so zoom moves it with the room.
     const frame = this.add.graphics();
-    frame.setScrollFactor(0);
     frame.setDepth(2000);
-    frame.fillStyle(biome.fill, 1.0);
-    if (offsetX > 0) frame.fillRect(0, 0, offsetX, surfaceH);
-    if (rightGap > 0) frame.fillRect(surfaceW - rightGap, 0, rightGap, surfaceH);
-    if (offsetY > 0) frame.fillRect(0, 0, surfaceW, offsetY);
-    if (bottomGap > 0) frame.fillRect(0, surfaceH - bottomGap, surfaceW, bottomGap);
     frame.lineStyle(2, biome.accent, 0.85);
-    frame.strokeRect(originX - 1, originY - 1, displayW + 2, displayH + 2);
+    frame.strokeRect(-1, -1, world.width + 2, world.height + 2);
     this._viewportFrame = frame;
-
-    // ── Vignette over the full viewport ───────────────────────────────────
-    // Same trapezoid trick as world-map-polish: 4 edge bands with a linear
-    // gradient that darkens toward the viewport corners. Subtle (alpha 0.35)
-    // so the biome fill still reads.
-    const VIG_DEPTH = Math.round(Math.min(cam.width, cam.height) * 0.22);
-    const ALPHA_OUTER = 0.35;
-    const ALPHA_INNER = 0;
-    const vg = this.add.graphics();
-    vg.setScrollFactor(0);
-    vg.setDepth(2001);
-    // TOP
-    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000,
-      ALPHA_OUTER, ALPHA_OUTER, ALPHA_INNER, ALPHA_INNER);
-    vg.fillRect(0, 0, cam.width, VIG_DEPTH);
-    // BOTTOM
-    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000,
-      ALPHA_INNER, ALPHA_INNER, ALPHA_OUTER, ALPHA_OUTER);
-    vg.fillRect(0, cam.height - VIG_DEPTH, cam.width, VIG_DEPTH);
-    // LEFT
-    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000,
-      ALPHA_OUTER, ALPHA_INNER, ALPHA_OUTER, ALPHA_INNER);
-    vg.fillRect(0, 0, VIG_DEPTH, cam.height);
-    // RIGHT
-    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000,
-      ALPHA_INNER, ALPHA_OUTER, ALPHA_INNER, ALPHA_OUTER);
-    vg.fillRect(cam.width - VIG_DEPTH, 0, VIG_DEPTH, cam.height);
-    this._viewportVignette = vg;
   }
 
   /**
@@ -951,6 +924,7 @@ export default class LocalSceneBase extends Phaser.Scene {
       camHeight: cam.height,
       worldWidth: world.width,
       worldHeight: world.height,
+      mode: this.getCameraFitMode?.() || 'cover',
     });
     this._cameraFit = fit;
     // `follow` means the update loop keeps re-framing as Zuzu walks.
