@@ -15,6 +15,14 @@
 
 import { interpolateStepText } from './questTemplating.js';
 
+export const NARRATOR = "Zuzu's notebook";
+
+/**
+ * Step types that are a conversation with the quest giver rather than a job
+ * to go and do. These must not happen where the giver is not standing.
+ */
+const GIVER_PRESENT_STEPS = new Set(['dialogue', 'complete']);
+
 /**
  * The dialog to show for the step the player has just arrived at.
  *
@@ -31,24 +39,77 @@ import { interpolateStepText } from './questTemplating.js';
  * @param {object|null} step the step now current, or null if the quest ended
  * @param {object} state the save state after the advance
  * @param {string|null} giverName display name of the quest giver
+ * @param {{ giverPresent?: boolean }} [options] whether the giver is in this
+ *   scene; when they are not, giver-conversation steps become a "go back"
+ *   objective instead of chaining on without them
  * @returns {object|null} a `dialogEvent` payload, or null when nothing follows
  */
-export function dialogForStep(step, state, giverName) {
+export function dialogForStep(step, state, giverName, options = {}) {
   if (!step) return null;
   if (step.type === 'explainer' && step.explainerId) return null;
+
+  const { giverPresent = true } = options;
 
   const text = step.templateVars
     ? interpolateStepText(step.text, step.templateVars, state)
     : step.text;
 
   const isQuiz = step.type === 'quiz';
+
+  // A quiz is Zuzu thinking, so it needs nobody.
+  if (isQuiz) {
+    return {
+      speaker: 'Zuzu (thinking)',
+      text,
+      choices: step.choices || null,
+      step,
+      questId: state?.activeQuest?.id ?? null,
+    };
+  }
+
+  // Talking to the giver requires the giver. Chaining regardless meant
+  // desert_healer, the infection quest and the coating quest could all be
+  // finished out in the desert or in the garage, with "Mrs. Ramirez"
+  // speaking in a scene she is not in — and the child never walked back.
+  if (!giverPresent && GIVER_PRESENT_STEPS.has(step.type)) {
+    return {
+      speaker: NARRATOR,
+      text: giverName
+        ? `Go back to ${giverName} and tell them.`
+        : 'Go back and tell them what happened.',
+      choices: null,
+      // No `step`: this is an objective reminder, not the step itself, so
+      // Continue must not advance the quest from here.
+      step: null,
+      questId: state?.activeQuest?.id ?? null,
+      objective: true,
+    };
+  }
+
   return {
-    speaker: isQuiz ? 'Zuzu (thinking)' : (giverName || 'Zuzu'),
+    speaker: speakerFor(step, text, giverName, giverPresent),
     text,
-    choices: isQuiz ? (step.choices || null) : null,
+    choices: null,
     step,
     questId: state?.activeQuest?.id ?? null,
   };
+}
+
+/**
+ * Who says a step's text.
+ *
+ * Quest steps are written as objectives, so some of them name the giver:
+ * "The tire is fixed! Mrs. Ramirez is so happy.", "Take the data back to
+ * Mr. Chen." Spoken *by* that person they read as someone talking about
+ * themselves in the third person. Those lines go to the notebook instead,
+ * which is what they always were.
+ *
+ * The giver also cannot speak at all when they are not in the scene.
+ */
+export function speakerFor(step, text, giverName, giverPresent = true) {
+  if (!giverName || !giverPresent) return NARRATOR;
+  if (typeof text === 'string' && text.includes(giverName)) return NARRATOR;
+  return giverName;
 }
 
 /**
@@ -80,4 +141,77 @@ export function sfxForStep(step) {
   if (step.id === 'use_lever') return { key: 'wrench_turn', opts: { vary: true } };
   if (step.id === 'use_patch') return { key: 'patch_apply', opts: { vary: true } };
   return { key: 'item_pickup' };
+}
+
+/**
+ * A quest an NPC is willing to hand over, as an Accept / Not now question.
+ *
+ * Quests used to start the instant the child talked to someone: a second
+ * word with Mrs. Ramirez after `desert_healer` silently began
+ * `toxic_knowledge`, and from then on Mr. Chen refused his own main quest
+ * with "busy with another job". The child never agreed to any of it.
+ *
+ * `swapsFrom` is set when another quest is already running. Accepting parks
+ * that one — its step index is remembered, so nothing is lost — rather than
+ * refusing the new giver outright.
+ *
+ * @param {{ id: string, title: string }} quest the quest on offer
+ * @param {string} npcName who is offering
+ * @param {{ id: string, title: string }|null} [active] the quest already running
+ * @returns {object} a `dialogEvent` payload carrying `questOffer`
+ */
+export function questOfferDialog(quest, npcName, active = null) {
+  const swapping = Boolean(active && active.id !== quest.id);
+  const text = swapping
+    ? `Want to help with "${quest.title}"?\n\n`
+      + `You can come back to "${active.title}" after — I'll remember where you got to.`
+    : `Want to help with "${quest.title}"?`;
+
+  return {
+    speaker: npcName,
+    text,
+    choices: [
+      { label: swapping ? 'Yes — switch to this' : "Yes, let's go" },
+      { label: 'Not right now' },
+    ],
+    step: null,
+    questOffer: { questId: quest.id, swapsFrom: swapping ? active.id : null },
+  };
+}
+
+/**
+ * Accept an offer: park whatever was running, then start the new quest.
+ *
+ * Parking keeps `stepIndex` in `state.pausedQuests` so a child who switches
+ * does not silently lose progress, and `resumeParkedQuest` puts it back.
+ *
+ * @returns {object} the next state
+ */
+export function acceptQuestOffer(state, questId, startQuest) {
+  let next = state;
+  const running = state?.activeQuest;
+  if (running?.id && running.id !== questId) {
+    next = {
+      ...next,
+      pausedQuests: { ...(next.pausedQuests || {}), [running.id]: running.stepIndex ?? 0 },
+      activeQuest: null,
+    };
+  }
+  return startQuest(next, questId) || next;
+}
+
+/**
+ * Put a parked quest back as the active one, at the step it was left on.
+ * Returns the state unchanged when that quest was never parked.
+ */
+export function resumeParkedQuest(state, questId) {
+  const parked = state?.pausedQuests?.[questId];
+  if (parked === undefined) return state;
+  const rest = { ...(state.pausedQuests || {}) };
+  delete rest[questId];
+  return {
+    ...state,
+    activeQuest: { id: questId, stepIndex: parked },
+    pausedQuests: rest,
+  };
 }

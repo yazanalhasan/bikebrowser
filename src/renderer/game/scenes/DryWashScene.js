@@ -167,11 +167,15 @@ export default class DryWashScene extends LocalSceneBase {
 
     // ── Mr. Chen NPC on the near side ──
     this._chenLastInteract = 0;
+    // Same painted frame as the Home Street Chen. Without it `Npc` falls back
+    // to `_buildHumanoid`, a box-and-circle placeholder, so the same person
+    // looked like two different characters depending on the scene.
     this.addNpc({
       id: 'mr_chen',
       name: 'Mr. Chen',
       x: this.layout.mr_chen_npc.x, y: this.layout.mr_chen_npc.y,
       color: 0x6b3410,
+      atlasFrame: 'npc_mr_chen_idle',
       onInteract: () => this._onMrChenInteract(),
     });
 

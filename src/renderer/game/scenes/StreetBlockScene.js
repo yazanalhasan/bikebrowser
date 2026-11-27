@@ -24,6 +24,7 @@
 
 import LocalSceneBase from './LocalSceneBase.js';
 import { startQuest, getCurrentStep, advanceQuest } from '../systems/questSystem.js';
+import { questOfferDialog, resumeParkedQuest } from '../systems/questDialog.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { NPC_PLACEMENTS } from '../data/neighborhoodLayout.js';
 import { getNextQuestForNPC } from '../data/questBoard.js';
@@ -822,13 +823,50 @@ ${line.caption}`,
           return;
         }
       }
-      // Different NPC's quest is active
+      // Someone else's quest is running.
+      //
+      // This used to be a flat refusal — "busy with another job" — which is
+      // how an auto-started side quest from Mrs. Ramirez locked Mr. Chen's
+      // main quest out entirely. Now this NPC may still offer, and accepting
+      // parks the other quest at the step it reached.
+      const offer = this._findNextQuestForNPC(npcId, state)
+        || (!state.completedQuests?.includes(primaryQuestId) ? primaryQuestId : null);
+      const offered = offer && offer !== state.activeQuest.id ? QUESTS[offer] : null;
+      if (offered) {
+        this.registry.set('dialogEvent', questOfferDialog(
+          { id: offer, title: offered.title },
+          npcName,
+          { id: state.activeQuest.id, title: activeQuest?.title || state.activeQuest.id },
+        ));
+        return;
+      }
+
       this.registry.set('dialogEvent', {
         speaker: npcName,
-        text: "Looks like you're busy with another job right now. Come back when you're free!",
+        text: "I don't have anything new for you yet — finish what you're on and come back!",
         choices: null, step: null,
       });
       return;
+    }
+
+    // A quest of this NPC's was parked for another. Pick it back up where it
+    // was left rather than starting it over.
+    const parkedId = Object.keys(state.pausedQuests || {})
+      .find((id) => QUESTS[id]?.giver === npcId);
+    if (parkedId) {
+      state = resumeParkedQuest(state, parkedId);
+      this.registry.set('gameState', state);
+      saveGame(state);
+      const resumed = getCurrentStep(state);
+      if (resumed) {
+        this.registry.set('dialogEvent', {
+          speaker: npcName,
+          text: `Back to "${QUESTS[parkedId].title}", then.\n\n${resumed.text}`,
+          choices: resumed.type === 'quiz' ? resumed.choices : null,
+          step: resumed,
+        });
+        return;
+      }
     }
 
     // No active quest — find the best quest to offer
@@ -858,13 +896,14 @@ ${line.caption}`,
       return;
     }
 
-    // Start the quest
-    const started = startQuest(state, questToStart);
-    if (started) {
-      state = started;
-      this.registry.set('gameState', state);
-      saveGame(state);
-      audioMgr?.playSfx('ui_quest_accept');
+    // Ask first. Quests used to begin the moment the child said hello, which
+    // is how `toxic_knowledge` started itself and then blocked Mr. Chen.
+    const offeredQuest = QUESTS[questToStart];
+    if (offeredQuest) {
+      this.registry.set('dialogEvent', questOfferDialog(
+        { id: questToStart, title: offeredQuest.title }, npcName, null,
+      ));
+      return;
     }
 
     const step = getCurrentStep(state);

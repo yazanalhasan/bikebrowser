@@ -41,7 +41,10 @@ import { clearDialogueCache } from './services/npcAiClient.js';
 import { setBusy, recordQuestionDismissed } from './systems/gameplayArbiter.js';
 import { runRuntimeAudit } from './systems/runtimeAudit.js';
 import { gameplayReportsEnabled } from './utils/gameplayReports.js';
-import { getCurrentStep, initDiscoveryQuestBridge } from './systems/questSystem.js';
+import { getCurrentStep, initDiscoveryQuestBridge, startQuest } from './systems/questSystem.js';
+import { acceptQuestOffer, dialogForStep } from './systems/questDialog.js';
+import QUEST_DEFS from './data/quests.js';
+import { getNpcProfile } from './data/npcProfiles.js';
 import { interpolateStepText } from './systems/questTemplating.js';
 import { triggerQuestRevealsForState } from './systems/discoveryBridge.js';
 import { LANGUAGE_CARDS } from './systems/languageLayer.js';
@@ -937,6 +940,27 @@ export default function GameContainer() {
     if (!game) return;
 
     audio?.playSfx('ui_tap');
+
+    // A quest offer: "Yes" starts it (parking anything already running),
+    // "Not right now" simply closes. Nothing starts without this answer.
+    if (dialog?.questOffer) {
+      if (choiceIndex === 0) {
+        const before = game.registry?.get?.('gameState') || {};
+        const after = acceptQuestOffer(before, dialog.questOffer.questId, startQuest);
+        game.registry.set('gameState', after);
+        saveGame(after);
+        audio?.playSfx?.('ui_quest_accept');
+        const first = getCurrentStep(after);
+        const giver = QUEST_DEFS[after?.activeQuest?.id]?.giver;
+        game.registry.set('dialogEvent', first
+          ? dialogForStep(first, after, (giver && getNpcProfile(giver)?.name) || null)
+          : null);
+        return;
+      }
+      setDialog(null);
+      game.registry?.set?.('dialogEvent', null);
+      return;
+    }
 
     if (!dialog?.step) {
       setDialog(null);

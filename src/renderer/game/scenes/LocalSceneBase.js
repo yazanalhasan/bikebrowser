@@ -216,7 +216,9 @@ export default class LocalSceneBase extends Phaser.Scene {
 
     // Carry the conversation on. `systems/questDialog.js` decides what the
     // box should say; this method only writes it.
-    const followOn = dialogForStep(nextStep, state, this._activeQuestGiverName(state));
+    const followOn = dialogForStep(nextStep, state, this._activeQuestGiverName(state), {
+      giverPresent: this._isQuestGiverHere(state),
+    });
     if (followOn) {
       this.registry.set('dialogEvent', followOn);
       return;
@@ -236,6 +238,20 @@ export default class LocalSceneBase extends Phaser.Scene {
   _activeQuestGiverName(state) {
     const giver = QUESTS[state?.activeQuest?.id]?.giver;
     return (giver && getNpcProfile(giver)?.name) || null;
+  }
+
+  /**
+   * Is the active quest's giver standing in this scene?
+   *
+   * Asks the scene's own NPCs rather than a fixed home-scene map, so the
+   * Dry Wash Mr. Chen counts for his quests exactly like the Home Street one
+   * does. A quest with no giver counts as present — nobody has to be found.
+   * @private
+   */
+  _isQuestGiverHere(state) {
+    const giver = QUESTS[state?.activeQuest?.id]?.giver;
+    if (!giver) return true;
+    return Boolean(this._npcs?.[giver]);
   }
 
   // ---------------------------------------------------------------------------
