@@ -131,6 +131,15 @@ test('turning the phone swaps the layout, not just the zoom', () => {
 
 test('the touch controls get out of the way of an overlay', () => {
   const container = read('src/renderer/game/GameContainer.jsx');
-  assert.match(container,
-    /!anyPanelOpen && !overlayOpen && \(\s*\n\s*<VirtualJoystick/);
+  // The guard grew a third condition — a lab rig owns the whole screen
+  // too (plan 0.5), and on a phone the d-pad and the action button sat
+  // across its instrument bench. This checks the conditions rather than
+  // one exact line, so the next one added does not break the test.
+  const at = container.indexOf('<VirtualJoystick');
+  assert.ok(at > 0, 'the d-pad is no longer rendered where this test looks');
+  const guard = container.slice(Math.max(0, at - 400), at);
+  for (const condition of ['!anyPanelOpen', '!overlayOpen', '!sceneOwnsHud']) {
+    assert.ok(guard.includes(condition),
+      `the d-pad must be hidden when ${condition.slice(1)}`);
+  }
 });

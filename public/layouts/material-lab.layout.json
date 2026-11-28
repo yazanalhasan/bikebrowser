@@ -55,5 +55,61 @@
       "h": 58,
       "_note": "Was (320, 516): the fromGarage spawn is (400, 540), so Zuzu stood ON the card and hid 91% of its heading. Moved up into the empty bench band under the callout strip, where he cannot stand, AND raised into the reserved UI depth band. Plan 0.12.6."
     }
+  },
+  "portrait": {
+    "designWidth": 400,
+    "designHeight": 860,
+    "_note": "The phone column (plan 0.5). The landscape block is an 800x600 bench, and contain-fitting that onto 390px is zoom 0.4875 — every label lands at 5 CSS px. Here the fit is 0.975. Rows: title 0-56, readout 56-90, samples 100-160, START 170-216, slow replay 222-268, chart 300-530, callout or takeaway 533-571, the machine to 660, the instrument bench 660-800, the way out below.",
+    "objects": {
+      "teaching_callout": {
+        "x": 200,
+        "y": 552,
+        "w": 372,
+        "_note": "Under the chart, where the takeaway card also goes — only one of the two is ever shown."
+      },
+      "comparison_panel": {
+        "x": 200,
+        "y": 552,
+        "w": 372,
+        "h": 58,
+        "_note": "Shares the callout slot: the takeaway is the last word, so it hides the callout when it appears."
+      },
+      "density_scale": {
+        "x": 108,
+        "displayY": 668,
+        "platformY": 692,
+        "artX": 320,
+        "artY": 668,
+        "_note": "The LCD and its buttons on the left of the bench, the brass scale itself on the right where there is room for it."
+      },
+      "density_calipers": {
+        "x": 200,
+        "y": 780,
+        "_note": "Bench, lower middle."
+      },
+      "density_slate": {
+        "x": 330,
+        "y": 776,
+        "_note": "Bench, lower right."
+      },
+      "density_slate_panel": {
+        "x": 200,
+        "y": 400,
+        "w": 372,
+        "h": 300,
+        "_note": "The open slate covers the chart, never the controls."
+      },
+      "slow_toggle": {
+        "x": 200,
+        "y": 252,
+        "w": 190,
+        "h": 46,
+        "_note": "Between START's 'Run the test' line (ends 226) and the chart's title (starts 280). Every row in this column is measured against its neighbours; see the rig geometry."
+      },
+      "utm": {
+        "x": 200,
+        "_note": "The machine centreline, mid-column."
+      }
+    }
   }
 }

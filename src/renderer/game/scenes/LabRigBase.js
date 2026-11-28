@@ -29,6 +29,10 @@ import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
 import {
   PANEL_BG_DEPTH, PANEL_TEXT_DEPTH,
 } from '../systems/labelLayout.js';
+import {
+  enforceReadableText, expandSmallTapTargets,
+} from '../systems/phoneReadable.js';
+import { HUD_TOP_LEFT_WIDTH } from '../ui/sceneTitle.js';
 
 // Defaults (subclasses can override via getWorldSize / hooks).
 const DEFAULT_WORLD_W = 800;
@@ -47,31 +51,46 @@ const COL_ELASTIC_DEFAULT = 0x22c55e;
 const COL_PLASTIC_DEFAULT = 0xf59e0b;
 const COL_FAILURE_DEFAULT = 0xef4444;
 
-// Selector panel layout (left side).
-const SELECTOR_X = 60;
-const SELECTOR_Y = 110;
-const SELECTOR_W = 160;
-const SELECTOR_H = 60;
-const SELECTOR_GAP = 8;
-
-// Chart panel layout (right side).
-const CHART_X = 460;
-const CHART_Y = 110;
-const CHART_W = 310;
-const CHART_H = 280;
-const CHART_PAD = 28;
-
-// START button.
-const START_BTN_X = 140;
-const START_BTN_Y = 410;
-const START_BTN_W = 160;
-const START_BTN_H = 44;
-
-// Readout panel.
-const READOUT_X = 220;
-const READOUT_Y = 70;
-const READOUT_W = 280;
-const READOUT_H = 36;
+/**
+ * Where everything sits, in the two shapes a screen can be.
+ *
+ * `landscape` is the layout that ships: 800x600, unchanged. `portrait`
+ * is a column in a 400x860 space, because contain-fitting the 800-wide
+ * desktop layout onto a 390px phone is a zoom of 0.4875 and turns every
+ * label into 5 CSS pixels (plan 0.5). At 400 wide the fit is 0.975, so
+ * the same font sizes come out legible.
+ *
+ * The column runs: title, readout, samples, start, chart, then the rig
+ * itself with room under it for the instrument stations a subclass adds.
+ */
+const RIG_LAYOUTS = {
+  landscape: {
+    world: { w: 800, h: 600 },
+    selector: { x: 60, y: 110, w: 160, h: 60, gap: 8 },
+    chart: { x: 460, y: 110, w: 310, h: 280, pad: 28 },
+    startBtn: { x: 140, y: 410, w: 160, h: 44 },
+    readout: { x: 220, y: 70, w: 280, h: 36 },
+    rigBaseY: 480,
+    rig: { x: 220, y: 320 },
+    bench: { y: 436 },
+  },
+  portrait: {
+    world: { w: 400, h: 860 },
+    // Three sample cards side by side instead of stacked: a column of
+    // three 60px cards would push the chart off the bottom.
+    selector: { x: 14, y: 104, w: 120, h: 56, gap: 6, columns: 3 },
+    // The rows, measured rather than guessed: readout 56-90, samples
+    // 104-160, START 184-228 with its "Run the test" line at 238, chart
+    // 270-500, the rig under it, and the instrument bench below that.
+    chart: { x: 14, y: 300, w: 372, h: 230, pad: 26 },
+    startBtn: { x: 200, y: 188, w: 190, h: 46 },
+    readout: { x: 200, y: 72, w: 372, h: 34 },
+    rigBaseY: 660,
+    // Where a subclass puts its own apparatus in this shape.
+    rig: { x: 200, y: 600 },
+    bench: { y: 700 },
+  },
+};
 
 // Convert "#rrggbb" to int.
 function hexToInt(hex) {
@@ -258,7 +277,38 @@ export default class LabRigBase extends LocalSceneBase {
     preloadGameAssets(this);
   }
 
-  getWorldSize() { return { width: DEFAULT_WORLD_W, height: DEFAULT_WORLD_H }; }
+  /**
+   * The geometry for this screen shape. Set before createWorld runs.
+   *
+   * Portrait when the viewport is taller than it is wide — the same
+   * test the overlay scenes use, so a rig and an explainer never
+   * disagree about which way the phone is being held.
+   */
+  /**
+   * The zoom the camera will fit this design space at.
+   *
+   * Contain, the same as the overlay scenes: the whole rig has to be
+   * on screen, because a child cannot scroll a lab bench.
+   */
+  _portraitZoom() {
+    const cam = this.cameras?.main;
+    const g = this._g || RIG_LAYOUTS.landscape;
+    if (!cam) return 1;
+    return Math.min(cam.width / g.world.w, cam.height / g.world.h);
+  }
+
+  rigGeometry() {
+    const cam = this.cameras?.main;
+    const portrait = cam ? cam.height > cam.width : false;
+    this._g = portrait ? RIG_LAYOUTS.portrait : RIG_LAYOUTS.landscape;
+    this._portraitRig = portrait;
+    return this._g;
+  }
+
+  getWorldSize() {
+    const g = this._g || this.rigGeometry();
+    return { width: g.world.w, height: g.world.h };
+  }
 
   /**
    * A rig is a control panel, not a place to walk around in, so the whole
@@ -307,8 +357,27 @@ export default class LabRigBase extends LocalSceneBase {
     }
   }
 
+  create() {
+    super.create();
+    // Every control is built by now, including the ones a subclass
+    // mounts, so this is the point where a finger-sized hit area can be
+    // given to the ones that need it (plan 0.5).
+    if (this._portraitRig) {
+      const grown = expandSmallTapTargets(this, this._portraitZoom());
+      if (grown) console.info(`[${this.scene.key}] grew ${grown} tap targets for touch`);
+    }
+  }
+
   createWorld() {
     this._clearDeadHandles();
+    // Which shape of screen this is, before a single thing is drawn.
+    this.rigGeometry();
+    // And on a phone, the floor every label and button has to clear.
+    // Installed before the world is built so the stations a subclass
+    // mounts are covered too (plan 0.5).
+    if (this._portraitRig) {
+      enforceReadableText(this, this._portraitZoom());
+    }
 
     // A lab rig draws its own instrument panel across the whole screen, so
     // the React quest card has nowhere to sit: it landed across the
@@ -405,23 +474,29 @@ export default class LabRigBase extends LocalSceneBase {
     this.add.rectangle(w / 2, 28, w, 56, 0x14151a).setDepth(2);
     const emoji = this.getRigTitleEmoji() || '';
     const title = this.getRigTitle() || 'LAB RIG';
-    this.add.text(w / 2, 20, `${emoji}  ${title}`, {
+    // On a phone the HUD's Home and Back buttons sit on the left end of
+    // this bar, so the heading moves right of them and loses the emoji
+    // and the long machine name it has no room for (plan 0.5).
+    const narrow = this._portraitRig;
+    const headX = narrow ? (HUD_TOP_LEFT_WIDTH + w) / 2 : w / 2;
+    const headText = narrow ? title.split('—')[0].trim() : `${emoji}  ${title}`;
+    this.add.text(headX, 20, headText, {
       fontSize: '14px', fontFamily: 'sans-serif', color: COL_TEXT,
       fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(3);
 
     const subtitle = this.getRigSubtitle();
     if (subtitle) {
-      this.add.text(w / 2, 42, subtitle, {
+      this.add.text(headX, 42, subtitle, {
         fontSize: '10px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
       }).setOrigin(0.5).setDepth(3);
     }
   }
 
   _buildReadout() {
-    this.add.rectangle(READOUT_X, READOUT_Y, READOUT_W, READOUT_H, COL_PANEL)
+    this.add.rectangle(this._g.readout.x, this._g.readout.y, this._g.readout.w, this._g.readout.h, COL_PANEL)
       .setStrokeStyle(2, COL_PANEL_EDGE).setDepth(PANEL_BG_DEPTH);
-    this._readoutText = this.add.text(READOUT_X, READOUT_Y, '', {
+    this._readoutText = this.add.text(this._g.readout.x, this._g.readout.y, '', {
       fontSize: '11px', fontFamily: 'monospace', color: '#10b981',
       fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
@@ -441,44 +516,71 @@ export default class LabRigBase extends LocalSceneBase {
 
   _buildSelector() {
     if (!this._samples.length) return;
-    this.add.text(SELECTOR_X + SELECTOR_W / 2, SELECTOR_Y - 16, 'SAMPLES', {
-      fontSize: '11px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
-      fontStyle: 'bold',
-    }).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
+    // Over the first card, and left-aligned when the cards run across
+    // the screen: centred over a 372px row it sat on the readout above.
+    const headerRow = (this._g.selector.columns || 1) > 1;
+    this.add.text(
+      this._g.selector.x + (headerRow ? 2 : this._g.selector.w / 2),
+      this._g.selector.y - 14,
+      'SAMPLES',
+      {
+        fontSize: '11px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
+        fontStyle: 'bold',
+      },
+    ).setOrigin(headerRow ? 0 : 0.5, 0.5).setDepth(PANEL_TEXT_DEPTH);
 
     this._slots = [];
+    // Down the side on a desktop, across the top on a phone: three
+    // 56px cards stacked in a 400px column would run through START
+    // TEST and the chart below it (plan 0.5).
+    const columns = this._g.selector.columns || 1;
     this._samples.forEach((s, idx) => {
-      const sy = SELECTOR_Y + idx * (SELECTOR_H + SELECTOR_GAP);
+      const col = columns > 1 ? idx % columns : 0;
+      const row = columns > 1 ? Math.floor(idx / columns) : idx;
+      const sx = this._g.selector.x + col * (this._g.selector.w + this._g.selector.gap);
+      const sy = this._g.selector.y + row * (this._g.selector.h + this._g.selector.gap);
 
       const bg = this.add.rectangle(
-        SELECTOR_X + SELECTOR_W / 2, sy + SELECTOR_H / 2,
-        SELECTOR_W, SELECTOR_H, COL_PANEL,
+        sx + this._g.selector.w / 2, sy + this._g.selector.h / 2,
+        this._g.selector.w, this._g.selector.h, COL_PANEL,
       ).setStrokeStyle(2, COL_PANEL_EDGE).setDepth(2)
         .setInteractive({ useHandCursor: true });
 
+      // A card in a row is 120 wide, not 160, and it has a colour chip
+      // and a tick to leave room for. Text that starts at a fixed +38
+      // and wraps at the card's full width spills into the next card:
+      // "Structural Steel (A36-like)" pushed its own "metal" under the
+      // neighbour's background (plan 0.5).
+      const narrowCard = columns > 1;
+      const chipW = narrowCard ? 10 : 22;
+      const textX = sx + (narrowCard ? 8 : 38);
+      const textW = this._g.selector.w - (narrowCard ? 18 : 50);
+
       const chip = this.add.rectangle(
-        SELECTOR_X + 18, sy + SELECTOR_H / 2,
-        22, 36, hexToInt(s.color),
+        sx + (narrowCard ? 5 : 18), sy + this._g.selector.h / 2,
+        chipW, narrowCard ? this._g.selector.h - 8 : 36, hexToInt(s.color),
       ).setStrokeStyle(1, 0x111114).setDepth(3);
 
-      const nameTxt = this.add.text(SELECTOR_X + 38, sy + 10, s.name || s.id, {
+      const nameTxt = this.add.text(textX, sy + 6, s.name || s.id, {
         fontSize: '11px', fontFamily: 'sans-serif', color: COL_TEXT,
-        fontStyle: 'bold', wordWrap: { width: SELECTOR_W - 50 },
+        fontStyle: 'bold', wordWrap: { width: textW },
       }).setDepth(3);
 
       if (s.category || s.subtitle) {
         // Under whatever the name actually took, not a fixed +28: a name
         // that wraps to two lines ("Structural Steel (A36-like)") ran
         // straight through the category word sitting below it.
-        this.add.text(SELECTOR_X + 38, nameTxt.y + nameTxt.height + 1, s.category || s.subtitle, {
+        this.add.text(textX, nameTxt.y + nameTxt.height + 1, s.category || s.subtitle, {
           fontSize: '9px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
+          wordWrap: { width: textW },
         }).setDepth(3);
       }
 
       const check = addArt(
         this, ART.ui_check,
-        SELECTOR_X + SELECTOR_W - 18, sy + SELECTOR_H / 2,
-        { anchor: 'icon', maxPx: 22, depth: 4 },
+        sx + this._g.selector.w - (columns > 1 ? 12 : 18),
+        sy + (columns > 1 ? 12 : this._g.selector.h / 2),
+        { anchor: 'icon', maxPx: columns > 1 ? 16 : 22, depth: 4 },
       );
       check?.setVisible(this._testedIds.has(s.id));
 
@@ -517,11 +619,11 @@ export default class LabRigBase extends LocalSceneBase {
 
   _buildStartButton() {
     this._startBtnBg = this.add.rectangle(
-      START_BTN_X, START_BTN_Y, START_BTN_W, START_BTN_H, 0x16a34a,
+      this._g.startBtn.x, this._g.startBtn.y, this._g.startBtn.w, this._g.startBtn.h, 0x16a34a,
     ).setStrokeStyle(3, 0x065f46).setDepth(3)
       .setInteractive({ useHandCursor: true });
     this._startBtnLabel = this.add.text(
-      START_BTN_X, START_BTN_Y, '▶ START TEST', {
+      this._g.startBtn.x, this._g.startBtn.y, '▶ START TEST', {
         fontSize: '14px', fontFamily: 'sans-serif', color: '#ffffff',
         fontStyle: 'bold',
       },
@@ -535,7 +637,10 @@ export default class LabRigBase extends LocalSceneBase {
       if (!this._testInProgress) this._startBtnBg.setFillStyle(0x16a34a);
     });
 
-    this.add.text(START_BTN_X, START_BTN_Y + 32, 'Run the test', {
+    // Not on a phone: the button is full width and already says it, and
+    // the line only had room to render as "Ru…" under it (plan 0.5).
+    if (this._portraitRig) return;
+    this.add.text(this._g.startBtn.x, this._g.startBtn.y + 32, 'Run the test', {
       fontSize: '10px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
       align: 'center',
     }).setOrigin(0.5).setDepth(3);
@@ -726,16 +831,16 @@ export default class LabRigBase extends LocalSceneBase {
     g.clear();
 
     g.fillStyle(COL_PANEL, 1);
-    g.fillRect(CHART_X, CHART_Y, CHART_W, CHART_H);
+    g.fillRect(this._g.chart.x, this._g.chart.y, this._g.chart.w, this._g.chart.h);
     g.lineStyle(2, COL_PANEL_EDGE, 1);
-    g.strokeRect(CHART_X, CHART_Y, CHART_W, CHART_H);
+    g.strokeRect(this._g.chart.x, this._g.chart.y, this._g.chart.w, this._g.chart.h);
 
     // Chart-mode toggle button (only renders when subclass exposes one).
     this._ensureModeToggle();
 
     if (!this._chartTitle) {
       this._chartTitle = this.add.text(
-        CHART_X + CHART_W / 2, CHART_Y - 14,
+        this._g.chart.x + this._g.chart.w / 2, this._g.chart.y - 14,
         cfg.title || `${cfg.yLabel || 'Y'} vs ${cfg.xLabel || 'X'}`, {
           fontSize: '12px', fontFamily: 'sans-serif', color: COL_TEXT,
           fontStyle: 'bold',
@@ -745,10 +850,10 @@ export default class LabRigBase extends LocalSceneBase {
       this._chartTitle.setText(cfg.title);
     }
 
-    const innerX = CHART_X + CHART_PAD;
-    const innerY = CHART_Y + CHART_PAD - 4;
-    const innerW = CHART_W - CHART_PAD - 12;
-    const innerH = CHART_H - CHART_PAD - 28;
+    const innerX = this._g.chart.x + this._g.chart.pad;
+    const innerY = this._g.chart.y + this._g.chart.pad - 4;
+    const innerW = this._g.chart.w - this._g.chart.pad - 12;
+    const innerH = this._g.chart.h - this._g.chart.pad - 28;
 
     const xMax = Math.max(1e-6, cfg.xMax || 1);
     const yMax = Math.max(1e-6, cfg.yMax || 1);
@@ -773,14 +878,14 @@ export default class LabRigBase extends LocalSceneBase {
     const xUnit = cfg.xUnit ? ` (${cfg.xUnit})` : '';
     const yUnit = cfg.yUnit ? ` (${cfg.yUnit})` : '';
     const xLabel = this.add.text(
-      CHART_X + CHART_W / 2, CHART_Y + CHART_H - 8,
+      this._g.chart.x + this._g.chart.w / 2, this._g.chart.y + this._g.chart.h - 8,
       `${cfg.xLabel || 'X'}${xUnit}, max ${formatAxis(xMax)}`, {
         fontSize: '9px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
       },
     ).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
     this._chartAxisLabels.push(xLabel);
     const yLabel = this.add.text(
-      CHART_X + 6, CHART_Y + CHART_H / 2,
+      this._g.chart.x + 6, this._g.chart.y + this._g.chart.h / 2,
       `${cfg.yLabel || 'Y'}${yUnit}\nmax ${formatAxis(yMax)}`, {
         fontSize: '9px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
         align: 'center',
@@ -827,7 +932,7 @@ export default class LabRigBase extends LocalSceneBase {
     }
 
     if ((!progressCurve || progressCurve.length < 2) && comparisonCurves.length === 0) {
-      const hint = this.add.text(CHART_X + CHART_W / 2, CHART_Y + CHART_H / 2,
+      const hint = this.add.text(this._g.chart.x + this._g.chart.w / 2, this._g.chart.y + this._g.chart.h / 2,
         'Press START TEST to begin', {
           fontSize: '11px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
         }).setOrigin(0.5).setDepth(3);
@@ -906,8 +1011,8 @@ export default class LabRigBase extends LocalSceneBase {
       if (this._modeToggleLbl) { this._modeToggleLbl.destroy(); this._modeToggleLbl = null; }
       return;
     }
-    const tx = CHART_X + CHART_W - 50;
-    const ty = CHART_Y - 14;
+    const tx = this._g.chart.x + this._g.chart.w - 50;
+    const ty = this._g.chart.y - 14;
     if (!this._modeToggleBg) {
       this._modeToggleBg = this.add.rectangle(tx, ty, 92, 18, 0x2c2e34)
         .setStrokeStyle(1, 0x4a4d55).setDepth(4)
@@ -955,7 +1060,7 @@ export default class LabRigBase extends LocalSceneBase {
     // Title for alt mode (use altMode.label or default).
     if (!this._chartTitle) {
       this._chartTitle = this.add.text(
-        CHART_X + CHART_W / 2, CHART_Y - 14,
+        this._g.chart.x + this._g.chart.w / 2, this._g.chart.y - 14,
         altMode.label || 'Alt Chart', {
           fontSize: '12px', fontFamily: 'sans-serif', color: COL_TEXT,
           fontStyle: 'bold',
@@ -968,7 +1073,7 @@ export default class LabRigBase extends LocalSceneBase {
     // Subclass paints the actual content. May return { texts: [...] }
     // which we track for cleanup on next render.
     const drawResult = this.drawAlternateChart(g, {
-      x: CHART_X, y: CHART_Y, w: CHART_W, h: CHART_H,
+      x: this._g.chart.x, y: this._g.chart.y, w: this._g.chart.w, h: this._g.chart.h,
     });
     if (drawResult && Array.isArray(drawResult.texts)) {
       this._altChartTexts = drawResult.texts;

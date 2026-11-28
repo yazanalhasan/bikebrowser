@@ -2005,6 +2005,10 @@ export default function GameContainer() {
       {PHYSICS_HUD_ENABLED && phase === 'playing' && !paused && (
         <button
           onClick={() => setShowPhysicsHUD((v) => !v)}
+          // A developer affordance: PHYSICS_HUD_ENABLED is DEV-only, so
+          // this never reaches a child. Marked so the layout audits do
+          // not report it as covering the game (plan 0.5 / 0.12).
+          data-dev-only="physics-hud"
           className={`absolute bottom-2 left-[170px] z-20 rounded-lg px-2 py-1 text-xs shadow transition-all active:scale-90 cursor-pointer ${
             showPhysicsHUD ? 'bg-blue-500 text-white' : 'bg-white/60 text-gray-600 hover:bg-white/80'
           }`}
@@ -2107,14 +2111,19 @@ export default function GameContainer() {
           covered the bottom of Crafting, Inventory and Milestones, and on
           a phone it sat across the explainer's PATCH tile. There is
           nothing to walk to while an overlay has the screen. */}
-      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && !overlayOpen && (
+      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && !overlayOpen
+        && !sceneOwnsHud && (
         <VirtualJoystick onMove={setJoystick} onAction={triggerWorldAction} />
       )}
 
       {/* ---- Action button (interact with NPCs) ---- */}
       {/* Hidden while a panel or overlay is open: on a phone it sat on
           the Crafting panel's footer, and over the explainer. */}
-      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && !overlayOpen && (
+      {/* A lab rig owns the screen: there is nothing to walk to, every
+          station answers a tap, and on a phone the d-pad and this
+          button sat across the instrument bench (plan 0.5). */}
+      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && !overlayOpen
+        && !sceneOwnsHud && (
         <button
           type="button"
           aria-label="Talk or use the thing you are standing next to"

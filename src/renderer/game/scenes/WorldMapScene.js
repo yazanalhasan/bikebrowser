@@ -473,7 +473,8 @@ export default class WorldMapScene extends Phaser.Scene {
       ? (width - HUD_RAIL_WIDTH) / 2
       : width - 260;
     this.add.text(legendX, legendY, '🟢 Resource  🔵 Material  🟤 Biology', {
-      fontSize: '10px', fontFamily: 'sans-serif', color: '#5c3d10',
+      // A sentence, so the floor is 12 (plan 0.5).
+      fontSize: '12px', fontFamily: 'sans-serif', color: '#5c3d10',
       stroke: '#f5e6c8', strokeThickness: 3,
     }).setOrigin(0.5);
 

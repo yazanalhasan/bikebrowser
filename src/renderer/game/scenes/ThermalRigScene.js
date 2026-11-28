@@ -59,6 +59,16 @@ function lerpColor(aInt, bInt, t) {
 }
 
 export default class ThermalRigScene extends LabRigBase {
+  /**
+   * Where the apparatus stands, in whichever shape this screen is.
+   *
+   * The landscape constants are the defaults; the portrait column puts
+   * the rod below the chart instead of across it (plan 0.5).
+   */
+  _rigX() { return (this._g?.rig?.x) ?? RIG_X; }
+
+  _rigY() { return (this._g?.rig?.y) ?? RIG_Y; }
+
   constructor() {
     super(SCENE_KEY);
   }
@@ -93,33 +103,33 @@ export default class ThermalRigScene extends LabRigBase {
     const layer = ctx.layer;
 
     // Heavy concrete-gray base under the rig.
-    const base = this.add.rectangle(RIG_X, RIG_Y + 70, BASE_W, BASE_H, 0x3b3b40)
+    const base = this.add.rectangle(this._rigX(), this._rigY() + 70, BASE_W, BASE_H, 0x3b3b40)
       .setStrokeStyle(2, 0x111114).setDepth(2);
     layer.add(base);
 
     // Bolts on the base.
     [-1, 1].forEach((s) => {
-      const dot = this.add.circle(RIG_X + s * 150, RIG_Y + 70, 3, 0x9aa0aa).setDepth(3);
+      const dot = this.add.circle(this._rigX() + s * 150, this._rigY() + 70, 3, 0x9aa0aa).setDepth(3);
       layer.add(dot);
     });
 
     // Two ceramic insulator supports — light cream, with a darker mount block.
-    const leftMount = this.add.rectangle(RIG_X - 130, RIG_Y + 30, SUPPORT_W + 6, 12, 0x55585f)
+    const leftMount = this.add.rectangle(this._rigX() - 130, this._rigY() + 30, SUPPORT_W + 6, 12, 0x55585f)
       .setStrokeStyle(1, 0x33363c).setDepth(2);
-    const rightMount = this.add.rectangle(RIG_X + 130, RIG_Y + 30, SUPPORT_W + 6, 12, 0x55585f)
+    const rightMount = this.add.rectangle(this._rigX() + 130, this._rigY() + 30, SUPPORT_W + 6, 12, 0x55585f)
       .setStrokeStyle(1, 0x33363c).setDepth(2);
     layer.add(leftMount); layer.add(rightMount);
 
-    const leftCeramic = this.add.rectangle(RIG_X - 130, RIG_Y, SUPPORT_W, SUPPORT_H, 0xede4ce)
+    const leftCeramic = this.add.rectangle(this._rigX() - 130, this._rigY(), SUPPORT_W, SUPPORT_H, 0xede4ce)
       .setStrokeStyle(1, 0x8b7d56).setDepth(2);
-    const rightCeramic = this.add.rectangle(RIG_X + 130, RIG_Y, SUPPORT_W, SUPPORT_H, 0xede4ce)
+    const rightCeramic = this.add.rectangle(this._rigX() + 130, this._rigY(), SUPPORT_W, SUPPORT_H, 0xede4ce)
       .setStrokeStyle(1, 0x8b7d56).setDepth(2);
     layer.add(leftCeramic); layer.add(rightCeramic);
 
     // V-cradle notches on the supports (where the rod rests).
     [-1, 1].forEach((s) => {
       const notch = this.add.triangle(
-        RIG_X + s * 130, RIG_Y - SUPPORT_H / 2 + 4,
+        this._rigX() + s * 130, this._rigY() - SUPPORT_H / 2 + 4,
         -10, 6,
         10, 6,
         0, -4,
@@ -129,26 +139,26 @@ export default class ThermalRigScene extends LabRigBase {
     });
 
     // Furnace flame icon under the rod's midsection.
-    const flameBox = this.add.rectangle(RIG_X, RIG_Y + 40, 60, 24, 0x14151a)
+    const flameBox = this.add.rectangle(this._rigX(), this._rigY() + 40, 60, 24, 0x14151a)
       .setStrokeStyle(2, 0x4a4d55).setDepth(2);
     layer.add(flameBox);
     // Painted burner flame. FLAME_BASE_SCALE fits the 28x48 art into the
     // 60x24 burner box; the heat pulse below multiplies this base so the
     // flame grows with temperature without snapping back to native size.
-    this._flameText = addArt(this, ART.burner_flame, RIG_X, RIG_Y + 46, {
+    this._flameText = addArt(this, ART.burner_flame, this._rigX(), this._rigY() + 46, {
       anchor: 'ground', depth: 4, scale: FLAME_BASE_SCALE,
     });
     if (this._flameText) layer.add(this._flameText);
 
     // Temperature dial graphic on the right.
-    const dial = this.add.circle(RIG_X + 175, RIG_Y - 10, 22, 0x14151a)
+    const dial = this.add.circle(this._rigX() + 175, this._rigY() - 10, 22, 0x14151a)
       .setStrokeStyle(2, 0x4a4d55).setDepth(2);
     layer.add(dial);
-    const dialFace = addArt(this, ART.ch_heat_math, RIG_X + 175, RIG_Y - 10, {
+    const dialFace = addArt(this, ART.ch_heat_math, this._rigX() + 175, this._rigY() - 10, {
       anchor: 'icon', maxPx: 26, depth: 3,
     });
     if (dialFace) layer.add(dialFace);
-    this._dialText = this.add.text(RIG_X + 175, RIG_Y + 18, '25°C', {
+    this._dialText = this.add.text(this._rigX() + 175, this._rigY() + 18, '25°C', {
       fontSize: '10px', fontFamily: 'monospace', color: '#10b981',
       fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(3);
@@ -169,7 +179,7 @@ export default class ThermalRigScene extends LabRigBase {
     this._rodBaseWidthPx = widthPx;
     this._rodBaseColor = baseColor;
 
-    const rect = this.add.rectangle(RIG_X, RIG_Y, widthPx, ROD_HEIGHT_PX, baseColor)
+    const rect = this.add.rectangle(this._rigX(), this._rigY(), widthPx, ROD_HEIGHT_PX, baseColor)
       .setStrokeStyle(1, 0x111114).setDepth(3);
     ctx.specimenLayer.add(rect);
 
@@ -223,8 +233,8 @@ export default class ThermalRigScene extends LabRigBase {
   }
 
   _spawnHazePuff(ctx, intensity) {
-    const x = RIG_X + (Math.random() - 0.5) * (this._rodBaseWidthPx * 0.6);
-    const y = RIG_Y - 8;
+    const x = this._rigX() + (Math.random() - 0.5) * (this._rodBaseWidthPx * 0.6);
+    const y = this._rigY() - 8;
     const r = 4 + Math.random() * 5;
     const color = intensity > 0.7 ? 0xffb04a : 0xfde68a;
     const puff = this.add.circle(x, y, r, color, 0.45);
@@ -271,7 +281,7 @@ export default class ThermalRigScene extends LabRigBase {
 
     // Numeric label "ΔL = 0.42 mm" floats up + fades.
     const totalDeltaMm = result?.summary?.totalDeltaMm ?? 0;
-    const label = this.add.text(RIG_X, RIG_Y - 28,
+    const label = this.add.text(this._rigX(), this._rigY() - 28,
       `ΔL = ${totalDeltaMm.toFixed(2)} mm`, {
         fontSize: '13px', fontFamily: 'monospace', color: '#fde68a',
         fontStyle: 'bold', stroke: '#1c1d22', strokeThickness: 3,
@@ -279,7 +289,7 @@ export default class ThermalRigScene extends LabRigBase {
     ctx.effectsLayer.add(label);
     this.tweens.add({
       targets: label,
-      y: RIG_Y - 60,
+      y: this._rigY() - 60,
       alpha: 0,
       duration: 1600,
       ease: 'Sine.easeOut',

@@ -40,7 +40,13 @@ export function loadResponsiveLayout(scene, key) {
 
   if (isPortrait && portrait?.objects) {
     return {
-      objects: portrait.objects,
+      // Merged over the landscape block, not instead of it. A portrait
+      // layout only has to say what MOVES; every other key keeps its
+      // landscape entry, so adding one object to a scene does not mean
+      // remembering to add it to a second block as well — and a key
+      // that was forgotten reads as "unchanged" rather than undefined
+      // (plan 0.5).
+      objects: { ...data.objects, ...portrait.objects },
       designWidth: portrait.designWidth || 400,
       designHeight: portrait.designHeight || 860,
       portrait: true,

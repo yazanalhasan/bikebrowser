@@ -461,8 +461,11 @@ export default class DryWashScene extends LocalSceneBase {
     // The painted monsoon sign carries the post, the board and the warning
     // mark; the UI still writes the word so it stays legible and localisable.
     this.addProp(ART.warning_sign, x, y + 60, { displayHeight: 96, depth: 2 });
+    // 10px, not 7: on a phone the world draws at zoom 1, so 7px is
+    // 7 CSS px and the warning on the flood sign cannot be read at all
+    // (plan 0.5's floor for a label is 10).
     this.add.text(x, y + 9, 'MONSOON', {
-      fontSize: '7px', fontFamily: 'sans-serif',
+      fontSize: '10px', fontFamily: 'sans-serif',
       fontStyle: 'bold', color: '#fef3c7',
     }).setOrigin(0.5).setDepth(3);
   }

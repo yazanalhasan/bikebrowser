@@ -18,7 +18,7 @@ import {
   detectFailurePoint,
 } from '../systems/materials/materialTestingEngine.js';
 import { saveGame } from '../systems/saveSystem.js';
-import { loadLayout } from '../utils/loadLayout.js';
+import { loadLayout, loadResponsiveLayout } from '../utils/loadLayout.js';
 import { createScaleStation } from '../systems/lab/scaleStation.js';
 import { createCalipers } from '../systems/lab/calipers.js';
 import { createDensitySlate } from '../systems/lab/densitySlate.js';
@@ -49,7 +49,9 @@ const SAMPLE_ITEM_IDS = {
 const SCENE_KEY = 'MaterialLabScene';
 const LAYOUT_KEY = 'materialLabLayout';
 
-// Rig geometry.
+// Rig geometry. RIG_BASE_Y is the landscape default; the live value
+// comes from the rig geometry so the portrait column can sit the
+// machine lower down its own world (plan 0.5).
 const RIG_BASE_Y = 480;
 const RIG_BASE_W = 180;
 const RIG_BASE_H = 30;
@@ -139,8 +141,20 @@ export default class MaterialLabScene extends LabRigBase {
 
   // ── createWorld: extend base to mount left-bay instruments after the
   //   selector / START / chart are built. ────────────────────────────────
+  /** The rig's feet, in whichever shape this screen is. */
+  _rigBaseY() { return (this._g || {}).rigBaseY ?? RIG_BASE_Y; }
+
+  _crossbeamY() { return this._rigBaseY() - COLUMN_H - 10; }
+
+  _crossheadHomeY() { return this._rigBaseY() - 200; }
+
   createWorld() {
-    this.layout = loadLayout(this, LAYOUT_KEY);
+    // Responsive: the phone gets the column block (plan 0.5). The rest
+    // of this scene reads `this.layout` as a flat map of objects, which
+    // is what the merged result is.
+    const design = loadResponsiveLayout(this, LAYOUT_KEY);
+    this.layout = design.objects;
+    this._design = design;
     super.createWorld();
     this._mountLeftBayInstruments();
     this._buildSlowToggle();
@@ -150,22 +164,22 @@ export default class MaterialLabScene extends LabRigBase {
   drawApparatus(ctx) {
     const L = ctx.layer;
     const rigX = this.layout.utm.x;
-    L.add(this.add.rectangle(rigX, RIG_BASE_Y + RIG_BASE_H / 2, RIG_BASE_W, RIG_BASE_H, COL_BASE)
+    L.add(this.add.rectangle(rigX, this._rigBaseY() + RIG_BASE_H / 2, RIG_BASE_W, RIG_BASE_H, COL_BASE)
       .setStrokeStyle(2, 0x111114).setDepth(2));
     [-1, 1].forEach((s) => {
-      L.add(this.add.circle(rigX + s * 70, RIG_BASE_Y + 8, 3, 0x9aa0aa).setDepth(3));
-      L.add(this.add.circle(rigX + s * 70, RIG_BASE_Y + 22, 3, 0x9aa0aa).setDepth(3));
+      L.add(this.add.circle(rigX + s * 70, this._rigBaseY() + 8, 3, 0x9aa0aa).setDepth(3));
+      L.add(this.add.circle(rigX + s * 70, this._rigBaseY() + 22, 3, 0x9aa0aa).setDepth(3));
       L.add(this.add.rectangle(
-        rigX + s * COLUMN_DX, RIG_BASE_Y - COLUMN_H / 2, COLUMN_W, COLUMN_H, COL_COLUMN,
+        rigX + s * COLUMN_DX, this._rigBaseY() - COLUMN_H / 2, COLUMN_W, COLUMN_H, COL_COLUMN,
       ).setStrokeStyle(1, 0x33363c).setDepth(1));
     });
-    L.add(this.add.rectangle(rigX, CROSSBEAM_Y, CROSSBEAM_W, CROSSBEAM_H, COL_BEAM)
+    L.add(this.add.rectangle(rigX, this._crossbeamY(), CROSSBEAM_W, CROSSBEAM_H, COL_BEAM)
       .setStrokeStyle(2, 0x2c2e34).setDepth(2));
-    L.add(this.add.rectangle(rigX, CROSSBEAM_Y - 14, 22, 18, 0x5a5d63).setDepth(2));
-    L.add(this.add.circle(rigX, CROSSBEAM_Y - 14, 4, 0xfacc15).setDepth(3));
+    L.add(this.add.rectangle(rigX, this._crossbeamY() - 14, 22, 18, 0x5a5d63).setDepth(2));
+    L.add(this.add.circle(rigX, this._crossbeamY() - 14, 4, 0xfacc15).setDepth(3));
 
     // Movable crosshead + grips — refs needed by animateProgress.
-    this._crossheadY = CROSSHEAD_HOME_Y;
+    this._crossheadY = this._crossheadHomeY();
     this._crosshead = this.add.rectangle(
       rigX, this._crossheadY, CROSSHEAD_W, CROSSHEAD_H, 0x8a8e96,
     ).setStrokeStyle(2, 0x33363c).setDepth(3);
@@ -176,7 +190,7 @@ export default class MaterialLabScene extends LabRigBase {
     ).setStrokeStyle(1, 0x111114).setDepth(3);
     L.add(this._upperGrip);
     this._lowerGrip = this.add.rectangle(
-      rigX, RIG_BASE_Y - GRIP_H / 2, GRIP_W, GRIP_H, COL_GRIP,
+      rigX, this._rigBaseY() - GRIP_H / 2, GRIP_W, GRIP_H, COL_GRIP,
     ).setStrokeStyle(1, 0x111114).setDepth(3);
     L.add(this._lowerGrip);
   }
@@ -190,12 +204,12 @@ export default class MaterialLabScene extends LabRigBase {
     const grain = mat.visual.grainColor ? hexToInt(mat.visual.grainColor) : null;
 
     // Reset crosshead home.
-    this._crossheadY = CROSSHEAD_HOME_Y;
+    this._crossheadY = this._crossheadHomeY();
     if (this._crosshead) this._crosshead.y = this._crossheadY;
     if (this._upperGrip) this._upperGrip.y = this._crossheadY + CROSSHEAD_H / 2 + GRIP_H / 2;
 
     const upperGripBottom = this._crossheadY + CROSSHEAD_H / 2 + GRIP_H;
-    const lowerGripTop = RIG_BASE_Y - GRIP_H;
+    const lowerGripTop = this._rigBaseY() - GRIP_H;
     const cy = (upperGripBottom + lowerGripTop) / 2;
     const h = lowerGripTop - upperGripBottom;
     this._specimenHomeW = SPECIMEN_HOME_W;
@@ -234,7 +248,7 @@ export default class MaterialLabScene extends LabRigBase {
 
     // Crosshead pulls up proportional to current strain.
     const yOffset = (sample.strain / Math.max(1e-6, fracStrain)) * 30;
-    const targetY = CROSSHEAD_HOME_Y - yOffset;
+    const targetY = this._crossheadHomeY() - yOffset;
     if (this._crosshead) this._crosshead.y = targetY;
     if (this._upperGrip) this._upperGrip.y = targetY + CROSSHEAD_H / 2 + GRIP_H / 2;
 
@@ -262,7 +276,7 @@ export default class MaterialLabScene extends LabRigBase {
     if (!this._specimenRect || !this._crosshead) return;
     const rigX = this.layout.utm.x;
     const upperGripBottom = this._crosshead.y + CROSSHEAD_H / 2 + GRIP_H;
-    const lowerGripTop = RIG_BASE_Y - GRIP_H;
+    const lowerGripTop = this._rigBaseY() - GRIP_H;
     const newH = lowerGripTop - upperGripBottom;
     const newY = (upperGripBottom + lowerGripTop) / 2;
     const newW = Math.max(2, this._specimenHomeW * scaleX);
@@ -518,6 +532,9 @@ export default class MaterialLabScene extends LabRigBase {
   _setTeachingCallout(text, color = 0x22c55e) {
     const cfg = this.layout.teaching_callout;
     if (!cfg) return;
+    // Back on screen if a takeaway card had hidden it.
+    this._teachingCalloutBg?.setVisible(true);
+    this._teachingCalloutText?.setVisible(true);
 
     if (!this._teachingCalloutBg) {
       this._teachingCalloutBg = this.add.rectangle(cfg.x, cfg.y, cfg.w, 38, 0x111827, 0.9)
@@ -738,6 +755,12 @@ export default class MaterialLabScene extends LabRigBase {
     // spawn. The card belongs in the reserved UI band, and its
     // children carry their own depths so the card cannot print over
     // its own words (plan 0.12.6).
+    // The takeaway is the last word on the test, and on a phone it
+    // shares its row with the teaching callout, so the callout stands
+    // down (plan 0.5).
+    this._teachingCalloutBg?.setVisible(false);
+    this._teachingCalloutText?.setVisible(false);
+
     const panel = this.add.container(0, 0).setDepth(PANEL_BG_DEPTH);
 
     // Measure, then place. The heading sat at a fixed -18 and the three

@@ -240,6 +240,11 @@ export async function auditCoverage(page, options = {}) {
       // that as solid turned a label clipped by one icon into "67%
       // covered".
       if (hudCandidates.some((other) => other !== el && el.contains(other))) continue;
+      // Developer chrome is not part of the game. The physics-HUD
+      // toggle is DEV-only and a child never sees it, so counting it
+      // as an occluder would mean moving real labels to dodge a button
+      // that does not ship.
+      if (el.closest('[data-dev-only]')) continue;
       const r = el.getBoundingClientRect();
       if (r.width < 8 || r.height < 8) continue;
       const style = window.getComputedStyle(el);
