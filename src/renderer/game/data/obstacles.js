@@ -19,6 +19,8 @@
  *   gate       — NPC or system that requires trust/knowledge to open
  */
 
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+
 // ── Obstacle Definitions Per Scene ───────────────────────────────────────────
 
 export const SCENE_OBSTACLES = {
@@ -90,10 +92,13 @@ export const SCENE_OBSTACLES = {
       {
         id: 'wilted_plant',
         type: 'puzzle',
+        // Painted art, not a 28px emoji (plan 2.4). `solvedIcon` is what
+        // it becomes once the child waters it.
+        solvedIcon: ART.recovered_plant,
         // Just off the trail down from the street gate, so it is the first
         // thing a child meets in the desert.
         x: 640, y: 250,
-        icon: '🥀',
+        icon: ART.wilted_plant,
         label: 'Wilted Plant',
         description: 'A plant that needs water. If you could find some...',
         solveCondition: { type: 'item', item: 'prickly_pear_fruit' },

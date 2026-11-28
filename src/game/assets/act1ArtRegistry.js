@@ -16,7 +16,7 @@
  *   'backdrop' full-scene image
  */
 
-export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-27","entries":206};
+export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-28","entries":208};
 
 /** slot/key -> sprite record. Keyed by texture key. */
 export const ACT1_ART = Object.freeze({
@@ -93,7 +93,9 @@ export const ACT1_ART = Object.freeze({
   "act1.plants.cottonwood": Object.freeze({ key: "act1.plants.cottonwood", path: "assets/game/act1/plants/cottonwood.png", anchor: "ground", width: 128, height: 126, slot: "shade_tree" }),
   "act1.plants.desert_shrub": Object.freeze({ key: "act1.plants.desert_shrub", path: "assets/game/act1/plants/desert_shrub.png", anchor: "ground", width: 63, height: 64, slot: "desert_shrub" }),
   "act1.plants.ponderosa_pine": Object.freeze({ key: "act1.plants.ponderosa_pine", path: "assets/game/act1/plants/ponderosa_pine.png", anchor: "ground", width: 81, height: 128, slot: "pine_tree" }),
+  "act1.plants.recovered_plant": Object.freeze({ key: "act1.plants.recovered_plant", path: "assets/game/act1/plants/recovered_plant.png", anchor: "ground", width: 38, height: 56, slot: "recovered_plant" }),
   "act1.plants.saguaro": Object.freeze({ key: "act1.plants.saguaro", path: "assets/game/act1/plants/saguaro.png", anchor: "ground", width: 58, height: 96, slot: "saguaro" }),
+  "act1.plants.wilted_plant": Object.freeze({ key: "act1.plants.wilted_plant", path: "assets/game/act1/plants/wilted_plant.png", anchor: "ground", width: 27, height: 56, slot: "wilted_plant" }),
   "act1.props.animal_skull": Object.freeze({ key: "act1.props.animal_skull", path: "assets/game/act1/props/animal_skull.png", anchor: "ground", width: 48, height: 36, slot: "animal_skull" }),
   "act1.props.balance_scale": Object.freeze({ key: "act1.props.balance_scale", path: "assets/game/act1/props/balance_scale.png", anchor: "ground", width: 64, height: 64, slot: "lab_scale" }),
   "act1.props.basketball_hoop": Object.freeze({ key: "act1.props.basketball_hoop", path: "assets/game/act1/props/basketball_hoop.png", anchor: "ground", width: 54, height: 96, slot: "hoop" }),
@@ -295,6 +297,7 @@ export const ART = Object.freeze({
   "pool_slide": "act1.props.pool_slide",
   "race_start": "act1.props.race_start_flag",
   "rare_minerals": "act1.items.crystal_cluster",
+  "recovered_plant": "act1.plants.recovered_plant",
   "reed_fiber": "act1.items.reed_fiber",
   "reeds": "act1.plants.cattail",
   "res_agave_fiber": "act1.items.agave_fiber",
@@ -332,6 +335,7 @@ export const ART = Object.freeze({
   "warning_sign": "act1.props.monsoon_warning_sign",
   "water_bottle": "act1.items.water_bottle",
   "water_bowl": "act1.items.dog_water_bowl",
+  "wilted_plant": "act1.plants.wilted_plant",
   "wire_spool": "act1.items.wire_spool",
   "workbench": "act1.props.workbench",
   "worldmap_sky_day": "act1.grounds.worldmap_sky_day",

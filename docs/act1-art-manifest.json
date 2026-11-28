@@ -1,7 +1,7 @@
 {
   "project": "bikebrowser Act 1 placeholder replacement",
   "pr": "yazanalhasan/bikebrowser#10 @2f4b40b",
-  "generated": "2026-11-27",
+  "generated": "2026-11-28",
   "style_guide": "style_guide.md",
   "entries": [
     {
@@ -4811,6 +4811,58 @@
       "qa": {
         "score": 4,
         "notes": "Same seed and prompt as the idle sheet plus the talking pose, which is what keeps it the same person."
+      }
+    },
+    {
+      "slot": "wilted_plant",
+      "target_repo_path": "public/assets/game/act1/plants/wilted_plant.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        27,
+        56
+      ],
+      "anchor": "ground",
+      "max_px": 56,
+      "provenance": {
+        "tool": "ComfyUI 0.22.0 on the i9, GPU0 — local, open weights only",
+        "checkpoint": "sd_xl_base_1.0 + sdxl_vae",
+        "loras": "bbact1style_v2 @1.0, pixel-art-xl @0.9",
+        "prompt_summary": "single plant on a flat magenta field, which is the style guide's own step 1",
+        "seed": 1337,
+        "staging": "20261127_2141_act1_complete/props/wilted_plant",
+        "post": "make_prop.py: magenta chroma-key by flood fill from the edges (so a magenta flower would survive), trim, nearest-neighbour to 56px, quantise to the 96-colour Act 1 palette",
+        "note": "The first recovered-plant pass came back in a basket every time; \"no pot\" in the negative was not enough and the prompt had to say it grows out of the ground."
+      },
+      "qa": {
+        "score": 4,
+        "notes": "A plant that needs water: drooping dry leaves, no pot — it grows out of the desert floor, where a child finds it."
+      }
+    },
+    {
+      "slot": "recovered_plant",
+      "target_repo_path": "public/assets/game/act1/plants/recovered_plant.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        38,
+        56
+      ],
+      "anchor": "ground",
+      "max_px": 56,
+      "provenance": {
+        "tool": "ComfyUI 0.22.0 on the i9, GPU0 — local, open weights only",
+        "checkpoint": "sd_xl_base_1.0 + sdxl_vae",
+        "loras": "bbact1style_v2 @1.0, pixel-art-xl @0.9",
+        "prompt_summary": "single plant on a flat magenta field, which is the style guide's own step 1",
+        "seed": 1337,
+        "staging": "20261127_2141_act1_complete/props/recovered_plant",
+        "post": "make_prop.py: magenta chroma-key by flood fill from the edges (so a magenta flower would survive), trim, nearest-neighbour to 56px, quantise to the 96-colour Act 1 palette",
+        "note": "The first recovered-plant pass came back in a basket every time; \"no pot\" in the negative was not enough and the prompt had to say it grows out of the ground."
+      },
+      "qa": {
+        "score": 4,
+        "notes": "The same plant after the child waters it: green, upright, one yellow flower. Same seed as the wilted one so the two read as one plant."
       }
     }
   ]

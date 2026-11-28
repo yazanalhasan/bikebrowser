@@ -116,9 +116,12 @@ test('every registered sprite exists on disk at its declared size', () => {
 test('every ART slot points at a real registry record', () => {
   const dangling = Object.entries(ART).filter(([, key]) => !ACT1_ART[key]);
   assert.deepEqual(dangling, [], 'ART slot names pointing at unknown texture keys');
-  // 143 single-image records: 150 files minus 2 atlases, 4 character sheets
-  // and 1 tileset, which load through their own paths.
-  assert.equal(Object.keys(ACT1_ART).length, 143);
+  // Another ratchet rather than a frozen count: Phase 2 adds art. 143
+  // single-image records shipped in November (150 files minus the 2
+  // atlases, 4 character sheets and 1 tileset, which load through
+  // their own paths); the number may only grow.
+  assert.ok(Object.keys(ACT1_ART).length >= 143,
+    `single-image art dropped to ${Object.keys(ACT1_ART).length}`);
 });
 
 test('character sheets are 4x4 of 96px frames with feet on y=91', () => {

@@ -26,6 +26,12 @@ import { createInteractionMarker } from '../../../game/ui/InteractionMarker.js';
 import { createScorchingPavementPlaceholder } from '../../../game/art/placeholderFactories.js';
 import { NARRATOR } from './questDialog.js';
 import { WORLD_SIGN_DEPTH } from './labelLayout.js';
+import { ACT1_ART } from '../../../game/assets/act1ArtRegistry.js';
+
+/** The art record behind a texture key, or null. */
+function getArt(key) {
+  return ACT1_ART[key] || null;
+}
 
 // ── Per-session failure tracking (resets on app restart) ─────────────────────
 const _failureCounts = new Map();
@@ -267,8 +273,23 @@ function _handlePuzzleInteract(scene, puzzle, interactable = null) {
       choices: null, step: null,
     });
     _solvePuzzle(scene, puzzle, state);
-    // Spent: take the hotspot away so the prompt stops inviting a press.
-    scene.removeInteractable?.(interactable);
+    if (puzzle.solvedIcon && interactable?.text?.setTexture) {
+      // The plant recovers in front of the child. Deleting the hotspot
+      // and leaving a dead plant on screen told them nothing happened
+      // (plan 2.4). The prompt and the caption still go.
+      const art = getArt(puzzle.solvedIcon);
+      if (art && scene.textures.exists(art.key)) {
+        interactable.text.setTexture(art.key);
+        interactable.text.setDisplaySize(art.width, art.height);
+      }
+      interactable.prompt?.destroy?.();
+      interactable.nameLabel?.destroy?.();
+      const at = scene._interactables?.indexOf(interactable);
+      if (at != null && at !== -1) scene._interactables.splice(at, 1);
+    } else {
+      // Spent: take the hotspot away so the prompt stops inviting a press.
+      scene.removeInteractable?.(interactable);
+    }
   } else {
     const count = (_failureCounts.get(puzzle.id) || 0) + 1;
     _failureCounts.set(puzzle.id, count);
