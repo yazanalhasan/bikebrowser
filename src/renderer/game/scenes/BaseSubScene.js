@@ -31,6 +31,7 @@ import { NARRATOR } from '../systems/questDialog.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { addArt } from '../../../game/assets/act1Art.js';
+import { challengeIdFor } from '../systems/challengeIds.js';
 
 export default class BaseSubScene extends LocalSceneBase {
   constructor(sceneKey) {
@@ -40,6 +41,31 @@ export default class BaseSubScene extends LocalSceneBase {
     this._originSpawn = 'default';
     this._challenges = [];
     this._collectedResources = [];
+  }
+
+  /**
+   * Rewrite a solved marker recorded under the old positional id.
+   *
+   * Old saves hold `challenge_CopperMineScene_0`. Called once per
+   * challenge as the scene builds, in registration order, so the mapping
+   * is the same one the old ids were written with.
+   *
+   * @private
+   */
+  _migrateLegacyChallengeId(legacyId, challengeId) {
+    if (legacyId === challengeId) return;
+    const state = this.registry.get('gameState');
+    const solved = state?.solvedChallenges;
+    if (!Array.isArray(solved) || !solved.includes(legacyId)) return;
+    const updated = {
+      ...state,
+      solvedChallenges: [
+        ...solved.filter((id) => id !== legacyId),
+        ...(solved.includes(challengeId) ? [] : [challengeId]),
+      ],
+    };
+    this.registry.set('gameState', updated);
+    saveGame(updated);
   }
 
   /** Override to return the location ID from worldMapData. */
@@ -69,7 +95,10 @@ export default class BaseSubScene extends LocalSceneBase {
     // Setup side quests for this location
     this._initSideQuests();
 
-    // Setup embedded challenges (replaces popup questions)
+    // Setup embedded challenges (replaces popup questions). The list is
+    // emptied first: it survived between visits, which is what made the
+    // ids drift.
+    this._resetChallenges();
     this.setupChallenges();
 
     // Show arrival message
@@ -133,6 +162,15 @@ export default class BaseSubScene extends LocalSceneBase {
   }
 
   // ── Side Quests ───────────────────────────────────────────────────────
+
+  /**
+   * Phaser reuses the scene object, so anything built in `create()` has to
+   * be cleared there too. This list is what the challenge ids used to be
+   * numbered from.
+   */
+  _resetChallenges() {
+    this._challenges = [];
+  }
 
   _initSideQuests() {
     // Nothing to do on init — quests are triggered by NPC/interactable interactions
@@ -302,7 +340,15 @@ export default class BaseSubScene extends LocalSceneBase {
    * @param {object} [config.reward] — { items, zuzubucks, reputation }
    */
   addChallenge(config) {
-    const challengeId = `challenge_${this.getSceneKey()}_${this._challenges.length}`;
+    // The id comes from the challenge itself, never from how many have
+    // been registered: `this._challenges.length` restarted at 0 only in
+    // the constructor, and Phaser reuses the scene object, so a second
+    // visit numbered the same three challenges _3.._5 and offered every
+    // one of them again.
+    const challengeId = challengeIdFor(this.getSceneKey(), config);
+    const legacyId = `challenge_${this.getSceneKey()}_${this._challenges.length}`;
+    this._migrateLegacyChallengeId(legacyId, challengeId);
+
     const state = this.registry.get('gameState');
     const solved = state.solvedChallenges?.includes(challengeId);
 
@@ -323,6 +369,21 @@ export default class BaseSubScene extends LocalSceneBase {
       label: config.label || 'Challenge',
       radius: 70,
       onInteract: () => {
+        // Solved earlier in this same visit: the ✓ marker is only drawn
+        // when the scene is built, so without this the question came back
+        // and asked a child something they had already worked out.
+        const live = this.registry.get('gameState');
+        if (live?.solvedChallenges?.includes(challengeId)) {
+          this.registry.set('dialogEvent', {
+            speaker: NARRATOR,
+            text: `You already worked this one out.
+
+${config.explanation}`,
+            choices: null,
+            step: null,
+          });
+          return;
+        }
         this.registry.set('dialogEvent', {
           // "Challenge" is not a person. The notebook is how the game
           // already talks to the child when nobody is speaking.
@@ -352,8 +413,20 @@ export default class BaseSubScene extends LocalSceneBase {
     const challenge = this._challenges.find(c => c.id === challengeId);
     if (!challenge) return;
 
-    const correct = challenge.choices[choiceIndex]?.correct;
     let state = this.registry.get('gameState');
+
+    // Already earned. Say so warmly and pay nothing: this is what let a
+    // child farm the same three mine challenges for 20 Zuzubucks a lap.
+    if (state.solvedChallenges?.includes(challengeId)) {
+      this.registry.set('mcpAlert', {
+        id: `challenge_done_${challengeId}`,
+        message: `You already worked this one out: ${challenge.explanation}`,
+        severity: 'info',
+      });
+      return;
+    }
+
+    const correct = challenge.choices[choiceIndex]?.correct;
 
     if (correct) {
       // Mark as solved
