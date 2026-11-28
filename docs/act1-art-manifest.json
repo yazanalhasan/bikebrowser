@@ -4864,6 +4864,52 @@
         "score": 4,
         "notes": "The same plant after the child waters it: green, upright, one yellow flower. Same seed as the wilted one so the two read as one plant."
       }
+    },
+    {
+      "slot": "utm_frame",
+      "target_repo_path": "public/assets/game/act1/props/utm_frame.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        184,
+        280
+      ],
+      "anchor": "ground",
+      "provenance": {
+        "tool": "authored pixel art (scripted draw), not a diffusion model",
+        "why": "Two ComfyUI passes with a tightened prompt both returned a drill press with a post up the middle, which is where the specimen hangs. A child watches this machine pull a sample apart, so its parts have to read at a glance; a regular mechanical shape is more reliably drawn than generated.",
+        "palette": "Act 1 steel greys with the 1px dark warm outline (42,26,20) and a brass lamp",
+        "script": "author_utm.py in the staging folder",
+        "staging": "20261127_2141_act1_complete/props",
+        "candidates_rejected": "props/utm_frame/utm_frame_candidates.png (8 generated, all with a central column)"
+      },
+      "qa": {
+        "score": 4,
+        "notes": "The machine that stands still: base, two threaded columns, crossbeam, motor housing with its lamp, and the anvil. The middle is open because the specimen hangs there."
+      }
+    },
+    {
+      "slot": "utm_crosshead",
+      "target_repo_path": "public/assets/game/act1/props/utm_crosshead.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        144,
+        38
+      ],
+      "anchor": "icon",
+      "provenance": {
+        "tool": "authored pixel art (scripted draw), not a diffusion model",
+        "why": "Two ComfyUI passes with a tightened prompt both returned a drill press with a post up the middle, which is where the specimen hangs. A child watches this machine pull a sample apart, so its parts have to read at a glance; a regular mechanical shape is more reliably drawn than generated.",
+        "palette": "Act 1 steel greys with the 1px dark warm outline (42,26,20) and a brass lamp",
+        "script": "author_utm.py in the staging folder",
+        "staging": "20261127_2141_act1_complete/props",
+        "candidates_rejected": "props/utm_frame/utm_frame_candidates.png (8 generated, all with a central column)"
+      },
+      "qa": {
+        "score": 4,
+        "notes": "The part that travels. Its own sprite so the pull still animates by moving it."
+      }
     }
   ]
 }

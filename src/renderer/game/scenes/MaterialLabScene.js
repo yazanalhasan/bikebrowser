@@ -25,6 +25,7 @@ import { createDensitySlate } from '../systems/lab/densitySlate.js';
 import { renderDensityChart } from '../systems/lab/densityChart.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { addArt, hasArt } from '../../../game/assets/act1Art.js';
 import {
   CALLOUT_BG_DEPTH, CALLOUT_TEXT_DEPTH, PANEL_BG_DEPTH, PANEL_TEXT_DEPTH,
 } from '../systems/labelLayout.js';
@@ -164,34 +165,57 @@ export default class MaterialLabScene extends LabRigBase {
   drawApparatus(ctx) {
     const L = ctx.layer;
     const rigX = this.layout.utm.x;
-    L.add(this.add.rectangle(rigX, this._rigBaseY() + RIG_BASE_H / 2, RIG_BASE_W, RIG_BASE_H, COL_BASE)
-      .setStrokeStyle(2, 0x111114).setDepth(2));
-    [-1, 1].forEach((s) => {
-      L.add(this.add.circle(rigX + s * 70, this._rigBaseY() + 8, 3, 0x9aa0aa).setDepth(3));
-      L.add(this.add.circle(rigX + s * 70, this._rigBaseY() + 22, 3, 0x9aa0aa).setDepth(3));
-      L.add(this.add.rectangle(
-        rigX + s * COLUMN_DX, this._rigBaseY() - COLUMN_H / 2, COLUMN_W, COLUMN_H, COL_COLUMN,
-      ).setStrokeStyle(1, 0x33363c).setDepth(1));
-    });
-    L.add(this.add.rectangle(rigX, this._crossbeamY(), CROSSBEAM_W, CROSSBEAM_H, COL_BEAM)
-      .setStrokeStyle(2, 0x2c2e34).setDepth(2));
-    L.add(this.add.rectangle(rigX, this._crossbeamY() - 14, 22, 18, 0x5a5d63).setDepth(2));
-    L.add(this.add.circle(rigX, this._crossbeamY() - 14, 4, 0xfacc15).setDepth(3));
+    // The machine is a painted sprite now (plan 2.5): a frame that
+    // stands still and a crosshead that travels. It was a dozen
+    // rectangles and circles, which is what the owner meant by a grey
+    // machine made of shapes.
+    //
+    // Two ComfyUI passes with a tightened prompt both came back as a
+    // drill press, with a post up the middle where the specimen hangs.
+    // So the two pieces are authored pixel art in the Act 1 palette,
+    // with the same 1px dark warm outline as the rest, rather than a
+    // generated image that cannot be trusted to leave the middle open.
+    const frameArt = hasArt(this, ART.utm_frame);
+    if (frameArt) {
+      const frame = addArt(this, ART.utm_frame, rigX, this._rigBaseY() + RIG_BASE_H, {
+        anchor: 'ground', depth: 1,
+      });
+      if (frame) L.add(frame);
+    } else {
+      // Dev fallback, so a missing texture still shows a machine.
+      L.add(this.add.rectangle(rigX, this._rigBaseY() + RIG_BASE_H / 2, RIG_BASE_W, RIG_BASE_H, COL_BASE)
+        .setStrokeStyle(2, 0x111114).setDepth(2));
+      [-1, 1].forEach((s) => {
+        L.add(this.add.rectangle(
+          rigX + s * COLUMN_DX, this._rigBaseY() - COLUMN_H / 2, COLUMN_W, COLUMN_H, COL_COLUMN,
+        ).setStrokeStyle(1, 0x33363c).setDepth(1));
+      });
+      L.add(this.add.rectangle(rigX, this._crossbeamY(), CROSSBEAM_W, CROSSBEAM_H, COL_BEAM)
+        .setStrokeStyle(2, 0x2c2e34).setDepth(2));
+    }
 
-    // Movable crosshead + grips — refs needed by animateProgress.
+    // The travelling crosshead. Everything downstream reads
+    // `_crosshead.y`, so it stays a positioned object either way.
     this._crossheadY = this._crossheadHomeY();
-    this._crosshead = this.add.rectangle(
+    const headArt = hasArt(this, ART.utm_crosshead)
+      ? addArt(this, ART.utm_crosshead, rigX, this._crossheadY, { anchor: 'icon', depth: 3 })
+      : null;
+    this._crosshead = headArt || this.add.rectangle(
       rigX, this._crossheadY, CROSSHEAD_W, CROSSHEAD_H, 0x8a8e96,
     ).setStrokeStyle(2, 0x33363c).setDepth(3);
     L.add(this._crosshead);
+
+    // The crosshead sprite draws its own grip, so the separate one is
+    // invisible when the art is there — but it stays, because the
+    // specimen's reach is measured from it.
     this._upperGrip = this.add.rectangle(
       rigX, this._crossheadY + CROSSHEAD_H / 2 + GRIP_H / 2,
       GRIP_W, GRIP_H, COL_GRIP,
-    ).setStrokeStyle(1, 0x111114).setDepth(3);
+    ).setStrokeStyle(1, 0x111114).setDepth(3).setVisible(!headArt);
     L.add(this._upperGrip);
     this._lowerGrip = this.add.rectangle(
       rigX, this._rigBaseY() - GRIP_H / 2, GRIP_W, GRIP_H, COL_GRIP,
-    ).setStrokeStyle(1, 0x111114).setDepth(3);
+    ).setStrokeStyle(1, 0x111114).setDepth(3).setVisible(!frameArt);
     L.add(this._lowerGrip);
   }
 

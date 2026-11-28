@@ -16,7 +16,7 @@
  *   'backdrop' full-scene image
  */
 
-export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-28","entries":208};
+export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-28","entries":210};
 
 /** slot/key -> sprite record. Keyed by texture key. */
 export const ACT1_ART = Object.freeze({
@@ -134,6 +134,8 @@ export const ACT1_ART = Object.freeze({
   "act1.props.towel_rack": Object.freeze({ key: "act1.props.towel_rack", path: "assets/game/act1/props/towel_rack.png", anchor: "ground", width: 62, height: 64, slot: "towel_rack" }),
   "act1.props.trail_lock_marker": Object.freeze({ key: "act1.props.trail_lock_marker", path: "assets/game/act1/props/trail_lock_marker.png", anchor: "ground", width: 23, height: 48, slot: "trail_lock" }),
   "act1.props.trail_marker": Object.freeze({ key: "act1.props.trail_marker", path: "assets/game/act1/props/trail_marker.png", anchor: "ground", width: 54, height: 64, slot: "trail_marker" }),
+  "act1.props.utm_crosshead": Object.freeze({ key: "act1.props.utm_crosshead", path: "assets/game/act1/props/utm_crosshead.png", anchor: "ground", width: 144, height: 38, slot: "utm_crosshead" }),
+  "act1.props.utm_frame": Object.freeze({ key: "act1.props.utm_frame", path: "assets/game/act1/props/utm_frame.png", anchor: "ground", width: 184, height: 280, slot: "utm_frame" }),
   "act1.props.workbench": Object.freeze({ key: "act1.props.workbench", path: "assets/game/act1/props/workbench.png", anchor: "ground", width: 128, height: 93, slot: "workbench" }),
   "act1.props.zuzu_bike": Object.freeze({ key: "act1.props.zuzu_bike", path: "assets/game/act1/props/zuzu_bike.png", anchor: "ground", width: 128, height: 112, slot: "zuzu_bike" }),
   "act1.ui.badge_check": Object.freeze({ key: "act1.ui.badge_check", path: "assets/game/act1/ui/badge_check.png", anchor: "icon", width: 32, height: 32, slot: "ui_check" }),
@@ -332,6 +334,8 @@ export const ART = Object.freeze({
   "ui_exclaim": "act1.ui.badge_exclaim",
   "ui_question": "act1.ui.badge_question",
   "umbrella": "act1.props.patio_umbrella",
+  "utm_crosshead": "act1.props.utm_crosshead",
+  "utm_frame": "act1.props.utm_frame",
   "warning_sign": "act1.props.monsoon_warning_sign",
   "water_bottle": "act1.items.water_bottle",
   "water_bowl": "act1.items.dog_water_bowl",
