@@ -81,7 +81,9 @@ function omitUnusedPublicAudio() {
   };
 }
 
-const HEAVY_PRELOAD = ['vendor-three', 'vendor-r3f', 'vendor-drei', 'vendor-rapier'];
+// `/play3d` and its three.js stack were removed on 2026-11-27 (plan
+// 0.11, owner decision), so there is no heavy 3D chunk left to preload.
+const HEAVY_PRELOAD = [];
 
 export default defineConfig({
   plugins: [react(), layoutSaverPlugin(), omitUnusedPublicAudio()],
@@ -102,10 +104,6 @@ export default defineConfig({
         manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('phaser')) return 'vendor-phaser';
-            if (id.includes('@react-three/rapier')) return 'vendor-rapier';
-            if (id.includes('@react-three/drei')) return 'vendor-drei';
-            if (id.includes('@react-three/fiber')) return 'vendor-r3f';
-            if (id.includes('three')) return 'vendor-three';
             if (id.includes('react-router')) return 'vendor-router';
           }
         },

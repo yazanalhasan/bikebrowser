@@ -21,7 +21,6 @@ const ShoppingPage = lazy(() => import('./pages/ShoppingPage'));
 const BuildPlannerPage = lazy(() => import('./pages/BuildPlannerPage'));
 const AllProjectNotesPage = lazy(() => import('./pages/AllProjectNotesPage'));
 const GamePage = lazy(() => import('./pages/GamePage'));
-const Game3DPage = lazy(() => import('./pages/Game3DPage'));
 const SpellingTrainerApp = lazy(() => import('./spellingTrainer/SpellingTrainerApp'));
 const LetterDetectivePage = lazy(() => import('./learning/letter-detective/LetterDetectivePage'));
 const MultiplicationTrainerApp = lazy(() => import('./multiplication/MultiplicationTrainerApp'));
@@ -81,7 +80,6 @@ function AppContent() {
           <Route path="/shop" element={<ShoppingPage />} />
           <Route path="/safe-search" element={<SafeSearchPage />} />
           <Route path="/play" element={<GamePage />} />
-          <Route path="/play3d" element={<Game3DPage />} />
           <Route path="/spelling-trainer" element={<SpellingTrainerApp />} />
           <Route path="/learn/letter-detective" element={<LetterDetectivePage />} />
           <Route path="/game/letter-detective" element={<Navigate to="/learn/letter-detective" replace />} />

@@ -30,7 +30,6 @@ export const UX_RULES = {
 // AppLayout (or equivalent) line that bypasses the chrome.
 export const ROUTE_EXEMPTIONS = {
   '/play': ['MUST_HAVE_HOME_BUTTON', 'MUST_HAVE_HEADER', 'MUST_HAVE_NAV_CONTAINER', 'MUST_HAVE_MAIN_CONTENT', 'NO_EMPTY_SCREEN'],
-  '/play3d': ['MUST_HAVE_HOME_BUTTON', 'MUST_HAVE_HEADER', 'MUST_HAVE_NAV_CONTAINER', 'MUST_HAVE_MAIN_CONTENT', 'NO_EMPTY_SCREEN'],
 };
 
 // ============================================================================
