@@ -77,12 +77,22 @@ export default class DogParkScene extends LocalSceneBase {
     // Right fence
     this.addVisibleWall(this.layout.fence_right.x, this.layout.fence_right.y, this.layout.fence_right.w, this.layout.fence_right.h, fenceColor, 0x5d4037);
 
-    // Fence posts (decorative)
+    // Fence posts (decorative). A painted post-and-rail panel where the
+    // art is there, a brown rectangle where it is not (plan 2.7 p8).
     const fp = this.layout.fence_posts;
+    const panel = hasArt(this, ART.fence_panel);
     for (let x = fp.x_start; x < this.getWorldSize().width; x += fp.x_step) {
-      this.add.rectangle(x, fp.y_top, fp.w, fp.h, 0x5d4037).setDepth(1);
+      if (panel) {
+        this.addProp(ART.fence_panel, x, fp.y_top + fp.h / 2, { depth: 1 });
+      } else {
+        this.add.rectangle(x, fp.y_top, fp.w, fp.h, 0x5d4037).setDepth(1);
+      }
       if (x < fp.gap_min_x || x > fp.gap_max_x) {
-        this.add.rectangle(x, fp.y_bottom, fp.w, fp.h, 0x5d4037).setDepth(1);
+        if (panel) {
+          this.addProp(ART.fence_panel, x, fp.y_bottom + fp.h / 2, { depth: 1 });
+        } else {
+          this.add.rectangle(x, fp.y_bottom, fp.w, fp.h, 0x5d4037).setDepth(1);
+        }
       }
     }
 
@@ -93,8 +103,16 @@ export default class DogParkScene extends LocalSceneBase {
     }).setOrigin(0.5).setDepth(5);
 
     // === BENCHES ===
+    // A painted bench instead of a brown rectangle (plan 2.7 p8). The
+    // collision box keeps the layout's size whichever is drawn, so
+    // nothing about where a child can walk changes.
     for (const { x: bx, y: by } of this.layout.benches) {
-      this.add.rectangle(bx, by, this.layout.bench_size.w, this.layout.bench_size.h, 0x795548).setStrokeStyle(2, 0x5d4037).setDepth(1);
+      if (hasArt(this, ART.park_bench)) {
+        this.addProp(ART.park_bench, bx, by + this.layout.bench_size.h / 2, { depth: 1 });
+      } else {
+        this.add.rectangle(bx, by, this.layout.bench_size.w, this.layout.bench_size.h, 0x795548)
+          .setStrokeStyle(2, 0x5d4037).setDepth(1);
+      }
       this.addWall(bx, by, this.layout.bench_size.w, this.layout.bench_size.h);
     }
 

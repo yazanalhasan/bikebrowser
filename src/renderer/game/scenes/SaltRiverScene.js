@@ -13,6 +13,7 @@ import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
 import { WORLD_SIGN_DEPTH } from '../systems/labelLayout.js';
 import { addSceneTitle } from '../ui/sceneTitle.js';
+import { hasArt } from '../../../game/assets/act1Art.js';
 
 const SCENE_KEY = 'SaltRiverScene';
 
@@ -78,11 +79,18 @@ export default class SaltRiverScene extends BaseSubScene {
     }
 
     // ── Rocks in river ──
-    for (const r of this.layout.river_rocks) {
-      const rock = this.add.circle(r.x, r.y, 15, 0x777777).setDepth(3);
-      rock.setStrokeStyle(2, 0x555555);
+    // Three painted stones, cycled, so a crossing does not look stamped
+    // out of one shape (plan 2.7 p7). They were grey circles.
+    const stones = [ART.stepping_stone_1, ART.stepping_stone_2, ART.stepping_stone_3]
+      .filter((s) => hasArt(this, s));
+    this.layout.river_rocks.forEach((r, i) => {
+      if (stones.length) {
+        this.addProp(stones[i % stones.length], r.x, r.y + 11, { depth: 3 });
+      } else {
+        this.add.circle(r.x, r.y, 15, 0x777777).setStrokeStyle(2, 0x555555).setDepth(3);
+      }
       this.addWall(r.x, r.y, 30, 30);
-    }
+    });
 
     // ── Trees (north bank) ──
     for (const t of this.layout.trees) {

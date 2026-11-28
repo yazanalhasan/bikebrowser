@@ -16,7 +16,7 @@
  *   'backdrop' full-scene image
  */
 
-export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-28","entries":218};
+export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-28","entries":224};
 
 /** slot/key -> sprite record. Keyed by texture key. */
 export const ACT1_ART = Object.freeze({
@@ -110,6 +110,8 @@ export const ACT1_ART = Object.freeze({
   "act1.props.diving_board": Object.freeze({ key: "act1.props.diving_board", path: "assets/game/act1/props/diving_board.png", anchor: "ground", width: 96, height: 78, slot: "diving_board" }),
   "act1.props.driftwood": Object.freeze({ key: "act1.props.driftwood", path: "assets/game/act1/props/driftwood.png", anchor: "ground", width: 48, height: 36, slot: "river_debris" }),
   "act1.props.drinking_fountain": Object.freeze({ key: "act1.props.drinking_fountain", path: "assets/game/act1/props/drinking_fountain.png", anchor: "ground", width: 36, height: 64, slot: "fountain" }),
+  "act1.props.fence_broken": Object.freeze({ key: "act1.props.fence_broken", path: "assets/game/act1/props/fence_broken.png", anchor: "ground", width: 48, height: 64, slot: "fence_broken" }),
+  "act1.props.fence_panel": Object.freeze({ key: "act1.props.fence_panel", path: "assets/game/act1/props/fence_panel.png", anchor: "ground", width: 64, height: 34, slot: "fence_panel" }),
   "act1.props.filing_cabinet": Object.freeze({ key: "act1.props.filing_cabinet", path: "assets/game/act1/props/filing_cabinet.png", anchor: "ground", width: 44, height: 64, slot: "cabinet" }),
   "act1.props.fire_hydrant": Object.freeze({ key: "act1.props.fire_hydrant", path: "assets/game/act1/props/fire_hydrant.png", anchor: "ground", width: 21, height: 38, slot: "fire_hydrant" }),
   "act1.props.fishing_rod": Object.freeze({ key: "act1.props.fishing_rod", path: "assets/game/act1/props/fishing_rod.png", anchor: "ground", width: 53, height: 64, slot: "fishing_spot" }),
@@ -124,6 +126,7 @@ export const ACT1_ART = Object.freeze({
   "act1.props.mountain_spring": Object.freeze({ key: "act1.props.mountain_spring", path: "assets/game/act1/props/mountain_spring.png", anchor: "ground", width: 64, height: 59, slot: "mountain_spring" }),
   "act1.props.multi_tool": Object.freeze({ key: "act1.props.multi_tool", path: "assets/game/act1/props/multi_tool.png", anchor: "ground", width: 48, height: 46, slot: "wrench" }),
   "act1.props.old_crate": Object.freeze({ key: "act1.props.old_crate", path: "assets/game/act1/props/old_crate.png", anchor: "ground", width: 64, height: 57, slot: "old_crate" }),
+  "act1.props.park_bench": Object.freeze({ key: "act1.props.park_bench", path: "assets/game/act1/props/park_bench.png", anchor: "ground", width: 56, height: 33, slot: "park_bench" }),
   "act1.props.parts_bin": Object.freeze({ key: "act1.props.parts_bin", path: "assets/game/act1/props/parts_bin.png", anchor: "ground", width: 48, height: 46, slot: "bolts" }),
   "act1.props.patio_umbrella": Object.freeze({ key: "act1.props.patio_umbrella", path: "assets/game/act1/props/patio_umbrella.png", anchor: "ground", width: 89, height: 96, slot: "umbrella" }),
   "act1.props.pegboard": Object.freeze({ key: "act1.props.pegboard", path: "assets/game/act1/props/pegboard.png", anchor: "ground", width: 96, height: 69, slot: "tool_wall" }),
@@ -132,6 +135,9 @@ export const ACT1_ART = Object.freeze({
   "act1.props.rock_boulder": Object.freeze({ key: "act1.props.rock_boulder", path: "assets/game/act1/props/rock_boulder.png", anchor: "ground", width: 64, height: 50, slot: "rock_boulder" }),
   "act1.props.rowboat": Object.freeze({ key: "act1.props.rowboat", path: "assets/game/act1/props/rowboat.png", anchor: "ground", width: 96, height: 76, slot: "rowboat" }),
   "act1.props.scavenge_spot": Object.freeze({ key: "act1.props.scavenge_spot", path: "assets/game/act1/props/scavenge_spot.png", anchor: "ground", width: 49, height: 64, slot: "scavenge_spot" }),
+  "act1.props.stepping_stone_1": Object.freeze({ key: "act1.props.stepping_stone_1", path: "assets/game/act1/props/stepping_stone_1.png", anchor: "ground", width: 34, height: 22, slot: "stepping_stone_1" }),
+  "act1.props.stepping_stone_2": Object.freeze({ key: "act1.props.stepping_stone_2", path: "assets/game/act1/props/stepping_stone_2.png", anchor: "ground", width: 30, height: 20, slot: "stepping_stone_2" }),
+  "act1.props.stepping_stone_3": Object.freeze({ key: "act1.props.stepping_stone_3", path: "assets/game/act1/props/stepping_stone_3.png", anchor: "ground", width: 36, height: 22, slot: "stepping_stone_3" }),
   "act1.props.street_sign_blank": Object.freeze({ key: "act1.props.street_sign_blank", path: "assets/game/act1/props/street_sign_blank.png", anchor: "ground", width: 96, height: 86, slot: "street_sign_blank" }),
   "act1.props.string_lights": Object.freeze({ key: "act1.props.string_lights", path: "assets/game/act1/props/string_lights.png", anchor: "ground", width: 128, height: 26, slot: "garage_lights" }),
   "act1.props.telescope": Object.freeze({ key: "act1.props.telescope", path: "assets/game/act1/props/telescope.png", anchor: "ground", width: 48, height: 64, slot: "telescope" }),
@@ -265,6 +271,8 @@ export const ART = Object.freeze({
   "ecology_terrain_rock": "ecology.terrain.rock",
   "ecology_terrain_sand": "ecology.terrain.sand",
   "ecology_yucca": "ecology.plant.yucca",
+  "fence_broken": "act1.props.fence_broken",
+  "fence_panel": "act1.props.fence_panel",
   "fire_hydrant": "act1.props.fire_hydrant",
   "fish": "act1.animals.fish",
   "fishing_spot": "act1.props.fishing_rod",
@@ -307,6 +315,7 @@ export const ART = Object.freeze({
   "mountain_spring": "act1.props.mountain_spring",
   "notebook": "act1.items.notebook",
   "old_crate": "act1.props.old_crate",
+  "park_bench": "act1.props.park_bench",
   "pencil": "act1.items.pencil",
   "pine_tree": "act1.plants.ponderosa_pine",
   "pool_slide": "act1.props.pool_slide",
@@ -333,6 +342,9 @@ export const ART = Object.freeze({
   "sparkle": "act1.fx.sparkle",
   "sportsfields_court": "act1.grounds.sportsfields_court",
   "sportsfields_grass": "act1.grounds.sportsfields_grass",
+  "stepping_stone_1": "act1.props.stepping_stone_1",
+  "stepping_stone_2": "act1.props.stepping_stone_2",
+  "stepping_stone_3": "act1.props.stepping_stone_3",
   "street_sign_blank": "act1.props.street_sign_blank",
   "streetblock_road": "act1.grounds.streetblock_road",
   "streetblock_sidewalk": "act1.grounds.streetblock_sidewalk",

@@ -5116,6 +5116,144 @@
         "score": 4,
         "notes": "A blank plate on a pole. No writing in the image: the game draws the street name over it."
       }
+    },
+    {
+      "slot": "park_bench",
+      "target_repo_path": "public/assets/game/act1/props/park_bench.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        56,
+        33
+      ],
+      "anchor": "ground",
+      "provenance": {
+        "tool": "ComfyUI 0.22.0 on the i9, GPU0 — local, open weights only",
+        "checkpoint": "sd_xl_base_1.0 + sdxl_vae",
+        "loras": "bbact1style_v2 @1.0, pixel-art-xl @0.9",
+        "post": "background key by flood fill from the edges, trim, nearest-neighbour to size, quantise to the 152-colour hue-balanced Act 1 palette",
+        "background_note": "Generated on GREY. The style guide says raw art is made on magenta and keyed, which is right for a human painting it — but asking a diffusion model for a magenta background bleeds magenta INTO the subject: three of four benches came back bright pink, and the only seed that came back the right colour was the one that ignored the instruction and used grey.",
+        "palette_note": "The hue-balanced palette also had to learn to ignore chroma-key residue. Ranking by frequency hid it; balancing by hue PROMOTED it, because key magenta was the only thing in that hue bucket — and a maroon bench then quantised to pink.",
+        "seed": 1337,
+        "staging": "20261127_2141_act1_complete/props/park_bench"
+      },
+      "qa": {
+        "score": 4,
+        "notes": "A timber park bench on dark metal legs. It was three flat rectangles."
+      }
+    },
+    {
+      "slot": "fence_panel",
+      "target_repo_path": "public/assets/game/act1/props/fence_panel.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        64,
+        34
+      ],
+      "anchor": "ground",
+      "provenance": {
+        "tool": "ComfyUI 0.22.0 on the i9, GPU0 — local, open weights only",
+        "checkpoint": "sd_xl_base_1.0 + sdxl_vae",
+        "loras": "bbact1style_v2 @1.0, pixel-art-xl @0.9",
+        "post": "background key by flood fill from the edges, trim, nearest-neighbour to size, quantise to the 152-colour hue-balanced Act 1 palette",
+        "background_note": "Generated on GREY. The style guide says raw art is made on magenta and keyed, which is right for a human painting it — but asking a diffusion model for a magenta background bleeds magenta INTO the subject: three of four benches came back bright pink, and the only seed that came back the right colour was the one that ignored the instruction and used grey.",
+        "palette_note": "The hue-balanced palette also had to learn to ignore chroma-key residue. Ranking by frequency hid it; balancing by hue PROMOTED it, because key magenta was the only thing in that hue bucket — and a maroon bench then quantised to pink.",
+        "seed": 1337,
+        "staging": "20261127_2141_act1_complete/props/fence_panel"
+      },
+      "qa": {
+        "score": 4,
+        "notes": "One post-and-rail fence section. The park fence was a row of thin rectangles."
+      }
+    },
+    {
+      "slot": "fence_broken",
+      "target_repo_path": "public/assets/game/act1/props/fence_broken.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        48,
+        64
+      ],
+      "anchor": "ground",
+      "provenance": {
+        "tool": "ComfyUI 0.22.0 on the i9, GPU0 — local, open weights only",
+        "checkpoint": "sd_xl_base_1.0 + sdxl_vae",
+        "loras": "bbact1style_v2 @1.0, pixel-art-xl @0.9",
+        "post": "background key by flood fill from the edges, trim, nearest-neighbour to size, quantise to the 152-colour hue-balanced Act 1 palette",
+        "background_note": "Generated on GREY. The style guide says raw art is made on magenta and keyed, which is right for a human painting it — but asking a diffusion model for a magenta background bleeds magenta INTO the subject: three of four benches came back bright pink, and the only seed that came back the right colour was the one that ignored the instruction and used grey.",
+        "palette_note": "The hue-balanced palette also had to learn to ignore chroma-key residue. Ranking by frequency hid it; balancing by hue PROMOTED it, because key magenta was the only thing in that hue bucket — and a maroon bench then quantised to pink.",
+        "seed": 4242,
+        "staging": "20261127_2141_act1_complete/props/fence_broken"
+      },
+      "qa": {
+        "score": 4,
+        "notes": "The same fence with a rail snapped and hanging. The Dog Park puzzle used a hammer emoji for this."
+      }
+    },
+    {
+      "slot": "stepping_stone_1",
+      "target_repo_path": "public/assets/game/act1/props/stepping_stone_1.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        34,
+        22
+      ],
+      "anchor": "ground",
+      "provenance": {
+        "tool": "authored pixel art (scripted draw), not a diffusion model",
+        "why": "A grey stone on a flat background has no edge for the keyer to find: three of four generated candidates were erased almost entirely, and the survivors were murky. An ellipse with a lit top, a damp waterline and some speckle is a shape worth drawing.",
+        "palette": "Act 1 stone greys with the 1px dark warm outline",
+        "date": "2026-11-28"
+      },
+      "qa": {
+        "score": 4,
+        "notes": "A wet river stone. Three of them, so a crossing does not look stamped."
+      }
+    },
+    {
+      "slot": "stepping_stone_2",
+      "target_repo_path": "public/assets/game/act1/props/stepping_stone_2.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        30,
+        20
+      ],
+      "anchor": "ground",
+      "provenance": {
+        "tool": "authored pixel art (scripted draw), not a diffusion model",
+        "why": "A grey stone on a flat background has no edge for the keyer to find: three of four generated candidates were erased almost entirely, and the survivors were murky. An ellipse with a lit top, a damp waterline and some speckle is a shape worth drawing.",
+        "palette": "Act 1 stone greys with the 1px dark warm outline",
+        "date": "2026-11-28"
+      },
+      "qa": {
+        "score": 4,
+        "notes": "A wet river stone, the small one."
+      }
+    },
+    {
+      "slot": "stepping_stone_3",
+      "target_repo_path": "public/assets/game/act1/props/stepping_stone_3.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        36,
+        22
+      ],
+      "anchor": "ground",
+      "provenance": {
+        "tool": "authored pixel art (scripted draw), not a diffusion model",
+        "why": "A grey stone on a flat background has no edge for the keyer to find: three of four generated candidates were erased almost entirely, and the survivors were murky. An ellipse with a lit top, a damp waterline and some speckle is a shape worth drawing.",
+        "palette": "Act 1 stone greys with the 1px dark warm outline",
+        "date": "2026-11-28"
+      },
+      "qa": {
+        "score": 4,
+        "notes": "A wet river stone, the wide one."
+      }
     }
   ]
 }
