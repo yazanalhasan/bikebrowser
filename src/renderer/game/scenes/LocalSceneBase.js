@@ -51,6 +51,9 @@ import {
   PROP_CAPTION_OFFSET, PROP_PROMPT_OFFSET, PROP_CAPTION_DEPTH, PROP_PROMPT_DEPTH,
   NAME_LABEL_LEAD_PX, firstLabelClash,
 } from '../systems/labelLayout.js';
+import {
+  registerZuzuAnimations, registerNPCAnimations,
+} from '../../../game/characters/registerCharacterAnimations.js';
 
 // Default world size for local scenes (viewport-scale, not overworld-scale)
 const DEFAULT_WORLD = { width: 800, height: 600 };
@@ -290,6 +293,13 @@ export default class LocalSceneBase extends Phaser.Scene {
     this._npcs = {};
     this._exits = [];
     this._interactables = [];
+
+    // The walk cycles live in the atlas and `playWalk` asks for them, but
+    // nothing ever registered them, so `anims.exists` was always false and
+    // Zuzu slid around on one idle frame. Registering is idempotent and
+    // skips quietly when a frame is missing.
+    registerZuzuAnimations(this);
+    registerNPCAnimations(this);
 
     const state = this.registry.get('gameState');
     const sceneKey = this.getSceneKey();

@@ -50,7 +50,7 @@
     },
     "zuzu_idle_left": {
       "frame": {
-        "x": 192,
+        "x": 288,
         "y": 0,
         "w": 96,
         "h": 112
@@ -74,7 +74,7 @@
     },
     "zuzu_idle_right": {
       "frame": {
-        "x": 288,
+        "x": 192,
         "y": 0,
         "w": 96,
         "h": 112
@@ -562,6 +562,7 @@
       "w": 576,
       "h": 448
     },
-    "scale": "1"
+    "scale": "1",
+    "zuzu_idle_side_note": "Swapped 2026-11-27 (plan 0.10): the cell at x=288 faces left and the cell at x=192 faces right, measured from the art, while both walk cycles face the way their names say. Zuzu stopped facing backwards after every sideways walk."
   }
 }
