@@ -37,7 +37,11 @@ export default defineConfig({
     {
       name: 'prod',
       testDir: './tests/e2e-prod',
-      use: { ...devices['Desktop Chrome'] },
+      // hasTouch, because the 0.17 suite drives phones with
+      // page.touchscreen and nothing else. A mouse click reaches
+      // controls a finger cannot, which is how the lab soft-lock
+      // (review MUST 1) passed every test I had.
+      use: { ...devices['Desktop Chrome'], hasTouch: true },
     },
     {
       // 0.15's acceptance, re-run against the built bundle.

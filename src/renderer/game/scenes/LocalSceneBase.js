@@ -55,6 +55,7 @@ import {
   registerZuzuAnimations, registerNPCAnimations,
 } from '../../../game/characters/registerCharacterAnimations.js';
 import { dodgeHud } from '../systems/hudDodge.js';
+import { MIN_TAP_PX } from '../systems/phoneReadable.js';
 
 // Default world size for local scenes (viewport-scale, not overworld-scale)
 const DEFAULT_WORLD = { width: 800, height: 600 };
@@ -566,6 +567,7 @@ export default class LocalSceneBase extends Phaser.Scene {
 
     // Label. In the sign band: at depth 2 the child covered the way out
     // by standing on it, which is exactly where they stand (plan 0.12).
+    let labelText = null;
     if (label) {
       // Smaller on a phone. At 14px "🗺️ Leave Fields ⬇" is 122px wide and
       // the clear gap along the bottom of a 390px screen — between the
@@ -573,7 +575,7 @@ export default class LocalSceneBase extends Phaser.Scene {
       // placed anywhere and sat under the chat button whatever the dodge
       // tried (plan 0.12).
       const narrow = (this.cameras?.main?.width ?? 1280) < 600;
-      this.add.text(x, y, label, {
+      labelText = this.add.text(x, y, label, {
         fontSize: narrow ? '12px' : '14px',
         fontFamily: 'sans-serif', color: '#92400e',
         fontStyle: 'bold', stroke: '#fef3c7', strokeThickness: 3,
@@ -582,6 +584,32 @@ export default class LocalSceneBase extends Phaser.Scene {
 
     const entry = { zone, targetScene, targetSpawn, sfx };
     this._exits.push(entry);
+
+    // Tappable, not only walk-into. A child on a phone reaches for the
+    // thing that says "Back to Garage" before they reach for the d-pad,
+    // and in a lab rig there IS no d-pad — hiding it (plan 0.5) left
+    // the rigs with no touch-only way out at all.
+    //
+    // The hit area is never smaller than a finger: these zones are as
+    // little as 28px tall, and the camera can be zoomed below 1.
+    const takeExit = () => {
+      if (this._transitioning) return;
+      transitionTo(this, entry.targetScene, entry.targetSpawn,
+        { sfx: entry.sfx || 'door_interact' });
+    };
+    const zoom = this.cameras?.main?.zoom || 1;
+    const needed = MIN_TAP_PX / zoom;
+    const hitW = Math.max(width, needed);
+    const hitH = Math.max(height, needed);
+    zone.setInteractive(
+      new Phaser.Geom.Rectangle((width - hitW) / 2, (height - hitH) / 2, hitW, hitH),
+      Phaser.Geom.Rectangle.Contains,
+    );
+    zone.on('pointerdown', takeExit);
+    if (labelText) {
+      labelText.setInteractive({ useHandCursor: true });
+      labelText.on('pointerdown', takeExit);
+    }
 
     // Wire the overlap immediately if the player has already been created.
     // Exits added in createWorld() run before the player exists and get wired

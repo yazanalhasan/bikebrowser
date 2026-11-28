@@ -16,7 +16,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Phaser from 'phaser';
-import { createGameConfig } from './config.js';
+import { attachLayoutEditor, createGameConfig } from './config.js';
 import { loadGame, saveGame, resetGame, hasSave } from './systems/saveSystem.js';
 import { getQuestSummary, getInventoryDisplay, getJournalEntries } from './ui/gameHud.js';
 import useGameAudio from './audio/useGameAudio.js';
@@ -51,6 +51,7 @@ import { triggerQuestRevealsForState } from './systems/discoveryBridge.js';
 import { LANGUAGE_CARDS } from './systems/languageLayer.js';
 import { approvedTextureKeys } from '../../game/assets/preloadGameAssets.js';
 import { ECOLOGY_ASSET_PATHS } from './systems/ecology/ecologyAssetManifest.js';
+import { transitionTo } from './systems/sceneTransition.js';
 
 const GAMEPLAY_REPORTS_KEY = 'bikebrowser_gameplay_reports';
 const GAMEPLAY_REPORTS_ENABLED = gameplayReportsEnabled(import.meta.env);
@@ -336,6 +337,7 @@ export default function GameContainer() {
   // lab rigs. The quest card sat across the Force / Strain / Stress
   // readout, which is the one thing the child is meant to be watching.
   const [sceneOwnsHud, setSceneOwnsHud] = useState(false);
+  const [leaveSceneLabel, setLeaveSceneLabel] = useState('Back');
   // True while Zuzu is standing at something he can use. The quest column
   // fades out of the way: in the garage it covered the workbench's own
   // caption and prompt, and the doors to both labs. Same rule the game
@@ -588,11 +590,28 @@ export default function GameContainer() {
     //   __phaserGame.scene.add('WorldMapScene', WorldMapScene, true);
     // (the second arg is the imported class — refresh the page first if
     // your console doesn't already have it in scope).
+    // Dev layout editor, in a dev build only (see attachLayoutEditor).
+    attachLayoutEditor(game).catch(() => {});
+
     if (E2E_HANDLE_ENABLED) {
       window.__phaserGame = game;
       // The approved texture list, for the no-legacy-art audit. Same
       // flag, same reason: that spec has to be able to run against a
       // built bundle (MUST 0.15 + 0.16).
+      // Scene jump, for the 0.17 lifecycle suite. It goes through the
+      // game's own transitionTo — the same spawn resolution and unlock
+      // check a child's walk-in exit uses — so a test cannot reach a
+      // scene by a route the game would refuse. A lifecycle spec has to
+      // start somewhere other than the garage without playing the whole
+      // act first; this is that, and nothing more.
+      window.__bbGoto = (key, spawn = 'default') => {
+        const scene = game.scene.getScenes(true)
+          .find((s) => s.scene?.isActive?.() && s.cameras?.main);
+        if (!scene) return false;
+        scene._transitioning = false;
+        transitionTo(scene, key, spawn, { fadeMs: 0 });
+        return true;
+      };
       window.__approvedTextureKeys = [
         ...approvedTextureKeys(),
         ...Object.keys(ECOLOGY_ASSET_PATHS || {}),
@@ -883,6 +902,13 @@ export default function GameContainer() {
 
       const ownsHud = Boolean(registry.get('sceneOwnsHud'));
       setSceneOwnsHud((prev) => (prev === ownsHud ? prev : ownsHud));
+
+      // What the leave control should say. The scene names it, so the
+      // HUD never has to guess where "back" goes.
+      const leaveLabel = gameRef.current?.scene?.getScenes(true)
+        ?.find((s) => typeof s.leaveScene === 'function')?.leaveSceneLabel
+        || 'Back';
+      setLeaveSceneLabel((prev) => (prev === leaveLabel ? prev : leaveLabel));
 
       const nearProp = Boolean(registry.get('propPromptVisible'));
       setAtProp((prev) => (prev === nearProp ? prev : nearProp));
@@ -1178,6 +1204,20 @@ export default function GameContainer() {
       if (s.player) s.player.joystick = { x, y };
     });
   }, []);
+
+  // A scene that owns the HUD has no d-pad, so it must say how to leave
+  // it. Without this, the Materials Lab and the Thermal Rig could only be
+  // left by walking into an exit zone with controls that were not on the
+  // screen — a child on a phone was stuck in the lab (review MUST 1).
+  const leaveOwnedScene = useCallback(() => {
+    const game = gameRef.current;
+    if (!game) return false;
+    const scene = game.scene.getScenes(true)
+      .find((s) => typeof s.leaveScene === 'function');
+    if (!scene) return false;
+    audio?.playSfx('ui_tap');
+    return scene.leaveScene() === true;
+  }, [audio]);
 
   const triggerWorldAction = useCallback(() => {
     const now = Date.now();
@@ -2137,6 +2177,31 @@ export default function GameContainer() {
           style={{ marginBottom: 'env(safe-area-inset-bottom)', marginRight: 'env(safe-area-inset-right)' }}
         >
           💬
+        </button>
+      )}
+      {/* ---- Leave control for a scene that owns the HUD ----
+          The lab rigs hide the d-pad and the action button, which left a
+          walk-in exit zone as the only way out: on a phone that is no way
+          out at all (review MUST 1). This sits where the d-pad would be,
+          is 44px+ at every size, and is DOM, so no chart, callout or
+          takeaway card can cover it. */}
+      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && !overlayOpen
+        && sceneOwnsHud && (
+        <button
+          type="button"
+          data-testid="leave-scene"
+          aria-label={`Leave: ${leaveSceneLabel}`}
+          onPointerDown={() => {
+            leaveOwnedScene();
+          }}
+          className="absolute bottom-6 left-3 z-20 flex min-h-[44px] items-center gap-1.5
+                     rounded-xl border-2 border-amber-500 bg-amber-400/95 px-3 py-2
+                     text-sm font-bold text-white shadow-lg transition-all duration-75
+                     active:scale-95 hover:bg-amber-300 cursor-pointer"
+          style={{ marginBottom: 'env(safe-area-inset-bottom)', marginLeft: 'env(safe-area-inset-left)' }}
+        >
+          <span aria-hidden="true">⬅</span>
+          {leaveSceneLabel}
         </button>
       )}
       {/* First-room hint. Garage only: "the door at the bottom goes outside"

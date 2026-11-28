@@ -75,7 +75,27 @@ test('SCENE_LIST exists and still has every scene', () => {
   assert.ok(list.length >= 19, `only ${list.length} scenes parsed out of SCENE_LIST`);
   // The boot-order contract: the garage is first, the dev overlay last.
   assert.equal(list[0].key, 'ZuzuGarageScene');
-  assert.equal(list[list.length - 1].key, 'LayoutEditorOverlayScene');
+  // The dev layout editor must NOT be in SCENE_LIST. It registered with
+  // active:true, so every entry in this list runs in a shipped build —
+  // and F2 opened an editor that drags scene furniture around and
+  // writes layout JSON. It is now attached after boot, from a dynamic
+  // import that a production build never reaches, so the module is not
+  // in the bundle either.
+  assert.ok(
+    !list.some((e) => e.key === 'LayoutEditorOverlayScene'),
+    'the dev layout editor must not be a SCENE_LIST entry — it would run '
+    + 'in a shipped build; attach it with attachLayoutEditor instead',
+  );
+  assert.ok(
+    !/^import LayoutEditorOverlayScene from/m.test(config),
+    'the layout editor must be imported dynamically, or the class stays '
+    + 'in the shipped bundle whatever the scene list says',
+  );
+  assert.match(
+    config,
+    /const LAYOUT_EDITOR_ENABLED\s*=\s*import\.meta\.env\.DEV/,
+    'the editor must be behind a build flag that is off in production',
+  );
 });
 
 test('every key in the list is the key that scene registers', () => {

@@ -22,6 +22,7 @@
  */
 
 import LocalSceneBase from './LocalSceneBase.js';
+import { transitionTo } from '../systems/sceneTransition.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { addArt, addGround } from '../../../game/assets/act1Art.js';
@@ -433,12 +434,29 @@ export default class LabRigBase extends LocalSceneBase {
     this._renderChart(null);
 
     // ── Exit back to garage ───────────────────────────────────────────
+    // Named, so the HUD can offer the same way out without knowing
+    // anything about this rig's layout (see leaveOwnedScene in
+    // GameContainer). A rig hides the d-pad, so the walk-in zone below
+    // is not by itself a way out for a child on a phone.
+    this.leaveScene = () => {
+      if (this._transitioning) return false;
+      transitionTo(this, 'ZuzuGarageScene', this.getExitSpawnName(),
+        { sfx: 'door_interact' });
+      return true;
+    };
+    this.leaveSceneLabel = 'Back to Garage';
+
     this.addExit({
       x: world.width / 2, y: world.height - 18,
       width: 200, height: 28,
       targetScene: 'ZuzuGarageScene',
       targetSpawn: this.getExitSpawnName(),
-      label: '⬅ Back to Garage',
+      // No world label. The way out of a rig is the HUD control above,
+      // which is on the screen at every size and cannot be covered by a
+      // chart or a takeaway card; a second "Back to Garage" painted into
+      // the world sat under the takeaway at 375x667 (review MUST 3) and
+      // read as a different exit. The zone stays: walking into it still
+      // works where there is a keyboard.
     });
 
     // ── First-entry hint (once per save, per rig) ─────────────────────

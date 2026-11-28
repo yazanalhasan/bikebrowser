@@ -38,7 +38,6 @@ import SaltRiverScene from './scenes/SaltRiverScene.js';
 import DryWashScene from './scenes/DryWashScene.js';
 
 // Dev-only overlay (F2 layout editor). Always registered; activates on F2.
-import LayoutEditorOverlayScene from './scenes/LayoutEditorOverlayScene.js';
 
 /**
  * All scenes in boot order. The first scene in the array boots first.
@@ -61,6 +60,9 @@ import LayoutEditorOverlayScene from './scenes/LayoutEditorOverlayScene.js';
  * A string literal survives minification. `tests/act1-scene-keys.test.mjs`
  * checks each one against the key the scene actually registers.
  */
+const LAYOUT_EDITOR_ENABLED =
+  import.meta.env.DEV || import.meta.env.VITE_LAYOUT_EDITOR === 'true';
+
 export const SCENE_LIST = [
   { key: 'ZuzuGarageScene', scene: ZuzuGarageScene },
   { key: 'MaterialLabScene', scene: MaterialLabScene },
@@ -82,9 +84,40 @@ export const SCENE_LIST = [
   { key: 'CopperMineScene', scene: CopperMineScene },
   { key: 'SaltRiverScene', scene: SaltRiverScene },
   { key: 'DryWashScene', scene: DryWashScene },
-  // Dev overlay (must be last so it's last to boot but always-active)
-  { key: 'LayoutEditorOverlayScene', scene: LayoutEditorOverlayScene },
 ];
+
+/**
+ * Is the layout editor part of this build?
+ *
+ * On in dev, and in a preview build that asks for it with
+ * VITE_LAYOUT_EDITOR=true. Never in what ships.
+ */
+export function layoutEditorEnabled() {
+  return LAYOUT_EDITOR_ENABLED;
+}
+
+/**
+ * Add the dev layout editor to a running game, if this build has one.
+ *
+ * It used to be a SCENE_LIST entry with active:true, which meant it was
+ * live in every session of the built game, listening for F2 — and F2
+ * opens an editor that drags scene furniture around and writes layout
+ * JSON. Found in the production bundle while reading the scene list
+ * during the MUST 1 fix; not in review.md.
+ *
+ * Imported dynamically so the module is not in a shipped bundle at all,
+ * and added last, so it is on top of whatever scene is running.
+ *
+ * @param {Phaser.Game} game
+ * @returns {Promise<boolean>} true if it was added.
+ */
+export async function attachLayoutEditor(game) {
+  if (!LAYOUT_EDITOR_ENABLED || !game) return false;
+  const mod = await import('./scenes/LayoutEditorOverlayScene.js');
+  if (game.scene.getScene('LayoutEditorOverlayScene')) return true;
+  game.scene.add('LayoutEditorOverlayScene', mod.default, true);
+  return true;
+}
 
 const ALL_SCENES = SCENE_LIST.map((entry) => entry.scene);
 
