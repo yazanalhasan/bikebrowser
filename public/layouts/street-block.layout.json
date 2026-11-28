@@ -304,16 +304,16 @@
       "_note": "Original: x = width / 2 (1000)."
     },
     "interact_gps": {
-      "x": 740,
-      "y": 300,
-      "_note": "Moved off x=820: the Bike GPS sat under the blue house, so its caption and interact prompt printed across the Workshop door sign at (850, 282)."
+      "x": 510,
+      "y": 490,
+      "_note": "Was (740, 300). The post is drawn at y+60 with a bottom origin, so it spanned y 240-360 and stood in the asphalt (road 290-410) and across the top kerb - and it is the only way to the Copper Mine and the Dry Wash, so a child had to stand in traffic to use it. Scanned the whole street for a box clear of the road, both kerbs, every house, tree, NPC and exit: 31 spots, all on the south lawn. This is the one nearest the middle. Plan 0.13 follow-up."
     },
     "gps_post": {
-      "x": 740,
-      "y": 310,
+      "x": 510,
+      "y": 500,
       "w": 8,
       "h": 40,
-      "_note": "Moved off x=820: the Bike GPS sat under the blue house, so its caption and interact prompt printed across the Workshop door sign at (850, 282)."
+      "_note": "The drawn post. It is a separate key from interact_gps and the two must stay together, or the caption and the prompt appear away from the thing they name. Both moved to the south lawn: at (740, 310) the post spanned y 250-370, in the asphalt (road 290-410). y is 10 below the hotspot so the caption sits above the post's head. Plan 0.13 follow-up."
     },
     "gps_top": {
       "x": 940,

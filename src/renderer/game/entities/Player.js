@@ -343,8 +343,16 @@ export default class Player {
 
     // Apply offsets to each limb Graphics
     if (this._usesAtlasAvatar) {
-      if (this._state === 'walk') this._avatar.playWalk?.(this.facing);
-      else this._avatar.setFacing?.(this.facing);
+      if (this._state === 'walk') {
+        this._avatar.playWalk?.(this.facing);
+      } else {
+        // Stop first. A playing animation writes its own frame every
+        // tick, so setting the idle frame underneath it did nothing and
+        // Zuzu kept walking on the spot after the key was released
+        // (plan 0.10 follow-up).
+        this._avatar.stop?.();
+        this._avatar.setFacing?.(this.facing);
+      }
       return;
     }
 

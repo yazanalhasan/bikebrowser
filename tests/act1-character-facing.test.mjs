@@ -109,6 +109,23 @@ test('the atlas really does carry four frames per direction', () => {
   }
 });
 
+test('the walk stops when the child lets go of the key', () => {
+  // `playWalk` runs the cycle; nothing ever stopped it. Phaser keeps
+  // advancing a playing animation every tick, so the idle frame that
+  // `setFacing` writes is overwritten on the very next frame and Zuzu
+  // keeps walking on the spot after the key is released. `createZuzu`
+  // has had a `stop()` since the atlas landed and no one called it.
+  const player = readFileSync(new URL('src/renderer/game/entities/Player.js', root), 'utf8');
+  const branch = player.match(
+    /if \(this\._state === 'walk'\)[\s\S]{0,600}?setFacing\?\.\(this\.facing\)/);
+  assert.ok(branch, 'the atlas walk/idle branch moved; re-point this test');
+  assert.match(branch[0], /stop\?\.\(\)/,
+    'the else branch must stop the animation before setting the idle frame');
+
+  const zuzu = readFileSync(new URL('src/game/characters/createZuzu.js', root), 'utf8');
+  assert.match(zuzu, /stop\(\) \{\s+sprite\.stop\(\);/);
+});
+
 test('something registers the walk animations', () => {
   // `playWalk` asks for `zuzu-walk-<dir>` and `Player.update` calls it
   // while walking, but nothing ever called the registrar, so
