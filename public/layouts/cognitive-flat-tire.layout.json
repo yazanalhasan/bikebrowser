@@ -95,7 +95,7 @@
       "close": {
         "x": 356,
         "y": 46,
-        "r": 22
+        "r": 23
       },
       "option_nail": {
         "x": 200,
@@ -132,6 +132,9 @@
         "w": 140,
         "h": 28
       }
+    },
+    "notes": {
+      "close": "r 23, not 22: the overlay contains 400x860 into the viewport, and on a 390x844 phone that 0.975 scale turned a 44-design-px circle into 42.9 CSS px. 46 design px fits to 44.9. Keep it at or above 23."
     }
   }
 }
