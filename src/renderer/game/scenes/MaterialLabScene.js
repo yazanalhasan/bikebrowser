@@ -859,6 +859,9 @@ export default class MaterialLabScene extends LabRigBase {
       icon: ART.lab_scale, label: 'Scale',
       showNameLabel: false,
       promptOffset: 34,
+      // While RECORD is on screen the prompt stands down: they share the
+      // same patch of bench, and RECORD is the one to press.
+      promptSuppressed: () => Boolean(this._scale?.isAwaitingInput?.()),
       onInteract: () => { /* scale buttons handle their own clicks */ },
     });
     this.addInteractable({

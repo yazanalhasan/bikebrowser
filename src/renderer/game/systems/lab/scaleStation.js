@@ -1,4 +1,7 @@
 /** Characters that fit a scale button before the labels collide. */
+
+import { LAB_BUTTON_DEPTH } from '../labelLayout.js';
+
 const MAX_BUTTON_CHARS = 7;
 
 /**
@@ -147,14 +150,17 @@ export function createScaleStation(scene, cfg) {
   function showRecordButton(s, mass) {
     if (recordButton) recordButton.destroy();
     const ry = displayY + 38;
+    // Above the interact prompt (label layer, 65). The prompt was drawn
+    // over this button, so the child was told to press E by a hint
+    // covering the button they actually needed.
     const bg = scene.add.rectangle(x, ry, 86, 26, 0x16a34a)
-      .setStrokeStyle(2, 0x065f46).setDepth(4)
+      .setStrokeStyle(2, 0x065f46).setDepth(LAB_BUTTON_DEPTH)
       .setInteractive({ useHandCursor: true });
     const lbl = scene.add.text(x, ry, '✎ RECORD', {
       fontSize: '11px', fontFamily: 'sans-serif', color: '#ffffff',
       fontStyle: 'bold',
-    }).setOrigin(0.5).setDepth(5);
-    recordButton = scene.add.container(0, 0, [bg, lbl]).setDepth(4);
+    }).setOrigin(0.5).setDepth(LAB_BUTTON_DEPTH + 1);
+    recordButton = scene.add.container(0, 0, [bg, lbl]).setDepth(LAB_BUTTON_DEPTH);
     bg.on('pointerdown', () => {
       onRecord({ id: s.id, name: s.name, massGrams: mass });
       // Replace with green check.
@@ -163,7 +169,7 @@ export function createScaleStation(scene, cfg) {
       recordCheck = scene.add.text(x, ry, '✓ recorded', {
         fontSize: '11px', fontFamily: 'sans-serif', color: '#22c55e',
         fontStyle: 'bold',
-      }).setOrigin(0.5).setDepth(4);
+      }).setOrigin(0.5).setDepth(LAB_BUTTON_DEPTH);
     });
   }
 
@@ -182,7 +188,12 @@ export function createScaleStation(scene, cfg) {
     clearRecordButton();
   }
 
-  return { refresh, destroy };
+  /** True while the child has a button to press on this station. */
+  function isAwaitingInput() {
+    return Boolean(recordButton);
+  }
+
+  return { refresh, destroy, isAwaitingInput };
 }
 
 /**

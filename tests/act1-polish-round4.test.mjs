@@ -157,7 +157,9 @@ test('only the closest prop prompts', () => {
   // Two "💬 Interact" chips side by side at the lab doors told the child
   // they could press E on either; E only ever uses the nearest.
   const base = read('src/renderer/game/scenes/LocalSceneBase.js');
-  assert.match(base, /prop\.prompt\.setVisible\(prop === nearest\)/);
+  // `&& !suppressed` arrived with plan 0.2: a station's own button (the
+  // lab scale's RECORD) stands the prompt down where they share a spot.
+  assert.match(base, /prop\.prompt\.setVisible\(prop === nearest && !suppressed\)/);
   assert.doesNotMatch(base, /prop\.prompt\.setVisible\(prop\._nearby\)/);
 });
 

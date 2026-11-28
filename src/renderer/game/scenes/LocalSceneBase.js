@@ -644,6 +644,9 @@ export default class LocalSceneBase extends Phaser.Scene {
   addInteractable(config) {
     const {
       x, y, label, icon, radius = 60, onInteract, showNameLabel = true,
+      // A prop can say when its own UI owns the screen: the lab scale's
+      // RECORD button sits exactly where the prompt goes.
+      promptSuppressed = null,
       // Above the prop by default. A station that already prints its own
       // sign there (the lab's SCALE) passes a positive offset to put the
       // prompt underneath instead.
@@ -697,6 +700,7 @@ export default class LocalSceneBase extends Phaser.Scene {
       grantsItems: config.grantsItems || [],
       metadata: config.metadata || {},
       onInteract,
+      promptSuppressed,
       text,
       nameLabel,
       prompt,
@@ -847,10 +851,13 @@ export default class LocalSceneBase extends Phaser.Scene {
       if (prop._nearby && (!nearest || dist < nearest._distanceToPlayer)) nearest = prop;
     }
 
-    const anyPrompting = Boolean(nearest);
+    const anyPrompting = Boolean(nearest)
+      && !(typeof nearest.promptSuppressed === 'function' && nearest.promptSuppressed());
     for (const prop of this._interactables) {
       const dist = prop._distanceToPlayer;
-      prop.prompt.setVisible(prop === nearest);
+      const suppressed = typeof prop.promptSuppressed === 'function'
+        && prop.promptSuppressed();
+      prop.prompt.setVisible(prop === nearest && !suppressed);
       // The name shows a little before the prompt does, and only if the
       // prop actually has a name.
       if (prop.nameLabel) {

@@ -64,6 +64,13 @@ export const NPC_LABEL_DEPTH = 62;
 export const PROP_CAPTION_DEPTH = 63;
 export const NPC_PROMPT_DEPTH = 64;
 export const PROP_PROMPT_DEPTH = 65;
+/**
+ * A lab station's own buttons (RECORD, START TEST, the sample buttons).
+ * They sit above every prompt: a prompt is a hint, a button is the thing
+ * the child has to press, and the hint was covering it.
+ */
+export const LAB_BUTTON_DEPTH = 70;
+
 /** A companion's own name and her "Talk" chip sit on top of all of it. */
 export const COMPANION_LABEL_DEPTH = 66;
 export const COMPANION_PROMPT_DEPTH = 67;
