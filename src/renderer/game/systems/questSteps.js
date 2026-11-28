@@ -79,11 +79,14 @@ export function isOnStep(state, questId, stepId) {
  * recomputed from it. Otherwise the index is shifted past every step
  * inserted above it since v1.
  *
- * Known limit, written down rather than hidden: a save created between the
- * insertion commit and this migration carries neither `stepId` nor a quest
- * data version, so it is indistinguishable from an older one and may land
- * one step ahead. Those saves only exist on dev machines from 2026-11-27;
- * starting a new game clears it.
+ * A save created between the insertion commit and this migration carries
+ * neither `stepId` nor a quest data version, so by number it is
+ * indistinguishable from an older one. It is no longer allowed to land
+ * one step ahead: the shift is refused when it would move onto the step
+ * that completes the quest, because that is the case where landing one
+ * ahead skips the build and ends the chapter early (plan 0.1b). Landing
+ * one behind only replays a step. Saves written from here on carry
+ * `stepId`, so they never reach this guess at all.
  *
  * @param {{id: string, stepIndex: number, stepId?: string}|null} activeQuest
  * @param {number} fromVersion the save's quest-data version (0 if absent)
@@ -107,7 +110,30 @@ export function migrateActiveQuest(activeQuest, fromVersion = 0) {
   if (fromVersion < 2) {
     for (const ins of INSERTIONS_SINCE_V1) {
       if (ins.questId !== activeQuest.id) continue;
-      if (index >= ins.index) index += 1;
+      if (index < ins.index) continue;
+
+      const shifted = Math.min(index + 1, steps.length - 1);
+
+      // The shift is a guess, and this is where the guess is paid for.
+      //
+      // A save with no `stepId` and no quest-data version is either
+      // older than the insertion (where this number meant one step) or
+      // from the window after it (where the number already meant the
+      // next one). By number alone the two are identical: 15 in
+      // `bridge_collapse` is `complete_bridge` on the old layout and
+      // `build_bridge` on the current one.
+      //
+      // So the tie is broken by what each mistake costs the child, not
+      // by which is likelier. Shifting onto the step that ENDS a quest
+      // skips the step before it: for `bridge_collapse` that is
+      // `build_bridge` — the ghost beams, the four mesquite spans and
+      // the load test, the whole point of the chapter — and Act 1 could
+      // not be finished at all. Staying put at worst replays a step the
+      // child has already done, which costs them a few minutes of a
+      // thing they enjoyed. Never shift onto a terminal step.
+      if (steps[shifted]?.type === 'complete') continue;
+
+      index = shifted;
     }
   }
   index = Math.min(index, steps.length - 1);
