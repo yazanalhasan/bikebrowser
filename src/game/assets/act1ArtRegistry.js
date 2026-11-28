@@ -16,7 +16,7 @@
  *   'backdrop' full-scene image
  */
 
-export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-28","entries":210};
+export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-28","entries":212};
 
 /** slot/key -> sprite record. Keyed by texture key. */
 export const ACT1_ART = Object.freeze({
@@ -181,6 +181,8 @@ export const ACT1_CHARACTER_SHEETS = Object.freeze({
   "maya_talk": Object.freeze({ key: "char.maya_talk", path: "assets/game/act1/characters/maya_talk.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up; one pose per row, repeated across the 4 columns" }),
   "nita_idle": Object.freeze({ key: "char.nita_idle", path: "assets/game/act1/characters/nita_idle.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up; one pose per row, repeated across the 4 columns" }),
   "nita_talk": Object.freeze({ key: "char.nita_talk", path: "assets/game/act1/characters/nita_talk.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up; one pose per row, repeated across the 4 columns" }),
+  "ramirez_idle": Object.freeze({ key: "char.ramirez_idle", path: "assets/game/act1/characters/ramirez_idle.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up; one pose per row, repeated across the 4 columns" }),
+  "ramirez_talk": Object.freeze({ key: "char.ramirez_talk", path: "assets/game/act1/characters/ramirez_talk.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up; one pose per row, repeated across the 4 columns" }),
 });
 
 /** Atlases that back the Act 1 art (frame lists come from the atlas JSON). */

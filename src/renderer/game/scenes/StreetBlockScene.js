@@ -188,6 +188,11 @@ export default class StreetBlockScene extends LocalSceneBase {
       x: this.layout.npc_mrs_ramirez.x,
       y: this.layout.npc_mrs_ramirez.y,
       color: ramirezData?.color || 0xb45309,
+      // A full sheet now: four directions and a talking pose, instead of
+      // the one static atlas frame she had since November (plan 2.6 f).
+      // The atlas frame stays as the fallback.
+      sheet: 'ramirez_idle',
+      talkSheet: 'ramirez_talk',
       atlasFrame: 'npc_mrs_ramirez_idle',
       onInteract: () => this._handleNpcInteract('mrs_ramirez', 'flat_tire_repair'),
     });
@@ -227,6 +232,9 @@ export default class StreetBlockScene extends LocalSceneBase {
       x: this.layout.npc_mariam.x,
       y: this.layout.npc_mariam.y,
       sheet: 'mariam_idle',
+      // `mariam_talk` has shipped since November and was never shown
+      // (plan 2.6 row h). She has a talking pose; she should use it.
+      talkSheet: 'mariam_talk',
       onInteract: () => this._handleMariamInteract(),
     });
 

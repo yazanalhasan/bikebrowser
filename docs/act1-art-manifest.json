@@ -4910,6 +4910,76 @@
         "score": 4,
         "notes": "The part that travels. Its own sprite so the pull still animates by moving it."
       }
+    },
+    {
+      "slot": "ramirez_idle",
+      "target_repo_path": "public/assets/game/act1/characters/ramirez_idle.png",
+      "origin": "generated",
+      "kind": "character_sheet",
+      "new_character": true,
+      "size": [
+        384,
+        384
+      ],
+      "frame": {
+        "frameWidth": 96,
+        "frameHeight": 96,
+        "cols": 4,
+        "rows": 4,
+        "feet_baseline_y": 91,
+        "row_order": "rows down,left,right,up; one pose per row, repeated across the 4 columns"
+      },
+      "provenance": {
+        "tool": "ComfyUI 0.22.0 on the i9, GPU0 — local, open weights only",
+        "checkpoint": "sd_xl_base_1.0 + sdxl_vae",
+        "loras": "bbact1style_v2 @1.0 (trained in plan 1.3 on shipped Act 1 art), pixel-art-xl @0.8",
+        "controlnet": "controlnet-union-sdxl-1.0-promax @0.55, ending at 60%, from mariam_idle.png's four idle frames composed as a 2x2 — the pose and the proportions come from shipped art",
+        "prompt_summary": "one 2x2 turnaround per sheet so all four directions are the same character: generating directions separately gave four different men",
+        "seed": 771,
+        "character_brief": "Mrs. Ramirez: an older woman with short curly grey hair, a bright teal zip-up hoodie, dark trousers and white trainers. Described from her existing single atlas frame so she is the same neighbour a child already knows (plan 2.6 row f).",
+        "staging": "20261127_2141_act1_complete/characters/ramirez",
+        "post": "sprite_chain.py: flood-fill background key, trim, nearest-neighbour to the 96px grid (never a smooth resize), quantise to a 96-colour palette taken from the 155 shipped Act 1 files, feet seated at y=91",
+        "gen_log": "gen_log.jsonl in the staging folder, one line per generation"
+      },
+      "qa": {
+        "score": 4,
+        "notes": "Four directions from one turnaround, so the clothes and the colours hold across all of them. Back view has no face. Reads as the same family as Lina and Mariam at 96px."
+      }
+    },
+    {
+      "slot": "ramirez_talk",
+      "target_repo_path": "public/assets/game/act1/characters/ramirez_talk.png",
+      "origin": "generated",
+      "kind": "character_sheet",
+      "new_character": true,
+      "size": [
+        384,
+        384
+      ],
+      "frame": {
+        "frameWidth": 96,
+        "frameHeight": 96,
+        "cols": 4,
+        "rows": 4,
+        "feet_baseline_y": 91,
+        "row_order": "rows down,left,right,up; one pose per row, repeated across the 4 columns"
+      },
+      "provenance": {
+        "tool": "ComfyUI 0.22.0 on the i9, GPU0 — local, open weights only",
+        "checkpoint": "sd_xl_base_1.0 + sdxl_vae",
+        "loras": "bbact1style_v2 @1.0 (trained in plan 1.3 on shipped Act 1 art), pixel-art-xl @0.8",
+        "controlnet": "controlnet-union-sdxl-1.0-promax @0.55, ending at 60%, from mariam_idle.png's four idle frames composed as a 2x2 — the pose and the proportions come from shipped art",
+        "prompt_summary": "one 2x2 turnaround per sheet so all four directions are the same character: generating directions separately gave four different men",
+        "seed": 771,
+        "character_brief": "Mrs. Ramirez: an older woman with short curly grey hair, a bright teal zip-up hoodie, dark trousers and white trainers. Described from her existing single atlas frame so she is the same neighbour a child already knows (plan 2.6 row f).",
+        "staging": "20261127_2141_act1_complete/characters/ramirez",
+        "post": "sprite_chain.py: flood-fill background key, trim, nearest-neighbour to the 96px grid (never a smooth resize), quantise to a 96-colour palette taken from the 155 shipped Act 1 files, feet seated at y=91",
+        "gen_log": "gen_log.jsonl in the staging folder, one line per generation"
+      },
+      "qa": {
+        "score": 4,
+        "notes": "Same seed and prompt as the idle sheet plus the talking pose, which is what keeps it the same person."
+      }
     }
   ]
 }
