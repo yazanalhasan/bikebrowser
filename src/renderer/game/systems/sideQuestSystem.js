@@ -126,13 +126,19 @@ const SIDE_QUESTS = {
       { id: 'collect_algae', type: 'forage', text: 'Collect an algae sample from the riverbank.', target: 'algae_sample' },
       { id: 'water_quiz', type: 'quiz',
         text: 'If the river flows at 3 meters per second and the fish swims upstream at 1 meter per second, how fast is the fish moving relative to the ground?',
+        // The current carries the fish downstream faster than it can swim
+        // against it, so it still moves downstream — at 3 - 1 = 2 m/s.
+        // "2 m/s upstream" was marked correct and the true answer was not
+        // offered at all.
         choices: [
-          { label: '2 m/s upstream', correct: true },
-          { label: '4 m/s upstream', correct: false },
-          { label: '3 m/s downstream', correct: false },
-          { label: '1 m/s upstream', correct: false },
+          { label: '2 m/s downstream', correct: true },
+          { label: '2 m/s upstream', correct: false },
+          { label: '4 m/s downstream', correct: false },
+          { label: 'It stays in one place', correct: false },
         ],
-        explanation: '3 - 1 = 2 m/s. The fish swims against the current, so subtract its speed from the river speed.',
+        explanation:
+          '3 - 1 = 2. The river pushes harder than the fish swims, so the fish '
+          + 'still drifts downstream — just 2 m/s instead of 3.',
       },
       { id: 'done', type: 'complete', text: 'Your biological samples could help with crafting organic compounds!' },
     ],

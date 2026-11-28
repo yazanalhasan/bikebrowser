@@ -43,8 +43,16 @@ export const SCENE_OBSTACLES = {
           items: ['sun_balm', 'protective_coating'],
           message: 'Sun balm or a protective coating will get you across.',
         },
-        failMessage: 'Ouch! The pavement burns! You need some kind of heat protection...',
-        successMessage: 'The sun balm protects your skin. You cross the hot zone safely!',
+        failMessage: 'Hot out here! Your tyres need something between them and the pavement.',
+        // One line for two items said "sun balm" to a child who had just
+        // crafted the coating. Keyed by the item actually carried, with
+        // `successMessage` kept as the fallback.
+        successMessage: 'Your heat protection holds. You cross the hot zone safely!',
+        successMessageByItem: {
+          sun_balm: 'The sun balm keeps the heat off. You cross the hot zone safely!',
+          protective_coating:
+            'The coating keeps the heat off your tyres. You cross the hot zone safely!',
+        },
         hintDelay: 2, // show AI hint after 2 failures
         learnSystem: 'crafting',
         unlocksPath: 'south_desert_access',
@@ -221,7 +229,7 @@ export const SCENE_OBSTACLES = {
         description: 'Open desert with no shade. Hydration drops fast.',
         damage: { stat: 'hydration', amount: 0.04, interval: 600 },
         passCondition: { type: 'item', item: 'hydration_jelly', message: 'Craft cactus water jelly for sustained hydration.' },
-        failMessage: 'The desert sun is relentless! Your water is running out...',
+        failMessage: 'Hot out here! Sip your water and find some shade.',
         successMessage: 'The cactus jelly keeps you hydrated through the desert crossing!',
         hintDelay: 2,
         learnSystem: 'crafting',
@@ -313,8 +321,13 @@ export function checkObstacleCondition(obstacle, gameState) {
     // whichever protection you happen to have made.
     case 'itemAny': {
       const options = Array.isArray(cond.items) ? cond.items : [];
+      // Report WHICH item matched: the success line is written per item,
+      // because "the sun balm protects you" is wrong when the child used
+      // the coating they just made.
+      const matched = options.find((id) => gameState.inventory?.includes(id)) || null;
       return {
-        passed: options.some((id) => gameState.inventory?.includes(id)),
+        passed: Boolean(matched),
+        matchedItem: matched,
         reason: cond.message || `Need one of: ${options.join(', ')}`,
       };
     }

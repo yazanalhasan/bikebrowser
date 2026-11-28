@@ -158,7 +158,7 @@ function _handleHazardContact(scene, obstacle) {
       _failureCounts.set(`success_${obstacle.id}`, true);
       scene.registry.set('dialogEvent', {
         speaker: NARRATOR,
-        text: obstacle.successMessage,
+        text: successLineFor(obstacle, check.matchedItem),
         choices: null, step: null,
       });
       _markSolved(scene, obstacle.id);
@@ -354,6 +354,21 @@ function _solvePuzzle(scene, puzzle, state) {
  * @param {object} scene
  * @param {{x?: number, y?: number, width?: number, height?: number}} obstacle
  */
+/**
+ * The success line for the item the child actually used.
+ *
+ * Falls back to the obstacle's single `successMessage` when it has no
+ * per-item lines, so obstacles with one solution are unchanged.
+ *
+ * @param {{successMessage?: string, successMessageByItem?: object}} obstacle
+ * @param {string|null} itemId
+ */
+function successLineFor(obstacle, itemId) {
+  const byItem = obstacle?.successMessageByItem;
+  if (itemId && byItem && byItem[itemId]) return byItem[itemId];
+  return obstacle?.successMessage || '';
+}
+
 function _shimmerHazard(scene, obstacle) {
   const cam = scene.cameras?.main;
   if (!cam || !scene.add) return;

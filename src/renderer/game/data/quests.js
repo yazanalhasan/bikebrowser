@@ -1010,10 +1010,11 @@ const QUESTS = {
         type: 'dialogue',
         text:
           '📖 Paracelsus (1493–1541) said: "The dose makes the poison." ' +
-          'Water can kill you if you drink too much (hyponatremia). ' +
-          'Snake venom can heal in tiny amounts (anticoagulants). ' +
-          'Every substance has a therapeutic window — the range where ' +
-          'benefit outweighs risk.',
+          'Even water can make you feel ill if you drink far too much at ' +
+          'once, so sip steadily. Snake venom, in a tiny measured amount, ' +
+          'is used in medicines that stop blood from clotting. Every ' +
+          'substance has a safe range — the amount where it helps instead ' +
+          'of harms.',
       },
       {
         id: 'quiz_dose',
@@ -1039,9 +1040,10 @@ const QUESTS = {
         type: 'complete',
         text:
           'You understand dose-response relationships!\n\n' +
-          '"Low dose = mild effect. Medium = therapeutic. High = toxic. ' +
-          'The curve applies to everything — medicine, food, even exercise. ' +
-          'Knowing the curve is what separates a healer from a poisoner."\n\n' +
+          '"A little does a little. The right amount helps. Far too much ' +
+          'harms. That holds for everything — medicine, food, even how far ' +
+          'you ride in one go. Knowing the right amount is what makes ' +
+          'medicine safe."\n\n' +
           '⚗️ You learned: Pharmacology — The Dose Makes the Poison',
       },
     ],
