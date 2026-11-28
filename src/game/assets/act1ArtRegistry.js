@@ -16,7 +16,7 @@
  *   'backdrop' full-scene image
  */
 
-export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-28","entries":215};
+export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-28","entries":218};
 
 /** slot/key -> sprite record. Keyed by texture key. */
 export const ACT1_ART = Object.freeze({
@@ -111,12 +111,14 @@ export const ACT1_ART = Object.freeze({
   "act1.props.driftwood": Object.freeze({ key: "act1.props.driftwood", path: "assets/game/act1/props/driftwood.png", anchor: "ground", width: 48, height: 36, slot: "river_debris" }),
   "act1.props.drinking_fountain": Object.freeze({ key: "act1.props.drinking_fountain", path: "assets/game/act1/props/drinking_fountain.png", anchor: "ground", width: 36, height: 64, slot: "fountain" }),
   "act1.props.filing_cabinet": Object.freeze({ key: "act1.props.filing_cabinet", path: "assets/game/act1/props/filing_cabinet.png", anchor: "ground", width: 44, height: 64, slot: "cabinet" }),
+  "act1.props.fire_hydrant": Object.freeze({ key: "act1.props.fire_hydrant", path: "assets/game/act1/props/fire_hydrant.png", anchor: "ground", width: 21, height: 38, slot: "fire_hydrant" }),
   "act1.props.fishing_rod": Object.freeze({ key: "act1.props.fishing_rod", path: "assets/game/act1/props/fishing_rod.png", anchor: "ground", width: 53, height: 64, slot: "fishing_spot" }),
   "act1.props.garage_lamp": Object.freeze({ key: "act1.props.garage_lamp", path: "assets/game/act1/props/garage_lamp.png", anchor: "ground", width: 26, height: 48, slot: "lightbulb" }),
   "act1.props.hex_key_set": Object.freeze({ key: "act1.props.hex_key_set", path: "assets/game/act1/props/hex_key_set.png", anchor: "ground", width: 48, height: 41, slot: "screwdriver" }),
   "act1.props.lantern": Object.freeze({ key: "act1.props.lantern", path: "assets/game/act1/props/lantern.png", anchor: "ground", width: 26, height: 48, slot: "lantern" }),
   "act1.props.lifeguard_chair": Object.freeze({ key: "act1.props.lifeguard_chair", path: "assets/game/act1/props/lifeguard_chair.png", anchor: "ground", width: 54, height: 96, slot: "lifeguard_chair" }),
   "act1.props.living_basin": Object.freeze({ key: "act1.props.living_basin", path: "assets/game/act1/props/living_basin.png", anchor: "ground", width: 64, height: 45, slot: "living_basin" }),
+  "act1.props.mailbox": Object.freeze({ key: "act1.props.mailbox", path: "assets/game/act1/props/mailbox.png", anchor: "ground", width: 22, height: 42, slot: "mailbox" }),
   "act1.props.mine_cart": Object.freeze({ key: "act1.props.mine_cart", path: "assets/game/act1/props/mine_cart.png", anchor: "ground", width: 96, height: 77, slot: "mine_cart" }),
   "act1.props.monsoon_warning_sign": Object.freeze({ key: "act1.props.monsoon_warning_sign", path: "assets/game/act1/props/monsoon_warning_sign.png", anchor: "ground", width: 29, height: 48, slot: "warning_sign" }),
   "act1.props.mountain_spring": Object.freeze({ key: "act1.props.mountain_spring", path: "assets/game/act1/props/mountain_spring.png", anchor: "ground", width: 64, height: 59, slot: "mountain_spring" }),
@@ -130,6 +132,7 @@ export const ACT1_ART = Object.freeze({
   "act1.props.rock_boulder": Object.freeze({ key: "act1.props.rock_boulder", path: "assets/game/act1/props/rock_boulder.png", anchor: "ground", width: 64, height: 50, slot: "rock_boulder" }),
   "act1.props.rowboat": Object.freeze({ key: "act1.props.rowboat", path: "assets/game/act1/props/rowboat.png", anchor: "ground", width: 96, height: 76, slot: "rowboat" }),
   "act1.props.scavenge_spot": Object.freeze({ key: "act1.props.scavenge_spot", path: "assets/game/act1/props/scavenge_spot.png", anchor: "ground", width: 49, height: 64, slot: "scavenge_spot" }),
+  "act1.props.street_sign_blank": Object.freeze({ key: "act1.props.street_sign_blank", path: "assets/game/act1/props/street_sign_blank.png", anchor: "ground", width: 96, height: 86, slot: "street_sign_blank" }),
   "act1.props.string_lights": Object.freeze({ key: "act1.props.string_lights", path: "assets/game/act1/props/string_lights.png", anchor: "ground", width: 128, height: 26, slot: "garage_lights" }),
   "act1.props.telescope": Object.freeze({ key: "act1.props.telescope", path: "assets/game/act1/props/telescope.png", anchor: "ground", width: 48, height: 64, slot: "telescope" }),
   "act1.props.test_coupons": Object.freeze({ key: "act1.props.test_coupons", path: "assets/game/act1/props/test_coupons.png", anchor: "ground", width: 64, height: 46, slot: "lab_coupons" }),
@@ -262,6 +265,7 @@ export const ART = Object.freeze({
   "ecology_terrain_rock": "ecology.terrain.rock",
   "ecology_terrain_sand": "ecology.terrain.sand",
   "ecology_yucca": "ecology.plant.yucca",
+  "fire_hydrant": "act1.props.fire_hydrant",
   "fish": "act1.animals.fish",
   "fishing_spot": "act1.props.fishing_rod",
   "fountain": "act1.props.drinking_fountain",
@@ -284,6 +288,7 @@ export const ART = Object.freeze({
   "lizard": "act1.animals.lizard",
   "load_calc": "act1.challenges.load_weight",
   "lost_collar": "act1.items.dog_collar",
+  "mailbox": "act1.props.mailbox",
   "map_desert": "act1.map.icon_desert",
   "map_home": "act1.map.icon_home",
   "map_lake": "act1.map.icon_lake",
@@ -328,6 +333,7 @@ export const ART = Object.freeze({
   "sparkle": "act1.fx.sparkle",
   "sportsfields_court": "act1.grounds.sportsfields_court",
   "sportsfields_grass": "act1.grounds.sportsfields_grass",
+  "street_sign_blank": "act1.props.street_sign_blank",
   "streetblock_road": "act1.grounds.streetblock_road",
   "streetblock_sidewalk": "act1.grounds.streetblock_sidewalk",
   "surface_copper": "act1.items.surface_copper",

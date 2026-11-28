@@ -5046,6 +5046,76 @@
         "why": "All three were drawn at a flat displayHeight of 52 from a 128px canvas, so a jackrabbit and a coyote were the same height on screen and every one of them was resampled at runtime. Cut to their own sizes against an 84px adult so the scene draws them 1:1 (plan 2.6 row k).",
         "date": "2026-11-28"
       }
+    },
+    {
+      "slot": "fire_hydrant",
+      "target_repo_path": "public/assets/game/act1/props/fire_hydrant.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        21,
+        38
+      ],
+      "anchor": "ground",
+      "provenance": {
+        "tool": "ComfyUI 0.22.0 on the i9, GPU0 — local, open weights only",
+        "checkpoint": "sd_xl_base_1.0 + sdxl_vae",
+        "loras": "bbact1style_v2 @1.0, pixel-art-xl @0.9",
+        "seed": 1337,
+        "staging": "20261127_2141_act1_complete/props/fire_hydrant",
+        "post": "magenta chroma-key, trim, nearest-neighbour to size, then quantise to a 152-colour HUE-BALANCED Act 1 palette",
+        "palette_note": "The first cut used the 96 most frequent colours in the shipped art. Act 1 is a desert, so that is 96 shades of sand and brown, and it turned the red hydrant brown. The palette now keeps the common colours AND one representative per hue bucket per lightness band, so the reds and blues that exist in the art survive even though they are rare."
+      },
+      "qa": {
+        "score": 4,
+        "notes": "A red cast-iron hydrant with a domed cap and a side nozzle. It was a red blob with a yellow dot, and the owner pointed at it by name."
+      }
+    },
+    {
+      "slot": "mailbox",
+      "target_repo_path": "public/assets/game/act1/props/mailbox.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        22,
+        42
+      ],
+      "anchor": "ground",
+      "provenance": {
+        "tool": "ComfyUI 0.22.0 on the i9, GPU0 — local, open weights only",
+        "checkpoint": "sd_xl_base_1.0 + sdxl_vae",
+        "loras": "bbact1style_v2 @1.0, pixel-art-xl @0.9",
+        "seed": 1337,
+        "staging": "20261127_2141_act1_complete/props/mailbox",
+        "post": "magenta chroma-key, trim, nearest-neighbour to size, then quantise to a 152-colour HUE-BALANCED Act 1 palette",
+        "palette_note": "The first cut used the 96 most frequent colours in the shipped art. Act 1 is a desert, so that is 96 shades of sand and brown, and it turned the red hydrant brown. The palette now keeps the common colours AND one representative per hue bucket per lightness band, so the reds and blues that exist in the art survive even though they are rare."
+      },
+      "qa": {
+        "score": 4,
+        "notes": "A curbside letterbox on a post with its red flag. It was a grey rounded rectangle with a red tick beside it."
+      }
+    },
+    {
+      "slot": "street_sign_blank",
+      "target_repo_path": "public/assets/game/act1/props/street_sign_blank.png",
+      "origin": "generated",
+      "kind": "world_prop",
+      "size": [
+        96,
+        86
+      ],
+      "anchor": "ground",
+      "provenance": {
+        "tool": "authored pixel art (scripted draw), not a diffusion model",
+        "why": "Every generated candidate was a portrait sign, and a street NAME plate has to be wide — stretching one 3x sideways looked exactly like a stretched sprite. A plate, a trim line and a pole is a shape worth drawing rather than sampling.",
+        "palette": "Act 1 sign green with the 1px dark warm outline",
+        "candidates_rejected": "20261127_2141_act1_complete/props/street_sign_blank (4 generated)",
+        "date": "2026-11-28"
+      },
+      "qa": {
+        "score": 4,
+        "notes": "A blank plate on a pole. No writing in the image: the game draws the street name over it."
+      }
     }
   ]
 }

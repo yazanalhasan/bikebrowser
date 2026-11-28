@@ -11,6 +11,7 @@ import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
+import { addSceneTitle } from '../ui/sceneTitle.js';
 
 const SCENE_KEY = 'DesertForagingScene';
 
@@ -122,10 +123,7 @@ export default class DesertForagingScene extends BaseSubScene {
     });
 
     // ── Scene label ──
-    this.add.text(this.layout.scene_label.x, this.layout.scene_label.y, '🏜️ Sonoran Foraging Grounds', {
-      fontSize: '16px', fontFamily: 'sans-serif', fontStyle: 'bold',
-      color: '#5c3d10', stroke: '#f5e6c8', strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(10).setScrollFactor(0);
+    addSceneTitle(this, '🏜️ Sonoran Foraging Grounds', { color: '#5c3d10', stroke: '#f5e6c8' });
   }
 
   setupChallenges() {

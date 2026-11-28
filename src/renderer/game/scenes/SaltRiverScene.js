@@ -12,6 +12,7 @@ import { loadLayout } from '../utils/loadLayout.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
 import { WORLD_SIGN_DEPTH } from '../systems/labelLayout.js';
+import { addSceneTitle } from '../ui/sceneTitle.js';
 
 const SCENE_KEY = 'SaltRiverScene';
 
@@ -185,10 +186,7 @@ export default class SaltRiverScene extends BaseSubScene {
     });
 
     // ── Scene label ──
-    this.add.text(this.layout.scene_label.x, this.layout.scene_label.y, '🏞️ Salt River Basin', {
-      fontSize: '16px', fontFamily: 'sans-serif', fontStyle: 'bold',
-      color: '#1e3a5f', stroke: '#dbeafe', strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(10).setScrollFactor(0);
+    addSceneTitle(this, '🏞️ Salt River Basin', { color: '#1e3a5f', stroke: '#dbeafe' });
   }
 
   setupChallenges() {

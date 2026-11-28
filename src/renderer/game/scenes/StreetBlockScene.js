@@ -43,6 +43,7 @@ import {
   getMentorLine,
 } from '../systems/languageLayer.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { hasArt } from '../../../game/assets/act1Art.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
 import { hasAtlasFrame } from '../../../game/assets/createAtlasSprite.js';
 import { WORLD_SIGN_ART_DEPTH, WORLD_SIGN_DEPTH } from '../systems/labelLayout.js';
@@ -649,13 +650,27 @@ export default class StreetBlockScene extends LocalSceneBase {
   _drawStreetSign(x, y, text) {
     // A street sign is a sign: Lina standing at the corner covered 58%
     // of "E Trailside" while it sat at depth 8/9 (plan 0.12).
-    const gfx = this.add.graphics().setDepth(WORLD_SIGN_ART_DEPTH);
-    gfx.lineStyle(4, 0xe5e7eb, 0.9);
-    gfx.lineBetween(x, y + 12, x, y + 70);
-    gfx.fillStyle(0x1f7a42, 1);
-    gfx.fillRoundedRect(x - 48, y - 15, 96, 30, 5);
-    gfx.lineStyle(2, 0xf5f1c8, 0.9);
-    gfx.strokeRoundedRect(x - 48, y - 15, 96, 30, 5);
+    //
+    // The plate and pole are painted now (plan 2.7 p3). The NAME stays
+    // game text drawn over it — no text inside an image, ever, because
+    // a baked word cannot be read at 96px and cannot be translated.
+    if (hasArt(this, ART.street_sign_blank)) {
+      // Drawn at its authored size. The generated candidates were all
+      // portrait signs, and stretching one 3x sideways to fit a street
+      // name looked exactly like what it was, so the plate is authored
+      // pixel art at the aspect a street name needs.
+      this.addProp(ART.street_sign_blank, x, y + 71, {
+        depth: WORLD_SIGN_ART_DEPTH,
+      });
+    } else {
+      const gfx = this.add.graphics().setDepth(WORLD_SIGN_ART_DEPTH);
+      gfx.lineStyle(4, 0xe5e7eb, 0.9);
+      gfx.lineBetween(x, y + 12, x, y + 70);
+      gfx.fillStyle(0x1f7a42, 1);
+      gfx.fillRoundedRect(x - 48, y - 15, 96, 30, 5);
+      gfx.lineStyle(2, 0xf5f1c8, 0.9);
+      gfx.strokeRoundedRect(x - 48, y - 15, 96, 30, 5);
+    }
     this.add.text(x, y, text, {
       fontFamily: 'sans-serif',
       fontSize: '14px',
@@ -727,6 +742,13 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawFireHydrant(x, y) {
+    // The owner pointed at this one: "a red blob with a yellow dot".
+    // It is a painted hydrant now (plan 2.7 p1); the shapes stay only
+    // as the fallback if the texture fails to load.
+    if (hasArt(this, ART.fire_hydrant)) {
+      this.addProp(ART.fire_hydrant, x, y + 10, { depth: groundDepth(y) });
+      return;
+    }
     const gfx = this.add.graphics().setDepth(6);
     gfx.fillStyle(0xdc2626, 1);
     gfx.fillRoundedRect(x - 7, y - 14, 14, 24, 4);
@@ -738,6 +760,12 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawMailbox(x, y) {
+    // Painted letterbox with its red flag (plan 2.7 p2), in place of a
+    // grey rounded rectangle with a red tick beside it.
+    if (hasArt(this, ART.mailbox)) {
+      this.addProp(ART.mailbox, x, y + 27, { depth: groundDepth(y) });
+      return;
+    }
     const gfx = this.add.graphics().setDepth(6);
     gfx.lineStyle(3, 0x6b7280, 1);
     gfx.lineBetween(x, y + 8, x, y + 27);
