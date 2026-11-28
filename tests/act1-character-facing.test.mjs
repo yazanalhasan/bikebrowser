@@ -122,7 +122,8 @@ test('something registers the walk animations', () => {
   const registrar = readFileSync(
     new URL('src/game/characters/registerCharacterAnimations.js', root), 'utf8',
   );
-  assert.match(registrar, /key: `zuzu-walk-\$\{direction\}`/);
+  assert.match(registrar, /const key = `zuzu-walk-/);
+  assert.match(registrar, /scene\.anims\.create\(/);
   const player = readFileSync(new URL('src/renderer/game/entities/Player.js', root), 'utf8');
   assert.match(player, /playWalk\?\.\(this\.facing\)/);
 });
