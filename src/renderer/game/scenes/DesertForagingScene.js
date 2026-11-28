@@ -111,7 +111,10 @@ export default class DesertForagingScene extends BaseSubScene {
 
     // ── Quest NPC: Desert Guide ──
     this.addNpc({
+      // Painted sheet, not five Graphics shapes (plan 2.3).
       id: 'desert_guide',
+      sheet: 'nita_idle',
+      talkSheet: 'nita_talk',
       name: 'Ranger Nita',
       x: this.layout.npc_desert_guide.x, y: this.layout.npc_desert_guide.y,
       color: 0x92400e,

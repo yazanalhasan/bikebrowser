@@ -59,11 +59,23 @@ export default class Npc {
     // Mr Chen and Mrs Ramirez). Both anchor on the art's own feet baseline so
     // every character in a scene stands on the same line. NPCs with neither —
     // or whose art has not loaded — fall back to the procedural humanoid.
+    // The sheet to swap to while they are speaking, if they have one.
+    this._talkSheetKey = config.talkSheet || null;
+
     this.sprite = this._buildSprite(config);
     if (this.sprite) {
       this.container.add(this.sprite);
       this.container.setScale(1);
     } else {
+      // The procedural humanoid is a dev fallback, not art. Every named
+      // Act 1 character has a sheet now (plan 2.1-2.3), so reaching
+      // here in the game means a texture failed to load.
+      if (config.sheet || config.atlasFrame) {
+        console.warn(
+          `[Npc] ${this.id}: art "${config.sheet || config.atlasFrame}" is not loaded; `
+          + 'falling back to the procedural humanoid',
+        );
+      }
       this._buildHumanoid(appearance);
       this.container.setScale(BODY_SCALE);
     }
@@ -111,6 +123,8 @@ export default class Npc {
       const sheet = ACT1_CHARACTER_SHEETS[config.sheet];
       if (sheet && scene.textures.exists(sheet.key)) {
         this._sheet = sheet;
+        this._idleSheetKey = config.sheet;
+        this._currentSheetKey = config.sheet;
         const frame = sheetFrame(config.sheet, config.sheetRow ?? 0, config.sheetCol ?? 0);
         return scene.add.sprite(0, FEET_OFFSET, sheet.key, frame)
           .setOrigin(0.5, sheet.feetY / sheet.frameHeight)
@@ -129,6 +143,26 @@ export default class Npc {
   }
 
   /**
+   * Show the talking pose, or go back to standing.
+   *
+   * A character who says four paragraphs with their arms by their sides
+   * reads as a cardboard cut-out. Both sheets share a layout, so the
+   * row stays put and only the texture changes.
+   *
+   * @param {boolean} talking
+   */
+  setTalking(talking) {
+    if (!this.sprite || !this._sheet || !this._talkSheetKey) return;
+    const want = talking ? this._talkSheetKey : this._idleSheetKey;
+    if (!want || want === this._currentSheetKey) return;
+    const sheet = ACT1_CHARACTER_SHEETS[want];
+    if (!sheet || !this.scene.textures?.exists?.(sheet.key)) return;
+    this._currentSheetKey = want;
+    this._sheet = sheet;
+    this.sprite.setTexture(sheet.key, sheetFrame(want, this._facingRow ?? 0, 0));
+  }
+
+  /**
    * Face a direction. Only meaningful for sheet-backed NPCs; the row order
    * comes from the sheet's own convention (down, left, right, up).
    */
@@ -136,6 +170,7 @@ export default class Npc {
     if (!this.sprite || !this._sheet) return;
     const row = SHEET_ROWS[direction];
     if (row === undefined) return;
+    this._facingRow = row;
     this.sprite.setFrame(row * this._sheet.cols);
   }
 

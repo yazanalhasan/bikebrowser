@@ -43,8 +43,13 @@ function publicFile(relPath) {
   return path.join(PUBLIC, relPath.replace(/^\/+/, '').split('/').join(path.sep));
 }
 
-test('the art bundle landed: 117 reused + 83 generated over 150 files', () => {
-  assert.equal(ART_MANIFEST_PROVENANCE.entries, 200);
+test('the art bundle is all still there, and only grows', () => {
+  // This used to pin the exact November bundle: 117 reused, 83
+  // generated, 150 files. Phase 2 adds art on purpose, so an equality
+  // check fails every time the game gains a sprite — and a test that
+  // has to be edited to add art is a test that stops meaning anything.
+  // What should hold forever is that nothing was LOST and that new
+  // entries carry the same provenance the old ones do.
   const manifest = JSON.parse(
     fs.readFileSync(path.join(ROOT, 'docs', 'act1-art-manifest.json'), 'utf8'),
   );
@@ -52,11 +57,42 @@ test('the art bundle landed: 117 reused + 83 generated over 150 files', () => {
     acc[e.origin] = (acc[e.origin] || 0) + 1;
     return acc;
   }, {});
-  assert.equal(origins.reused, 117);
-  assert.equal(origins.generated, 83);
+  assert.ok(origins.reused >= 117, `reused art dropped to ${origins.reused}`);
+  assert.ok(origins.generated >= 83, `generated art dropped to ${origins.generated}`);
+  assert.ok(manifest.entries.length >= 200, `the manifest shrank to ${manifest.entries.length}`);
 
   const files = new Set(manifest.entries.map((e) => e.target_repo_path.split('#')[0]));
-  assert.equal(files.size, 150);
+  assert.ok(files.size >= 150, `the bundle shrank to ${files.size} files`);
+
+  // Every entry carries a QA score, and everything GENERATED says how
+  // it was made. The 117 reused entries have no generation provenance
+  // by definition — they were already in the repo — so the provenance
+  // rule applies where it means something.
+  const noScore = manifest.entries
+    .filter((e) => !e.qa || typeof e.qa.score !== 'number')
+    .map((e) => e.slot);
+  assert.deepEqual(noScore, [], 'art entries with no QA score');
+
+  const noProvenance = manifest.entries
+    .filter((e) => e.origin === 'generated' && !e.provenance)
+    .map((e) => e.slot);
+  assert.deepEqual(noProvenance, [], 'generated art with no provenance');
+
+  // Nothing NEW ships below the plan's bar of QA 4. Two pieces already
+  // in the repo are a 3 and are named here rather than waved through:
+  // `zuzu_bike_idle` (the generated replacements were all worse than
+  // the shipped frame — see the 2026-11-27 GPU run) and
+  // `sportsfields_court`. Both are Phase 2/3 work. The list may shrink
+  // and must never grow.
+  const KNOWN_BELOW_BAR = ['sportsfields_court', 'zuzu_bike_idle'];
+  const poor = manifest.entries
+    .filter((e) => e.origin === 'generated' && e.qa.score < 4)
+    .map((e) => e.slot)
+    .sort();
+  const unexpected = poor.filter((slot) => !KNOWN_BELOW_BAR.includes(slot));
+  assert.deepEqual(unexpected, [], 'new generated art below QA 4 is in the repo');
+  assert.ok(poor.length <= KNOWN_BELOW_BAR.length,
+    `art below QA 4 grew to ${poor.length}: ${poor.join(', ')}`);
 });
 
 test('every registered sprite exists on disk at its declared size', () => {
@@ -86,10 +122,11 @@ test('every ART slot points at a real registry record', () => {
 });
 
 test('character sheets are 4x4 of 96px frames with feet on y=91', () => {
-  assert.deepEqual(
-    Object.keys(ACT1_CHARACTER_SHEETS).sort(),
-    ['lina_idle', 'lina_walk', 'mariam_idle', 'mariam_talk'],
-  );
+  // The four that shipped in November must still be here; the list is
+  // open at the top end because Phase 2 adds Pete, Maya and Nita.
+  for (const slot of ['lina_idle', 'lina_walk', 'mariam_idle', 'mariam_talk']) {
+    assert.ok(ACT1_CHARACTER_SHEETS[slot], `${slot} disappeared from the registry`);
+  }
   for (const [slot, sheet] of Object.entries(ACT1_CHARACTER_SHEETS)) {
     const file = publicFile(sheet.path);
     assert.ok(fs.existsSync(file), `${slot} sheet missing: ${sheet.path}`);

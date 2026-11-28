@@ -16,7 +16,7 @@
  *   'backdrop' full-scene image
  */
 
-export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-26","entries":200};
+export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-27","entries":206};
 
 /** slot/key -> sprite record. Keyed by texture key. */
 export const ACT1_ART = Object.freeze({
@@ -171,6 +171,12 @@ export const ACT1_CHARACTER_SHEETS = Object.freeze({
   "lina_idle": Object.freeze({ key: "char.lina_idle", path: "assets/game/act1/characters/lina_idle.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,right,left,up (Zuzu idle order); right = mirrored left" }),
   "mariam_idle": Object.freeze({ key: "char.mariam_idle", path: "assets/game/act1/characters/mariam_idle.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up (MrsRamirez order); right = mirrored left" }),
   "mariam_talk": Object.freeze({ key: "char.mariam_talk", path: "assets/game/act1/characters/mariam_talk.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up; side rows from 3/4 talk frames (left mirrored)" }),
+  "pete_idle": Object.freeze({ key: "char.pete_idle", path: "assets/game/act1/characters/pete_idle.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up; one pose per row, repeated across the 4 columns" }),
+  "pete_talk": Object.freeze({ key: "char.pete_talk", path: "assets/game/act1/characters/pete_talk.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up; one pose per row, repeated across the 4 columns" }),
+  "maya_idle": Object.freeze({ key: "char.maya_idle", path: "assets/game/act1/characters/maya_idle.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up; one pose per row, repeated across the 4 columns" }),
+  "maya_talk": Object.freeze({ key: "char.maya_talk", path: "assets/game/act1/characters/maya_talk.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up; one pose per row, repeated across the 4 columns" }),
+  "nita_idle": Object.freeze({ key: "char.nita_idle", path: "assets/game/act1/characters/nita_idle.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up; one pose per row, repeated across the 4 columns" }),
+  "nita_talk": Object.freeze({ key: "char.nita_talk", path: "assets/game/act1/characters/nita_talk.png", frameWidth: 96, frameHeight: 96, cols: 4, rows: 4, feetY: 91, rowOrder: "rows down,left,right,up; one pose per row, repeated across the 4 columns" }),
 });
 
 /** Atlases that back the Act 1 art (frame lists come from the atlas JSON). */

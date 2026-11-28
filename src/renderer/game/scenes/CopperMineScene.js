@@ -159,10 +159,15 @@ export default class CopperMineScene extends BaseSubScene {
     });
 
     // ── Quest NPC: Old Miner ──
+    // Painted sheet, not five Graphics shapes (plan 2.1). `Npc` takes
+    // the procedural path only when the texture is missing, so the
+    // fallback stays as a dev safety net and nothing a child sees.
     this.addNpc({
       id: 'old_miner',
       name: 'Old Miner Pete',
       x: this.layout.npc_old_miner.x, y: this.layout.npc_old_miner.y,
+      sheet: 'pete_idle',
+      talkSheet: 'pete_talk',
       color: 0x8b6914,
       onInteract: () => this._handleMinerInteract(),
     });

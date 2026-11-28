@@ -174,7 +174,10 @@ export default class SaltRiverScene extends BaseSubScene {
 
     // ── Quest NPC: Biologist ──
     this.addNpc({
+      // Painted sheet, not five Graphics shapes (plan 2.2).
       id: 'river_biologist',
+      sheet: 'maya_idle',
+      talkSheet: 'maya_talk',
       name: 'Dr. Maya',
       x: this.layout.npc_biologist.x, y: this.layout.npc_biologist.y,
       color: 0x2563eb,

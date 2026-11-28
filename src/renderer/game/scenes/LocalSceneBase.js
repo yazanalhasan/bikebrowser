@@ -413,7 +413,14 @@ export default class LocalSceneBase extends Phaser.Scene {
     if (this._cameraMode === 'follow') this._frameFollowCamera();
 
     // Update NPCs
-    Object.values(this._npcs).forEach(npc => npc.update(this.player.sprite));
+    // Who is speaking right now, so a character with a talk sheet uses
+    // it while they talk (plan 2.1). The dialog event carries the
+    // speaker's display name.
+    const speaking = this.registry.get('dialogEvent')?.speaker || null;
+    Object.values(this._npcs).forEach((npc) => {
+      npc.update(this.player.sprite);
+      npc.setTalking?.(Boolean(speaking) && speaking === npc.name);
+    });
 
     // Decides who gets a chip this frame and publishes it for the
     // companion, which updates just below and would otherwise read a
