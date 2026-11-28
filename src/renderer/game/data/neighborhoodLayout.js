@@ -43,14 +43,20 @@ export const SPAWNS = {
   default: { x: 640, y: 500 },
 };
 
-/** Transition zone back to the garage scene. */
+/**
+ * Transition zone back to the garage scene.
+ *
+ * Read only by `drawDebugOverlay` below. The scene that used to open a
+ * door here is gone (MUST 0.15); the key names the live garage so wiring
+ * this up again cannot resurrect a retired one.
+ */
 export const GARAGE_TRANSITION = {
   x: 240,
   y: 190,
   width: 120,
   height: 50,
   label: '🏠 Go Home',
-  targetScene: 'GarageScene',
+  targetScene: 'ZuzuGarageScene',
   targetSpawn: { x: 400, y: 340 },
 };
 

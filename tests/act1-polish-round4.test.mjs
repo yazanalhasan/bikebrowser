@@ -15,7 +15,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 import { challengeDialogAction } from '../src/renderer/game/systems/subSceneDialog.js';
 import { NARRATOR, speakerFor } from '../src/renderer/game/systems/questDialog.js';
@@ -25,9 +25,26 @@ import {
 } from '../src/renderer/game/systems/labelLayout.js';
 
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
+
+/**
+ * Every live game source. The caption sweep below walks these rather than
+ * naming one file, which is how the old version of that test kept passing
+ * while pointing at a scene that no longer existed.
+ */
+function gameSources() {
+  const out = [];
+  const walk = (dir) => {
+    for (const entry of readdirSync(new URL(`../${dir}/`, import.meta.url), { withFileTypes: true })) {
+      if (entry.isDirectory()) walk(`${dir}/${entry.name}`);
+      else if (/\.(js|jsx)$/.test(entry.name)) out.push(`${dir}/${entry.name}`);
+    }
+  };
+  walk('src/renderer/game');
+  return out;
+}
+
 const SRC = [
   'src/renderer/game/scenes/LocalSceneBase.js',
-  'src/renderer/game/scenes/NeighborhoodScene.js',
   'src/renderer/game/scenes/WorldMapScene.js',
   'src/renderer/game/scenes/BaseSubScene.js',
   'src/renderer/game/systems/obstacleSystem.js',
@@ -144,11 +161,27 @@ test('a line in her own voice is still hers', () => {
   assert.equal(speakerFor({ type: 'dialogue' }, line, 'Mrs. Ramirez', true), 'Mrs. Ramirez');
 });
 
-test('the scene routes every caption through the rule', () => {
-  const scene = read('src/renderer/game/scenes/NeighborhoodScene.js');
-  assert.match(scene, /speakerFor\(step, text, npcName, true\)/);
-  const direct = scene.match(/speaker,\n\s+text: (?:immediateText|enrichedText)/g) || [];
-  assert.equal(direct.length, 0, 'a caption still assigns the speaker directly');
+test('the one place captions are built routes them through the rule', () => {
+  // This used to read NeighborhoodScene, which assigned the speaker
+  // directly in `_emitEnrichedDialog`. That scene is gone (MUST 0.15) and
+  // `questDialog` is now the only thing that builds a quest caption, so
+  // the rule is checked where the caption is actually made.
+  const dialog = read('src/renderer/game/systems/questDialog.js');
+  assert.match(dialog, /speaker: speakerFor\(step, text, giverName, giverPresent\)/);
+});
+
+test('nothing anywhere assigns a caption speaker behind the rule', () => {
+  // The guard the old test was reaching for, over the whole live tree
+  // rather than one file: a caption that sets `speaker` next to enriched
+  // text has bypassed `speakerFor`, and an NPC starts narrating about
+  // herself again.
+  const offenders = [];
+  for (const file of gameSources()) {
+    const src = read(file);
+    const direct = src.match(/speaker,\s*\n\s+text: (?:immediateText|enrichedText)/g) || [];
+    if (direct.length) offenders.push(`${file} (${direct.length})`);
+  }
+  assert.deepEqual(offenders, []);
 });
 
 // ── the polish tail ────────────────────────────────────────────────────────

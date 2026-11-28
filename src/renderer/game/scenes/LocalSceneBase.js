@@ -64,8 +64,6 @@ const DEFAULT_WORLD = { width: 800, height: 600 };
 // entry when adding a new local scene; fallback is a muted dark frame.
 const SCENE_BIOMES = {
   ZuzuGarageScene:    { fill: 0x6b4423, accent: 0x8b6914, label: 'urban'     },
-  GarageScene:        { fill: 0x6b4423, accent: 0x8b6914, label: 'urban'     },
-  NeighborhoodScene:  { fill: 0x6b5b3a, accent: 0x8b7344, label: 'urban'     },
   StreetBlockScene:   { fill: 0xa08250, accent: 0xc4a26a, label: 'desert'    },
   DesertEdgeScene:    { fill: 0xa08250, accent: 0xc4a26a, label: 'desert'    },
   DogParkScene:       { fill: 0x4a6b3a, accent: 0x6e8a4a, label: 'grassland' },
@@ -145,7 +143,7 @@ export default class LocalSceneBase extends Phaser.Scene {
   // are met (e.g. requiredItem is in inventory after a forage/grant scene).
   // Without this, scenes like CopperMineScene / MountainScene / ZuzuGarageScene
   // would grant items via dialog but never trigger the step advance — leaving
-  // the player with the item but quest stuck on the prior step. NeighborhoodScene
+  // the player with the item but quest stuck on the prior step. OverworldScene
   // and StreetBlockScene OVERRIDE this with NPC-aware versions that emit the
   // next step's dialog inline; this default just advances + saves silently and
   // closes the dialog so the next interaction (NPC, prop, scene transition)

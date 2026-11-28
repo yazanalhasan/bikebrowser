@@ -66,15 +66,28 @@ const sceneFiles = [
   'src/renderer/game/scenes/CommunityPoolScene.js',
   'src/renderer/game/scenes/DesertTrailScene.js',
   'src/renderer/game/scenes/MountainScene.js',
-  // Legacy (save compat)
-  'src/renderer/game/scenes/GarageScene.js',
-  'src/renderer/game/scenes/NeighborhoodScene.js',
-  // Editor base classes
-  'src/renderer/game/editor-scenes/GarageSceneBase.js',
-  'src/renderer/game/editor-scenes/NeighborhoodSceneBase.js',
 ];
 for (const f of sceneFiles) {
   check(f, existsSync(resolve(ROOT, f)));
+}
+
+// 2b. The retired scenes are gone and stay gone (MUST 0.15).
+//
+// This block used to assert the opposite — that GarageScene,
+// NeighborhoodScene and their editor bases existed "for save compat".
+// They were drawn with Graphics primitives, and the Dry Wash west edge
+// walked a child who had just built the bridge straight into them with
+// no way back out. Save compat lives in SCENE_MIGRATION now.
+console.log('\nRetired scenes stay retired:');
+const retiredFiles = [
+  'src/renderer/game/scenes/GarageScene.js',
+  'src/renderer/game/scenes/NeighborhoodScene.js',
+  'src/renderer/game/editor-scenes/GarageSceneBase.js',
+  'src/renderer/game/editor-scenes/NeighborhoodSceneBase.js',
+  'public/layouts/neighborhood.layout.json',
+];
+for (const f of retiredFiles) {
+  check(`${f} is gone`, !existsSync(resolve(ROOT, f)));
 }
 
 // 3. Local scenes extend LocalSceneBase
@@ -105,10 +118,16 @@ const config = readFileSync(resolve(ROOT, 'src/renderer/game/config.js'), 'utf8'
 const expectedImports = [
   'OverworldScene', 'ZuzuGarageScene', 'StreetBlockScene', 'DogParkScene',
   'LakeEdgeScene', 'SportsFieldsScene', 'CommunityPoolScene',
-  'DesertTrailScene', 'MountainScene', 'GarageScene', 'NeighborhoodScene',
+  'DesertTrailScene', 'MountainScene',
 ];
 for (const name of expectedImports) {
   check(`config imports ${name}`, config.includes(`import ${name}`));
+}
+for (const name of ['GarageScene', 'NeighborhoodScene']) {
+  // A retired scene must not be registered: a registered scene can be
+  // started by key, and that is exactly how the bug reached a child.
+  check(`config does not register ${name}`,
+    !new RegExp(`import ${name} from|^  ${name},$`, 'm').test(config));
 }
 check('config has scene migration map', config.includes('SCENE_KEY_MIGRATION'));
 
@@ -124,7 +143,10 @@ check('Registry has getSpawn', registry.includes('getSpawn'));
 // 7. Save system migration
 console.log('\nSave system:');
 const save = readFileSync(resolve(ROOT, 'src/renderer/game/systems/saveSystem.js'), 'utf8');
-check('Save version is 3', save.includes('CURRENT_VERSION = 3'));
+// Read the number rather than hard-coding it: this check sat red at
+// 'version is 3' while the real format moved on to 7.
+const saveVersion = Number(/CURRENT_VERSION = ([0-9]+)/.exec(save)[1]);
+check(`Save version is ${saveVersion}`, saveVersion >= 7);
 check('Save has v2→v3 migration', save.includes('migrateV2toV3'));
 check('Save defaults to ZuzuGarageScene', save.includes("scene: 'ZuzuGarageScene'"));
 

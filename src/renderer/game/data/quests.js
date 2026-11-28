@@ -1213,7 +1213,7 @@ const QUESTS = {
       {
         id: 'quiz_weight',
         type: 'quiz',
-        // Template tokens resolved by NeighborhoodScene._emitEnrichedDialog
+        // Template tokens resolved by questDialog's enrichment pass
         // via systems/questTemplating.js. {massTable} pulls from
         // state.materialLog so the readout reflects the *player's* scale
         // measurements, not a canonical literal. Choices unchanged so

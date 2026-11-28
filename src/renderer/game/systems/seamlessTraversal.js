@@ -72,30 +72,25 @@
  *
  *   SCENE_ADJACENCY.DryWashScene = {
  *     ...SCENE_ADJACENCY.DryWashScene,
- *     west: { to: 'NeighborhoodScene', entrySide: 'east' },
+ *     east: { to: 'FarSideTrailScene', entrySide: 'west' },
  *   };
  *
- * Seeded with the Neighborhood↔DryWash edge pair so the next agent
- * (`phaser-dry-wash-scene`) can consume the adjacency without round-
- * tripping through this module.
+ * Only register an edge whose target is a current, art-backed scene. The
+ * seed pair that used to live here (Neighborhood↔DryWash) is why a child
+ * who had just built the bridge could walk west into the retired
+ * Graphics-primitive neighbourhood — see MUST 0.15.
  *
  * @type {AdjacencyMap}
  */
-export const SCENE_ADJACENCY = {
-  NeighborhoodScene: {
-    east: { to: 'DryWashScene', entrySide: 'west' },
-    // … other edges added by consumer agents as scenes adopt the API.
-  },
-  DryWashScene: {
-    west: { to: 'NeighborhoodScene', entrySide: 'east' },
-    // East edge would lead to the locked far-side trail — left unmapped
-    // until that scene exists; the edge sensor will safe-fail with a warn.
-  },
-};
+// Empty on purpose (MUST 0.15). The retired NeighborhoodScene <-> DryWashScene
+// pair used to live here. DryWashScene now sends its west edge to the world
+// map itself; every other edge safe-fails with a warn, which is the correct
+// behaviour for an unmapped edge.
+export const SCENE_ADJACENCY = {};
 
 // Edge → opposite edge lookup. Used to derive the entry edge when the
 // adjacency entry omits an explicit `entrySide` (defensive fallback —
-// our seeded entry always provides one).
+// every registered entry should provide one).
 const OPPOSITE_EDGE = {
   north: 'south',
   south: 'north',

@@ -16,7 +16,6 @@
  */
 export const INDOOR_SCENES = new Set([
   'ZuzuGarageScene',
-  'GarageScene',
   'MaterialLabScene',
   'ThermalRigScene',
   'CopperMineScene',

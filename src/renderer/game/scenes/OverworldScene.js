@@ -361,9 +361,8 @@ export default class OverworldScene extends Phaser.Scene {
       CommunityPoolScene: 'fromCommunityPool',
       DesertTrailScene: 'fromDesertTrail',
       MountainScene: 'fromMountain',
-      // Legacy scene names
-      GarageScene: 'fromGarage',
-      NeighborhoodScene: 'default',
+      // No legacy keys here: loadGame rewrites a retired scene key
+      // before the game boots, so `prev` is always a live scene.
     };
     return spawnMap[prev] || 'default';
   }

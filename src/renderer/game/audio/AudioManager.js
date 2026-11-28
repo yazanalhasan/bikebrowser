@@ -237,7 +237,7 @@ export default class AudioManager {
 
   /**
    * Preload assets for a specific scene.
-   * @param {string} sceneKey — e.g. 'GarageScene'
+   * @param {string} sceneKey — e.g. 'ZuzuGarageScene'
    */
   async preloadForScene(sceneKey) {
     const keys = [];

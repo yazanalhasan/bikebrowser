@@ -373,9 +373,7 @@ export const ASSET_MAP = Object.fromEntries(ALL_ASSETS.map((a) => [a.key, a]));
 // silently keeps the previous scene's music, which breaks when the previous
 // scene was WorldMap.
 export const SCENE_MUSIC = {
-  GarageScene: 'pixel_pedal_parade_v4',
   ZuzuGarageScene: 'pixel_pedal_parade_v4',
-  NeighborhoodScene: 'pixel_pedal_parade_v2',
   OverworldScene: 'pixel_pedal_parade_v2',
   StreetBlockScene: 'pixel_pedal_parade_v2',
   // NOT 'desert_discovery' — see the note above; that file is a 0-byte
@@ -396,18 +394,14 @@ export const SCENE_MUSIC = {
 };
 
 export const SCENE_MUSIC_ALT = {
-  GarageScene: 'warm_hands_quiet_gears',
   ZuzuGarageScene: 'warm_hands_quiet_gears',
-  NeighborhoodScene: 'neighborhood_hybrid_ride',
   OverworldScene: 'neighborhood_hybrid_ride',
   StreetBlockScene: 'neighborhood_hybrid_ride',
   DesertEdgeScene: 'neighborhood_hybrid_ride',
 };
 
 export const SCENE_AMBIENT = {
-  GarageScene: 'garage_ambience',
   ZuzuGarageScene: 'garage_ambience',
-  NeighborhoodScene: 'neighborhood_ambience',
   OverworldScene: 'neighborhood_ambience',
   StreetBlockScene: 'neighborhood_ambience',
   DesertEdgeScene: 'neighborhood_ambience',

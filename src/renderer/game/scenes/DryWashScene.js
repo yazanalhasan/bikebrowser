@@ -35,6 +35,7 @@ import {
   performSeamlessTransition,
 } from '../systems/seamlessTraversal.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { transitionTo } from '../systems/sceneTransition.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { isOnStep } from '../systems/questSteps.js';
 
@@ -96,13 +97,21 @@ export default class DryWashScene extends LocalSceneBase {
    *   1. Apply any seamless-entry payload (repositions player to the
    *      entry edge, restores velocity + facing). No-op when entered via
    *      world-map travel.
-   *   2. Attach the cardinal edge sensors so walking off the west edge
-   *      transitions back to NeighborhoodScene.
+   *   2. Attach the cardinal edge sensors. West is the way home: it goes
+   *      through the same door as the south exit (MUST 0.15 — it used to
+   *      drop the player into the retired NeighborhoodScene).
    */
   create() {
     super.create();
     applySeamlessEntry(this, this._initData);
     attachEdgeSensor(this, this.player, (edge) => {
+      // The west bank is the way home. It takes the same door as the
+      // south exit zone, so a child who wanders off that edge lands on
+      // the world map instead of in a retired scene (MUST 0.15).
+      if (edge === 'west') {
+        transitionTo(this, 'WorldMapScene', 'fromDryWash');
+        return;
+      }
       performSeamlessTransition(this, edge, this.player);
     });
   }

@@ -23,7 +23,15 @@ import { migrateActiveQuest, QUEST_DATA_VERSION } from './questSteps.js';
 const SAVE_KEY = 'bikebrowser_game_save';
 const CURRENT_VERSION = 7;
 
-/** Map old scene keys to new ones. */
+/**
+ * Map retired scene keys to the live scene that replaced them.
+ *
+ * Applied in `loadGame` after every version migration, not inside one:
+ * a save can name a retired key at ANY version. v6 saves predate the
+ * rename, and saves written while the west-edge bug was live (MUST 0.15)
+ * are already at v7 with `scene: 'NeighborhoodScene'` in them. Keying
+ * this off the version number is what let those through.
+ */
 const SCENE_MIGRATION = {
   GarageScene: 'ZuzuGarageScene',
   NeighborhoodScene: 'OverworldScene',
@@ -292,6 +300,18 @@ export function loadGame() {
     if (migrated.version === 4) migrated = migrateV4toV5(migrated);
     if (migrated.version === 5) migrated = migrateV5toV6(migrated);
     if (migrated.version === 6) migrated = migrateV6toV7(migrated);
+
+    // A retired scene key is rewritten at every version, including the
+    // current one — see SCENE_MIGRATION. Without this a v7 save written
+    // while the west-edge bug was live reopened the retired scene, and
+    // walking out of it wrote the same key straight back.
+    const savedScene = migrated.player?.scene;
+    if (savedScene && SCENE_MIGRATION[savedScene]) {
+      migrated = {
+        ...migrated,
+        player: { ...migrated.player, scene: SCENE_MIGRATION[savedScene] },
+      };
+    }
 
     // Fill any fields that may be missing from older saves.
     const merged = {

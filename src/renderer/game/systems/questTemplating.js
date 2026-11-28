@@ -19,7 +19,7 @@
  *     measure first" rather than handing the player the answer.
  *
  * Used by:
- *   - NeighborhoodScene._emitEnrichedDialog — interpolates before the
+ *   - questDialog's enrichment pass — interpolates before the
  *     dialog event fires.
  */
 

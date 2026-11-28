@@ -37,10 +37,6 @@ import CopperMineScene from './scenes/CopperMineScene.js';
 import SaltRiverScene from './scenes/SaltRiverScene.js';
 import DryWashScene from './scenes/DryWashScene.js';
 
-// Legacy scenes (kept for save compat — old saves reference these keys)
-import GarageScene from './scenes/GarageScene.js';
-import NeighborhoodScene from './scenes/NeighborhoodScene.js';
-
 // Dev-only overlay (F2 layout editor). Always registered; activates on F2.
 import LayoutEditorOverlayScene from './scenes/LayoutEditorOverlayScene.js';
 
@@ -70,15 +66,18 @@ const ALL_SCENES = [
   CopperMineScene,
   SaltRiverScene,
   DryWashScene,
-  // Legacy scenes (for old saves that reference GarageScene/NeighborhoodScene)
-  GarageScene,
-  NeighborhoodScene,
   // Dev overlay (must be last so it's last to boot but always-active)
   LayoutEditorOverlayScene,
 ];
 
 /**
  * Map old scene keys to new ones for save migration.
+ *
+ * The scenes themselves are gone (MUST 0.15): they were drawn with
+ * Graphics primitives and a child who walked west out of the Dry Wash
+ * landed in them with no way back. This map is the whole of what is left
+ * of them — `loadGame` rewrites a retired key to its live scene before
+ * the game boots, so nothing can start one.
  */
 export const SCENE_KEY_MIGRATION = {
   GarageScene: 'ZuzuGarageScene',
