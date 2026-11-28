@@ -8,7 +8,7 @@
  *      Broken bridge remnants visible. Mr. Chen nudges the player toward
  *      the testing flow. No construction available.
  *
- *   2. Build phase — bridge_collapse active and stepIndex === BUILD_STEP_INDEX
+ *   2. Build phase — bridge_collapse active and on the 'build_bridge' step
  *      and !state.bridgeBuilt. Mounts the ConstructionSystem with the
  *      mesquite blueprint. Player clicks ghost beams to place them.
  *      After the last beam is placed the host runs a load-test bike
@@ -36,14 +36,14 @@ import {
 } from '../systems/seamlessTraversal.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { isOnStep } from '../systems/questSteps.js';
 
 const SCENE_KEY = 'DryWashScene';
 
-// Step in bridge_collapse.steps where build_bridge sits (id: 'build_bridge').
-// Indexed against the canonical quests.js steps array. If the order shifts,
-// update this constant — there's no automatic lookup because we want the
-// behavior gate to stay deterministic even if quests.js changes shape.
-const BUILD_STEP_INDEX = 14;
+// The build phase is found by step id, never by number. The number used to
+// be 14; inserting `weigh_samples` into bridge_collapse moved build_bridge
+// to 15 and this scene silently fell back to its first-visit line, so Act 1
+// could not be finished at all. See systems/questSteps.js.
 
 // Wash channel geometry — kept at module scope so the construction system's
 // blueprint coords (also y≈400) and the broken-bridge remnant decals stay
@@ -487,8 +487,7 @@ export default class DryWashScene extends LocalSceneBase {
       this._renderFinishedBridgeOnly();
       return;
     }
-    const aq = state.activeQuest;
-    const onBuildStep = aq?.id === 'bridge_collapse' && (aq.stepIndex || 0) === BUILD_STEP_INDEX;
+    const onBuildStep = isOnStep(state, 'bridge_collapse', 'build_bridge');
     if (onBuildStep) {
       this._mountConstruction();
     }
@@ -756,8 +755,7 @@ export default class DryWashScene extends LocalSceneBase {
       });
       return;
     }
-    const aq = state.activeQuest;
-    const onBuildStep = aq?.id === 'bridge_collapse' && (aq.stepIndex || 0) === BUILD_STEP_INDEX;
+    const onBuildStep = isOnStep(state, 'bridge_collapse', 'build_bridge');
     if (onBuildStep) {
       this.registry.set('dialogEvent', {
         speaker: 'Mr. Chen',
