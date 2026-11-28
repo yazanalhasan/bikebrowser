@@ -8,7 +8,7 @@
  *      Broken bridge remnants visible. Mr. Chen nudges the player toward
  *      the testing flow. No construction available.
  *
- *   2. Build phase — bridge_collapse active and stepIndex === BUILD_STEP_INDEX
+ *   2. Build phase — bridge_collapse active and on the 'build_bridge' step
  *      and !state.bridgeBuilt. Mounts the ConstructionSystem with the
  *      mesquite blueprint. Player clicks ghost beams to place them.
  *      After the last beam is placed the host runs a load-test bike
@@ -35,14 +35,17 @@ import {
   performSeamlessTransition,
 } from '../systems/seamlessTraversal.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { transitionTo } from '../systems/sceneTransition.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { isOnStep } from '../systems/questSteps.js';
+import { addSceneTitle } from '../ui/sceneTitle.js';
 
 const SCENE_KEY = 'DryWashScene';
 
-// Step in bridge_collapse.steps where build_bridge sits (id: 'build_bridge').
-// Indexed against the canonical quests.js steps array. If the order shifts,
-// update this constant — there's no automatic lookup because we want the
-// behavior gate to stay deterministic even if quests.js changes shape.
-const BUILD_STEP_INDEX = 14;
+// The build phase is found by step id, never by number. The number used to
+// be 14; inserting `weigh_samples` into bridge_collapse moved build_bridge
+// to 15 and this scene silently fell back to its first-visit line, so Act 1
+// could not be finished at all. See systems/questSteps.js.
 
 // Wash channel geometry — kept at module scope so the construction system's
 // blueprint coords (also y≈400) and the broken-bridge remnant decals stay
@@ -95,13 +98,21 @@ export default class DryWashScene extends LocalSceneBase {
    *   1. Apply any seamless-entry payload (repositions player to the
    *      entry edge, restores velocity + facing). No-op when entered via
    *      world-map travel.
-   *   2. Attach the cardinal edge sensors so walking off the west edge
-   *      transitions back to NeighborhoodScene.
+   *   2. Attach the cardinal edge sensors. West is the way home: it goes
+   *      through the same door as the south exit (MUST 0.15 — it used to
+   *      drop the player into the retired NeighborhoodScene).
    */
   create() {
     super.create();
     applySeamlessEntry(this, this._initData);
     attachEdgeSensor(this, this.player, (edge) => {
+      // The west bank is the way home. It takes the same door as the
+      // south exit zone, so a child who wanders off that edge lands on
+      // the world map instead of in a retired scene (MUST 0.15).
+      if (edge === 'west') {
+        transitionTo(this, 'WorldMapScene', 'fromDryWash');
+        return;
+      }
       performSeamlessTransition(this, edge, this.player);
     });
   }
@@ -121,11 +132,20 @@ export default class DryWashScene extends LocalSceneBase {
     }
 
     // ── Sky / background ──
-    this.add.rectangle(this.layout.sky.x, this.layout.sky.y, this.layout.sky.w, this.layout.sky.h, 0xf2c98f);
+    {
+      const o = this.layout.sky;
+      this.addGroundTexture(ART.worldmap_sky_day, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
     // ── Sandy near-side ground ──
-    this.add.rectangle(this.layout.ground_near.x, this.layout.ground_near.y, this.layout.ground_near.w, this.layout.ground_near.h, 0xc8a274);
-    // ── Far-side ground (slightly different tone to read as "across") ──
-    this.add.rectangle(this.layout.ground_far.x, this.layout.ground_far.y, this.layout.ground_far.w, this.layout.ground_far.h, 0xb89368);
+    {
+      const o = this.layout.ground_near;
+      this.addGroundTexture(ART.drywash_ground, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
+    // ── Far-side ground — the bank texture reads as "across the wash" ──
+    {
+      const o = this.layout.ground_far;
+      this.addGroundTexture(ART.drywash_bank, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
 
     // ── Wash channel (jagged tan-brown arroyo at y≈400) ──
     this._renderWashChannel(width);
@@ -139,10 +159,10 @@ export default class DryWashScene extends LocalSceneBase {
     mesa.fillTriangle(this.layout.mesa_3.x1, this.layout.mesa_3.y1, this.layout.mesa_3.x2, this.layout.mesa_3.y2, this.layout.mesa_3.x3, this.layout.mesa_3.y3);
 
     // ── Decorative cacti / brush ──
-    this.add.text(this.layout.cactus_left.x, this.layout.cactus_left.y, '🌵', { fontSize: '34px' }).setOrigin(0.5).setDepth(2);
-    this.add.text(this.layout.cactus_right.x, this.layout.cactus_right.y, '🌵', { fontSize: '28px' }).setOrigin(0.5).setDepth(2);
-    this.add.text(this.layout.brush_right.x, this.layout.brush_right.y, '🌿', { fontSize: '22px' }).setOrigin(0.5).setDepth(2);
-    this.add.text(this.layout.brush_left.x, this.layout.brush_left.y, '🌿', { fontSize: '18px' }).setOrigin(0.5).setDepth(2);
+    this.addProp(ART.saguaro, this.layout.cactus_left.x, this.layout.cactus_left.y + 22, { depth: 2 });
+    this.addProp(ART.saguaro, this.layout.cactus_right.x, this.layout.cactus_right.y + 18, { maxPx: 76, depth: 2 });
+    this.addProp(ART.desert_shrub, this.layout.brush_right.x, this.layout.brush_right.y + 12, { maxPx: 40, depth: 2 });
+    this.addProp(ART.desert_shrub, this.layout.brush_left.x, this.layout.brush_left.y + 10, { maxPx: 32, depth: 2 });
 
     // ── Monsoon warning sign ──
     this._renderMonsoonSign(this.layout.monsoon_sign.x, this.layout.monsoon_sign.y);
@@ -157,19 +177,20 @@ export default class DryWashScene extends LocalSceneBase {
 
     // ── Mr. Chen NPC on the near side ──
     this._chenLastInteract = 0;
+    // Same painted frame as the Home Street Chen. Without it `Npc` falls back
+    // to `_buildHumanoid`, a box-and-circle placeholder, so the same person
+    // looked like two different characters depending on the scene.
     this.addNpc({
       id: 'mr_chen',
       name: 'Mr. Chen',
       x: this.layout.mr_chen_npc.x, y: this.layout.mr_chen_npc.y,
       color: 0x6b3410,
+      atlasFrame: 'npc_mr_chen_idle',
       onInteract: () => this._onMrChenInteract(),
     });
 
     // ── Scene title ──
-    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🏜️ Dry Wash', {
-      fontSize: '18px', fontFamily: 'sans-serif', fontStyle: 'bold',
-      color: '#7c2d12', stroke: '#fef3c7', strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(10).setScrollFactor(0);
+    addSceneTitle(this, '🏜️ Dry Wash', { color: '#7c2d12', stroke: '#fef3c7' });
 
     // ── Exit back to world map ──
     this.addExit({
@@ -267,7 +288,7 @@ export default class DryWashScene extends LocalSceneBase {
       x: basin.x,
       y: basin.y,
       label: 'Living Basin',
-      icon: '💧',
+      icon: ART.living_basin,
       radius: basin.interactionRadius || 140,
       metadata: { questObservation: 'fluid_zone_found' },
       onInteract: () => this._handleLivingBasinInteract(),
@@ -437,14 +458,14 @@ export default class DryWashScene extends LocalSceneBase {
    * @private
    */
   _renderMonsoonSign(x, y) {
-    // Post
-    this.add.rectangle(x, y + 30, 6, 60, 0x6b4423).setDepth(2);
-    // Sign face
-    const sign = this.add.rectangle(x, y, 64, 36, 0x8b6234).setStrokeStyle(2, 0x4a2e16).setDepth(2);
-    sign.setOrigin(0.5);
-    this.add.text(x, y - 4, '⚠', { fontSize: '14px' }).setOrigin(0.5).setDepth(3);
+    // The painted monsoon sign carries the post, the board and the warning
+    // mark; the UI still writes the word so it stays legible and localisable.
+    this.addProp(ART.warning_sign, x, y + 60, { displayHeight: 96, depth: 2 });
+    // 10px, not 7: on a phone the world draws at zoom 1, so 7px is
+    // 7 CSS px and the warning on the flood sign cannot be read at all
+    // (plan 0.5's floor for a label is 10).
     this.add.text(x, y + 9, 'MONSOON', {
-      fontSize: '7px', fontFamily: 'sans-serif',
+      fontSize: '10px', fontFamily: 'sans-serif',
       fontStyle: 'bold', color: '#fef3c7',
     }).setOrigin(0.5).setDepth(3);
   }
@@ -458,8 +479,8 @@ export default class DryWashScene extends LocalSceneBase {
     g.lineTo(this.layout.locked_trail_mid.x, this.layout.locked_trail_mid.y);
     g.lineTo(this.layout.locked_trail_end.x, this.layout.locked_trail_end.y);
     g.strokePath();
-    this.add.text(this.layout.locked_trail_lock_icon.x, this.layout.locked_trail_lock_icon.y, '🔒', { fontSize: '20px' })
-      .setOrigin(0.5).setDepth(3).setAlpha(0.85);
+    this.addProp(ART.trail_lock, this.layout.locked_trail_lock_icon.x,
+      this.layout.locked_trail_lock_icon.y + 12, { maxPx: 34, depth: 3, alpha: 0.85 });
     this.add.text(this.layout.locked_trail_label.x, this.layout.locked_trail_label.y, 'Far Trail', {
       fontSize: '10px', fontFamily: 'sans-serif',
       color: '#4a3520', fontStyle: 'bold',
@@ -476,8 +497,7 @@ export default class DryWashScene extends LocalSceneBase {
       this._renderFinishedBridgeOnly();
       return;
     }
-    const aq = state.activeQuest;
-    const onBuildStep = aq?.id === 'bridge_collapse' && (aq.stepIndex || 0) === BUILD_STEP_INDEX;
+    const onBuildStep = isOnStep(state, 'bridge_collapse', 'build_bridge');
     if (onBuildStep) {
       this._mountConstruction();
     }
@@ -506,7 +526,8 @@ export default class DryWashScene extends LocalSceneBase {
     // Hint banner so the player knows what to do.
     this.time.delayedCall(400, () => {
       const audioMgr = this.registry.get('audioManager');
-      audioMgr?.playSfx?.('ui_open');
+      // 'ui_open' was never a key; the panel sound is 'ui_panel_open'.
+      audioMgr?.playSfx?.('ui_panel_open');
       this.registry.set('mcpAlert', {
         id: 'dry_wash_build_intro',
         message: 'Click each ghost beam to place a mesquite plank across the wash.',
@@ -650,35 +671,48 @@ export default class DryWashScene extends LocalSceneBase {
 
   _createLoadedBikeTestRig(scene, x, y) {
     const rig = scene.add.container(x, y).setDepth(8);
-    const bike = scene.add.graphics();
 
-    bike.lineStyle(5, 0x2563eb, 1);
-    bike.strokeCircle(-24, 16, 15);
-    bike.strokeCircle(24, 16, 15);
-    bike.lineStyle(4, 0x0f172a, 1);
-    bike.lineBetween(-24, 16, -6, -6);
-    bike.lineBetween(-6, -6, 10, 16);
-    bike.lineBetween(10, 16, -24, 16);
-    bike.lineBetween(10, 16, 24, 16);
-    bike.lineBetween(-6, -6, 24, 16);
-    bike.lineBetween(24, 16, 30, -6);
-    bike.lineBetween(22, -8, 34, -12);
-    bike.lineBetween(-6, -6, -12, -16);
-    bike.lineStyle(3, 0x111827, 1);
-    bike.lineBetween(-16, -16, -3, -16);
+    // Zuzu on his bike, from the one frame in the atlas that draws
+    // exactly that — `zuzu_bike_idle` (plan 2.6 row e / 3.1).
+    //
+    // It has been in the repo since the atlas landed and nothing ever
+    // showed it. What rolled across the finished bridge instead was a
+    // bicycle made of eleven Graphics lines with `zuzu_idle_down`
+    // squashed from 96x112 into a 26x30 box on top of it — a standing
+    // boy, flattened, hovering over a wire-frame bike, at the moment
+    // the chapter pays off.
+    const riding = scene.textures.exists('zuzu_atlas')
+      && scene.textures.get('zuzu_atlas').has('zuzu_bike_idle');
+    let bike;
+    if (riding) {
+      bike = scene.add.image(0, 20, 'zuzu_atlas', 'zuzu_bike_idle')
+        .setOrigin(0.5, 1);
+    } else {
+      // Dev fallback: the old wire bike, so a missing atlas still shows
+      // something rolling.
+      bike = scene.add.graphics();
+      bike.lineStyle(5, 0x2563eb, 1);
+      bike.strokeCircle(-24, 16, 15);
+      bike.strokeCircle(24, 16, 15);
+      bike.lineStyle(4, 0x0f172a, 1);
+      bike.lineBetween(-24, 16, -6, -6);
+      bike.lineBetween(-6, -6, 10, 16);
+      bike.lineBetween(10, 16, -24, 16);
+      bike.lineBetween(10, 16, 24, 16);
+      bike.lineBetween(-6, -6, 24, 16);
+      bike.lineBetween(24, 16, 30, -6);
+      bike.lineBetween(22, -8, 34, -12);
+      bike.lineBetween(-6, -6, -12, -16);
+    }
 
-    bike.fillStyle(0xf59e0b, 1);
-    bike.fillRoundedRect(-37, -12, 18, 16, 3);
-    bike.fillRoundedRect(15, -18, 18, 18, 3);
-    bike.lineStyle(2, 0x78350f, 1);
-    bike.strokeRoundedRect(-37, -12, 18, 16, 3);
-    bike.strokeRoundedRect(15, -18, 18, 18, 3);
-
-    const rider = scene.add.text(-4, -33, '🧒', {
-      fontSize: '30px',
-      stroke: '#1f2937',
-      strokeThickness: 2,
-    }).setOrigin(0.5);
+    // The 100 kg load, strapped on: two panniers either side.
+    const load = scene.add.graphics();
+    load.fillStyle(0xf59e0b, 1);
+    load.fillRoundedRect(-44, -14, 18, 16, 3);
+    load.fillRoundedRect(26, -20, 18, 18, 3);
+    load.lineStyle(2, 0x78350f, 1);
+    load.strokeRoundedRect(-44, -14, 18, 16, 3);
+    load.strokeRoundedRect(26, -20, 18, 18, 3);
 
     const label = scene.add.text(0, 42, '100 kg load test', {
       fontSize: '13px',
@@ -689,7 +723,7 @@ export default class DryWashScene extends LocalSceneBase {
       strokeThickness: 3,
     }).setOrigin(0.5);
 
-    rig.add([bike, rider, label]);
+    rig.add([bike, load, label]);
     return rig;
   }
 
@@ -744,8 +778,7 @@ export default class DryWashScene extends LocalSceneBase {
       });
       return;
     }
-    const aq = state.activeQuest;
-    const onBuildStep = aq?.id === 'bridge_collapse' && (aq.stepIndex || 0) === BUILD_STEP_INDEX;
+    const onBuildStep = isOnStep(state, 'bridge_collapse', 'build_bridge');
     if (onBuildStep) {
       this.registry.set('dialogEvent', {
         speaker: 'Mr. Chen',

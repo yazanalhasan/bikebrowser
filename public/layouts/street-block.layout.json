@@ -68,8 +68,9 @@
       "h": 25
     },
     "zuzu_house_label": {
-      "x": 130,
-      "y": 245
+      "x": 152,
+      "y": 245,
+      "_note": "Was x=130, which put its left end under the garage direction sign board (world x -11..109, depth 160) and hid 17% of it. Still under the house (x 40..220). Plan 0.12."
     },
     "zuzu_house_collision": {
       "x": 130,
@@ -210,8 +211,9 @@
     },
     "trees": [
       {
-        "x": 30,
-        "y": 340
+        "x": 70,
+        "y": 120,
+        "_note": "Was (30,340): feet in the west lane, and a quarter of the canopy off the west edge of the world. North-west lawn beside Zuzu's house now, clear of the ← Garage exit (y 260-340)."
       },
       {
         "x": 260,
@@ -226,137 +228,67 @@
         "y": 140
       },
       {
-        "x": 950,
-        "y": 340
+        "x": 935,
+        "y": 200,
+        "_note": "Was (950,340): feet in the east lane, across the road below the Workshop. Beside the Workshop on the lawn; canopy reads as behind the roof."
       },
       {
-        "x": 200,
-        "y": 500
-      },
-      {
-        "x": 500,
-        "y": 620
-      },
-      {
-        "x": 900,
-        "y": 500
-      }
-    ],
-    "plants": [
-      {
-        "species": "mesquite",
-        "label": "Mesquite Tree",
-        "x": 205,
-        "y": 475,
-        "radius": 65
-      },
-      {
-        "species": "mesquite",
-        "label": "Mesquite Tree",
-        "x": 900,
-        "y": 460,
-        "radius": 65
-      },
-      {
-        "species": "creosote",
-        "label": "Creosote Bush",
         "x": 80,
-        "y": 460,
-        "radius": 55
+        "y": 545,
+        "_note": "Was (200,500): feet on the lawn but the canopy lay over the south kerb, under the toast strip. South-west corner, west of Mr. Chen's bike."
       },
       {
-        "species": "creosote",
-        "label": "Creosote Bush",
-        "x": 950,
-        "y": 620,
-        "radius": 55
+        "x": 240,
+        "y": 650,
+        "_note": "Moved west out of the Desert Edge path (was 500,620)."
       },
       {
-        "species": "prickly_pear",
-        "label": "Prickly Pear",
-        "x": 480,
-        "y": 640,
-        "radius": 50
-      },
-      {
-        "species": "barrel_cactus",
-        "label": "Barrel Cactus",
-        "x": 30,
-        "y": 620,
-        "radius": 45
-      },
-      {
-        "species": "jojoba",
-        "label": "Jojoba Shrub",
-        "x": 780,
-        "y": 640,
-        "radius": 45
-      },
-      {
-        "species": "ephedra",
-        "label": "Ephedra (Mormon Tea)",
-        "x": 270,
-        "y": 155,
-        "radius": 45
-      },
-      {
-        "species": "agave",
-        "label": "Agave Plant",
-        "x": 450,
-        "y": 460,
-        "radius": 55
-      },
-      {
-        "species": "yucca",
-        "label": "Yucca Plant",
-        "x": 150,
-        "y": 620,
-        "radius": 50
-      },
-      {
-        "species": "desert_lavender",
-        "label": "Desert Lavender",
-        "x": 650,
-        "y": 460,
-        "radius": 50
+        "x": 900,
+        "y": 545,
+        "_note": "Was (900,500): canopy over the south kerb. Clear of the yellow house (x 620-780)."
       }
     ],
+    "plants": [],
     "fire_hydrant": {
-      "x": 340,
-      "y": 275
+      "x": 250,
+      "y": 275,
+      "_note": "Moved west from x=340 to open space between the hydrant, Mrs. Ramirez's bike (418) and the street sign (500)."
     },
     "mailbox_left": {
       "x": 190,
       "y": 265
     },
     "mailbox_right": {
-      "x": 610,
-      "y": 265
+      "x": 665,
+      "y": 265,
+      "_note": "Moved east from x=610 to spread the top-sidewalk props."
     },
     "street_sign": {
-      "x": 500,
-      "y": 275,
-      "_note": "Original: x = width / 2 (1000)."
+      "x": 300,
+      "y": 272,
+      "_note": "Moved along the kerb rather than down it. At (500,275) the board sat in the band where Mrs. Ramirez's talk prompt appears; dropping it to y=292 put the board across her sprite instead. This spot is clear of both."
     },
     "npc_mrs_ramirez": {
       "x": 550,
       "y": 310
     },
     "ramirez_bike_icon": {
-      "x": 417.9720050288943,
-      "y": 277.99286296379034,
+      "x": 400,
+      "y": 238,
       "fontSize": "46px",
-      "interactionRadius": 95
+      "interactionRadius": 95,
+      "_note": "Was (417.97,277.99): feet at y=308, in the north lane, body across the kerb. In Mrs. Ramirez's front yard now — feet at 268, just above the kerb, clear of her door at x=550."
     },
     "npc_mr_chen": {
       "x": 313,
       "y": 402
     },
     "chen_bike_icon": {
-      "x": 440,
-      "y": 420,
+      "x": 250,
+      "y": 525,
       "fontSize": "44px",
-      "interactionRadius": 115
+      "interactionRadius": 115,
+      "_note": "Was (440,420): feet below the south kerb but the 120px body stood up through the travel lane — this is the bike in the middle of the road. In the yard south of the kerb now (body 435-555), a few steps from Mr. Chen at (313,402)."
     },
     "exit_zone_west": {
       "x": 14,
@@ -372,16 +304,16 @@
       "_note": "Original: x = width / 2 (1000)."
     },
     "interact_gps": {
-      "x": 940,
-      "y": 300,
-      "_note": "Original: x = width - 60 (1000-60)."
+      "x": 510,
+      "y": 490,
+      "_note": "Was (740, 300). The post is drawn at y+60 with a bottom origin, so it spanned y 240-360 and stood in the asphalt (road 290-410) and across the top kerb - and it is the only way to the Copper Mine and the Dry Wash, so a child had to stand in traffic to use it. Scanned the whole street for a box clear of the road, both kerbs, every house, tree, NPC and exit: 31 spots, all on the south lawn. This is the one nearest the middle. Plan 0.13 follow-up."
     },
     "gps_post": {
-      "x": 940,
-      "y": 310,
+      "x": 510,
+      "y": 500,
       "w": 8,
       "h": 40,
-      "_note": "Original: x = width - 60 (1000-60)."
+      "_note": "The drawn post. It is a separate key from interact_gps and the two must stay together, or the caption and the prompt appear away from the thing they name. Both moved to the south lawn: at (740, 310) the post spanned y 250-370, in the asphalt (road 290-410). y is 10 below the hotspot so the caption sits above the post's head. Plan 0.13 follow-up."
     },
     "gps_top": {
       "x": 940,
@@ -390,38 +322,39 @@
       "h": 5,
       "_note": "Original: x = width - 60 (1000-60)."
     },
-    "wall_south": {
-      "x": 500,
-      "y": 710,
-      "w": 1000,
-      "h": 20,
-      "_note": "Original: x = width / 2 (1000), y = height + 10 (700+10), w = width."
+    "animals": [],
+    "npc_mariam": {
+      "x": 700,
+      "y": 470,
+      "_note": "Mariam, the Act 1 Arabic mentor (Modern Standard, per data/languages.js). Stands in her front yard between the south sidewalk (y=420) and the yellow house (y=550), clear of Mrs. Ramirez (550,310) and Mr. Chen (313,402)."
     },
-    "animals": [
-      {
-        "speciesId": "javelina",
-        "label": "Javelina",
-        "x": 390,
-        "y": 515,
-        "interactionRadius": 60,
-        "_note": "Near the west mesquite, but offset from Mr. Chen and his bike — javelina feeds on mesquite pods"
-      },
-      {
-        "speciesId": "rabbit",
-        "label": "Desert Jackrabbit",
-        "x": 120,
-        "y": 545,
-        "interactionRadius": 55,
-        "_note": "Near creosote, lower on the lawn so the animal cluster reads clearly"
-      },
-      {
-        "speciesId": "coyote",
-        "label": "Coyote",
-        "x": 830,
-        "y": 520,
-        "interactionRadius": 65,
-        "_note": "Predator roaming near the east mesquite, with space from the player path and other animals"
-      }
-    ]
+    "plants_note": "Desert flora moved to desert-edge.layout.json (owner request 2026-11-26: the street was too crowded for a young child). Kept as an empty array so the scene's layout contract is unchanged and a plant can be added back by data alone.",
+    "animals_note": "Desert fauna moved to desert-edge.layout.json. See plants_note.",
+    "wall_south_west": {
+      "x": 230,
+      "y": 710,
+      "w": 460,
+      "h": 20,
+      "_note": "South bound, west of the Desert Edge gap (spans x=0..460)."
+    },
+    "wall_south_east": {
+      "x": 800,
+      "y": 710,
+      "w": 400,
+      "h": 20,
+      "_note": "South bound, east of the Desert Edge gap (spans x=600..1000)."
+    },
+    "exit_zone_south": {
+      "x": 530,
+      "y": 686,
+      "w": 140,
+      "h": 28,
+      "_note": "Walk south off the street into Desert Edge. Sits in the gap between the green and yellow houses; a signed arrow is drawn above it so a young child can see where it goes."
+    },
+    "desert_edge_sign": {
+      "x": 530,
+      "y": 620,
+      "_note": "Arrow sign over the south exit: \"Desert Edge\"."
+    }
   }
 }

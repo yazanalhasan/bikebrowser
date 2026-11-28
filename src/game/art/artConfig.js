@@ -16,6 +16,21 @@ export const DEPTHS = {
   ui: 1000,
 };
 
+/**
+ * On-screen scale for the 96 px character sheets (Zuzu's atlas, Mariam, Lina).
+ *
+ * The sheets are authored at 96x96 per frame with the figure 72–84 px tall and
+ * its feet on a y=91 baseline. Drawing them all at this one scale keeps
+ * relative heights exactly as drawn — an adult reads taller than a kid because
+ * the art says so, not because a scene picked a number — and lands Zuzu at
+ * roughly the 92 px he occupied as vector art, so camera framing and the
+ * collision box tuned for that avatar still hold.
+ *
+ * Changing this rescales every character together. Do not scale characters
+ * per scene.
+ */
+export const CHARACTER_PIXEL_SCALE = 1.1;
+
 export const SCALE = {
   zuzu: 1,
   child: 1,

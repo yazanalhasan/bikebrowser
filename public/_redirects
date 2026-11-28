@@ -5,11 +5,14 @@
 /saved-notes / 200
 /safe-search / 200
 /play / 200
-/play3d / 200
 /spelling-trainer / 200
 /multiplication-trainer / 200
 /learn / 200
 /learn/* / 200
 /game/letter-detective /learn/letter-detective 302
 /youtube/* / 200
+# /play3d and its asset tree were removed on 2026-11-27 (plan 0.11).
+# Without this the catch-all below answers every /game3d-assets/ URL
+# with the app shell and a 200, so a dead asset path looks alive.
+/game3d-assets/* /404.html 404
 /* /index.html 200

@@ -1,12 +1,6 @@
 {
     "section1": {
-        "files": [
-            {
-                "url": "editor-scenes/GarageSceneBase.js",
-                "type": "sceneFile",
-                "key": "GarageSceneBase"
-            }
-        ]
+        "files": []
     },
     "meta": {
         "app": "Phaser Editor 2D - Asset Pack Editor",

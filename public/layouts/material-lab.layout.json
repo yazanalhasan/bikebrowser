@@ -14,7 +14,9 @@
       "x": 560,
       "displayY": 436,
       "platformY": 458,
-      "_note": "Density station scale, placed below the chart and away from the UTM."
+      "artX": 480,
+      "artY": 436,
+      "_note": "artX/artY place the brass scale sprite BESIDE the LCD. Centred on it (the old behaviour) the 64x64 sprite covered the SCALE label and the grams 100%. Plan 0.12.2."
     },
     "density_calipers": {
       "x": 690,
@@ -34,10 +36,10 @@
       "_note": "Open slate panel. Kept in the upper lab area so it does not cover Zuzu near the bottom exit."
     },
     "teaching_callout": {
-      "x": 320,
-      "y": 92,
-      "w": 260,
-      "_note": "Transient UTM physics callout anchored near the specimen/readout."
+      "x": 600,
+      "y": 68,
+      "w": 250,
+      "_note": "Moved off the readout (x80-360, y52-88) and the SAMPLES header (x113-167, y88-101), which it covered by 15% and more. It now sits in the top-right strip above the chart title, in the child's eye-line for the graph it is explaining. Plan 0.12.1."
     },
     "slow_toggle": {
       "x": 140,
@@ -48,10 +50,116 @@
     },
     "comparison_panel": {
       "x": 320,
-      "y": 548,
+      "y": 170,
       "w": 350,
       "h": 58,
-      "_note": "Compact all-material comparison takeaway after all UTM tests."
+      "_note": "Was (320, 516): the fromGarage spawn is (400, 540), so Zuzu stood ON the card and hid 91% of its heading. Moved up into the empty bench band under the callout strip, where he cannot stand, AND raised into the reserved UI depth band. Plan 0.12.6."
+    }
+  },
+  "portrait": {
+    "designWidth": 400,
+    "designHeight": 860,
+    "_note": "The phone column (plan 0.5). The landscape block is an 800x600 bench, and contain-fitting that onto 390px is zoom 0.4875 — every label lands at 5 CSS px. Here the fit is 0.975. Rows: title 0-56, readout 56-90, samples 100-160, START 170-216, slow replay 222-268, chart 300-530, callout or takeaway 533-571, the machine to 660, the instrument bench 660-800, the way out below.",
+    "objects": {
+      "teaching_callout": {
+        "x": 200,
+        "y": 552,
+        "w": 372,
+        "_note": "Under the chart, where the takeaway card also goes — only one of the two is ever shown."
+      },
+      "comparison_panel": {
+        "x": 200,
+        "y": 552,
+        "w": 372,
+        "h": 58,
+        "_note": "Shares the callout slot: the takeaway is the last word, so it hides the callout when it appears."
+      },
+      "density_scale": {
+        "x": 150,
+        "displayY": 640,
+        "platformY": 664,
+        "artX": 330,
+        "artY": 640,
+        "_note": "Lifted 28px and moved right of the HUD leave control, which is DOM, pinned to the bottom-left corner on top of the canvas, and owns roughly world x 0-190, y 777-828 on a 390x844 phone."
+      },
+      "density_calipers": {
+        "x": 262,
+        "y": 752,
+        "_note": "Its \"Coupons: 10 cm3 uniform\" caption prints under it, so the station sits right of the leave control rather than above it."
+      },
+      "density_slate": {
+        "x": 355,
+        "y": 700
+      },
+      "density_slate_panel": {
+        "x": 200,
+        "y": 400,
+        "w": 372,
+        "h": 300,
+        "_note": "The open slate covers the chart, never the controls."
+      },
+      "slow_toggle": {
+        "x": 200,
+        "y": 252,
+        "w": 190,
+        "h": 46,
+        "_note": "Between START's 'Run the test' line (ends 226) and the chart's title (starts 280). Every row in this column is measured against its neighbours; see the rig geometry."
+      },
+      "utm": {
+        "x": 200,
+        "_note": "The machine centreline, mid-column."
+      }
+    }
+  },
+  "landscapeCompact": {
+    "designWidth": 800,
+    "designHeight": 380,
+    "_note": "A phone held sideways (review MUST 5). The 800x600 bench fitted onto a 390px-tall screen at zoom 0.65 and rendered 6-9 CSS px type. This is the same bench 380 tall: samples in a row across the top (76-130), the chart on the right (140-330), the machine on the left, and the density station along the bottom strip where the bench art already is.",
+    "objects": {
+      "utm": {
+        "x": 280
+      },
+      "density_scale": {
+        "x": 90,
+        "displayY": 190,
+        "platformY": 208,
+        "artX": 170,
+        "artY": 188,
+        "_note": "Down the left, below the takeaway button row (ends 148) and above the HUD leave control, which owns world x 0-159, y 314-357 on this screen."
+      },
+      "density_calipers": {
+        "x": 90,
+        "y": 286
+      },
+      "density_slate": {
+        "x": 230,
+        "y": 296
+      },
+      "density_slate_panel": {
+        "x": 400,
+        "y": 190,
+        "w": 460,
+        "h": 220,
+        "_note": "Unused for placement — the slate is a modal now and centres on the camera."
+      },
+      "teaching_callout": {
+        "x": 608,
+        "y": 44,
+        "w": 300
+      },
+      "slow_toggle": {
+        "x": 620,
+        "y": 134,
+        "w": 150,
+        "h": 22
+      },
+      "comparison_panel": {
+        "x": 112,
+        "y": 134,
+        "w": 260,
+        "h": 50,
+        "_note": "Only the small \"Takeaway\" reopen button lands here; the card is a modal."
+      }
     }
   }
 }

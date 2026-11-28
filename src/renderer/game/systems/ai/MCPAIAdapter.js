@@ -29,6 +29,18 @@ import {
 } from './questGenerator.js';
 import { validateAIQuestion } from '../education/quizQuestionGenerator.js';
 
+import QUEST_DEFS from '../../data/quests.js';
+
+/** A quest's human title, falling back to a de-underscored id. */
+function questTitleFor(questId) {
+  if (!questId) return '';
+  const title = QUEST_DEFS[questId]?.title;
+  if (title) return title;
+  const words = String(questId).replace(/_/g, ' ');
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
+
 // ── Per-type cooldowns ───────────────────────────────────────────────────────
 
 const COOLDOWNS = {
@@ -307,7 +319,9 @@ export default class MCPAIAdapter {
       const state = mcp.getState();
       if (state.quest?.activeQuestId) {
         const result = await this.guideQuest({
-          questTitle: state.quest.activeQuestId,
+          // The id, not the title, used to reach the toast: the child
+          // saw "\ud83d\udca1 desert_healer".
+          questTitle: questTitleFor(state.quest.activeQuestId),
           currentStepText: '',
           completedQuests: state.quest.completedCount,
         });

@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
-import { loadLayout } from '../utils/loadLayout.js';
+import { loadResponsiveLayout } from '../utils/loadLayout.js';
 import { getExplainer } from '../data/explainers/index.js';
 import {
   cancelInteractiveExplainer,
   completeInteractiveExplainer,
 } from '../systems/interactiveExplainerSystem.js';
+import { applyOverlayCameraFit, stretchOverlayDim } from '../utils/overlayCameraFit.js';
 
 export default class ExplainerScene extends Phaser.Scene {
   constructor() {
@@ -16,7 +17,9 @@ export default class ExplainerScene extends Phaser.Scene {
   init(data) {
     this._explainerId = data?.explainerId;
     this._returnSceneKey = data?.returnSceneKey;
-    this._stepIndex = 0;
+    // Carried across an orientation restart so turning the phone does not
+    // send the child back to the first step.
+    this._stepIndex = data?.stepIndex || 0;
     this._advancing = false;
   }
 
@@ -34,10 +37,21 @@ export default class ExplainerScene extends Phaser.Scene {
       return;
     }
 
-    this.layout = loadLayout(this, this.explainer.layoutKey);
+    // Portrait gets its own layout: contain-fitting the 800x600 landscape
+    // space onto a 390x844 phone lands at 0.4875, which rendered PATCH at
+    // 4.9 CSS px. See utils/loadLayout.js.
+    this._design = loadResponsiveLayout(this, this.explainer.layoutKey);
+    this.layout = this._design.objects;
     this._elementLabels = new Map();
     this._zones = new Map();
     this._solvedElements = new Set();
+
+    // The React HUD hides its quest card while this is set — it was sitting
+    // over the question and the first answer.
+    this.registry.set('overlayOpen', true);
+    this.events.once('shutdown', () => this.registry.set('overlayOpen', false));
+    this.scale.on('resize', this._refit, this);
+    this.events.once('shutdown', () => this.scale.off('resize', this._refit, this));
 
     this._drawFrame();
     this._drawWheel();
@@ -47,9 +61,50 @@ export default class ExplainerScene extends Phaser.Scene {
     this._renderStep();
   }
 
+  /** Re-centre and re-scale when the window changes size. */
+  _refit() {
+    // Turning the phone changes which layout applies, and that is a
+    // different set of coordinates — a re-fit alone would leave the
+    // landscape arrangement squeezed onto a tall screen.
+    if (this._orientationChanged()) {
+      this.scene.restart({
+        explainerId: this._explainerId,
+        returnSceneKey: this._returnSceneKey,
+        stepIndex: this._stepIndex,
+      });
+      return;
+    }
+    const fit = applyOverlayCameraFit(this, this._design);
+    // The dim is sized in design units, so it has to grow with the viewport
+    // or a resize leaves the game showing around it.
+    stretchOverlayDim(this._dimRect, fit);
+  }
+
+  /** True when the viewport has flipped between portrait and landscape. */
+  _orientationChanged() {
+    const cam = this.cameras?.main;
+    if (!cam || !this._design) return false;
+    return (cam.height > cam.width) !== Boolean(this._design.portrait);
+  }
+
   _drawFrame() {
-    const b = this.layout.backdrop;
-    this.add.rectangle(b.x, b.y, b.w, b.h, 0x020617, 0.72).setDepth(100);
+    // Centre the 800x600 design space and scale it to the window. Without
+    // this the panel sat in the top-left corner with the street showing
+    // beside it at 1280x720, and ran off the bottom at 1024x484.
+    const fit = applyOverlayCameraFit(this, this._design);
+
+    // Dim the WHOLE viewport, not the design rect: once the design space is
+    // centred, a backdrop sized to it leaves the game visible around the
+    // edges. `fit.cover` is the viewport expressed in design units.
+    const b = fit ? fit.cover : {
+      x: this.layout.backdrop.x - this.layout.backdrop.w / 2,
+      y: this.layout.backdrop.y - this.layout.backdrop.h / 2,
+      width: this.layout.backdrop.w,
+      height: this.layout.backdrop.h,
+    };
+    this._dimRect = this.add.rectangle(
+      b.x + b.width / 2, b.y + b.height / 2, b.width, b.height, 0x020617, 0.72,
+    ).setDepth(100);
 
     const p = this.layout.panel;
     this._drawRoundedPanel(p.x + 8, p.y + 10, p.w, p.h, p.r || 18, 0x020617, 0.22, 0x020617, 0, 101);
@@ -217,7 +272,10 @@ export default class ExplainerScene extends Phaser.Scene {
     body.lineBetween(-patch.w / 2 + 12, 0, patch.w / 2 - 12, 0);
     body.lineBetween(0, -patch.h / 2 + 8, 0, patch.h / 2 - 8);
     const text = this.add.text(0, 0, 'PATCH', {
-      fontSize: '10px',
+      // 10 design px fell under the 10 CSS px floor twice over: 9.8 on a
+      // phone, and 8.1 in a short 1024x484 window where the landscape
+      // layout fits at 0.807. Both tiles have room for a bigger word.
+      fontSize: this._design?.portrait ? '14px' : '13px',
       fontFamily: 'sans-serif',
       fontStyle: 'bold',
       color: '#92400e',
@@ -352,12 +410,31 @@ export default class ExplainerScene extends Phaser.Scene {
     }
   }
 
+  /**
+   * A short green glow behind the feedback line, instead of flashing the
+   * whole screen at the child.
+   */
+  _pulseFeedback(color) {
+    const t = this.feedbackText;
+    if (!t || !this.add || !this.tweens) return;
+    const b = t.getBounds();
+    const ring = this.add.rectangle(b.centerX, b.centerY, b.width + 28, b.height + 18)
+      .setStrokeStyle(4, color, 0.85)
+      .setFillStyle(color, 0.12)
+      .setDepth((t.depth || 0) - 1);
+    this.tweens.add({
+      targets: ring, alpha: 0, duration: 520, ease: 'Quad.easeOut',
+      onComplete: () => ring.destroy(),
+    });
+  }
+
   _success(message) {
     if (this._advancing) return;
     this._advancing = true;
     this.feedbackText.setColor('#15803d').setText(message || 'Correct.');
     this.registry.get('audioManager')?.playSfx?.('ui_success');
-    this.cameras.main.flash(120, 34, 197, 94, false);
+    // Green text and the sound say 'correct' already; no screen flash.
+    this._pulseFeedback(0x16a34a);
     this.time.delayedCall(750, () => {
       this._stepIndex += 1;
       this._advancing = false;

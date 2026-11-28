@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { loadLayout } from '../utils/loadLayout.js';
+import { loadResponsiveLayout } from '../utils/loadLayout.js';
 import { getCognitiveQuest } from '../data/cognitiveQuests/index.js';
 import {
   cancelCognitiveQuest,
@@ -9,6 +9,7 @@ import {
   recordCognitiveAnswer,
   shouldShowHint,
 } from '../systems/cognitiveQuestSystem.js';
+import { applyOverlayCameraFit, stretchOverlayDim } from '../utils/overlayCameraFit.js';
 
 export default class CognitiveQuestScene extends Phaser.Scene {
   constructor() {
@@ -37,19 +38,58 @@ export default class CognitiveQuestScene extends Phaser.Scene {
       return;
     }
 
-    this.layout = loadLayout(this, this.quest.layoutKey);
+    // Portrait stacks the three cards down the screen instead of
+    // squeezing a 680px row onto a 390px phone, where the answers read at
+    // 7.3 CSS px. See utils/loadLayout.js.
+    this._design = loadResponsiveLayout(this, this.quest.layoutKey);
+    this.layout = this._design.objects;
     this.state = this.registry.get('gameState') || {};
     this.mensaMode = isMensaModeEnabled(this.state);
     this.optionCards = new Map();
+
+    this.registry.set('overlayOpen', true);
+    this.events.once('shutdown', () => this.registry.set('overlayOpen', false));
+    this.scale.on('resize', this._refit, this);
+    this.events.once('shutdown', () => this.scale.off('resize', this._refit, this));
 
     this._drawFrame();
     this._drawOptions();
     this._drawFeedback();
   }
 
+  /** Re-centre and re-scale when the window changes size. */
+  _refit() {
+    // Same as the explainer: a turned phone needs the other layout, not
+    // the same one at a different zoom. The question is re-asked, which
+    // is the right thing — the cards have moved.
+    const cam = this.cameras?.main;
+    if (cam && this._design && (cam.height > cam.width) !== Boolean(this._design.portrait)) {
+      this.scene.restart({
+        questId: this._questId,
+        returnSceneKey: this._returnSceneKey,
+        completionDialog: this._completionDialog,
+      });
+      return;
+    }
+    const fit = applyOverlayCameraFit(this, this._design);
+    // The dim is sized in design units, so it has to grow with the viewport
+    // or a resize leaves the game showing around it.
+    stretchOverlayDim(this._dimRect, fit);
+  }
+
   _drawFrame() {
-    const b = this.layout.backdrop;
-    this.add.rectangle(b.x, b.y, b.w, b.h, 0x000000, 0.68).setDepth(200);
+    // Same treatment as the explainer: centre the fixed design space and
+    // scale it, then dim the whole viewport rather than the design rect.
+    const fit = applyOverlayCameraFit(this, this._design);
+    const b = fit ? fit.cover : {
+      x: this.layout.backdrop.x - this.layout.backdrop.w / 2,
+      y: this.layout.backdrop.y - this.layout.backdrop.h / 2,
+      width: this.layout.backdrop.w,
+      height: this.layout.backdrop.h,
+    };
+    this._dimRect = this.add.rectangle(
+      b.x + b.width / 2, b.y + b.height / 2, b.width, b.height, 0x000000, 0.68,
+    ).setDepth(200);
 
     const p = this.layout.panel;
     this.add.rectangle(p.x, p.y, p.w, p.h, 0xf8fafc, 0.98)
@@ -111,7 +151,7 @@ export default class CognitiveQuestScene extends Phaser.Scene {
       const bg = this.add.rectangle(0, 0, area.w, area.h, 0xffffff, 1)
         .setStrokeStyle(3, 0xcbd5e1);
       const visual = this.add.graphics();
-      this._drawOptionVisual(visual, option.visual, area);
+      this._drawOptionVisual(visual, option.visual);
       const label = this.add.text(0, area.h / 2 - 36, option.label, {
         fontSize: '15px',
         fontFamily: 'sans-serif',
@@ -131,8 +171,11 @@ export default class CognitiveQuestScene extends Phaser.Scene {
     }
   }
 
-  _drawOptionVisual(gfx, visual, area) {
-    const centerY = -24;
+  _drawOptionVisual(gfx, visual) {
+    // The art is drawn above the card's label. A portrait card is 170 tall
+    // where a landscape one is 250, so the same -24 pushed the valve
+    // stem out of the top of the card and into the one above it.
+    const centerY = this._design?.portrait ? -16 : -24;
     gfx.lineStyle(12, 0x111827, 1);
     gfx.strokeCircle(0, centerY, 48);
     gfx.lineStyle(4, 0x94a3b8, 1);
@@ -161,9 +204,25 @@ export default class CognitiveQuestScene extends Phaser.Scene {
       gfx.lineBetween(26, centerY + 48, 44, centerY + 32);
     }
 
-    const captionY = area.h / 2 - 70;
-    gfx.fillStyle(0xe0f2fe, 0.9);
-    gfx.fillRoundedRect(-56, captionY, 112, 18, 6);
+    // No empty caption bar. It was a pale blue rounded rect with nothing in
+    // it under every card — a child reads that as text that failed to load.
+    // The card's own label sits below it and says what the picture is.
+  }
+
+  /**
+   * A short green glow around the chosen card, instead of flashing the
+   * whole screen at the child.
+   */
+  _pulseCard(bg, color) {
+    if (!bg || !this.add || !this.tweens) return;
+    const ring = this.add.rectangle(bg.x, bg.y, bg.width + 12, bg.height + 12)
+      .setStrokeStyle(5, color, 0.85)
+      .setFillStyle(color, 0)
+      .setDepth((bg.depth || 0) + 1);
+    this.tweens.add({
+      targets: ring, alpha: 0, duration: 520, ease: 'Quad.easeOut',
+      onComplete: () => ring.destroy(),
+    });
   }
 
   _drawFeedback() {
@@ -206,7 +265,9 @@ export default class CognitiveQuestScene extends Phaser.Scene {
       this.feedbackText.setColor('#166534').setText(this.quest.feedback?.correct || 'Correct.');
       this.continueButton.setVisible(true);
       this.registry.get('audioManager')?.playSfx?.('ui_success');
-      this.cameras.main.flash(120, 34, 197, 94, false);
+      // The card already turns green and says so. A full-screen flash
+      // on top of it is the thing a child flinches at.
+      this._pulseCard(bg, 0x16a34a);
       return;
     }
 

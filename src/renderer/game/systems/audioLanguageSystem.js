@@ -14,7 +14,7 @@ import { getVocabItem, VOCABULARY } from '../data/languages.js';
 // ── TTS Voice Configuration Per Language ─────────────────────────────────────
 
 const VOICE_CONFIG = {
-  ar: { lang: 'ar-SA', rate: 0.75, pitch: 1.0, label: 'Arabic (Levantine)' },
+  ar: { lang: 'ar-SA', rate: 0.75, pitch: 1.0, label: 'Arabic (Modern Standard)' },
   qu: { lang: 'es-PE', rate: 0.7, pitch: 1.0, label: 'Quechua (via Spanish)' },
   sw: { lang: 'sw-KE', rate: 0.8, pitch: 1.0, label: 'Swahili' },
   tr: { lang: 'tr-TR', rate: 0.75, pitch: 1.0, label: 'Turkish' },

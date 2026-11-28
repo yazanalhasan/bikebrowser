@@ -19,6 +19,8 @@
  *   gate       — NPC or system that requires trust/knowledge to open
  */
 
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+
 // ── Obstacle Definitions Per Scene ───────────────────────────────────────────
 
 export const SCENE_OBSTACLES = {
@@ -34,19 +36,40 @@ export const SCENE_OBSTACLES = {
         icon: '',
         description: 'The pavement is scorching hot. You need protection to cross.',
         damage: { stat: 'health', amount: 0.05, interval: 500 },
-        passCondition: { type: 'item', item: 'sun_balm', message: 'Apply sun balm to resist the heat.' },
-        failMessage: 'Ouch! The pavement burns! You need some kind of heat protection...',
-        successMessage: 'The sun balm protects your skin. You cross the hot zone safely!',
+        // Either protection works. It only accepted sun balm, so a child
+        // carrying the Protective Coating they had just crafted still got
+        // the full-screen flash and "you need some kind of heat
+        // protection".
+        passCondition: {
+          type: 'itemAny',
+          items: ['sun_balm', 'protective_coating'],
+          message: 'Sun balm or a protective coating will get you across.',
+        },
+        failMessage: 'Hot out here! Your tyres need something between them and the pavement.',
+        // One line for two items said "sun balm" to a child who had just
+        // crafted the coating. Keyed by the item actually carried, with
+        // `successMessage` kept as the fallback.
+        successMessage: 'Your heat protection holds. You cross the hot zone safely!',
+        successMessageByItem: {
+          sun_balm: 'The sun balm keeps the heat off. You cross the hot zone safely!',
+          protective_coating:
+            'The coating keeps the heat off your tyres. You cross the hot zone safely!',
+        },
         hintDelay: 2, // show AI hint after 2 failures
         learnSystem: 'crafting',
         unlocksPath: 'south_desert_access',
       },
       {
+        // The gate IS the workshop's door, so it sits on the workshop
+        // (blue_house_door in street-block.layout.json) and is named for the
+        // door. It used to stand at (700,200) in open grass labelled
+        // "Workshop", which printed a second "Workshop" caption 120px from
+        // the building's own label.
         id: 'locked_workshop',
         type: 'gate',
-        x: 700, y: 200,
+        x: 850, y: 225,
         width: 60, height: 60,
-        label: 'Workshop',
+        label: 'Workshop Door',
         icon: '',
         description: 'A locked workshop with tools inside. Someone trusts you to enter.',
         passCondition: { type: 'reputation', threshold: 15, message: 'Earn more reputation by completing quests.' },
@@ -57,17 +80,34 @@ export const SCENE_OBSTACLES = {
         unlocksPath: 'workshop_interior',
       },
     ],
+    // The wilted plant moved to DesertEdgeScene with the rest of the flora
+    // (owner request 2026-11-26). The pavement hazard and the locked
+    // workshop stay here: both are street furniture.
+    puzzles: [],
+  },
+
+  DesertEdgeScene: {
+    obstacles: [],
     puzzles: [
       {
         id: 'wilted_plant',
         type: 'puzzle',
-        x: 350, y: 480,
-        icon: '🥀',
+        // Painted art, not a 28px emoji (plan 2.4). `solvedIcon` is what
+        // it becomes once the child waters it.
+        solvedIcon: ART.recovered_plant,
+        // Just off the trail down from the street gate, so it is the first
+        // thing a child meets in the desert.
+        x: 640, y: 250,
+        icon: ART.wilted_plant,
         label: 'Wilted Plant',
         description: 'A plant that needs water. If you could find some...',
         solveCondition: { type: 'item', item: 'prickly_pear_fruit' },
         failMessage: 'The plant is too dry. It needs water or a hydrating fruit...',
-        successMessage: 'The prickly pear juice revives the plant! It reveals a hidden path.',
+        // No hidden path is opened — the desert is already reachable through
+        // the signed gap in the fence, and promising one sends a child
+        // hunting for something that does not exist.
+        successMessage: 'The prickly pear juice soaks in and the plant perks up. Its leaves go green again!',
+        solvedMessage: 'The plant is green again. It looks much happier.',
         reward: { xp: 15, zuzubucks: 10 },
         learnSystem: 'foraging',
       },
@@ -194,7 +234,7 @@ export const SCENE_OBSTACLES = {
         description: 'Open desert with no shade. Hydration drops fast.',
         damage: { stat: 'hydration', amount: 0.04, interval: 600 },
         passCondition: { type: 'item', item: 'hydration_jelly', message: 'Craft cactus water jelly for sustained hydration.' },
-        failMessage: 'The desert sun is relentless! Your water is running out...',
+        failMessage: 'Hot out here! Sip your water and find some shade.',
         successMessage: 'The cactus jelly keeps you hydrated through the desert crossing!',
         hintDelay: 2,
         learnSystem: 'crafting',
@@ -281,6 +321,21 @@ export function checkObstacleCondition(obstacle, gameState) {
         passed: gameState.inventory?.includes(cond.item),
         reason: cond.message || `Need item: ${cond.item}`,
       };
+
+    // Any one of several items will do — a hazard you can cross with
+    // whichever protection you happen to have made.
+    case 'itemAny': {
+      const options = Array.isArray(cond.items) ? cond.items : [];
+      // Report WHICH item matched: the success line is written per item,
+      // because "the sun balm protects you" is wrong when the child used
+      // the coating they just made.
+      const matched = options.find((id) => gameState.inventory?.includes(id)) || null;
+      return {
+        passed: Boolean(matched),
+        matchedItem: matched,
+        reason: cond.message || `Need one of: ${options.join(', ')}`,
+      };
+    }
     case 'quest':
       return {
         passed: gameState.completedQuests?.includes(cond.quest),

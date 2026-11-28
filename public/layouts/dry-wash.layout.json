@@ -78,8 +78,8 @@
     },
     "scene_title": {
       "x": 450,
-      "y": 30,
-      "_note": "Original: x = width / 2 (900)."
+      "y": 52,
+      "_note": "Down off the top edge: at y<=30 the title was clipped on a window taller than the room, and on Home Street it met the HUD. 52 matches Desert Edge."
     },
     "exit_zone_south": {
       "x": 450,
@@ -195,9 +195,9 @@
       "_note": "Original: x = width - 30 (900-30=870), y = height - 140 (600-140=460)."
     },
     "locked_trail_label": {
-      "x": 870,
+      "x": 790,
       "y": 432,
-      "_note": "Original: x = width - 30 (900-30=870), y = height - 168 (600-168=432)."
+      "_note": "Was x=870. The wash is 900 wide and fits the camera, so this sign sat permanently under the HUD's right rail (56px) and was 56% hidden — not a scroll artefact, it could never be read. Plan 0.12."
     }
   }
 }

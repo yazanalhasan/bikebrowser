@@ -22,8 +22,16 @@
  */
 
 export const SCENE_ITEM_GRANTS = {
-  // Foraging plant interactions in StreetBlockScene (PLANT_INFO map).
-  StreetBlockScene: [
+  // Home Street grants no forage items any more: the plants moved to
+  // DesertEdgeScene on 2026-11-26 (owner request). Kept as an explicit
+  // empty array rather than deleted, so the audit sees a declared zero
+  // instead of INCOMPLETE_DATA.
+  StreetBlockScene: [],
+
+  // Foraging plant interactions in DesertEdgeScene. Species come from
+  // `public/layouts/desert-edge.layout.json`; items from
+  // `data/foragePlants.js`.
+  DesertEdgeScene: [
     { itemId: 'mesquite_pods' },
     { itemId: 'mesquite_wood_sample' },
     { itemId: 'bio_sample_bacteria' },
@@ -36,7 +44,6 @@ export const SCENE_ITEM_GRANTS = {
     { itemId: 'yucca_root' },
     { itemId: 'desert_lavender_flowers' },
     { itemId: 'ephedra_stems' },
-    { itemId: 'yerba_mansa_root' },
   ],
 
   DogParkScene: [

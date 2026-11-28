@@ -26,8 +26,18 @@ import MCPSystem from '../systems/MCPSystem.js';
 import { getUnlockProgress } from '../systems/sceneRegistry.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { addArt } from '../../../game/assets/act1Art.js';
+import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
+import {
+  WORLD_SIGN_ART_DEPTH, WORLD_SIGN_DEPTH, HUD_RAIL_WIDTH, underHudRail,
+} from '../systems/labelLayout.js';
 
 const SCENE_KEY = 'OverworldScene';
+
+// The Sonoran tileset frames used to lay the overworld ground.
+const SONORAN_TILES = 'sonoran_tiles';
+const TILE = { grass: 1, road: 2, kerb: 4, sand: 6 };
 const ENTER_RADIUS = 70; // how close player must be to enter a location
 
 export default class OverworldScene extends Phaser.Scene {
@@ -42,9 +52,38 @@ export default class OverworldScene extends Phaser.Scene {
 
   preload() {
     this.load.json('overworldLayout', 'layouts/overworld.layout.json');
-    if (!this.textures.exists(WORLD.mapAsset)) {
-      this.load.image(WORLD.mapAsset, WORLD.mapPath);
+    // Act 1 art: marker icons, props and the Sonoran tileset that builds the
+    // neighborhood ground below.
+    preloadGameAssets(this);
+  }
+
+  /**
+   * Lay the overworld ground from the Sonoran tileset: sand base, grass
+   * blocks, then the road cross with concrete kerbs. Tile indices are the
+   * tileset's own frames (0/1 grass, 2 road, 4 kerb, 6 sand).
+   * @private
+   */
+  _buildGround() {
+    const L = this.layout;
+    const tile = (frame, x, y, w, h, depth) => {
+      if (!this.textures.exists(SONORAN_TILES)) return null;
+      return this.add.tileSprite(x, y, w, h, SONORAN_TILES, frame)
+        .setOrigin(0, 0)
+        .setDepth(depth);
+    };
+
+    const base = L.ground_desert_margin;
+    tile(TILE.sand, base.x, base.y, base.w, base.h, 0);
+    for (const b of L.ground_grass_blocks || []) {
+      tile(TILE.grass, b.x, b.y, b.w, b.h, 1);
     }
+    for (const s of L.sidewalks || []) {
+      tile(TILE.kerb, s.x, s.y, s.w, s.h, 2);
+    }
+    const rv = L.road_vertical;
+    const rh = L.road_horizontal;
+    tile(TILE.road, rv.x, rv.y, rv.w, rv.h, 3);
+    tile(TILE.road, rh.x, rh.y, rh.w, rh.h, 3);
   }
 
   create() {
@@ -61,9 +100,10 @@ export default class OverworldScene extends Phaser.Scene {
     );
 
     // --- World map ---
-    this.add.image(WORLD.width / 2, WORLD.height / 2, WORLD.mapAsset)
-      .setDisplaySize(WORLD.width, WORLD.height)
-      .setDepth(0);
+    // Built from the 8-tile Sonoran tileset rather than a single painted
+    // plate: `neighborhood_world_v1.png` was never in the repo, so this used
+    // to render as a missing texture. Geometry lives in the layout JSON.
+    this._buildGround();
 
     // --- Location markers ---
     this._locationMarkers = [];
@@ -76,14 +116,18 @@ export default class OverworldScene extends Phaser.Scene {
 
       // Marker circle
       const markerColor = unlocked ? 0xfbbf24 : 0x6b7280;
+      // The whole pin — ring, icon, name, prompt — rides in the sign
+      // band. The child walks this map, and at depth 10-12 they stood on
+      // top of the place they were trying to read (plan 0.12).
       const marker = this.add.circle(x, y, this.layout.marker_circle.r, markerColor, 0.7)
         .setStrokeStyle(this.layout.marker_circle.stroke_width, unlocked ? 0xf59e0b : 0x4b5563)
-        .setDepth(10);
+        .setDepth(WORLD_SIGN_ART_DEPTH);
 
-      // Icon
-      const icon = this.add.text(x, y, unlocked ? sceneDef.icon : '🔒', {
-        fontSize: '18px',
-      }).setOrigin(0.5).setDepth(11);
+      // Icon — painted marker art; the lock is art too when the scene is shut.
+      const iconKey = unlocked ? sceneDef.iconArt : ART.map_lock;
+      const icon = addArt(this, iconKey, x, y, {
+        anchor: 'icon', maxPx: 30, depth: WORLD_SIGN_ART_DEPTH + 1,
+      });
 
       // Name label
       const label = this.add.text(x, y + this.layout.marker_label.y_offset, sceneDef.name, {
@@ -91,7 +135,7 @@ export default class OverworldScene extends Phaser.Scene {
         fontStyle: 'bold',
         color: unlocked ? '#78350f' : '#6b7280',
         stroke: '#ffffff', strokeThickness: 3,
-      }).setOrigin(0.5).setDepth(11);
+      }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH);
 
       // Enter prompt (hidden) OR lock hint
       let prompt;
@@ -101,23 +145,23 @@ export default class OverworldScene extends Phaser.Scene {
           fontStyle: 'bold', color: '#ffffff',
           backgroundColor: '#1e40af',
           padding: { x: 6, y: 3 },
-        }).setOrigin(0.5).setDepth(12).setVisible(false);
+        }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH + 1).setVisible(false);
       } else {
         // Show lock requirements
         const progress = getUnlockProgress(sceneDef.key, state);
-        prompt = this.add.text(x, y + this.layout.marker_prompt.y_offset, `🔒 ${progress.hint}`, {
+        prompt = this.add.text(x, y + this.layout.marker_prompt.y_offset, progress.hint, {
           fontSize: '10px', fontFamily: 'sans-serif',
           color: '#ffffff',
           backgroundColor: '#6b7280',
           padding: { x: 4, y: 2 },
           wordWrap: { width: 160 },
-        }).setOrigin(0.5).setDepth(12).setVisible(false);
+        }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH + 1).setVisible(false);
 
         // Progress bar under locked marker
         if (progress.progress > 0 && progress.progress < 1) {
           const barW = this.layout.progress_bar.w;
-          this.add.rectangle(x, y + this.layout.progress_bar.y_offset, barW, this.layout.progress_bar.h, 0x4b5563).setDepth(11);
-          this.add.rectangle(x - barW / 2 + (barW * progress.progress) / 2, y + this.layout.progress_bar.y_offset, barW * progress.progress, this.layout.progress_bar.h, 0xfbbf24).setOrigin(0, 0.5).setDepth(12);
+          this.add.rectangle(x, y + this.layout.progress_bar.y_offset, barW, this.layout.progress_bar.h, 0x4b5563).setDepth(WORLD_SIGN_ART_DEPTH + 1);
+          this.add.rectangle(x - barW / 2 + (barW * progress.progress) / 2, y + this.layout.progress_bar.y_offset, barW * progress.progress, this.layout.progress_bar.h, 0xfbbf24).setOrigin(0, 0.5).setDepth(WORLD_SIGN_ART_DEPTH + 2);
         }
       }
 
@@ -125,9 +169,12 @@ export default class OverworldScene extends Phaser.Scene {
       const hasQuest = this._hasQuestAt(sceneDef.key, state);
       let questMarker = null;
       if (hasQuest && unlocked) {
-        questMarker = this.add.text(x + this.layout.marker_quest_indicator.x_offset, y + this.layout.marker_quest_indicator.y_offset, '❗', {
-          fontSize: '16px',
-        }).setOrigin(0.5).setDepth(12);
+        questMarker = addArt(
+          this, ART.ui_exclaim,
+          x + this.layout.marker_quest_indicator.x_offset,
+          y + this.layout.marker_quest_indicator.y_offset,
+          { anchor: 'icon', maxPx: 24, depth: 12 },
+        );
       }
 
       this._locationMarkers.push({
@@ -207,7 +254,45 @@ export default class OverworldScene extends Phaser.Scene {
 
   // ── Location marker interaction ────────────────────────────────────────────
 
+  /**
+   * Keep every pin's name out from under the HUD rail.
+   *
+   * The map is 1536 wide in a 1280 camera, so it scrolls: a pin that
+   * reads fine in one position slides under the rail's icons in
+   * another, and "Sports Fields" was 42% hidden at the default spawn.
+   * Depth cannot fix it — the rail is DOM, above the whole canvas — so
+   * the label moves instead, from under its pin to the pin's left,
+   * which is the same yielding rule name tags already follow.
+   */
+  _dodgeHudRail() {
+    const cam = this.cameras.main;
+    for (const loc of this._locationMarkers) {
+      for (const text of [loc.label, loc.prompt]) {
+        if (!text?.visible) continue;
+        const home = text.getData('homeX') ?? text.x;
+        if (text.getData('homeX') == null) text.setData('homeX', home);
+
+        const halfW = text.displayWidth / 2;
+        const ox = cam.width / 2;
+        const screenRight = (home + halfW - cam.scrollX - ox) * cam.zoom + ox;
+        if (underHudRail(screenRight, cam.width)) {
+          // Clamp in SCREEN space, not relative to the pin: when the pin
+          // itself is under the rail, nudging the label a few pixels to
+          // its left leaves it under the rail too. This puts the label's
+          // right edge just clear of the rail wherever the map has
+          // scrolled to.
+          const limit = cam.width - HUD_RAIL_WIDTH - 4;
+          const worldRight = (limit - ox) / cam.zoom + cam.scrollX + ox;
+          text.setX(worldRight - halfW);
+        } else {
+          text.setX(home);
+        }
+      }
+    }
+  }
+
   _updateMarkerProximity() {
+    this._dodgeHudRail();
     const px = this.player.sprite.x;
     const py = this.player.sprite.y;
 
@@ -320,9 +405,8 @@ export default class OverworldScene extends Phaser.Scene {
       CommunityPoolScene: 'fromCommunityPool',
       DesertTrailScene: 'fromDesertTrail',
       MountainScene: 'fromMountain',
-      // Legacy scene names
-      GarageScene: 'fromGarage',
-      NeighborhoodScene: 'default',
+      // No legacy keys here: loadGame rewrites a retired scene key
+      // before the game boots, so `prev` is always a live scene.
     };
     return spawnMap[prev] || 'default';
   }

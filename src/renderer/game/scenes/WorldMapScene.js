@@ -23,6 +23,12 @@ import {
   _drainPendingReveals as _drainPendingQuestReveals,
   triggerQuestRevealsForState,
 } from '../systems/discoveryBridge.js';
+import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { addArt, addBackdrop } from '../../../game/assets/act1Art.js';
+import { NARRATOR } from '../systems/questDialog.js';
+import { HUD_RAIL_WIDTH } from '../systems/labelLayout.js';
+import { HUD_TOP_LEFT_WIDTH } from '../ui/sceneTitle.js';
 
 const SCENE_KEY = 'WorldMapScene';
 
@@ -109,6 +115,11 @@ export default class WorldMapScene extends Phaser.Scene {
     this._originSpawn = data?.originSpawn || 'default';
   }
 
+  preload() {
+    // Act 1 art: map node icons, the padlock and the sky plate.
+    preloadGameAssets(this);
+  }
+
   create() {
     const state = this.registry.get('gameState');
     const { width, height } = this.cameras.main;
@@ -117,7 +128,9 @@ export default class WorldMapScene extends Phaser.Scene {
     setBusy('inMenu', true);
 
     // ── Background ──
-    this.add.rectangle(width / 2, height / 2, width, height, 0x2d1b0e).setDepth(-300);
+    // Painted daytime sky behind the parchment instead of a flat brown fill.
+    addBackdrop(this, ART.worldmap_sky_day, 0, 0, width, height, { depth: -300 })
+      || this.add.rectangle(width / 2, height / 2, width, height, 0x2d1b0e).setDepth(-300);
 
     // Parchment/map overlay
     const mapW = width * 0.88;
@@ -146,14 +159,22 @@ export default class WorldMapScene extends Phaser.Scene {
     this._renderFogLayer({ mapBounds: { x: mapX, y: mapY, w: mapW, h: mapH } });
 
     // Title
-    this.add.text(width / 2, 30, '🗺️  WORLD MAP  🗺️', {
-      fontSize: '22px', fontFamily: 'sans-serif', fontStyle: 'bold',
+    // The header sits between the HUD's top-left block and its right
+    // rail, not in the middle of the raw width: on a 390px phone a
+    // centred heading runs under the goals chip (plan 0.12).
+    const headX = HUD_TOP_LEFT_WIDTH + (width - HUD_TOP_LEFT_WIDTH - HUD_RAIL_WIDTH) / 2;
+    this.add.text(headX, 30, '🗺️  WORLD MAP  🗺️', {
+      fontSize: width < 600 ? '17px' : '22px',
+      fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#5c3d10', stroke: '#f5e6c8', strokeThickness: 3,
     }).setOrigin(0.5);
 
     // ── Subtitle with region ──
-    this.add.text(width / 2, 55, 'Tap a location to travel there', {
-      fontSize: '12px', fontFamily: 'sans-serif', color: '#8b6914',
+    // The same parchment stroke the title uses. Without it this line is
+    // dark brown on open sky and a child cannot read it.
+    this.add.text(headX, 55, 'Tap a location to travel there', {
+      fontSize: '12px', fontFamily: 'sans-serif', color: '#6b4f10',
+      stroke: '#f5e6c8', strokeThickness: 3,
     }).setOrigin(0.5);
 
     // ── Location Markers ──
@@ -337,10 +358,10 @@ export default class WorldMapScene extends Phaser.Scene {
       circle.setInteractive({ useHandCursor: unlocked });
       circle.setDepth(1);
 
-      // Icon — depth 1
-      const icon = this.add.text(x, y, unlocked ? loc.icon : '🔒', {
-        fontSize: '20px',
-      }).setOrigin(0.5).setDepth(1);
+      // Icon — depth 1. Painted node art; locked nodes show the padlock art.
+      const icon = addArt(this, unlocked ? loc.iconArt : ART.map_lock, x, y, {
+        anchor: 'icon', maxPx: 30, depth: 1,
+      });
 
       // Name label — depth 1, inactive at 0.7 alpha
       const nameLabel = this.add.text(x, y + 32, loc.name, {
@@ -355,10 +376,13 @@ export default class WorldMapScene extends Phaser.Scene {
         nameLabel.setAlpha(0.7);
       }
 
-      // Difficulty stars — depth 1
+      // Difficulty stars — under the name, wherever the name ended. A
+      // fixed y+48 printed them through the second line of a name that
+      // wrapped ("Abandoned Copper Mine").
       if (unlocked) {
         const stars = '⭐'.repeat(loc.difficulty);
-        this.add.text(x, y + 48, stars, { fontSize: '10px' }).setOrigin(0.5).setDepth(1);
+        this.add.text(x, nameLabel.y + nameLabel.height + 2, stars, { fontSize: '10px' })
+          .setOrigin(0.5, 0).setDepth(1);
       }
 
       // Side quest indicators — depth 1
@@ -404,7 +428,7 @@ export default class WorldMapScene extends Phaser.Scene {
     // ── Neighborhood marker (home base) ──
     // homeX / homeY declared above (before _renderPathLayer call).
     const homeCircle = this.add.circle(homeX, homeY, 18, 0x22c55e).setStrokeStyle(3, 0xffffff).setDepth(1);
-    this.add.text(homeX, homeY, '🏠', { fontSize: '18px' }).setOrigin(0.5).setDepth(1);
+    addArt(this, ART.map_home, homeX, homeY, { anchor: 'icon', maxPx: 26, depth: 1 });
     const homeLabel = this.add.text(homeX, homeY + 28, 'Neighborhood', {
       fontSize: '11px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#166534', stroke: '#f5e6c8', strokeThickness: 2,
@@ -421,20 +445,37 @@ export default class WorldMapScene extends Phaser.Scene {
     homeHitZone.on('pointerdown', () => this._returnToNeighborhood());
 
     // ── Back button ──
-    const backBtn = this.add.text(60, height - 35, '← Back to Neighborhood', {
-      fontSize: '14px', fontFamily: 'sans-serif', fontStyle: 'bold',
+    // Left-anchored and clear of the on-screen arrow pad, which sits in
+    // the bottom-left corner: centred at x=60 the first word ran off the
+    // left edge and the ↓ key was printed through "Neighborhood".
+    // On a narrow screen the back button and the legend cannot share a
+    // row: at 390px wide they overlapped each other by 41% and both ran
+    // under the HUD. Stack them instead.
+    const narrow = width < 600;
+    // Above the d-pad and the action button, not in them: at the very
+    // bottom of a 390px screen both of those sit on top of this row.
+    const backY = narrow ? height - 215 : height - 35;
+    const backBtn = this.add.text(narrow ? 16 : 190, backY, '← Back to Neighborhood', {
+      fontSize: narrow ? '12px' : '14px',
+      fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#ffffff', backgroundColor: '#475569', padding: { x: 10, y: 6 },
-    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });
 
     backBtn.on('pointerdown', () => this._returnToNeighborhood());
     backBtn.on('pointerover', () => backBtn.setBackgroundColor('#334155'));
     backBtn.on('pointerout', () => backBtn.setBackgroundColor('#475569'));
 
     // ── Legend ──
-    const legendY = height - 35;
-    const legendX = width - 140;
+    // Above the back button on a phone, beside it on a desktop; clear of
+    // the right-hand rail either way.
+    const legendY = narrow ? height - 250 : height - 35;
+    const legendX = narrow
+      ? (width - HUD_RAIL_WIDTH) / 2
+      : width - 260;
     this.add.text(legendX, legendY, '🟢 Resource  🔵 Material  🟤 Biology', {
-      fontSize: '9px', fontFamily: 'sans-serif', color: '#8b6914',
+      // A sentence, so the floor is 12 (plan 0.5).
+      fontSize: '12px', fontFamily: 'sans-serif', color: '#5c3d10',
+      stroke: '#f5e6c8', strokeThickness: 3,
     }).setOrigin(0.5);
 
     // ── Camera vignette overlay ────────────────────────────────────────────
@@ -1384,7 +1425,7 @@ export default class WorldMapScene extends Phaser.Scene {
     if (req.reputation) hints.push(`Need ${req.reputation} reputation (you have ${state?.reputation || 0})`);
     if (req.questsAny) hints.push(`Complete a quest: ${req.questsAny.join(' or ')}`);
     this.registry.set('dialogEvent', {
-      speaker: 'System',
+      speaker: NARRATOR,
       text: `${loc.name} is locked. ${hints.join('. ') || 'Keep exploring!'}`,
       choices: null, step: null,
     });
@@ -1479,7 +1520,9 @@ export default class WorldMapScene extends Phaser.Scene {
     if (audioMgr) {
       // Try discover key first; fall back to reward_stinger.
       if (audioMgr.hasSfx?.('discover')) {
-        audioMgr.playSfx('discover');
+        // 'discover' was never a key; the find-something sound is
+        // 'desert_discovery'.
+        audioMgr.playSfx('desert_discovery');
       } else if (audioMgr.playStinger) {
         audioMgr.playStinger('reward_stinger');
       } else {
@@ -1528,10 +1571,10 @@ export default class WorldMapScene extends Phaser.Scene {
     container.add(circle);
 
     // Icon — at local (0, 0).
-    const icon = this.add.text(0, 0, unlocked ? loc.icon : '🔒', {
-      fontSize: '20px',
-    }).setOrigin(0.5);
-    container.add(icon);
+    const icon = addArt(this, unlocked ? loc.iconArt : ART.map_lock, 0, 0, {
+      anchor: 'icon', maxPx: 30, depth: 1,
+    });
+    if (icon) container.add(icon);
 
     // Name label — at local (0, 32).
     const nameLabel = this.add.text(0, 32, loc.name, {
@@ -1543,10 +1586,14 @@ export default class WorldMapScene extends Phaser.Scene {
     if (!unlocked) nameLabel.setAlpha(0.7);
     container.add(nameLabel);
 
-    // Difficulty stars — at local (0, 48).
+    // Difficulty stars — under the name, wherever the name ended (see the
+    // note on the other node renderer above).
     if (unlocked) {
       const stars = '⭐'.repeat(loc.difficulty);
-      container.add(this.add.text(0, 48, stars, { fontSize: '10px' }).setOrigin(0.5));
+      container.add(
+        this.add.text(0, nameLabel.y + nameLabel.height + 2, stars, { fontSize: '10px' })
+          .setOrigin(0.5, 0),
+      );
     }
 
     // Make the circle interactive. Because the circle is inside a container,

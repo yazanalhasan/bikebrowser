@@ -10,6 +10,10 @@
 
 import Phaser from 'phaser';
 import { createZuzu } from '../../../game/characters/createZuzu.js';
+import { CHARACTER_PIXEL_SCALE } from '../../../game/art/artConfig.js';
+import {
+  feetOffset, nameTagOffset, PLAYER_LABEL_DEPTH,
+} from '../systems/labelLayout.js';
 
 const SPEED = 300;
 
@@ -23,6 +27,8 @@ const ANIM_SPEED_MIN = 0.5;    // slowest animation multiplier
 const ANIM_SPEED_MAX = 2.0;    // fastest animation multiplier
 const IDLE_LERP = 0.15;        // how fast limbs return to rest (0–1)
 const DUST_INTERVAL = 260;     // ms between dust puffs
+
+
 
 export default class Player {
   /**
@@ -45,11 +51,19 @@ export default class Player {
     // Container holds all body parts
     this.container = scene.add.container(x, y);
     this._buildCharacter();
-    this.container.setScale(1.65);
+    // Pixel-art Zuzu is drawn at the shared character scale; the vector
+    // fallback keeps its own 1.65 tuning.
+    this._bodyScale = this._usesAtlasAvatar ? CHARACTER_PIXEL_SCALE : 1.65;
+    this.container.setScale(this._bodyScale);
     this.container.setDepth(6);
 
+    // The art is anchored on its feet baseline, the hitbox is not; see
+    // systems/labelLayout.js.
+    this._feetOffset = feetOffset(this._usesAtlasAvatar);
+    this._labelOffset = nameTagOffset(this._usesAtlasAvatar);
+
     // Shadow under character for grounding
-    this._shadow = scene.add.ellipse(x, y + 24, 28, 8, 0x000000, 0.18);
+    this._shadow = scene.add.ellipse(x, y + this._feetOffset, 28, 8, 0x000000, 0.18);
     this._shadow.setDepth(5);
 
     // Invisible physics hitbox
@@ -58,8 +72,10 @@ export default class Player {
     this.sprite.body.setCollideWorldBounds(true);
     this.sprite.setDepth(6);
 
-    // Name label
-    this.label = scene.add.text(x, y + 42, 'Zuzu', {
+    // Name label, just under the feet — the same relationship `Npc.js`
+    // uses (FEET_OFFSET + 10). At +42 it floated clear of the sprite and
+    // landed on other labels, Lina's among them.
+    this.label = scene.add.text(x, y + this._labelOffset, 'Zuzu', {
       fontSize: '13px',
       fontFamily: 'sans-serif',
       fontStyle: 'bold',
@@ -327,8 +343,16 @@ export default class Player {
 
     // Apply offsets to each limb Graphics
     if (this._usesAtlasAvatar) {
-      if (this._state === 'walk') this._avatar.playWalk?.(this.facing);
-      else this._avatar.setFacing?.(this.facing);
+      if (this._state === 'walk') {
+        this._avatar.playWalk?.(this.facing);
+      } else {
+        // Stop first. A playing animation writes its own frame every
+        // tick, so setting the idle frame underneath it did nothing and
+        // Zuzu kept walking on the spot after the key was released
+        // (plan 0.10 follow-up).
+        this._avatar.stop?.();
+        this._avatar.setFacing?.(this.facing);
+      }
       return;
     }
 
@@ -377,8 +401,32 @@ export default class Player {
 
   // ── Main update (called from scene) ───────────────────────────────────────
 
+  /**
+   * Take the player off the screen and out of the physics world.
+   *
+   * For a scene that is an instrument rather than a room: a lab rig
+   * has no d-pad and nothing to walk to, but the player still spawned
+   * on the bench and a keyboard walked him over the controls (review
+   * MUST 9). The object stays — the save system, the quest system and
+   * the exit zones all reach for scene.player.
+   *
+   * @param {boolean} hidden
+   */
+  setHidden(hidden) {
+    this.hidden = Boolean(hidden);
+    this.container?.setVisible(!hidden);
+    this.label?.setVisible(!hidden);
+    this._shadow?.setVisible(!hidden);
+    this.sprite?.setVisible(!hidden);
+    if (this.sprite?.body) this.sprite.body.enable = !hidden;
+    return this;
+  }
+
   /** Call from scene update(). Returns { x, y } of current position. */
   update() {
+    // Hidden means hidden: no walk animation, no dust, no footsteps,
+    // and no answering the keyboard.
+    if (this.hidden) return { x: this.sprite?.x ?? 0, y: this.sprite?.y ?? 0 };
     // Guard against the React-unmount race: Phaser can tear down the
     // sprite's physics body mid-frame while an in-flight requestAnimationFrame
     // callback still calls update(). When the user pauses/leaves and re-enters
@@ -409,8 +457,12 @@ export default class Player {
     if (vy < 0) this.facing = 'up';
     else if (vy > 0) this.facing = 'down';
 
-    if (vx < 0) this.container.setScale(-1.8, 1.8);
-    else if (vx > 0) this.container.setScale(1.8, 1.8);
+    // Horizontal flip. The atlas sheets carry their own left/right rows, so
+    // only the vector avatar is mirrored (and at its own walking scale).
+    if (!this._usesAtlasAvatar) {
+      if (vx < 0) this.container.setScale(-1.8, 1.8);
+      else if (vx > 0) this.container.setScale(1.8, 1.8);
+    }
 
     // Normalize diagonal speed
     const len = Math.sqrt(vx * vx + vy * vy) || 1;
@@ -434,10 +486,21 @@ export default class Player {
     // ── Position sync ──
     // Container (visual) follows physics sprite, with walk bob applied
     this.container.setPosition(this.sprite.x, this.sprite.y + this._limbOffsets.bob);
-    this.label.setPosition(this.sprite.x, this.sprite.y + 42);
+    this.label.setPosition(this.sprite.x, this.sprite.y + this._labelOffset);
 
     // Shadow stays flat on ground under character
-    this._shadow.setPosition(this.sprite.x, this.sprite.y + 24);
+    this._shadow.setPosition(this.sprite.x, this.sprite.y + this._feetOffset);
+    // Y-sort the player into the same band the props and NPCs use
+    // (systems/depthSort.js), so he walks in front of what is above him and
+    // behind what is below. A fixed depth left him under every prop.
+    const depth = 10 + Math.min(39, this.container.y / 26);
+    this.container.setDepth(depth);
+    this.sprite.setDepth(depth);
+    this._shadow.setDepth(depth - 0.5);
+    // The name tag is on the shared label layer, not just above Zuzu: at
+    // `depth + 0.1` an NPC standing below him drew over it.
+    this.label.setDepth(PLAYER_LABEL_DEPTH);
+
     // Shadow scales subtly with bob to reinforce grounding
     const shadowScale = 1.0 + this._limbOffsets.bob * 0.03;
     this._shadow.setScale(shadowScale, 1);
@@ -448,8 +511,8 @@ export default class Player {
   setPosition(x, y) {
     this.sprite.setPosition(x, y);
     this.container.setPosition(x, y);
-    this.label.setPosition(x, y + 42);
-    this._shadow.setPosition(x, y + 24);
+    this.label.setPosition(x, y + this._labelOffset);
+    this._shadow.setPosition(x, y + this._feetOffset);
   }
 
   destroy() {

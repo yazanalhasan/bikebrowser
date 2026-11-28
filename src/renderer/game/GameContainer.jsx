@@ -16,7 +16,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Phaser from 'phaser';
-import { createGameConfig } from './config.js';
+import { attachLayoutEditor, createGameConfig } from './config.js';
 import { loadGame, saveGame, resetGame, hasSave } from './systems/saveSystem.js';
 import { getQuestSummary, getInventoryDisplay, getJournalEntries } from './ui/gameHud.js';
 import useGameAudio from './audio/useGameAudio.js';
@@ -41,9 +41,17 @@ import { clearDialogueCache } from './services/npcAiClient.js';
 import { setBusy, recordQuestionDismissed } from './systems/gameplayArbiter.js';
 import { runRuntimeAudit } from './systems/runtimeAudit.js';
 import { gameplayReportsEnabled } from './utils/gameplayReports.js';
-import { getCurrentStep, initDiscoveryQuestBridge } from './systems/questSystem.js';
+import { getCurrentStep, initDiscoveryQuestBridge, startQuest } from './systems/questSystem.js';
+import { acceptQuestOffer, dialogForStep } from './systems/questDialog.js';
+import { describeCondition } from './systems/milestoneText.js';
+import QUEST_DEFS from './data/quests.js';
+import { getNpcProfile } from './data/npcProfiles.js';
 import { interpolateStepText } from './systems/questTemplating.js';
 import { triggerQuestRevealsForState } from './systems/discoveryBridge.js';
+import { LANGUAGE_CARDS } from './systems/languageLayer.js';
+import { approvedTextureKeys } from '../../game/assets/preloadGameAssets.js';
+import { ECOLOGY_ASSET_PATHS } from './systems/ecology/ecologyAssetManifest.js';
+import { transitionTo } from './systems/sceneTransition.js';
 
 const GAMEPLAY_REPORTS_KEY = 'bikebrowser_gameplay_reports';
 const GAMEPLAY_REPORTS_ENABLED = gameplayReportsEnabled(import.meta.env);
@@ -51,6 +59,19 @@ const CONSOLE_BUFFER_ENABLED =
   GAMEPLAY_REPORTS_ENABLED || import.meta.env.DEV || import.meta.env.VITE_ENABLE_CONSOLE_BUFFER === 'true';
 const PHYSICS_HUD_ENABLED =
   import.meta.env.DEV || import.meta.env.VITE_ENABLE_PHYSICS_HUD === 'true';
+/**
+ * `window.__phaserGame`, in a built bundle, for the acceptance tests.
+ *
+ * MUST 0.16 was invisible to every test we had because it only happens
+ * in a MINIFIED build: the boot scene was looked up by class name, and
+ * the minifier renames classes. Testing that needs a production build,
+ * and a production build has no handle to read the live scene from.
+ *
+ * Off unless VITE_E2E_HANDLE is set, so what ships is unchanged; the
+ * flag only adds the handle, never anything the fix depends on.
+ */
+const E2E_HANDLE_ENABLED =
+  import.meta.env.DEV || import.meta.env.VITE_E2E_HANDLE === 'true';
 const HUD_BUTTON_CLASS =
   'bg-white/90 rounded-lg w-10 h-10 sm:w-11 sm:h-11 shadow text-lg flex items-center justify-center transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer';
 const HUD_PANEL_STYLE = { right: 'calc(max(0.5rem, env(safe-area-inset-right)) + 3rem)' };
@@ -277,6 +298,10 @@ export default function GameContainer() {
   const gameRef = useRef(null);
   const [containerReady, setContainerReady] = useState(false);
   const prevCompletedRef = useRef(new Set());
+  // Act 1 finishing is a moment, not a checklist row — fire it once.
+  const act1CelebratedRef = useRef(false);
+  // Last `dialogEvent` value adopted from the registry (see the mirror below).
+  const lastDialogRef = useRef(null);
   const navigate = useNavigate();
   const recordQuestComplete = useLearningStore((s) => s.recordQuestComplete);
 
@@ -302,6 +327,23 @@ export default function GameContainer() {
   const [showQuestBoard, setShowQuestBoard] = useState(false);
   const [showShop, setShowShop] = useState(false);
   const [gameState, setGameState] = useState(null);
+  // Which local scene is on screen. Published by LocalSceneBase on entry so
+  // HUD hints can be scene-specific.
+  const [activeSceneKey, setActiveSceneKey] = useState(null);
+  // True while the explainer or cognitive-quest overlay is up. The HUD
+  // quest card sat over the question and the first answer.
+  const [overlayOpen, setOverlayOpen] = useState(false);
+  // True in a scene that draws its own full-screen instrument panel — the
+  // lab rigs. The quest card sat across the Force / Strain / Stress
+  // readout, which is the one thing the child is meant to be watching.
+  const [sceneOwnsHud, setSceneOwnsHud] = useState(false);
+  const [leaveSceneLabel, setLeaveSceneLabel] = useState('Back');
+  // True while Zuzu is standing at something he can use. The quest column
+  // fades out of the way: in the garage it covered the workbench's own
+  // caption and prompt, and the doors to both labs. Same rule the game
+  // already uses for Lina's chip and for the walking name tags — the thing
+  // you walked up to wins.
+  const [atProp, setAtProp] = useState(false);
   const [paused, setPaused] = useState(false);
   const [showInventory, setShowInventory] = useState(false);
   const [showNotebook, setShowNotebook] = useState(false);
@@ -419,6 +461,7 @@ export default function GameContainer() {
     setCraftResult(null);
     setDialog(null);
     prevCompletedRef.current = new Set();
+    act1CelebratedRef.current = false;
 
     // Force Phaser re-mount via key bump
     setBootKey((k) => k + 1);
@@ -547,8 +590,33 @@ export default function GameContainer() {
     //   __phaserGame.scene.add('WorldMapScene', WorldMapScene, true);
     // (the second arg is the imported class — refresh the page first if
     // your console doesn't already have it in scope).
-    if (import.meta.env.DEV) {
+    // Dev layout editor, in a dev build only (see attachLayoutEditor).
+    attachLayoutEditor(game).catch(() => {});
+
+    if (E2E_HANDLE_ENABLED) {
       window.__phaserGame = game;
+      // The approved texture list, for the no-legacy-art audit. Same
+      // flag, same reason: that spec has to be able to run against a
+      // built bundle (MUST 0.15 + 0.16).
+      // Scene jump, for the 0.17 lifecycle suite. It goes through the
+      // game's own transitionTo — the same spawn resolution and unlock
+      // check a child's walk-in exit uses — so a test cannot reach a
+      // scene by a route the game would refuse. A lifecycle spec has to
+      // start somewhere other than the garage without playing the whole
+      // act first; this is that, and nothing more.
+      window.__bbGoto = (key, spawn = 'default') => {
+        const scene = game.scene.getScenes(true)
+          .find((s) => s.scene?.isActive?.() && s.cameras?.main);
+        if (!scene) return false;
+        scene._transitioning = false;
+        transitionTo(scene, key, spawn, { fadeMs: 0 });
+        return true;
+      };
+      window.__approvedTextureKeys = [
+        ...approvedTextureKeys(),
+        ...Object.keys(ECOLOGY_ASSET_PATHS || {}),
+        '__WHITE',
+      ];
     }
     if (import.meta.env.DEV || GAMEPLAY_REPORTS_ENABLED) {
       runRuntimeAudit();
@@ -579,6 +647,7 @@ export default function GameContainer() {
     // Seed registry with saved state
     game.registry.set('gameState', savedState);
     prevCompletedRef.current = new Set(savedState.completedQuests || []);
+    act1CelebratedRef.current = evaluateAct1(savedState || {}).complete;
 
     // Inject audio manager into registry so scenes can use it
     game.registry.set('audioManager', null); // set after unlock
@@ -586,11 +655,33 @@ export default function GameContainer() {
     // Refresh HUD once the game is ready
     game.events.once('ready', () => {
       refreshHud(savedState);
+      // Belt-and-braces: if the first scene set the key before this effect
+      // attached its listener, pick it up here. `registry.set` only emits
+      // changedata when the value actually changes, so a missed first write
+      // would otherwise never be seen.
+      setActiveSceneKey(game.registry.get('activeSceneKey') || null);
     });
 
     // Listen for registry changes to keep HUD in sync
     game.registry.events.on('changedata-gameState', (_parent, value) => {
       refreshHud(value);
+
+      // Finishing Act 1 gets its own dialog. It used to be announced only by
+      // a small HUD card that sat under the AI toasts, so the end of the act
+      // could pass a child by completely.
+      if (!act1CelebratedRef.current && evaluateAct1(value || {}).complete) {
+        act1CelebratedRef.current = true;
+        game.registry.set('dialogEvent', {
+          speaker: 'Zuzu',
+          text:
+            'I did it!\n\nMy bike rolls, the bridge holds, and I tested the '
+            + 'materials instead of guessing. The neighbors trust me now.\n\n'
+            + 'The road out of the desert is open — look for "Road Beyond the '
+            + 'Desert" on the Bike GPS map.',
+          choices: null,
+          step: null,
+        });
+      }
 
       // Detect newly completed quests → update learning + knowledge + quest tree
       const completed = new Set(value?.completedQuests || []);
@@ -666,8 +757,14 @@ export default function GameContainer() {
       prevCompletedRef.current = completed;
     });
 
+    // Track which local scene is on screen (for scene-specific HUD hints)
+    game.registry.events.on('changedata-activeSceneKey', (_parent, value) => {
+      setActiveSceneKey(value || null);
+    });
+
     // Listen for dialog events from scenes
     game.registry.events.on('changedata-dialogEvent', (_parent, value) => {
+      lastDialogRef.current = value ?? null;
       setDialog(value);
     });
 
@@ -676,15 +773,27 @@ export default function GameContainer() {
       if (!value) return;
 
       // Toast notification (ephemeral)
+      // One at a time. Three stacked toasts at the top centre covered Zuzu,
+      // the NPCs and the signs, and on a phone they sat over the toolbar.
+      // The newest wins; the others were never read anyway.
       setAiToasts((prev) => {
         if (prev.some((t) => t.id === value.id)) return prev;
-        const next = [...prev, { ...value, shownAt: Date.now() }];
-        return next.slice(-3);
+        return [{ ...value, shownAt: Date.now() }];
       });
 
       // Assistant panel message (persistent feed)
       setAssistantMessages((prev) => {
         if (prev.some((m) => m.id === value.id && Date.now() - m.timestamp < 10000)) return prev;
+        // The feed was a wall of the same line: every pass over the
+        // Scorching Pavement added another "Extreme heat! Seek shade or
+        // hydrate." Repeating the newest entry says nothing new.
+        if (prev.length && prev[prev.length - 1].message === value.message) {
+          const last = prev[prev.length - 1];
+          return [
+            ...prev.slice(0, -1),
+            { ...last, timestamp: Date.now(), repeats: (last.repeats || 1) + 1 },
+          ];
+        }
         const msg = {
           id: value.id,
           type: value.id.startsWith('ai_') ? value.id.replace('ai_', '') : 'system',
@@ -736,7 +845,7 @@ export default function GameContainer() {
       resizeObserver.disconnect();
       game.destroy(true);
       gameRef.current = null;
-      if (import.meta.env.DEV && window.__phaserGame === game) {
+      if (E2E_HANDLE_ENABLED && window.__phaserGame === game) {
         delete window.__phaserGame;
       }
     };
@@ -770,6 +879,55 @@ export default function GameContainer() {
     document.addEventListener('visibilitychange', onVisChange);
     return () => document.removeEventListener('visibilitychange', onVisChange);
   }, [audio, dialog]);
+
+  // Keep the active-scene key in sync.
+  //
+  // The registry listener above is not enough on its own. A scene writes the
+  // key once, in its create(); if that single write lands before the listener
+  // is attached, the value then never changes again and no event ever fires —
+  // so the HUD would sit on a stale (usually null) scene key for the whole
+  // session. Polling the registry costs nothing at 500ms and is immune to the
+  // boot ordering.
+  useEffect(() => {
+    if (phase !== 'playing') return undefined;
+    const sync = () => {
+      const registry = gameRef.current?.registry;
+      if (!registry) return;
+
+      const key = registry.get('activeSceneKey') || null;
+      setActiveSceneKey((prev) => (prev === key ? prev : key));
+
+      const overlay = Boolean(registry.get('overlayOpen'));
+      setOverlayOpen((prev) => (prev === overlay ? prev : overlay));
+
+      const ownsHud = Boolean(registry.get('sceneOwnsHud'));
+      setSceneOwnsHud((prev) => (prev === ownsHud ? prev : ownsHud));
+
+      // What the leave control should say. The scene names it, so the
+      // HUD never has to guess where "back" goes.
+      const leaveLabel = gameRef.current?.scene?.getScenes(true)
+        ?.find((s) => typeof s.leaveScene === 'function')?.leaveSceneLabel
+        || 'Back';
+      setLeaveSceneLabel((prev) => (prev === leaveLabel ? prev : leaveLabel));
+
+      const nearProp = Boolean(registry.get('propPromptVisible'));
+      setAtProp((prev) => (prev === nearProp ? prev : nearProp));
+
+      // Mirror `dialogEvent` for the same reason. The garage's welcome
+      // message is written ~600ms into the first scene, and if that single
+      // write is missed the first thing a child sees never appears at all.
+      // Comparing against the last value we adopted means closing a dialog
+      // (which nulls the registry) does not re-open it.
+      const pending = registry.get('dialogEvent') ?? null;
+      if (pending !== lastDialogRef.current) {
+        lastDialogRef.current = pending;
+        setDialog(pending);
+      }
+    };
+    sync();
+    const timer = setInterval(sync, 400);
+    return () => clearInterval(timer);
+  }, [phase]);
 
   // Auto-dismiss AI toasts after 6 seconds
   useEffect(() => {
@@ -867,6 +1025,27 @@ export default function GameContainer() {
 
     audio?.playSfx('ui_tap');
 
+    // A quest offer: "Yes" starts it (parking anything already running),
+    // "Not right now" simply closes. Nothing starts without this answer.
+    if (dialog?.questOffer) {
+      if (choiceIndex === 0) {
+        const before = game.registry?.get?.('gameState') || {};
+        const after = acceptQuestOffer(before, dialog.questOffer.questId, startQuest);
+        game.registry.set('gameState', after);
+        saveGame(after);
+        audio?.playSfx?.('ui_quest_accept');
+        const first = getCurrentStep(after);
+        const giver = QUEST_DEFS[after?.activeQuest?.id]?.giver;
+        game.registry.set('dialogEvent', first
+          ? dialogForStep(first, after, (giver && getNpcProfile(giver)?.name) || null)
+          : null);
+        return;
+      }
+      setDialog(null);
+      game.registry?.set?.('dialogEvent', null);
+      return;
+    }
+
     if (!dialog?.step) {
       setDialog(null);
       game.registry?.set?.('dialogEvent', null);
@@ -947,14 +1126,18 @@ export default function GameContainer() {
       }
     }
     if (!handled) {
-      // Simple dialog (no quest advancement) — just close
+      // Simple dialog (no quest advancement) — just close. Clear the registry
+      // as well: leaving a stale `dialogEvent` there makes React and Phaser
+      // disagree about whether a dialog is open.
       setDialog(null);
+      gameRef.current?.registry?.set('dialogEvent', null);
     }
   }, [audio, dialog]);
 
   const handleDialogClose = useCallback(() => {
     cancelSpeech();
     resetLastSpoken();
+    lastDialogRef.current = null;
     setDialog(null);
     gameRef.current?.registry?.set('dialogEvent', null);
   }, []);
@@ -993,6 +1176,13 @@ export default function GameContainer() {
   const [speechOn, setSpeechOn] = useState(() => isSpeechEnabled());
   const [showGameSettings, setShowGameSettings] = useState(false);
 
+  // A panel is covering the game. The 💬 button used to sit on top of
+  // Crafting, Inventory and Milestones — including their own buttons —
+  // and the physics pop-up appeared over whatever was already open.
+  const anyPanelOpen = showQuestBoard || showShop || showInventory || showNotebook
+    || showCrafting || showMilestones || showAssistant || showReportPanel
+    || showAudioSettings || showGameSettings;
+
   // Initialize speech service from saved game settings
   useEffect(() => {
     const saved = loadGame();
@@ -1014,6 +1204,20 @@ export default function GameContainer() {
       if (s.player) s.player.joystick = { x, y };
     });
   }, []);
+
+  // A scene that owns the HUD has no d-pad, so it must say how to leave
+  // it. Without this, the Materials Lab and the Thermal Rig could only be
+  // left by walking into an exit zone with controls that were not on the
+  // screen — a child on a phone was stuck in the lab (review MUST 1).
+  const leaveOwnedScene = useCallback(() => {
+    const game = gameRef.current;
+    if (!game) return false;
+    const scene = game.scene.getScenes(true)
+      .find((s) => typeof s.leaveScene === 'function');
+    if (!scene) return false;
+    audio?.playSfx('ui_tap');
+    return scene.leaveScene() === true;
+  }, [audio]);
 
   const triggerWorldAction = useCallback(() => {
     const now = Date.now();
@@ -1252,12 +1456,20 @@ export default function GameContainer() {
         </div>
       )}
 
-      {/* ---- HUD overlay ---- */}
-      {phase === 'playing' && (
-        <div className="absolute left-0 right-0 pointer-events-none z-10" style={{ top: 'calc(max(0.5rem, env(safe-area-inset-top)) + 2.5rem)' }}>
+      {/* ---- HUD overlay ----
+          Hidden while a full-screen overlay is up: the goals chip and the
+          quest card were drawn over the explainer's question and its first
+          answer, which is the very first quest a child plays. */}
+      {phase === 'playing' && !overlayOpen && !sceneOwnsHud && (
+        <div className="absolute left-0 right-0 pointer-events-none z-10" style={{ top: 'calc(max(0.5rem, env(safe-area-inset-top)) + 3rem)' }}>
           <div className="flex items-start justify-between px-2 gap-2">
-            {/* Quest tracker + Zuzubucks */}
-            <div className="flex flex-col gap-1.5 max-w-[55%]">
+            {/* Quest tracker + Zuzubucks. Fades while Zuzu is at a prop so
+                it stops covering that prop's own caption and prompt. */}
+            <div
+              className={`flex flex-col gap-1.5 max-w-[55%] transition-opacity duration-200 ${
+                atProp ? 'opacity-0' : 'opacity-100'
+              }`}
+            >
               {gameState && (
                 <Act1Checklist state={gameState} />
               )}
@@ -1387,6 +1599,36 @@ export default function GameContainer() {
             }
             return null;
           })}
+
+          {/* ---- Words Mariam taught (Act 1 Modern Standard Arabic) ----
+              Script, transliteration and English caption all stay visible:
+              rank 1 never hides the Arabic. The words themselves come from
+              the `ar_*` rows in data/languages.js via systems/languageLayer.js.
+              Practice counts come from state.languagePractice. */}
+          <div className="mt-3 pt-2 border-t border-gray-200">
+            <div className="font-bold text-gray-700 mb-1 text-xs">
+              Words Mariam taught
+            </div>
+            {LANGUAGE_CARDS.map((card) => {
+              const practiced = gameState?.languagePractice?.[card.id]?.practiced || 0;
+              return (
+                <div key={card.id} className="py-1 border-b border-gray-100 last:border-0">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span dir="rtl" lang="ar" className="text-base text-gray-800 font-semibold">
+                      {card.script}
+                    </span>
+                    <span className="text-[10px] text-gray-500 shrink-0">
+                      {practiced > 0 ? `practiced ${practiced}×` : 'not practiced yet'}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    {card.transliteration} — {card.english}
+                  </div>
+                  <div className="text-[10px] text-gray-500 italic">{card.caption}</div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
@@ -1664,6 +1906,7 @@ export default function GameContainer() {
           onTouchStart={(e) => e.stopPropagation()}
         >
           <div
+            data-testid="dialog-box"
             className="bg-white rounded-2xl shadow-xl p-4 max-w-lg mx-auto border-2 border-blue-200"
             onPointerDown={(e) => e.stopPropagation()}
             onPointerUp={(e) => e.stopPropagation()}
@@ -1803,6 +2046,10 @@ export default function GameContainer() {
       {PHYSICS_HUD_ENABLED && phase === 'playing' && !paused && (
         <button
           onClick={() => setShowPhysicsHUD((v) => !v)}
+          // A developer affordance: PHYSICS_HUD_ENABLED is DEV-only, so
+          // this never reaches a child. Marked so the layout audits do
+          // not report it as covering the game (plan 0.5 / 0.12).
+          data-dev-only="physics-hud"
           className={`absolute bottom-2 left-[170px] z-20 rounded-lg px-2 py-1 text-xs shadow transition-all active:scale-90 cursor-pointer ${
             showPhysicsHUD ? 'bg-blue-500 text-white' : 'bg-white/60 text-gray-600 hover:bg-white/80'
           }`}
@@ -1811,14 +2058,19 @@ export default function GameContainer() {
         >📊</button>
       )}
 
-      {/* ---- Physics Question Popup ---- */}
-      {physicsQuestion && (
+      {/* ---- Physics Question Popup ----
+          Held back while something else has the screen. It used to appear
+          over the flat-tire reward, unprompted, the moment the quest
+          finished. The question stays in state and shows once the screen
+          is the child's again. */}
+      {physicsQuestion && !dialog && !paused && !overlayOpen && !craftResult
+        && !anyPanelOpen && (
         <div className="absolute inset-0 z-40 bg-black/40 flex items-center justify-center">
           <div className="bg-white rounded-2xl shadow-2xl p-5 max-w-sm mx-4 border-2 border-blue-300">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xl">📐</span>
               <span className="font-bold text-blue-700 text-sm">Physics Challenge!</span>
-              <span className="text-[10px] text-gray-400 ml-auto">T{physicsHUD?.tier || 1}</span>
+              {/* The tier number is for us, not for a seven-year-old. */}
             </div>
             <div className="text-gray-700 text-sm mb-3 leading-relaxed">
               {physicsQuestion.question}
@@ -1868,8 +2120,10 @@ export default function GameContainer() {
       )}
 
       {/* ---- AI Toast Notifications ---- */}
-      {phase === 'playing' && aiToasts.length > 0 && (
-        <div className="absolute top-[120px] left-1/2 -translate-x-1/2 z-25 flex flex-col gap-2 pointer-events-none max-w-sm w-full px-2">
+      {/* Hidden while a dialog is open: a hint floating over the conversation
+          it is hinting about is just noise. */}
+      {phase === 'playing' && !dialog && aiToasts.length > 0 && (
+        <div className="absolute bottom-[11rem] left-2 z-25 flex flex-col gap-2 pointer-events-none max-w-[min(22rem,calc(100vw-5rem))]">
           {aiToasts.map((toast) => {
             const bg = toast.severity === 'critical' ? 'bg-red-500/90'
               : toast.severity === 'warning' ? 'bg-amber-500/90'
@@ -1894,12 +2148,23 @@ export default function GameContainer() {
       )}
 
       {/* ---- Virtual joystick (always visible for accessibility) ---- */}
-      {phase === 'playing' && !paused && !dialog && (
+      {/* Hidden while a panel or a full-screen overlay is open: the pad
+          covered the bottom of Crafting, Inventory and Milestones, and on
+          a phone it sat across the explainer's PATCH tile. There is
+          nothing to walk to while an overlay has the screen. */}
+      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && !overlayOpen
+        && !sceneOwnsHud && (
         <VirtualJoystick onMove={setJoystick} onAction={triggerWorldAction} />
       )}
 
       {/* ---- Action button (interact with NPCs) ---- */}
-      {phase === 'playing' && !paused && !dialog && (
+      {/* Hidden while a panel or overlay is open: on a phone it sat on
+          the Crafting panel's footer, and over the explainer. */}
+      {/* A lab rig owns the screen: there is nothing to walk to, every
+          station answers a tap, and on a phone the d-pad and this
+          button sat across the instrument bench (plan 0.5). */}
+      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && !overlayOpen
+        && !sceneOwnsHud && (
         <button
           type="button"
           aria-label="Talk or use the thing you are standing next to"
@@ -1915,12 +2180,49 @@ export default function GameContainer() {
           💬
         </button>
       )}
-      {phase === 'playing' && !dialog && !paused && !gameState?.activeQuest && !evaluateAct1(gameState || {}).complete && (
-        <div className="pointer-events-none absolute left-1/2 top-20 z-20 w-[min(18rem,calc(100%-7rem))] -translate-x-1/2 rounded-xl bg-white/95 px-3 py-2 text-center text-sm font-semibold text-gray-800 shadow-lg">
+      {/* ---- Leave control for a scene that owns the HUD ----
+          The lab rigs hide the d-pad and the action button, which left a
+          walk-in exit zone as the only way out: on a phone that is no way
+          out at all (review MUST 1). This sits where the d-pad would be,
+          is 44px+ at every size, and is DOM, so no chart, callout or
+          takeaway card can cover it. */}
+      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && !overlayOpen
+        && sceneOwnsHud && (
+        <button
+          type="button"
+          data-testid="leave-scene"
+          aria-label={`Leave: ${leaveSceneLabel}`}
+          onPointerDown={() => {
+            leaveOwnedScene();
+          }}
+          className="absolute bottom-6 left-3 z-20 flex min-h-[44px] items-center gap-1.5
+                     rounded-xl border-2 border-amber-500 bg-amber-400/95 px-3 py-2
+                     text-sm font-bold text-white shadow-lg transition-all duration-75
+                     active:scale-95 hover:bg-amber-300 cursor-pointer"
+          style={{ marginBottom: 'env(safe-area-inset-bottom)', marginLeft: 'env(safe-area-inset-left)' }}
+        >
+          <span aria-hidden="true">⬅</span>
+          {leaveSceneLabel}
+        </button>
+      )}
+      {/* First-room hint. Garage only: "the door at the bottom goes outside"
+          is only true in the garage, and on the street or in the desert it
+          pointed a child at a wall. It sits above the arrow pad: at top-20
+          it covered the bike and the "Zuzu's Garage" title. */}
+      {phase === 'playing' && !dialog && !paused && !overlayOpen && !anyPanelOpen
+        && activeSceneKey === 'ZuzuGarageScene'
+        && !gameState?.activeQuest && !evaluateAct1(gameState || {}).complete && (
+        <div
+          className="pointer-events-none absolute left-1/2 bottom-28 z-20 w-[min(18rem,calc(100%-7rem))] -translate-x-1/2 rounded-xl bg-white/95 px-3 py-2 text-center text-sm font-semibold text-gray-800 shadow-lg"
+          style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
+        >
           Arrows or the pad to walk. The door at the bottom goes outside.
         </div>
       )}
-      {phase === 'playing' && actionHint && (
+      {/* Same rule as the rest of the HUD: nothing prints over an open
+          overlay or panel. */}
+      {phase === 'playing' && actionHint && !dialog && !paused && !overlayOpen
+        && !anyPanelOpen && (
         <div
           role="status"
           className="absolute bottom-24 right-6 z-20 max-w-[14rem] rounded-xl bg-white/95 px-3 py-2 text-sm text-gray-800 shadow-lg"
@@ -2066,8 +2368,9 @@ function CraftingPanel({ state, craftResult, onCraft, onClose }) {
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="px-3 py-1.5 border-t border-gray-100 text-[10px] text-gray-400 text-center">
+      {/* Footer. Opaque and outside the scroll area: the last recipe card
+          used to show through it. */}
+      <div className="shrink-0 rounded-b-xl bg-white px-3 py-1.5 border-t border-gray-100 text-[10px] text-gray-400 text-center">
         Forage plants to get materials · Combine to craft
       </div>
     </div>
@@ -2089,7 +2392,25 @@ function getAlertTitle(id) {
     obstacle_hint: '🧩 Obstacle',
     craft_success: '⚗️ Crafted',
   };
-  return titles[id] || '🧠 Assistant';
+  if (titles[id]) return titles[id];
+
+  // Ids built from a quest or challenge name reached the feed raw
+  // ("bridge_collapse"). Match the family, never print the id.
+  const byPrefix = [
+    ['side_quest_complete_', '🏅 Side quest done'],
+    ['side_quest_fail_', '🧩 Not yet'],
+    ['side_quest_', '📜 Side quest'],
+    ['challenge_fail_', '🧩 Try again'],
+    ['challenge_', '🧠 Challenge'],
+    ['craft_blocked_', '⚗️ Crafting'],
+    ['dialog_hint_', '💡 Hint'],
+    ['sub_scene_arrival', '🧭 Arrived'],
+  ];
+  for (const [prefix, title] of byPrefix) {
+    if (id.startsWith(prefix)) return title;
+  }
+
+  return '🧠 Assistant';
 }
 
 // ---------------------------------------------------------------------------
@@ -2134,8 +2455,9 @@ function AIAssistantPanel({ messages, status, onClose, onClear }) {
 
   return (
     <div className="absolute top-14 z-20 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-[min(18rem,calc(100vw-4rem))] max-h-[calc(100vh-5rem)] flex flex-col" style={HUD_PANEL_STYLE}>
-      {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100">
+      {/* Header. Opaque: the feed scrolled under it and the title was
+          printed over by the messages. */}
+      <div className="shrink-0 rounded-t-xl bg-white flex items-center justify-between px-3 py-2 border-b border-gray-100">
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-gray-700">🧠 Assistant</span>
           <span className={`flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full text-white ${st.color}`}>
@@ -2200,8 +2522,18 @@ function AIAssistantPanel({ messages, status, onClose, onClear }) {
   );
 }
 
+/**
+ * Act 1 goals.
+ *
+ * Collapsed to a single tappable line by default. Expanded, this is a
+ * six-row card pinned to the top-left of the play area, and at 1280x720 it
+ * covered the garage workbench and Zuzu standing at it — the child could not
+ * see the thing the goals were telling them to use.
+ */
 function Act1Checklist({ state }) {
   const report = evaluateAct1(state);
+  const [open, setOpen] = useState(false);
+
   if (report.complete) {
     return (
       <div className="bg-emerald-50 rounded-lg px-3 py-2 shadow text-xs pointer-events-auto" data-testid="act1-complete">
@@ -2210,9 +2542,39 @@ function Act1Checklist({ state }) {
       </div>
     );
   }
+
+  const done = report.rows.filter((r) => r.done).length;
+  const total = report.rows.length;
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="bg-white/90 rounded-lg px-3 py-1.5 shadow text-xs font-bold text-gray-800
+                   pointer-events-auto flex items-center gap-2 cursor-pointer hover:bg-white"
+        data-testid="act1-checklist-collapsed"
+        aria-expanded="false"
+        aria-label={`Neighborhood goals, ${done} of ${total} done. Tap to show the list.`}
+      >
+        <span>🎯 Goals {done}/{total}</span>
+        <span aria-hidden="true" className="text-gray-400">▸</span>
+      </button>
+    );
+  }
+
   return (
     <div className="bg-white/90 rounded-lg px-3 py-2 shadow text-xs pointer-events-auto" data-testid="act1-checklist">
-      <div className="font-bold text-gray-800">Neighborhood goals</div>
+      <button
+        type="button"
+        onClick={() => setOpen(false)}
+        className="font-bold text-gray-800 flex items-center gap-2 cursor-pointer w-full text-left"
+        aria-expanded="true"
+        aria-label="Hide the neighborhood goals list"
+      >
+        <span>Neighborhood goals</span>
+        <span aria-hidden="true" className="text-gray-400 ml-auto">▾</span>
+      </button>
       {report.rows.map((row) => (
         <div key={row.id} className={row.done ? 'text-emerald-700' : 'text-gray-600'}>
           {row.done ? '✅' : '⬜'} {row.label}
@@ -2485,7 +2847,7 @@ function MilestonesPanel({ state, onClose }) {
             }`}
             title={`${PHASE_NAMES[phase]}: ${data.completed}/${data.total}`}
           >
-            {PHASE_NAMES[phase]?.slice(0, 5) || phase}
+            {PHASE_NAMES[phase] || phase}
           </div>
         ))}
       </div>
@@ -2525,7 +2887,7 @@ function MilestonesPanel({ state, onClose }) {
                 <div className="mt-1 flex flex-wrap gap-1">
                   {m.conditions.filter(c => !c.met).map((c, i) => (
                     <span key={i} className="text-[9px] bg-red-50 text-red-500 px-1 rounded border border-red-200">
-                      {c.type}: {c.target || ''} ({c.current}/{c.required})
+                      {describeCondition(c)}
                     </span>
                   ))}
                 </div>

@@ -81,29 +81,53 @@ export function revealLocationsByQuestId(questId, scene = null) {
   const locs = QUEST_TO_LOCATIONS[questId] || [];
   if (locs.length === 0) return;
 
-  for (const id of locs) {
-    const loc = WORLD_LOCATIONS[id];
-    if (!loc) continue;
+  for (const id of locs) _revealLocation(id, scene);
+}
 
-    const isWorldMapMounted =
-      scene &&
-      scene.scene &&
-      scene.scene.key === 'WorldMapScene' &&
-      typeof scene.revealNode === 'function';
+/**
+ * Reveal one location now if the world map is mounted, else queue it.
+ * @param {string} id
+ * @param {Phaser.Scene|null} scene
+ */
+function _revealLocation(id, scene) {
+  if (!WORLD_LOCATIONS[id]) return;
 
-    if (isWorldMapMounted) {
-      try {
-        scene.revealNode(id);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.warn('[discoveryBridge] revealNode failed for', id, e);
-        _pendingReveals.add(id);
-      }
-    } else {
+  const isWorldMapMounted =
+    scene &&
+    scene.scene &&
+    scene.scene.key === 'WorldMapScene' &&
+    typeof scene.revealNode === 'function';
+
+  if (isWorldMapMounted) {
+    try {
+      scene.revealNode(id);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn('[discoveryBridge] revealNode failed for', id, e);
       _pendingReveals.add(id);
     }
+  } else {
+    _pendingReveals.add(id);
   }
 }
+
+/**
+ * Locations that open on a state milestone rather than on a quest.
+ *
+ * Derived from the location data, not hard-coded: any world location whose
+ * `unlockReq.act1Complete` is set is revealed once Act 1 is stamped. Today
+ * that is `wider_earth_gate`, the ending node.
+ *
+ * Without this the ending was unreachable. `WorldMapScene` skips any node
+ * whose tile is not discovered, and nothing referenced `wider_earth_gate`
+ * anywhere except its own definition — it only ever rendered because it used
+ * to sit at (0.18, 0.18), inside the radius revealed around the home marker.
+ * Moving it clear of the home marker's click zone took it into permanent fog,
+ * so the HUD said "check the world map" and the corner was empty.
+ */
+const ACT1_COMPLETE_LOCATIONS = Object.values(WORLD_LOCATIONS)
+  .filter((loc) => loc?.unlockReq?.act1Complete)
+  .map((loc) => loc.id);
 
 /**
  * Drain queued reveals. Called by WorldMapScene.create() AFTER
@@ -147,6 +171,16 @@ export function triggerQuestRevealsForState(state, scene = null) {
   for (const questId of questIds) {
     revealLocationsByQuestId(questId, scene);
   }
+  // Milestone reveals. Act 1 being complete opens the road out of the
+  // desert; see ACT1_COMPLETE_LOCATIONS for why this is needed at all.
+  if (state.act1?.complete) {
+    for (const id of ACT1_COMPLETE_LOCATIONS) _revealLocation(id, scene);
+  }
+}
+
+/** Internal/test helper — the milestone list derived from location data. */
+export function _debugGetAct1CompleteLocations() {
+  return [...ACT1_COMPLETE_LOCATIONS];
 }
 
 /**

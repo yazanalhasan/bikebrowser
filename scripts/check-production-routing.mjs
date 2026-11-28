@@ -62,7 +62,6 @@ async function main() {
     '/saved-notes',
     '/safe-search',
     '/play',
-    '/play3d',
     '/spelling-trainer',
     '/learn/letter-detective',
     '/multiplication-trainer',

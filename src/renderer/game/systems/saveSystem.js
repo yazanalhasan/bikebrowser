@@ -18,11 +18,20 @@
  */
 
 import { getDiscoveryState, loadDiscoveryState } from './discoverySystem.js';
+import { migrateActiveQuest, QUEST_DATA_VERSION } from './questSteps.js';
 
 const SAVE_KEY = 'bikebrowser_game_save';
-const CURRENT_VERSION = 6;
+const CURRENT_VERSION = 7;
 
-/** Map old scene keys to new ones. */
+/**
+ * Map retired scene keys to the live scene that replaced them.
+ *
+ * Applied in `loadGame` after every version migration, not inside one:
+ * a save can name a retired key at ANY version. v6 saves predate the
+ * rename, and saves written while the west-edge bug was live (MUST 0.15)
+ * are already at v7 with `scene: 'NeighborhoodScene'` in them. Keying
+ * this off the version number is what let those through.
+ */
 const SCENE_MIGRATION = {
   GarageScene: 'ZuzuGarageScene',
   NeighborhoodScene: 'OverworldScene',
@@ -210,6 +219,9 @@ function migrateV3toV4(data) {
  * lacks the canonical item. Re-running on the migrated state is a no-op
  * because hasCanonical will be true.
  */
+// The index below is frozen: it describes the bridge_collapse step layout
+// as it stood at save version 4, which cannot change retroactively. Live
+// code must ask by step id instead (systems/questSteps.js).
 function migrateV4toV5(data) {
   const aq = data.activeQuest;
   const inv = data.inventory || [];
@@ -250,6 +262,24 @@ function migrateV5toV6(data) {
   };
 }
 
+/**
+ * Migrate v6 → v7: carry the quest step id, not just its number.
+ *
+ * Inserting `weigh_samples` into bridge_collapse moved every step after it
+ * by one. A save holding only a number therefore pointed at the wrong
+ * step — on the build step it pointed at the quiz. `migrateActiveQuest`
+ * walks the number past every insertion and stamps the id, so the next
+ * insertion needs no migration at all.
+ */
+function migrateV6toV7(data) {
+  return {
+    ...data,
+    version: 7,
+    questDataVersion: QUEST_DATA_VERSION,
+    activeQuest: migrateActiveQuest(data.activeQuest, data.questDataVersion || 0),
+  };
+}
+
 /** Read save from localStorage, or return defaults. */
 export function loadGame() {
   try {
@@ -269,6 +299,19 @@ export function loadGame() {
     if (migrated.version === 3) migrated = migrateV3toV4(migrated);
     if (migrated.version === 4) migrated = migrateV4toV5(migrated);
     if (migrated.version === 5) migrated = migrateV5toV6(migrated);
+    if (migrated.version === 6) migrated = migrateV6toV7(migrated);
+
+    // A retired scene key is rewritten at every version, including the
+    // current one — see SCENE_MIGRATION. Without this a v7 save written
+    // while the west-edge bug was live reopened the retired scene, and
+    // walking out of it wrote the same key straight back.
+    const savedScene = migrated.player?.scene;
+    if (savedScene && SCENE_MIGRATION[savedScene]) {
+      migrated = {
+        ...migrated,
+        player: { ...migrated.player, scene: SCENE_MIGRATION[savedScene] },
+      };
+    }
 
     // Fill any fields that may be missing from older saves.
     const merged = {

@@ -1,15 +1,140 @@
 {
   "objects": {
-    "backdrop": { "x": 400, "y": 300, "w": 800, "h": 600 },
-    "panel": { "x": 400, "y": 300, "w": 680, "h": 500 },
-    "title": { "x": 400, "y": 82, "w": 560 },
-    "prompt": { "x": 400, "y": 126, "w": 560 },
-    "close": { "x": 700, "y": 70, "r": 16 },
-    "option_nail": { "x": 190, "y": 295, "w": 180, "h": 250 },
-    "option_valve": { "x": 400, "y": 295, "w": 180, "h": 250 },
-    "option_wear": { "x": 610, "y": 295, "w": 180, "h": 250 },
-    "feedback": { "x": 400, "y": 505, "w": 560 },
-    "continue": { "x": 400, "y": 548, "w": 170, "h": 40 },
-    "mensa_badge": { "x": 112, "y": 70, "w": 140, "h": 28 }
+    "backdrop": {
+      "x": 400,
+      "y": 300,
+      "w": 800,
+      "h": 600
+    },
+    "panel": {
+      "x": 400,
+      "y": 300,
+      "w": 680,
+      "h": 500
+    },
+    "title": {
+      "x": 400,
+      "y": 82,
+      "w": 560
+    },
+    "prompt": {
+      "x": 400,
+      "y": 126,
+      "w": 560
+    },
+    "close": {
+      "x": 700,
+      "y": 70,
+      "r": 16
+    },
+    "option_nail": {
+      "x": 190,
+      "y": 295,
+      "w": 180,
+      "h": 250
+    },
+    "option_valve": {
+      "x": 400,
+      "y": 295,
+      "w": 180,
+      "h": 250
+    },
+    "option_wear": {
+      "x": 610,
+      "y": 295,
+      "w": 180,
+      "h": 250
+    },
+    "feedback": {
+      "x": 400,
+      "y": 486,
+      "w": 560,
+      "_note": "Inside the card. The options end at y=420, so the verdict line sits between them and the Continue button."
+    },
+    "continue": {
+      "x": 400,
+      "y": 520,
+      "w": 170,
+      "h": 40,
+      "_note": "Inside the card: at y=548 the button's bottom edge (568) hung 18 px below the panel (550) and read as a stray button on the street."
+    },
+    "mensa_badge": {
+      "x": 112,
+      "y": 70,
+      "w": 140,
+      "h": 28
+    }
+  },
+  "portrait": {
+    "_note": "Phone layout: the three option cards stack down the screen instead of sitting in a row squeezed to a third of their width. Authored for 400x860; cards are 300x180 with 44 px of room for a thumb.",
+    "designWidth": 400,
+    "designHeight": 860,
+    "objects": {
+      "backdrop": {
+        "x": 200,
+        "y": 430,
+        "w": 400,
+        "h": 860
+      },
+      "panel": {
+        "x": 200,
+        "y": 430,
+        "w": 376,
+        "h": 824
+      },
+      "title": {
+        "x": 200,
+        "y": 56,
+        "w": 350
+      },
+      "prompt": {
+        "x": 200,
+        "y": 104,
+        "w": 350
+      },
+      "close": {
+        "x": 356,
+        "y": 46,
+        "r": 23
+      },
+      "option_nail": {
+        "x": 200,
+        "y": 240,
+        "w": 300,
+        "h": 170
+      },
+      "option_valve": {
+        "x": 200,
+        "y": 430,
+        "w": 300,
+        "h": 170
+      },
+      "option_wear": {
+        "x": 200,
+        "y": 620,
+        "w": 300,
+        "h": 170
+      },
+      "feedback": {
+        "x": 200,
+        "y": 742,
+        "w": 350
+      },
+      "continue": {
+        "x": 200,
+        "y": 800,
+        "w": 220,
+        "h": 48
+      },
+      "mensa_badge": {
+        "x": 300,
+        "y": 150,
+        "w": 140,
+        "h": 28
+      }
+    },
+    "notes": {
+      "close": "r 23, not 22: the overlay contains 400x860 into the viewport, and on a 390x844 phone that 0.975 scale turned a 44-design-px circle into 42.9 CSS px. 46 design px fits to 44.9. Keep it at or above 23."
+    }
   }
 }

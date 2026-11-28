@@ -1,0 +1,189 @@
+{
+  "scene": "DesertEdgeScene",
+  "version": 1,
+  "_note": "Desert Edge — the open desert just south of Zuzu's street. Split out of street-block.layout.json on 2026-11-26 at the owner's request: all the Sonoran flora and fauna, and every foraging interaction, used to share one screen with the houses and neighbours and it was too busy for a young child.",
+  "objects": {
+    "ground": {
+      "x": 500,
+      "y": 350,
+      "w": 1000,
+      "h": 700,
+      "_note": "Full-bleed desert floor tile."
+    },
+    "trail": {
+      "x": 530,
+      "y": 350,
+      "w": 130,
+      "h": 700,
+      "_note": "Sandy trail from the street gate straight through the scene, so the way back is visible from anywhere."
+    },
+    "exit_zone_north": {
+      "x": 530,
+      "y": 14,
+      "w": 200,
+      "h": 28,
+      "_note": "Back up to Home Street. Lines up with the street's south gap."
+    },
+    "street_sign": {
+      "x": 400,
+      "y": 64,
+      "_note": "Left of the gate. Not on the spawn (530,90), and well inside the area the viewport frame leaves visible on a wide window - at x=760 the board was cut off by the right-hand band."
+    },
+    "scene_label": {
+      "x": 640,
+      "y": 52,
+      "_note": "Top centre-right. At (170,52) it sat under the HUD Goals chip in the top-left corner; clear of the Home Street sign at x=400 (which spans 308-492) and of the right-hand toolbar."
+    },
+    "decor": [
+      {
+        "key": "saguaro",
+        "x": 60,
+        "y": 250,
+        "height": 150
+      },
+      {
+        "key": "saguaro",
+        "x": 960,
+        "y": 300,
+        "height": 140
+      }
+    ],
+    "plants": [
+      {
+        "species": "mesquite",
+        "label": "Mesquite Tree",
+        "x": 160,
+        "y": 190,
+        "radius": 65
+      },
+      {
+        "species": "creosote",
+        "label": "Creosote Bush",
+        "x": 340,
+        "y": 150,
+        "radius": 55
+      },
+      {
+        "species": "ephedra",
+        "label": "Ephedra (Mormon Tea)",
+        "x": 700,
+        "y": 150,
+        "radius": 45
+      },
+      {
+        "species": "mesquite",
+        "label": "Mesquite Tree",
+        "x": 870,
+        "y": 220,
+        "radius": 65
+      },
+      {
+        "species": "yucca",
+        "label": "Yucca Plant",
+        "x": 130,
+        "y": 390,
+        "radius": 50
+      },
+      {
+        "species": "agave",
+        "label": "Agave Plant",
+        "x": 370,
+        "y": 360,
+        "radius": 55
+      },
+      {
+        "species": "desert_lavender",
+        "label": "Desert Lavender",
+        "x": 660,
+        "y": 370,
+        "radius": 50
+      },
+      {
+        "species": "jojoba",
+        "label": "Jojoba Shrub",
+        "x": 890,
+        "y": 420,
+        "radius": 45
+      },
+      {
+        "species": "barrel_cactus",
+        "label": "Barrel Cactus",
+        "x": 170,
+        "y": 590,
+        "radius": 45
+      },
+      {
+        "species": "prickly_pear",
+        "label": "Prickly Pear",
+        "x": 430,
+        "y": 600,
+        "radius": 50
+      },
+      {
+        "species": "creosote",
+        "label": "Creosote Bush",
+        "x": 700,
+        "y": 600,
+        "radius": 55
+      }
+    ],
+    "animals": [
+      {
+        "speciesId": "javelina",
+        "label": "Javelina",
+        "x": 250,
+        "y": 280,
+        "interactionRadius": 60,
+        "_note": "Feeds on mesquite pods — placed near the west mesquite, clear of the entry path."
+      },
+      {
+        "speciesId": "rabbit",
+        "label": "Desert Jackrabbit",
+        "x": 480,
+        "y": 450,
+        "interactionRadius": 55,
+        "_note": "Herbivore in the open middle, between the agave and the prickly pear."
+      },
+      {
+        "speciesId": "coyote",
+        "label": "Coyote",
+        "x": 800,
+        "y": 540,
+        "interactionRadius": 65,
+        "_note": "Predator roaming the south-east, well clear of its prey so the food chain reads."
+      }
+    ],
+    "wall_south": {
+      "x": 500,
+      "y": 710,
+      "w": 1000,
+      "h": 20
+    },
+    "wall_west": {
+      "x": -10,
+      "y": 350,
+      "w": 20,
+      "h": 700
+    },
+    "wall_east": {
+      "x": 1010,
+      "y": 350,
+      "w": 20,
+      "h": 700
+    },
+    "wall_north_west": {
+      "x": 215,
+      "y": -10,
+      "w": 430,
+      "h": 20,
+      "_note": "North bound west of the gate (spans x=0..430)."
+    },
+    "wall_north_east": {
+      "x": 815,
+      "y": -10,
+      "w": 370,
+      "h": 20,
+      "_note": "North bound east of the gate (spans x=630..1000)."
+    }
+  }
+}

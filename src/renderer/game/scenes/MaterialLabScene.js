@@ -18,12 +18,19 @@ import {
   detectFailurePoint,
 } from '../systems/materials/materialTestingEngine.js';
 import { saveGame } from '../systems/saveSystem.js';
-import { loadLayout } from '../utils/loadLayout.js';
+import { loadLayout, loadResponsiveLayout } from '../utils/loadLayout.js';
 import { createScaleStation } from '../systems/lab/scaleStation.js';
 import { createCalipers } from '../systems/lab/calipers.js';
 import { createDensitySlate } from '../systems/lab/densitySlate.js';
+import { showLabModal } from '../systems/lab/labModal.js';
 import { renderDensityChart } from '../systems/lab/densityChart.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { addArt, hasArt } from '../../../game/assets/act1Art.js';
+import {
+  CALLOUT_BG_DEPTH, CALLOUT_TEXT_DEPTH, PANEL_BG_DEPTH, PANEL_TEXT_DEPTH,
+  STATION_BUTTON_DEPTH,
+} from '../systems/labelLayout.js';
 
 // Sample-id → inventory item mapping. The scale enables a button only
 // when the player owns the corresponding sample item.
@@ -45,7 +52,9 @@ const SAMPLE_ITEM_IDS = {
 const SCENE_KEY = 'MaterialLabScene';
 const LAYOUT_KEY = 'materialLabLayout';
 
-// Rig geometry.
+// Rig geometry. RIG_BASE_Y is the landscape default; the live value
+// comes from the rig geometry so the portrait column can sit the
+// machine lower down its own world (plan 0.5).
 const RIG_BASE_Y = 480;
 const RIG_BASE_W = 180;
 const RIG_BASE_H = 30;
@@ -79,6 +88,7 @@ export default class MaterialLabScene extends LabRigBase {
   constructor() { super(SCENE_KEY); }
 
   preload() {
+    super.preload();
     this.load.json(LAYOUT_KEY, 'layouts/material-lab.layout.json');
   }
 
@@ -117,22 +127,82 @@ export default class MaterialLabScene extends LabRigBase {
     const calipers = this.layout.density_calipers;
     const slate = this.layout.density_slate;
     const slatePanel = this.layout.density_slate_panel;
+    // Out of the HUD's corner, as one piece so the station keeps its
+    // own spacing. The scale's buttons reach 40 below its platform and
+    // its coupon caption another 20 under that, which is what kept
+    // landing under the leave control.
+    const shift = this._stationShift({
+      left: Math.min(scale.x, calipers.x) - 60,
+      top: scale.displayY - 24,
+      right: Math.max(scale.x, calipers.x, scale.artX ?? 0) + 60,
+      bottom: Math.max(scale.platformY + 62, calipers.y + 24),
+    });
     return {
-      scaleDisplayY: scale.displayY,
-      scalePlatformY: scale.platformY,
-      scaleX: scale.x,
-      calipersX: calipers.x,
-      calipersY: calipers.y,
-      slateX: slate.x,
-      slateY: slate.y,
+      scaleDisplayY: scale.displayY + shift.dy,
+      scalePlatformY: scale.platformY + shift.dy,
+      scaleX: scale.x + shift.dx,
+      // The sprite is placed apart from the readout it belongs to.
+      scaleArtX: scale.artX + shift.dx,
+      scaleArtY: scale.artY + shift.dy,
+      calipersX: calipers.x + shift.dx,
+      calipersY: calipers.y + shift.dy,
+      slateX: slate.x + shift.dx,
+      slateY: slate.y + shift.dy,
       slatePanel,
     };
   }
 
+  /**
+   * How far the instrument station has to move to clear the HUD.
+   *
+   * Up first — the bench has headroom and the rig does not reach this
+   * far left — then right if lifting it is not enough. Returns {0,0}
+   * when the station is already clear, which is every desktop size.
+   *
+   * @param {{left:number,top:number,right:number,bottom:number}} box
+   */
+  _stationShift(box) {
+    const reserve = this.hudLeaveReserve?.();
+    if (!reserve) return { dx: 0, dy: 0 };
+    const hits = (b) => b.left < reserve.x + reserve.w && b.right > reserve.x
+      && b.top < reserve.y + reserve.h && b.bottom > reserve.y;
+    if (!hits(box)) return { dx: 0, dy: 0 };
+
+    // Lift it to sit just above the reserved corner, but not so far
+    // that it climbs into the chart.
+    const lift = box.bottom - reserve.y + 6;
+    const headroom = Math.max(0, box.top - ((this._g.chart?.y ?? 0) + (this._g.chart?.h ?? 0) + 8));
+    const dy = -Math.min(lift, headroom);
+    if (hits({ ...box, top: box.top + dy, bottom: box.bottom + dy })) {
+      // Lifting is the only move available: a phone's bench is 400
+      // wide and sliding the station sideways runs it off the screen,
+      // which is what the first version of this did. Say so rather
+      // than make it worse.
+      console.warn(`[${this.scene.key}] instrument station cannot clear the HUD `
+        + `corner by lifting (${-dy}px of ${lift}px needed) — its layout `
+        + `coordinates need to move`);
+    } else {
+      console.info(`[${this.scene.key}] instrument station lifted ${-dy}px clear of the HUD`);
+    }
+    return { dx: 0, dy };
+  }
+
   // ── createWorld: extend base to mount left-bay instruments after the
   //   selector / START / chart are built. ────────────────────────────────
+  /** The rig's feet, in whichever shape this screen is. */
+  _rigBaseY() { return (this._g || {}).rigBaseY ?? RIG_BASE_Y; }
+
+  _crossbeamY() { return this._rigBaseY() - COLUMN_H - 10; }
+
+  _crossheadHomeY() { return this._rigBaseY() - 200; }
+
   createWorld() {
-    this.layout = loadLayout(this, LAYOUT_KEY);
+    // Responsive: the phone gets the column block (plan 0.5). The rest
+    // of this scene reads `this.layout` as a flat map of objects, which
+    // is what the merged result is.
+    const design = loadResponsiveLayout(this, LAYOUT_KEY);
+    this.layout = design.objects;
+    this._design = design;
     super.createWorld();
     this._mountLeftBayInstruments();
     this._buildSlowToggle();
@@ -142,34 +212,57 @@ export default class MaterialLabScene extends LabRigBase {
   drawApparatus(ctx) {
     const L = ctx.layer;
     const rigX = this.layout.utm.x;
-    L.add(this.add.rectangle(rigX, RIG_BASE_Y + RIG_BASE_H / 2, RIG_BASE_W, RIG_BASE_H, COL_BASE)
-      .setStrokeStyle(2, 0x111114).setDepth(2));
-    [-1, 1].forEach((s) => {
-      L.add(this.add.circle(rigX + s * 70, RIG_BASE_Y + 8, 3, 0x9aa0aa).setDepth(3));
-      L.add(this.add.circle(rigX + s * 70, RIG_BASE_Y + 22, 3, 0x9aa0aa).setDepth(3));
-      L.add(this.add.rectangle(
-        rigX + s * COLUMN_DX, RIG_BASE_Y - COLUMN_H / 2, COLUMN_W, COLUMN_H, COL_COLUMN,
-      ).setStrokeStyle(1, 0x33363c).setDepth(1));
-    });
-    L.add(this.add.rectangle(rigX, CROSSBEAM_Y, CROSSBEAM_W, CROSSBEAM_H, COL_BEAM)
-      .setStrokeStyle(2, 0x2c2e34).setDepth(2));
-    L.add(this.add.rectangle(rigX, CROSSBEAM_Y - 14, 22, 18, 0x5a5d63).setDepth(2));
-    L.add(this.add.circle(rigX, CROSSBEAM_Y - 14, 4, 0xfacc15).setDepth(3));
+    // The machine is a painted sprite now (plan 2.5): a frame that
+    // stands still and a crosshead that travels. It was a dozen
+    // rectangles and circles, which is what the owner meant by a grey
+    // machine made of shapes.
+    //
+    // Two ComfyUI passes with a tightened prompt both came back as a
+    // drill press, with a post up the middle where the specimen hangs.
+    // So the two pieces are authored pixel art in the Act 1 palette,
+    // with the same 1px dark warm outline as the rest, rather than a
+    // generated image that cannot be trusted to leave the middle open.
+    const frameArt = hasArt(this, ART.utm_frame);
+    if (frameArt) {
+      const frame = addArt(this, ART.utm_frame, rigX, this._rigBaseY() + RIG_BASE_H, {
+        anchor: 'ground', depth: 1,
+      });
+      if (frame) L.add(frame);
+    } else {
+      // Dev fallback, so a missing texture still shows a machine.
+      L.add(this.add.rectangle(rigX, this._rigBaseY() + RIG_BASE_H / 2, RIG_BASE_W, RIG_BASE_H, COL_BASE)
+        .setStrokeStyle(2, 0x111114).setDepth(2));
+      [-1, 1].forEach((s) => {
+        L.add(this.add.rectangle(
+          rigX + s * COLUMN_DX, this._rigBaseY() - COLUMN_H / 2, COLUMN_W, COLUMN_H, COL_COLUMN,
+        ).setStrokeStyle(1, 0x33363c).setDepth(1));
+      });
+      L.add(this.add.rectangle(rigX, this._crossbeamY(), CROSSBEAM_W, CROSSBEAM_H, COL_BEAM)
+        .setStrokeStyle(2, 0x2c2e34).setDepth(2));
+    }
 
-    // Movable crosshead + grips — refs needed by animateProgress.
-    this._crossheadY = CROSSHEAD_HOME_Y;
-    this._crosshead = this.add.rectangle(
+    // The travelling crosshead. Everything downstream reads
+    // `_crosshead.y`, so it stays a positioned object either way.
+    this._crossheadY = this._crossheadHomeY();
+    const headArt = hasArt(this, ART.utm_crosshead)
+      ? addArt(this, ART.utm_crosshead, rigX, this._crossheadY, { anchor: 'icon', depth: 3 })
+      : null;
+    this._crosshead = headArt || this.add.rectangle(
       rigX, this._crossheadY, CROSSHEAD_W, CROSSHEAD_H, 0x8a8e96,
     ).setStrokeStyle(2, 0x33363c).setDepth(3);
     L.add(this._crosshead);
+
+    // The crosshead sprite draws its own grip, so the separate one is
+    // invisible when the art is there — but it stays, because the
+    // specimen's reach is measured from it.
     this._upperGrip = this.add.rectangle(
       rigX, this._crossheadY + CROSSHEAD_H / 2 + GRIP_H / 2,
       GRIP_W, GRIP_H, COL_GRIP,
-    ).setStrokeStyle(1, 0x111114).setDepth(3);
+    ).setStrokeStyle(1, 0x111114).setDepth(3).setVisible(!headArt);
     L.add(this._upperGrip);
     this._lowerGrip = this.add.rectangle(
-      rigX, RIG_BASE_Y - GRIP_H / 2, GRIP_W, GRIP_H, COL_GRIP,
-    ).setStrokeStyle(1, 0x111114).setDepth(3);
+      rigX, this._rigBaseY() - GRIP_H / 2, GRIP_W, GRIP_H, COL_GRIP,
+    ).setStrokeStyle(1, 0x111114).setDepth(3).setVisible(!frameArt);
     L.add(this._lowerGrip);
   }
 
@@ -182,12 +275,12 @@ export default class MaterialLabScene extends LabRigBase {
     const grain = mat.visual.grainColor ? hexToInt(mat.visual.grainColor) : null;
 
     // Reset crosshead home.
-    this._crossheadY = CROSSHEAD_HOME_Y;
+    this._crossheadY = this._crossheadHomeY();
     if (this._crosshead) this._crosshead.y = this._crossheadY;
     if (this._upperGrip) this._upperGrip.y = this._crossheadY + CROSSHEAD_H / 2 + GRIP_H / 2;
 
     const upperGripBottom = this._crossheadY + CROSSHEAD_H / 2 + GRIP_H;
-    const lowerGripTop = RIG_BASE_Y - GRIP_H;
+    const lowerGripTop = this._rigBaseY() - GRIP_H;
     const cy = (upperGripBottom + lowerGripTop) / 2;
     const h = lowerGripTop - upperGripBottom;
     this._specimenHomeW = SPECIMEN_HOME_W;
@@ -226,7 +319,7 @@ export default class MaterialLabScene extends LabRigBase {
 
     // Crosshead pulls up proportional to current strain.
     const yOffset = (sample.strain / Math.max(1e-6, fracStrain)) * 30;
-    const targetY = CROSSHEAD_HOME_Y - yOffset;
+    const targetY = this._crossheadHomeY() - yOffset;
     if (this._crosshead) this._crosshead.y = targetY;
     if (this._upperGrip) this._upperGrip.y = targetY + CROSSHEAD_H / 2 + GRIP_H / 2;
 
@@ -254,7 +347,7 @@ export default class MaterialLabScene extends LabRigBase {
     if (!this._specimenRect || !this._crosshead) return;
     const rigX = this.layout.utm.x;
     const upperGripBottom = this._crosshead.y + CROSSHEAD_H / 2 + GRIP_H;
-    const lowerGripTop = RIG_BASE_Y - GRIP_H;
+    const lowerGripTop = this._rigBaseY() - GRIP_H;
     const newH = lowerGripTop - upperGripBottom;
     const newY = (upperGripBottom + lowerGripTop) / 2;
     const newW = Math.max(2, this._specimenHomeW * scaleX);
@@ -510,14 +603,17 @@ export default class MaterialLabScene extends LabRigBase {
   _setTeachingCallout(text, color = 0x22c55e) {
     const cfg = this.layout.teaching_callout;
     if (!cfg) return;
+    // Back on screen if a takeaway card had hidden it.
+    this._teachingCalloutBg?.setVisible(true);
+    this._teachingCalloutText?.setVisible(true);
 
     if (!this._teachingCalloutBg) {
       this._teachingCalloutBg = this.add.rectangle(cfg.x, cfg.y, cfg.w, 38, 0x111827, 0.9)
-        .setStrokeStyle(2, color).setDepth(5);
+        .setStrokeStyle(2, color).setDepth(CALLOUT_BG_DEPTH);
       this._teachingCalloutText = this.add.text(cfg.x, cfg.y, '', {
         fontSize: '10px', fontFamily: 'sans-serif', color: '#f8fafc',
         fontStyle: 'bold', align: 'center', wordWrap: { width: cfg.w - 18 },
-      }).setOrigin(0.5).setDepth(6);
+      }).setOrigin(0.5).setDepth(CALLOUT_TEXT_DEPTH);
     }
 
     this._teachingCalloutBg.setStrokeStyle(2, color);
@@ -606,7 +702,7 @@ export default class MaterialLabScene extends LabRigBase {
     };
   }
 
-  // ── Completion dialog: append "take the data back to Mr. Chen" + add
+  // ── Completion dialog: append the "bring the data back" line + add
   //   structured journal entry on first all-tested completion. ──────────
   _emitCompletionDialog(result) {
     super._emitCompletionDialog(result);
@@ -709,32 +805,93 @@ export default class MaterialLabScene extends LabRigBase {
     return {
       ...base,
       text: base.text +
-        "\n\n📓 Take the data back to Mr. Chen — he'll want to see the numbers.",
+        // First person: Mr. Chen is the speaker here, so "take it back to
+        // Mr. Chen" was him talking about himself. No pronoun either.
+        "\n\n📓 Bring the data back to me - I'll want to see the numbers.",
     };
   }
 
-  _showComparisonPanel() {
-    const cfg = this.layout.comparison_panel;
-    if (!cfg) return;
-    if (this._comparisonPanel) this._comparisonPanel.destroy(true);
+  /**
+   * Show or hide the floating cards a modal would print through.
+   *
+   * The teaching callout only comes back if the takeaway is not up:
+   * they share a row on a phone, and only one of the two is ever meant
+   * to be on screen (plan 0.5).
+   */
+  _setLabCardsVisible(visible) {
+    this._takeawayBtn?.bg?.setVisible(visible);
+    this._takeawayBtn?.lbl?.setVisible(visible);
+    // The callout only comes back if the experiment is not finished:
+    // once there is a conclusion, the hint that explained the chart
+    // has had its turn (plan 0.5).
+    const calloutWanted = visible && !this._takeawayBtn;
+    this._teachingCalloutBg?.setVisible(calloutWanted);
+    this._teachingCalloutText?.setVisible(calloutWanted);
+  }
 
+  _showComparisonPanel() {
+    if (this._takeawayModal?.isOpen()) return;
     const lines = [
       'Steel: strongest, but heavy.',
       'Copper: stretches, but weak and heavy.',
       'Mesquite: strong enough and light for the bridge.',
     ];
-    const panel = this.add.container(0, 0).setDepth(8);
-    panel.add(this.add.rectangle(cfg.x, cfg.y, cfg.w, cfg.h, 0x111827, 0.92)
-      .setStrokeStyle(2, 0xfbbf24));
-    panel.add(this.add.text(cfg.x, cfg.y - 18, 'Engineering takeaway', {
-      fontSize: '11px', fontFamily: 'sans-serif', color: '#fbbf24',
+
+    // The teaching callout stands down while the conclusion is up: on
+    // a phone they share a row, and only one of the two is ever meant
+    // to be on screen (plan 0.5).
+    this._teachingCalloutBg?.setVisible(false);
+    this._teachingCalloutText?.setVisible(false);
+
+    this._takeawayModal = showLabModal(this, {
+      title: 'Engineering takeaway',
+      lines,
+      onClose: () => {
+        this._takeawayModal = null;
+        this._showTakeawayButton();
+      },
+    });
+  }
+
+  /**
+   * The small control that brings the takeaway back.
+   *
+   * The conclusion must stay reachable after it is dismissed — a child
+   * who closes it should not have to re-run three tests to read it
+   * again. 112x28 in the band between the chart and the instrument
+   * row, the one gap on this bench with nothing in it.
+   */
+  _showTakeawayButton() {
+    if (this._takeawayBtn) return;
+    // Under the slow-replay toggle, at the foot of the control column.
+    // Under the CHART was the obvious spot and it covered the density
+    // station's "SCALE" sign by 53% — this bench has one genuinely
+    // empty band and it is this one.
+    const portrait = Boolean(this._design?.portrait);
+    const slow = this.layout.slow_toggle;
+    const cfg = this.layout.comparison_panel;
+    // Portrait has a row reserved for exactly this — the layout calls
+    // it "callout or takeaway", and only one of the two is ever shown.
+    // Under the slow toggle it sat on the chart's title (23% of "UTM
+    // COMPARISON").
+    // Both small shapes have a slot reserved for this in their layout
+    // block; only the big bench has to find room under the toggle.
+    const reserved = portrait || this._compactRig;
+    const x = reserved ? cfg.x : (slow ? slow.x : cfg.x);
+    const y = reserved ? cfg.y : (slow ? slow.y + 34 : cfg.y);
+
+    const bg = this.add.rectangle(x, y, 112, 28, 0x111827, 0.95)
+      .setStrokeStyle(2, 0xfbbf24).setDepth(STATION_BUTTON_DEPTH)
+      .setInteractive({ useHandCursor: true });
+    const lbl = this.add.text(x, y, 'Takeaway', {
+      fontSize: '12px', fontFamily: 'sans-serif', color: '#fbbf24',
       fontStyle: 'bold',
-    }).setOrigin(0.5));
-    panel.add(this.add.text(cfg.x, cfg.y + 6, lines.join('\n'), {
-      fontSize: '10px', fontFamily: 'sans-serif', color: '#f8fafc',
-      align: 'center', lineSpacing: 2, wordWrap: { width: cfg.w - 18 },
-    }).setOrigin(0.5));
-    this._comparisonPanel = panel;
+    }).setOrigin(0.5).setDepth(STATION_BUTTON_DEPTH + 2);
+    bg.on('pointerdown', () => this._showComparisonPanel());
+    lbl.setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => this._showComparisonPanel());
+
+    this._takeawayBtn = { bg, lbl };
   }
 
   // ─── Alt chart mode: density bars ───────────────────────────────────
@@ -826,23 +983,52 @@ export default class MaterialLabScene extends LabRigBase {
         return Array.isArray(live.materialLog) ? live.materialLog : [];
       },
       onAutoFill: (id, _name) => this._onSlateAutoFill(id),
+      // A modal owns the screen. The takeaway card and the teaching
+      // callout live in the UI band, which is ABOVE the old panel's
+      // world depth — they printed through the slate's title and table
+      // (review MUST 4). They stand down while it is open.
+      onOpen: () => this._setLabCardsVisible(false),
+      onClose: () => this._setLabCardsVisible(true),
     });
 
     // Also expose each as a proximity-prompt interactable so the player
     // can walk up and press E. Click-to-interact stays available too.
+    // Each station prints its own sign — "SCALE", "Coupons: 10 cm³
+    // uniform", "Density Slate" — so the generic caption was a second copy
+    // of the same word landing on the chart's axis label and on the
+    // neighbouring station's note. The scale's sign sits exactly where the
+    // interact prompt goes, so that one prompt hangs below the display.
+    // The sprite sits beside the LCD (artX/artY), not on it: a 64x64
+    // brass scale centred on its own display hid the SCALE label and the
+    // grams completely (plan 0.12.2). The hotspot stays on the display so
+    // walking up to the readout is still what triggers the prompt.
     this.addInteractable({
-      x: layout.scaleX, y: layout.scaleDisplayY, radius: 70,
-      icon: '⚖️', label: 'Scale',
+      x: layout.scaleArtX ?? layout.scaleX, y: layout.scaleArtY ?? layout.scaleDisplayY,
+      radius: 70,
+      icon: ART.lab_scale, label: 'Scale',
+      showNameLabel: false,
+      promptOffset: 34,
+      // While RECORD is on screen the prompt stands down: they share the
+      // same patch of bench, and RECORD is the one to press.
+      promptSuppressed: () => Boolean(this._scale?.isAwaitingInput?.()),
       onInteract: () => { /* scale buttons handle their own clicks */ },
     });
     this.addInteractable({
       x: layout.calipersX, y: layout.calipersY, radius: 60,
-      icon: '🧪', label: 'Coupons',
+      icon: ART.lab_coupons, label: 'Coupons',
+      showNameLabel: false,
       onInteract: () => this._onCalipersClick(),
     });
+    // No clipboard sprite here. It was drawn on the same point as the
+    // slate station, so it covered the station's own board and the word
+    // SLATE, and its baked-in writing is unreadable at this size — the
+    // plan wants that sprite redrawn with no text in the image (0.12.4,
+    // art chain, Phase 1). Until then the station's own legible board is
+    // the face; `icon: null` means "the scene already drew this prop".
     this.addInteractable({
       x: layout.slateX, y: layout.slateY, radius: 60,
-      icon: '📋', label: 'Density Slate',
+      icon: null, label: 'Density Slate',
+      showNameLabel: false,
       onInteract: () => this._slate?.openPanel?.(),
     });
   }

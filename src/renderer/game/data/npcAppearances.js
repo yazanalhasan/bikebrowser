@@ -80,6 +80,33 @@ export const NPC_APPEARANCES = {
     shoes: 0x2b2b2b,
     accessory: 'clipboard',
   },
+
+  // Mariam and Lina are drawn from their 4x4 character sheets (see
+  // act1ArtRegistry.js). These entries only matter if a sheet fails to
+  // load, so they mirror the sheets: Mariam in a mustard cardigan with
+  // loose dark hair and no head covering; Lina with a brown ponytail,
+  // teal tee and purple shorts.
+  mariam: {
+    skin: 0xd9a47a,
+    hair: { color: 0x241c18, style: 'bob' },
+    headgear: null,
+    glasses: false,
+    shirt: { color: 0xd9a21b, style: 'cardigan' },
+    pants: 0x3a5673,
+    shoes: 0x3a2a1a,
+    accessory: null,
+  },
+
+  lina: {
+    skin: 0xd9a47a,
+    hair: { color: 0x5b3a21, style: 'ponytail' },
+    headgear: null,
+    glasses: false,
+    shirt: { color: 0x14b8a6, style: 'basic' },
+    pants: 0x7c3aed,
+    shoes: 0xf97316,
+    accessory: null,
+  },
 };
 
 /** Fallback when an NPC id has no declared appearance. */

@@ -1,24 +1,34 @@
 /**
- * StreetBlockScene — the street outside Zuzu's house.
+ * StreetBlockScene — Home Street, the street outside Zuzu's house.
  *
  * Local playable scene with:
  *   - Sidewalks, road, driveways
  *   - Zuzu's house exterior
  *   - Mrs. Ramirez + flat tire quest
- *   - Neighbor houses
+ *   - Neighbor houses, Mr. Chen, Mariam, Lina
  *   - Exit to garage (west)
  *   - Exit to overworld (north)
+ *   - Exit to Desert Edge (south)
+ *
+ * The Sonoran plants, the animals and the foraging interactions used to be
+ * here too. On 2026-11-26 the owner asked for the neighborhood to be split
+ * in two because one screen with five houses, four neighbours, two bikes,
+ * eleven plants and three animals was too busy for a young child: the
+ * desert now lives in `DesertEdgeScene`, reached through the signed gap in
+ * the south fence. Nothing moved by hard-coding — the plants are rows in
+ * `public/layouts/desert-edge.layout.json` and the behaviour is the shared
+ * `systems/foragingScenery.js`.
  *
  * World size: 1000×700 (slightly larger than viewport for scrolling)
  */
 
 import LocalSceneBase from './LocalSceneBase.js';
 import { startQuest, getCurrentStep, advanceQuest } from '../systems/questSystem.js';
+import { questOfferDialog, resumeParkedQuest, dialogForStep } from '../systems/questDialog.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { NPC_PLACEMENTS } from '../data/neighborhoodLayout.js';
 import { getNextQuestForNPC } from '../data/questBoard.js';
 import QUESTS from '../data/quests.js';
-import { drawPlant } from '../utils/plantRenderer.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { startInteractiveExplainer } from '../systems/interactiveExplainerSystem.js';
@@ -28,29 +38,17 @@ import { createWorldLabel } from '../../../game/ui/WorldLabel.js';
 import { createInteractionMarker } from '../../../game/ui/InteractionMarker.js';
 import { createGarageLeftSignPlaceholder } from '../../../game/art/placeholderFactories.js';
 import {
-  registerEntities,
-  attachEcologyTicker,
-  emitObservation,
-  emitForage,
-} from '../systems/ecology/index.js';
-import {
-  preloadEcologyAssets,
-  ECOLOGY_ASSET_KEYS,
-} from '../systems/ecology/ecologyAssetManifest.js';
+  LANGUAGE_CARDS,
+  practiceLanguageTerm,
+  getMentorLine,
+} from '../systems/languageLayer.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { hasArt } from '../../../game/assets/act1Art.js';
+import { groundDepth } from '../../../game/assets/act1Art.js';
+import { hasAtlasFrame } from '../../../game/assets/createAtlasSprite.js';
+import { WORLD_SIGN_ART_DEPTH, WORLD_SIGN_DEPTH } from '../systems/labelLayout.js';
 
-const PLANT_GRANTS = {
-  mesquite: ['mesquite_pods', 'mesquite_wood_sample', 'bio_sample_bacteria'],
-  creosote: ['creosote_leaves'],
-  prickly_pear: ['prickly_pear_fruit'],
-  barrel_cactus: ['barrel_cactus_pulp'],
-  jojoba: ['jojoba_seeds'],
-  agave: ['agave_fiber', 'bio_sample_agave'],
-  yucca: ['yucca_root'],
-  desert_lavender: ['desert_lavender_flowers'],
-  ephedra: ['ephedra_stems'],
-  yerba_mansa: ['yerba_mansa_root'],
-};
-const INTERACTIVE_PLANT_SCALE = 1.65;
+const NEIGHBORHOOD_ATLAS = 'neighborhood_atlas';
 
 export default class StreetBlockScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -70,10 +68,6 @@ export default class StreetBlockScene extends LocalSceneBase {
     super.preload?.();
     preloadGameAssets(this);
     this.load.json('streetBlockLayout', 'layouts/street-block.layout.json');
-    // ECOLOGY (additive — Phase 4 animals): preload animal sprite textures.
-    // Plant textures are unused visually (plants use drawPlant graphics), but
-    // animal sprites are rendered via this.add.image using ecology texture keys.
-    preloadEcologyAssets(this);
   }
 
   createWorld() {
@@ -105,41 +99,13 @@ export default class StreetBlockScene extends LocalSceneBase {
     }
 
     // === ZUZU'S HOUSE (left side, north of road) ===
-    // House body
-    {
-      const o = this.layout.zuzu_house_body;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0xd4a574).setStrokeStyle(3, 0xc4945e).setDepth(1);
-    }
-    // Roof
-    const roofGfx = this.add.graphics();
-    roofGfx.fillStyle(0x8d6e63);
-    {
-      const o = this.layout.zuzu_house_roof;
-      roofGfx.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
-    }
-    roofGfx.setDepth(2);
-    // Door
-    {
-      const o = this.layout.zuzu_house_door;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
-    }
-    {
-      const o = this.layout.zuzu_house_doorknob;
-      this.add.circle(o.x, o.y, o.r, 0xfdd835).setDepth(3);
-    }
-    // Windows
-    {
-      const o = this.layout.zuzu_house_window_left;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
-    }
-    {
-      const o = this.layout.zuzu_house_window_right;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
-    }
+    // The facade is a painted neighborhood-atlas frame, drawn by
+    // _skinNeighborhoodHouses() below. Only the label, the collision body
+    // and the driveway are built here.
     // Label
     {
       const o = this.layout.zuzu_house_label;
-      this._drawMapLabel(o.x, o.y, "Zuzu's House", { depth: 9 });
+      this._drawMapLabel(o.x, o.y, "Zuzu's House", { depth: WORLD_SIGN_DEPTH });
     }
     // House collision
     {
@@ -147,65 +113,24 @@ export default class StreetBlockScene extends LocalSceneBase {
       this.addWall(o.x, o.y, o.w, o.h);
     }
 
-    // Driveway
+    // Driveway — same concrete as the sidewalk.
     {
       const o = this.layout.zuzu_driveway;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x9e9e9e);
+      this.addGroundTexture(ART.streetblock_sidewalk, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h,
+        { depth: -1 });
     }
 
     // === NEIGHBOR HOUSE — Mrs. Ramirez (center-right, north of road) ===
     {
-      const o = this.layout.ramirez_house_body;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0xef9a9a).setStrokeStyle(3, 0xe57373).setDepth(1);
-    }
-    const roofGfx2 = this.add.graphics();
-    roofGfx2.fillStyle(0xc62828);
-    {
-      const o = this.layout.ramirez_house_roof;
-      roofGfx2.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
-    }
-    roofGfx2.setDepth(2);
-    {
-      const o = this.layout.ramirez_house_door;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
-    }
-    {
-      const o = this.layout.ramirez_house_doorknob;
-      this.add.circle(o.x, o.y, o.r, 0xfdd835).setDepth(3);
-    }
-    {
-      const o = this.layout.ramirez_house_window_left;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
-    }
-    {
-      const o = this.layout.ramirez_house_window_right;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x87ceeb, 0.7).setStrokeStyle(2, 0x795548).setDepth(2);
-    }
-    {
       const o = this.layout.ramirez_house_label;
-      this._drawMapLabel(o.x, o.y, 'Ramirez House', { depth: 9 });
+      this._drawMapLabel(o.x, o.y, 'Ramirez House', { depth: WORLD_SIGN_DEPTH });
     }
     {
       const o = this.layout.ramirez_house_collision;
       this.addWall(o.x, o.y, o.w, o.h);
     }
 
-    // === NEIGHBOR HOUSE — far right (decorative) ===
-    {
-      const o = this.layout.blue_house_body;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x90caf9).setStrokeStyle(3, 0x64b5f6).setDepth(1);
-    }
-    const roofGfx3 = this.add.graphics();
-    roofGfx3.fillStyle(0x1565c0);
-    {
-      const o = this.layout.blue_house_roof;
-      roofGfx3.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
-    }
-    roofGfx3.setDepth(2);
-    {
-      const o = this.layout.blue_house_door;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
-    }
+    // === NEIGHBOR HOUSE — far right (the workshop) ===
     {
       const o = this.layout.blue_house_collision;
       this.addWall(o.x, o.y, o.w, o.h);
@@ -213,39 +138,8 @@ export default class StreetBlockScene extends LocalSceneBase {
 
     // === SOUTH SIDE — more houses ===
     {
-      const o = this.layout.green_house_body;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0xc8e6c9).setStrokeStyle(3, 0xa5d6a7).setDepth(1);
-    }
-    const roofGfx4 = this.add.graphics();
-    roofGfx4.fillStyle(0x2e7d32);
-    {
-      const o = this.layout.green_house_roof;
-      roofGfx4.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
-    }
-    roofGfx4.setDepth(2);
-    {
-      const o = this.layout.green_house_door;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
-    }
-    {
       const o = this.layout.green_house_collision;
       this.addWall(o.x, o.y, o.w, o.h);
-    }
-
-    {
-      const o = this.layout.yellow_house_body;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0xfff9c4).setStrokeStyle(3, 0xfff176).setDepth(1);
-    }
-    const roofGfx5 = this.add.graphics();
-    roofGfx5.fillStyle(0xf9a825);
-    {
-      const o = this.layout.yellow_house_roof;
-      roofGfx5.fillTriangle(o.x1, o.y1, o.x2, o.y2, o.x3, o.y3);
-    }
-    roofGfx5.setDepth(2);
-    {
-      const o = this.layout.yellow_house_door;
-      this.add.rectangle(o.x, o.y, o.w, o.h, 0x5d4037).setDepth(2);
     }
     {
       const o = this.layout.yellow_house_collision;
@@ -259,90 +153,11 @@ export default class StreetBlockScene extends LocalSceneBase {
       this._drawTree(t.x, t.y, t.scale || 1);
     }
 
-    // === ECOLOGY PLANTS (drawn with graphics + interactable) ===
+    // No plants or animals on Home Street: the desert moved to
+    // DesertEdgeScene. The layout still carries empty `plants` and
+    // `animals` arrays, so putting a plant back on the street is a data
+    // edit and this scene needs no new code for it.
     this._ecologyPlants = [];
-
-    for (const p of this.layout.plants) {
-      // Draw visual plant (graphics-based, not emoji)
-      const plantContainer = drawPlant(this, p.species, p.x, p.y, {
-        scale: p.visualScale || INTERACTIVE_PLANT_SCALE,
-      });
-      plantContainer.setDepth(4); // background decoration, below player (depth 6)
-
-      // Add invisible interaction zone (uses existing addInteractable for prompt/hitbox)
-      this.addInteractable({
-        x: p.x, y: p.y, label: p.label, icon: '', // no emoji — visual is drawn above
-        radius: p.radius,
-        grantsItems: PLANT_GRANTS[p.species] || [],
-        metadata: { type: 'plant', species: p.species },
-        onInteract: () => this._handlePlantInteract(p.species, p.label, p.x, p.y),
-      });
-      this._ecologyPlants.push({ species: p.species, x: p.x, y: p.y });
-      this._drawMapLabel(p.x, p.y + (p.labelOffsetY || 31), p.label, {
-        depth: 14,
-        fontSize: 10,
-        maxWidth: 142,
-      });
-    }
-
-    // === ECOLOGY SUBSTRATE WIRING (additive — Phase 4) ===========================
-    // Register each layout-driven plant as an EcologyEntity so the ecology
-    // substrate can track observations and forage events alongside the
-    // existing plant-interaction flow. The original `_handlePlantInteract`
-    // path (forage gate, item grant, dialog) is preserved unchanged below;
-    // ecology emission is layered on top.
-    const SCENE_KEY = 'StreetBlockScene';
-    const ecologyConfigs = this.layout.plants.map((p, i) => ({
-      id: `${SCENE_KEY}_plant_${i}_${p.species}`,
-      speciesId: p.species,
-      sceneKey: SCENE_KEY,
-      x: p.x,
-      y: p.y,
-      spawnedBy: 'static',
-      interactionRadius: p.radius,
-    }));
-    /** @type {import('../systems/ecology/index.js').EcologyEntity[]} */
-    this._ecologyEntities = registerEntities(this, ecologyConfigs);
-    // Index by `${species}|${x}|${y}` so `_handlePlantInteract` can find
-    // the registered entity for the specific plant the player interacted with.
-    this._ecologyEntityIndex = new Map();
-    for (const ent of this._ecologyEntities) {
-      this._ecologyEntityIndex.set(`${ent.speciesId}|${ent.x}|${ent.y}`, ent);
-    }
-    attachEcologyTicker(this);
-
-    // === ECOLOGY ANIMALS (additive — Phase 4 animals) ========================
-    // Render layout-driven animal sprites and register them as EcologyEntity
-    // instances. The existing plant rendering/registration above is unchanged.
-    // `attachEcologyTicker` above is type-agnostic and already covers fauna.
-    for (const a of this.layout.animals) {
-      const key = ECOLOGY_ASSET_KEYS.animals[a.speciesId];
-      if (!key) continue;
-      this.add.image(a.x, a.y, key).setOrigin(0.5).setDepth(4).setDisplaySize(48, 48);
-      this._drawMapLabel(a.x, a.y + 34, this._formatAnimalLabel(a), {
-        depth: 14,
-        fontSize: 10,
-        maxWidth: 118,
-      });
-    }
-
-    const animalConfigs = this.layout.animals.map((a, i) => ({
-      id: `${SCENE_KEY}_animal_${i}_${a.speciesId}`,
-      speciesId: a.speciesId,
-      sceneKey: SCENE_KEY,
-      x: a.x,
-      y: a.y,
-      spawnedBy: 'static',
-      interactionRadius: a.interactionRadius,
-      observable: true,
-      forageable: false,
-    }));
-    this._ecologyAnimalEntities = registerEntities(this, animalConfigs);
-    for (const ent of this._ecologyAnimalEntities) {
-      // eslint-disable-next-line no-console
-      console.log(`[ecology-debug] registered animal: ${ent.speciesId} at ${ent.x}, ${ent.y}`);
-    }
-    // =========================================================================
 
     // Fire hydrant
     {
@@ -374,6 +189,12 @@ export default class StreetBlockScene extends LocalSceneBase {
       x: this.layout.npc_mrs_ramirez.x,
       y: this.layout.npc_mrs_ramirez.y,
       color: ramirezData?.color || 0xb45309,
+      // A full sheet now: four directions and a talking pose, instead of
+      // the one static atlas frame she had since November (plan 2.6 f).
+      // The atlas frame stays as the fallback.
+      sheet: 'ramirez_idle',
+      talkSheet: 'ramirez_talk',
+      atlasFrame: 'npc_mrs_ramirez_idle',
       onInteract: () => this._handleNpcInteract('mrs_ramirez', 'flat_tire_repair'),
     });
 
@@ -381,9 +202,15 @@ export default class StreetBlockScene extends LocalSceneBase {
     const questDone = state.completedQuests?.includes('flat_tire_repair');
     {
       const o = this.layout.ramirez_bike_icon;
-      this._drawBike(o.x, o.y, { color: 0x2563eb, accent: 0xef4444, flat: !questDone, depth: 38 });
-      if (!questDone) createInteractionMarker(this, o.x + 58, o.y - 10, 'blocked', { pulse: true });
-      this._ramirezBike = this._drawBikeBadge(o.x + 48, o.y - 8, questDone ? 'OK' : '', questDone);
+      this._drawBike(o.x, o.y, { color: 0x2563eb, accent: 0xef4444, flat: !questDone, depth: groundDepth(o.y) });
+      // Only the open quest gets a floating marker. The "OK" badge that used
+      // to sit here once the tyre was fixed told the child nothing and added
+      // to the clutter, so a finished bike now simply looks fixed.
+      // Above the bike, not beside it: at x+58 the marker landed inside the
+      // "E Trailside" street sign board (which spans x 452-548).
+      this._ramirezMarker = questDone
+        ? null
+        : createInteractionMarker(this, o.x, o.y - 56, 'blocked', { pulse: true });
     }
 
     const ramirezBikeInteract = this.layout.ramirez_bike_icon;
@@ -396,6 +223,22 @@ export default class StreetBlockScene extends LocalSceneBase {
       onInteract: () => this._handleRamirezBikeInteract(),
     });
 
+    // === MARIAM NPC (Act 1 Arabic mentor) ===
+    // A grown-up neighbor in her own front yard, same placement pattern as
+    // Mrs. Ramirez. She is a mentor, not a quest-giver: talking to her
+    // teaches one of the three briefed Arabic words and nothing else.
+    this.addNpc({
+      id: 'mariam',
+      name: 'Mariam',
+      x: this.layout.npc_mariam.x,
+      y: this.layout.npc_mariam.y,
+      sheet: 'mariam_idle',
+      // `mariam_talk` has shipped since November and was never shown
+      // (plan 2.6 row h). She has a talking pose; she should use it.
+      talkSheet: 'mariam_talk',
+      onInteract: () => this._handleMariamInteract(),
+    });
+
     // === MR. CHEN NPC ===
     const chenData = NPC_PLACEMENTS.find(n => n.id === 'mr_chen');
     this.addNpc({
@@ -404,6 +247,7 @@ export default class StreetBlockScene extends LocalSceneBase {
       x: this.layout.npc_mr_chen.x,
       y: this.layout.npc_mr_chen.y,
       color: chenData?.color || 0x2563eb,
+      atlasFrame: 'npc_mr_chen_idle',
       onInteract: () => this._handleNpcInteract('mr_chen', 'chain_repair'),
     });
 
@@ -412,15 +256,23 @@ export default class StreetBlockScene extends LocalSceneBase {
     const chenMotorCleaningActive =
       state.activeQuest?.id === 'engine_cleaning'
       && getCurrentStep(state)?.id === 'clean_motor';
+    // A badge only when a quest needs one: OIL during the motor-cleaning
+    // step, FIX while the chain job is open, and nothing at all once it is
+    // done (the old "OK" badge was decoration).
     const chenBikeIcon = chenMotorCleaningActive
       ? 'OIL'
       : chenQuestDone
-        ? 'OK'
+        ? ''
         : 'FIX';
     {
       const o = this.layout.chen_bike_icon;
-      this._drawBike(o.x, o.y, { color: 0xef4444, accent: 0x111827, depth: 38 });
-      this._chenBike = this._drawBikeBadge(o.x + 44, o.y - 7, chenBikeIcon, chenQuestDone);
+      this._drawBike(o.x, o.y, { color: 0xef4444, accent: 0x111827, depth: groundDepth(o.y) });
+      this._chenBike = chenBikeIcon
+        // Further out to the side: at x+44 the badge clipped the right
+        // edge of the interact prompt, and dropping it instead put it on
+        // Zuzu's name tag.
+        ? this._drawBikeBadge(o.x + 62, o.y - 7, chenBikeIcon, chenQuestDone)
+        : null;
       this.addInteractable({
         x: o.x,
         y: o.y,
@@ -449,13 +301,17 @@ export default class StreetBlockScene extends LocalSceneBase {
     // North exit → Overworld
     {
       const o = this.layout.exit_zone_north;
-      this._drawTopNeighborhoodSign(o.x, 24);
+      // Clear of the top edge: at y=24 the board's top was clipped on a
+      // window taller than the street.
+      this._drawTopNeighborhoodSign(o.x, 46);
       this.addExit({
         x: o.x, y: o.y,
         width: o.w, height: o.h,
         targetScene: 'OverworldScene',
         targetSpawn: 'fromStreet',
-        label: 'Neighborhood north',
+        // The carved sign above already says "Neighborhood ↑"; an exit
+        // label here printed a second one across it.
+        label: null,
       });
     }
 
@@ -508,42 +364,64 @@ export default class StreetBlockScene extends LocalSceneBase {
       this._drawGpsPost(o.x, o.y);
     }
 
-    // === WORLD BOUNDS ===
+    // === SOUTH EXIT → Desert Edge ===
+    // The one way out to the plants and animals. A signed arrow sits above
+    // the gap so a young child can see where the opening in the fence goes.
     {
-      const o = this.layout.wall_south;
-      this.addWall(o.x, o.y, o.w, o.h); // south
+      const sign = this.layout.desert_edge_sign;
+      this._drawDesertEdgeSign(sign.x, sign.y);
+      const o = this.layout.exit_zone_south;
+      this.addExit({
+        x: o.x, y: o.y,
+        width: o.w, height: o.h,
+        targetScene: 'DesertEdgeScene',
+        targetSpawn: 'fromStreet',
+        label: null,
+      });
     }
+
+    // === WORLD BOUNDS ===
+    // The south bound is two bodies with a gap between them — that gap is
+    // the Desert Edge gate.
+    for (const key of ['wall_south_west', 'wall_south_east']) {
+      const o = this.layout[key];
+      if (o) this.addWall(o.x, o.y, o.w, o.h);
+    }
+  }
+
+  /**
+   * Signed arrow over the south gap: a board reading "Desert Edge" and a
+   * big triangle pointing down out of the neighborhood.
+   */
+  _drawDesertEdgeSign(x, y) {
+    const gfx = this.add.graphics().setDepth(20);
+    gfx.fillStyle(0x8a5a2b, 1);
+    gfx.fillRoundedRect(x - 94, y - 20, 188, 40, 8);
+    gfx.lineStyle(3, 0xf0d9a8, 0.95);
+    gfx.strokeRoundedRect(x - 94, y - 20, 188, 40, 8);
+    this.add.text(x + 14, y, 'Desert Edge', {
+      fontFamily: 'sans-serif',
+      fontSize: '16px',
+      fontStyle: 'bold',
+      color: '#ffffff',
+    }).setOrigin(0.5).setDepth(21);
+    this.add.triangle(x - 58, y, 0, -11, 22, -11, 11, 13, 0xfacc15, 1).setDepth(21);
+    return gfx;
   }
 
   _drawGrassField(o) {
-    this.add.rectangle(o.x, o.y, o.w, o.h, 0x7fb13d).setDepth(-10);
-
-    const gfx = this.add.graphics().setDepth(-9);
-    for (let i = 0; i < 210; i++) {
-      const x = (i * 67) % o.w;
-      const y = (i * 43) % o.h;
-      const color = i % 3 === 0 ? 0x96c65a : i % 3 === 1 ? 0x6c9c31 : 0xb4d36a;
-      const alpha = i % 5 === 0 ? 0.5 : 0.28;
-      gfx.fillStyle(color, alpha);
-      gfx.fillEllipse(x, y, 10 + (i % 4) * 2, 4 + (i % 3));
-    }
-
-    gfx.lineStyle(1, 0x5f8f28, 0.14);
-    for (let y = 12; y < o.h; y += 28) {
-      gfx.lineBetween(0, y, o.w, y + ((y / 28) % 2 ? 3 : -3));
-    }
+    // Painted lawn texture. The 210 hand-scattered grass ellipses and the
+    // mower stripes are gone — that variation lives in the art.
+    this.addGroundTexture(ART.lakeedge_grass, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h,
+      { depth: -10 });
   }
 
   _drawRoadway(o, width) {
-    this.add.rectangle(o.x, o.y, o.w, o.h, 0x3f4548).setDepth(-5);
+    // Painted asphalt. Lane markings stay as graphics: they are road
+    // *information* a child reads, and they have to line up with the layout.
+    this.addGroundTexture(ART.streetblock_road, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h,
+      { depth: -5 });
     const gfx = this.add.graphics().setDepth(-4);
-
-    gfx.fillStyle(0x2f3437, 0.22);
-    for (let i = 0; i < 180; i++) {
-      const x = (i * 53) % width;
-      const y = o.y - o.h / 2 + ((i * 29) % o.h);
-      gfx.fillCircle(x, y, i % 4 === 0 ? 1.4 : 0.8);
-    }
 
     gfx.lineStyle(3, 0xe8e2d6, 0.65);
     gfx.lineBetween(0, o.y - o.h / 2, width, o.y - o.h / 2);
@@ -556,18 +434,15 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawSidewalk(o) {
-    this.add.rectangle(o.x, o.y, o.w, o.h, 0xd7d3ca).setDepth(-2);
-    const gfx = this.add.graphics().setDepth(-1);
-    gfx.lineStyle(1, 0xa9a39a, 0.45);
-    gfx.strokeRect(o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
-    for (let x = o.x - o.w / 2; x <= o.x + o.w / 2; x += 42) {
-      gfx.lineBetween(x, o.y - o.h / 2, x + 7, o.y + o.h / 2);
-    }
+    // Painted concrete; the slab joints are in the texture.
+    this.addGroundTexture(ART.streetblock_sidewalk, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h,
+      { depth: -2 });
   }
 
   _skinNeighborhoodHouses() {
     this._drawHouseSkin({
       body: this.layout.zuzu_house_body,
+      atlasFrame: 'house_zuzu',
       roof: this.layout.zuzu_house_roof,
       door: this.layout.zuzu_house_door,
       knob: this.layout.zuzu_house_doorknob,
@@ -579,6 +454,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     });
     this._drawHouseSkin({
       body: this.layout.ramirez_house_body,
+      atlasFrame: 'house_ramirez',
       roof: this.layout.ramirez_house_roof,
       door: this.layout.ramirez_house_door,
       knob: this.layout.ramirez_house_doorknob,
@@ -590,6 +466,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     });
     this._drawHouseSkin({
       body: this.layout.blue_house_body,
+      atlasFrame: 'building_workshop',
       roof: this.layout.blue_house_roof,
       door: this.layout.blue_house_door,
       windows: [],
@@ -598,10 +475,13 @@ export default class StreetBlockScene extends LocalSceneBase {
       roofColor: 0x1557a8,
       shutterColor: 0x1d4f91,
       garage: true,
-      label: { text: 'Workshop', x: this.layout.blue_house_body.x - 34, y: this.layout.blue_house_body.y + 76 },
+      // Centred below the building. The old offset put it 7px from the
+      // workshop-door gate's own caption, so the two names collided.
+      label: { text: 'Workshop', x: this.layout.blue_house_body.x, y: this.layout.blue_house_body.y + 102 },
     });
     this._drawHouseSkin({
       body: this.layout.green_house_body,
+      atlasFrame: 'house_ramirez',
       roof: this.layout.green_house_roof,
       door: this.layout.green_house_door,
       windows: [],
@@ -612,6 +492,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     });
     this._drawHouseSkin({
       body: this.layout.yellow_house_body,
+      atlasFrame: 'house_zuzu',
       roof: this.layout.yellow_house_roof,
       door: this.layout.yellow_house_door,
       windows: [],
@@ -634,8 +515,27 @@ export default class StreetBlockScene extends LocalSceneBase {
     shutterColor,
     garage = false,
     label = null,
+    atlasFrame = null,
   }) {
     this.add.ellipse(body.x + 8, body.y + body.h / 2 + 10, body.w * 0.9, 24, 0x1f2937, 0.18).setDepth(1.4);
+
+    // Painted facade from the neighborhood atlas. The frame already carries
+    // the walls, roof, door and windows, so the vector skin below is skipped
+    // entirely; only the ground shadow and the map label stay.
+    if (atlasFrame && hasAtlasFrame(this, NEIGHBORHOOD_ATLAS, atlasFrame)) {
+      const facadeH = body.h + Math.abs(body.y - roof.y2);
+      this.add.image(body.x, body.y + body.h / 2, NEIGHBORHOOD_ATLAS, atlasFrame)
+        .setOrigin(0.5, 1)
+        .setDisplaySize(body.w, facadeH)
+        .setDepth(3);
+      // Depth 10 put the nameplate inside the character band and under
+      // its own facade: "Zuzu's House" was 17% behind the roof art.
+      if (label) {
+        this._drawMapLabel(label.x, label.y, label.text,
+          { icon: label.icon, depth: WORLD_SIGN_DEPTH });
+      }
+      return;
+    }
 
     const house = this.add.graphics().setDepth(2.6);
     house.fillStyle(bodyColor, 1);
@@ -728,25 +628,13 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawTree(x, y, scale = 1) {
+    // Painted cottonwood. The ground shadow stays so the tree still sits on
+    // the lawn; the vector trunk and the six canopy blobs are gone.
     this.add.ellipse(x + 4, y + 20 * scale, 58 * scale, 18 * scale, 0x1f2937, 0.18).setDepth(2);
-    const gfx = this.add.graphics().setDepth(4);
-    gfx.fillStyle(0x6b3d1f, 1);
-    gfx.fillRoundedRect(x - 5 * scale, y + 4 * scale, 10 * scale, 31 * scale, 4 * scale);
-    gfx.lineStyle(2 * scale, 0x442412, 0.6);
-    gfx.lineBetween(x, y + 10 * scale, x - 16 * scale, y + 24 * scale);
-    gfx.lineBetween(x + 2 * scale, y + 13 * scale, x + 18 * scale, y + 25 * scale);
-    const blobs = [
-      [-19, -3, 16, 0x4f8d2e], [0, -12, 20, 0x6dac39], [18, -3, 17, 0x4f8d2e],
-      [-9, 9, 19, 0x79b84a], [12, 10, 19, 0x5f9d35], [0, 1, 23, 0x72b343],
-    ];
-    for (const [dx, dy, r, color] of blobs) {
-      gfx.fillStyle(color, 1);
-      gfx.fillCircle(x + dx * scale, y + dy * scale, r * scale);
-    }
-    gfx.fillStyle(0xc7df72, 0.75);
-    for (let i = 0; i < 9; i++) {
-      gfx.fillCircle(x - 20 * scale + i * 5 * scale, y - 10 * scale + ((i * 7) % 24) * scale, 2 * scale);
-    }
+    this.addProp(ART.shade_tree, x, y + 24 * scale, {
+      displayHeight: Math.round(110 * scale),
+      depth: groundDepth(y),
+    });
   }
 
   _drawMapLabel(x, y, text, { icon = '', depth = 12, fontSize = 11, maxWidth = 150 } = {}) {
@@ -759,35 +647,41 @@ export default class StreetBlockScene extends LocalSceneBase {
     });
   }
 
-  _formatAnimalLabel(animal) {
-    const bySpecies = {
-      rabbit: 'Jackrabbit',
-      jackrabbit: 'Jackrabbit',
-      javelina: 'Javelina',
-      coyote: 'Coyote',
-    };
-    const labelKey = animal.label?.toLowerCase?.().replace(/^desert\s+/, '');
-    return bySpecies[animal.speciesId] || bySpecies[labelKey] || animal.label || animal.speciesId;
-  }
-
   _drawStreetSign(x, y, text) {
-    const gfx = this.add.graphics().setDepth(8);
-    gfx.lineStyle(4, 0xe5e7eb, 0.9);
-    gfx.lineBetween(x, y + 12, x, y + 70);
-    gfx.fillStyle(0x1f7a42, 1);
-    gfx.fillRoundedRect(x - 48, y - 15, 96, 30, 5);
-    gfx.lineStyle(2, 0xf5f1c8, 0.9);
-    gfx.strokeRoundedRect(x - 48, y - 15, 96, 30, 5);
+    // A street sign is a sign: Lina standing at the corner covered 58%
+    // of "E Trailside" while it sat at depth 8/9 (plan 0.12).
+    //
+    // The plate and pole are painted now (plan 2.7 p3). The NAME stays
+    // game text drawn over it — no text inside an image, ever, because
+    // a baked word cannot be read at 96px and cannot be translated.
+    if (hasArt(this, ART.street_sign_blank)) {
+      // Drawn at its authored size. The generated candidates were all
+      // portrait signs, and stretching one 3x sideways to fit a street
+      // name looked exactly like what it was, so the plate is authored
+      // pixel art at the aspect a street name needs.
+      this.addProp(ART.street_sign_blank, x, y + 71, {
+        depth: WORLD_SIGN_ART_DEPTH,
+      });
+    } else {
+      const gfx = this.add.graphics().setDepth(WORLD_SIGN_ART_DEPTH);
+      gfx.lineStyle(4, 0xe5e7eb, 0.9);
+      gfx.lineBetween(x, y + 12, x, y + 70);
+      gfx.fillStyle(0x1f7a42, 1);
+      gfx.fillRoundedRect(x - 48, y - 15, 96, 30, 5);
+      gfx.lineStyle(2, 0xf5f1c8, 0.9);
+      gfx.strokeRoundedRect(x - 48, y - 15, 96, 30, 5);
+    }
     this.add.text(x, y, text, {
       fontFamily: 'sans-serif',
       fontSize: '14px',
       fontStyle: 'bold',
       color: '#ffffff',
-    }).setOrigin(0.5).setDepth(9);
+    }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH);
   }
 
   _drawTopNeighborhoodSign(x, y) {
-    const gfx = this.add.graphics().setScrollFactor(1).setDepth(20);
+    // In the sign band so it dodges the HUD rail like every other sign.
+    const gfx = this.add.graphics().setScrollFactor(1).setDepth(WORLD_SIGN_ART_DEPTH);
     gfx.fillStyle(0x406b1b, 0.95);
     gfx.fillRoundedRect(x - 112, y - 21, 224, 42, 10);
     gfx.lineStyle(3, 0x9fb64c, 0.95);
@@ -797,10 +691,20 @@ export default class StreetBlockScene extends LocalSceneBase {
       fontSize: '18px',
       fontStyle: 'bold',
       color: '#ffffff',
-    }).setOrigin(0.5).setDepth(21);
+    }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH);
   }
 
   _drawBike(x, y, { color = 0x2563eb, accent = 0xef4444, flat = false, depth = 38 } = {}) {
+    // Painted bike from the neighborhood atlas. The flat-tyre and
+    // on-the-stand frames are separate art, so `flat` picks the frame
+    // instead of stroking a red ring over a vector drawing.
+    const frame = flat ? 'prop_flat_tire_bike' : 'prop_mr_chen_bike';
+    if (hasAtlasFrame(this, NEIGHBORHOOD_ATLAS, frame)) {
+      this.add.image(x, y + 30, NEIGHBORHOOD_ATLAS, frame)
+        .setOrigin(0.5, 1)
+        .setDepth(depth);
+      return;
+    }
     const gfx = this.add.graphics().setDepth(depth);
     gfx.lineStyle(4, 0x111827, 0.9);
     gfx.strokeCircle(x - 22, y + 12, 18);
@@ -838,6 +742,13 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawFireHydrant(x, y) {
+    // The owner pointed at this one: "a red blob with a yellow dot".
+    // It is a painted hydrant now (plan 2.7 p1); the shapes stay only
+    // as the fallback if the texture fails to load.
+    if (hasArt(this, ART.fire_hydrant)) {
+      this.addProp(ART.fire_hydrant, x, y + 10, { depth: groundDepth(y) });
+      return;
+    }
     const gfx = this.add.graphics().setDepth(6);
     gfx.fillStyle(0xdc2626, 1);
     gfx.fillRoundedRect(x - 7, y - 14, 14, 24, 4);
@@ -849,6 +760,12 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawMailbox(x, y) {
+    // Painted letterbox with its red flag (plan 2.7 p2), in place of a
+    // grey rounded rectangle with a red tick beside it.
+    if (hasArt(this, ART.mailbox)) {
+      this.addProp(ART.mailbox, x, y + 27, { depth: groundDepth(y) });
+      return;
+    }
     const gfx = this.add.graphics().setDepth(6);
     gfx.lineStyle(3, 0x6b7280, 1);
     gfx.lineBetween(x, y + 8, x, y + 27);
@@ -859,6 +776,12 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawGpsPost(x, y) {
+    if (hasAtlasFrame(this, NEIGHBORHOOD_ATLAS, 'prop_bike_gps')) {
+      this.add.image(x, y + 60, NEIGHBORHOOD_ATLAS, 'prop_bike_gps')
+        .setOrigin(0.5, 1)
+        .setDepth(7);
+      return;
+    }
     const gfx = this.add.graphics().setDepth(7);
     gfx.lineStyle(5, 0x64748b, 1);
     gfx.lineBetween(x, y + 10, x, y + 60);
@@ -872,120 +795,48 @@ export default class StreetBlockScene extends LocalSceneBase {
     gfx.lineBetween(x - 4, y - 12, x + 4, y - 16);
   }
 
-  // ── Plant Interaction ────────────────────────────────────────────────────────
+  // ── Mariam: Arabic mentor ────────────────────────────────────────────────────
 
-  _handlePlantInteract(species, label, plantX, plantY) {
-    const state = this.registry.get('gameState');
+  /**
+   * Teach the next of Mariam's three briefed words.
+   *
+   * Order is fixed (hello, then water, then repair) and each word is taught
+   * until the child has practised it, so she never races ahead. Once all
+   * three are known she greets and offers a refresher. Content comes from
+   * `systems/languageLayer.js`, which derives every word from the canonical
+   * `ar_*` rows in `data/languages.js` — this method must not author Arabic
+   * of its own.
+   * @private
+   */
+  _handleMariamInteract() {
+    let state = this.registry.get('gameState') || {};
     const audioMgr = this.registry.get('audioManager');
-    audioMgr?.playSfx('interaction_ping');
 
-    // Notify MCP about plant interaction
-    const mcp = this.registry.get('mcp');
-    if (mcp) {
-      mcp.emit('FORAGE_AVAILABLE', { species, x: 0, y: 0 });
-    }
+    const practice = state.languagePractice || {};
+    const next = LANGUAGE_CARDS.find((card) => !practice[card.id]?.practiced)
+      || LANGUAGE_CARDS[(Object.values(practice).reduce((n, r) => n + (r.practiced || 0), 0))
+        % LANGUAGE_CARDS.length];
 
-    // Resolve the registered ecology entity for this exact plant (by
-    // species + world position). Used after the existing flow completes
-    // to fire ecology observation/forage events alongside, without
-    // disturbing the canonical dialog/inventory path below.
-    const ecologyEntity = (typeof plantX === 'number' && typeof plantY === 'number')
-      ? this._ecologyEntityIndex?.get(`${species}|${plantX}|${plantY}`) ?? null
-      : null;
+    const result = practiceLanguageTerm(state, next.id);
+    if (!result.ok) return;
 
-    // Plant info from flora data
-    const PLANT_INFO = {
-      mesquite: { desc: 'A mesquite tree! Its pods are nutritious and its wood makes excellent charcoal. Animals gather here to eat the pods. The soil around its roots is full of desert microbes.', items: ['mesquite_pods', 'mesquite_wood_sample', 'bio_sample_bacteria'] },
-      creosote: { desc: 'Creosote bush — its resin is antimicrobial and anti-inflammatory. Careful: toxic in large doses!', items: ['creosote_leaves'] },
-      prickly_pear: { desc: 'Prickly pear cactus! The fruit is sweet and hydrating. The pads are edible too.', items: ['prickly_pear_fruit'] },
-      barrel_cactus: { desc: 'Barrel cactus — it has moisture inside but the pulp is bitter and can cause nausea.', items: ['barrel_cactus_pulp'] },
-      jojoba: { desc: 'Jojoba shrub — its seeds produce a stable liquid wax. Natural sunscreen and lubricant!', items: ['jojoba_seeds'] },
-      agave: { desc: 'Agave plant — strong fibers for rope and bandages. The sap has healing properties.', items: ['agave_fiber', 'bio_sample_agave'] },
-      yucca: { desc: 'Yucca — the root contains natural soap (saponins). Used for cleaning and surfactants for thousands of years.', items: ['yucca_root'] },
-      desert_lavender: { desc: 'Desert lavender — purple flowers with a calming scent. Makes a soothing tea that improves focus.', items: ['desert_lavender_flowers'] },
-      ephedra: { desc: 'Ephedra (Mormon Tea) — a powerful natural stimulant. Boosts energy but stresses the heart. Use with caution!', items: ['ephedra_stems'] },
-      yerba_mansa: { desc: 'Yerba mansa — powerful antimicrobial root found near water. The desert\'s natural antibiotic.', items: ['yerba_mansa_root'] },
-    };
+    state = result.state;
+    this.registry.set('gameState', state);
+    saveGame(state);
+    audioMgr?.playSfx?.('interaction_ping');
 
-    const info = PLANT_INFO[species] || { desc: `A ${label}.`, items: [] };
-
-    // Decide whether this plant grants an item to the player. Two gates:
-    //   (a) Canonical flow — current step is a forage step whose
-    //       requiredItem matches this plant's outputs.
-    //   (b) Recovery flow — the active quest has SOME forage step that
-    //       requires an item this plant produces, and the player
-    //       doesn't already have it. Catches the case where a quest
-    //       advanced past the gather step without the item (e.g. pre-
-    //       C3-fix saves where observe steps auto-advanced and pulled
-    //       the player past forage steps too aggressively).
-    let grantedItem = null;
-    const step = state.activeQuest ? this._getCurrentStepIfForage(state) : null;
-    if (step && info.items.includes(step.requiredItem)) {
-      grantedItem = step.requiredItem;
-    }
-    if (!grantedItem && state.activeQuest) {
-      const quest = QUESTS[state.activeQuest.id];
-      if (quest) {
-        grantedItem = info.items.find((item) =>
-          !state.inventory.includes(item)
-          && quest.steps.some(
-            (s) => s.type === 'forage' && s.requiredItem === item,
-          ),
-        ) || null;
-      }
-    }
-
-    if (grantedItem) {
-      const advancesCurrentStep = step?.requiredItem === grantedItem;
-      const updated = {
-        ...state,
-        inventory: [...state.inventory, grantedItem],
-      };
-      this.registry.set('gameState', updated);
-      // saveGame already imported at top of file
-      saveGame(updated);
-
-      audioMgr?.playSfx('item_pickup');
-
-      this.registry.set('dialogEvent', {
-        speaker: 'Zuzu',
-        text: advancesCurrentStep
-          ? `Found ${grantedItem.replace(/_/g, ' ')}! ${info.desc}\n\nBring this back to Mrs. Ramirez.`
-          : `Found ${grantedItem.replace(/_/g, ' ')}! ${info.desc}`,
-        choices: null,
-        step: advancesCurrentStep ? step : null,
-      });
-
-      // ECOLOGY (additive): fire observation + forage events alongside the
-      // existing dialog/inventory grant. Existing flow above is unchanged.
-      if (ecologyEntity) {
-        try { emitObservation(ecologyEntity, 'interact'); } catch { /* swallow */ }
-        try { emitForage(ecologyEntity, 'interact'); } catch { /* swallow */ }
-      }
-      return;
-    }
-
-    // Otherwise just show plant info
+    const line = getMentorLine(next.id);
     this.registry.set('dialogEvent', {
-      speaker: 'Zuzu',
-      text: info.desc,
-      choices: null, step: null,
+      speaker: 'Mariam',
+      // Script first, then the kid transliteration, then the English
+      // caption — rank 1 never hides the script.
+      text: `${line.script}
+${line.transliteration}
+
+${line.caption}`,
+      choices: null,
+      step: null,
     });
-
-    // ECOLOGY (additive): record the inspect-style interaction so
-    // observation state advances even when no item is granted.
-    if (ecologyEntity) {
-      try { emitObservation(ecologyEntity, 'interact'); } catch { /* swallow */ }
-    }
-  }
-
-  _getCurrentStepIfForage(state) {
-    if (!state.activeQuest) return null;
-    const quest = QUESTS[state.activeQuest.id];
-    if (!quest) return null;
-    const step = quest.steps[state.activeQuest.stepIndex];
-    if (step?.type === 'forage') return step;
-    return null;
   }
 
   // ── NPC Interaction ─────────────────────────────────────────────────────────
@@ -1017,22 +868,60 @@ export default class StreetBlockScene extends LocalSceneBase {
             startInteractiveExplainer(this, step.explainerId);
             return;
           }
-          this.registry.set('dialogEvent', {
-            speaker: step.type === 'quiz' ? 'Zuzu (thinking)' : npcName,
-            text: step.text,
-            choices: step.type === 'quiz' ? step.choices : null,
-            step,
-          });
+          // Through the shared rules, so a step whose text names this NPC
+          // goes to the notebook and template tokens are interpolated. This
+          // path printed `step.text` raw with the NPC as speaker.
+          this.registry.set('dialogEvent',
+            dialogForStep(step, state, npcName, { giverPresent: true }));
           return;
         }
       }
-      // Different NPC's quest is active
+      // Someone else's quest is running.
+      //
+      // This used to be a flat refusal — "busy with another job" — which is
+      // how an auto-started side quest from Mrs. Ramirez locked Mr. Chen's
+      // main quest out entirely. Now this NPC may still offer, and accepting
+      // parks the other quest at the step it reached.
+      // `ignoreActive` so this asks what the NPC *would* offer if the child
+      // were free. The plain call returns null whenever anything is running,
+      // which is why the switch path never fired.
+      const offer = getNextQuestForNPC(npcId, state, { ignoreActive: true })
+        || (!state.completedQuests?.includes(primaryQuestId) ? primaryQuestId : null);
+      const offered = offer && offer !== state.activeQuest.id ? QUESTS[offer] : null;
+      if (offered) {
+        this.registry.set('dialogEvent', questOfferDialog(
+          { id: offer, title: offered.title },
+          npcName,
+          { id: state.activeQuest.id, title: activeQuest?.title || state.activeQuest.id },
+        ));
+        return;
+      }
+
       this.registry.set('dialogEvent', {
         speaker: npcName,
-        text: "Looks like you're busy with another job right now. Come back when you're free!",
+        text: "I don't have anything new for you yet — finish what you're on and come back!",
         choices: null, step: null,
       });
       return;
+    }
+
+    // A quest of this NPC's was parked for another. Pick it back up where it
+    // was left rather than starting it over.
+    const parkedId = Object.keys(state.pausedQuests || {})
+      .find((id) => QUESTS[id]?.giver === npcId);
+    if (parkedId) {
+      state = resumeParkedQuest(state, parkedId);
+      this.registry.set('gameState', state);
+      saveGame(state);
+      const resumed = getCurrentStep(state);
+      if (resumed) {
+        const resumedLine = dialogForStep(resumed, state, npcName, { giverPresent: true });
+        this.registry.set('dialogEvent', {
+          ...resumedLine,
+          text: `Back to it, then.\n\n${resumedLine.text}`,
+        });
+        return;
+      }
     }
 
     // No active quest — find the best quest to offer
@@ -1062,13 +951,14 @@ export default class StreetBlockScene extends LocalSceneBase {
       return;
     }
 
-    // Start the quest
-    const started = startQuest(state, questToStart);
-    if (started) {
-      state = started;
-      this.registry.set('gameState', state);
-      saveGame(state);
-      audioMgr?.playSfx('ui_quest_accept');
+    // Ask first. Quests used to begin the moment the child said hello, which
+    // is how `toxic_knowledge` started itself and then blocked Mr. Chen.
+    const offeredQuest = QUESTS[questToStart];
+    if (offeredQuest) {
+      this.registry.set('dialogEvent', questOfferDialog(
+        { id: questToStart, title: offeredQuest.title }, npcName, null,
+      ));
+      return;
     }
 
     const step = getCurrentStep(state);
@@ -1255,7 +1145,12 @@ export default class StreetBlockScene extends LocalSceneBase {
       }
 
       audioMgr?.playSfx('ui_success');
-      if (this._chenBike) this._chenBike.setText('OK').setColor('#16a34a');
+      // The OIL badge has done its job; the motor is clean. No "OK" badge
+      // replaces it — a finished bike just looks finished.
+      if (this._chenBike) {
+        this._chenBike.destroy();
+        this._chenBike = null;
+      }
       this.registry.set('dialogEvent', {
         speaker: 'Zuzu',
         text:
@@ -1284,70 +1179,49 @@ export default class StreetBlockScene extends LocalSceneBase {
     });
   }
 
+  /**
+   * Street-only follow-up after a quest step advances.
+   *
+   * This scene used to carry a full copy of `advanceFromDialog`, which meant
+   * it never got the base class's fixes: a wrong quiz answer offered only
+   * "Continue", which then looped "Pick an answer first." forever; quiz text
+   * was emitted raw so the bridge quest showed the literal token
+   * "{strengthTable}"; and the no-active-quest and scene-active guards were
+   * missing (arc.md §8.6 — primitive fragmentation).
+   *
+   * The fork is gone. Its three real extras — use_item sounds, explainer
+   * routing and naming the quest giver — now live in LocalSceneBase, so every
+   * scene gets them. All that is left here is the bike art, which is genuinely
+   * street-only.
+   */
   advanceFromDialog(choiceIndex) {
-    let state = this.registry.get('gameState');
-    const audioMgr = this.registry.get('audioManager');
-    const result = advanceQuest(state, choiceIndex);
+    super.advanceFromDialog(choiceIndex);
+    this._refreshBikeBadges();
+  }
 
-    if (!result.ok) {
-      audioMgr?.playSfx('ui_error');
-      this.registry.set('dialogEvent', {
-        speaker: 'System',
-        text: result.message,
-        choices: null,
-        step: getCurrentStep(state),
-      });
-      return;
-    }
-
-    state = result.state;
-    this.registry.set('gameState', state);
-    saveGame(state);
-
-    const step = getCurrentStep(state);
-    if (step?.type === 'use_item') {
-      if (step.id === 'use_lever') audioMgr?.playSfx('wrench_turn', { vary: true });
-      else if (step.id === 'use_patch') audioMgr?.playSfx('patch_apply', { vary: true });
-      else audioMgr?.playSfx('item_pickup');
-    } else if (!step) {
-      audioMgr?.playStinger('reward_stinger');
-      this._showRewardCelebration(state);
-    } else {
-      audioMgr?.playSfx('ui_success');
-    }
-
-    // Update bike icons
-    if (state.completedQuests?.includes('flat_tire_repair') && this._ramirezBike) {
-      this._ramirezBike.setText('OK').setColor('#16a34a');
+  /**
+   * Keep the bikes in step with quest state.
+   *
+   * No "OK" badge: a finished bike simply looks fixed (owner request,
+   * 2026-11-26). Only an open job is badged, and the fork used to re-add the
+   * OK text here after the drawing code had stopped creating it.
+   * @private
+   */
+  _refreshBikeBadges() {
+    const state = this.registry.get('gameState') || {};
+    // The blocked marker used to sit on a fixed bike until the scene
+    // reloaded, still telling the child something was wrong.
+    if (state.completedQuests?.includes('flat_tire_repair') && this._ramirezMarker) {
+      this._ramirezMarker.destroy?.();
+      this._ramirezMarker = null;
     }
     if (state.completedQuests?.includes('chain_repair') && this._chenBike) {
-      this._chenBike.setText('OK').setColor('#16a34a');
-    }
-
-    const nextStep = getCurrentStep(state);
-    if (nextStep) {
-      if (nextStep.type === 'explainer' && nextStep.explainerId) {
-        startInteractiveExplainer(this, nextStep.explainerId);
-        return;
-      }
-      // Get speaker from quest giver
-      const NPC_NAMES = { mrs_ramirez: 'Mrs. Ramirez', mr_chen: 'Mr. Chen' };
-      const activeQuest = QUESTS[state.activeQuest?.id];
-      const speaker = nextStep.type === 'quiz'
-        ? 'Zuzu (thinking)'
-        : NPC_NAMES[activeQuest?.giver] || 'NPC';
-      this.registry.set('dialogEvent', {
-        speaker,
-        text: nextStep.text,
-        choices: nextStep.type === 'quiz' ? nextStep.choices : null,
-        step: nextStep,
-      });
-    } else {
-      this.registry.set('dialogEvent', null);
+      this._chenBike.destroy();
+      this._chenBike = null;
     }
   }
 
-  _showRewardCelebration(state) {
+  _showRewardCelebration(state, earned = {}) {
     // Guard: scene may be mid-shutdown when a quest-completion celebration is
     // triggered (e.g. final dialog handler runs after a scene transition has
     // started tearing down cameras). Without this guard, cam.scrollX throws
@@ -1367,8 +1241,14 @@ export default class StreetBlockScene extends LocalSceneBase {
       color: '#ffffff', stroke: '#1e40af', strokeThickness: 4,
     }).setOrigin(0.5).setDepth(100);
 
+    // What this quest actually paid, not a hard-coded 25. The bridge pays
+    // 60 and the chain job 35, and both used to announce "+25".
     const bucks = state.zuzubucks || 0;
-    const bucksText = this.add.text(cx, cy + 40, `+25 Zuzubucks! (Total: ${bucks})`, {
+    const gained = earned.zuzubucks || 0;
+    const line = gained > 0
+      ? `+${gained} Zuzubucks! (Total: ${bucks})`
+      : `Total: ${bucks} Zuzubucks`;
+    const bucksText = this.add.text(cx, cy + 40, line, {
       fontSize: '18px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#fbbf24', stroke: '#78350f', strokeThickness: 3,
     }).setOrigin(0.5).setDepth(100);

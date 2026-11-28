@@ -1,3 +1,11 @@
+/** Characters that fit a scale button before the labels collide. */
+
+import {
+  LAB_BUTTON_DEPTH, PANEL_BG_DEPTH, PANEL_TEXT_DEPTH,
+} from '../labelLayout.js';
+
+const MAX_BUTTON_CHARS = 7;
+
 /**
  * scaleStation — interactive scale + sample slot + Record button.
  *
@@ -44,21 +52,25 @@ export function createScaleStation(scene, cfg) {
 
   // ── Display panel ────────────────────────────────────────────────────
   const display = scene.add.rectangle(x, displayY, 90, 28, 0x1c1d22)
-    .setStrokeStyle(2, 0x4a4d55).setDepth(3);
+    .setStrokeStyle(2, 0x4a4d55).setDepth(PANEL_BG_DEPTH);
+  // The readout and its label live in the reserved UI band: they are the
+  // numbers the child is here to read, and both were behind the brass
+  // sprite at depth 4 (plan 0.12.2).
   const displayText = scene.add.text(x, displayY, '— g', {
     fontSize: '12px', fontFamily: 'monospace', color: '#10b981',
     fontStyle: 'bold',
-  }).setOrigin(0.5).setDepth(4);
+  }).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
 
   // ── "SCALE" label above display ──────────────────────────────────────
   scene.add.text(x, displayY - 22, 'SCALE', {
     fontSize: '9px', fontFamily: 'sans-serif', color: '#a4a8b3',
     fontStyle: 'bold',
-  }).setOrigin(0.5).setDepth(3);
+  }).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
 
   // ── Sample buttons (3) ───────────────────────────────────────────────
   const BTN_Y = platformY + 40;
   const BTN_DX = 50;
+  // 42px wide at 9px bold fits about 7 characters before neighbours touch.
   const buttons = samples.map((s, idx) => {
     const bx = x + (idx - 1) * BTN_DX;
     const enabled = !!s.hasItem;
@@ -143,14 +155,17 @@ export function createScaleStation(scene, cfg) {
   function showRecordButton(s, mass) {
     if (recordButton) recordButton.destroy();
     const ry = displayY + 38;
+    // Above the interact prompt (label layer, 65). The prompt was drawn
+    // over this button, so the child was told to press E by a hint
+    // covering the button they actually needed.
     const bg = scene.add.rectangle(x, ry, 86, 26, 0x16a34a)
-      .setStrokeStyle(2, 0x065f46).setDepth(4)
+      .setStrokeStyle(2, 0x065f46).setDepth(LAB_BUTTON_DEPTH)
       .setInteractive({ useHandCursor: true });
     const lbl = scene.add.text(x, ry, '✎ RECORD', {
       fontSize: '11px', fontFamily: 'sans-serif', color: '#ffffff',
       fontStyle: 'bold',
-    }).setOrigin(0.5).setDepth(5);
-    recordButton = scene.add.container(0, 0, [bg, lbl]).setDepth(4);
+    }).setOrigin(0.5).setDepth(LAB_BUTTON_DEPTH + 1);
+    recordButton = scene.add.container(0, 0, [bg, lbl]).setDepth(LAB_BUTTON_DEPTH);
     bg.on('pointerdown', () => {
       onRecord({ id: s.id, name: s.name, massGrams: mass });
       // Replace with green check.
@@ -159,7 +174,7 @@ export function createScaleStation(scene, cfg) {
       recordCheck = scene.add.text(x, ry, '✓ recorded', {
         fontSize: '11px', fontFamily: 'sans-serif', color: '#22c55e',
         fontStyle: 'bold',
-      }).setOrigin(0.5).setDepth(4);
+      }).setOrigin(0.5).setDepth(LAB_BUTTON_DEPTH);
     });
   }
 
@@ -178,12 +193,28 @@ export function createScaleStation(scene, cfg) {
     clearRecordButton();
   }
 
-  return { refresh, destroy };
+  /** True while the child has a button to press on this station. */
+  function isAwaitingInput() {
+    return Boolean(recordButton);
+  }
+
+  return { refresh, destroy, isAwaitingInput };
 }
 
-/** "Mesquite Wood" → "MESQ", "Structural Steel (A36-like)" → "STEEL", etc. */
+/**
+ * A name that fits a 42px button: "Mesquite Wood" -> "Wood",
+ * "Structural Steel (A36-like)" -> "Steel", "Copper (Annealed)" -> "Copper".
+ *
+ * First it was `slice(0, 5)` ("MESQU", "STRUC", "COPPE"); then I used the
+ * first whole word, which gave "MESQUITE" and "STRUCTURAL" — 8 and 10
+ * characters at 9px in a 42px button, so the three labels ran together as
+ * "MESQUITESTRUCTURALCOPPER". The last word is the kind of name a child
+ * would use anyway.
+ */
 function shortName(name) {
   if (!name) return '?';
-  const s = name.split(' ')[0].toUpperCase();
-  return s.length > 5 ? s.slice(0, 5) : s;
+  const withoutParens = String(name).replace(/\([^)]*\)/g, ' ').trim();
+  const words = withoutParens.split(/\s+/).filter(Boolean);
+  const pick = words.length ? words[words.length - 1] : String(name);
+  return pick.slice(0, MAX_BUTTON_CHARS).toUpperCase();
 }

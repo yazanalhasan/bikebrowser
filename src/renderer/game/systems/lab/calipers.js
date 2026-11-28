@@ -15,6 +15,9 @@
  * @param {() => void} cfg.onClick
  * @returns {{ destroy: () => void }}
  */
+
+import { PANEL_TEXT_DEPTH } from '../labelLayout.js';
+
 export function createCalipers(scene, cfg) {
   const { x, y, onClick } = cfg;
 
@@ -28,9 +31,12 @@ export function createCalipers(scene, cfg) {
   const coupon = scene.add.rectangle(x, y, 14, 10, 0xa4d8e0)
     .setStrokeStyle(1, 0x111114).setDepth(5);
 
-  const label = scene.add.text(x, y + 28, 'Coupons: 10 cm³ uniform', {
+  // +34, not +28: the tray sprite drawn on this station reaches y+23, and
+  // the caption ran into its bottom edge. The slate's caption 77px below
+  // is the other half of plan 0.12.5 — they must not meet either.
+  const label = scene.add.text(x, y + 34, 'Coupons: 10 cm³ uniform', {
     fontSize: '10px', fontFamily: 'sans-serif', color: '#a4a8b3',
-  }).setOrigin(0.5).setDepth(4);
+  }).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
 
   beaker.on('pointerdown', () => onClick());
 

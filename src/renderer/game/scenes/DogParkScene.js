@@ -18,6 +18,10 @@ import { drawPlant } from '../utils/plantRenderer.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { startInteraction } from '../systems/interactionManager.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { addArt, hasArt } from '../../../game/assets/act1Art.js';
+import { groundDepth } from '../../../game/assets/act1Art.js';
+import { addSceneTitle } from '../ui/sceneTitle.js';
 
 const INTERACTIVE_PLANT_SCALE = 1.65;
 
@@ -73,12 +77,22 @@ export default class DogParkScene extends LocalSceneBase {
     // Right fence
     this.addVisibleWall(this.layout.fence_right.x, this.layout.fence_right.y, this.layout.fence_right.w, this.layout.fence_right.h, fenceColor, 0x5d4037);
 
-    // Fence posts (decorative)
+    // Fence posts (decorative). A painted post-and-rail panel where the
+    // art is there, a brown rectangle where it is not (plan 2.7 p8).
     const fp = this.layout.fence_posts;
+    const panel = hasArt(this, ART.fence_panel);
     for (let x = fp.x_start; x < this.getWorldSize().width; x += fp.x_step) {
-      this.add.rectangle(x, fp.y_top, fp.w, fp.h, 0x5d4037).setDepth(1);
+      if (panel) {
+        this.addProp(ART.fence_panel, x, fp.y_top + fp.h / 2, { depth: 1 });
+      } else {
+        this.add.rectangle(x, fp.y_top, fp.w, fp.h, 0x5d4037).setDepth(1);
+      }
       if (x < fp.gap_min_x || x > fp.gap_max_x) {
-        this.add.rectangle(x, fp.y_bottom, fp.w, fp.h, 0x5d4037).setDepth(1);
+        if (panel) {
+          this.addProp(ART.fence_panel, x, fp.y_bottom + fp.h / 2, { depth: 1 });
+        } else {
+          this.add.rectangle(x, fp.y_bottom, fp.w, fp.h, 0x5d4037).setDepth(1);
+        }
       }
     }
 
@@ -89,37 +103,58 @@ export default class DogParkScene extends LocalSceneBase {
     }).setOrigin(0.5).setDepth(5);
 
     // === BENCHES ===
+    // A painted bench instead of a brown rectangle (plan 2.7 p8). The
+    // collision box keeps the layout's size whichever is drawn, so
+    // nothing about where a child can walk changes.
     for (const { x: bx, y: by } of this.layout.benches) {
-      this.add.rectangle(bx, by, this.layout.bench_size.w, this.layout.bench_size.h, 0x795548).setStrokeStyle(2, 0x5d4037).setDepth(1);
+      if (hasArt(this, ART.park_bench)) {
+        this.addProp(ART.park_bench, bx, by + this.layout.bench_size.h / 2, { depth: 1 });
+      } else {
+        this.add.rectangle(bx, by, this.layout.bench_size.w, this.layout.bench_size.h, 0x795548)
+          .setStrokeStyle(2, 0x5d4037).setDepth(1);
+      }
       this.addWall(bx, by, this.layout.bench_size.w, this.layout.bench_size.h);
     }
 
     // === TREES ===
     for (const { x: tx, y: ty } of this.layout.trees) {
-      this.add.text(tx, ty, '🌳', { fontSize: '32px' }).setOrigin(0.5).setDepth(3);
+      this.addProp(ART.shade_tree, tx, ty + 20, { maxPx: 96, depth: groundDepth(ty) });
       this.addWall(tx, ty, 20, 20);
     }
 
     // === DOGS (decorative, walking) ===
+    //
+    // Painted dogs, not system emoji (plan 2.6 row d). The art has
+    // shipped since November and nothing ever drew it: three 🐕 glyphs
+    // in a painted park, each rendering differently on every platform.
     this._dogs = [];
-    const dogEmojis = ['🐕', '🐩', '🐕‍🦺'];
+    const dogArt = [ART.dog_brown, ART.dog_poodle, ART.dog_vest];
 
     for (let i = 0; i < this.layout.dog_spots.length; i++) {
       const dog = this.layout.dog_spots[i];
-      const sprite = this.add.text(dog.x, dog.y, dogEmojis[i], { fontSize: '28px' })
-        .setOrigin(0.5).setDepth(4);
+      const art = dogArt[i % dogArt.length];
+      const sprite = hasArt(this, art)
+        ? addArt(this, art, dog.x, dog.y, { anchor: 'ground', depth: 4 })
+        : this.add.text(dog.x, dog.y, '🐕', { fontSize: '28px' })
+          .setOrigin(0.5).setDepth(4);
 
       // Simple wander behavior
+      // Wander, and face the way they are going: a dog sliding
+      // backwards across a park is worse than a dog that stands still.
+      const dx = (Math.random() - 0.5) * 200;
       this.tweens.add({
         targets: sprite,
-        x: dog.x + (Math.random() - 0.5) * 200,
+        x: dog.x + dx,
         y: dog.y + (Math.random() - 0.5) * 100,
         duration: 3000 + Math.random() * 2000,
         ease: 'Sine.easeInOut',
         yoyo: true,
         repeat: -1,
         delay: Math.random() * 1000,
+        onYoyo: () => sprite.setFlipX?.(dx > 0),
+        onRepeat: () => sprite.setFlipX?.(dx < 0),
       });
+      sprite.setFlipX?.(dx < 0);
 
       this._dogs.push(sprite);
     }
@@ -150,7 +185,7 @@ export default class DogParkScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_water_bowl.x, y: this.layout.interact_water_bowl.y,
       label: 'Water Bowl',
-      icon: '🥣',
+      icon: ART.water_bowl,
       radius: this.layout.interact_water_bowl.radius,
       onInteract: () => {
         this.registry.set('dialogEvent', {
@@ -165,7 +200,7 @@ export default class DogParkScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_tennis_ball.x, y: this.layout.interact_tennis_ball.y,
       label: 'Tennis Ball',
-      icon: '🎾',
+      icon: ART.tennis_ball,
       radius: this.layout.interact_tennis_ball.radius,
       onInteract: () => {
         startInteraction(this, {
@@ -187,23 +222,20 @@ export default class DogParkScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_lost_collar.x, y: this.layout.interact_lost_collar.y,
       label: 'Lost Collar',
-      icon: '📿',
+      icon: ART.lost_collar,
       radius: this.layout.interact_lost_collar.radius,
       onInteract: () => {
         startInteraction(this, {
           type: 'inspect',
           title: 'Lost collar',
-          icon: '🐕',
+          icon: ART.dog_brown,
           text: 'The name on the tag is worn off. I will remember the collar and ask the neighbors. I am not starting a new job until I know whose dog it is.',
         });
       },
     });
 
     // === SCENE TITLE ===
-    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🐕 Dog Park', {
-      fontSize: '20px', fontFamily: 'sans-serif', color: '#33691e',
-      fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(5);
+    addSceneTitle(this, '🐕 Dog Park', { color: '#33691e', stroke: '#ffffff' });
 
     // === EXIT (south gate → overworld) ===
     this.addExit({

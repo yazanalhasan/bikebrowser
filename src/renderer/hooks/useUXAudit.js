@@ -45,7 +45,7 @@ export function useUXAudit() {
           );
         }
 
-        const onGameRoute = location.pathname === '/play' || location.pathname.startsWith('/play3d');
+        const onGameRoute = location.pathname === '/play';
         if (onGameRoute) return;
 
         auditUXState(serializableState, {

@@ -11,6 +11,8 @@
  * GameContainer reads sideQuests from gameState for HUD display.
  */
 
+import { itemName } from '../data/items.js';
+
 // ── Side Quest Definitions ──────────────────────────────────────────────────
 
 const SIDE_QUESTS = {
@@ -33,6 +35,10 @@ const SIDE_QUESTS = {
 
   water_management_101: {
     id: 'water_management_101',
+    // Ranger Nita only offers this once the first one is done; the arrival
+    // toast used to count it anyway and promise a quest the kid
+    // could not take.
+    requires: ['collect_desert_fibers'],
     title: 'Water Wise',
     description: 'Manage your water supply across a desert foraging run.',
     location: 'desert_foraging',
@@ -82,6 +88,10 @@ const SIDE_QUESTS = {
 
   mine_stability_check: {
     id: 'mine_stability_check',
+    // Old Miner Pete only offers this once the first one is done; the arrival
+    // toast used to count it anyway and promise a quest the kid
+    // could not take.
+    requires: ['collect_copper_samples'],
     title: 'Structural Inspector',
     description: 'Check the mine supports and learn about structural physics.',
     location: 'copper_mine',
@@ -116,13 +126,19 @@ const SIDE_QUESTS = {
       { id: 'collect_algae', type: 'forage', text: 'Collect an algae sample from the riverbank.', target: 'algae_sample' },
       { id: 'water_quiz', type: 'quiz',
         text: 'If the river flows at 3 meters per second and the fish swims upstream at 1 meter per second, how fast is the fish moving relative to the ground?',
+        // The current carries the fish downstream faster than it can swim
+        // against it, so it still moves downstream — at 3 - 1 = 2 m/s.
+        // "2 m/s upstream" was marked correct and the true answer was not
+        // offered at all.
         choices: [
-          { label: '2 m/s upstream', correct: true },
-          { label: '4 m/s upstream', correct: false },
-          { label: '3 m/s downstream', correct: false },
-          { label: '1 m/s upstream', correct: false },
+          { label: '2 m/s downstream', correct: true },
+          { label: '2 m/s upstream', correct: false },
+          { label: '4 m/s downstream', correct: false },
+          { label: 'It stays in one place', correct: false },
         ],
-        explanation: '3 - 1 = 2 m/s. The fish swims against the current, so subtract its speed from the river speed.',
+        explanation:
+          '3 - 1 = 2. The river pushes harder than the fish swims, so the fish '
+          + 'still drifts downstream — just 2 m/s instead of 3.',
       },
       { id: 'done', type: 'complete', text: 'Your biological samples could help with crafting organic compounds!' },
     ],
@@ -132,6 +148,10 @@ const SIDE_QUESTS = {
 
   balance_the_flow: {
     id: 'balance_the_flow',
+    // Dr. Maya only offers this once the first one is done; the arrival
+    // toast used to count it anyway and promise a quest the kid
+    // could not take.
+    requires: ['river_ecosystem_survey'],
     title: 'Flow Controller',
     description: 'Balance the irrigation channels to water desert crops.',
     location: 'salt_river',
@@ -180,6 +200,12 @@ export function startSideQuest(state, questId) {
   const sideQuests = state.sideQuests || {};
   if (sideQuests[questId]?.completed) {
     return { state, ok: false, message: 'Already completed this quest.' };
+  }
+
+  // Talking to the quest giver again resumes; it used to write stepIndex 0
+  // back over whatever the kid had already done.
+  if (sideQuests[questId]) {
+    return { state, ok: true, message: `Side quest resumed: ${quest.title}` };
   }
 
   const updated = {
@@ -233,7 +259,12 @@ export function advanceSideQuest(state, questId, choiceIndex) {
   // Forage validation
   if (step.type === 'forage' && step.target) {
     if (!state.inventory?.includes(step.target)) {
-      return { state, ok: false, message: `You need to find: ${step.target}`, completed: false };
+      // Never show the raw id: this reached the child as
+      // "You need to find: surface_copper".
+      return {
+        state, ok: false, completed: false,
+        message: `Still to find: ${itemName(step.target, { icon: true })}`,
+      };
     }
   }
 
@@ -281,6 +312,69 @@ export function advanceSideQuest(state, questId, choiceIndex) {
 export function getCompletedSideQuestCount(state) {
   if (!state.sideQuests) return 0;
   return Object.values(state.sideQuests).filter(q => q.completed).length;
+}
+
+/**
+ * Side quests the player can start at this location right now.
+ *
+ * Not started, not completed, and every prerequisite in `requires` finished.
+ * The arrival toast counted every quest defined for the location, so walking
+ * into the mine promised "2 quests here" when Pete would only offer one.
+ *
+ * @param {string} locationId
+ * @param {object} state gameState
+ */
+export function getOfferableSideQuests(locationId, state) {
+  const progress = state?.sideQuests || {};
+  return getSideQuestsForLocation(locationId).filter((quest) => {
+    if (progress[quest.id]) return false; // started or finished
+    const needs = Array.isArray(quest.requires) ? quest.requires : [];
+    return needs.every((id) => progress[id]?.completed);
+  });
+}
+
+/** The side quest already under way at this location, if any. */
+export function getActiveSideQuestAt(locationId, state) {
+  const progress = state?.sideQuests || {};
+  return getSideQuestsForLocation(locationId)
+    .find((quest) => progress[quest.id] && !progress[quest.id].completed) || null;
+}
+
+/**
+ * What a side-quest dialog is asking the scene to do.
+ *
+ * Offer dialogs carry `step.type === 'side_quest_offer'` and a choice with
+ * `action: 'start_quest'`; a running side quest's steps carry
+ * `step.isSideQuest`. Neither was handled anywhere, so both fell through to
+ * the main-quest advance: Pete's "Start Copper Quest!" tried to advance the
+ * bridge quest, failed, and showed its hint instead of starting anything.
+ *
+ * Pure so it can be tested without Phaser.
+ *
+ * @param {object} dialog the registry `dialogEvent`
+ * @param {number} [choiceIndex]
+ * @returns {{ kind: 'start'|'decline'|'advance', questId: string }|null}
+ */
+export function sideQuestDialogAction(dialog, choiceIndex) {
+  const step = dialog?.step;
+  if (!step) return null;
+
+  if (step.type === 'side_quest_offer') {
+    const choices = Array.isArray(dialog.choices) ? dialog.choices : [];
+    const choice = choiceIndex == null ? null : choices[choiceIndex];
+    // Closing the offer without picking anything is a decline, never a start.
+    const accepted = choice?.action === 'start_quest';
+    return {
+      kind: accepted ? 'start' : 'decline',
+      questId: choice?.questId || step.questId,
+    };
+  }
+
+  if (step.isSideQuest && step.questId) {
+    return { kind: 'advance', questId: step.questId };
+  }
+
+  return null;
 }
 
 /** Get all side quests with status for a location. */

@@ -240,7 +240,8 @@ function attachInteractionZone(scene, entity) {
    */
   function _wireOverlap() {
     if (zone._ecologyOverlapWired) return;
-    const p = scene.player?.sprite ?? scene.player ?? null;
+    const live = scene.player?.sprite ?? scene.player ?? null;
+    const p = live?.active === false ? null : live;
     if (p && scene.physics?.add?.overlap) {
       try {
         scene.physics.add.overlap(p, zone, () => {
@@ -252,7 +253,15 @@ function attachInteractionZone(scene, entity) {
     }
   }
 
-  const playerNow = scene.player?.sprite ?? scene.player ?? null;
+  // A sprite only counts as "the current player" if it is still alive.
+  // Phaser reuses the scene object between visits, so a stale `scene.player`
+  // from the previous visit would otherwise satisfy the fast path and the
+  // overlap would be wired to a destroyed body — the animal is on screen but
+  // walking into it records nothing. LocalSceneBase now clears `this.player`
+  // at the top of create(); this guard means the system is correct even for a
+  // scene that does not.
+  const candidate = scene.player?.sprite ?? scene.player ?? null;
+  const playerNow = candidate?.active === false ? null : candidate;
   if (playerNow) {
     // Fast path: player already exists (HMR / scene-restart case).
     _wireOverlap();

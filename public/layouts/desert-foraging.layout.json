@@ -10,31 +10,105 @@
       "_note": "Original: x = width / 2 (1200), y = height / 2 (800), w = width, h = height."
     },
     "patches": [
-      { "x": 200, "y": 200, "w": 150, "h": 100 },
-      { "x": 600, "y": 350, "w": 200, "h": 120 },
-      { "x": 900, "y": 500, "w": 160, "h": 100 },
-      { "x": 350, "y": 600, "w": 180, "h": 90 }
+      {
+        "x": 200,
+        "y": 200,
+        "w": 150,
+        "h": 100
+      },
+      {
+        "x": 600,
+        "y": 350,
+        "w": 200,
+        "h": 120
+      },
+      {
+        "x": 900,
+        "y": 500,
+        "w": 160,
+        "h": 100
+      },
+      {
+        "x": 350,
+        "y": 600,
+        "w": 180,
+        "h": 90
+      }
     ],
-    "riverbed_west": { "x": 100, "y": 350, "w": 400, "h": 30 },
-    "riverbed_mid": { "x": 450, "y": 330, "w": 300, "h": 35 },
-    "riverbed_east": { "x": 700, "y": 340, "w": 250, "h": 30 },
+    "riverbed_west": {
+      "x": 100,
+      "y": 350,
+      "w": 400,
+      "h": 30
+    },
+    "riverbed_mid": {
+      "x": 450,
+      "y": 330,
+      "w": 300,
+      "h": 35
+    },
+    "riverbed_east": {
+      "x": 700,
+      "y": 340,
+      "w": 250,
+      "h": 30
+    },
     "rocks": [
-      { "x": 100, "y": 150 },
-      { "x": 750, "y": 200 },
-      { "x": 1050, "y": 400 },
-      { "x": 300, "y": 700 },
-      { "x": 850, "y": 650 }
+      {
+        "x": 100,
+        "y": 150
+      },
+      {
+        "x": 750,
+        "y": 200
+      },
+      {
+        "x": 1050,
+        "y": 400
+      },
+      {
+        "x": 300,
+        "y": 700
+      },
+      {
+        "x": 850,
+        "y": 650
+      }
     ],
     "cacti": [
-      { "x": 180, "y": 400 },
-      { "x": 500, "y": 250 },
-      { "x": 700, "y": 150 },
-      { "x": 1000, "y": 300 },
-      { "x": 400, "y": 550 },
-      { "x": 1100, "y": 600 }
+      {
+        "x": 180,
+        "y": 400
+      },
+      {
+        "x": 500,
+        "y": 250
+      },
+      {
+        "x": 700,
+        "y": 150
+      },
+      {
+        "x": 1000,
+        "y": 300
+      },
+      {
+        "x": 400,
+        "y": 550
+      },
+      {
+        "x": 1100,
+        "y": 600
+      }
     ],
-    "lizard": { "x": 600, "y": 500 },
-    "hawk": { "x": 400, "y": 80 },
+    "lizard": {
+      "x": 600,
+      "y": 500
+    },
+    "hawk": {
+      "x": 400,
+      "y": 80
+    },
     "wall_top": {
       "x": 600,
       "y": 0,
@@ -56,19 +130,46 @@
       "h": 800,
       "_note": "Original: x = width (1200), y = height / 2 (800), h = height."
     },
-    "resource_yucca_fiber": { "x": 250, "y": 230 },
-    "resource_agave_fiber": { "x": 650, "y": 380 },
-    "resource_jojoba_extract": { "x": 950, "y": 530 },
-    "resource_creosote_resin": { "x": 400, "y": 630 },
-    "resource_barrel_cactus_water": { "x": 800, "y": 200 },
-    "npc_desert_guide": { "x": 550, "y": 450 },
+    "resource_yucca_fiber": {
+      "x": 250,
+      "y": 230
+    },
+    "resource_agave_fiber": {
+      "x": 650,
+      "y": 380
+    },
+    "resource_jojoba_extract": {
+      "x": 950,
+      "y": 530
+    },
+    "resource_creosote_resin": {
+      "x": 400,
+      "y": 630
+    },
+    "resource_barrel_cactus_water": {
+      "x": 800,
+      "y": 200
+    },
+    "npc_desert_guide": {
+      "x": 550,
+      "y": 450
+    },
     "scene_label": {
       "x": 600,
-      "y": 30,
-      "_note": "Original: x = width / 2 (1200)."
+      "y": 52,
+      "_note": "Down off the top edge: at y<=30 the title was clipped on a window taller than the room, and on Home Street it met the HUD. 52 matches Desert Edge."
     },
-    "challenge_water_math": { "x": 800, "y": 350 },
-    "challenge_plant_ratio": { "x": 350, "y": 300 },
-    "challenge_heat_math": { "x": 1050, "y": 250 }
+    "challenge_water_math": {
+      "x": 800,
+      "y": 350
+    },
+    "challenge_plant_ratio": {
+      "x": 350,
+      "y": 300
+    },
+    "challenge_heat_math": {
+      "x": 1050,
+      "y": 250
+    }
   }
 }

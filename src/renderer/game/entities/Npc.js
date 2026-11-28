@@ -15,6 +15,15 @@
  */
 
 import { getNpcAppearance, DEFAULT_APPEARANCE } from '../data/npcAppearances.js';
+import { ACT1_CHARACTER_SHEETS, sheetFrame } from '../../../game/assets/act1Art.js';
+import { hasAtlasFrame } from '../../../game/assets/createAtlasSprite.js';
+import { CHARACTER_PIXEL_SCALE } from '../../../game/art/artConfig.js';
+import { NPC_LABEL_DEPTH, NPC_PROMPT_DEPTH } from '../systems/labelLayout.js';
+
+const NEIGHBORHOOD_ATLAS = 'neighborhood_atlas';
+
+// Row order shared by the Act 1 NPC sheets (MrsRamirez convention).
+const SHEET_ROWS = { down: 0, left: 1, right: 2, up: 3 };
 
 const INTERACT_DISTANCE = 90;
 const BODY_SCALE = 1.8;      // matches Player
@@ -44,8 +53,32 @@ export default class Npc {
 
     // Body container
     this.container = scene.add.container(config.x, config.y);
-    this._buildHumanoid(appearance);
-    this.container.setScale(BODY_SCALE);
+
+    // Painted NPCs come from either a 4x4 character sheet (config.sheet, e.g.
+    // Mariam) or a frame on the neighborhood atlas (config.atlasFrame, e.g.
+    // Mr Chen and Mrs Ramirez). Both anchor on the art's own feet baseline so
+    // every character in a scene stands on the same line. NPCs with neither —
+    // or whose art has not loaded — fall back to the procedural humanoid.
+    // The sheet to swap to while they are speaking, if they have one.
+    this._talkSheetKey = config.talkSheet || null;
+
+    this.sprite = this._buildSprite(config);
+    if (this.sprite) {
+      this.container.add(this.sprite);
+      this.container.setScale(1);
+    } else {
+      // The procedural humanoid is a dev fallback, not art. Every named
+      // Act 1 character has a sheet now (plan 2.1-2.3), so reaching
+      // here in the game means a texture failed to load.
+      if (config.sheet || config.atlasFrame) {
+        console.warn(
+          `[Npc] ${this.id}: art "${config.sheet || config.atlasFrame}" is not loaded; `
+          + 'falling back to the procedural humanoid',
+        );
+      }
+      this._buildHumanoid(appearance);
+      this.container.setScale(BODY_SCALE);
+    }
 
     // Name label (below feet)
     this.label = scene.add.text(config.x, config.y + FEET_OFFSET + 10, config.name, {
@@ -73,6 +106,72 @@ export default class Npc {
 
     this._nearby = false;
     this._applyDepth();
+  }
+
+  // ── Painted sprite construction ──────────────────────────────────────────
+
+  /**
+   * Build the NPC's sprite from a character sheet or an atlas frame.
+   * Returns null when no art is configured or the texture is not loaded,
+   * which sends the constructor down the procedural path.
+   * @private
+   */
+  _buildSprite(config) {
+    const scene = this.scene;
+
+    if (config.sheet) {
+      const sheet = ACT1_CHARACTER_SHEETS[config.sheet];
+      if (sheet && scene.textures.exists(sheet.key)) {
+        this._sheet = sheet;
+        this._idleSheetKey = config.sheet;
+        this._currentSheetKey = config.sheet;
+        const frame = sheetFrame(config.sheet, config.sheetRow ?? 0, config.sheetCol ?? 0);
+        return scene.add.sprite(0, FEET_OFFSET, sheet.key, frame)
+          .setOrigin(0.5, sheet.feetY / sheet.frameHeight)
+          .setScale(CHARACTER_PIXEL_SCALE);
+      }
+    }
+
+    if (config.atlasFrame && hasAtlasFrame(scene, NEIGHBORHOOD_ATLAS, config.atlasFrame)) {
+      // Neighborhood atlas cells are 160x120 with the base line on y=117.
+      return scene.add.image(0, FEET_OFFSET, NEIGHBORHOOD_ATLAS, config.atlasFrame)
+        .setOrigin(0.5, 117 / 120)
+        .setScale(CHARACTER_PIXEL_SCALE);
+    }
+
+    return null;
+  }
+
+  /**
+   * Show the talking pose, or go back to standing.
+   *
+   * A character who says four paragraphs with their arms by their sides
+   * reads as a cardboard cut-out. Both sheets share a layout, so the
+   * row stays put and only the texture changes.
+   *
+   * @param {boolean} talking
+   */
+  setTalking(talking) {
+    if (!this.sprite || !this._sheet || !this._talkSheetKey) return;
+    const want = talking ? this._talkSheetKey : this._idleSheetKey;
+    if (!want || want === this._currentSheetKey) return;
+    const sheet = ACT1_CHARACTER_SHEETS[want];
+    if (!sheet || !this.scene.textures?.exists?.(sheet.key)) return;
+    this._currentSheetKey = want;
+    this._sheet = sheet;
+    this.sprite.setTexture(sheet.key, sheetFrame(want, this._facingRow ?? 0, 0));
+  }
+
+  /**
+   * Face a direction. Only meaningful for sheet-backed NPCs; the row order
+   * comes from the sheet's own convention (down, left, right, up).
+   */
+  setFacing(direction) {
+    if (!this.sprite || !this._sheet) return;
+    const row = SHEET_ROWS[direction];
+    if (row === undefined) return;
+    this._facingRow = row;
+    this.sprite.setFrame(row * this._sheet.cols);
   }
 
   // ── Humanoid construction ────────────────────────────────────────────────
@@ -407,8 +506,12 @@ export default class Npc {
     const depth = 10 + feetY / 26;
     this.container.setDepth(depth);
     this.shadow.setDepth(depth - 0.5);
-    this.label.setDepth(depth + 0.1);
-    this.prompt.setDepth(depth + 0.2);
+    // The name and the prompt go on the label layer, not just above this
+    // NPC: the child's own depth is y-sorted too, so standing in front of
+    // Mrs. Ramirez put her name under Zuzu's feet and her talk prompt
+    // behind his head.
+    this.label.setDepth(NPC_LABEL_DEPTH);
+    this.prompt.setDepth(NPC_PROMPT_DEPTH);
   }
 
   /** Call from scene update(). Pass the player sprite so distance is checked. */
@@ -420,12 +523,16 @@ export default class Npc {
     this._nearby = dist < INTERACT_DISTANCE;
     this.prompt.setVisible(this._nearby);
 
-    // Re-apply depth each frame so label/prompt/shadow track the container
-    // even when a scene's depth-sort system rewrites container depth.
+    // Re-apply the shadow depth each frame so it tracks the container even
+    // when a scene's depth-sort system rewrites it. The name and the
+    // prompt do NOT follow the container: they belong on the label layer,
+    // above every character. This per-frame line used to put them back on
+    // `container.depth + 0.1`, which is why raising them in `_applyDepth`
+    // changed nothing on screen.
     const base = this.container.depth;
     this.shadow.setDepth(base - 0.5);
-    this.label.setDepth(base + 0.1);
-    this.prompt.setDepth(base + 0.2);
+    this.label.setDepth(NPC_LABEL_DEPTH);
+    this.prompt.setDepth(NPC_PROMPT_DEPTH);
   }
 
   isNearby() { return this._nearby; }

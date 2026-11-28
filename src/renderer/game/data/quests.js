@@ -224,6 +224,8 @@ const QUESTS = {
       {
         id: 'use_salve',
         type: 'use_item',
+        // Needs the patient present: the salve goes on Mrs. Ramirez's arm.
+        requiresGiver: true,
         text: 'Apply the healing salve to help Mrs. Ramirez\'s arm.',
         requiredItem: 'healing_salve',
         hint: 'Use the salve you just crafted.',
@@ -893,6 +895,8 @@ const QUESTS = {
       {
         id: 'treat_infection',
         type: 'use_item',
+        // Needs the patient present: the creosote treats a person, not an object.
+        requiresGiver: true,
         text: 'Apply creosote\'s antimicrobial compounds to treat the infection.',
         requiredItem: 'creosote_leaves',
         hint: 'Use the creosote leaves you harvested.',
@@ -1006,10 +1010,11 @@ const QUESTS = {
         type: 'dialogue',
         text:
           '📖 Paracelsus (1493–1541) said: "The dose makes the poison." ' +
-          'Water can kill you if you drink too much (hyponatremia). ' +
-          'Snake venom can heal in tiny amounts (anticoagulants). ' +
-          'Every substance has a therapeutic window — the range where ' +
-          'benefit outweighs risk.',
+          'Even water can make you feel ill if you drink far too much at ' +
+          'once, so sip steadily. Snake venom, in a tiny measured amount, ' +
+          'is used in medicines that stop blood from clotting. Every ' +
+          'substance has a safe range — the amount where it helps instead ' +
+          'of harms.',
       },
       {
         id: 'quiz_dose',
@@ -1035,9 +1040,10 @@ const QUESTS = {
         type: 'complete',
         text:
           'You understand dose-response relationships!\n\n' +
-          '"Low dose = mild effect. Medium = therapeutic. High = toxic. ' +
-          'The curve applies to everything — medicine, food, even exercise. ' +
-          'Knowing the curve is what separates a healer from a poisoner."\n\n' +
+          '"A little does a little. The right amount helps. Far too much ' +
+          'harms. That holds for everything — medicine, food, even how far ' +
+          'you ride in one go. Knowing the right amount is what makes ' +
+          'medicine safe."\n\n' +
           '⚗️ You learned: Pharmacology — The Dose Makes the Poison',
       },
     ],
@@ -1191,9 +1197,23 @@ const QUESTS = {
           'Weight matters for a bridge — too heavy and the supports can\'t hold it up."',
       },
       {
+        // Chen says "let's weigh them" and the quiz followed immediately,
+        // so a child who had never opened the lab was shown "You weighed
+        // each sample. (no measurements yet)" and asked which was
+        // lightest. This mirrors `test_material` before the strength
+        // quiz: the lab already records 'masses_measured' once all three
+        // are on the scale.
+        id: 'weigh_samples',
+        type: 'observe',
+        text: 'Weigh all three samples on the lab scale.',
+        requiredObservation: 'masses_measured',
+        hint: 'The scale is in the Materials Lab, through the garage door.',
+        scene: 'MaterialLabScene',
+      },
+      {
         id: 'quiz_weight',
         type: 'quiz',
-        // Template tokens resolved by NeighborhoodScene._emitEnrichedDialog
+        // Template tokens resolved by questDialog's enrichment pass
         // via systems/questTemplating.js. {massTable} pulls from
         // state.materialLog so the readout reflects the *player's* scale
         // measurements, not a canonical literal. Choices unchanged so
@@ -1203,9 +1223,9 @@ const QUESTS = {
           'Which is lightest per cm³?',
         templateVars: ['massTable'],
         choices: [
-          { label: 'Mesquite wood (0.83 g/cm³)', correct: true },
-          { label: 'Copper (8.9 g/cm³)', correct: false },
-          { label: 'Steel (7.8 g/cm³)', correct: false },
+          { label: 'Mesquite wood (0.85 g/cm3)', correct: true },
+          { label: 'Copper (8.96 g/cm3)', correct: false },
+          { label: 'Steel (7.85 g/cm3)', correct: false },
           { label: 'They all weigh the same', correct: false },
         ],
       },
@@ -1237,11 +1257,24 @@ const QUESTS = {
           'Load test results: {strengthTable}\n\n' +
           'Which holds up best?',
         templateVars: ['strengthTable'],
+        // No percentages in the labels. They used to read 85/55/35, taken
+        // from `data/materials.js` `structural.strength`, while the table
+        // above is built from `systems/materials/materialDatabase.js`
+        // `ultimateStrengthMPa` and reads 17/75/42. Two sources, two sets of
+        // numbers, and by the printed table copper beat mesquite while the
+        // choices said otherwise. The table is what the child is asked to
+        // read, so the labels now just name the material and the table
+        // supplies the figures — they cannot disagree again.
+        //
+        // `materialId` ties each choice to its row so a test can assert the
+        // choice marked correct really is the strongest material in the load
+        // test (owner decision 2026-11-27: steel or mesquite is fine, but the
+        // lab numbers, the choices and the correct flag must all agree).
         choices: [
-          { label: 'Steel (85% strength)', correct: true },
-          { label: 'Mesquite wood (55% strength)', correct: false },
-          { label: 'Copper (35% strength)', correct: false },
-          { label: 'They\'re all the same under load', correct: false },
+          { label: 'Steel', materialId: 'structural_steel', correct: true },
+          { label: 'Mesquite wood', materialId: 'mesquite_wood', correct: false },
+          { label: 'Copper', materialId: 'copper', correct: false },
+          { label: 'They are all the same under load', correct: false },
         ],
       },
 
@@ -1251,9 +1284,9 @@ const QUESTS = {
         type: 'dialogue',
         text:
           '📖 Here\'s the engineer\'s dilemma:\n' +
-          '  Steel: strongest (85%) but very heavy (7.8 g/cm³)\n' +
-          '  Mesquite: medium strength (55%) and light (0.83 g/cm³)\n' +
-          '  Copper: weakest (35%) and heavy (8.9 g/cm³) — worst of both!\n\n' +
+          '  Steel: strongest (75%) but very heavy (7.85 g/cm3)\n' +
+          '  Mesquite: least strong (17%) but far the lightest (0.85 g/cm3)\n' +
+          '  Copper: in between for strength (42%) and the heaviest (8.96 g/cm3) - worst of both!\n\n' +
           'Strength-to-weight ratio tells the real story.',
       },
       {
@@ -1264,9 +1297,13 @@ const QUESTS = {
           'A heavy bridge needs stronger supports. ' +
           'Given the data, which is the BEST choice for this bridge?',
         choices: [
-          { label: 'Mesquite — strong enough (55%) and 10× lighter than steel', correct: true },
-          { label: 'Steel — strongest, weight doesn\'t matter', correct: false },
-          { label: 'Copper — good conductor so it must be strong', correct: false },
+          // No figures in the labels: the dilemma step above quotes the
+          // lab's own numbers, and two sets of percentages is exactly how
+          // this contradicted itself. Mesquite wins on strength per weight
+          // (100MPa / 0.85 = 118, vs steel 57 and copper 28).
+          { label: 'Mesquite - strong enough, and about 9x lighter than steel', materialId: 'mesquite_wood', correct: true },
+          { label: 'Steel - strongest, but weight does matter here', materialId: 'structural_steel', correct: false },
+          { label: 'Copper - good conductor so it must be strong', materialId: 'copper', correct: false },
           { label: 'Mix all three together', correct: false },
         ],
       },

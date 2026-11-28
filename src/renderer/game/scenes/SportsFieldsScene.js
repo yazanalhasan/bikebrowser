@@ -15,6 +15,9 @@ import LocalSceneBase from './LocalSceneBase.js';
 import { startInteraction } from '../systems/interactionManager.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { groundDepth } from '../../../game/assets/act1Art.js';
+import { addSceneTitle } from '../ui/sceneTitle.js';
 
 export default class SportsFieldsScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -39,13 +42,20 @@ export default class SportsFieldsScene extends LocalSceneBase {
     this.layout = loadLayout(this, 'sportsFieldsLayout');
 
     // === GROUND ===
-    // Main grass
-    this.add.rectangle(this.layout.ground.x, this.layout.ground.y, this.layout.ground.w, this.layout.ground.h, 0x66bb6a);
+    // Mown-grass texture over the whole park.
+    {
+      const o = this.layout.ground;
+      this.addGroundTexture(ART.sportsfields_grass, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h);
+    }
 
     // === SOCCER FIELD (left-center) ===
     const sfx = this.layout.soccer_field.x, sfy = this.layout.soccer_field.y, sfw = this.layout.soccer_field.w, sfh = this.layout.soccer_field.h;
     // Field background (darker grass)
-    this.add.rectangle(this.layout.soccer_field_bg.x, this.layout.soccer_field_bg.y, this.layout.soccer_field_bg.w, this.layout.soccer_field_bg.h, 0x4caf50);
+    {
+      const o = this.layout.soccer_field_bg;
+      this.addGroundTexture(ART.sportsfields_grass, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h, { depth: 1 })
+        ?.setTint(0xd8f0d8);
+    }
 
     const fieldGfx = this.add.graphics();
     fieldGfx.lineStyle(2, 0xffffff, 0.9);
@@ -69,7 +79,10 @@ export default class SportsFieldsScene extends LocalSceneBase {
     // === BASKETBALL COURT (east side) ===
     const bcx = this.layout.basketball_court.x, bcy = this.layout.basketball_court.y, bcw = this.layout.basketball_court.w, bch = this.layout.basketball_court.h;
     // Court surface (hardcourt)
-    this.add.rectangle(this.layout.basketball_court_bg.x, this.layout.basketball_court_bg.y, this.layout.basketball_court_bg.w, this.layout.basketball_court_bg.h, 0xd4955a);
+    {
+      const o = this.layout.basketball_court_bg;
+      this.addGroundTexture(ART.sportsfields_court, o.x - o.w / 2, o.y - o.h / 2, o.w, o.h, { depth: 1 });
+    }
 
     const courtGfx = this.add.graphics();
     courtGfx.lineStyle(2, 0xffffff, 0.8);
@@ -79,8 +92,8 @@ export default class SportsFieldsScene extends LocalSceneBase {
     // Center line
     courtGfx.strokeRect(bcx, bcy + bch / 2 - 1, bcw, 2);
     // Hoops (top and bottom)
-    this.add.text(this.layout.hoop_top.x, this.layout.hoop_top.y, '🏀', { fontSize: '20px' }).setOrigin(0.5).setDepth(3);
-    this.add.text(this.layout.hoop_bottom.x, this.layout.hoop_bottom.y, '🏀', { fontSize: '20px' }).setOrigin(0.5).setDepth(3);
+    this.addProp(ART.hoop, this.layout.hoop_top.x, this.layout.hoop_top.y + 36, { maxPx: 76, depth: 3 });
+    this.addProp(ART.hoop, this.layout.hoop_bottom.x, this.layout.hoop_bottom.y + 36, { maxPx: 76, depth: 3 });
     // Backboards
     this.addVisibleWall(this.layout.backboard_top.x, this.layout.backboard_top.y, this.layout.backboard_top.w, this.layout.backboard_top.h, 0x616161, 0x424242);
     this.addVisibleWall(this.layout.backboard_bottom.x, this.layout.backboard_bottom.y, this.layout.backboard_bottom.w, this.layout.backboard_bottom.h, 0x616161, 0x424242);
@@ -89,7 +102,7 @@ export default class SportsFieldsScene extends LocalSceneBase {
     const bleacherColor = 0x78909c;
     // North bleachers
     this.addVisibleWall(this.layout.bleachers_north.x, this.layout.bleachers_north.y, this.layout.bleachers_north.w, this.layout.bleachers_north.h, bleacherColor, 0x546e7a);
-    this.add.text(this.layout.bleachers_north.x, this.layout.bleachers_north.y, '🪑🪑🪑🪑🪑', { fontSize: '14px' }).setOrigin(0.5).setDepth(2);
+    this.addProp(ART.bleachers, this.layout.bleachers_north.x, this.layout.bleachers_north.y + 22, { depth: 2 });
     // East bleachers
     this.addVisibleWall(this.layout.bleachers_east.x, this.layout.bleachers_east.y, this.layout.bleachers_east.w, this.layout.bleachers_east.h, bleacherColor, 0x546e7a);
 
@@ -101,7 +114,7 @@ export default class SportsFieldsScene extends LocalSceneBase {
 
     // === TREES (decorative) ===
     for (const [tx, ty] of this.layout.trees.map(s => [s.x, s.y])) {
-      this.add.text(tx, ty, '🌳', { fontSize: '30px' }).setOrigin(0.5).setDepth(3);
+      this.addProp(ART.shade_tree, tx, ty + 20, { maxPx: 92, depth: groundDepth(ty) });
       this.addWall(tx, ty, 20, 20);
     }
 
@@ -116,7 +129,7 @@ export default class SportsFieldsScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_soccer_ball.x, y: this.layout.interact_soccer_ball.y,
       label: 'Soccer Ball',
-      icon: '⚽',
+      icon: ART.soccer_ball,
       radius: this.layout.interact_soccer_ball.radius,
       onInteract: () => {
         this.registry.set('dialogEvent', {
@@ -131,7 +144,7 @@ export default class SportsFieldsScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_race_start.x, y: this.layout.interact_race_start.y,
       label: 'Race Track Start',
-      icon: '🏁',
+      icon: ART.race_start,
       radius: this.layout.interact_race_start.radius,
       onInteract: () => {
         startInteraction(this, { type: 'race', title: 'Starting line' });
@@ -142,7 +155,7 @@ export default class SportsFieldsScene extends LocalSceneBase {
     this.addInteractable({
       x: this.layout.interact_water_fountain.x, y: this.layout.interact_water_fountain.y,
       label: 'Water Fountain',
-      icon: '🚰',
+      icon: ART.fountain,
       radius: this.layout.interact_water_fountain.radius,
       onInteract: () => {
         this.registry.set('dialogEvent', {
@@ -154,10 +167,7 @@ export default class SportsFieldsScene extends LocalSceneBase {
     });
 
     // === SCENE TITLE ===
-    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🏟️ Sports Fields', {
-      fontSize: '20px', fontFamily: 'sans-serif', color: '#1b5e20',
-      fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(5);
+    addSceneTitle(this, '🏟️ Sports Fields', { color: '#1b5e20', stroke: '#ffffff' });
 
     // === EXIT (south → overworld) ===
     this.addExit({

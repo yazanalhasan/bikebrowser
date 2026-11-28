@@ -1,3 +1,4 @@
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
 /**
  * Scene Registry — defines all game scenes, their layer types,
  * connections, unlock requirements, and spawn points.
@@ -31,6 +32,7 @@ const SCENES = {
     layer: 'overworld',
     name: 'Neighborhood',
     icon: '🗺️',
+    iconArt: ART.map_road,
     description: 'E Trailside View — the neighborhood from above',
     worldPos: null,
     spawns: {
@@ -56,6 +58,7 @@ const SCENES = {
     layer: 'local',
     name: "Zuzu's Garage",
     icon: '🏠',
+    iconArt: ART.map_home,
     description: 'Home base — bike repairs, upgrades, notebook',
     worldPos: { x: 250, y: 230 },
     spawns: {
@@ -81,6 +84,7 @@ const SCENES = {
     layer: 'local',
     name: 'Materials Lab',
     icon: '🧪',
+    iconArt: ART.materials_lab_marker,
     description: "Mr. Chen's materials testing lab — the UTM rig.",
     worldPos: null,
     spawns: {
@@ -101,6 +105,7 @@ const SCENES = {
     layer: 'local',
     name: 'Thermal Lab',
     icon: '🌡️',
+    iconArt: ART.ch_heat_math,
     description: "Mrs. Ramirez's thermal expansion lab — heat each rod and watch it stretch.",
     worldPos: null,
     spawns: {
@@ -121,20 +126,56 @@ const SCENES = {
     layer: 'local',
     name: "Zuzu's Street",
     icon: '🏘️',
+    iconArt: ART.map_home,
     description: 'The street outside — neighbors, driveways, sidewalks',
     worldPos: { x: 400, y: 300 },
     spawns: {
       default: { x: 400, y: 300 },
       fromGarage: { x: 120, y: 300 },
       fromOverworld: { x: 400, y: 80 },
+      // Back up through the south gap. Well clear of the gate (which spans
+      // y 672-700): land on the zone and the overlap fires again and the
+      // child bounces straight back into the desert.
+      fromDesertEdge: { x: 530, y: 596 },
     },
     exits: {
       toGarage: { target: 'ZuzuGarageScene', spawn: 'fromStreet' },
       toOverworld: { target: 'OverworldScene', spawn: 'fromStreet' },
+      toDesertEdge: { target: 'DesertEdgeScene', spawn: 'fromStreet' },
     },
     unlockReq: null,
     region: 'neighborhood',
     defaultMusic: 'pixel_pedal_parade_v2',
+  },
+
+  // Home Street's other half. Split out on 2026-11-26 (owner request): the
+  // desert flora, fauna and foraging were crowding the street scene.
+  //
+  // `worldPos` is null on purpose. Desert Edge is reached on foot from the
+  // street, the same way the Materials Lab and Thermal Lab are reached from
+  // the garage, so it is not a separate pin on the neighborhood overworld.
+  // It still appears automatically in anything that enumerates local scenes
+  // (`getLocalScenes`, `getAllRegionStatus`) because those read this map.
+  DesertEdgeScene: {
+    key: 'DesertEdgeScene',
+    layer: 'local',
+    name: 'Desert Edge',
+    icon: '🌵',
+    iconArt: ART.map_desert,
+    description: 'The open desert past the fence — plants, animals, foraging',
+    worldPos: null,
+    spawns: {
+      // Both well below the north gate (y 0-28) for the same reason the
+      // street's `fromDesertEdge` sits well above the south gap.
+      default: { x: 530, y: 130 },
+      fromStreet: { x: 530, y: 110 },
+    },
+    exits: {
+      toStreet: { target: 'StreetBlockScene', spawn: 'fromDesertEdge' },
+    },
+    unlockReq: null,
+    region: 'neighborhood',
+    defaultMusic: 'qanun_jar_lid',
   },
 
   DogParkScene: {
@@ -142,6 +183,7 @@ const SCENES = {
     layer: 'local',
     name: 'Dog Park',
     icon: '🐕',
+    iconArt: ART.dog_brown,
     description: 'Fenced park — dogs, mud paths, ecology puzzles',
     worldPos: { x: 270, y: 700 },
     spawns: {
@@ -161,6 +203,7 @@ const SCENES = {
     layer: 'local',
     name: 'Lake Edge',
     icon: '🏞️',
+    iconArt: ART.map_lake,
     description: 'Shoreline with dock — water science, buoyancy, contamination',
     worldPos: { x: 770, y: 140 },
     spawns: {
@@ -184,6 +227,7 @@ const SCENES = {
     layer: 'local',
     name: 'Sports Fields',
     icon: '⚽',
+    iconArt: ART.soccer_ball,
     description: 'Tennis court and soccer field — physics, materials testing',
     worldPos: { x: 1280, y: 380 },
     spawns: {
@@ -207,6 +251,7 @@ const SCENES = {
     layer: 'local',
     name: 'Community Pool',
     icon: '🏊',
+    iconArt: ART.diving_board,
     description: 'Pool with slide — chemistry, surfactants, water science',
     worldPos: { x: 1100, y: 720 },
     spawns: {
@@ -230,6 +275,7 @@ const SCENES = {
     layer: 'local',
     name: 'Desert Trail',
     icon: '🌵',
+    iconArt: ART.map_desert,
     description: 'Branching paths, cacti, wildlife — survival, foraging, language',
     worldPos: { x: 1450, y: 700 },
     spawns: {
@@ -253,6 +299,7 @@ const SCENES = {
     layer: 'local',
     name: 'Desert Mountain',
     icon: '⛰️',
+    iconArt: ART.map_mountain,
     description: 'Foothills, climb paths, cave — advanced materials, topology',
     worldPos: { x: 1150, y: 80 },
     spawns: {
@@ -277,6 +324,7 @@ const SCENES = {
     layer: 'overworld',
     name: 'World Map',
     icon: '🗺️',
+    iconArt: ART.map_road,
     description: 'Explore the wider Arizona region',
     worldPos: null,
     spawns: {
@@ -295,6 +343,7 @@ const SCENES = {
     layer: 'local',
     name: 'Sonoran Foraging Grounds',
     icon: '🌵',
+    iconArt: ART.map_desert,
     description: 'Desert ecosystem — harvest plants, manage water, learn ethnobotany',
     worldPos: null,   // accessed via world map, not neighborhood overworld
     spawns: {
@@ -314,6 +363,7 @@ const SCENES = {
     layer: 'local',
     name: 'Abandoned Copper Mine',
     icon: '⛏️',
+    iconArt: ART.map_mine,
     description: 'Old mine — copper ore, conductivity, structural physics',
     worldPos: null,
     spawns: {
@@ -337,6 +387,7 @@ const SCENES = {
     layer: 'local',
     name: 'Salt River Basin',
     icon: '🏞️',
+    iconArt: ART.map_lake,
     description: 'Desert waterway — biology, fluid dynamics, ecological balance',
     worldPos: null,
     spawns: {
@@ -360,6 +411,7 @@ const SCENES = {
     layer: 'local',
     name: 'Dry Wash',
     icon: '🏜️',
+    iconArt: ART.map_desert,
     description:
       "A dry arroyo cutting through the desert — broken bridge remnants on both sides.",
     worldPos: null,        // visible via worldMapData.WORLD_LOCATIONS, not a region anchor

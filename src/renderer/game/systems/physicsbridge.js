@@ -108,6 +108,30 @@ export function cameraFlash(scene, duration = 150, r = 255, g = 80, b = 80) {
 }
 
 /**
+ * A short coloured pulse centred on the player.
+ *
+ * The local stand-in for a full-screen flash: it marks what happened
+ * without washing the whole room out, which a young child reads as the
+ * game breaking.
+ *
+ * @param {Phaser.Scene} scene
+ * @param {number} color
+ */
+export function pulseOnPlayer(scene, color = 0xf97316) {
+  const sprite = scene.player?.sprite;
+  if (!sprite || !scene.add || !scene.tweens) return;
+  const ring = scene.add.circle(sprite.x, sprite.y - 18, 34, color, 0.34).setDepth(13);
+  scene.tweens.add({
+    targets: ring,
+    alpha: 0,
+    scale: 1.5,
+    duration: 420,
+    ease: 'Quad.easeOut',
+    onComplete: () => ring.destroy(),
+  });
+}
+
+/**
  * Pan camera to a point of interest.
  * @param {Phaser.Scene} scene
  * @param {number} x
@@ -153,20 +177,31 @@ export function cameraResetFollow(scene) {
 export function wireCameraToMCP(scene, mcp) {
   if (!mcp) return;
 
-  // Obstacle damage → red flash
+  // Nothing here flashes the whole screen at a child any more.
+  //
+  // These three fired on top of the hazard shimmer: a red flash on the
+  // second contact with the Scorching Pavement, which is on the way to
+  // the Workshop; a red flash on EVERY tick while health is low, which is
+  // a strobe; and a white flash plus a shake on every quest finished.
+  // Where there is something to say, it is said over the player, small.
+
+  // Repeated obstacle failure → a warm pulse on the player, not the screen
   mcp.on('OBSTACLE_FAILED_REPEATEDLY', () => {
-    cameraFlash(scene, 200, 255, 100, 100);
+    pulseOnPlayer(scene, 0xf97316);
   });
 
-  // Player low health → subtle red pulse
+  // Low health → one gentle pulse, and not again until health recovers
   mcp.on('PLAYER_LOW_HEALTH', () => {
-    cameraFlash(scene, 300, 200, 50, 50);
+    if (scene._lowHealthPulsed) return;
+    scene._lowHealthPulsed = true;
+    pulseOnPlayer(scene, 0xef4444);
   });
+  mcp.on('PLAYER_HEALTH_RECOVERED', () => { scene._lowHealthPulsed = false; });
 
-  // Quest completed → celebratory white flash
+  // Quest completed → a bright pulse on the player. No flash, no shake:
+  // the scene already runs its own "Quest Complete!" celebration.
   mcp.on('QUEST_COMPLETED', () => {
-    cameraFlash(scene, 400, 255, 255, 255);
-    cameraShake(scene, 100, 0.003); // gentle celebration shake
+    pulseOnPlayer(scene, 0xfde68a);
   });
 
   // High-speed collision → shake

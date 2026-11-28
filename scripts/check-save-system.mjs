@@ -14,6 +14,8 @@
  * Runs in Node with a minimal localStorage shim — no browser needed.
  */
 
+import { readFileSync } from 'node:fs';
+
 // ── Minimal localStorage shim ──────────────────────────────────────
 const store = new Map();
 globalThis.localStorage = {
@@ -41,13 +43,21 @@ function assert(condition, label) {
   }
 }
 
+// Read straight out of saveSystem.js: a hard-coded copy of this number
+// is what left this gate red and ignored for several save versions.
+const CURRENT_VERSION = Number(
+  /const CURRENT_VERSION = (\d+)/.exec(
+    readFileSync(new URL('../src/renderer/game/systems/saveSystem.js', import.meta.url), 'utf8'),
+  )[1],
+);
+
 console.log('\n── Save System Smoke Tests ──\n');
 
 // 1. Default save shape
 const def = loadGame();
-assert(def.version === 2, 'defaultSave version is 2');
-assert(def.player?.scene === 'GarageScene', 'default scene is GarageScene');
-assert(def.player?.x === 400 && def.player?.y === 300, 'default spawn position 400,300');
+assert(def.version === CURRENT_VERSION, `defaultSave version is ${CURRENT_VERSION}`);
+assert(def.player?.scene === 'ZuzuGarageScene', 'default scene is ZuzuGarageScene');
+assert(def.player?.x === 400 && def.player?.y === 350, 'default spawn position 400,350');
 assert(Array.isArray(def.inventory) && def.inventory.length > 0, 'default inventory is non-empty');
 assert(Array.isArray(def.completedQuests) && def.completedQuests.length === 0, 'completedQuests starts empty');
 assert(def.activeQuest === null, 'activeQuest starts null');
@@ -66,14 +76,14 @@ const modified = {
   zuzubucks: 42,
   completedQuests: ['flat_tire_repair'],
   hasSeenOnboarding: true,
-  player: { x: 100, y: 200, scene: 'NeighborhoodScene' },
+  player: { x: 100, y: 200, scene: 'StreetBlockScene' },
 };
 saveGame(modified);
 const loaded = loadGame();
 assert(loaded.zuzubucks === 42, 'round-trip preserves zuzubucks');
 assert(loaded.completedQuests.includes('flat_tire_repair'), 'round-trip preserves completedQuests');
 assert(loaded.hasSeenOnboarding === true, 'round-trip preserves hasSeenOnboarding');
-assert(loaded.player.scene === 'NeighborhoodScene', 'round-trip preserves player scene');
+assert(loaded.player.scene === 'StreetBlockScene', 'round-trip preserves player scene');
 
 // 4. hasSave after saving
 assert(hasSave() === true, 'hasSave() returns true after save');
@@ -92,7 +102,26 @@ assert(hasSave() === false, 'hasSave() returns false after reset');
 assert(fresh.zuzubucks === 0, 'resetGame returns fresh state with 0 zuzubucks');
 assert(fresh.completedQuests.length === 0, 'resetGame returns fresh state with no quests');
 assert(fresh.hasSeenOnboarding === false, 'resetGame restores hasSeenOnboarding to false');
-assert(fresh.player.scene === 'GarageScene', 'resetGame restores starting scene');
+assert(fresh.player.scene === 'ZuzuGarageScene', 'resetGame restores starting scene');
+
+// 6b. Retired scene keys are rewritten on load, at every version (MUST 0.15)
+//
+// Saves written while the Dry Wash west-edge bug was live are at the
+// CURRENT version and name NeighborhoodScene. Migrating the key only
+// inside the v2->v3 step let every one of those through, so the child
+// reopened the retired scene and walking out of it wrote the key back.
+const RETIRED = { GarageScene: 'ZuzuGarageScene', NeighborhoodScene: 'OverworldScene' };
+for (let version = 1; version <= CURRENT_VERSION; version += 1) {
+  for (const [retired, live] of Object.entries(RETIRED)) {
+    localStorage.setItem('bikebrowser_game_save', JSON.stringify({
+      ...def, version, player: { x: 100, y: 200, scene: retired },
+    }));
+    const out = loadGame();
+    assert(out.player.scene === live,
+      `v${version} save in ${retired} loads into ${live} (got ${out.player.scene})`);
+  }
+}
+resetGame();
 
 // 7. Learning progress survives reset
 const learningAfter = JSON.parse(localStorage.getItem(LEARNING_KEY));

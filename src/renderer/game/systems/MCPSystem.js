@@ -17,11 +17,12 @@
  */
 
 import { getEnvironment } from './ecologyEngine.js';
-import { computeForagingRisk, detectForageables } from './foragingSystem.js';
+import { computeForagingRisk, nextForageable } from './foragingSystem.js';
 import { getPhysicsState, computeMovementStress } from './physicsbridge.js';
 import { initAISystem } from './ai/MCPAIAdapter.js';
 import PhysicsEducationSystem from './education/physicsEducationSystem.js';
 import { canShowQuestion, shouldDismissQuestion, setBusy } from './gameplayArbiter.js';
+import { isOutdoorScene, prettyName } from './sceneAmbience.js';
 
 // ── MCP System Class ─────────────────────────────────────────────────────────
 
@@ -248,9 +249,11 @@ export default class MCPSystem {
     // ── Plant proximity (ecology objects) ──
     const ecologyPlants = scene._ecologyPlants || [];
     if (ecologyPlants.length > 0 && sprite) {
-      const nearby = detectForageables(sprite.x, sprite.y, ecologyPlants);
-      this.state.player.nearPlant = nearby.length > 0;
-      this.state.player.nearestPlantSpecies = nearby[0]?.species || null;
+      // The one a child would actually pick: closest, and not still
+      // regrowing. The hint named the wrong plant on both counts.
+      const next = nextForageable(sprite.x, sprite.y, ecologyPlants);
+      this.state.player.nearPlant = Boolean(next);
+      this.state.player.nearestPlantSpecies = next?.species || null;
     } else {
       this.state.player.nearPlant = false;
       this.state.player.nearestPlantSpecies = null;
@@ -432,13 +435,24 @@ export default class MCPSystem {
     }
     if (player.toxicity < 0.3) this._hintedToxicity = false;
 
-    if (player.nearPlant && player.nearestPlantSpecies && !this._hintedForage) {
-      this._pushAlert('forage_hint', `${player.nearestPlantSpecies} nearby — press action to forage.`, 'info');
+    // No raw ids in front of a child, and no hint while a dialog is
+    // already open — it used to hang over that very plant's own dialog,
+    // sometimes naming a different plant.
+    if (player.nearPlant && player.nearestPlantSpecies && !this._hintedForage
+        && !this.scene?.registry?.get?.('dialogEvent')) {
+      this._pushAlert(
+        'forage_hint',
+        `${prettyName(player.nearestPlantSpecies)} nearby — press action to forage.`,
+        'info',
+      );
       this._hintedForage = true;
     }
     if (!player.nearPlant) this._hintedForage = false;
 
-    if (environment.temperature > 0.7 && this.lastTick > 15000 && !this._hintedHeat) {
+    // Only outdoors. It was firing in the garage, the Materials Lab and
+    // inside the copper mine.
+    if (environment.temperature > 0.7 && this.lastTick > 15000 && !this._hintedHeat
+        && isOutdoorScene(this.scene?.getSceneKey?.() || this.scene?.scene?.key)) {
       this._pushAlert('heat_warning', 'Extreme heat! Seek shade or hydrate.', 'warning');
       this._hintedHeat = true;
     }

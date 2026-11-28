@@ -12,6 +12,7 @@ import DISCOVERY_UNLOCKS from '../data/discoveryUnlocks.js';
 import { revealLocationsByQuestId } from './discoveryBridge.js';
 import { runProgressionReachabilityAudit } from './progressionReachabilityAudit.js';
 import { stampAct1 } from './act1Progress.js';
+import { withStepId } from './questSteps.js';
 
 // ── Discovery → Quest Bridge ─────────────────────────────────────────────────
 
@@ -119,7 +120,10 @@ export function startQuest(state, questId) {
   // but does NOT abort the quest start (signal, not gate).
   if (import.meta.env.DEV) {
     try {
-      const postState = { ...state, activeQuest: { id: questId, stepIndex: 0 } };
+      const postState = {
+        ...state,
+        activeQuest: withStepId({ id: questId, stepIndex: 0 }),
+      };
       runProgressionReachabilityAudit(postState, { silent: false });
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -129,7 +133,9 @@ export function startQuest(state, questId) {
 
   return {
     ...state,
-    activeQuest: { id: questId, stepIndex: 0 },
+    // The id travels with the number so a later insert into the step
+    // list can be migrated without guessing.
+    activeQuest: withStepId({ id: questId, stepIndex: 0 }),
     journal: [
       ...state.journal,
       `📋 New quest: ${quest.title}`,
@@ -231,7 +237,7 @@ export function advanceQuest(state, choiceIndex) {
   return {
     state: {
       ...state,
-      activeQuest: { ...state.activeQuest, stepIndex: nextIndex },
+      activeQuest: withStepId({ ...state.activeQuest, stepIndex: nextIndex }),
     },
     ok: true,
     message: null,

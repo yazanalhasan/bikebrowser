@@ -30,8 +30,32 @@ import MCPSystem from '../systems/MCPSystem.js';
 import { spawnObstacles } from '../systems/obstacleSystem.js';
 import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
 import { interpolateStepText } from '../systems/questTemplating.js';
+import {
+  dialogForStep, listenerOpenedDialog, sfxForStep, NARRATOR,
+} from '../systems/questDialog.js';
 import { getPhysicsState, wireCameraToMCP } from '../systems/physicsbridge.js';
-import { localCameraFit } from '../utils/localCameraFit.js';
+import { localCameraFit, localCameraCenter } from '../utils/localCameraFit.js';
+import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
+import { preloadEcologyAssets } from '../systems/ecology/ecologyAssetManifest.js';
+import { addArt, addGround, addBackdrop, hasArt } from '../../../game/assets/act1Art.js';
+import { mountCompanion } from '../systems/companionSystem.js';
+import { startInteractiveExplainer } from '../systems/interactiveExplainerSystem.js';
+import { getNpcProfile } from '../data/npcProfiles.js';
+import QUESTS from '../data/quests.js';
+import {
+  getCompanionsForScene,
+  pickCompanionLine,
+  markCompanionMet,
+} from '../data/companions.js';
+import {
+  PROP_CAPTION_OFFSET, PROP_PROMPT_OFFSET, PROP_CAPTION_DEPTH, PROP_PROMPT_DEPTH,
+  NAME_LABEL_LEAD_PX, WORLD_SIGN_DEPTH, firstLabelClash,
+} from '../systems/labelLayout.js';
+import {
+  registerZuzuAnimations, registerNPCAnimations,
+} from '../../../game/characters/registerCharacterAnimations.js';
+import { dodgeHud } from '../systems/hudDodge.js';
+import { MIN_TAP_PX } from '../systems/phoneReadable.js';
 
 // Default world size for local scenes (viewport-scale, not overworld-scale)
 const DEFAULT_WORLD = { width: 800, height: 600 };
@@ -42,9 +66,8 @@ const DEFAULT_WORLD = { width: 800, height: 600 };
 // entry when adding a new local scene; fallback is a muted dark frame.
 const SCENE_BIOMES = {
   ZuzuGarageScene:    { fill: 0x6b4423, accent: 0x8b6914, label: 'urban'     },
-  GarageScene:        { fill: 0x6b4423, accent: 0x8b6914, label: 'urban'     },
-  NeighborhoodScene:  { fill: 0x6b5b3a, accent: 0x8b7344, label: 'urban'     },
   StreetBlockScene:   { fill: 0xa08250, accent: 0xc4a26a, label: 'desert'    },
+  DesertEdgeScene:    { fill: 0xa08250, accent: 0xc4a26a, label: 'desert'    },
   DogParkScene:       { fill: 0x4a6b3a, accent: 0x6e8a4a, label: 'grassland' },
   SportsFieldsScene:  { fill: 0x5a7a4a, accent: 0x7a9a5a, label: 'grassland' },
   CommunityPoolScene: { fill: 0x4a6680, accent: 0x6a86a0, label: 'urban'     },
@@ -57,6 +80,13 @@ const SCENE_BIOMES = {
 };
 const DEFAULT_BIOME = { fill: 0x2a2422, accent: 0x4a4030, label: 'unknown' };
 
+/**
+ * How much further than the interaction radius a prop's name stays
+ * visible. Gives the child the name just before the interact prompt.
+ */
+// Label geometry lives in systems/labelLayout.js so the prop caption and
+// the player's name tag cannot drift into each other again.
+
 export default class LocalSceneBase extends Phaser.Scene {
   constructor(sceneKey) {
     super({ key: sceneKey });
@@ -67,6 +97,25 @@ export default class LocalSceneBase extends Phaser.Scene {
   // Override points
   // ---------------------------------------------------------------------------
 
+  // ---------------------------------------------------------------------------
+  // Asset loading
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Load the shared Act 1 art for every local scene and sub-scene.
+   *
+   * Subclasses that define their own preload() call `super.preload?.()` first,
+   * so every scene in the Act 1 chain gets the atlases, the Sonoran tileset,
+   * the character sheets, the scene grounds, the world props and the ecology
+   * sprites without repeating the list. Loads are idempotent — Phaser skips a
+   * key that is already in the texture cache, so scene-to-scene transitions
+   * do not re-fetch.
+   */
+  preload() {
+    preloadGameAssets(this);
+    preloadEcologyAssets(this);
+  }
+
   /** Override to define the scene key. */
   getSceneKey() { return this._sceneKey; }
 
@@ -75,6 +124,15 @@ export default class LocalSceneBase extends Phaser.Scene {
 
   /** Override to build the scene's visual world. Called after base setup. */
   createWorld() { /* subclass implements */ }
+
+  /**
+   * How this room should be framed: `'cover'` (fill the screen width, follow
+   * Zuzu vertically) or `'contain'` (show the whole room, never follow).
+   *
+   * Rooms that are really a control panel want `'contain'` — see
+   * `utils/localCameraFit.js`. Everything else is a place you walk around in.
+   */
+  getCameraFitMode() { return 'cover'; }
 
   /** Override for per-frame custom logic. */
   onUpdate(_dt) { /* subclass implements */ }
@@ -87,7 +145,7 @@ export default class LocalSceneBase extends Phaser.Scene {
   // are met (e.g. requiredItem is in inventory after a forage/grant scene).
   // Without this, scenes like CopperMineScene / MountainScene / ZuzuGarageScene
   // would grant items via dialog but never trigger the step advance — leaving
-  // the player with the item but quest stuck on the prior step. NeighborhoodScene
+  // the player with the item but quest stuck on the prior step. OverworldScene
   // and StreetBlockScene OVERRIDE this with NPC-aware versions that emit the
   // next step's dialog inline; this default just advances + saves silently and
   // closes the dialog so the next interaction (NPC, prop, scene transition)
@@ -122,7 +180,7 @@ export default class LocalSceneBase extends Phaser.Scene {
         return;
       }
       this.registry.set('dialogEvent', {
-        speaker: 'System',
+        speaker: NARRATOR,
         text: result.message,
         choices: null,
         step: getCurrentStep(state),
@@ -130,37 +188,80 @@ export default class LocalSceneBase extends Phaser.Scene {
       return;
     }
 
+    const zuzubucksBefore = state?.zuzubucks || 0;
     state = result.state;
+    const zuzubucksGained = (state?.zuzubucks || 0) - zuzubucksBefore;
+
+    // Writing gameState runs every `changedata-gameState` listener
+    // SYNCHRONOUSLY, and one of them (the end-of-Act-1 celebration in
+    // GameContainer) opens a dialog. This method used to fall through and
+    // null `dialogEvent` immediately afterwards, wiping it — and because the
+    // celebration only fires once, it never came back. Remember what was
+    // there before so we can tell a listener's dialog from a stale one.
+    const dialogBeforeWrite = this.registry.get('dialogEvent');
     this.registry.set('gameState', state);
     saveGame(state);
+    const listenerKeptDialog = listenerOpenedDialog(
+      dialogBeforeWrite, this.registry.get('dialogEvent'),
+    );
 
     const nextStep = getCurrentStep(state);
     if (!nextStep) {
       // Quest completed
       audioMgr?.playStinger?.('reward_stinger');
       if (typeof this._showRewardCelebration === 'function') {
-        this._showRewardCelebration(state);
+        // Hand over what was actually earned. The celebration used to
+        // hard-code "+25 Zuzubucks!" whatever the quest paid.
+        this._showRewardCelebration(state, { zuzubucks: zuzubucksGained });
       }
     } else {
-      audioMgr?.playSfx?.('ui_success');
+      const sfx = sfxForStep(nextStep);
+      if (sfx) audioMgr?.playSfx?.(sfx.key, sfx.opts);
     }
-    // Close current dialog regardless — the next step's dialog will be
-    // emitted by whichever interaction the player triggers next (NPC,
-    // prop, scene transition).
-    if (nextStep?.type === 'quiz') {
-      const text = nextStep.templateVars
-        ? interpolateStepText(nextStep.text, nextStep.templateVars, state)
-        : nextStep.text;
-      this.registry.set('dialogEvent', {
-        speaker: 'Zuzu (thinking)',
-        text,
-        choices: nextStep.choices || null,
-        step: nextStep,
-        questId: state?.activeQuest?.id,
-      });
-    } else {
-      this.registry.set('dialogEvent', null);
+    // An explainer step opens its own overlay rather than a dialog box.
+    if (nextStep?.type === 'explainer' && nextStep.explainerId) {
+      startInteractiveExplainer(this, nextStep.explainerId);
+      return;
     }
+
+    // Carry the conversation on. `systems/questDialog.js` decides what the
+    // box should say; this method only writes it.
+    const followOn = dialogForStep(nextStep, state, this._activeQuestGiverName(state), {
+      giverPresent: this._isQuestGiverHere(state),
+    });
+    if (followOn) {
+      this.registry.set('dialogEvent', followOn);
+      return;
+    }
+
+    // Nothing follows. Leave a dialog a listener opened during the state
+    // write above rather than wiping it.
+    if (listenerKeptDialog) return;
+    this.registry.set('dialogEvent', null);
+  }
+
+  /**
+   * Display name of the NPC who gave the active quest, for dialog speakers.
+   * Reads `data/npcProfiles.js` rather than a per-scene name map, so a new
+   * quest giver needs no scene edit.
+   */
+  _activeQuestGiverName(state) {
+    const giver = QUESTS[state?.activeQuest?.id]?.giver;
+    return (giver && getNpcProfile(giver)?.name) || null;
+  }
+
+  /**
+   * Is the active quest's giver standing in this scene?
+   *
+   * Asks the scene's own NPCs rather than a fixed home-scene map, so the
+   * Dry Wash Mr. Chen counts for his quests exactly like the Home Street one
+   * does. A quest with no giver counts as present — nobody has to be found.
+   * @private
+   */
+  _isQuestGiverHere(state) {
+    const giver = QUESTS[state?.activeQuest?.id]?.giver;
+    if (!giver) return true;
+    return Boolean(this._npcs?.[giver]);
   }
 
   // ---------------------------------------------------------------------------
@@ -168,14 +269,47 @@ export default class LocalSceneBase extends Phaser.Scene {
   // ---------------------------------------------------------------------------
 
   create() {
+    // Phaser reuses the scene *object* across visits, so every per-visit
+    // field has to be cleared here or it carries the last visit's destroyed
+    // objects into this one.
+    //
+    // `this.player` matters most. `createWorld()` runs before the new Player
+    // is constructed, and `systems/ecology` takes a fast path when
+    // `scene.player` already exists at registration time — on a revisit that
+    // was the *previous*, destroyed sprite, so every animal's proximity
+    // overlap was wired to an inactive object and observations silently
+    // stopped counting. That is what blocked "Follow the Food Chain" after
+    // the first visit to a scene. Clearing it forces the deferred path,
+    // which wires to the real player on the first update tick.
+    //
+    // `_collisionBodies` is the same bug with a smaller blast radius: it grew
+    // 7 -> 14 -> 21 across visits and re-added colliders for destroyed walls.
+    this.player = null;
+    this._companions = [];
+    this._collisionBodies = null;
+    this._obstacles = null;
+    this._ecologyEntityIndex = null;
     this._transitioning = false;
     this._npcs = {};
     this._exits = [];
     this._interactables = [];
 
+    // The walk cycles live in the atlas and `playWalk` asks for them, but
+    // nothing ever registered them, so `anims.exists` was always false and
+    // Zuzu slid around on one idle frame. Registering is idempotent and
+    // skips quietly when a frame is missing.
+    registerZuzuAnimations(this);
+    registerNPCAnimations(this);
+
     const state = this.registry.get('gameState');
     const sceneKey = this.getSceneKey();
     const world = this.getWorldSize();
+
+    // Publish which scene is on screen so the React HUD can scene-gate its
+    // hints. `gameState.player.scene` is not usable for that: it is only
+    // rewritten by `_savePosition`, so it still names the previous scene
+    // until the child moves.
+    this.registry.set('activeSceneKey', sceneKey);
 
     // --- Physics world bounds ---
     this.physics.world.setBounds(0, 0, world.width, world.height);
@@ -205,6 +339,16 @@ export default class LocalSceneBase extends Phaser.Scene {
     const py = state?.player?.scene === sceneKey ? state.player.y : spawn.y;
 
     this.player = new Player(this, px, py);
+
+    // A scene can say it is an instrument, not a room. A lab rig hides
+    // the d-pad because there is nothing to walk to — but the player
+    // was still spawned on the bench, and with a keyboard he walked
+    // over the controls: 100% of "Run the test", 83% of START, 92% of
+    // "Slow replay" (review MUST 9).
+    if (this.hidesPlayer?.()) this.player.setHidden(true);
+
+    // --- Companions (Lina in the neighborhood and the desert) ---
+    this._mountCompanions(px, py);
 
     // --- Wire exit zones ---
     for (const exit of this._exits) {
@@ -263,6 +407,10 @@ export default class LocalSceneBase extends Phaser.Scene {
   }
 
   update(_time, delta) {
+    // Labels step out from under the HUD's rail, d-pad and chat button:
+    // nothing in Phaser can draw above the page, so they move instead
+    // (plan 0.12).
+    dodgeHud(this);
     if (!this.player) return;
     // Skip the whole tick if the player's sprite was torn down by a
     // pause/unmount race — entities downstream (NPCs, MCP, save) all
@@ -273,7 +421,24 @@ export default class LocalSceneBase extends Phaser.Scene {
     if (this._cameraMode === 'follow') this._frameFollowCamera();
 
     // Update NPCs
-    Object.values(this._npcs).forEach(npc => npc.update(this.player.sprite));
+    // Who is speaking right now, so a character with a talk sheet uses
+    // it while they talk (plan 2.1). The dialog event carries the
+    // speaker's display name.
+    const speaking = this.registry.get('dialogEvent')?.speaker || null;
+    Object.values(this._npcs).forEach((npc) => {
+      npc.update(this.player.sprite);
+      npc.setTalking?.(Boolean(speaking) && speaking === npc.name);
+    });
+
+    // Decides who gets a chip this frame and publishes it for the
+    // companion, which updates just below and would otherwise read a
+    // frame-old answer and flicker.
+    this._updateInteractablePrompts();
+
+    // Walk companions along behind the player
+    for (const companion of this._companions || []) {
+      companion.update(this.player.sprite, this.game.loop.delta);
+    }
 
     const liveState = this.registry.get('gameState');
     const liveStep = getCurrentStep(liveState);
@@ -299,9 +464,6 @@ export default class LocalSceneBase extends Phaser.Scene {
       this._handleActionKey();
     }
 
-    // Check interactable proximity
-    this._updateInteractablePrompts();
-
     // MCP orchestration tick
     if (this.mcp) {
       this.mcp.update(delta, _time);
@@ -321,6 +483,30 @@ export default class LocalSceneBase extends Phaser.Scene {
   // ---------------------------------------------------------------------------
 
   /**
+   * Place an Act 1 art sprite by texture key. Thin pass-through to the art
+   * helper so scenes never touch sprite origins or file paths directly.
+   * @see src/game/assets/act1Art.js
+   */
+  addProp(key, x, y, opts = {}) {
+    return addArt(this, key, x, y, opts);
+  }
+
+  /** Tile a seamless scene-ground texture over a rectangle (top-left anchored). */
+  addGroundTexture(key, x, y, w, h, opts = {}) {
+    return addGround(this, key, x, y, w, h, opts);
+  }
+
+  /** Stretch a painted backdrop plate over a rectangle (top-left anchored). */
+  addBackdropTexture(key, x, y, w, h, opts = {}) {
+    return addBackdrop(this, key, x, y, w, h, opts);
+  }
+
+  /** True when an Act 1 texture is loaded in this scene. */
+  hasArtTexture(key) {
+    return hasArt(this, key);
+  }
+
+  /**
    * Add a rectangular collision wall.
    * @returns {Phaser.GameObjects.Rectangle}
    */
@@ -333,14 +519,33 @@ export default class LocalSceneBase extends Phaser.Scene {
   }
 
   /**
-   * Add a visible wall with color.
+   * Add a visible wall.
+   *
+   * Pass `textureKey` to surface the wall with a tiled Act 1 texture instead
+   * of a flat fill — a cliff face reads as rock, not as a grey box. The flat
+   * colour stays as the fallback for walls that have no art (fences, mine
+   * timbers), and as the backing behind a texture with any transparency.
+   *
+   * @param {string} [textureKey] Act 1 tile texture to face the wall with
    */
-  addVisibleWall(x, y, w, h, color, strokeColor) {
+  addVisibleWall(x, y, w, h, color, strokeColor, textureKey = null) {
     const wall = this.add.rectangle(x, y, w, h, color);
     if (strokeColor) wall.setStrokeStyle(2, strokeColor);
     this.physics.add.existing(wall, true);
     if (!this._collisionBodies) this._collisionBodies = [];
     this._collisionBodies.push(wall);
+
+    if (textureKey && hasArt(this, textureKey)) {
+      wall.setFillStyle(color, 0);
+      const face = addGround(this, textureKey, x - w / 2, y - h / 2, w, h,
+        { depth: wall.depth });
+      if (face && strokeColor) {
+        this.add.rectangle(x, y, w, h)
+          .setStrokeStyle(2, strokeColor)
+          .setDepth(wall.depth + 0.1);
+      }
+      if (!face) wall.setFillStyle(color, 1);
+    }
     return wall;
   }
 
@@ -367,16 +572,51 @@ export default class LocalSceneBase extends Phaser.Scene {
     // Visual marker
     this.add.rectangle(x, y, width, height, 0xf59e0b, 0.18).setDepth(1);
 
-    // Label
+    // Label. In the sign band: at depth 2 the child covered the way out
+    // by standing on it, which is exactly where they stand (plan 0.12).
+    let labelText = null;
     if (label) {
-      this.add.text(x, y, label, {
-        fontSize: '14px', fontFamily: 'sans-serif', color: '#92400e',
+      // Smaller on a phone. At 14px "🗺️ Leave Fields ⬇" is 122px wide and
+      // the clear gap along the bottom of a 390px screen — between the
+      // d-pad and the chat button — is 120px, so the label could not be
+      // placed anywhere and sat under the chat button whatever the dodge
+      // tried (plan 0.12).
+      const narrow = (this.cameras?.main?.width ?? 1280) < 600;
+      labelText = this.add.text(x, y, label, {
+        fontSize: narrow ? '12px' : '14px',
+        fontFamily: 'sans-serif', color: '#92400e',
         fontStyle: 'bold', stroke: '#fef3c7', strokeThickness: 3,
-      }).setOrigin(0.5).setDepth(2);
+      }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH);
     }
 
     const entry = { zone, targetScene, targetSpawn, sfx };
     this._exits.push(entry);
+
+    // Tappable, not only walk-into. A child on a phone reaches for the
+    // thing that says "Back to Garage" before they reach for the d-pad,
+    // and in a lab rig there IS no d-pad — hiding it (plan 0.5) left
+    // the rigs with no touch-only way out at all.
+    //
+    // The hit area is never smaller than a finger: these zones are as
+    // little as 28px tall, and the camera can be zoomed below 1.
+    const takeExit = () => {
+      if (this._transitioning) return;
+      transitionTo(this, entry.targetScene, entry.targetSpawn,
+        { sfx: entry.sfx || 'door_interact' });
+    };
+    const zoom = this.cameras?.main?.zoom || 1;
+    const needed = MIN_TAP_PX / zoom;
+    const hitW = Math.max(width, needed);
+    const hitH = Math.max(height, needed);
+    zone.setInteractive(
+      new Phaser.Geom.Rectangle((width - hitW) / 2, (height - hitH) / 2, hitW, hitH),
+      Phaser.Geom.Rectangle.Contains,
+    );
+    zone.on('pointerdown', takeExit);
+    if (labelText) {
+      labelText.setInteractive({ useHandCursor: true });
+      labelText.on('pointerdown', takeExit);
+    }
 
     // Wire the overlap immediately if the player has already been created.
     // Exits added in createWorld() run before the player exists and get wired
@@ -394,6 +634,48 @@ export default class LocalSceneBase extends Phaser.Scene {
   }
 
   /**
+   * Mount every companion whose data lists this scene, a short way behind
+   * the player's spawn. Companions are friends, not quest-givers: talking
+   * to one shows a line and nothing else changes.
+   * @private
+   */
+  _mountCompanions(px, py) {
+    this._companions = [];
+    const state = this.registry.get('gameState');
+    for (const def of getCompanionsForScene(this.getSceneKey(), state)) {
+      const companion = mountCompanion(this, {
+        id: def.id,
+        name: def.name,
+        walkSheet: def.walkSheet,
+        idleSheet: def.idleSheet,
+        // Clear of the spawn point: at (-44, +10) she overlapped Zuzu on
+        // arrival, which on Home Street put her on top of him and the
+        // flat-tyre bike at once.
+        x: px - 62,
+        y: py + 26,
+        onInteract: () => {
+          const live = this.registry.get('gameState');
+          const line = pickCompanionLine(def, live);
+          if (!line) return;
+          // Meeting her is what lets her follow Zuzu out of the neighborhood.
+          const next = markCompanionMet(live, def.id);
+          if (next !== live) {
+            this.registry.set('gameState', next);
+            saveGame(next);
+          }
+          this.registry.set('dialogEvent', {
+            speaker: def.name,
+            text: line.text,
+            choices: null,
+            step: null,
+          });
+        },
+      });
+      if (companion) this._companions.push(companion);
+    }
+  }
+
+  /**
    * Add an NPC to the scene.
    * @param {object} config — same as Npc constructor config + questId
    * @returns {Npc}
@@ -406,28 +688,74 @@ export default class LocalSceneBase extends Phaser.Scene {
 
   /**
    * Add an interactable prop (non-NPC object the player can interact with).
+   *
+   * `icon` is an Act 1 art texture key (see src/game/assets/act1ArtRegistry.js).
+   * A string that is not a known art key is drawn as text, which keeps
+   * non-Act-1 callers working; for Act 1 that path is a bug, so it warns.
+   *
    * @param {object} config
    * @param {number} config.x
    * @param {number} config.y
    * @param {string} config.label — display name
-   * @param {string} config.icon — emoji
+   * @param {string|null} config.icon — art texture key, or null when the
+   *   scene has already drawn the prop (legacy: an emoji glyph)
+   * @param {number} [config.iconMaxPx] — cap the icon's longest side
    * @param {number} [config.radius=60] — interaction radius
+   * @param {boolean} [config.showNameLabel=true] — set false when the scene
+   *   has already drawn a visible name for this object, so the hotspot does
+   *   not print the same name a second time on top of it
    * @param {function} config.onInteract — called when player interacts
    */
   addInteractable(config) {
-    const { x, y, label, icon, radius = 60, onInteract } = config;
+    const {
+      x, y, label, icon, radius = 60, onInteract, showNameLabel = true,
+      // A prop can say when its own UI owns the screen: the lab scale's
+      // RECORD button sits exactly where the prompt goes.
+      promptSuppressed = null,
+      // Above the prop by default. A station that already prints its own
+      // sign there (the lab's SCALE) passes a positive offset to put the
+      // prompt underneath instead.
+      promptOffset = PROP_PROMPT_OFFSET,
+    } = config;
 
-    const text = this.add.text(x, y, icon, { fontSize: '28px' }).setOrigin(0.5).setDepth(4);
-    const nameLabel = this.add.text(x, y + 24, label, {
-      fontSize: '11px', fontFamily: 'sans-serif', color: '#374151',
-      fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 2,
-    }).setOrigin(0.5).setDepth(4);
+    // Three cases:
+    //  - an art key      -> draw the sprite
+    //  - null/'' icon    -> draw nothing, because the scene already drew the
+    //                       prop this hotspot sits on (no doubled art)
+    //  - any other string -> legacy text glyph
+    let text = null;
+    if (hasArt(this, icon)) {
+      text = addArt(this, icon, x, y, {
+        anchor: 'icon',
+        depth: 4,
+        maxPx: config.iconMaxPx,
+      });
+    } else if (icon) {
+      text = this.add.text(x, y, icon, { fontSize: '28px' }).setOrigin(0.5).setDepth(4);
+    }
+    // Object caption. Hidden until Zuzu is near it: a scene that names every
+    // prop at once is unreadable for a young child (owner request
+    // 2026-11-26). `_updateInteractablePrompts` drives the visibility, using
+    // a slightly wider radius than the interact prompt so the name arrives
+    // first and the child knows what they are walking up to.
+    // Above the prop, stacked over the interact prompt. Below it is where
+    // Zuzu's own name tag lands when he walks up, and the two collided:
+    // "Flat Tire" sat across "Zuzu" the moment the caption appeared.
+    const nameLabel = showNameLabel
+      ? this.add.text(x, y + PROP_CAPTION_OFFSET, label, {
+        fontSize: '11px', fontFamily: 'sans-serif', color: '#374151',
+        fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 2,
+      }).setOrigin(0.5).setDepth(PROP_CAPTION_DEPTH).setVisible(false)
+      : null;
 
     // Prompt (hidden by default)
-    const prompt = this.add.text(x, y - 24, '💬 Interact', {
+    const prompt = this.add.text(x, y + promptOffset, '💬 Interact', {
       fontSize: '12px', fontFamily: 'sans-serif', color: '#ffffff',
       backgroundColor: '#1e293b', padding: { x: 4, y: 2 },
-    }).setOrigin(0.5).setDepth(5).setVisible(false);
+      // Above the characters (depth 6). At depth 5 the child's own sprite
+      // covered the prompt for the thing they were standing at — the
+      // wilted plant most of all.
+    }).setOrigin(0.5).setDepth(PROP_PROMPT_DEPTH).setVisible(false);
 
     const interactable = {
       x,
@@ -437,6 +765,7 @@ export default class LocalSceneBase extends Phaser.Scene {
       grantsItems: config.grantsItems || [],
       metadata: config.metadata || {},
       onInteract,
+      promptSuppressed,
       text,
       nameLabel,
       prompt,
@@ -445,6 +774,21 @@ export default class LocalSceneBase extends Phaser.Scene {
     };
     this._interactables.push(interactable);
     return interactable;
+  }
+
+  /**
+   * Remove an interactable and its on-screen parts.
+   *
+   * Used when a hotspot is spent — a solved puzzle, for instance — so the
+   * prompt stops inviting a press that no longer does anything.
+   */
+  removeInteractable(interactable) {
+    if (!interactable) return;
+    const at = this._interactables.indexOf(interactable);
+    if (at !== -1) this._interactables.splice(at, 1);
+    interactable.prompt?.destroy?.();
+    interactable.nameLabel?.destroy?.();
+    interactable.text?.destroy?.();
   }
 
   // ---------------------------------------------------------------------------
@@ -458,27 +802,55 @@ export default class LocalSceneBase extends Phaser.Scene {
     return 'default';
   }
 
-  _handleActionKey() {
+  /**
+   * What pressing E would use right now: the closest NPC, prop or
+   * companion in range, or null.
+   *
+   * It used to be a fixed order — NPC, then prop, then companion — while
+   * all three showed a chip. Standing between Mr. Chen and his bike put
+   * two chips on screen and E took Chen even when the bike was nearer.
+   *
+   * A quest-priority prop still wins outright: when a step says to use a
+   * particular thing, that is what the child means.
+   *
+   * @returns {{kind: 'prop'|'npc'|'companion', target: object, dist: number}|null}
+   */
+  _nearestTarget() {
     const priorityProp = this._getQuestPriorityInteractable();
-    if (priorityProp) {
-      priorityProp.onInteract();
-      return true;
-    }
+    if (priorityProp) return { kind: 'prop', target: priorityProp, dist: -1 };
 
-    // Try NPCs first
-    for (const npc of Object.values(this._npcs)) {
-      if (npc.isNearby()) {
-        npc.onInteract();
-        return true;
-      }
+    const px = this.player?.sprite?.x;
+    const py = this.player?.sprite?.y;
+    if (typeof px !== 'number') return null;
+
+    const candidates = [];
+    for (const npc of Object.values(this._npcs || {})) {
+      if (!npc.isNearby?.()) continue;
+      const nx = npc.container?.x ?? npc.x;
+      const ny = npc.container?.y ?? npc.y;
+      candidates.push({ kind: 'npc', target: npc, dist: Math.hypot(px - nx, py - ny) });
     }
-    // Then interactable props
-    const nearestProp = this._getNearbyInteractables()[0];
-    if (nearestProp) {
-      nearestProp.onInteract();
-      return true;
+    const prop = this._getNearbyInteractables()[0];
+    if (prop) candidates.push({ kind: 'prop', target: prop, dist: prop._distanceToPlayer });
+    for (const companion of this._companions || []) {
+      if (!companion.isNearby?.()) continue;
+      const cx = companion.sprite?.x ?? px;
+      const cy = companion.sprite?.y ?? py;
+      candidates.push({
+        kind: 'companion', target: companion, dist: Math.hypot(px - cx, py - cy),
+      });
     }
-    return false;
+    if (!candidates.length) return null;
+    candidates.sort((a, b) => a.dist - b.dist);
+    return candidates[0];
+  }
+
+  _handleActionKey() {
+    const nearest = this._nearestTarget();
+    if (!nearest) return false;
+    if (nearest.kind === 'companion') nearest.target.interact();
+    else nearest.target.onInteract();
+    return true;
   }
 
   _handlePointerInteract(pointer) {
@@ -545,13 +917,99 @@ export default class LocalSceneBase extends Phaser.Scene {
     const px = this.player.sprite.x;
     const py = this.player.sprite.y;
 
+    // Measure everything first: only the closest prop in range gets the
+    // prompt. Two "💬 Interact" chips side by side at the lab doors told
+    // the child they could press E on either, and E only ever uses one.
+    let nearest = null;
     for (const prop of this._interactables) {
       const dx = px - prop.x;
       const dy = py - prop.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
       prop._nearby = dist < prop.radius;
       prop._distanceToPlayer = dist;
-      prop.prompt.setVisible(prop._nearby);
+      if (prop._nearby && (!nearest || dist < nearest._distanceToPlayer)) nearest = prop;
+    }
+
+    // Only what E would actually use gets a chip — see `_nearestTarget`.
+    // An NPC standing closer than the prop takes it instead, and the
+    // companion yields to both, so the child never sees a chip that the
+    // key will not honour.
+    const winner = this._nearestTarget();
+    const propWins = winner?.kind === 'prop' ? winner.target : null;
+    for (const npc of Object.values(this._npcs || {})) {
+      npc.prompt?.setVisible?.(winner?.kind === 'npc' && winner.target === npc);
+    }
+    this.registry.set('npcPromptVisible', winner?.kind === 'npc');
+    const anyPrompting = Boolean(propWins)
+      && !(typeof propWins.promptSuppressed === 'function' && propWins.promptSuppressed());
+    for (const prop of this._interactables) {
+      const dist = prop._distanceToPlayer;
+      const suppressed = typeof prop.promptSuppressed === 'function'
+        && prop.promptSuppressed();
+      prop.prompt.setVisible(prop === propWins && !suppressed);
+      // The name shows a little before the prompt does, and only if the
+      // prop actually has a name.
+      if (prop.nameLabel) {
+        prop.nameLabel.setVisible(Boolean(prop.label) && dist < prop.radius + NAME_LABEL_LEAD_PX);
+      }
+    }
+
+    // A companion's "Talk" chip hides while a prop is prompting: she walks
+    // with Zuzu, so her chip sat on every prop prompt, and E would have
+    // used the prop anyway.
+    this.registry.set('propPromptVisible', anyPrompting);
+
+    this._keepNameTagsClear();
+  }
+
+  /**
+   * Hide a walking name tag when it lands on another label.
+   *
+   * Signs stay where they are drawn and the child walks wherever they like,
+   * so sooner or later a tag crosses one — "Workshop" and "E Trailside"
+   * both ended up with "Zuzu" printed through them, and Lina parks next to
+   * whatever Zuzu is looking at. A sign is telling the child something;
+   * whose feet they belong to is already obvious from the sprite, so the
+   * walking tag is what gives way. Checked a few times a second.
+   */
+  _keepNameTagsClear() {
+    const now = this.time.now;
+    if (now - (this._lastTagClearanceCheck || 0) < 120) return;
+    this._lastTagClearanceCheck = now;
+
+    // Zuzu's tag yields first, then the companions': two tags that land on
+    // each other should not both vanish.
+    // A hidden player has no name tag to place. This routine shows every
+    // tag to measure it and then hides the ones that clash, which turned
+    // a hidden Zuzu's label back on every 120ms — it was the one thing
+    // still floating over the lab bench after the player came off it.
+    if (this.player?.hidden) return;
+    const yielding = [this.player?.label, ...(this._companions || []).map((c) => c.label)]
+      .filter((tag) => tag && tag.scene);
+    if (!yielding.length) return;
+
+    // Measure every tag as if shown, so one can come back when it clears.
+    for (const tag of yielding) tag.setVisible(true);
+
+    const fixed = [];
+    const collect = (list) => {
+      for (const obj of list) {
+        if (obj.list) collect(obj.list);
+        if (obj.type !== 'Text' || !obj.visible || !obj.text) continue;
+        if (yielding.includes(obj)) continue;
+        // Screen-space HUD text has no meaningful world box.
+        if (obj.scrollFactorX === 0 && obj.scrollFactorY === 0) continue;
+        fixed.push(obj.getBounds());
+      }
+    };
+    collect(this.children.list);
+
+    const shown = [];
+    for (const tag of yielding) {
+      const box = tag.getBounds();
+      const clear = !firstLabelClash(box, fixed) && !firstLabelClash(box, shown);
+      tag.setVisible(clear);
+      if (clear) shown.push(box);
     }
   }
 
@@ -572,12 +1030,28 @@ export default class LocalSceneBase extends Phaser.Scene {
    * outside the canvas entirely). Input passes through (Graphics has no
    * default hit area).
    */
+  /**
+   * Outline the room, and nothing else.
+   *
+   * This used to paint biome-coloured letterbox bands and a vignette with
+   * `setScrollFactor(0)`, on the assumption that scroll-factor-0 means screen
+   * coordinates. It does not: Phaser still scales those objects by the camera
+   * zoom, about the viewport centre. Above zoom 1 the bands drifted outward
+   * harmlessly, but a phone fits a 1000px room into 390px — zoom 0.39 — and
+   * the bands shrank inward into a solid block over the middle of the room,
+   * hiding Zuzu, Mrs. Ramirez and the whole street centre. Unplayable.
+   *
+   * The bands are gone. `_fitLocalCamera` sets the camera's own background to
+   * the biome colour, which fills every uncovered pixel correctly at any zoom
+   * and needs no geometry at all. What is left is a one-pixel accent edge
+   * drawn in WORLD space, so it scales with the room the way everything else
+   * in the scene does.
+   * @private
+   */
   _renderViewportFrame() {
     if (!this.cameras?.main) return;
     const world = this.getWorldSize();
-    const cam = this.cameras.main;
 
-    // Tear down any previous frame from a prior resize.
     if (this._viewportFrame) {
       this._viewportFrame.destroy();
       this._viewportFrame = null;
@@ -587,62 +1061,14 @@ export default class LocalSceneBase extends Phaser.Scene {
       this._viewportVignette = null;
     }
 
-    // On-screen room size after zoom and scroll. Bands fill whatever the
-    // room does not cover, including a phone letterbox.
-    const zoom = cam.zoom || 1;
-    const displayW = world.width * zoom;
-    const displayH = world.height * zoom;
-    const originX = -cam.scrollX * zoom;
-    const originY = -cam.scrollY * zoom;
-    const offsetX = Math.max(0, originX);
-    const offsetY = Math.max(0, originY);
-    const rightGap = Math.max(0, cam.width - (originX + displayW));
-    const bottomGap = Math.max(0, cam.height - (originY + displayH));
-    if (offsetX < 1 && offsetY < 1 && rightGap < 1 && bottomGap < 1) return;
+    const biome = SCENE_BIOMES[this.getSceneKey()] || DEFAULT_BIOME;
 
-    const sceneKey = this.getSceneKey();
-    const biome = SCENE_BIOMES[sceneKey] || DEFAULT_BIOME;
-
-    // ── Biome fill bands ──────────────────────────────────────────────────
+    // World-space edge: scrollFactor stays 1, so zoom moves it with the room.
     const frame = this.add.graphics();
-    frame.setScrollFactor(0);
     frame.setDepth(2000);
-    frame.fillStyle(biome.fill, 1.0);
-    if (offsetX > 0) frame.fillRect(0, 0, offsetX, cam.height);
-    if (rightGap > 0) frame.fillRect(cam.width - rightGap, 0, rightGap, cam.height);
-    if (offsetY > 0) frame.fillRect(0, 0, cam.width, offsetY);
-    if (bottomGap > 0) frame.fillRect(0, cam.height - bottomGap, cam.width, bottomGap);
     frame.lineStyle(2, biome.accent, 0.85);
-    frame.strokeRect(originX - 1, originY - 1, displayW + 2, displayH + 2);
+    frame.strokeRect(-1, -1, world.width + 2, world.height + 2);
     this._viewportFrame = frame;
-
-    // ── Vignette over the full viewport ───────────────────────────────────
-    // Same trapezoid trick as world-map-polish: 4 edge bands with a linear
-    // gradient that darkens toward the viewport corners. Subtle (alpha 0.35)
-    // so the biome fill still reads.
-    const VIG_DEPTH = Math.round(Math.min(cam.width, cam.height) * 0.22);
-    const ALPHA_OUTER = 0.35;
-    const ALPHA_INNER = 0;
-    const vg = this.add.graphics();
-    vg.setScrollFactor(0);
-    vg.setDepth(2001);
-    // TOP
-    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000,
-      ALPHA_OUTER, ALPHA_OUTER, ALPHA_INNER, ALPHA_INNER);
-    vg.fillRect(0, 0, cam.width, VIG_DEPTH);
-    // BOTTOM
-    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000,
-      ALPHA_INNER, ALPHA_INNER, ALPHA_OUTER, ALPHA_OUTER);
-    vg.fillRect(0, cam.height - VIG_DEPTH, cam.width, VIG_DEPTH);
-    // LEFT
-    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000,
-      ALPHA_OUTER, ALPHA_INNER, ALPHA_OUTER, ALPHA_INNER);
-    vg.fillRect(0, 0, VIG_DEPTH, cam.height);
-    // RIGHT
-    vg.fillGradientStyle(0x000000, 0x000000, 0x000000, 0x000000,
-      ALPHA_INNER, ALPHA_OUTER, ALPHA_INNER, ALPHA_OUTER);
-    vg.fillRect(cam.width - VIG_DEPTH, 0, VIG_DEPTH, cam.height);
-    this._viewportVignette = vg;
   }
 
   /**
@@ -650,60 +1076,88 @@ export default class LocalSceneBase extends Phaser.Scene {
    * on axes where the window is taller or wider. Keeps a phone from pinning
    * the garage to the top of a tall screen.
    */
+  /**
+   * Scroll the camera for the current fit.
+   *
+   * The room always fills the screen width, so this is mostly about the
+   * vertical axis: follow Zuzu when the room is taller than the view, centre
+   * it when it is not. Falls back to the room centre before the player
+   * exists (a resize can land during `createWorld`).
+   * @private
+   */
   _frameFollowCamera() {
-    if (!this.cameras?.main || !this.player?.sprite) return;
-    const cam = this.cameras.main;
+    const cam = this.cameras?.main;
+    if (!cam || !this._cameraFit) return;
     const world = this.getWorldSize();
-    const viewW = cam.width / cam.zoom;
-    const viewH = cam.height / cam.zoom;
-    const maxX = world.width - viewW;
-    const maxY = world.height - viewH;
-    const scrollX = maxX <= 0
-      ? maxX / 2
-      : Phaser.Math.Clamp(this.player.sprite.x - viewW / 2, 0, maxX);
-    // Lift a letterboxed room so the south door sits above the on-screen pad.
-    const lift = maxY <= 0 ? Math.min(56, -maxY / 2) : 0;
-    const scrollY = maxY <= 0
-      ? maxY / 2 + lift
-      : Phaser.Math.Clamp(this.player.sprite.y - viewH / 2, 0, maxY);
-    cam.setScroll(scrollX, scrollY);
+    const sprite = this.player?.sprite;
+    const { centerX, centerY } = localCameraCenter({
+      fit: this._cameraFit,
+      worldWidth: world.width,
+      worldHeight: world.height,
+      focusX: sprite?.x ?? world.width / 2,
+      focusY: sprite?.y ?? world.height / 2,
+    });
+    // centerOn, not setScroll — see localCameraCenter for why.
+    cam.centerOn(centerX, centerY);
   }
 
   /**
    * Frame the room for the current viewport. Wired to `scale.resize` so a
    * phone rotation or a devtools dock does not leave the garage cropped.
    */
+  /**
+   * Size the camera to the room.
+   *
+   * One rule: fill the screen width (see `utils/localCameraFit.js`). The old
+   * contain-fit left side bands on every landscape window and cropped the
+   * room on phones, which is what the owner asked to have fixed.
+   * @private
+   */
   _fitLocalCamera() {
-    if (!this.cameras?.main) return;
+    const cam = this.cameras?.main;
+    if (!cam) return;
     const world = this.getWorldSize();
-    const cam = this.cameras.main;
+
     const fit = localCameraFit({
       camWidth: cam.width,
       camHeight: cam.height,
       worldWidth: world.width,
       worldHeight: world.height,
+      mode: this.getCameraFitMode?.() || 'cover',
     });
+    this._cameraFit = fit;
+    // `follow` means the update loop keeps re-framing as Zuzu walks.
+    //
+    // Must consider BOTH axes. A portrait phone zooms in and overflows
+    // horizontally, so it has followX true and followY false — testing only
+    // followY left the camera pinned and Zuzu walked straight off the side
+    // of the screen, with the lab doors, the workbench, the GPS and the
+    // Desert Edge exit all out of sight while walking to them.
+    this._cameraMode = (fit.followX || fit.followY) ? 'follow' : 'fit';
 
-    if (fit.mode === 'follow') {
-      this._cameraMode = 'follow';
-      cam.stopFollow();
-      cam.setZoom(1);
-      if (cam.useBounds) cam.removeBounds();
-      this._frameFollowCamera();
-      this._renderViewportFrame();
-      return;
-    }
-
-    this._cameraMode = 'fit';
+    // Safety net: paint the camera's own background in this scene's biome
+    // colour. Anything the room does not cover then reads as a themed
+    // letterbox instead of the renderer's raw dark grey. The band graphics
+    // below still draw the accent edge; this just means a child never sees
+    // bare #333 if the drawn area and the camera ever disagree about size.
+    const biome = SCENE_BIOMES[this.getSceneKey()] || DEFAULT_BIOME;
+    cam.setBackgroundColor(biome.fill);
 
     cam.stopFollow();
     if (cam.useBounds) cam.removeBounds();
     cam.setZoom(fit.zoom);
-    cam.centerOn(world.width / 2, world.height / 2);
+    this._frameFollowCamera();
     this._renderViewportFrame();
   }
 
   _savePosition(pos) {
+    // Not while leaving. `transitionTo` writes the destination's named spawn
+    // into `state.player` and then fades out — during which this scene is
+    // still updating, and one more autosave would stamp the OLD scene and
+    // the OLD position straight over it. The target then sees
+    // `player.scene !== its own key`, falls back to `default`, and the child
+    // arrives in the middle of the street instead of at the garage door.
+    if (this._transitioning) return;
     const state = this.registry.get('gameState');
     if (!state) return;
     const updated = {

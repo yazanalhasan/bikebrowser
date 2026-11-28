@@ -11,6 +11,32 @@
 // against the Vite dev server (not a production build).
 
 /**
+ * Fail by name if the dev server on baseURL is not BikeBrowser.
+ *
+ * `webServer.reuseExistingServer` will attach to whatever is already
+ * listening on the configured port. On the owner's box :5173 is a
+ * different app, and attaching to it made every spec die 20s later in
+ * `page.waitForFunction` waiting for `window.__phaserGame` — a timeout
+ * that looks like a game bug and says nothing about the real cause.
+ *
+ * An absence never errors on its own, so this asserts the positive: the
+ * page we are driving says it is BikeBrowser.
+ *
+ * @param {import('playwright/test').Page} page
+ */
+export async function assertBikeBrowser(page) {
+  const title = await page.title();
+  if (!/bikebrowser/i.test(title)) {
+    throw new Error(
+      `Wrong app on the test server: the page title is "${title}", not BikeBrowser. `
+      + `Playwright reused a dev server that belongs to something else. `
+      + `Start BikeBrowser on the configured port, or set BB_E2E_PORT to a free one `
+      + `(see the PORT note in playwright.config.js).`,
+    );
+  }
+}
+
+/**
  * Navigate to /play and wait for Phaser to be initialized + at least one
  * scene to be active.
  *
@@ -23,6 +49,7 @@ export async function waitForGameBoot(page, options = {}) {
   const { timeout = 20_000, route = '/play' } = options;
 
   await page.goto(route, { waitUntil: 'domcontentloaded' });
+  await assertBikeBrowser(page);
 
   // The /play route renders a "Start Adventure!" splash screen
   // (GameContainer.jsx:716-723). Phaser is only constructed after the
