@@ -49,6 +49,8 @@ import { getNpcProfile } from './data/npcProfiles.js';
 import { interpolateStepText } from './systems/questTemplating.js';
 import { triggerQuestRevealsForState } from './systems/discoveryBridge.js';
 import { LANGUAGE_CARDS } from './systems/languageLayer.js';
+import { approvedTextureKeys } from '../../game/assets/preloadGameAssets.js';
+import { ECOLOGY_ASSET_PATHS } from './systems/ecology/ecologyAssetManifest.js';
 
 const GAMEPLAY_REPORTS_KEY = 'bikebrowser_gameplay_reports';
 const GAMEPLAY_REPORTS_ENABLED = gameplayReportsEnabled(import.meta.env);
@@ -56,6 +58,19 @@ const CONSOLE_BUFFER_ENABLED =
   GAMEPLAY_REPORTS_ENABLED || import.meta.env.DEV || import.meta.env.VITE_ENABLE_CONSOLE_BUFFER === 'true';
 const PHYSICS_HUD_ENABLED =
   import.meta.env.DEV || import.meta.env.VITE_ENABLE_PHYSICS_HUD === 'true';
+/**
+ * `window.__phaserGame`, in a built bundle, for the acceptance tests.
+ *
+ * MUST 0.16 was invisible to every test we had because it only happens
+ * in a MINIFIED build: the boot scene was looked up by class name, and
+ * the minifier renames classes. Testing that needs a production build,
+ * and a production build has no handle to read the live scene from.
+ *
+ * Off unless VITE_E2E_HANDLE is set, so what ships is unchanged; the
+ * flag only adds the handle, never anything the fix depends on.
+ */
+const E2E_HANDLE_ENABLED =
+  import.meta.env.DEV || import.meta.env.VITE_E2E_HANDLE === 'true';
 const HUD_BUTTON_CLASS =
   'bg-white/90 rounded-lg w-10 h-10 sm:w-11 sm:h-11 shadow text-lg flex items-center justify-center transition-all duration-75 active:scale-90 hover:bg-white cursor-pointer';
 const HUD_PANEL_STYLE = { right: 'calc(max(0.5rem, env(safe-area-inset-right)) + 3rem)' };
@@ -573,8 +588,16 @@ export default function GameContainer() {
     //   __phaserGame.scene.add('WorldMapScene', WorldMapScene, true);
     // (the second arg is the imported class — refresh the page first if
     // your console doesn't already have it in scope).
-    if (import.meta.env.DEV) {
+    if (E2E_HANDLE_ENABLED) {
       window.__phaserGame = game;
+      // The approved texture list, for the no-legacy-art audit. Same
+      // flag, same reason: that spec has to be able to run against a
+      // built bundle (MUST 0.15 + 0.16).
+      window.__approvedTextureKeys = [
+        ...approvedTextureKeys(),
+        ...Object.keys(ECOLOGY_ASSET_PATHS || {}),
+        '__WHITE',
+      ];
     }
     if (import.meta.env.DEV || GAMEPLAY_REPORTS_ENABLED) {
       runRuntimeAudit();
@@ -803,7 +826,7 @@ export default function GameContainer() {
       resizeObserver.disconnect();
       game.destroy(true);
       gameRef.current = null;
-      if (import.meta.env.DEV && window.__phaserGame === game) {
+      if (E2E_HANDLE_ENABLED && window.__phaserGame === game) {
         delete window.__phaserGame;
       }
     };

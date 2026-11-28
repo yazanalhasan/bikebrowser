@@ -45,30 +45,48 @@ import LayoutEditorOverlayScene from './scenes/LayoutEditorOverlayScene.js';
  * For new games, ZuzuGarageScene is the start. For saves, we reorder
  * so the saved scene boots first.
  */
-const ALL_SCENES = [
-  ZuzuGarageScene,
-  MaterialLabScene,
-  ThermalRigScene,
-  OverworldScene,
-  StreetBlockScene,
-  DesertEdgeScene,
-  DogParkScene,
-  LakeEdgeScene,
-  SportsFieldsScene,
-  CommunityPoolScene,
-  DesertTrailScene,
-  MountainScene,
-  ExplainerScene,
-  CognitiveQuestScene,
+/**
+ * Every scene, with the key it registers, as a literal string.
+ *
+ * The key is written out rather than read from the class (MUST 0.16).
+ * `createGameConfig` used to find the saved scene with
+ * `s.name === targetScene`, and a production build renames those
+ * classes to things like `Io` and `Rp` — so nothing matched, the list
+ * was never reordered, and the garage booted every time. A child who
+ * stopped playing in the Dry Wash always woke up in the garage, and the
+ * garage spawn then overwrote where they had been standing. The dev
+ * server keeps real class names, which is exactly why every test we had
+ * passed while the live site did this to every save.
+ *
+ * A string literal survives minification. `tests/act1-scene-keys.test.mjs`
+ * checks each one against the key the scene actually registers.
+ */
+export const SCENE_LIST = [
+  { key: 'ZuzuGarageScene', scene: ZuzuGarageScene },
+  { key: 'MaterialLabScene', scene: MaterialLabScene },
+  { key: 'ThermalRigScene', scene: ThermalRigScene },
+  { key: 'OverworldScene', scene: OverworldScene },
+  { key: 'StreetBlockScene', scene: StreetBlockScene },
+  { key: 'DesertEdgeScene', scene: DesertEdgeScene },
+  { key: 'DogParkScene', scene: DogParkScene },
+  { key: 'LakeEdgeScene', scene: LakeEdgeScene },
+  { key: 'SportsFieldsScene', scene: SportsFieldsScene },
+  { key: 'CommunityPoolScene', scene: CommunityPoolScene },
+  { key: 'DesertTrailScene', scene: DesertTrailScene },
+  { key: 'MountainScene', scene: MountainScene },
+  { key: 'ExplainerScene', scene: ExplainerScene },
+  { key: 'CognitiveQuestScene', scene: CognitiveQuestScene },
   // World map + sub-scenes
-  WorldMapScene,
-  DesertForagingScene,
-  CopperMineScene,
-  SaltRiverScene,
-  DryWashScene,
+  { key: 'WorldMapScene', scene: WorldMapScene },
+  { key: 'DesertForagingScene', scene: DesertForagingScene },
+  { key: 'CopperMineScene', scene: CopperMineScene },
+  { key: 'SaltRiverScene', scene: SaltRiverScene },
+  { key: 'DryWashScene', scene: DryWashScene },
   // Dev overlay (must be last so it's last to boot but always-active)
-  LayoutEditorOverlayScene,
+  { key: 'LayoutEditorOverlayScene', scene: LayoutEditorOverlayScene },
 ];
+
+const ALL_SCENES = SCENE_LIST.map((entry) => entry.scene);
 
 /**
  * Map old scene keys to new ones for save migration.
@@ -100,11 +118,13 @@ export function createGameConfig(parent, width, height, startScene) {
     targetScene = SCENE_KEY_MIGRATION[targetScene];
   }
 
-  // Reorder so the target scene boots first
+  // Reorder so the target scene boots first.
+  //
+  // By KEY, never by class name (MUST 0.16): `s.name` is whatever the
+  // minifier decided, so this match silently failed in every production
+  // build and the garage booted no matter what the save said.
   if (targetScene && targetScene !== 'ZuzuGarageScene') {
-    const idx = allScenes.findIndex(
-      s => s.name === targetScene || s.prototype?.constructor?.name === targetScene
-    );
+    const idx = SCENE_LIST.findIndex((entry) => entry.key === targetScene);
     if (idx > 0) {
       const [target] = allScenes.splice(idx, 1);
       allScenes.unshift(target);

@@ -63,14 +63,13 @@ const SAVES = {
 async function audit(page, label) {
   return page.evaluate(async ({ LEGACY, BUDGET, EXEMPT }) => {
     const game = window.__phaserGame;
-    const { ASSET_MANIFEST } = await import('/src/game/assets/assetManifest.js');
-    const eco = await import('/src/renderer/game/systems/ecology/ecologyAssetManifest.js');
-    const approved = new Set([
-      ...ASSET_MANIFEST.atlases.map((a) => a.key), ...ASSET_MANIFEST.images.map((a) => a.key),
-      ...ASSET_MANIFEST.tilesets.map((a) => a.key), ...ASSET_MANIFEST.spritesheets.map((a) => a.key),
-      ...Object.values(eco.ECOLOGY_ASSET_PATHS || {}).length ? Object.keys(eco.ECOLOGY_ASSET_PATHS) : [],
-      '__WHITE',
-    ]);
+    // The app publishes its own approved list beside the game handle.
+    // This used to be `import('/src/game/assets/assetManifest.js')`,
+    // which only resolves on the dev server — so this spec could not run
+    // against a built bundle, and MUST 0.16 proved that a green dev run
+    // can hide a bug the live site has.
+    const approved = new Set(window.__approvedTextureKeys || []);
+    if (!approved.size) return ['no approved texture list on the page'];
     // tileSprites are cut from approved slots into uuid-named, edge-extruded textures
     const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-/;
     const v = [];
