@@ -36,6 +36,48 @@ test('the three.js stack is out of package.json', () => {
   assert.equal(pkg.overrides?.three, undefined);
 });
 
+test('nothing still routes /play3d', () => {
+  // A redirect and a prod-routing check outlived the route itself. The
+  // redirect made /play3d serve the app shell, so the dead route looked
+  // alive from outside; the check then asserted it did.
+  // Rules only — a comment saying why the route went is worth keeping.
+  const rules = read('public/_redirects')
+    .split('\n')
+    .filter((l) => l.trim() && !l.trim().startsWith('#'));
+  assert.deepEqual(rules.filter((l) => /play3d/.test(l)), []);
+  assert.doesNotMatch(read('scripts/check-production-routing.mjs'), /play3d/);
+});
+
+test('the 3D asset tree and its Pages function are gone', () => {
+  // Scaffolding for a screen that no longer exists: an empty manifest
+  // plus a worker whose only job was serving that tree.
+  for (const p of [
+    'public/game3d-assets',
+    'functions/game3d-assets',
+    'public/game3d-assets/manifests/proof-of-life.manifest.json',
+    'functions/game3d-assets/[[path]].js',
+  ]) {
+    assert.equal(existsSync(new URL(p, root)), false, `${p} is still here`);
+  }
+});
+
+test('a dead asset URL answers 404, not the app shell', () => {
+  // Deleting the files is not enough on its own. `/* /index.html 200`
+  // catches every unknown path, so /game3d-assets/manifests/... kept
+  // answering 200 with HTML — a JSON fetch gets a page instead of a
+  // file, and the dead path looks alive from outside. Pages takes the
+  // first matching rule, so the 404 has to sit above the catch-all.
+  const lines = read('public/_redirects')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l && !l.startsWith('#'));
+  const guard = lines.findIndex((l) => l.startsWith('/game3d-assets/*'));
+  const catchAll = lines.findIndex((l) => l.startsWith('/*'));
+  assert.notEqual(guard, -1, 'no rule 404s the removed asset tree');
+  assert.match(lines[guard], /404$/, 'the rule must answer 404');
+  assert.ok(guard < catchAll, 'the 404 rule must come before the catch-all');
+});
+
 test('the build no longer carves out 3D chunks', () => {
   const vite = read('vite.config.js');
   assert.doesNotMatch(vite, /vendor-three|vendor-r3f|vendor-drei|vendor-rapier/);
