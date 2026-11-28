@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { loadLayout } from '../utils/loadLayout.js';
+import { loadResponsiveLayout } from '../utils/loadLayout.js';
 import { getExplainer } from '../data/explainers/index.js';
 import {
   cancelInteractiveExplainer,
@@ -17,7 +17,9 @@ export default class ExplainerScene extends Phaser.Scene {
   init(data) {
     this._explainerId = data?.explainerId;
     this._returnSceneKey = data?.returnSceneKey;
-    this._stepIndex = 0;
+    // Carried across an orientation restart so turning the phone does not
+    // send the child back to the first step.
+    this._stepIndex = data?.stepIndex || 0;
     this._advancing = false;
   }
 
@@ -35,7 +37,11 @@ export default class ExplainerScene extends Phaser.Scene {
       return;
     }
 
-    this.layout = loadLayout(this, this.explainer.layoutKey);
+    // Portrait gets its own layout: contain-fitting the 800x600 landscape
+    // space onto a 390x844 phone lands at 0.4875, which rendered PATCH at
+    // 4.9 CSS px. See utils/loadLayout.js.
+    this._design = loadResponsiveLayout(this, this.explainer.layoutKey);
+    this.layout = this._design.objects;
     this._elementLabels = new Map();
     this._zones = new Map();
     this._solvedElements = new Set();
@@ -57,17 +63,35 @@ export default class ExplainerScene extends Phaser.Scene {
 
   /** Re-centre and re-scale when the window changes size. */
   _refit() {
-    const fit = applyOverlayCameraFit(this);
+    // Turning the phone changes which layout applies, and that is a
+    // different set of coordinates — a re-fit alone would leave the
+    // landscape arrangement squeezed onto a tall screen.
+    if (this._orientationChanged()) {
+      this.scene.restart({
+        explainerId: this._explainerId,
+        returnSceneKey: this._returnSceneKey,
+        stepIndex: this._stepIndex,
+      });
+      return;
+    }
+    const fit = applyOverlayCameraFit(this, this._design);
     // The dim is sized in design units, so it has to grow with the viewport
     // or a resize leaves the game showing around it.
     stretchOverlayDim(this._dimRect, fit);
+  }
+
+  /** True when the viewport has flipped between portrait and landscape. */
+  _orientationChanged() {
+    const cam = this.cameras?.main;
+    if (!cam || !this._design) return false;
+    return (cam.height > cam.width) !== Boolean(this._design.portrait);
   }
 
   _drawFrame() {
     // Centre the 800x600 design space and scale it to the window. Without
     // this the panel sat in the top-left corner with the street showing
     // beside it at 1280x720, and ran off the bottom at 1024x484.
-    const fit = applyOverlayCameraFit(this);
+    const fit = applyOverlayCameraFit(this, this._design);
 
     // Dim the WHOLE viewport, not the design rect: once the design space is
     // centred, a backdrop sized to it leaves the game visible around the
@@ -248,7 +272,10 @@ export default class ExplainerScene extends Phaser.Scene {
     body.lineBetween(-patch.w / 2 + 12, 0, patch.w / 2 - 12, 0);
     body.lineBetween(0, -patch.h / 2 + 8, 0, patch.h / 2 - 8);
     const text = this.add.text(0, 0, 'PATCH', {
-      fontSize: '10px',
+      // 10 design px fell under the 10 CSS px floor twice over: 9.8 on a
+      // phone, and 8.1 in a short 1024x484 window where the landscape
+      // layout fits at 0.807. Both tiles have room for a bigger word.
+      fontSize: this._design?.portrait ? '14px' : '13px',
       fontFamily: 'sans-serif',
       fontStyle: 'bold',
       color: '#92400e',

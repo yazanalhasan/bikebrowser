@@ -133,5 +133,142 @@
         "r": 6
       }
     ]
+  },
+  "portrait": {
+    "_note": "Phone layout. A 390x844 screen contain-fitted the 800x600 landscape space at 0.4875, so the instruction read at 9.8 CSS px and PATCH at 4.9. These coordinates are authored for 400x860, which fits a phone at about 0.98 — the same numbers then render at nearly their face value. Touch targets are at least 44 px.",
+    "designWidth": 400,
+    "designHeight": 860,
+    "objects": {
+      "backdrop": {
+        "x": 200,
+        "y": 430,
+        "w": 400,
+        "h": 860
+      },
+      "panel": {
+        "x": 200,
+        "y": 430,
+        "w": 376,
+        "h": 824,
+        "r": 18
+      },
+      "title": {
+        "x": 200,
+        "y": 58
+      },
+      "close": {
+        "x": 356,
+        "y": 46,
+        "r": 22
+      },
+      "wheel": {
+        "x": 200,
+        "y": 310,
+        "outerR": 130,
+        "tireR": 104,
+        "hubR": 16
+      },
+      "rim": {
+        "r": 89,
+        "lineWidth": 8
+      },
+      "tube": {
+        "r": 71,
+        "lineWidth": 14
+      },
+      "hole": {
+        "x": 288,
+        "y": 262,
+        "r": 13
+      },
+      "air_leak_start": {
+        "x": 302,
+        "y": 250
+      },
+      "air_particles": [
+        {
+          "x": 319,
+          "y": 240,
+          "r": 4
+        },
+        {
+          "x": 338,
+          "y": 230,
+          "r": 3
+        },
+        {
+          "x": 357,
+          "y": 219,
+          "r": 2
+        }
+      ],
+      "patch": {
+        "x": 200,
+        "y": 700,
+        "w": 96,
+        "h": 52,
+        "r": 10
+      },
+      "instruction": {
+        "x": 200,
+        "y": 780,
+        "w": 330
+      },
+      "feedback": {
+        "x": 200,
+        "y": 828,
+        "w": 340
+      },
+      "label_tire": {
+        "x": 296,
+        "y": 150,
+        "w": 150
+      },
+      "label_tube": {
+        "x": 104,
+        "y": 310,
+        "w": 150
+      },
+      "label_hole": {
+        "x": 300,
+        "y": 96,
+        "w": 150
+      },
+      "zone_tire": {
+        "x": 200,
+        "y": 310,
+        "w": 278,
+        "h": 278
+      },
+      "zone_tube": {
+        "x": 200,
+        "y": 310,
+        "w": 182,
+        "h": 182
+      },
+      "zone_hole": {
+        "x": 288,
+        "y": 262,
+        "w": 60,
+        "h": 60
+      },
+      "step_pips": [
+        {
+          "x": 164,
+          "y": 620,
+          "r": 7
+        },
+        {
+          "x": 200,
+          "y": 620,
+          "r": 7
+        },
+        {
+          "x": 236,
+          "y": 620,
+          "r": 7
+        }
+      ]
+    }
   }
 }

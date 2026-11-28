@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { loadLayout } from '../utils/loadLayout.js';
+import { loadResponsiveLayout } from '../utils/loadLayout.js';
 import { getCognitiveQuest } from '../data/cognitiveQuests/index.js';
 import {
   cancelCognitiveQuest,
@@ -38,7 +38,11 @@ export default class CognitiveQuestScene extends Phaser.Scene {
       return;
     }
 
-    this.layout = loadLayout(this, this.quest.layoutKey);
+    // Portrait stacks the three cards down the screen instead of
+    // squeezing a 680px row onto a 390px phone, where the answers read at
+    // 7.3 CSS px. See utils/loadLayout.js.
+    this._design = loadResponsiveLayout(this, this.quest.layoutKey);
+    this.layout = this._design.objects;
     this.state = this.registry.get('gameState') || {};
     this.mensaMode = isMensaModeEnabled(this.state);
     this.optionCards = new Map();
@@ -55,7 +59,19 @@ export default class CognitiveQuestScene extends Phaser.Scene {
 
   /** Re-centre and re-scale when the window changes size. */
   _refit() {
-    const fit = applyOverlayCameraFit(this);
+    // Same as the explainer: a turned phone needs the other layout, not
+    // the same one at a different zoom. The question is re-asked, which
+    // is the right thing — the cards have moved.
+    const cam = this.cameras?.main;
+    if (cam && this._design && (cam.height > cam.width) !== Boolean(this._design.portrait)) {
+      this.scene.restart({
+        questId: this._questId,
+        returnSceneKey: this._returnSceneKey,
+        completionDialog: this._completionDialog,
+      });
+      return;
+    }
+    const fit = applyOverlayCameraFit(this, this._design);
     // The dim is sized in design units, so it has to grow with the viewport
     // or a resize leaves the game showing around it.
     stretchOverlayDim(this._dimRect, fit);
@@ -64,7 +80,7 @@ export default class CognitiveQuestScene extends Phaser.Scene {
   _drawFrame() {
     // Same treatment as the explainer: centre the fixed design space and
     // scale it, then dim the whole viewport rather than the design rect.
-    const fit = applyOverlayCameraFit(this);
+    const fit = applyOverlayCameraFit(this, this._design);
     const b = fit ? fit.cover : {
       x: this.layout.backdrop.x - this.layout.backdrop.w / 2,
       y: this.layout.backdrop.y - this.layout.backdrop.h / 2,
@@ -156,7 +172,10 @@ export default class CognitiveQuestScene extends Phaser.Scene {
   }
 
   _drawOptionVisual(gfx, visual) {
-    const centerY = -24;
+    // The art is drawn above the card's label. A portrait card is 170 tall
+    // where a landscape one is 250, so the same -24 pushed the valve
+    // stem out of the top of the card and into the one above it.
+    const centerY = this._design?.portrait ? -16 : -24;
     gfx.lineStyle(12, 0x111827, 1);
     gfx.strokeCircle(0, centerY, 48);
     gfx.lineStyle(4, 0x94a3b8, 1);

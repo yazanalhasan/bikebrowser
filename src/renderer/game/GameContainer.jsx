@@ -2080,16 +2080,18 @@ export default function GameContainer() {
       )}
 
       {/* ---- Virtual joystick (always visible for accessibility) ---- */}
-      {/* Hidden while a panel is open: the button covered the bottom of
-          Crafting, Inventory and Milestones, including their buttons. */}
-      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && (
+      {/* Hidden while a panel or a full-screen overlay is open: the pad
+          covered the bottom of Crafting, Inventory and Milestones, and on
+          a phone it sat across the explainer's PATCH tile. There is
+          nothing to walk to while an overlay has the screen. */}
+      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && !overlayOpen && (
         <VirtualJoystick onMove={setJoystick} onAction={triggerWorldAction} />
       )}
 
       {/* ---- Action button (interact with NPCs) ---- */}
-      {/* Hidden while a panel is open: on a phone it sat on the
-          Crafting panel's footer. */}
-      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && (
+      {/* Hidden while a panel or overlay is open: on a phone it sat on
+          the Crafting panel's footer, and over the explainer. */}
+      {phase === 'playing' && !paused && !dialog && !anyPanelOpen && !overlayOpen && (
         <button
           type="button"
           aria-label="Talk or use the thing you are standing next to"

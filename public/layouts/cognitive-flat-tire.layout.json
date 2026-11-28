@@ -64,5 +64,74 @@
       "w": 140,
       "h": 28
     }
+  },
+  "portrait": {
+    "_note": "Phone layout: the three option cards stack down the screen instead of sitting in a row squeezed to a third of their width. Authored for 400x860; cards are 300x180 with 44 px of room for a thumb.",
+    "designWidth": 400,
+    "designHeight": 860,
+    "objects": {
+      "backdrop": {
+        "x": 200,
+        "y": 430,
+        "w": 400,
+        "h": 860
+      },
+      "panel": {
+        "x": 200,
+        "y": 430,
+        "w": 376,
+        "h": 824
+      },
+      "title": {
+        "x": 200,
+        "y": 56,
+        "w": 350
+      },
+      "prompt": {
+        "x": 200,
+        "y": 104,
+        "w": 350
+      },
+      "close": {
+        "x": 356,
+        "y": 46,
+        "r": 22
+      },
+      "option_nail": {
+        "x": 200,
+        "y": 240,
+        "w": 300,
+        "h": 170
+      },
+      "option_valve": {
+        "x": 200,
+        "y": 430,
+        "w": 300,
+        "h": 170
+      },
+      "option_wear": {
+        "x": 200,
+        "y": 620,
+        "w": 300,
+        "h": 170
+      },
+      "feedback": {
+        "x": 200,
+        "y": 742,
+        "w": 350
+      },
+      "continue": {
+        "x": 200,
+        "y": 800,
+        "w": 220,
+        "h": 48
+      },
+      "mensa_badge": {
+        "x": 300,
+        "y": 150,
+        "w": 140,
+        "h": 28
+      }
+    }
   }
 }

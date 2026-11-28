@@ -40,6 +40,9 @@ export function overlayCameraFit({
   designWidth = OVERLAY_DESIGN_WIDTH,
   designHeight = OVERLAY_DESIGN_HEIGHT,
 }) {
+  // A null or undefined design size means "the landscape one".
+  designWidth = designWidth || OVERLAY_DESIGN_WIDTH;
+  designHeight = designHeight || OVERLAY_DESIGN_HEIGHT;
   const width = Math.max(1, camWidth);
   const height = Math.max(1, camHeight);
   const dw = Math.max(1, designWidth);
@@ -74,10 +77,17 @@ export function overlayCameraFit({
  *
  * Kept separate from the maths so the maths stays testable without Phaser.
  */
-export function applyOverlayCameraFit(scene) {
+export function applyOverlayCameraFit(scene, design = null) {
   const cam = scene.cameras?.main;
   if (!cam) return null;
-  const fit = overlayCameraFit({ camWidth: cam.width, camHeight: cam.height });
+  // A scene on a phone passes its portrait design size, which is close to
+  // the screen's own shape, so the fit is about 1:1 instead of 0.49.
+  const fit = overlayCameraFit({
+    camWidth: cam.width,
+    camHeight: cam.height,
+    designWidth: design?.designWidth,
+    designHeight: design?.designHeight,
+  });
   cam.setZoom(fit.zoom);
   cam.centerOn(fit.centerX, fit.centerY);
   return fit;
