@@ -75,6 +75,32 @@ const RIG_LAYOUTS = {
     rig: { x: 220, y: 320 },
     bench: { y: 436 },
   },
+  // A phone held sideways. 844x390 fitted the 800x600 bench at zoom
+  // 0.65 and put every label at 6-9 CSS px (review MUST 5). This is
+  // 800x380, which fits at 1.0: samples in a row across the top, the
+  // chart beside the machine instead of under it.
+  //
+  // Rows, measured against each other: title 0-32, readout 36-70,
+  // samples 76-130, chart 140-330 on the right, the machine on the
+  // left with its feet at 330, the instrument bench 334-376.
+  landscapeCompact: {
+    world: { w: 800, h: 380 },
+    // Rows measured against each other, like the portrait column:
+    // the title bar owns 0-56 (its subtitle sits at 42, and the
+    // readout used to land on it), samples 64-112, START 68-112 on
+    // the right, readout and the slow toggle share the 119-149 band,
+    // the chart is 176-336, and the density station runs down the
+    // left from 168. The bottom-left corner — world x 0-159, y
+    // 314-357 — belongs to the HUD's leave control, which is DOM and
+    // sits on top of the canvas whatever depth anything here has.
+    selector: { x: 12, y: 64, w: 150, h: 48, gap: 8, columns: 3 },
+    chart: { x: 420, y: 176, w: 318, h: 160, pad: 24 },
+    startBtn: { x: 620, y: 90, w: 150, h: 44 },
+    readout: { x: 330, y: 134, w: 240, h: 30 },
+    rigBaseY: 330,
+    rig: { x: 280, y: 250 },
+    bench: { y: 350 },
+  },
   portrait: {
     world: { w: 400, h: 860 },
     // Three sample cards side by side instead of stacked: a column of
@@ -298,11 +324,60 @@ export default class LabRigBase extends LocalSceneBase {
     return Math.min(cam.width / g.world.w, cam.height / g.world.h);
   }
 
+  /**
+   * The world rectangle the HUD's leave control covers.
+   *
+   * It is DOM, pinned to the bottom-left corner of the viewport, so it
+   * is on top of the canvas whatever depth a scene object has. A rig
+   * has to keep that corner clear; nothing in the scene can win it.
+   *
+   * Measured from the control itself where that is possible, with the
+   * drawn size as the fallback (left-3 bottom-6, ~44px tall, and the
+   * label makes it about 170 wide).
+   */
+  hudLeaveReserve() {
+    const cam = this.cameras?.main;
+    const g = this._g;
+    if (!cam || !g) return null;
+    // From the DESIGN space and the fitted zoom, not from the live
+    // camera. The station is laid out during createWorld, before
+    // _fitLocalCamera runs, so the camera still reports zoom 1 and the
+    // viewport's height as the world's: the first version of this read
+    // a reserved strip 118px tall instead of 10 and heaved the whole
+    // station up into the teaching callout.
+    const zoom = this._portraitZoom() || 1;
+    const el = typeof document !== 'undefined'
+      ? document.querySelector('[data-testid="leave-scene"]') : null;
+    let wCss = 180;
+    let hCss = 76;
+    if (el) {
+      const r = el.getBoundingClientRect();
+      if (r.width > 2) {
+        wCss = r.x + r.width + 8;
+        hCss = (window.innerHeight - r.y) + 8;
+      }
+    }
+    return {
+      x: 0,
+      y: g.world.h - hCss / zoom,
+      w: wCss / zoom,
+      h: hCss / zoom,
+    };
+  }
+
   rigGeometry() {
     const cam = this.cameras?.main;
     const portrait = cam ? cam.height > cam.width : false;
-    this._g = portrait ? RIG_LAYOUTS.portrait : RIG_LAYOUTS.landscape;
-    this._portraitRig = portrait;
+    // A short screen is its own shape, whichever way up it is. The
+    // 800x600 bench on a 390px-tall phone is zoom 0.65 and 6px text.
+    const shortLandscape = Boolean(cam) && !portrait && cam.height < 460;
+    if (portrait) this._g = RIG_LAYOUTS.portrait;
+    else if (shortLandscape) this._g = RIG_LAYOUTS.landscapeCompact;
+    else this._g = RIG_LAYOUTS.landscape;
+    this._compactRig = shortLandscape;
+    // Both small shapes get the phone text floor and the finger-sized
+    // hit areas, not just the portrait one.
+    this._portraitRig = portrait || shortLandscape;
     return this._g;
   }
 
@@ -368,6 +443,15 @@ export default class LabRigBase extends LocalSceneBase {
       if (grown) console.info(`[${this.scene.key}] grew ${grown} tap targets for touch`);
     }
   }
+
+  /**
+   * A rig is an instrument, not a room: no player is drawn in it.
+   *
+   * See LocalSceneBase, where this is honoured. Every station answers
+   * a tap, the d-pad is hidden (plan 0.5), and the way out is the
+   * HUD's leave control.
+   */
+  hidesPlayer() { return true; }
 
   createWorld() {
     this._clearDeadHandles();
@@ -512,8 +596,9 @@ export default class LabRigBase extends LocalSceneBase {
   }
 
   _buildReadout() {
-    this.add.rectangle(this._g.readout.x, this._g.readout.y, this._g.readout.w, this._g.readout.h, COL_PANEL)
-      .setStrokeStyle(2, COL_PANEL_EDGE).setDepth(PANEL_BG_DEPTH);
+    this._readoutPanel = this.add.rectangle(
+      this._g.readout.x, this._g.readout.y, this._g.readout.w, this._g.readout.h, COL_PANEL,
+    ).setStrokeStyle(2, COL_PANEL_EDGE).setDepth(PANEL_BG_DEPTH);
     this._readoutText = this.add.text(this._g.readout.x, this._g.readout.y, '', {
       fontSize: '11px', fontFamily: 'monospace', color: '#10b981',
       fontStyle: 'bold',
@@ -528,8 +613,42 @@ export default class LabRigBase extends LocalSceneBase {
       this._readoutText.setText('— ready —');
       return;
     }
-    const txt = fields.map(f => `${f.label}: ${f.value}`).join('    ');
-    this._readoutText.setText(txt);
+
+    // Fit the panel, don't run past it. These fields carry live numbers
+    // that grow while the test runs — "Force: 28,328 N" is 7 characters
+    // wider than "Force: 0 N" — so a line that fits at spawn runs 42px
+    // off a 390px phone a second later (review MUST 2). The old code
+    // joined them with four spaces and hoped.
+    const parts = fields.map((f) => `${f.label}: ${f.value}`);
+    const maxW = this._g.readout.w - 16;
+    const fit = (txt) => {
+      this._readoutText.setText(txt);
+      return this._readoutText.width <= maxW;
+    };
+
+    if (fit(parts.join('    '))) return;
+    if (fit(parts.join('  '))) return;
+
+    // Two rows, split where the line is most even, and the panel grows
+    // to hold the second row.
+    const half = Math.ceil(parts.length / 2);
+    const twoRow = `${parts.slice(0, half).join('  ')}\n${parts.slice(half).join('  ')}`;
+    this._readoutText.setText(twoRow);
+    if (this._readoutText.width > maxW) {
+      // Still too wide: one field per line is the last thing that always
+      // fits, because a single field is shorter than any panel we draw.
+      this._readoutText.setText(parts.join('\n'));
+    }
+    this._growReadoutPanel();
+  }
+
+  /** Keep the readout's panel around whatever the text came to. */
+  _growReadoutPanel() {
+    if (!this._readoutPanel || !this._readoutText) return;
+    const needed = this._readoutText.height + 10;
+    if (needed > this._readoutPanel.height) {
+      this._readoutPanel.setSize(this._readoutPanel.width, needed);
+    }
   }
 
   _buildSelector() {
@@ -537,8 +656,20 @@ export default class LabRigBase extends LocalSceneBase {
     // Over the first card, and left-aligned when the cards run across
     // the screen: centred over a 372px row it sat on the readout above.
     const headerRow = (this._g.selector.columns || 1) > 1;
-    this.add.text(
+    // Clear of the HUD's Home and Back buttons. They are DOM, pinned to
+    // the top-left corner on top of the canvas, and on a sideways phone
+    // the header sat under them (26% of "SAMPLES"). HUD_TOP_LEFT_WIDTH
+    // is their width in CSS px; at this camera that is this many world
+    // units.
+    const hudCols = this._compactRig
+      ? HUD_TOP_LEFT_WIDTH / Math.max(this._portraitZoom(), 0.01)
+      : 0;
+    const headerX = Math.max(
       this._g.selector.x + (headerRow ? 2 : this._g.selector.w / 2),
+      hudCols + 6,
+    );
+    this.add.text(
+      headerX,
       this._g.selector.y - 14,
       'SAMPLES',
       {
@@ -579,7 +710,17 @@ export default class LabRigBase extends LocalSceneBase {
         chipW, narrowCard ? this._g.selector.h - 8 : 36, hexToInt(s.color),
       ).setStrokeStyle(1, 0x111114).setDepth(3);
 
-      const nameTxt = this.add.text(textX, sy + 6, s.name || s.id, {
+      // On a narrow card the parenthetical goes. "Structural Steel
+      // (A36-like)" at the 12px body floor wraps to three lines in a
+      // 102px card, spills past the card's own edge and pushes
+      // "metal" into the START button below it — the grade is detail
+      // for the readout, not for a card a child is picking from.
+      const fullName = s.name || s.id;
+      const cardName = narrowCard
+        ? (s.shortName || fullName.replace(/\s*\([^)]*\)\s*/g, '').trim())
+        : fullName;
+
+      const nameTxt = this.add.text(textX, sy + 6, cardName, {
         fontSize: '11px', fontFamily: 'sans-serif', color: COL_TEXT,
         fontStyle: 'bold', wordWrap: { width: textW },
       }).setDepth(3);
@@ -1010,6 +1151,16 @@ export default class LabRigBase extends LocalSceneBase {
               : '#fbbf24',
             fontStyle: 'bold',
           }).setDepth(4);
+          // Keep it inside the chart. The marker sits wherever the
+          // material failed, and a late failure puts it against the
+          // right edge: "Ult 237 MPa" ran 18px off a 390px phone
+          // (review MUST 2's neighbour). Flip the label to the left of
+          // its dot rather than let it leave the panel.
+          const pad = 4;
+          const right = this._g.chart.x + this._g.chart.w - pad;
+          if (txt.x + txt.width > right) txt.setX(Math.max(this._g.chart.x + pad, sp.sx - 4 - txt.width));
+          const top = this._g.chart.y + pad;
+          if (txt.y < top) txt.setY(sp.sy + 8);
           this._chartAnnotations.push(txt);
         }
       }

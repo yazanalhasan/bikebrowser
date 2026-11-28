@@ -340,6 +340,13 @@ export default class LocalSceneBase extends Phaser.Scene {
 
     this.player = new Player(this, px, py);
 
+    // A scene can say it is an instrument, not a room. A lab rig hides
+    // the d-pad because there is nothing to walk to — but the player
+    // was still spawned on the bench, and with a keyboard he walked
+    // over the controls: 100% of "Run the test", 83% of START, 92% of
+    // "Slow replay" (review MUST 9).
+    if (this.hidesPlayer?.()) this.player.setHidden(true);
+
     // --- Companions (Lina in the neighborhood and the desert) ---
     this._mountCompanions(px, py);
 
@@ -972,6 +979,11 @@ export default class LocalSceneBase extends Phaser.Scene {
 
     // Zuzu's tag yields first, then the companions': two tags that land on
     // each other should not both vanish.
+    // A hidden player has no name tag to place. This routine shows every
+    // tag to measure it and then hides the ones that clash, which turned
+    // a hidden Zuzu's label back on every 120ms — it was the one thing
+    // still floating over the lab bench after the player came off it.
+    if (this.player?.hidden) return;
     const yielding = [this.player?.label, ...(this._companions || []).map((c) => c.label)]
       .filter((tag) => tag && tag.scene);
     if (!yielding.length) return;

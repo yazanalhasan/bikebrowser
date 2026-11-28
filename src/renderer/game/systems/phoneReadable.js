@@ -27,7 +27,12 @@ export const MIN_BODY_PX = 12;
 export const MIN_TAP_PX = 44;
 
 /** A sentence, rather than a label. */
-const BODY_WORDS = 4;
+// Three words, not four. "Structural Steel (A36-like)" and "Slow
+// replay: OFF" are three words each and both are things a child reads
+// to decide something, not chrome — at the label floor they shipped at
+// 10.7 CSS px on a 390px phone. Four was a guess; this is the line the
+// owner's standard draws (body >= 12, labels >= 10).
+const BODY_WORDS = 3;
 
 /** The floor for a given string. */
 export function floorFor(text) {

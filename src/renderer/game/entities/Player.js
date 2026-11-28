@@ -401,8 +401,32 @@ export default class Player {
 
   // ── Main update (called from scene) ───────────────────────────────────────
 
+  /**
+   * Take the player off the screen and out of the physics world.
+   *
+   * For a scene that is an instrument rather than a room: a lab rig
+   * has no d-pad and nothing to walk to, but the player still spawned
+   * on the bench and a keyboard walked him over the controls (review
+   * MUST 9). The object stays — the save system, the quest system and
+   * the exit zones all reach for scene.player.
+   *
+   * @param {boolean} hidden
+   */
+  setHidden(hidden) {
+    this.hidden = Boolean(hidden);
+    this.container?.setVisible(!hidden);
+    this.label?.setVisible(!hidden);
+    this._shadow?.setVisible(!hidden);
+    this.sprite?.setVisible(!hidden);
+    if (this.sprite?.body) this.sprite.body.enable = !hidden;
+    return this;
+  }
+
   /** Call from scene update(). Returns { x, y } of current position. */
   update() {
+    // Hidden means hidden: no walk animation, no dust, no footsteps,
+    // and no answering the keyboard.
+    if (this.hidden) return { x: this.sprite?.x ?? 0, y: this.sprite?.y ?? 0 };
     // Guard against the React-unmount race: Phaser can tear down the
     // sprite's physics body mid-frame while an in-flight requestAnimationFrame
     // callback still calls update(). When the user pauses/leaves and re-enters

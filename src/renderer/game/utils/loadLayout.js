@@ -36,7 +36,22 @@ export function loadResponsiveLayout(scene, key) {
   }
   const cam = scene.cameras?.main;
   const isPortrait = Boolean(cam && cam.height > cam.width);
+  const isShortLandscape = Boolean(cam && !isPortrait && cam.height < 460);
   const portrait = data.portrait;
+  const compact = data.landscapeCompact;
+
+  // A phone held sideways: its own block, merged the same way the
+  // portrait one is. Without it a 390px-tall screen fitted the tall
+  // design and rendered 6px type (review MUST 5).
+  if (isShortLandscape && compact?.objects) {
+    return {
+      objects: { ...data.objects, ...compact.objects },
+      designWidth: compact.designWidth || 800,
+      designHeight: compact.designHeight || 380,
+      portrait: false,
+      compact: true,
+    };
+  }
 
   if (isPortrait && portrait?.objects) {
     return {

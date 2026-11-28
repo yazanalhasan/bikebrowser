@@ -22,12 +22,14 @@ import { loadLayout, loadResponsiveLayout } from '../utils/loadLayout.js';
 import { createScaleStation } from '../systems/lab/scaleStation.js';
 import { createCalipers } from '../systems/lab/calipers.js';
 import { createDensitySlate } from '../systems/lab/densitySlate.js';
+import { showLabModal } from '../systems/lab/labModal.js';
 import { renderDensityChart } from '../systems/lab/densityChart.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { addArt, hasArt } from '../../../game/assets/act1Art.js';
 import {
   CALLOUT_BG_DEPTH, CALLOUT_TEXT_DEPTH, PANEL_BG_DEPTH, PANEL_TEXT_DEPTH,
+  STATION_BUTTON_DEPTH,
 } from '../systems/labelLayout.js';
 
 // Sample-id → inventory item mapping. The scale enables a button only
@@ -125,19 +127,64 @@ export default class MaterialLabScene extends LabRigBase {
     const calipers = this.layout.density_calipers;
     const slate = this.layout.density_slate;
     const slatePanel = this.layout.density_slate_panel;
+    // Out of the HUD's corner, as one piece so the station keeps its
+    // own spacing. The scale's buttons reach 40 below its platform and
+    // its coupon caption another 20 under that, which is what kept
+    // landing under the leave control.
+    const shift = this._stationShift({
+      left: Math.min(scale.x, calipers.x) - 60,
+      top: scale.displayY - 24,
+      right: Math.max(scale.x, calipers.x, scale.artX ?? 0) + 60,
+      bottom: Math.max(scale.platformY + 62, calipers.y + 24),
+    });
     return {
-      scaleDisplayY: scale.displayY,
-      scalePlatformY: scale.platformY,
-      scaleX: scale.x,
+      scaleDisplayY: scale.displayY + shift.dy,
+      scalePlatformY: scale.platformY + shift.dy,
+      scaleX: scale.x + shift.dx,
       // The sprite is placed apart from the readout it belongs to.
-      scaleArtX: scale.artX,
-      scaleArtY: scale.artY,
-      calipersX: calipers.x,
-      calipersY: calipers.y,
-      slateX: slate.x,
-      slateY: slate.y,
+      scaleArtX: scale.artX + shift.dx,
+      scaleArtY: scale.artY + shift.dy,
+      calipersX: calipers.x + shift.dx,
+      calipersY: calipers.y + shift.dy,
+      slateX: slate.x + shift.dx,
+      slateY: slate.y + shift.dy,
       slatePanel,
     };
+  }
+
+  /**
+   * How far the instrument station has to move to clear the HUD.
+   *
+   * Up first — the bench has headroom and the rig does not reach this
+   * far left — then right if lifting it is not enough. Returns {0,0}
+   * when the station is already clear, which is every desktop size.
+   *
+   * @param {{left:number,top:number,right:number,bottom:number}} box
+   */
+  _stationShift(box) {
+    const reserve = this.hudLeaveReserve?.();
+    if (!reserve) return { dx: 0, dy: 0 };
+    const hits = (b) => b.left < reserve.x + reserve.w && b.right > reserve.x
+      && b.top < reserve.y + reserve.h && b.bottom > reserve.y;
+    if (!hits(box)) return { dx: 0, dy: 0 };
+
+    // Lift it to sit just above the reserved corner, but not so far
+    // that it climbs into the chart.
+    const lift = box.bottom - reserve.y + 6;
+    const headroom = Math.max(0, box.top - ((this._g.chart?.y ?? 0) + (this._g.chart?.h ?? 0) + 8));
+    const dy = -Math.min(lift, headroom);
+    if (hits({ ...box, top: box.top + dy, bottom: box.bottom + dy })) {
+      // Lifting is the only move available: a phone's bench is 400
+      // wide and sliding the station sideways runs it off the screen,
+      // which is what the first version of this did. Say so rather
+      // than make it worse.
+      console.warn(`[${this.scene.key}] instrument station cannot clear the HUD `
+        + `corner by lifting (${-dy}px of ${lift}px needed) — its layout `
+        + `coordinates need to move`);
+    } else {
+      console.info(`[${this.scene.key}] instrument station lifted ${-dy}px clear of the HUD`);
+    }
+    return { dx: 0, dy };
   }
 
   // ── createWorld: extend base to mount left-bay instruments after the
@@ -764,54 +811,87 @@ export default class MaterialLabScene extends LabRigBase {
     };
   }
 
-  _showComparisonPanel() {
-    const cfg = this.layout.comparison_panel;
-    if (!cfg) return;
-    if (this._comparisonPanel) this._comparisonPanel.destroy(true);
+  /**
+   * Show or hide the floating cards a modal would print through.
+   *
+   * The teaching callout only comes back if the takeaway is not up:
+   * they share a row on a phone, and only one of the two is ever meant
+   * to be on screen (plan 0.5).
+   */
+  _setLabCardsVisible(visible) {
+    this._takeawayBtn?.bg?.setVisible(visible);
+    this._takeawayBtn?.lbl?.setVisible(visible);
+    // The callout only comes back if the experiment is not finished:
+    // once there is a conclusion, the hint that explained the chart
+    // has had its turn (plan 0.5).
+    const calloutWanted = visible && !this._takeawayBtn;
+    this._teachingCalloutBg?.setVisible(calloutWanted);
+    this._teachingCalloutText?.setVisible(calloutWanted);
+  }
 
+  _showComparisonPanel() {
+    if (this._takeawayModal?.isOpen()) return;
     const lines = [
       'Steel: strongest, but heavy.',
       'Copper: stretches, but weak and heavy.',
       'Mesquite: strong enough and light for the bridge.',
     ];
-    // Depth 8 is inside the world, and a character y-sorts to 10-49:
-    // Zuzu hid 91% of the heading just by standing at the garage
-    // spawn. The card belongs in the reserved UI band, and its
-    // children carry their own depths so the card cannot print over
-    // its own words (plan 0.12.6).
-    // The takeaway is the last word on the test, and on a phone it
-    // shares its row with the teaching callout, so the callout stands
-    // down (plan 0.5).
+
+    // The teaching callout stands down while the conclusion is up: on
+    // a phone they share a row, and only one of the two is ever meant
+    // to be on screen (plan 0.5).
     this._teachingCalloutBg?.setVisible(false);
     this._teachingCalloutText?.setVisible(false);
 
-    const panel = this.add.container(0, 0).setDepth(PANEL_BG_DEPTH);
+    this._takeawayModal = showLabModal(this, {
+      title: 'Engineering takeaway',
+      lines,
+      onClose: () => {
+        this._takeawayModal = null;
+        this._showTakeawayButton();
+      },
+    });
+  }
 
-    // Measure, then place. The heading sat at a fixed -18 and the three
-    // lines at +6, so the body's first line printed through "Engineering
-    // takeaway". Lay them out from their real heights and size the card to
-    // whatever they come to.
-    const heading = this.add.text(0, 0, 'Engineering takeaway', {
-      fontSize: '11px', fontFamily: 'sans-serif', color: '#fbbf24',
+  /**
+   * The small control that brings the takeaway back.
+   *
+   * The conclusion must stay reachable after it is dismissed — a child
+   * who closes it should not have to re-run three tests to read it
+   * again. 112x28 in the band between the chart and the instrument
+   * row, the one gap on this bench with nothing in it.
+   */
+  _showTakeawayButton() {
+    if (this._takeawayBtn) return;
+    // Under the slow-replay toggle, at the foot of the control column.
+    // Under the CHART was the obvious spot and it covered the density
+    // station's "SCALE" sign by 53% — this bench has one genuinely
+    // empty band and it is this one.
+    const portrait = Boolean(this._design?.portrait);
+    const slow = this.layout.slow_toggle;
+    const cfg = this.layout.comparison_panel;
+    // Portrait has a row reserved for exactly this — the layout calls
+    // it "callout or takeaway", and only one of the two is ever shown.
+    // Under the slow toggle it sat on the chart's title (23% of "UTM
+    // COMPARISON").
+    // Both small shapes have a slot reserved for this in their layout
+    // block; only the big bench has to find room under the toggle.
+    const reserved = portrait || this._compactRig;
+    const x = reserved ? cfg.x : (slow ? slow.x : cfg.x);
+    const y = reserved ? cfg.y : (slow ? slow.y + 34 : cfg.y);
+
+    const bg = this.add.rectangle(x, y, 112, 28, 0x111827, 0.95)
+      .setStrokeStyle(2, 0xfbbf24).setDepth(STATION_BUTTON_DEPTH)
+      .setInteractive({ useHandCursor: true });
+    const lbl = this.add.text(x, y, 'Takeaway', {
+      fontSize: '12px', fontFamily: 'sans-serif', color: '#fbbf24',
       fontStyle: 'bold',
-    }).setOrigin(0.5, 0);
-    const body = this.add.text(0, 0, lines.join('\n'), {
-      fontSize: '10px', fontFamily: 'sans-serif', color: '#f8fafc',
-      align: 'center', lineSpacing: 2, wordWrap: { width: cfg.w - 18 },
-    }).setOrigin(0.5, 0);
+    }).setOrigin(0.5).setDepth(STATION_BUTTON_DEPTH + 2);
+    bg.on('pointerdown', () => this._showComparisonPanel());
+    lbl.setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => this._showComparisonPanel());
 
-    const padding = 8;
-    const gap = 5;
-    const height = Math.max(cfg.h, padding * 2 + heading.height + gap + body.height);
-    const top = cfg.y - height / 2 + padding;
-    heading.setPosition(cfg.x, top);
-    body.setPosition(cfg.x, top + heading.height + gap);
-
-    panel.add(this.add.rectangle(cfg.x, cfg.y, cfg.w, height, 0x111827, 0.92)
-      .setStrokeStyle(2, 0xfbbf24).setDepth(PANEL_BG_DEPTH));
-    panel.add(heading.setDepth(PANEL_TEXT_DEPTH));
-    panel.add(body.setDepth(PANEL_TEXT_DEPTH));
-    this._comparisonPanel = panel;
+    this._takeawayBtn = { bg, lbl };
   }
 
   // ─── Alt chart mode: density bars ───────────────────────────────────
@@ -903,6 +983,12 @@ export default class MaterialLabScene extends LabRigBase {
         return Array.isArray(live.materialLog) ? live.materialLog : [];
       },
       onAutoFill: (id, _name) => this._onSlateAutoFill(id),
+      // A modal owns the screen. The takeaway card and the teaching
+      // callout live in the UI band, which is ABOVE the old panel's
+      // world depth — they printed through the slate's title and table
+      // (review MUST 4). They stand down while it is open.
+      onOpen: () => this._setLabCardsVisible(false),
+      onClose: () => this._setLabCardsVisible(true),
     });
 
     // Also expose each as a proximity-prompt interactable so the player

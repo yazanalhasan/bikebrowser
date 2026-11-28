@@ -109,6 +109,19 @@ export const CALLOUT_TEXT_DEPTH = 94;
 /** A toast or hint strip sits above everything else on the canvas. */
 export const TOAST_DEPTH = 100;
 
+// ── Modal band ────────────────────────────────────────────────────────
+// A modal owns the screen: a scrim over everything, the panel above the
+// scrim, its controls above that. Nothing in the UI band may reach it.
+//
+// The Density Slate used depths 20-22, which is inside the WORLD, so the
+// takeaway card (80) printed straight through its title and the chart
+// covered its table — the child read 32% of a panel they had just asked
+// for (review MUST 4).
+export const SCRIM_DEPTH = 110;
+export const MODAL_BG_DEPTH = 112;
+export const MODAL_TEXT_DEPTH = 114;
+export const MODAL_CONTROL_DEPTH = 116;
+
 /**
  * The HUD's right-hand rail, in screen pixels.
  *

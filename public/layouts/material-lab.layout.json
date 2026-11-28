@@ -75,22 +75,21 @@
         "_note": "Shares the callout slot: the takeaway is the last word, so it hides the callout when it appears."
       },
       "density_scale": {
-        "x": 108,
-        "displayY": 668,
-        "platformY": 692,
-        "artX": 320,
-        "artY": 668,
-        "_note": "The LCD and its buttons on the left of the bench, the brass scale itself on the right where there is room for it."
+        "x": 150,
+        "displayY": 640,
+        "platformY": 664,
+        "artX": 330,
+        "artY": 640,
+        "_note": "Lifted 28px and moved right of the HUD leave control, which is DOM, pinned to the bottom-left corner on top of the canvas, and owns roughly world x 0-190, y 777-828 on a 390x844 phone."
       },
       "density_calipers": {
-        "x": 200,
-        "y": 780,
-        "_note": "Bench, lower middle."
+        "x": 262,
+        "y": 752,
+        "_note": "Its \"Coupons: 10 cm3 uniform\" caption prints under it, so the station sits right of the leave control rather than above it."
       },
       "density_slate": {
-        "x": 330,
-        "y": 776,
-        "_note": "Bench, lower right."
+        "x": 355,
+        "y": 700
       },
       "density_slate_panel": {
         "x": 200,
@@ -109,6 +108,57 @@
       "utm": {
         "x": 200,
         "_note": "The machine centreline, mid-column."
+      }
+    }
+  },
+  "landscapeCompact": {
+    "designWidth": 800,
+    "designHeight": 380,
+    "_note": "A phone held sideways (review MUST 5). The 800x600 bench fitted onto a 390px-tall screen at zoom 0.65 and rendered 6-9 CSS px type. This is the same bench 380 tall: samples in a row across the top (76-130), the chart on the right (140-330), the machine on the left, and the density station along the bottom strip where the bench art already is.",
+    "objects": {
+      "utm": {
+        "x": 280
+      },
+      "density_scale": {
+        "x": 90,
+        "displayY": 190,
+        "platformY": 208,
+        "artX": 170,
+        "artY": 188,
+        "_note": "Down the left, below the takeaway button row (ends 148) and above the HUD leave control, which owns world x 0-159, y 314-357 on this screen."
+      },
+      "density_calipers": {
+        "x": 90,
+        "y": 286
+      },
+      "density_slate": {
+        "x": 230,
+        "y": 296
+      },
+      "density_slate_panel": {
+        "x": 400,
+        "y": 190,
+        "w": 460,
+        "h": 220,
+        "_note": "Unused for placement — the slate is a modal now and centres on the camera."
+      },
+      "teaching_callout": {
+        "x": 608,
+        "y": 44,
+        "w": 300
+      },
+      "slow_toggle": {
+        "x": 620,
+        "y": 134,
+        "w": 150,
+        "h": 22
+      },
+      "comparison_panel": {
+        "x": 112,
+        "y": 134,
+        "w": 260,
+        "h": 50,
+        "_note": "Only the small \"Takeaway\" reopen button lands here; the card is a modal."
       }
     }
   }

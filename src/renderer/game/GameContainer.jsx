@@ -1906,6 +1906,7 @@ export default function GameContainer() {
           onTouchStart={(e) => e.stopPropagation()}
         >
           <div
+            data-testid="dialog-box"
             className="bg-white rounded-2xl shadow-xl p-4 max-w-lg mx-auto border-2 border-blue-200"
             onPointerDown={(e) => e.stopPropagation()}
             onPointerUp={(e) => e.stopPropagation()}

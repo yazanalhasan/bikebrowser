@@ -165,11 +165,20 @@ export async function bootToScene(page, key, spawn = 'default') {
  * touch. Returns the texts that were dismissed, so a lifecycle spec can
  * assert it actually saw the lines it expected.
  */
-export async function dismissDialogs(page, { max = 12 } = {}) {
+export async function dismissDialogs(page, { max = 12, settle = 1600 } = {}) {
   const seen = [];
+  // Wait for a dialog that has not arrived yet. A scene's first-entry
+  // hint is written ~600ms in, so a dismiss that ran the instant the
+  // scene started saw nothing, returned, and left Mr. Chen's welcome
+  // sitting over the rig for the whole of a five-state audit — every
+  // state measured the same covered screen.
+  await page.locator('[data-testid="dialog-box"]')
+    .first()
+    .waitFor({ state: 'visible', timeout: settle })
+    .catch(() => {});
   for (let i = 0; i < max; i += 1) {
-    const box = page.locator('[data-testid="dialog-box"], [data-dialog-root]');
-    const close = page.getByRole('button', { name: /^(Got it|Close|Continue|OK|Next)/i });
+    const box = page.locator('[data-testid="dialog-box"]');
+    const close = page.getByRole('button', { name: /^(Close|Got it|Continue|OK|Next)$/i });
     if (await box.count()) {
       const text = (await box.first().innerText().catch(() => '')).trim();
       if (text) seen.push(text);
@@ -190,9 +199,41 @@ export async function dismissDialogs(page, { max = 12 } = {}) {
   return seen;
 }
 
+/**
+ * World coordinates -> page coordinates, as a string of JS to inject.
+ *
+ * Phaser zooms a camera about its MIDPOINT:
+ *   screen = (world - scroll*scrollFactor - camW/2) * zoom + camX + camW/2
+ * and then the canvas may be letterboxed or scaled by CSS on top.
+ *
+ * Dropping the midpoint term is correct at zoom 1 and wrong by
+ * (camW/2)(zoom-1) at any other zoom — the Materials Lab runs at 1.2,
+ * where it put every tap 128px to the right of what it aimed at.
+ */
+export const WORLD_TO_PAGE = `(scene, cam) => {
+  const game = window.__phaserGame;
+  const canvas = game.canvas;
+  const r = canvas.getBoundingClientRect();
+  const kx = r.width / canvas.width;
+  const ky = r.height / canvas.height;
+  const hw = cam.width / 2;
+  const hh = cam.height / 2;
+  return (wx, wy, sfx, sfy) => ({
+    x: r.x + (((wx - cam.scrollX * sfx - hw) * cam.zoom) + cam.x + hw) * kx,
+    y: r.y + (((wy - cam.scrollY * sfy - hh) * cam.zoom) + cam.y + hh) * ky,
+  });
+}`;
+
+/** The same, as a factor: how many page px one game px is. */
+export const PAGE_SCALE = `(cam) => {
+  const canvas = window.__phaserGame.canvas;
+  const r = canvas.getBoundingClientRect();
+  return { x: (r.width / canvas.width) * cam.zoom, y: (r.height / canvas.height) * cam.zoom };
+}`;
+
 /** Where a world object is on the screen right now, in CSS pixels. */
 export async function screenRectOf(page, sceneKey, pick) {
-  return page.evaluate(([key, src]) => {
+  return page.evaluate(([key, src, w2p, pscale]) => {
     // eslint-disable-next-line no-new-func
     const chooser = new Function('scene', `return (${src})(scene);`);
     const scene = window.__phaserGame.scene.getScenes(true)
@@ -203,15 +244,15 @@ export async function screenRectOf(page, sceneKey, pick) {
     const cam = scene.cameras.main;
     const b = obj.getBounds ? obj.getBounds() : null;
     if (!b) return null;
-    const sf = obj.scrollFactorX ?? 1;
-    const z = cam.zoom;
-    return {
-      x: (b.x - cam.scrollX * sf) * z + cam.x,
-      y: (b.y - cam.scrollY * (obj.scrollFactorY ?? 1)) * z + cam.y,
-      width: b.width * z,
-      height: b.height * z,
-    };
-  }, [sceneKey, pick.toString()]);
+    const sfx = obj.scrollFactorX ?? 1;
+    const sfy = obj.scrollFactorY ?? 1;
+    // eslint-disable-next-line no-new-func
+    const toPage = new Function('return (' + w2p + ');')()(scene, cam);
+    // eslint-disable-next-line no-new-func
+    const k = new Function('return (' + pscale + ');')()(cam);
+    const tl = toPage(b.x, b.y, sfx, sfy);
+    return { x: tl.x, y: tl.y, width: b.width * k.x, height: b.height * k.y };
+  }, [sceneKey, pick.toString(), WORLD_TO_PAGE, PAGE_SCALE]);
 }
 
 /** Screenshot a lifecycle state into qa/lifecycle/<scene>/<viewport>/. */

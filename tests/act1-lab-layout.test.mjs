@@ -53,19 +53,47 @@ test("the scale's prompt hangs below its display", () => {
     'the prompt must use the override, not the constant');
 });
 
-test('the takeaway card is laid out from its own text', () => {
-  assert.match(MATERIAL_LAB, /top \+ heading\.height \+ gap/,
-    'the body must follow the heading it sits under');
-  assert.match(MATERIAL_LAB, /Math\.max\(cfg\.h, padding \* 2 \+ heading\.height/,
-    'the card must grow to whatever the text came to');
+test('the takeaway owns the screen instead of hunting for a gap', () => {
+  // It used to be a world card placed by layout coordinates, and it
+  // spent three rounds moving from one collision to the next: over
+  // "Structural Steel" at 1280 (40%), over the coupons station under
+  // the chart (81%), over "Back to Garage" at 375x667 (100%). An
+  // 800x600 bench holding a selector, a chart, a readout, a machine
+  // and an instrument row has no 350x58 hole in it.
+  const modal = read('src/renderer/game/systems/lab/labModal.js');
+  assert.match(MATERIAL_LAB, /showLabModal\(this, \{/,
+    'the takeaway must be a modal');
+  assert.match(modal, /cam\.worldView/,
+    'a modal sizes itself from the camera, not from a design canvas');
+  assert.match(modal, /SCRIM_DEPTH/,
+    'and covers the screen behind it, so nothing can print through it');
+  assert.match(modal, /MIN_TAP_PX/,
+    'its close control has to be reachable by a finger');
 });
 
-test('the takeaway card clears the way out of the lab', () => {
-  // "⬅ Back to Garage" is drawn at y 582.
-  const panel = LAB_LAYOUT.objects.comparison_panel;
-  const bottom = panel.y + panel.h / 2;
-  assert.ok(bottom < 572,
-    `the takeaway card reaches y=${bottom}, into the Back to Garage label at 572`);
+test('a dismissed takeaway can be brought back', () => {
+  // A conclusion a child closes must not need three more tests to
+  // re-read it.
+  assert.match(MATERIAL_LAB, /_showTakeawayButton\(\)/);
+  assert.match(MATERIAL_LAB, /onClose: \(\) => \{\s*\n\s*this\._takeawayModal = null;\s*\n\s*this\._showTakeawayButton\(\);/,
+    'closing the modal must leave the reopen button behind');
+});
+
+test('the way out of a rig is the HUD control, not a world label', () => {
+  // The rigs hide the d-pad, so a walk-in exit zone is no way out at
+  // all on a phone (review MUST 1) — and a second "Back to Garage"
+  // painted into the world sat under the takeaway at 375x667.
+  assert.match(LAB_RIG, /this\.leaveScene = \(\) =>/,
+    'a rig must name its own way out for the HUD');
+  assert.match(LAB_RIG, /this\.leaveSceneLabel = 'Back to Garage'/);
+  const exitCall = LAB_RIG.slice(LAB_RIG.indexOf('this.addExit({'));
+  const exitBlock = exitCall.slice(0, exitCall.indexOf('});'));
+  assert.ok(!/label:/.test(exitBlock),
+    'the rig exit must not draw a world label that duplicates the HUD control');
+  assert.match(GAME_CONTAINER, /data-testid="leave-scene"/,
+    'the HUD must draw the control');
+  assert.match(GAME_CONTAINER, /sceneOwnsHud && \(\s*\n\s*<button/,
+    'and only for a scene that owns the HUD');
 });
 
 test('a lab rig takes the HUD while it is open, and gives it back', () => {
