@@ -210,8 +210,9 @@
     },
     "trees": [
       {
-        "x": 30,
-        "y": 340
+        "x": 70,
+        "y": 120,
+        "_note": "Was (30,340): feet in the west lane, and a quarter of the canopy off the west edge of the world. North-west lawn beside Zuzu's house now, clear of the ← Garage exit (y 260-340)."
       },
       {
         "x": 260,
@@ -226,12 +227,14 @@
         "y": 140
       },
       {
-        "x": 950,
-        "y": 340
+        "x": 935,
+        "y": 200,
+        "_note": "Was (950,340): feet in the east lane, across the road below the Workshop. Beside the Workshop on the lawn; canopy reads as behind the roof."
       },
       {
-        "x": 200,
-        "y": 500
+        "x": 80,
+        "y": 545,
+        "_note": "Was (200,500): feet on the lawn but the canopy lay over the south kerb, under the toast strip. South-west corner, west of Mr. Chen's bike."
       },
       {
         "x": 240,
@@ -240,7 +243,8 @@
       },
       {
         "x": 900,
-        "y": 500
+        "y": 545,
+        "_note": "Was (900,500): canopy over the south kerb. Clear of the yellow house (x 620-780)."
       }
     ],
     "plants": [],
@@ -268,20 +272,22 @@
       "y": 310
     },
     "ramirez_bike_icon": {
-      "x": 417.9720050288943,
-      "y": 277.99286296379034,
+      "x": 400,
+      "y": 238,
       "fontSize": "46px",
-      "interactionRadius": 95
+      "interactionRadius": 95,
+      "_note": "Was (417.97,277.99): feet at y=308, in the north lane, body across the kerb. In Mrs. Ramirez's front yard now — feet at 268, just above the kerb, clear of her door at x=550."
     },
     "npc_mr_chen": {
       "x": 313,
       "y": 402
     },
     "chen_bike_icon": {
-      "x": 440,
-      "y": 420,
+      "x": 250,
+      "y": 525,
       "fontSize": "44px",
-      "interactionRadius": 115
+      "interactionRadius": 115,
+      "_note": "Was (440,420): feet below the south kerb but the 120px body stood up through the travel lane — this is the bike in the middle of the road. In the yard south of the kerb now (body 435-555), a few steps from Mr. Chen at (313,402)."
     },
     "exit_zone_west": {
       "x": 14,
