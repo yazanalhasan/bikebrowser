@@ -17,6 +17,7 @@ import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
+import { addSceneTitle } from '../ui/sceneTitle.js';
 
 export default class SportsFieldsScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -166,10 +167,7 @@ export default class SportsFieldsScene extends LocalSceneBase {
     });
 
     // === SCENE TITLE ===
-    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🏟️ Sports Fields', {
-      fontSize: '20px', fontFamily: 'sans-serif', color: '#1b5e20',
-      fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(5);
+    addSceneTitle(this, '🏟️ Sports Fields', { color: '#1b5e20', stroke: '#ffffff' });
 
     // === EXIT (south → overworld) ===
     this.addExit({

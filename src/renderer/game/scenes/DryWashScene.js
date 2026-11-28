@@ -38,6 +38,7 @@ import { loadLayout } from '../utils/loadLayout.js';
 import { transitionTo } from '../systems/sceneTransition.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { isOnStep } from '../systems/questSteps.js';
+import { addSceneTitle } from '../ui/sceneTitle.js';
 
 const SCENE_KEY = 'DryWashScene';
 
@@ -189,10 +190,7 @@ export default class DryWashScene extends LocalSceneBase {
     });
 
     // ── Scene title ──
-    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🏜️ Dry Wash', {
-      fontSize: '18px', fontFamily: 'sans-serif', fontStyle: 'bold',
-      color: '#7c2d12', stroke: '#fef3c7', strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(10).setScrollFactor(0);
+    addSceneTitle(this, '🏜️ Dry Wash', { color: '#7c2d12', stroke: '#fef3c7' });
 
     // ── Exit back to world map ──
     this.addExit({

@@ -25,6 +25,9 @@ import { createDensitySlate } from '../systems/lab/densitySlate.js';
 import { renderDensityChart } from '../systems/lab/densityChart.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import {
+  CALLOUT_BG_DEPTH, CALLOUT_TEXT_DEPTH, PANEL_BG_DEPTH, PANEL_TEXT_DEPTH,
+} from '../systems/labelLayout.js';
 
 // Sample-id → inventory item mapping. The scale enables a button only
 // when the player owns the corresponding sample item.
@@ -123,6 +126,9 @@ export default class MaterialLabScene extends LabRigBase {
       scaleDisplayY: scale.displayY,
       scalePlatformY: scale.platformY,
       scaleX: scale.x,
+      // The sprite is placed apart from the readout it belongs to.
+      scaleArtX: scale.artX,
+      scaleArtY: scale.artY,
       calipersX: calipers.x,
       calipersY: calipers.y,
       slateX: slate.x,
@@ -515,11 +521,11 @@ export default class MaterialLabScene extends LabRigBase {
 
     if (!this._teachingCalloutBg) {
       this._teachingCalloutBg = this.add.rectangle(cfg.x, cfg.y, cfg.w, 38, 0x111827, 0.9)
-        .setStrokeStyle(2, color).setDepth(5);
+        .setStrokeStyle(2, color).setDepth(CALLOUT_BG_DEPTH);
       this._teachingCalloutText = this.add.text(cfg.x, cfg.y, '', {
         fontSize: '10px', fontFamily: 'sans-serif', color: '#f8fafc',
         fontStyle: 'bold', align: 'center', wordWrap: { width: cfg.w - 18 },
-      }).setOrigin(0.5).setDepth(6);
+      }).setOrigin(0.5).setDepth(CALLOUT_TEXT_DEPTH);
     }
 
     this._teachingCalloutBg.setStrokeStyle(2, color);
@@ -727,7 +733,12 @@ export default class MaterialLabScene extends LabRigBase {
       'Copper: stretches, but weak and heavy.',
       'Mesquite: strong enough and light for the bridge.',
     ];
-    const panel = this.add.container(0, 0).setDepth(8);
+    // Depth 8 is inside the world, and a character y-sorts to 10-49:
+    // Zuzu hid 91% of the heading just by standing at the garage
+    // spawn. The card belongs in the reserved UI band, and its
+    // children carry their own depths so the card cannot print over
+    // its own words (plan 0.12.6).
+    const panel = this.add.container(0, 0).setDepth(PANEL_BG_DEPTH);
 
     // Measure, then place. The heading sat at a fixed -18 and the three
     // lines at +6, so the body's first line printed through "Engineering
@@ -750,9 +761,9 @@ export default class MaterialLabScene extends LabRigBase {
     body.setPosition(cfg.x, top + heading.height + gap);
 
     panel.add(this.add.rectangle(cfg.x, cfg.y, cfg.w, height, 0x111827, 0.92)
-      .setStrokeStyle(2, 0xfbbf24));
-    panel.add(heading);
-    panel.add(body);
+      .setStrokeStyle(2, 0xfbbf24).setDepth(PANEL_BG_DEPTH));
+    panel.add(heading.setDepth(PANEL_TEXT_DEPTH));
+    panel.add(body.setDepth(PANEL_TEXT_DEPTH));
     this._comparisonPanel = panel;
   }
 
@@ -854,8 +865,13 @@ export default class MaterialLabScene extends LabRigBase {
     // of the same word landing on the chart's axis label and on the
     // neighbouring station's note. The scale's sign sits exactly where the
     // interact prompt goes, so that one prompt hangs below the display.
+    // The sprite sits beside the LCD (artX/artY), not on it: a 64x64
+    // brass scale centred on its own display hid the SCALE label and the
+    // grams completely (plan 0.12.2). The hotspot stays on the display so
+    // walking up to the readout is still what triggers the prompt.
     this.addInteractable({
-      x: layout.scaleX, y: layout.scaleDisplayY, radius: 70,
+      x: layout.scaleArtX ?? layout.scaleX, y: layout.scaleArtY ?? layout.scaleDisplayY,
+      radius: 70,
       icon: ART.lab_scale, label: 'Scale',
       showNameLabel: false,
       promptOffset: 34,
@@ -870,9 +886,15 @@ export default class MaterialLabScene extends LabRigBase {
       showNameLabel: false,
       onInteract: () => this._onCalipersClick(),
     });
+    // No clipboard sprite here. It was drawn on the same point as the
+    // slate station, so it covered the station's own board and the word
+    // SLATE, and its baked-in writing is unreadable at this size — the
+    // plan wants that sprite redrawn with no text in the image (0.12.4,
+    // art chain, Phase 1). Until then the station's own legible board is
+    // the face; `icon: null` means "the scene already drew this prop".
     this.addInteractable({
       x: layout.slateX, y: layout.slateY, radius: 60,
-      icon: ART.clipboard, label: 'Density Slate',
+      icon: null, label: 'Density Slate',
       showNameLabel: false,
       onInteract: () => this._slate?.openPanel?.(),
     });

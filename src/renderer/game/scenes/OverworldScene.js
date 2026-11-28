@@ -29,6 +29,9 @@ import { loadLayout } from '../utils/loadLayout.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { addArt } from '../../../game/assets/act1Art.js';
 import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
+import {
+  WORLD_SIGN_ART_DEPTH, WORLD_SIGN_DEPTH, HUD_RAIL_WIDTH, underHudRail,
+} from '../systems/labelLayout.js';
 
 const SCENE_KEY = 'OverworldScene';
 
@@ -113,14 +116,17 @@ export default class OverworldScene extends Phaser.Scene {
 
       // Marker circle
       const markerColor = unlocked ? 0xfbbf24 : 0x6b7280;
+      // The whole pin — ring, icon, name, prompt — rides in the sign
+      // band. The child walks this map, and at depth 10-12 they stood on
+      // top of the place they were trying to read (plan 0.12).
       const marker = this.add.circle(x, y, this.layout.marker_circle.r, markerColor, 0.7)
         .setStrokeStyle(this.layout.marker_circle.stroke_width, unlocked ? 0xf59e0b : 0x4b5563)
-        .setDepth(10);
+        .setDepth(WORLD_SIGN_ART_DEPTH);
 
       // Icon — painted marker art; the lock is art too when the scene is shut.
       const iconKey = unlocked ? sceneDef.iconArt : ART.map_lock;
       const icon = addArt(this, iconKey, x, y, {
-        anchor: 'icon', maxPx: 30, depth: 11,
+        anchor: 'icon', maxPx: 30, depth: WORLD_SIGN_ART_DEPTH + 1,
       });
 
       // Name label
@@ -129,7 +135,7 @@ export default class OverworldScene extends Phaser.Scene {
         fontStyle: 'bold',
         color: unlocked ? '#78350f' : '#6b7280',
         stroke: '#ffffff', strokeThickness: 3,
-      }).setOrigin(0.5).setDepth(11);
+      }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH);
 
       // Enter prompt (hidden) OR lock hint
       let prompt;
@@ -139,7 +145,7 @@ export default class OverworldScene extends Phaser.Scene {
           fontStyle: 'bold', color: '#ffffff',
           backgroundColor: '#1e40af',
           padding: { x: 6, y: 3 },
-        }).setOrigin(0.5).setDepth(12).setVisible(false);
+        }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH + 1).setVisible(false);
       } else {
         // Show lock requirements
         const progress = getUnlockProgress(sceneDef.key, state);
@@ -149,13 +155,13 @@ export default class OverworldScene extends Phaser.Scene {
           backgroundColor: '#6b7280',
           padding: { x: 4, y: 2 },
           wordWrap: { width: 160 },
-        }).setOrigin(0.5).setDepth(12).setVisible(false);
+        }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH + 1).setVisible(false);
 
         // Progress bar under locked marker
         if (progress.progress > 0 && progress.progress < 1) {
           const barW = this.layout.progress_bar.w;
-          this.add.rectangle(x, y + this.layout.progress_bar.y_offset, barW, this.layout.progress_bar.h, 0x4b5563).setDepth(11);
-          this.add.rectangle(x - barW / 2 + (barW * progress.progress) / 2, y + this.layout.progress_bar.y_offset, barW * progress.progress, this.layout.progress_bar.h, 0xfbbf24).setOrigin(0, 0.5).setDepth(12);
+          this.add.rectangle(x, y + this.layout.progress_bar.y_offset, barW, this.layout.progress_bar.h, 0x4b5563).setDepth(WORLD_SIGN_ART_DEPTH + 1);
+          this.add.rectangle(x - barW / 2 + (barW * progress.progress) / 2, y + this.layout.progress_bar.y_offset, barW * progress.progress, this.layout.progress_bar.h, 0xfbbf24).setOrigin(0, 0.5).setDepth(WORLD_SIGN_ART_DEPTH + 2);
         }
       }
 
@@ -248,7 +254,45 @@ export default class OverworldScene extends Phaser.Scene {
 
   // ── Location marker interaction ────────────────────────────────────────────
 
+  /**
+   * Keep every pin's name out from under the HUD rail.
+   *
+   * The map is 1536 wide in a 1280 camera, so it scrolls: a pin that
+   * reads fine in one position slides under the rail's icons in
+   * another, and "Sports Fields" was 42% hidden at the default spawn.
+   * Depth cannot fix it — the rail is DOM, above the whole canvas — so
+   * the label moves instead, from under its pin to the pin's left,
+   * which is the same yielding rule name tags already follow.
+   */
+  _dodgeHudRail() {
+    const cam = this.cameras.main;
+    for (const loc of this._locationMarkers) {
+      for (const text of [loc.label, loc.prompt]) {
+        if (!text?.visible) continue;
+        const home = text.getData('homeX') ?? text.x;
+        if (text.getData('homeX') == null) text.setData('homeX', home);
+
+        const halfW = text.displayWidth / 2;
+        const ox = cam.width / 2;
+        const screenRight = (home + halfW - cam.scrollX - ox) * cam.zoom + ox;
+        if (underHudRail(screenRight, cam.width)) {
+          // Clamp in SCREEN space, not relative to the pin: when the pin
+          // itself is under the rail, nudging the label a few pixels to
+          // its left leaves it under the rail too. This puts the label's
+          // right edge just clear of the rail wherever the map has
+          // scrolled to.
+          const limit = cam.width - HUD_RAIL_WIDTH - 4;
+          const worldRight = (limit - ox) / cam.zoom + cam.scrollX + ox;
+          text.setX(worldRight - halfW);
+        } else {
+          text.setX(home);
+        }
+      }
+    }
+  }
+
   _updateMarkerProximity() {
+    this._dodgeHudRail();
     const px = this.player.sprite.x;
     const py = this.player.sprite.y;
 

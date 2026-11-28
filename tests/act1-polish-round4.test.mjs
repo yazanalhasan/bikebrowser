@@ -129,9 +129,18 @@ test('map stars sit under whatever the name came to', () => {
 
 test('the way off the map is readable and out from under the arrow pad', () => {
   const map = read('src/renderer/game/scenes/WorldMapScene.js');
-  assert.match(map, /text\(190, height - 35, '← Back to Neighborhood'/);
-  assert.match(map, /'← Back to Neighborhood'[\s\S]{0,220}setOrigin\(0, 0\.5\)/,
+  // This used to pin the literal `text(190, height - 35, ...)`. That
+  // position is right on a desktop and wrong on a phone, where the
+  // d-pad, the chat button and the legend all want the same row — so
+  // the button is placed from a `narrow` branch now (plan 0.12), and
+  // what is actually guaranteed is measured in
+  // tests/e2e/overlap-coverage.smoke.spec.js at 390x844.
+  assert.match(map, /'← Back to Neighborhood'[\s\S]{0,260}setOrigin\(0, 0\.5\)/,
     'left-anchored, or the first word runs off the screen');
+  assert.match(map, /const narrow = width < 600;/,
+    'the bottom row has to know it is on a phone');
+  assert.match(map, /const backY = narrow \?/,
+    'the back button moves clear of the d-pad on a phone');
 });
 
 // ── #8: the HUD gets out of the way at a prop ──────────────────────────────

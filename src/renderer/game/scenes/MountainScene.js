@@ -19,6 +19,7 @@ import { loadLayout } from '../utils/loadLayout.js';
 import { startInteraction } from '../systems/interactionManager.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
+import { addSceneTitle } from '../ui/sceneTitle.js';
 
 export default class MountainScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -231,10 +232,7 @@ export default class MountainScene extends LocalSceneBase {
     });
 
     // === SCENE TITLE ===
-    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🏔️ Mountain Trail', {
-      fontSize: '20px', fontFamily: 'sans-serif', color: '#37474f',
-      fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(5);
+    addSceneTitle(this, '🏔️ Mountain Trail', { color: '#37474f', stroke: '#ffffff' });
 
     // === EXIT (south → overworld) ===
     this.addExit({

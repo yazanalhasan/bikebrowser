@@ -11,6 +11,7 @@ import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
+import { WORLD_SIGN_DEPTH } from '../systems/labelLayout.js';
 
 const SCENE_KEY = 'SaltRiverScene';
 
@@ -133,9 +134,16 @@ export default class SaltRiverScene extends BaseSubScene {
     channels.lineBetween(this.layout.channel_c_top.x1, this.layout.channel_c_top.y1, this.layout.channel_c_top.x2, this.layout.channel_c_top.y2);
     channels.lineBetween(this.layout.channel_c_bottom.x1, this.layout.channel_c_bottom.y1, this.layout.channel_c_bottom.x2, this.layout.channel_c_bottom.y2);
 
-    this.add.text(this.layout.channel_label_a.x, this.layout.channel_label_a.y, 'Ch. A', { fontSize: '10px', color: '#3b5998' }).setOrigin(0.5);
-    this.add.text(this.layout.channel_label_b.x, this.layout.channel_label_b.y, 'Ch. B', { fontSize: '10px', color: '#3b5998' }).setOrigin(0.5);
-    this.add.text(this.layout.channel_label_c.x, this.layout.channel_label_c.y, 'Ch. C', { fontSize: '10px', color: '#3b5998' }).setOrigin(0.5);
+    // The channel names are the diagram's key — at the default depth the
+    // bank drawn after them cut "Ch. B" in half (plan 0.12).
+    for (const [cfg, name] of [
+      [this.layout.channel_label_a, 'Ch. A'],
+      [this.layout.channel_label_b, 'Ch. B'],
+      [this.layout.channel_label_c, 'Ch. C'],
+    ]) {
+      this.add.text(cfg.x, cfg.y, name, { fontSize: '10px', color: '#3b5998' })
+        .setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH);
+    }
 
     // ── Boundary ──
     this.addWall(this.layout.wall_top.x, this.layout.wall_top.y, this.layout.wall_top.w, this.layout.wall_top.h);

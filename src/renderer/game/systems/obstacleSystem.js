@@ -25,6 +25,7 @@ import { createWorldLabel } from '../../../game/ui/WorldLabel.js';
 import { createInteractionMarker } from '../../../game/ui/InteractionMarker.js';
 import { createScorchingPavementPlaceholder } from '../../../game/art/placeholderFactories.js';
 import { NARRATOR } from './questDialog.js';
+import { WORLD_SIGN_DEPTH } from './labelLayout.js';
 
 // ── Per-session failure tracking (resets on app restart) ─────────────────────
 const _failureCounts = new Map();
@@ -59,7 +60,7 @@ export function spawnObstacles(scene) {
         scene.add.text(obs.x, obs.y - obs.height / 2 - 16, `${obs.icon} ${obs.label}`, {
           fontSize: '11px', fontFamily: 'sans-serif', color: '#92400e',
           fontStyle: 'bold', stroke: '#fef3c7', strokeThickness: 2,
-        }).setOrigin(0.5).setDepth(5);
+        }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH);
 
         spawned.obstacles.push({ def: obs, wall, solved: false });
       }

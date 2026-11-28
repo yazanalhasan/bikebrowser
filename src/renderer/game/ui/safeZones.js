@@ -75,6 +75,59 @@ export function getSafeZone(sceneWidth, sceneHeight) {
   };
 }
 
+
+/**
+ * The HUD's reserved rectangles, in SCREEN pixels, for a given camera.
+ *
+ * The zone table above describes the HUD as four corner blocks, which it
+ * no longer is: the buttons moved into a vertical rail down the right
+ * edge (ten 44px buttons from y=56), and the chat button sits on its own
+ * in the bottom-right. Plan 0.12 needs the real boxes, because world
+ * labels have to be kept out of them — depth cannot help when the thing
+ * on top is the page itself.
+ *
+ * Measured on the running HUD at 1280x720 and 390x844; the HUD does not
+ * scale with the viewport, so these are absolute.
+ *
+ * @param {number} camWidth
+ * @param {number} camHeight
+ * @returns {Array<{x:number,y:number,w:number,h:number,name:string}>}
+ */
+export function hudReservedRects(camWidth, camHeight) {
+  return [
+    // Home / Back, the goals chip and the quest card.
+    { x: 0, y: 0, w: UI_ZONES.topLeft.width, h: UI_ZONES.topLeft.height, name: 'top-left' },
+    // The icon rail.
+    {
+      x: camWidth - HUD_RAIL_PX, y: 40,
+      w: HUD_RAIL_PX, h: Math.max(0, camHeight - 140),
+      name: 'rail',
+    },
+    // The d-pad.
+    {
+      x: 0, y: camHeight - UI_ZONES.bottomLeft.height,
+      w: UI_ZONES.bottomLeft.width, h: UI_ZONES.bottomLeft.height, name: 'd-pad',
+    },
+    // The chat / action button.
+    {
+      x: camWidth - UI_ZONES.bottomRight.width, y: camHeight - UI_ZONES.bottomRight.height,
+      w: UI_ZONES.bottomRight.width, h: UI_ZONES.bottomRight.height, name: 'action',
+    },
+    // The scene heading. Not HUD — it is drawn in Phaser — but it is
+    // screen-fixed in the same way, and a world label that drifts under
+    // it is just as unreadable: "🌊 Deep Water" at Lake Edge was 46%
+    // behind the title.
+    {
+      x: UI_ZONES.topLeft.width, y: 0,
+      w: Math.max(0, camWidth - UI_ZONES.topLeft.width - HUD_RAIL_PX), h: 46,
+      name: 'heading',
+    },
+  ];
+}
+
+/** Width of the right-hand icon rail, in screen pixels. */
+export const HUD_RAIL_PX = 56;
+
 /**
  * Check whether a point is inside the gameplay-safe area.
  * @param {number} x

@@ -49,11 +49,12 @@ import {
 } from '../data/companions.js';
 import {
   PROP_CAPTION_OFFSET, PROP_PROMPT_OFFSET, PROP_CAPTION_DEPTH, PROP_PROMPT_DEPTH,
-  NAME_LABEL_LEAD_PX, firstLabelClash,
+  NAME_LABEL_LEAD_PX, WORLD_SIGN_DEPTH, firstLabelClash,
 } from '../systems/labelLayout.js';
 import {
   registerZuzuAnimations, registerNPCAnimations,
 } from '../../../game/characters/registerCharacterAnimations.js';
+import { dodgeHud } from '../systems/hudDodge.js';
 
 // Default world size for local scenes (viewport-scale, not overworld-scale)
 const DEFAULT_WORLD = { width: 800, height: 600 };
@@ -398,6 +399,10 @@ export default class LocalSceneBase extends Phaser.Scene {
   }
 
   update(_time, delta) {
+    // Labels step out from under the HUD's rail, d-pad and chat button:
+    // nothing in Phaser can draw above the page, so they move instead
+    // (plan 0.12).
+    dodgeHud(this);
     if (!this.player) return;
     // Skip the whole tick if the player's sprite was torn down by a
     // pause/unmount race — entities downstream (NPCs, MCP, save) all
@@ -552,12 +557,20 @@ export default class LocalSceneBase extends Phaser.Scene {
     // Visual marker
     this.add.rectangle(x, y, width, height, 0xf59e0b, 0.18).setDepth(1);
 
-    // Label
+    // Label. In the sign band: at depth 2 the child covered the way out
+    // by standing on it, which is exactly where they stand (plan 0.12).
     if (label) {
+      // Smaller on a phone. At 14px "🗺️ Leave Fields ⬇" is 122px wide and
+      // the clear gap along the bottom of a 390px screen — between the
+      // d-pad and the chat button — is 120px, so the label could not be
+      // placed anywhere and sat under the chat button whatever the dodge
+      // tried (plan 0.12).
+      const narrow = (this.cameras?.main?.width ?? 1280) < 600;
       this.add.text(x, y, label, {
-        fontSize: '14px', fontFamily: 'sans-serif', color: '#92400e',
+        fontSize: narrow ? '12px' : '14px',
+        fontFamily: 'sans-serif', color: '#92400e',
         fontStyle: 'bold', stroke: '#fef3c7', strokeThickness: 3,
-      }).setOrigin(0.5).setDepth(2);
+      }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH);
     }
 
     const entry = { zone, targetScene, targetSpawn, sfx };

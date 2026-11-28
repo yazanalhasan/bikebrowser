@@ -26,6 +26,9 @@ import { saveGame } from '../systems/saveSystem.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { addArt, addGround } from '../../../game/assets/act1Art.js';
 import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
+import {
+  PANEL_BG_DEPTH, PANEL_TEXT_DEPTH,
+} from '../systems/labelLayout.js';
 
 // Defaults (subclasses can override via getWorldSize / hooks).
 const DEFAULT_WORLD_W = 800;
@@ -395,17 +398,21 @@ export default class LabRigBase extends LocalSceneBase {
 
   _drawTitle() {
     const w = this._worldDim.w;
-    this.add.rectangle(w / 2, 24, w, 48, 0x14151a).setDepth(2);
+    // The bar is 8px taller than it was so the subtitle fits inside it.
+    // At y=50 the subtitle hung below the bar and its ends ran under the
+    // readout panel (y52-88): the Thermal Rig's "how much does each metal
+    // stretch when heated?" was 11% covered (plan 0.12).
+    this.add.rectangle(w / 2, 28, w, 56, 0x14151a).setDepth(2);
     const emoji = this.getRigTitleEmoji() || '';
     const title = this.getRigTitle() || 'LAB RIG';
-    this.add.text(w / 2, 22, `${emoji}  ${title}`, {
+    this.add.text(w / 2, 20, `${emoji}  ${title}`, {
       fontSize: '14px', fontFamily: 'sans-serif', color: COL_TEXT,
       fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(3);
 
     const subtitle = this.getRigSubtitle();
     if (subtitle) {
-      this.add.text(w / 2, 50, subtitle, {
+      this.add.text(w / 2, 42, subtitle, {
         fontSize: '10px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
       }).setOrigin(0.5).setDepth(3);
     }
@@ -413,11 +420,11 @@ export default class LabRigBase extends LocalSceneBase {
 
   _buildReadout() {
     this.add.rectangle(READOUT_X, READOUT_Y, READOUT_W, READOUT_H, COL_PANEL)
-      .setStrokeStyle(2, COL_PANEL_EDGE).setDepth(2);
+      .setStrokeStyle(2, COL_PANEL_EDGE).setDepth(PANEL_BG_DEPTH);
     this._readoutText = this.add.text(READOUT_X, READOUT_Y, '', {
       fontSize: '11px', fontFamily: 'monospace', color: '#10b981',
       fontStyle: 'bold',
-    }).setOrigin(0.5).setDepth(3);
+    }).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
     this._refreshReadout(0, null, null);
   }
 
@@ -437,7 +444,7 @@ export default class LabRigBase extends LocalSceneBase {
     this.add.text(SELECTOR_X + SELECTOR_W / 2, SELECTOR_Y - 16, 'SAMPLES', {
       fontSize: '11px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
       fontStyle: 'bold',
-    }).setOrigin(0.5).setDepth(3);
+    }).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
 
     this._slots = [];
     this._samples.forEach((s, idx) => {
@@ -711,7 +718,10 @@ export default class LabRigBase extends LocalSceneBase {
       this._altChartTexts = [];
     }
 
-    if (!this._chartG) this._chartG = this.add.graphics().setDepth(2);
+    // The chart is a wall board: its bottom edge is at bench height,
+    // so a child standing at the scale covered the x-axis label by
+    // half. A panel belongs in the reserved UI band (plan 0.12).
+    if (!this._chartG) this._chartG = this.add.graphics().setDepth(PANEL_BG_DEPTH);
     const g = this._chartG;
     g.clear();
 
@@ -730,7 +740,7 @@ export default class LabRigBase extends LocalSceneBase {
           fontSize: '12px', fontFamily: 'sans-serif', color: COL_TEXT,
           fontStyle: 'bold',
         },
-      ).setOrigin(0.5).setDepth(3);
+      ).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
     } else if (cfg.title) {
       this._chartTitle.setText(cfg.title);
     }
@@ -767,7 +777,7 @@ export default class LabRigBase extends LocalSceneBase {
       `${cfg.xLabel || 'X'}${xUnit}, max ${formatAxis(xMax)}`, {
         fontSize: '9px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
       },
-    ).setOrigin(0.5).setDepth(3);
+    ).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
     this._chartAxisLabels.push(xLabel);
     const yLabel = this.add.text(
       CHART_X + 6, CHART_Y + CHART_H / 2,
@@ -775,7 +785,7 @@ export default class LabRigBase extends LocalSceneBase {
         fontSize: '9px', fontFamily: 'sans-serif', color: COL_TEXT_DIM,
         align: 'center',
       },
-    ).setOrigin(0.5).setDepth(3).setRotation(-Math.PI / 2);
+    ).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH).setRotation(-Math.PI / 2);
     this._chartAxisLabels.push(yLabel);
 
     const toScreen = (p) => {

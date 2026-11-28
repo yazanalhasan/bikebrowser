@@ -1,6 +1,8 @@
 /** Characters that fit a scale button before the labels collide. */
 
-import { LAB_BUTTON_DEPTH } from '../labelLayout.js';
+import {
+  LAB_BUTTON_DEPTH, PANEL_BG_DEPTH, PANEL_TEXT_DEPTH,
+} from '../labelLayout.js';
 
 const MAX_BUTTON_CHARS = 7;
 
@@ -50,17 +52,20 @@ export function createScaleStation(scene, cfg) {
 
   // ── Display panel ────────────────────────────────────────────────────
   const display = scene.add.rectangle(x, displayY, 90, 28, 0x1c1d22)
-    .setStrokeStyle(2, 0x4a4d55).setDepth(3);
+    .setStrokeStyle(2, 0x4a4d55).setDepth(PANEL_BG_DEPTH);
+  // The readout and its label live in the reserved UI band: they are the
+  // numbers the child is here to read, and both were behind the brass
+  // sprite at depth 4 (plan 0.12.2).
   const displayText = scene.add.text(x, displayY, '— g', {
     fontSize: '12px', fontFamily: 'monospace', color: '#10b981',
     fontStyle: 'bold',
-  }).setOrigin(0.5).setDepth(4);
+  }).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
 
   // ── "SCALE" label above display ──────────────────────────────────────
   scene.add.text(x, displayY - 22, 'SCALE', {
     fontSize: '9px', fontFamily: 'sans-serif', color: '#a4a8b3',
     fontStyle: 'bold',
-  }).setOrigin(0.5).setDepth(3);
+  }).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
 
   // ── Sample buttons (3) ───────────────────────────────────────────────
   const BTN_Y = platformY + 40;

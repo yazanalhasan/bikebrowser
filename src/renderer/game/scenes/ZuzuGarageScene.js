@@ -30,6 +30,8 @@ import {
 } from '../data/workbenchRecipes.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
+import { WORLD_SIGN_DEPTH } from '../systems/labelLayout.js';
+import { addSceneTitle } from '../ui/sceneTitle.js';
 
 /**
  * Ambient lift for the garage interior (see `_liftInteriorLight`).
@@ -692,7 +694,7 @@ export default class ZuzuGarageScene extends LocalSceneBase {
       this.add.text(o.x, o.y, "⭐ Zuzu's Bike ⭐", {
         fontSize: '16px', fontFamily: 'sans-serif', color: '#1e40af', fontStyle: 'bold',
         stroke: '#dbeafe', strokeThickness: 2,
-      }).setOrigin(0.5).setDepth(2);
+      }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH);
     }
     // Bike rack collision
     {
@@ -849,13 +851,7 @@ export default class ZuzuGarageScene extends LocalSceneBase {
     }
 
     // === SCENE TITLE ===
-    {
-      const o = this.layout.scene_title;
-      this.add.text(o.x, o.y, "Zuzu's Garage", {
-        fontSize: '20px', fontFamily: 'sans-serif', color: '#78350f',
-        fontStyle: 'bold', stroke: '#fef3c7', strokeThickness: 3,
-      }).setOrigin(0.5).setDepth(5);
-    }
+    addSceneTitle(this, "Zuzu's Garage", { color: '#78350f', stroke: '#fef3c7' });
 
     // === EXIT (south door → street) ===
     // Sunlight glow at door

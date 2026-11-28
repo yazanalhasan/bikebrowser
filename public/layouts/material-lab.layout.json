@@ -14,7 +14,9 @@
       "x": 560,
       "displayY": 436,
       "platformY": 458,
-      "_note": "Density station scale, placed below the chart and away from the UTM."
+      "artX": 480,
+      "artY": 436,
+      "_note": "artX/artY place the brass scale sprite BESIDE the LCD. Centred on it (the old behaviour) the 64x64 sprite covered the SCALE label and the grams 100%. Plan 0.12.2."
     },
     "density_calipers": {
       "x": 690,
@@ -34,10 +36,10 @@
       "_note": "Open slate panel. Kept in the upper lab area so it does not cover Zuzu near the bottom exit."
     },
     "teaching_callout": {
-      "x": 320,
-      "y": 92,
-      "w": 260,
-      "_note": "Transient UTM physics callout anchored near the specimen/readout."
+      "x": 600,
+      "y": 68,
+      "w": 250,
+      "_note": "Moved off the readout (x80-360, y52-88) and the SAMPLES header (x113-167, y88-101), which it covered by 15% and more. It now sits in the top-right strip above the chart title, in the child's eye-line for the graph it is explaining. Plan 0.12.1."
     },
     "slow_toggle": {
       "x": 140,
@@ -48,10 +50,10 @@
     },
     "comparison_panel": {
       "x": 320,
-      "y": 516,
+      "y": 170,
       "w": 350,
       "h": 58,
-      "_note": "Compact all-material comparison takeaway after all UTM tests. Raised from y=548: the panel's bottom edge (y+h/2 = 577) printed over the ⬅ Back to Garage label at y=582."
+      "_note": "Was (320, 516): the fromGarage spawn is (400, 540), so Zuzu stood ON the card and hid 91% of its heading. Moved up into the empty bench band under the callout strip, where he cannot stand, AND raised into the reserved UI depth band. Plan 0.12.6."
     }
   }
 }

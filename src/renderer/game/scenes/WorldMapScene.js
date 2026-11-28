@@ -27,6 +27,8 @@ import { preloadGameAssets } from '../../../game/assets/preloadGameAssets.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { addArt, addBackdrop } from '../../../game/assets/act1Art.js';
 import { NARRATOR } from '../systems/questDialog.js';
+import { HUD_RAIL_WIDTH } from '../systems/labelLayout.js';
+import { HUD_TOP_LEFT_WIDTH } from '../ui/sceneTitle.js';
 
 const SCENE_KEY = 'WorldMapScene';
 
@@ -157,15 +159,20 @@ export default class WorldMapScene extends Phaser.Scene {
     this._renderFogLayer({ mapBounds: { x: mapX, y: mapY, w: mapW, h: mapH } });
 
     // Title
-    this.add.text(width / 2, 30, '🗺️  WORLD MAP  🗺️', {
-      fontSize: '22px', fontFamily: 'sans-serif', fontStyle: 'bold',
+    // The header sits between the HUD's top-left block and its right
+    // rail, not in the middle of the raw width: on a 390px phone a
+    // centred heading runs under the goals chip (plan 0.12).
+    const headX = HUD_TOP_LEFT_WIDTH + (width - HUD_TOP_LEFT_WIDTH - HUD_RAIL_WIDTH) / 2;
+    this.add.text(headX, 30, '🗺️  WORLD MAP  🗺️', {
+      fontSize: width < 600 ? '17px' : '22px',
+      fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#5c3d10', stroke: '#f5e6c8', strokeThickness: 3,
     }).setOrigin(0.5);
 
     // ── Subtitle with region ──
     // The same parchment stroke the title uses. Without it this line is
     // dark brown on open sky and a child cannot read it.
-    this.add.text(width / 2, 55, 'Tap a location to travel there', {
+    this.add.text(headX, 55, 'Tap a location to travel there', {
       fontSize: '12px', fontFamily: 'sans-serif', color: '#6b4f10',
       stroke: '#f5e6c8', strokeThickness: 3,
     }).setOrigin(0.5);
@@ -441,8 +448,16 @@ export default class WorldMapScene extends Phaser.Scene {
     // Left-anchored and clear of the on-screen arrow pad, which sits in
     // the bottom-left corner: centred at x=60 the first word ran off the
     // left edge and the ↓ key was printed through "Neighborhood".
-    const backBtn = this.add.text(190, height - 35, '← Back to Neighborhood', {
-      fontSize: '14px', fontFamily: 'sans-serif', fontStyle: 'bold',
+    // On a narrow screen the back button and the legend cannot share a
+    // row: at 390px wide they overlapped each other by 41% and both ran
+    // under the HUD. Stack them instead.
+    const narrow = width < 600;
+    // Above the d-pad and the action button, not in them: at the very
+    // bottom of a 390px screen both of those sit on top of this row.
+    const backY = narrow ? height - 215 : height - 35;
+    const backBtn = this.add.text(narrow ? 16 : 190, backY, '← Back to Neighborhood', {
+      fontSize: narrow ? '12px' : '14px',
+      fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#ffffff', backgroundColor: '#475569', padding: { x: 10, y: 6 },
     }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });
 
@@ -451,9 +466,12 @@ export default class WorldMapScene extends Phaser.Scene {
     backBtn.on('pointerout', () => backBtn.setBackgroundColor('#475569'));
 
     // ── Legend ──
-    const legendY = height - 35;
-    // Clear of the right-hand toolbar, which the legend used to run under.
-    const legendX = width - 260;
+    // Above the back button on a phone, beside it on a desktop; clear of
+    // the right-hand rail either way.
+    const legendY = narrow ? height - 250 : height - 35;
+    const legendX = narrow
+      ? (width - HUD_RAIL_WIDTH) / 2
+      : width - 260;
     this.add.text(legendX, legendY, '🟢 Resource  🔵 Material  🟤 Biology', {
       fontSize: '10px', fontFamily: 'sans-serif', color: '#5c3d10',
       stroke: '#f5e6c8', strokeThickness: 3,

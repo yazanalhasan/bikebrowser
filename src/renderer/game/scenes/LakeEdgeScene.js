@@ -20,6 +20,7 @@ import { advanceQuest, getCurrentStep } from '../systems/questSystem.js';
 import { saveGame } from '../systems/saveSystem.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
+import { addSceneTitle } from '../ui/sceneTitle.js';
 
 function isBoatPuzzleDockMode(state, step) {
   if (state?.activeQuest?.id !== 'boat_puzzle') return false;
@@ -284,10 +285,7 @@ export default class LakeEdgeScene extends LocalSceneBase {
     });
 
     // === SCENE TITLE ===
-    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🏞️ Lake Edge', {
-      fontSize: '20px', fontFamily: 'sans-serif', color: '#1b5e20',
-      fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(5);
+    addSceneTitle(this, '🏞️ Lake Edge', { color: '#1b5e20', stroke: '#ffffff' });
 
     // === EXIT (south → overworld) ===
     this.addExit({

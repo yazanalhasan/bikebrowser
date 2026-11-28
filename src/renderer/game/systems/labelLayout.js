@@ -69,11 +69,85 @@ export const PROP_PROMPT_DEPTH = 65;
  * They sit above every prompt: a prompt is a hint, a button is the thing
  * the child has to press, and the hint was covering it.
  */
-export const LAB_BUTTON_DEPTH = 70;
+export const LAB_BUTTON_DEPTH = 90;
 
 /** A companion's own name and her "Talk" chip sit on top of all of it. */
 export const COMPANION_LABEL_DEPTH = 66;
 export const COMPANION_PROMPT_DEPTH = 67;
+
+/**
+ * The reserved UI band — panels, readouts, cards and their text.
+ *
+ * Plan 0.12. Everything above this line is still in the world: a
+ * character y-sorts to 10–49, so an info panel at depth 0–8 is hidden
+ * the moment the child stands on it. The Materials Lab takeaway card
+ * was 91% behind Zuzu for exactly that reason, and the garage spawn
+ * puts him on the card the moment he walks in.
+ *
+ * A panel's parts are ordered so a panel cannot cover its own words:
+ *
+ *   80  the card or readout background
+ *   82  its heading and body text
+ *   84  a control inside it
+ *   90  a station's own button (RECORD, START TEST, the sample cards)
+ *   92  a teaching callout's box
+ *   94  the callout's text
+ *
+ * Depth is only half of it. The band stops a character drawing OVER a
+ * panel; it does nothing about a panel landing on a name tag or on
+ * another panel. Panels still have to be placed where the child does
+ * not stand.
+ */
+export const UI_BAND_MIN = 80;
+export const PANEL_BG_DEPTH = 80;
+export const PANEL_TEXT_DEPTH = 82;
+export const PANEL_CONTROL_DEPTH = 84;
+export const STATION_BUTTON_DEPTH = 90;
+export const CALLOUT_BG_DEPTH = 92;
+export const CALLOUT_TEXT_DEPTH = 94;
+
+/** A toast or hint strip sits above everything else on the canvas. */
+export const TOAST_DEPTH = 100;
+
+/**
+ * The HUD's right-hand rail, in screen pixels.
+ *
+ * Ten 44px buttons down the right edge with an 8px margin, drawn in the
+ * DOM on top of the canvas. Depth cannot help here — nothing in Phaser
+ * is above the page — so a world label that lands under the rail has to
+ * move. Measured on the running game at 1280x720 and 390x844; the rail
+ * is the same size at both.
+ */
+export const HUD_RAIL_WIDTH = 56;
+
+/**
+ * Would a label at this screen position run under the rail?
+ *
+ * @param {number} screenRight right edge of the label, in screen px
+ * @param {number} camWidth
+ */
+export function underHudRail(screenRight, camWidth) {
+  return screenRight > camWidth - HUD_RAIL_WIDTH;
+}
+
+/**
+ * A fixed sign in the world: a scene title, a house nameplate, a map
+ * pin's name, an exit label.
+ *
+ * These were drawn at depth 2 to 12, which is inside the character
+ * y-sort band (10-49), so a child standing near one hid it — 83% of
+ * "COPPER MINE" at the mine's own spawn, 92% of "Enter" on the
+ * overworld, 100% of "Ramirez House" behind its own roof. A sign
+ * carries something the child needs, so it sits above every character;
+ * their own name tag (61) still sits above the sign, and
+ * `firstLabelClash` moves the tag when the two meet.
+ *
+ * WORLD_SIGN_ART_DEPTH is for the art a sign belongs to — a map pin's
+ * circle and icon — so the pin travels with its name instead of being
+ * left behind in the world.
+ */
+export const WORLD_SIGN_ART_DEPTH = 58;
+export const WORLD_SIGN_DEPTH = 60;
 
 /** How much closer than the caption the player must be for the prompt. */
 export const NAME_LABEL_LEAD_PX = 34;

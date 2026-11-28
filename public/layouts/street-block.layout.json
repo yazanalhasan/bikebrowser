@@ -68,8 +68,9 @@
       "h": 25
     },
     "zuzu_house_label": {
-      "x": 130,
-      "y": 245
+      "x": 152,
+      "y": 245,
+      "_note": "Was x=130, which put its left end under the garage direction sign board (world x -11..109, depth 160) and hid 17% of it. Still under the house (x 40..220). Plan 0.12."
     },
     "zuzu_house_collision": {
       "x": 130,

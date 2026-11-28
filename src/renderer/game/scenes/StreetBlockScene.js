@@ -45,6 +45,7 @@ import {
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
 import { hasAtlasFrame } from '../../../game/assets/createAtlasSprite.js';
+import { WORLD_SIGN_ART_DEPTH, WORLD_SIGN_DEPTH } from '../systems/labelLayout.js';
 
 const NEIGHBORHOOD_ATLAS = 'neighborhood_atlas';
 
@@ -103,7 +104,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     // Label
     {
       const o = this.layout.zuzu_house_label;
-      this._drawMapLabel(o.x, o.y, "Zuzu's House", { depth: 9 });
+      this._drawMapLabel(o.x, o.y, "Zuzu's House", { depth: WORLD_SIGN_DEPTH });
     }
     // House collision
     {
@@ -121,7 +122,7 @@ export default class StreetBlockScene extends LocalSceneBase {
     // === NEIGHBOR HOUSE — Mrs. Ramirez (center-right, north of road) ===
     {
       const o = this.layout.ramirez_house_label;
-      this._drawMapLabel(o.x, o.y, 'Ramirez House', { depth: 9 });
+      this._drawMapLabel(o.x, o.y, 'Ramirez House', { depth: WORLD_SIGN_DEPTH });
     }
     {
       const o = this.layout.ramirez_house_collision;
@@ -518,7 +519,12 @@ export default class StreetBlockScene extends LocalSceneBase {
         .setOrigin(0.5, 1)
         .setDisplaySize(body.w, facadeH)
         .setDepth(3);
-      if (label) this._drawMapLabel(label.x, label.y, label.text, { icon: label.icon, depth: 10 });
+      // Depth 10 put the nameplate inside the character band and under
+      // its own facade: "Zuzu's House" was 17% behind the roof art.
+      if (label) {
+        this._drawMapLabel(label.x, label.y, label.text,
+          { icon: label.icon, depth: WORLD_SIGN_DEPTH });
+      }
       return;
     }
 
@@ -633,7 +639,9 @@ export default class StreetBlockScene extends LocalSceneBase {
   }
 
   _drawStreetSign(x, y, text) {
-    const gfx = this.add.graphics().setDepth(8);
+    // A street sign is a sign: Lina standing at the corner covered 58%
+    // of "E Trailside" while it sat at depth 8/9 (plan 0.12).
+    const gfx = this.add.graphics().setDepth(WORLD_SIGN_ART_DEPTH);
     gfx.lineStyle(4, 0xe5e7eb, 0.9);
     gfx.lineBetween(x, y + 12, x, y + 70);
     gfx.fillStyle(0x1f7a42, 1);
@@ -645,11 +653,12 @@ export default class StreetBlockScene extends LocalSceneBase {
       fontSize: '14px',
       fontStyle: 'bold',
       color: '#ffffff',
-    }).setOrigin(0.5).setDepth(9);
+    }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH);
   }
 
   _drawTopNeighborhoodSign(x, y) {
-    const gfx = this.add.graphics().setScrollFactor(1).setDepth(20);
+    // In the sign band so it dodges the HUD rail like every other sign.
+    const gfx = this.add.graphics().setScrollFactor(1).setDepth(WORLD_SIGN_ART_DEPTH);
     gfx.fillStyle(0x406b1b, 0.95);
     gfx.fillRoundedRect(x - 112, y - 21, 224, 42, 10);
     gfx.lineStyle(3, 0x9fb64c, 0.95);
@@ -659,7 +668,7 @@ export default class StreetBlockScene extends LocalSceneBase {
       fontSize: '18px',
       fontStyle: 'bold',
       color: '#ffffff',
-    }).setOrigin(0.5).setDepth(21);
+    }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH);
   }
 
   _drawBike(x, y, { color = 0x2563eb, accent = 0xef4444, flat = false, depth = 38 } = {}) {

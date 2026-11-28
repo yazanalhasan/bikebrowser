@@ -17,6 +17,7 @@ import { startInteraction } from '../systems/interactionManager.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { addSceneTitle } from '../ui/sceneTitle.js';
 
 export default class CommunityPoolScene extends LocalSceneBase {
   static layoutEditorConfig = {
@@ -171,10 +172,7 @@ export default class CommunityPoolScene extends LocalSceneBase {
     });
 
     // === SCENE TITLE ===
-    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '🏊 Community Pool', {
-      fontSize: '20px', fontFamily: 'sans-serif', color: '#0d47a1',
-      fontStyle: 'bold', stroke: '#ffffff', strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(5);
+    addSceneTitle(this, '🏊 Community Pool', { color: '#0d47a1', stroke: '#ffffff' });
 
     // === EXIT (south gate → overworld) ===
     this.addExit({

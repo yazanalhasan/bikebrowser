@@ -12,6 +12,8 @@ import QUESTS from '../data/quests.js';
 import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { WORLD_SIGN_DEPTH } from '../systems/labelLayout.js';
+import { addSceneTitle } from '../ui/sceneTitle.js';
 
 const SCENE_KEY = 'CopperMineScene';
 
@@ -72,10 +74,12 @@ export default class CopperMineScene extends BaseSubScene {
     arch.fillRoundedRect(this.layout.arch_outer.x, this.layout.arch_outer.y, this.layout.arch_outer.w, this.layout.arch_outer.h, { tl: 40, tr: 40, bl: 0, br: 0 });
     arch.fillStyle(0x1a1410);
     arch.fillRoundedRect(this.layout.arch_inner.x, this.layout.arch_inner.y, this.layout.arch_inner.w, this.layout.arch_inner.h, { tl: 30, tr: 30, bl: 0, br: 0 });
+    // The mine's spawn is under this sign, so at world depth the child
+    // covered 83% of it on arrival (plan 0.12).
     this.add.text(this.layout.arch_label.x, this.layout.arch_label.y, '⛏️ COPPER MINE', {
       fontSize: '14px', fontFamily: 'sans-serif', fontStyle: 'bold',
       color: '#f5e6c8', stroke: '#3d2b1f', strokeThickness: 3,
-    }).setOrigin(0.5);
+    }).setOrigin(0.5).setDepth(WORLD_SIGN_DEPTH);
 
     // ── Support beams ──
     const beamColor = 0x6b4423;
@@ -164,10 +168,7 @@ export default class CopperMineScene extends BaseSubScene {
     });
 
     // ── Scene label ──
-    this.add.text(this.layout.scene_title.x, this.layout.scene_title.y, '⛏️ Abandoned Copper Mine', {
-      fontSize: '16px', fontFamily: 'sans-serif', fontStyle: 'bold',
-      color: '#f5e6c8', stroke: '#3d2b1f', strokeThickness: 3,
-    }).setOrigin(0.5).setDepth(10).setScrollFactor(0);
+    addSceneTitle(this, '⛏️ Abandoned Copper Mine', { color: '#f5e6c8', stroke: '#3d2b1f' });
   }
 
   setupChallenges() {

@@ -14,6 +14,9 @@
  * @param {(id:string, name:string) => void} cfg.onAutoFill
  * @returns {{ destroy: () => void, openPanel: () => void }}
  */
+
+import { PANEL_TEXT_DEPTH } from '../labelLayout.js';
+
 export function createDensitySlate(scene, cfg) {
   const { x, y, getRecorded, onAutoFill } = cfg;
   const panelLayout = cfg.panel || {};
@@ -24,11 +27,13 @@ export function createDensitySlate(scene, cfg) {
   const icon = scene.add.text(x, y, 'SLATE', {
     fontSize: '11px', fontFamily: 'sans-serif', color: '#fef3c7',
     fontStyle: 'bold',
-  }).setOrigin(0.5).setDepth(5);
-  const label = scene.add.text(x, y + 28, 'Density Slate', {
+  }).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
+  // Below the board, clear of the coupons caption 77px above (plan
+  // 0.12.5), and in the UI band so nothing in the world covers it.
+  const label = scene.add.text(x, y + 30, 'Density Slate', {
     fontSize: '10px', fontFamily: 'sans-serif', color: '#a4a8b3',
     fontStyle: 'bold',
-  }).setOrigin(0.5).setDepth(4);
+  }).setOrigin(0.5).setDepth(PANEL_TEXT_DEPTH);
 
   frame.setInteractive({ useHandCursor: true });
   board.setInteractive({ useHandCursor: true });
