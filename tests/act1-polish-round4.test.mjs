@@ -154,12 +154,14 @@ test('the scene routes every caption through the rule', () => {
 // ── the polish tail ────────────────────────────────────────────────────────
 
 test('only the closest prop prompts', () => {
+  const p0 = read('src/renderer/game/scenes/LocalSceneBase.js');
   // Two "💬 Interact" chips side by side at the lab doors told the child
   // they could press E on either; E only ever uses the nearest.
   const base = read('src/renderer/game/scenes/LocalSceneBase.js');
-  // `&& !suppressed` arrived with plan 0.2: a station's own button (the
-  // lab scale's RECORD) stands the prompt down where they share a spot.
-  assert.match(base, /prop\.prompt\.setVisible\(prop === nearest && !suppressed\)/);
+  // Plan 0.2 added `&& !suppressed` (a station's own button stands the
+  // prompt down); plan 0.3 made the winner whatever E would actually use,
+  // which may be an NPC rather than this prop.
+  assert.match(p0, /prop\.prompt\.setVisible\(prop === propWins && !suppressed\)/);
   assert.doesNotMatch(base, /prop\.prompt\.setVisible\(prop\._nearby\)/);
 });
 

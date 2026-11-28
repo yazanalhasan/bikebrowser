@@ -51,7 +51,9 @@ test('the scale stands its prompt down while RECORD is waiting', () => {
 
   const base = read('src/renderer/game/scenes/LocalSceneBase.js');
   assert.match(base, /prop\.promptSuppressed\(\)/);
-  assert.match(base, /setVisible\(prop === nearest && !suppressed\)/);
+  // `propWins` arrived with plan 0.3: the chip goes to whatever E would
+  // actually use, which may be an NPC rather than this prop.
+  assert.match(base, /setVisible\(prop === propWins && !suppressed\)/);
 });
 
 test('a suppressed prompt also stops the HUD fading for it', () => {
@@ -60,7 +62,7 @@ test('a suppressed prompt also stops the HUD fading for it', () => {
   const base = read('src/renderer/game/scenes/LocalSceneBase.js');
   const line = base.split('\n').find((l) => l.includes('const anyPrompting'));
   assert.ok(line);
-  assert.match(base, /anyPrompting = Boolean\(nearest\)\s*\n\s*&& !\(typeof nearest\.promptSuppressed/);
+  assert.match(base, /anyPrompting = Boolean\(propWins\)\s*\n\s*&& !\(typeof propWins\.promptSuppressed/);
 });
 
 test('RECORD and the prompt would collide if both were drawn', () => {
@@ -70,4 +72,32 @@ test('RECORD and the prompt would collide if both were drawn', () => {
   const prompt = labelBox(560, displayY + 34 - 9, 70, 18);
   const record = labelBox(560, displayY + 38 - 13, 86, 26);
   assert.equal(labelsOverlap(prompt, record), true);
+});
+
+// ── plan 0.3: one chip, and it is the one E will use ───────────────────────
+
+test('the action key and the chip ask the same question', () => {
+  const base = read('src/renderer/game/scenes/LocalSceneBase.js');
+  assert.match(base, /_nearestTarget\(\)/);
+  // the key handler is now a thin wrapper around it
+  const handler = base.slice(base.indexOf('_handleActionKey() {'));
+  const body = handler.slice(0, handler.indexOf('\n  }'));
+  assert.match(body, /const nearest = this\._nearestTarget\(\)/);
+  assert.doesNotMatch(body, /for \(const npc of Object\.values\(this\._npcs\)\)/,
+    'the fixed NPC-then-prop-then-companion order is back');
+});
+
+test('a quest-priority prop still wins outright', () => {
+  // When a step says to use a particular thing, that is what the child
+  // means, however close someone else is standing.
+  const base = read('src/renderer/game/scenes/LocalSceneBase.js');
+  assert.match(base, /_getQuestPriorityInteractable\(\);\s*\n\s*if \(priorityProp\) return \{ kind: 'prop'/);
+});
+
+test('every chip on screen is decided by the same winner', () => {
+  const base = read('src/renderer/game/scenes/LocalSceneBase.js');
+  assert.match(base, /npc\.prompt\?\.setVisible\?\.\(winner\?\.kind === 'npc' && winner\.target === npc\)/);
+  assert.match(base, /registry\.set\('npcPromptVisible', winner\?\.kind === 'npc'\)/);
+  const companion = read('src/renderer/game/systems/companionSystem.js');
+  assert.match(companion, /propPromptVisible'\) === true\s*\n\s*\|\| registry\?\.get\?\.\('npcPromptVisible'\) === true/);
 });

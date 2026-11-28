@@ -134,8 +134,13 @@ export function mountCompanion(scene, config) {
       // it promised an action E would not perform, because a prop you walk
       // up to beats a friend who walks up to you (see
       // LocalSceneBase._handleActionKey). Yield while a prop is prompting.
-      const propPrompting = scene.registry?.get?.('propPromptVisible') === true;
-      prompt.setVisible(this._nearby && !propPrompting);
+      // ...and to an NPC for the same reason: `_handleActionKey` tries
+      // NPCs first, then props, then her. Two "Talk" chips on screen told
+      // the child E would reach either one.
+      const registry = scene.registry;
+      const otherPrompting = registry?.get?.('propPromptVisible') === true
+        || registry?.get?.('npcPromptVisible') === true;
+      prompt.setVisible(this._nearby && !otherPrompting);
 
       // Close enough: stand still and face the player.
       if (dist <= FOLLOW_DISTANCE) {

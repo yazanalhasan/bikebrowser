@@ -402,6 +402,11 @@ export default class LocalSceneBase extends Phaser.Scene {
     // Update NPCs
     Object.values(this._npcs).forEach(npc => npc.update(this.player.sprite));
 
+    // Decides who gets a chip this frame and publishes it for the
+    // companion, which updates just below and would otherwise read a
+    // frame-old answer and flicker.
+    this._updateInteractablePrompts();
+
     // Walk companions along behind the player
     for (const companion of this._companions || []) {
       companion.update(this.player.sprite, this.game.loop.delta);
@@ -430,9 +435,6 @@ export default class LocalSceneBase extends Phaser.Scene {
     if (Phaser.Input.Keyboard.JustDown(this.actionKey)) {
       this._handleActionKey();
     }
-
-    // Check interactable proximity
-    this._updateInteractablePrompts();
 
     // MCP orchestration tick
     if (this.mcp) {
@@ -737,41 +739,55 @@ export default class LocalSceneBase extends Phaser.Scene {
     return 'default';
   }
 
-  _handleActionKey() {
+  /**
+   * What pressing E would use right now: the closest NPC, prop or
+   * companion in range, or null.
+   *
+   * It used to be a fixed order — NPC, then prop, then companion — while
+   * all three showed a chip. Standing between Mr. Chen and his bike put
+   * two chips on screen and E took Chen even when the bike was nearer.
+   *
+   * A quest-priority prop still wins outright: when a step says to use a
+   * particular thing, that is what the child means.
+   *
+   * @returns {{kind: 'prop'|'npc'|'companion', target: object, dist: number}|null}
+   */
+  _nearestTarget() {
     const priorityProp = this._getQuestPriorityInteractable();
-    if (priorityProp) {
-      priorityProp.onInteract();
-      return true;
-    }
+    if (priorityProp) return { kind: 'prop', target: priorityProp, dist: -1 };
 
-    // Try NPCs first
-    for (const npc of Object.values(this._npcs)) {
-      if (npc.isNearby()) {
-        npc.onInteract();
-        return true;
-      }
-    }
-    // Then interactable props — BEFORE the companion.
-    //
-    // Lina follows Zuzu everywhere, so with her in range she used to swallow
-    // every E press: standing at the wilted plant and pressing E replied
-    // "Marhaba! That's the one Mariam taught us" instead of using the fruit.
-    // A thing you walked up to beats a friend who walked up to you; she is
-    // still one press away as soon as you step off the prop.
-    const nearestProp = this._getNearbyInteractables()[0];
-    if (nearestProp) {
-      nearestProp.onInteract();
-      return true;
-    }
+    const px = this.player?.sprite?.x;
+    const py = this.player?.sprite?.y;
+    if (typeof px !== 'number') return null;
 
-    // Then a companion standing next to you
+    const candidates = [];
+    for (const npc of Object.values(this._npcs || {})) {
+      if (!npc.isNearby?.()) continue;
+      const nx = npc.container?.x ?? npc.x;
+      const ny = npc.container?.y ?? npc.y;
+      candidates.push({ kind: 'npc', target: npc, dist: Math.hypot(px - nx, py - ny) });
+    }
+    const prop = this._getNearbyInteractables()[0];
+    if (prop) candidates.push({ kind: 'prop', target: prop, dist: prop._distanceToPlayer });
     for (const companion of this._companions || []) {
-      if (companion.isNearby()) {
-        companion.interact();
-        return true;
-      }
+      if (!companion.isNearby?.()) continue;
+      const cx = companion.sprite?.x ?? px;
+      const cy = companion.sprite?.y ?? py;
+      candidates.push({
+        kind: 'companion', target: companion, dist: Math.hypot(px - cx, py - cy),
+      });
     }
-    return false;
+    if (!candidates.length) return null;
+    candidates.sort((a, b) => a.dist - b.dist);
+    return candidates[0];
+  }
+
+  _handleActionKey() {
+    const nearest = this._nearestTarget();
+    if (!nearest) return false;
+    if (nearest.kind === 'companion') nearest.target.interact();
+    else nearest.target.onInteract();
+    return true;
   }
 
   _handlePointerInteract(pointer) {
@@ -851,13 +867,23 @@ export default class LocalSceneBase extends Phaser.Scene {
       if (prop._nearby && (!nearest || dist < nearest._distanceToPlayer)) nearest = prop;
     }
 
-    const anyPrompting = Boolean(nearest)
-      && !(typeof nearest.promptSuppressed === 'function' && nearest.promptSuppressed());
+    // Only what E would actually use gets a chip — see `_nearestTarget`.
+    // An NPC standing closer than the prop takes it instead, and the
+    // companion yields to both, so the child never sees a chip that the
+    // key will not honour.
+    const winner = this._nearestTarget();
+    const propWins = winner?.kind === 'prop' ? winner.target : null;
+    for (const npc of Object.values(this._npcs || {})) {
+      npc.prompt?.setVisible?.(winner?.kind === 'npc' && winner.target === npc);
+    }
+    this.registry.set('npcPromptVisible', winner?.kind === 'npc');
+    const anyPrompting = Boolean(propWins)
+      && !(typeof propWins.promptSuppressed === 'function' && propWins.promptSuppressed());
     for (const prop of this._interactables) {
       const dist = prop._distanceToPlayer;
       const suppressed = typeof prop.promptSuppressed === 'function'
         && prop.promptSuppressed();
-      prop.prompt.setVisible(prop === nearest && !suppressed);
+      prop.prompt.setVisible(prop === propWins && !suppressed);
       // The name shows a little before the prompt does, and only if the
       // prop actually has a name.
       if (prop.nameLabel) {
