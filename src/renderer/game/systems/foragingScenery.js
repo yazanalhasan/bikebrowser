@@ -41,6 +41,21 @@ import { ECOLOGY_ASSET_KEYS } from './ecology/ecologyAssetManifest.js';
 import { createWorldLabel } from '../../../game/ui/WorldLabel.js';
 import { drawPlant } from '../utils/plantRenderer.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
+import { ART } from '../../../game/assets/act1ArtRegistry.js';
+
+/**
+ * Species that have an Act 1 cut of their own, at their display size.
+ *
+ * The shared ecology pack is 128x128 canvases for every creature; these
+ * three are the only ones Act 1 spawns, and they are cut against the
+ * human scale so a rabbit is rabbit-sized next to a coyote.
+ */
+const ACT1_ANIMAL_SLOT = {
+  rabbit: 'jackrabbit',
+  jackrabbit: 'jackrabbit',
+  javelina: 'javelina',
+  coyote: 'coyote',
+};
 
 /** Default visual scale for an interactive plant. */
 export const INTERACTIVE_PLANT_SCALE = 1.65;
@@ -153,9 +168,23 @@ export function mountLayoutFauna(scene, animals = [], options = {}) {
   const labelRadius = options.labelRadius ?? NEARBY_LABEL_RADIUS;
 
   for (const a of animals) {
-    const key = ECOLOGY_ASSET_KEYS.animals[a.speciesId];
+    // Prefer the Act 1 cut, which is already the size it is drawn at.
+    //
+    // Every animal used to come off the shared 128px ecology canvas at
+    // a flat `displayHeight: 52`, so a jackrabbit and a coyote were the
+    // same height on screen — in a biology game — and all of them were
+    // resampled every time a scene loaded (plan 2.6 row k).
+    const act1Key = ACT1_ANIMAL_SLOT[a.speciesId];
+    const cut = act1Key && ART[act1Key] && scene.hasArtTexture?.(ART[act1Key])
+      ? ART[act1Key]
+      : null;
+    const key = cut || ECOLOGY_ASSET_KEYS.animals[a.speciesId];
     if (!key) continue;
-    scene.addProp(key, a.x, a.y + 12, { displayHeight: 52, depth: groundDepth(a.y) });
+    scene.addProp(key, a.x, a.y + 12, {
+      // The cut is authored at its display size, so it is drawn 1:1.
+      ...(cut ? {} : { displayHeight: 52 }),
+      depth: groundDepth(a.y),
+    });
     createWorldLabel(scene, a.x, a.y + 34, formatAnimalLabel(a), {
       depth: 14,
       fontSize: 10,

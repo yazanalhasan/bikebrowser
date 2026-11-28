@@ -110,12 +110,15 @@
       "replaces": "🦅",
       "scenes": "DesertForaging,Mountain",
       "size": [
-        96,
-        91
+        40,
+        38
       ],
       "qa": {
         "score": 4,
         "notes": "existing curated eb pixel-art asset; props_manifest status was generated-needs-art-review"
+      },
+      "provenance": {
+        "recut": "Re-cut nearest-neighbour to its display size on 2026-11-28 so nothing scales it at runtime, and so the animals are sized against each other (plan 2.6 row k)."
       }
     },
     {
@@ -4979,6 +4982,69 @@
       "qa": {
         "score": 4,
         "notes": "Same seed and prompt as the idle sheet plus the talking pose, which is what keeps it the same person."
+      }
+    },
+    {
+      "slot": "jackrabbit",
+      "target_repo_path": "public/assets/game/act1/animals/jackrabbit.png",
+      "origin": "reused",
+      "kind": "world_prop",
+      "size": [
+        31,
+        34
+      ],
+      "anchor": "ground",
+      "qa": {
+        "score": 4,
+        "notes": "A jackrabbit, sitting. Knee high on an adult."
+      },
+      "provenance": {
+        "tool": "cut from the shipped ecology pack, nearest-neighbour",
+        "source": "public/assets/ecology/animals/rabbit.png (128x128 canvas)",
+        "why": "All three were drawn at a flat displayHeight of 52 from a 128px canvas, so a jackrabbit and a coyote were the same height on screen and every one of them was resampled at runtime. Cut to their own sizes against an 84px adult so the scene draws them 1:1 (plan 2.6 row k).",
+        "date": "2026-11-28"
+      }
+    },
+    {
+      "slot": "javelina",
+      "target_repo_path": "public/assets/game/act1/animals/javelina.png",
+      "origin": "reused",
+      "kind": "world_prop",
+      "size": [
+        49,
+        44
+      ],
+      "anchor": "ground",
+      "qa": {
+        "score": 4,
+        "notes": "A javelina, side on. Thigh high and twice as long as it is tall."
+      },
+      "provenance": {
+        "tool": "cut from the shipped ecology pack, nearest-neighbour",
+        "source": "public/assets/ecology/animals/javelina.png (128x128 canvas)",
+        "why": "All three were drawn at a flat displayHeight of 52 from a 128px canvas, so a jackrabbit and a coyote were the same height on screen and every one of them was resampled at runtime. Cut to their own sizes against an 84px adult so the scene draws them 1:1 (plan 2.6 row k).",
+        "date": "2026-11-28"
+      }
+    },
+    {
+      "slot": "coyote",
+      "target_repo_path": "public/assets/game/act1/animals/coyote.png",
+      "origin": "reused",
+      "kind": "world_prop",
+      "size": [
+        20,
+        56
+      ],
+      "anchor": "ground",
+      "qa": {
+        "score": 4,
+        "notes": "A coyote, standing and facing the camera. Waist high."
+      },
+      "provenance": {
+        "tool": "cut from the shipped ecology pack, nearest-neighbour",
+        "source": "public/assets/ecology/animals/coyote.png (128x128 canvas)",
+        "why": "All three were drawn at a flat displayHeight of 52 from a 128px canvas, so a jackrabbit and a coyote were the same height on screen and every one of them was resampled at runtime. Cut to their own sizes against an 84px adult so the scene draws them 1:1 (plan 2.6 row k).",
+        "date": "2026-11-28"
       }
     }
   ]

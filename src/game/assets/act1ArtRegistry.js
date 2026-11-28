@@ -16,11 +16,12 @@
  *   'backdrop' full-scene image
  */
 
-export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-28","entries":212};
+export const ART_MANIFEST_PROVENANCE = {"project":"bikebrowser Act 1 placeholder replacement","pr":"yazanalhasan/bikebrowser#10 @2f4b40b","generated":"2026-11-28","entries":215};
 
 /** slot/key -> sprite record. Keyed by texture key. */
 export const ACT1_ART = Object.freeze({
   "act1.animals.bighorn_sheep": Object.freeze({ key: "act1.animals.bighorn_sheep", path: "assets/game/act1/animals/bighorn_sheep.png", anchor: "ground", width: 60, height: 64, slot: "goat" }),
+  "act1.animals.coyote": Object.freeze({ key: "act1.animals.coyote", path: "assets/game/act1/animals/coyote.png", anchor: "ground", width: 20, height: 56, slot: "coyote" }),
   "act1.animals.dog_brown": Object.freeze({ key: "act1.animals.dog_brown", path: "assets/game/act1/animals/dog_brown.png", anchor: "ground", width: 56, height: 49, slot: "dog_brown" }),
   "act1.animals.dog_poodle": Object.freeze({ key: "act1.animals.dog_poodle", path: "assets/game/act1/animals/dog_poodle.png", anchor: "ground", width: 50, height: 56, slot: "dog_poodle" }),
   "act1.animals.dog_vest": Object.freeze({ key: "act1.animals.dog_vest", path: "assets/game/act1/animals/dog_vest.png", anchor: "ground", width: 50, height: 56, slot: "dog_vest" }),
@@ -28,6 +29,8 @@ export const ACT1_ART = Object.freeze({
   "act1.animals.frog": Object.freeze({ key: "act1.animals.frog", path: "assets/game/act1/animals/frog.png", anchor: "ground", width: 40, height: 30, slot: "frog" }),
   "act1.animals.hawk": Object.freeze({ key: "act1.animals.hawk", path: "assets/game/act1/animals/hawk.png", anchor: "ground", width: 96, height: 91, slot: "hawk" }),
   "act1.animals.heron": Object.freeze({ key: "act1.animals.heron", path: "assets/game/act1/animals/heron.png", anchor: "ground", width: 51, height: 64, slot: "heron" }),
+  "act1.animals.jackrabbit": Object.freeze({ key: "act1.animals.jackrabbit", path: "assets/game/act1/animals/jackrabbit.png", anchor: "ground", width: 31, height: 34, slot: "jackrabbit" }),
+  "act1.animals.javelina": Object.freeze({ key: "act1.animals.javelina", path: "assets/game/act1/animals/javelina.png", anchor: "ground", width: 49, height: 44, slot: "javelina" }),
   "act1.animals.lizard": Object.freeze({ key: "act1.animals.lizard", path: "assets/game/act1/animals/lizard.png", anchor: "ground", width: 48, height: 42, slot: "lizard" }),
   "act1.challenges.conductivity": Object.freeze({ key: "act1.challenges.conductivity", path: "assets/game/act1/challenges/conductivity.png", anchor: "icon", width: 96, height: 93, slot: "ch_conductivity" }),
   "act1.challenges.depth_marker": Object.freeze({ key: "act1.challenges.depth_marker", path: "assets/game/act1/challenges/depth_marker.png", anchor: "icon", width: 29, height: 48, slot: "ch_depth" }),
@@ -222,6 +225,7 @@ export const ART = Object.freeze({
   "communitypool_pool_water": "act1.grounds.communitypool_pool_water",
   "coppermine_floor": "act1.grounds.coppermine_floor",
   "coppermine_wall_backdrop": "act1.grounds.coppermine_wall_backdrop",
+  "coyote": "act1.animals.coyote",
   "deep_copper": "act1.items.deep_copper_ore",
   "desert_shrub": "act1.plants.desert_shrub",
   "desertforaging_ground": "act1.grounds.desertforaging_ground",
@@ -267,6 +271,8 @@ export const ART = Object.freeze({
   "hawk": "act1.animals.hawk",
   "heron": "act1.animals.heron",
   "hoop": "act1.props.basketball_hoop",
+  "jackrabbit": "act1.animals.jackrabbit",
+  "javelina": "act1.animals.javelina",
   "lab_coupons": "act1.props.test_coupons",
   "lab_scale": "act1.props.balance_scale",
   "lakeedge_grass": "act1.grounds.lakeedge_grass",
