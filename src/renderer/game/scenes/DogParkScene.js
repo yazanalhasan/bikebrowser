@@ -19,6 +19,7 @@ import { registerSceneHmr } from '../dev/phaserHmr.js';
 import { loadLayout } from '../utils/loadLayout.js';
 import { startInteraction } from '../systems/interactionManager.js';
 import { ART } from '../../../game/assets/act1ArtRegistry.js';
+import { addArt, hasArt } from '../../../game/assets/act1Art.js';
 import { groundDepth } from '../../../game/assets/act1Art.js';
 import { addSceneTitle } from '../ui/sceneTitle.js';
 
@@ -104,25 +105,38 @@ export default class DogParkScene extends LocalSceneBase {
     }
 
     // === DOGS (decorative, walking) ===
+    //
+    // Painted dogs, not system emoji (plan 2.6 row d). The art has
+    // shipped since November and nothing ever drew it: three 🐕 glyphs
+    // in a painted park, each rendering differently on every platform.
     this._dogs = [];
-    const dogEmojis = ['🐕', '🐩', '🐕‍🦺'];
+    const dogArt = [ART.dog_brown, ART.dog_poodle, ART.dog_vest];
 
     for (let i = 0; i < this.layout.dog_spots.length; i++) {
       const dog = this.layout.dog_spots[i];
-      const sprite = this.add.text(dog.x, dog.y, dogEmojis[i], { fontSize: '28px' })
-        .setOrigin(0.5).setDepth(4);
+      const art = dogArt[i % dogArt.length];
+      const sprite = hasArt(this, art)
+        ? addArt(this, art, dog.x, dog.y, { anchor: 'ground', depth: 4 })
+        : this.add.text(dog.x, dog.y, '🐕', { fontSize: '28px' })
+          .setOrigin(0.5).setDepth(4);
 
       // Simple wander behavior
+      // Wander, and face the way they are going: a dog sliding
+      // backwards across a park is worse than a dog that stands still.
+      const dx = (Math.random() - 0.5) * 200;
       this.tweens.add({
         targets: sprite,
-        x: dog.x + (Math.random() - 0.5) * 200,
+        x: dog.x + dx,
         y: dog.y + (Math.random() - 0.5) * 100,
         duration: 3000 + Math.random() * 2000,
         ease: 'Sine.easeInOut',
         yoyo: true,
         repeat: -1,
         delay: Math.random() * 1000,
+        onYoyo: () => sprite.setFlipX?.(dx > 0),
+        onRepeat: () => sprite.setFlipX?.(dx < 0),
       });
+      sprite.setFlipX?.(dx < 0);
 
       this._dogs.push(sprite);
     }

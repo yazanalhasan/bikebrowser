@@ -13,7 +13,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
 const root = new URL('../', import.meta.url);
 const read = (p) => readFileSync(new URL(p, root), 'utf8');
@@ -71,4 +71,43 @@ test('the recovered plant swaps in where the child can see it', () => {
   assert.match(system, /setTexture\(art\.key\)/);
   // And the prompt goes, so it stops inviting a press that does nothing.
   assert.match(system, /interactable\.prompt\?\.destroy\?\.\(\)/);
+});
+
+// ── and the same rule inside the scenes ───────────────────────────────────
+
+test('no world object in a scene is a bare emoji either', () => {
+  // The Dog Park drew three dogs as 🐕 🐩 🐕‍🦺 while the painted dog art
+  // sat unused in the repo (plan 2.6 row d). The obstacle data is not
+  // the only place a prop can be an emoji.
+  //
+  // An emoji INSIDE a sentence is fine — "🏜️ Dry Wash" is a heading.
+  // What this catches is a text object whose whole content is a glyph,
+  // which means it is standing in for a sprite.
+  const dir = new URL('src/renderer/game/scenes/', root);
+  const pattern = /add\.text\(\s*[^,]+,\s*[^,]+,\s*'([^'a-zA-Z0-9]{1,6})'/g;
+  const found = [];
+  for (const file of readdirSync(dir)) {
+    if (!file.endsWith('.js')) continue;
+    const src = read(`src/renderer/game/scenes/${file}`);
+    for (const m of src.matchAll(pattern)) {
+      const glyph = m[1].trim();
+      if (!glyph) continue;
+      // '+' marks a construction anchor; it is a UI mark, not a prop.
+      if (glyph === '+') continue;
+      // The documented fallback when a texture fails to load.
+      const context = src.slice(Math.max(0, m.index - 220), m.index);
+      if (/hasArt\(/.test(context)) continue;
+      found.push(`${file}: ${glyph}`);
+    }
+  }
+  assert.deepEqual(found, [], 'these world objects are emoji standing in for art');
+});
+
+test('the Dog Park uses the dog art that ships with the game', () => {
+  const scene = read('src/renderer/game/scenes/DogParkScene.js');
+  for (const slot of ['dog_brown', 'dog_poodle', 'dog_vest']) {
+    assert.match(scene, new RegExp(`ART\.${slot}`), `${slot} is still unused`);
+  }
+  // And they face the way they are walking.
+  assert.match(scene, /setFlipX\?\.\(/);
 });
