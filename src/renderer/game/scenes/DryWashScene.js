@@ -671,35 +671,48 @@ export default class DryWashScene extends LocalSceneBase {
 
   _createLoadedBikeTestRig(scene, x, y) {
     const rig = scene.add.container(x, y).setDepth(8);
-    const bike = scene.add.graphics();
 
-    bike.lineStyle(5, 0x2563eb, 1);
-    bike.strokeCircle(-24, 16, 15);
-    bike.strokeCircle(24, 16, 15);
-    bike.lineStyle(4, 0x0f172a, 1);
-    bike.lineBetween(-24, 16, -6, -6);
-    bike.lineBetween(-6, -6, 10, 16);
-    bike.lineBetween(10, 16, -24, 16);
-    bike.lineBetween(10, 16, 24, 16);
-    bike.lineBetween(-6, -6, 24, 16);
-    bike.lineBetween(24, 16, 30, -6);
-    bike.lineBetween(22, -8, 34, -12);
-    bike.lineBetween(-6, -6, -12, -16);
-    bike.lineStyle(3, 0x111827, 1);
-    bike.lineBetween(-16, -16, -3, -16);
+    // Zuzu on his bike, from the one frame in the atlas that draws
+    // exactly that — `zuzu_bike_idle` (plan 2.6 row e / 3.1).
+    //
+    // It has been in the repo since the atlas landed and nothing ever
+    // showed it. What rolled across the finished bridge instead was a
+    // bicycle made of eleven Graphics lines with `zuzu_idle_down`
+    // squashed from 96x112 into a 26x30 box on top of it — a standing
+    // boy, flattened, hovering over a wire-frame bike, at the moment
+    // the chapter pays off.
+    const riding = scene.textures.exists('zuzu_atlas')
+      && scene.textures.get('zuzu_atlas').has('zuzu_bike_idle');
+    let bike;
+    if (riding) {
+      bike = scene.add.image(0, 20, 'zuzu_atlas', 'zuzu_bike_idle')
+        .setOrigin(0.5, 1);
+    } else {
+      // Dev fallback: the old wire bike, so a missing atlas still shows
+      // something rolling.
+      bike = scene.add.graphics();
+      bike.lineStyle(5, 0x2563eb, 1);
+      bike.strokeCircle(-24, 16, 15);
+      bike.strokeCircle(24, 16, 15);
+      bike.lineStyle(4, 0x0f172a, 1);
+      bike.lineBetween(-24, 16, -6, -6);
+      bike.lineBetween(-6, -6, 10, 16);
+      bike.lineBetween(10, 16, -24, 16);
+      bike.lineBetween(10, 16, 24, 16);
+      bike.lineBetween(-6, -6, 24, 16);
+      bike.lineBetween(24, 16, 30, -6);
+      bike.lineBetween(22, -8, 34, -12);
+      bike.lineBetween(-6, -6, -12, -16);
+    }
 
-    bike.fillStyle(0xf59e0b, 1);
-    bike.fillRoundedRect(-37, -12, 18, 16, 3);
-    bike.fillRoundedRect(15, -18, 18, 18, 3);
-    bike.lineStyle(2, 0x78350f, 1);
-    bike.strokeRoundedRect(-37, -12, 18, 16, 3);
-    bike.strokeRoundedRect(15, -18, 18, 18, 3);
-
-    // Zuzu himself rides the load test, straight off his atlas.
-    const rider = scene.textures.exists('zuzu_atlas')
-      ? scene.add.image(-4, -33, 'zuzu_atlas', 'zuzu_idle_down')
-        .setOrigin(0.5, 1).setDisplaySize(26, 30)
-      : scene.add.rectangle(-4, -33, 20, 30, 0x1f3a5f).setOrigin(0.5, 1);
+    // The 100 kg load, strapped on: two panniers either side.
+    const load = scene.add.graphics();
+    load.fillStyle(0xf59e0b, 1);
+    load.fillRoundedRect(-44, -14, 18, 16, 3);
+    load.fillRoundedRect(26, -20, 18, 18, 3);
+    load.lineStyle(2, 0x78350f, 1);
+    load.strokeRoundedRect(-44, -14, 18, 16, 3);
+    load.strokeRoundedRect(26, -20, 18, 18, 3);
 
     const label = scene.add.text(0, 42, '100 kg load test', {
       fontSize: '13px',
@@ -710,7 +723,7 @@ export default class DryWashScene extends LocalSceneBase {
       strokeThickness: 3,
     }).setOrigin(0.5);
 
-    rig.add([bike, rider, label]);
+    rig.add([bike, load, label]);
     return rig;
   }
 
